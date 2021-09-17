@@ -1,0 +1,105 @@
+environment:
+  version:  "1.0"
+  topology_template:  "1node_template_physical.yaml"
+  type:   "physical"
+
+environment_host:
+  name:                   "VServer1"
+  ip:                     "10.69.2.40"
+  username:               "extreme"
+  password:               "extreme"
+  connection_method:      "ssh"
+  #ssh_port:              "9015"
+  #type:                  "vbox"
+  #os:                    "linux"
+
+testengine:
+  name:                     "robot_test_engine"
+  ip:                       "10.69.2.72"
+  vm_location:              ""
+  physical_device:          "True"
+  username:                 "administrator"
+  password:                 "BeExtreme!"
+
+netelem1:
+  name:                     "x435_DUT1"
+  ip:                       "10.69.11.15"
+  term_server:              "10.69.1.244 2031"
+  pdu_ip:                   "10.69.11.2"
+  pdu_port:                 "19"
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  family:                   "summitlite_arm"
+  platform:                 "X435-8T-4S"
+  host_mac:                 "00-04-96-CE-94-38"
+  primary_test_target:      "True"
+  physical_device:          "True"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  vm_location:
+  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/cit_x435_unit/cit_x435_unit_netelem1.cfg"
+  isl:
+
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "2"
+      intnet: "link397"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "3"
+      intnet: "link398"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "4"
+      intnet: "link399"
+    port_d:
+      ifname: &netelem1_tgen_port_d_ifname "1"
+      intnet: "link400"
+
+  management:
+    port_a:
+      ifname:
+      intnet:
+
+tgen1:
+  name:                     &tgen1_name "JETS"
+  vendor:                   "jets"
+  chassis_type:             "jets"
+  software:                 "N/A"
+  ip:                       "10.69.2.26"
+  vm_ip:                    "N/A"
+  username:                 "root"
+  password:                 "PASprt86"
+  ssh_port:                 "22"
+  vm_port:                  "22"
+  os:                       "linux"
+  dynamic_deployment:       "False"
+  vm_location:
+
+tgen_ports:
+  netelem1:
+    port_a: &tgen_ports_netelem1_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth5"
+      intnet:             "link397"
+    port_b: &tgen_ports_netelem1_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth6"
+      intnet:             "link398"
+    port_c: &tgen_ports_netelem1_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth7"
+      intnet:             "link399"
+    port_d: &tgen_ports_netelem1_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth8"
+      intnet:             "link400"
+
+
+

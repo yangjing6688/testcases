@@ -1,0 +1,120 @@
+
+
+netelem1:
+  name:                     "X450G2_DUT1"
+  ip:                       "10.51.136.80"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  host_mac:                 "00-04-96-9B-C1-C1"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  upgrade_firmware:         "False"
+  build_directory:          "release-manager/30.4.0.99/mips/cougar/cougar/release/summitX-30.4.0.99.xos"
+  build:                    "30.4.0.99"
+  mgmt_vlan:                "VR-Mgmt"
+
+#  Interswith Links and to define VM virtual links.
+  isl:
+    port_a:
+      ifname: &netelem1_isl_port_a_ifname ""
+      intnet: "intnet0"
+    port_b:
+      ifname: &netelem1_isl_port_b_ifname ""
+      intnet: "intnet1"
+    port_c:
+      ifname: &netelem1_isl_port_c_ifname ""
+      intnet: "intnet2"
+    port_d:
+      ifname: &netelem1_isl_port_d_ifname ""
+      intnet: "intnet3"
+# Ports for Traffic Generation.
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "22"
+      intnet: "intnet4"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "23"
+      intnet: "intnet5"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "24"
+      intnet: "intnet6"
+# End Systems ..
+#  endsys:
+#    port_a:
+#      ifname: &netelem1_endsys_port_a_ifname "40"
+#      intnet: "intnet15"
+#  Named Management port if needed.
+#  management:
+#    ifname:  "1:48"
+#    intnet:  "mgmt"
+
+# Traffic Generation..
+#  vm_ip of 10.52.2.167 - proxy server between robot framework and ixia chassis.
+tgen1:
+  name:       &tgen1_name "robot_jets"
+  vendor:                 "jets"
+  chassis_type:           "jets"
+  jets_dir:               "jets"
+  software:               "jets"
+  ip:                     "10.51.132.100"
+  vm_ip:                  "10.51.132.100"
+  username:               "root"
+  password:               "PASprt86"
+  vm_port:                "22"
+  dynamic_deployment:     "False"
+  vm_location:            "Jets_Centos_7_6.ovf"
+
+#
+# JETS 4 port NIC cards don't always map sequentially from left to right (or right to left)
+#
+tgen_ports:
+  netelem1:
+    port_a:
+      tgen_name: *tgen1_name
+      ifname:    "eth15"
+      intnet:    "intnet4"
+    port_b:
+      tgen_name:  *tgen1_name
+      ifname:     "eth14"
+      intnet:     "intnet5"
+    port_c:
+      tgen_name: *tgen1_name
+      ifname:     "eth16"
+      intnet:     "intnet6"
+#    port_d:
+#      tgen_name: *tgen1_name
+#      ifname:     "1/2/12"
+#      intnet:     "intnet7"
+
+# Gateway
+#gateway_ip:           "192.168.117.1"
+#gateway_mac:          "20:b3:99:7a:ed:08"
+
+# EndSys1 - Description
+#endsys1:
+#  name:                 "endsys1_testbed1_static"
+#  ip:                   "10.52.15.98"
+#  username:             "administrator"
+#  password:             "BeExtreme!"
+#  connection_method:    "ssh"
+#  os:                   "linux"
+#  vm_location:          "endsys1.ova"
+#  vm_provider:          "virtualbox"
+#  dynamic_deployment:   "False"
+#  port:                 "46022"
+#  port_a:
+#    ifname:       "enp0s8"
+#    ip: "10.10.10.11"
+#    mask:    "24"
+#    source_mac:   "08:00:27:ec:c8:67"
+#    intnet:       "intnet15"
+
+tftp_server:
+  ip: "10.59.5.2"

@@ -1,0 +1,321 @@
+environment:
+  version:           "1.0"
+  topology_template: "NONE"
+  number_of_nodes:   "6-node"
+  test_bed_name:     "x465x590x690x460g2_6node_SalemRobot80-85"
+  url:               ""
+
+
+netelem1:
+  name:                     "X460G2_DUT1"
+  ip:                       "10.51.136.80"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  host_mac:                 "00-04-96-97-D1-94"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  upgrade_firmware:         "False"
+  build_directory:          "release-manager/30.4.0.99/mips/cougar/cougar/release/summitX-30.4.0.99.xos"
+  build:                    "30.4.0.99"
+  mgmt_vlan:                "VR-Mgmt"
+
+#  Interswith Links and to define VM virtual links.
+  isl:
+    port_1:
+      ifname: &netelem1_isl_port_a_ifname "1"
+      intnet: "ISL to ROBOT83"
+    port_3:
+      ifname: &netelem1_isl_port_b_ifname "3"
+      intnet: "ISL to ROBOT84"
+    port_5:
+      ifname: &netelem1_isl_port_c_ifname "5"
+      intnet: "ISL to ROBOT85"
+    port_45:
+      ifname: &netelem1_isl_port_d_ifname "45"
+      intnet: "ISL to ROBOT81"
+    port_47:
+      ifname: &netelem1_isl_port_e_ifname "47"
+      intnet: "ISL to ROBOT82"
+# Ports for Traffic Generation.
+  tgen:
+    port_2:
+      ifname: &netelem1_tgen_port_a_ifname "2"
+      intnet: "jets eth11"
+
+
+netelem2:
+  name:                     "X460G2_DUT2"
+  ip:                       "10.51.136.81"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  host_mac:                 "00:04:96:98:90:FF"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  upgrade_firmware:         "False"
+  build_directory:          "release-manager/30.4.0.99/mips/cougar/cougar/release/summitX-30.4.0.99.xos"
+  build:                    "30.4.0.99"
+  mgmt_vlan:                "VR-Mgmt"
+
+#  Interswith Links and to define VM virtual links.
+  isl:
+    port_7:
+      ifname: &netelem2_isl_port_a_ifname "7"
+      intnet: "ISL to ROBOT83"
+    port_9:
+      ifname: &netelem2_isl_port_b_ifname "9"
+      intnet: "ISL to ROBOT84"
+    port_11:
+      ifname: &netelem2_isl_port_c_ifname "11"
+      intnet: "ISL to ROBOT85"
+    port_43:
+      ifname: &netelem2_isl_port_d_ifname "43"
+      intnet: "ISL to ROBOT80"
+    port_45:
+      ifname: &netelem2_isl_port_e_ifname "45"
+      intnet: "ISL to ROBOT82"
+# Ports for Traffic Generation.
+  tgen:
+    port_2:
+      ifname: &netelem2_tgen_port_a_ifname "2"
+      intnet: "jets eth11"
+
+
+netelem3:
+  name:                     "X460G2_DUT3"
+  ip:                       "10.51.136.82"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  host_mac:                 "00:04:96:97:D1:8D"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  upgrade_firmware:         "False"
+  build_directory:          "release-manager/30.4.0.99/mips/cougar/cougar/release/summitX-30.4.0.99.xos"
+  build:                    "30.4.0.99"
+  mgmt_vlan:                "VR-Mgmt"
+
+#  Interswith Links and to define VM virtual links.
+  isl:
+    port_13:
+      ifname: &netelem3_isl_port_a_ifname "13"
+      intnet: "ISL to ROBOT83"
+    port_15:
+      ifname: &netelem3_isl_port_b_ifname "35"
+      intnet: "ISL to ROBOT84"
+    port_17:
+      ifname: &netelem3_isl_port_c_ifname "17"
+      intnet: "ISL to ROBOT85"
+    port_43:
+      ifname: &netelem3_isl_port_d_ifname "43"
+      intnet: "ISL to ROBOT80"
+    port_47:
+      ifname: &netelem3_isl_port_e_ifname "47"
+      intnet: "ISL to ROBOT81"
+# Ports for Traffic Generation.
+  tgen:
+    port_2:
+      ifname: &netelem3_tgen_port_a_ifname "2"
+      intnet: "jets eth13"
+      
+      
+netelem4:
+  name:                     "X465_DUT4"
+  ip:                       "10.51.136.83"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  host_mac:                 "00:04:96:BB:1B:88"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  upgrade_firmware:         "False"
+  build_directory:          "release-manager/30.4.0.99/mips/cougar/cougar/release/summitX-30.4.0.99.xos"
+  build:                    "30.4.0.99"
+  mgmt_vlan:                "VR-Mgmt"
+
+#  Interswith Links and to define VM virtual links.
+  isl:
+    port_1:
+      ifname: &netelem4_isl_port_a_ifname "1"
+      intnet: "ISL to ROBOT80"
+    port_7:
+      ifname: &netelem4_isl_port_b_ifname "7"
+      intnet: "ISL to ROBOT81"
+    port_13:
+      ifname: &netelem4_isl_port_c_ifname "13"
+      intnet: "ISL to ROBOT82"
+    port_21:
+      ifname: &netelem4_isl_port_d_ifname "21"
+      intnet: "ISL to ROBOT85"
+    port_23:
+      ifname: &netelem4_isl_port_e_ifname "23"
+      intnet: "ISL to ROBOT84"
+# Ports for Traffic Generation.
+  tgen:
+    port_2:
+      ifname: &netelem4_tgen_port_a_ifname "2"
+      intnet: "jets eth15"
+      
+      
+netelem5:
+  name:                     "X690_DUT5"
+  ip:                       "10.51.136.84"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  host_mac:                 "00:04:96:9B:FF:56"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  upgrade_firmware:         "False"
+  build_directory:          "release-manager/30.4.0.99/mips/cougar/cougar/release/summitX-30.4.0.99.xos"
+  build:                    "30.4.0.99"
+  mgmt_vlan:                "VR-Mgmt"
+
+#  Interswith Links and to define VM virtual links.
+  isl:
+    port_3:
+      ifname: &netelem5_isl_port_a_ifname "3"
+      intnet: "ISL to ROBOT80"
+    port_9:
+      ifname: &netelem5_isl_port_b_ifname "9"
+      intnet: "ISL to ROBOT81"
+    port_15:
+      ifname: &netelem5_isl_port_c_ifname "15"
+      intnet: "ISL to ROBOT82"
+    port_19:
+      ifname: &netelem5_isl_port_d_ifname "19"
+      intnet: "ISL to ROBOT85"
+    port_23:
+      ifname: &netelem5_isl_port_e_ifname "23"
+      intnet: "ISL to ROBOT83"
+# Ports for Traffic Generation.
+  tgen:
+    port_2:
+      ifname: &netelem5_tgen_port_a_ifname "2"
+      intnet: "jets eth14"
+      
+      
+netelem6:
+  name:                     "X590_DUT6"
+  ip:                       "10.51.136.85"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  host_mac:                 "00-04-96-97-D1-94"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  upgrade_firmware:         "False"
+  build_directory:          "release-manager/30.4.0.99/mips/cougar/cougar/release/summitX-30.4.0.99.xos"
+  build:                    "30.4.0.99"
+  mgmt_vlan:                "VR-Mgmt"
+
+#  Interswith Links and to define VM virtual links.
+  isl:
+    port_5:
+      ifname: &netelem6_isl_port_a_ifname "5"
+      intnet: "ISL to ROBOT80"
+    port_11:
+      ifname: &netelem6_isl_port_b_ifname "11"
+      intnet: "ISL to ROBOT81"
+    port_17:
+      ifname: &netelem6_isl_port_c_ifname "17"
+      intnet: "ISL to ROBOT82"
+    port_19:
+      ifname: &netelem6_isl_port_d_ifname "19"
+      intnet: "ISL to ROBOT84"
+    port_21:
+      ifname: &netelem6_isl_port_e_ifname "21"
+      intnet: "ISL to ROBOT83"
+# Ports for Traffic Generation.
+  tgen:
+    port_2:
+      ifname: &netelem6_tgen_port_a_ifname "2"
+      intnet: "jets eth16"
+
+# Traffic Generation..
+#  vm_ip of 10.52.2.167 - proxy server between robot framework and ixia chassis.
+tgen1:
+  name: &tgen1_name    "robot_jets"
+  vendor:              "jets"
+  chassis_type:        "jets"
+  jets_dir:            "jets"
+  software:            "5.2.3"
+  ip:                  "10.51.132.100"
+  vm_ipv4_address:     "10.51.132.100"
+  username:            "root"
+  password:            "PASprt86"
+  vm_port:             "22"
+  dynamic_deployment:  "false"
+  vm_location:         "Jets_Centos_7_6.ovf"
+
+tgen_ports:
+  netelem1:
+    port_a:
+      tgen_name:  *tgen1_name
+      ifname:     "eth11"
+      intnet:     "to_80_p2"
+  netelem2:
+    port_a:
+      tgen_name:  *tgen1_name
+      ifname:     "eth12"
+      intnet:     "to_81_p2"
+  netelem3:
+    port_a:
+      tgen_name:  *tgen1_name
+      ifname:     "eth13"
+      intnet:     "to_82_p2"
+  netelem4:
+    port_a:
+      tgen_name:  *tgen1_name
+      ifname:     "eth15"
+      intnet:     "to_83_p2"
+  netelem5:
+    port_a:
+      tgen_name:  *tgen1_name
+      ifname:     "eth14"
+      intnet:     "to_84_p2"
+  netelem6:
+    port_a:
+      tgen_name:  *tgen1_name
+      ifname:     "eth16"
+      intnet:     "to_85_p2"
+
+tftp_server:
+  ip: "10.59.5.2"

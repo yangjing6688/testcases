@@ -1,0 +1,168 @@
+environment:
+  version:            "1.0"
+  topology_template:  "2node_template_physical.yaml"
+  type:               "physical"
+
+environment_host:
+  name:                   "VServer1"
+  ip:                     "10.69.2.41"
+  username:               "extreme"
+  password:               "extreme"
+  connection_method:      "ssh"
+  #port:                   "9015"
+  #type:                   "vbox"
+  #os:                     "linux"
+
+testengine:
+  name:               "robot_test_engine"
+  ip:                 "10.69.2.71"
+  vm_location:        ""
+  username:           "administrator"
+  password:           "BeExtreme!"
+
+netelem1:
+  name:                     "x620_DUT1"
+  ip:                       "10.69.11.20"
+  term_server:              "10.69.1.244 2027"
+  pdu_ip:                   "10.69.11.2"
+  pdu_port:                 "14"
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  family:                   "summitx"
+  platform:                 "x620-8t-2x"
+  host_mac:                 "00-04-96-9a-f4-e8"
+  primary_test_target:      "True"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  vm_location:
+  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/cit_x450g2_2node_1/cit_x450g2_2node_1_netelem1.cfg"
+  isl:
+    port_a:
+      ifname: &netelem1_isl_port_a_ifname "2"
+      intnet: "intnet0"
+    port_b:
+      ifname: &netelem1_isl_port_b_ifname "4"
+      intnet: "intnet1"
+    port_c:
+      ifname: &netelem1_isl_port_c_ifname "3"
+      intnet: "intnet2"
+
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "5"
+      intnet: "intnet3"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "6"
+      intnet: "intnet4"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "7"
+      intnet: "intnet5"
+    port_d:
+      ifname: &netelem1_tgen_port_d_ifname "8"
+      intnet: "intnet6"
+  endsys:
+    port_a:
+      ifname: &netelem1_endsys_port_a_ifname "1"
+      intnet: "intnet12"
+  management:
+    port_a:
+      ifname:
+      intnet:
+
+# NetworkElement2
+netelem2:
+  name:                     "x620_DUT2"
+  ip:                       "10.69.2.101"
+  term_server:              ""
+  pdu_ip:                   ""
+  pdu_port:                 ""
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  family:                   "i386"
+  platform:                 "EXOS-VM"
+  host_mac:                 "00-04-96-AA-B0-01"
+  primary_test_target:      "False"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  vm_location:
+  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/cit_x450g2_2node_1/cit_x450g2_2node_1_netelem2.cfg"
+  isl:
+    port_a:
+      ifname: &netelem2_isl_port_a_ifname "1"
+      intnet: "intnet0"
+    port_b:
+      ifname: &netelem2_isl_port_b_ifname "2"
+      intnet: "intnet1"
+    port_c:
+      ifname: &netelem2_isl_port_c_ifname "3"
+      intnet: "intnet2"
+
+  tgen:
+    port_a:
+      ifname: &netelem2_tgen_port_a_ifname "4"
+      intnet: "intnet7"
+    port_b:
+      ifname: &netelem2_tgen_port_b_ifname "5"
+      intnet: "intnet8"
+
+
+  management:
+    port_a:
+      ifname:
+      intnet:
+
+tgen1:
+  name: &tgen1_name "robot_ostinato"
+  vendor:           "ostinato"
+  chassis_type:     "ostinato"
+  ip:               "10.69.2.151"
+  vm_ip:            ""
+  username:         "robot-X620_1"
+  password:         ""
+  port:             "7878"
+  vm_location:
+
+tgen_ports:
+  netelem1:
+    port_a: &tgen_ports_netelem1_port_a
+      tgen_name: *tgen1_name
+      ifname:    "eth1"
+      intnet:    "intnet3"
+    port_b: &tgen_ports_netelem1_port_b
+      tgen_name:  *tgen1_name
+      ifname:     "eth2"
+      intnet:     "intnet4"
+    port_c: &tgen_ports_netelem1_port_c
+      tgen_name: *tgen1_name
+      ifname:     "eth3"
+      intnet:     "intnet5"
+    port_d: &tgen_ports_netelem1_port_d
+      tgen_name: *tgen1_name
+      ifname:     "eth4"
+      intnet:     "intnet6"
+  netelem2:
+    port_a: &tgen_ports_netelem2_port_a
+      tgen_name: *tgen1_name
+      ifname:     "eth5"
+      intnet:     "intnet7"
+    port_b: &tgen_ports_netelem2_port_b
+      tgen_name: *tgen1_name
+      ifname:     "eth6"
+      intnet:     "intnet8"
+

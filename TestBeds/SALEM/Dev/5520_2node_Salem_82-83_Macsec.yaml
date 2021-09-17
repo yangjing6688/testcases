@@ -1,0 +1,159 @@
+environment:
+  version:           "1.0"
+  topology_template: "NONE"
+  number_of_nodes:   "2-node"
+  test_bed_name:     "SalemRobot82-83-MACSEC"
+  url:               ""
+
+
+netelem1:
+  name:                     "5520_DUT1"
+  ip:                       "10.51.100.82"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  platform:                 "5520"
+  host_mac:                 "00:04:96:ED:6C:00"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  upgrade_firmware:         "False"
+  build_directory:          "release-manager/30.6.0.67/mips/cougar/cougar/release/summitX-30.6.0.67.xos"
+  build:                    "30.6.0.67"
+  mgmt_vlan:                "VR-Mgmt"
+  macsec:
+    ports:
+      all:                  "1-48,57-60"
+    gcm_aes_128:
+      port_a:
+      port_b:
+    gcm_aes_256:
+      port_a:               "57"
+      port_b:               "58"
+      port_c:               "23"
+      port_d:               "24"
+
+#  Interswith Links and to define VM virtual links.
+  isl:
+    port_a:
+      ifname: &netelem1_isl_port_a_ifname "57"
+      intnet: "ISL to SUM83"
+    port_b:
+      ifname: &netelem1_isl_port_b_ifname "58"
+      intnet: "ISL to SUM83"
+    port_c:
+      ifname: &netelem1_isl_port_c_ifname "23"
+      intnet: "ISL to SUM83"
+    port_d:
+      ifname: &netelem1_isl_port_d_ifname "24"
+      intnet: "ISL to SUM83"
+# Ports for Traffic Generation.
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "6"
+      intnet: "intnet4"
+
+
+netelem2:
+  name:                     "5520_DUT2"
+  ip:                       "10.51.100.83"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  platform:                 "5520"
+  host_mac:                 "00:04:96:EE:1C:00"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  upgrade_firmware:         "False"
+  build_directory:          "release-manager/30.6.0.67/mips/cougar/cougar/release/summitX-30.6.0.67.xos"
+  build:                    "30.6.0.67"
+  mgmt_vlan:                "VR-Mgmt"
+  macsec:
+    ports:
+      all:                  "1-24,33-36"
+    gcm_aes_128:
+      port_a:
+      port_b:
+    gcm_aes_256:
+      port_a:               "33"
+      port_b:               "34"
+      port_c:               "23"
+      port_d:               "24"
+
+#  Interswith Links and to define VM virtual links.
+  isl:
+    port_a:
+      ifname: &netelem2_isl_port_a_ifname "33"
+      intnet: "ISL to SUM82"
+    port_b:
+      ifname: &netelem2_isl_port_b_ifname "34"
+      intnet: "ISL to SUM82"
+    port_c:
+      ifname: &netelem2_isl_port_c_ifname "23"
+      intnet: "ISL to SUM82"
+    port_d:
+      ifname: &netelem2_isl_port_d_ifname "24"
+      intnet: "ISL to SUM82"
+  # Ports for Traffic Generation.
+  tgen:
+    port_a:
+      ifname: &netelem2_tgen_port_a_ifname "9"
+      intnet: "intnet4"
+
+# Traffic Generation..
+tgen1:
+  name: &tgen1_name    "robot_jets"
+  vendor:              "jets"
+  chassis_type:        "jets"
+  jets_dir:            "jets"
+# software:            "5.2.3"
+  software:            "jets"
+  ip:                  "10.51.3.99"
+  vm_ipv4_address:     "10.51.3.99"
+  username:            "root"
+  password:            "PASprt86"
+  vm_port:             "22"
+  dynamic_deployment:  "false"
+  vm_location:         "Jets_Centos_7_6.ovf"
+
+tgen_ports:
+  netelem1:
+      port_a:
+        tgen_name: *tgen1_name
+        ifname:    "eth6"
+        intnet:    "intnet0"
+      port_b:
+        tgen_name:  *tgen1_name
+        ifname:     "eth7"
+        intnet:     "intnet1"
+      port_c:
+        tgen_name: *tgen1_name
+        ifname:     "eth8"
+        intnet:     "intnet2"
+  netelem2:
+      port_a:
+        tgen_name: *tgen1_name
+        ifname:    "eth9"
+        intnet:    "intnet0"
+      port_b:
+        tgen_name:  *tgen1_name
+        ifname:     "eth10"
+        intnet:     "intnet1"
+      port_c:
+        tgen_name: *tgen1_name
+        ifname:     "eth11"
+        intnet:     "intnet2"
+
+tftp_server:
+  ip: "10.59.5.2"

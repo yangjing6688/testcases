@@ -1,0 +1,84 @@
+netelem1:
+  name:                     "SalemRobot_SUM56_X460G2"
+  ip:                       "10.51.3.57"
+  port:                     "10016"
+  system_type:              "x460g2"
+  serial:                   "1405G-00012"
+  console:                  "sum56"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  host_mac:                 "00:04:96:97:D1:9B"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  upgrade_firmware:         "False"
+  build_directory:          "30.4.0.520/mips/cougar/cougar/release/summitX-30.4.0.520.xos"
+  build:                    "30.4.0.520"
+  virtual_router:           "VR-Mgmt"
+  mgmt_vlan:                "VR-Mgmt"
+  #  Interswith Links and to define VM virtual links.
+  isl:
+    port_a:
+      ifname: &netelem1_isl_port_a_ifname "1"
+      intnet: "intnet0"
+    port_b:
+      ifname: &netelem1_isl_port_b_ifname "2"
+      intnet: "intnet1"
+    port_c:
+      ifname: &netelem1_isl_port_c_ifname "3"
+      intnet: "intnet2"
+    port_d:
+      ifname: &netelem1_isl_port_d_ifname "4"
+      intnet: "intnet3"
+
+# Ports for Traffic Generation.
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "26"
+      intnet: "intnet4"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "27"
+      intnet: "intnet5"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "28"
+      intnet: "intnet6"
+
+# Traffic Generation..
+#  vm_ip of 10.52.2.167 - proxy server between robot framework and ixia chassis.
+tgen1:
+  name:       &tgen1_name "robot_ixia"
+  vendor:                 "ixia"
+  chassis_type:           "ixia"
+  software:               "6.80.1100.12"
+  ip:                     "10.50.2.202"
+  vm_ip:                  "10.52.2.167"
+  username:               "robot-X450G2_chill"
+  password:               "test123"
+  port:                   "5678"
+  dynamic_deployment:     "False"
+  vm_location:
+
+tgen_ports:
+  netelem1:
+    port_a:
+      tgen_name: *tgen1_name
+      ifname:    "1/1/5"
+      intnet:    "intnet4"
+    port_b:
+      tgen_name:  *tgen1_name
+      ifname:     "1/1/6"
+      intnet:     "intnet5"
+    port_c:
+      tgen_name: *tgen1_name
+      ifname:     "1/1/7"
+      intnet:     "intnet6"
+#    port_d:
+#      tgen_name: *tgen1_name
+#      ifname:     "1/2/12"
+#      intnet:     "intnet7"

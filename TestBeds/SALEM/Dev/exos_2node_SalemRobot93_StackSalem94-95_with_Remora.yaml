@@ -1,0 +1,175 @@
+environment:
+  version:           "1.0"
+  topology_template: "NONE"
+  number_of_nodes:   "2-node"
+  test_bed_name:     "SalemRobot93_StackSalemRobot94-95_with_Remora"
+  url:               ""
+
+
+netelem1:
+  name:                     "DUT1_X450G2_Standalone"
+  ip:                       "10.51.136.93"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  host_mac:                 "00-04-96-99-5D-15"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  upgrade_firmware:         "False"
+  build_directory:          "30.6.0.364/mips/cougar/cougar/release/summitX-30.6.0.364.xos"
+  build:                    "30.6.0.364"
+  mgmt_vlan:                "VR-Mgmt"
+  macsec:
+    gcm_aes_128:
+      port_a:
+      port_b:
+    gcm_aes_256:
+      port_a:               "29"
+      port_b:               "30"
+#  Interswith Links and to define VM virtual links.
+  isl:
+    port_a:
+      ifname: &netelem1_isl_port_a_ifname "29"
+      intnet: "ISL to ROBOT94-95"
+    port_b:
+      ifname: &netelem1_isl_port_b_ifname "30"
+      intnet: "ISL to ROBOT94-95"
+    port_c:
+      ifname: &netelem1_isl_port_c_ifname "31"
+      intnet: "ISL to ROBOT94-95"
+    port_d:
+      ifname: &netelem1_isl_port_d_ifname "32"
+      intnet: "ISL to ROBOT94-95"
+# Ports for Traffic Generation.
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "22"
+      intnet: "intnet6"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "23"
+      intnet: "intnet7"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "24"
+      intnet: "intnet8"
+# End Systems ..
+# Traffic Generation..
+
+
+netelem2:
+  name:                     "DUT2_X450G2_Stack"
+  ip:                       "10.51.136.94"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  host_mac:                 "02-04-96-99-13-B5"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  upgrade_firmware:         "False"
+  build_directory:          "30.6.0.364/mips/cougar/cougar/release/summitX-30.6.0.364.xos"
+  build:                    "30.6.0.364"
+  mgmt_vlan:                "VR-Mgmt"
+  macsec:
+    gcm_aes_128:
+      port_a:
+      port_b:
+    gcm_aes_256:
+      port_a:               "2:25"
+      port_b:               "2:26"
+  #  Interswith Links and to define VM virtual links.
+  isl:
+    port_a:
+      ifname: &netelem2_isl_port_a_ifname "2:25"
+      intnet: "ISL to ROBOT92"
+    port_b:
+      ifname: &netelem2_isl_port_b_ifname "2:26"
+      intnet: "ISL to ROBOT92"
+    port_a:
+      ifname: &netelem2_isl_port_c_ifname "2:27"
+      intnet: "ISL to ROBOT92"
+    port_b:
+      ifname: &netelem2_isl_port_d_ifname "2:28"
+      intnet: "ISL to ROBOT92"
+  # Ports for Traffic Generation.
+  tgen:
+    port_a:
+      ifname: &netelem2_tgen_port_a_ifname "1:1"
+      intnet: "intnet0"
+    port_b:
+      ifname: &netelem2_tgen_port_b_ifname "2:2"
+      intnet: "intnet1"
+    port_c:
+      ifname: &netelem2_tgen_port_c_ifname "1:3"
+      intnet: "intnet2"
+
+# Traffic Generation..
+tgen1:
+  name: &tgen1_name    "robot_jets2"
+  vendor:              "jets"
+  chassis_type:        "jets"
+  jets_dir:            "jets"
+  software:            "jets"
+  ip:                  "10.51.3.95"
+  vm_ipv4_address:     "10.51.3.95"
+  username:            "root"
+  password:            "PASprt86"
+  vm_port:             "22"
+  dynamic_deployment:  "false"
+  vm_location:         "Jets_Centos_7_6.ovf"
+
+tgen2:
+  name: &tgen2_name    "robot_jets3"
+  vendor:              "jets"
+  chassis_type:        "jets"
+  jets_dir:            "jets"
+  software:            "jets"
+  ip:                  "10.51.3.96"
+  vm_ipv4_address:     "10.51.3.96"
+  username:            "root"
+  password:            "PASprt86"
+  vm_port:             "22"
+  dynamic_deployment:  "false"
+  vm_location:         "Jets_Centos_7_6.ovf"
+
+tgen_ports:
+  netelem1:
+      port_a:
+        tgen_name: *tgen1_name
+        ifname:    "eth9"
+        intnet:    "intnet0"
+      port_b:
+        tgen_name:  *tgen1_name
+        ifname:     "eth10"
+        intnet:     "intnet1"
+      port_c:
+        tgen_name: *tgen1_name
+        ifname:     "eth11"
+        intnet:     "intnet2"
+
+  netelem2:
+      port_a:
+        tgen_name: *tgen2_name
+        ifname:    "eth0"
+        intnet:    "intnet4"
+      port_b:
+        tgen_name: *tgen2_name
+        ifname:     "eth1"
+        intnet:     "intnet5"
+      port_c:
+        tgen_name: *tgen2_name
+        ifname:     "eth2"
+        intnet:     "intnet6"
+
+tftp_server:
+  ip: "10.59.5.2"
