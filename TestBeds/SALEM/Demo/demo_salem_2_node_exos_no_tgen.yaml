@@ -8,6 +8,7 @@ netelem1:
   os:                       "voss"
   host_mac:                 "00:04:96:f1:75:00"
   platform:                 "vsp8000"
+  image_family:
   isl:
     port_a:
       ifname: &netelem1_isl_port_a_ifname "1/10"

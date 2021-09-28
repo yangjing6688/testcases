@@ -1,0 +1,44 @@
+# ------------------   From Wireless  ----------------------  need robot b/c used in builtin used in some python methods.
+#Pillow==7.0.0
+Flask==1.1.1
+image==1.5.28
+netmiko==3.0.0
+paramiko==2.7.1
+pexpect==4.8.0
+robotframework==3.1.2
+robotframework-debuglibrary==2.2.2
+sauceclient==1.0.0
+selenium==3.141.0
+sauceclient==1.0.0
+opencv-python
+bs4
+# ----------------- From Wireless End ---------------------
+pytest==6.2.2
+pytest-html==3.1.1
+pytest-testconfig==0.2.0
+pytest-yaml==1.2.1
+pytest-sugar==0.9.4
+pytest-xdist==2.2.1
+pytest-helpers-namespace
+allure-pytest==2.8.36
+urllib3==1.23
+#selenium==3.14.0
+#netmiko==2.3.0
+pyvmomi==6.7.1
+#flask==1.0.2
+flask-cors==3.0.7
+pycryptodome==3.10.1
+pyyaml==3.13
+mock==2.0.0
+requests==2.19.1
+pysnmp==4.4.6
+pyserial==3.4
+xmlrunner==1.7.7
+oyaml==0.7
+textfsm==0.4.1
+PyMySQL==1.0.2
+wheel==0.36.2
+PyAutoGUI==0.9.42; platform_system == "Windows"
+https://github.com/jacexh/pyautoit/archive/master.zip; platform_system == "Windows"
+pycurl-7.43.0.5-cp39-cp39-win_amd64.whl; platform_system == "Windows"
+pycurl; platform_system != "Windows"

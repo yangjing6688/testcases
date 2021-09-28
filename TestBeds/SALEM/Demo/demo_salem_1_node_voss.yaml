@@ -10,6 +10,8 @@ netelem1:
   os:                       "voss"
   platform:                 "vsp8000"
   auth_mode:                "basic"
+  image_family:
+  
   tgen:
     port_a:
       ifname: &netelem1_tgen_port_a_ifname "1/1"

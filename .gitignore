@@ -1,1 +1,9 @@
 /.project
+/.pydevproject
+/.pycache
+/venv
+/pycurl-7.43.0.5-cp39-cp39-win_amd64.whl
+**__pycache__**
+**report.html**
+**output.xml**
+**log.html**
