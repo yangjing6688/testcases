@@ -1,0 +1,42 @@
+---
+RDU:
+  tftpserver:     "10.69.20.4"
+  tftp_nfs:       "/net/dumpster/volume1/data/software/tftpboot/"
+  radius:
+    server:         "10.69.1.152"
+    radius_user:    "autotest"
+    radius_pass:    "autotest"
+    net_tools1:     "172.16.250.1"
+
+SALEM:
+  tftpserver:     "10.51.1.88"
+  tftp_nfs:       "/net/salemreg/tftpboot/"
+  radius:
+    server:         "10.69.1.152"
+    server_inband:  "10.69.5.105"
+    radius_user:    "autotest"
+    radius_pass:    "autotest"
+
+SJ:
+  tftpserver:     "10.69.5.248"
+  radius:
+    server:         "10.69.1.152"
+    server_inband:  "10.69.5.105"
+    radius_user:    "autotest"
+    radius_pass:    "autotest"
+
+CHENNAI:
+  tftpserver:       "10.127.18.147"
+  radius:
+    server:         "10.127.18.152"
+    server_inband:  "10.127.18.152"
+    radius_user:    "autotest"
+    radius_pass:    "autotest"
+
+BANGALORE:
+  tftpserver:     "10.69.5.248"
+  radius:
+    server:         "10.127.18.152"
+    server_inband:  "10.127.18.152"
+    radius_user:    "autotest"
+    radius_pass:    "autotest"

@@ -1,0 +1,94 @@
+LAB: "SALEM"  # The lab test information see lab_config.yaml for details
+
+netelem1:
+  name:                     #(REQUIRED)                         unique netelem name
+  hostname:                 #(REQUIRED)                         unique hostname
+  os:                       #(REQUIRED)                         exos/eos/linux
+  platform:                 #(REQUIRED)                         x460G2
+  image_family:             #(REQUIRED)                         Image family for download firmware (summitx)
+  ip:                       #(REQUIRED)                         1.1.1.3
+  port:                     #(OPTIONAL)                         rewrite L4 port for static port forwarding
+  mgmt_vlan:                #(OPTIONAL)                         The netelem VLAN that provides connectivity outside of the test environment (i.e. lab network) - "VLAN_123"
+  username:                 #(REQUIRED)                         netelem1 username
+  password:                 #(REQUIRED)                         netelem1 password
+  connection_method:        #(REQUIRED)                         telnet/ssh/snmp/rest
+  console_ip:               #(OPTIONAL)                         The console IP
+  console_port:             #(OPTIONAL)                         The console port
+  auth_mode:                #(OPTIONAL)                         "basic" 
+  snmp_version:             #(SNMP REQUIREMENT)                 "v2c"            # The snmp version to use (v1, v2c, or v3).
+  snmp_community_name:      #(SNMP REQUIREMENT)                 "extreme123"     # The community security name for v1 or v2c.
+  snmp_user_name:           #(SNMP REQUIREMENT)                 "user_md5_des"   # The user security name for v3 USM.
+  snmp_auth_protocol:       #(SNMP REQUIREMENT)                 "md5"            # The authentication protocol used by the user_name ('noauth', 'md5', or 'sha').
+  snmp_auth_password:       #(SNMP REQUIREMENT)                 "extreme123"     # The clear text password for the auth_protocol.
+  snmp_privacy_protocol:    #(SNMP REQUIREMENT)                 "des"            # The privacy protocol used by the user_name ('nopriv', 'des', '3des', 'aes128', 'aes192', or 'aes256').
+  snmp_privacy_password:    #(SNMP REQUIREMENT)                 "extreme123"     # The clear text password for the privacy_protocol.
+  primary_test_target:      #(OPTIONAL)                         "True"/"False"
+  base_cfg_location:        #(OPTIONAL)                         {path}/netelem1.cfg
+  host_mac:                 #(OPTIONAL)                         00-aa-bb-cc-dd-ee
+  management_gateway_ip:    #(OPTIONAL)                         The IP of the router that provides connectivity outside of the test environment (i.e. lab network) - "10.52.16.17"
+  management_gateway_mac:   #(OPTIONAL)                         The MAC of the router that provides connectivity outside of the test environment (i.e. lab network) - - "20:b3:99:ad:78:fb"
+  power_strip:
+    ip:                     #(OPTIONAL)                         The IP for the power strip
+    port:                   #(OPTIONAL)                         The port for the power strip
+    username:               #(OPTIONAL)                         The username for the power strip
+    password:               #(OPTIONAL)                         The password for the power strip
+    plug:                   #(OPTIONAL)                         The list of plugs
+        plug_a:             #(OPTIONAL)                         The 1st plug
+        plug_b:             #(OPTIONAL)                         The 2nd plug ...
+    type:                   #(OPTIONAL)                         The type of power strip
+    
+  template:                 #(OPTIONAL)                         AP_230-default-template
+  country:                  #(OPTIONAL)                         United Kingdom
+  network_policy:           #(OPTIONAL)                         Test_np
+  ssid:                     #(OPTIONAL)                         AP230_01
+  version:                  #(OPTIONAL)                         6.5
+  neighbour_serial:         #(OPTIONAL)                         06301908310556
+  neighbour_mac:            #(OPTIONAL)                         3485843A5CC0
+      
+  tgen:
+    port_a:
+      ifname:               #(REQUIRED)                         The netelem's interface name, as it would be entered on the device (i.e "5", "2:3" "ge.1.2" or "eth1')
+      intnet:               "intnet4"
+    port_b:
+      ifname:               #(REQUIRED)                         The netelem's interface name, as it would be entered on the device (i.e "5", "2:3" "ge.1.2" or "eth1')
+      intnet:               "intnet5"
+    port_c:
+      ifname:               #(REQUIRED)                         The netelem's interface name, as it would be entered on the device (i.e "5", "2:3" "ge.1.2" or "eth1')
+      intnet:               "intnet6"
+    port_d:
+      ifname:               #(REQUIRED)                         The netelem's interface name, as it would be entered on the device (i.e "5", "2:3" "ge.1.2" or "eth1')
+      intnet:               "intnet7"
+  management:
+    port_a:
+      ifname:               #(REQUIRED)                         The netelem's interface name, as it would be entered on the device (i.e "5", "2:3" "ge.1.2" or "eth1')
+      intnet:               "intnetmgmt1"
+
+tgen1:
+  name: @tgen1_name         #(REQUIRED)                         unique tgen name
+  vendor:                   #(REQUIRED)                         ixia/ostinato/spirent
+  chassis_type:             #(REQUIRED)                         ixia/ostinato/spirent
+  software:                 #(REQUIRED)                         5.2.3
+  ip:                       #(REQUIRED)                         1.1.1.5
+  vm_ip:                    #(IXIA REQUIREMENT)                 IPv4 address of Ixia Socket Listener - 1.2.3.4
+  port:                     #(IXIA REQUIREMENT)                 "5678"
+  username:                 #(REQUIRED)                         tgen1 username
+  password:                 #(REQUIRED)                         tgen1 password
+
+tgen_ports:
+  netelem1:
+    port_a:
+      tgen_name:            *tgen1_name
+      ifname:               #(REQUIRED)                        The generator's interface name (i.e "1/12/1" or "eth1')
+      intnet:               "intnet4"
+    port_b:
+      tgen_name:            *tgen1_name
+      ifname:               #(REQUIRED)                        The generator's interface name (i.e "1/12/1" or "eth1')
+      intnet:               "intnet5"
+    port_c:
+      tgen_name:            *tgen1_name
+      ifname:               #(REQUIRED)                        The generator's interface name (i.e "1/12/1" or "eth1')
+      intnet:               "intnet6"
+    port_d:
+      tgen_name:            *tgen1_name
+      ifname:               #(REQUIRED)                        The generator's interface name (i.e "1/12/1" or "eth1')
+      intnet:               "intnet7"
