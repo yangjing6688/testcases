@@ -3,6 +3,7 @@
 /.pytest_cache
 /venv
 /pycurl-7.43.0.5-cp39-cp39-win_amd64.whl
+**allure_output**
 **__pycache__**
 **report.html**
 **output.xml**
