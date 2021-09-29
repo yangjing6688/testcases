@@ -1,0 +1,8 @@
+
+xiq_environment:            # Test cases would reference var from this point
+  test_url:                 "https://g2r1.qa.xcloudiq.com"
+  connection_method:        "https"
+  CAPWAP_URL:               "g2r1-cwpm-01.qa.xcloudiq.com"
+  SW_CONNECTION_HOST:       "g2r1.qa.xcloudiq.com"
+  username:                 xiqextremeqa+auto1-g2r1@gmail.com
+  password:                 "Extreme@123"

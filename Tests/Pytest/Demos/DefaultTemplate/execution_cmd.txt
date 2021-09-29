@@ -1,0 +1,11 @@
+From this directory:
+    
+    extreme_automation_tests\Tests\Pytest\Demos\DefaultTemplate
+
+Activate the Python virtual environment:
+    
+    ..\..\..\..\venv\Scripts\activate
+    
+Run the script:
+
+    pytest --tc-file=../../../../Testbeds/SALEM/Demo/demo_salem_1_node_exos.yaml --tc-file=../../../../Environments/environment.local.chrome.yaml TestCases 
