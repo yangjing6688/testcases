@@ -4,6 +4,10 @@
 # remote - remote webdriver
 # sauce - SauceLabs
 # bstack - Browser Stack
+
+PROXY_STATUS: ''
+LOG_LEVEL: 'DEBUG'
+
 WEB_DRIVER_LOC:           remote
 OS_PLATFORM:              linux
 BROWSER:                  firefox

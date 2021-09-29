@@ -81,15 +81,12 @@ class xiqTests():
                                          cls.cfg['xiq_environment']['username'],
                                          cls.cfg['xiq_environment']['password'],
                                          url=cls.cfg['xiq_environment']['test_url'])
-        cls.xiq.xflowscommonDevices.get_device_status(device_serial=cls.tb.dut1.serial)
-        cls.xiq.xflowscommonDevices.search_device_serial(cls.tb.dut1.serial)
-        cls.xiq.xflowscommonDevices.delete_device(device_serial=cls.tb.dut1.serial)
         cls.deactivate_xiq_libaries_and_logout(cls)
         cls.defaultLibrary.apiUdks.setupTeardownUdks.Base_Test_Suite_Cleanup()
         
     # """ Test Cases """
     @mark.p1
-    def test_Onboarding(self, xiq_helper_test_setup_teardown):
+    def test_dosomething(self, xiq_helper_test_setup_teardown):
         self.executionHelper.testSkipCheck()
         print("do something")
         

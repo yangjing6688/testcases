@@ -3,8 +3,12 @@ From this directory:
     extreme_automation_tests\Tests\Pytest\Demos\DefaultTemplate
 
 Activate the Python virtual environment:
-    
+
+    Windows:
     ..\..\..\..\venv\Scripts\activate
+
+    Linux:
+    ../../../venv/bin/activate
     
 Run the script:
 
