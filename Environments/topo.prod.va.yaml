@@ -1,0 +1,6 @@
+xiq_environment:    # Test cases would reference var from this point
+          test_url:                 "https://extremecloudiq.com"
+          CAPWAP_URL:               "redirector.aerohive.com"
+          SW_CONNECTION_HOST:       "va.extremecloudiq.com"
+          username:                 "xiqproductionqa+auto1-blr-tb1-va@gmail.com"
+          password:                 "Extreme@123"
