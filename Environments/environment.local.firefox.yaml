@@ -1,0 +1,40 @@
+# *** Variables ***
+# Environment Config.
+# local - on current PC/Laptop
+# remote - remote webdriver
+# sauce - SauceLabs
+# bstack - Browser Stack
+
+PROXY_STATUS: ''
+LOG_LEVEL: 'DEBUG'
+
+WEB_DRIVER_LOC:           local
+OS_PLATFORM:              linux
+BROWSER:                  firefox
+
+# Configure this to True to print the WebElement descriptions in definitions
+ELEMENT_INFO:             None
+
+# Remote Webdriver Port
+WEBDRIVER_PORT:           4444
+
+# Remote Robot Server Port
+REMOTE_SERVER_PORT:       8270
+
+# Max Delay for which framework wait for an Element to respond
+ELEMENT_DELAY:            10
+
+# SauceLabs
+SAUCE_URL:                https://extremesauce:4e0a81fe-5c1a-4d37-800f-4e39629f754b@ondemand.us-west-1.saucelabs.com:443/wd/hub
+SAUCE_OS:                 Windows 10
+SAUCE_BROWSER:            chrome
+SAUCE_BROWSER_VER:        89
+SAUCE_RESULATION:         1920x1080
+SAUCE_SESSION_NAME:       UI-Sanity
+
+# Browser Stack
+BSTACK_URL:               https://rameswararaogees1:72QzLJnr9oyLM8z44pn4@hub-cloud.browserstack.com/wd/hub
+BSTACK_OS:                Windows
+BSTACK_OS_VERSION:        10
+BSTACK_BROWSER:           chrome
+BSTACK_BROWSER_VERSION:   latest
