@@ -4,4 +4,4 @@ From this directory:
 
 Run the script:
 
-    robot --variable TestBedVariable:/automation/tests/extreme_automation_tests/TestBeds/SALEM/Demo/demo_salem_1_node_exos.yaml --variable EnvVariable:/automation/tests/extreme_automation_tests/Environments/environment.local.chrome.yaml --variable TopoVariable:/automation/tests/extreme_automation_tests/Tests/Robot/Demos/DefaultTemplateUI/Resources/test_topo.yaml TestCases
+    robot --variable TestBedVariable:/automation/tests/extreme_automation_tests/TestBeds/SALEM/Demo/demo_salem_1_node_exos.yaml --variable EnvVariable:/automation/tests/extreme_automation_tests/Environments/environment.local.chrome.yaml --variable TopoVariable:/automation/tests/extreme_automation_tests/Environments/topo.test.g2r2.yaml TestCases

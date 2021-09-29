@@ -16,9 +16,9 @@ from ..Resources.SuiteUdks import SuiteUdk
 @fixture()
 def xiq_helper_test_setup_teardown(request):
     request.instance.executionHelper.testSkipCheck()
-    request.instance.init_xiq_libaries_and_login(request.instance.cfg['TENANT_USERNAME'], 
-                                                 request.instance.cfg['TENANT_PASSWORD'], 
-                                                 url=request.instance.cfg['TEST_URL'])
+    request.instance.init_xiq_libaries_and_login(request.instance.cfg['xiq_environment']['username'],
+                                                 request.instance.cfg['xiq_environment']['password'],
+                                                 url=request.instance.cfg['xiq_environment']['test_url'])
     def teardown():
         request.instance.deactivate_xiq_libaries_and_logout()
         

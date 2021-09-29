@@ -8,4 +8,4 @@ Activate the Python virtual environment:
     
 Run the script:
 
-    pytest --tc-file=TestBeds/SALEM/Demo/demo_salem_1_node_exos.yaml --tc-file=Environments/environment.local.chrome.yaml --tc-file=Tests/Pytest/Demos/DefaultTemplateUI/Resources/test_topo.yaml TestCases
+    pytest --tc-file=/automation/tests/extreme_automation_tests/TestBeds/SALEM/Demo/demo_salem_1_node_exos.yaml --tc-file=/automation/tests/extreme_automation_tests/Environments/environment.local.chrome.yaml --tc-file=/automation/tests/extreme_automation_tests/Environments/topo.test.g2r1.yaml TestCases
