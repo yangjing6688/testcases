@@ -10,6 +10,6 @@ Activate the Python virtual environment:
     Linux:
     ../../../venv/bin/activate
     
-Run the script:
+Run the script in the Dev VM:
 
     pytest --tc-file=../../../../TestBeds/SALEM/Demo/demo_salem_1_node_exos.yaml  TestCases
