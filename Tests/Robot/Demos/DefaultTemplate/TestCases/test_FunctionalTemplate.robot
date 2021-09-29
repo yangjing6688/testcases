@@ -2,6 +2,8 @@
 Resource        ../Resources/AllResources.robot
 Suite Setup     Test Suite Setup
 Suite Teardown  Test Suite Cleanup
+Force Tags      testbed_1_node
+
 *** Test Cases ***
 01 do_something
     [Documentation]  Test Objective: Run Test Case

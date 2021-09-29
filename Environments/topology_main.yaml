@@ -1,58 +1,52 @@
 PROD:
     VA:
         xiq_environment:    # Test cases would reference var from this point
-          test_url:                 "extremecloudiq.com"
-          connection_method:        "https"
+          test_url:                 "https://extremecloudiq.com"
           CAPWAP_URL:               "redirector.aerohive.com"
           SW_CONNECTION_HOST:       "va.extremecloudiq.com"
-          username:                 xiqproductionqa+auto1-blr-tb1-va@gmail.com
+          username:                 "xiqproductionqa+auto1-blr-tb1-va@gmail.com"
           password:                 "Extreme@123"
 
     IN:
         xiq_environment:    # Test cases would reference var from this point
-          test_url:                 "extremecloudiq.com"
-          connection_method:        "https"
+          test_url:                 "https://extremecloudiq.com"
           CAPWAP_URL:               "redirector.aerohive.com"
           SW_CONNECTION_HOST:       "in.extremecloudiq.com"
-          username:                 xiqproductionqa+auto1-blr-tb1-in@gmail.com
+          username:                 "xiqproductionqa+auto1-blr-tb1-in@gmail.com"
           password:                 "Extreme@123"
 
 TEST:
     g2r1:
         xiq_environment:    # Test cases would reference var from this point
-          test_url:                 "g2r1.qa.xcloudiq.com"
-          connection_method:        "https"
+          test_url:                 "https://g2r1.qa.xcloudiq.com"
           CAPWAP_URL:               "g2r1-cwpm-01.qa.xcloudiq.com"
           SW_CONNECTION_HOST:       "g2r1.qa.xcloudiq.com"
-          username:                 xiqextremeqa+auto1-g2r1@gmail.com
+          username:                 "xiqextremeqa+auto1-g2r1@gmail.com"
           password:                 "Extreme@123"
 
     g7r2:
         xiq_environment:    # Test cases would reference var from this point
-          test_url:                 "g7r2.qa.xcloudiq.com"
-          connection_method:        "https"
+          test_url:                 "https://g7r2.qa.xcloudiq.com"
           CAPWAP_URL:               "g7r2-cwpm-01.qa.xcloudiq.com"
           SW_CONNECTION_HOST:       "g7r2.qa.xcloudiq.com"
-          username:                 xiqextremeqa+auto1-g7r2@gmail.com
+          username:                 "xiqextremeqa+auto1-g7r2@gmail.com"
           password:                 "Extreme@123"
                 
 
 STAGING:
     oss2:
         xiq_environment:    # Test cases would reference var from this point
-          test_url:                 https://stage.extremecloudiq.com
-          connection_method:        "https"
+          test_url:                 "https://stage.extremecloudiq.com"
           CAPWAP_URL:               "stage-cwpm-01.extremecloudiq.com"
           SW_CONNECTION_HOST:       "stage.extremecloudiq.com"
-          username:                 xiqproductionqa+auto1-blr-tb1-oss2@gmail.com
+          username:                 "xiqproductionqa+auto1-blr-tb1-oss2@gmail.com"
           password:                 "Extreme@123"
 
     oss3:
         xiq_environment:    # Test cases would reference var from this point
-          test_url:                 https://stage.extremecloudiq.com
-          connection_method:        "https"
+          test_url:                 "https://stage.extremecloudiq.com"
           CAPWAP_URL:               "stage-cwpm-01.extremecloudiq.com"
           SW_CONNECTION_HOST:       "stage.extremecloudiq.com"
-          username:                 xiqproductionqa+auto1-blr-tb1-oss3@gmail.com
+          username:                 "xiqproductionqa+auto1-blr-tb1-oss3@gmail.com"
           password:                 "Extreme@123"
 
