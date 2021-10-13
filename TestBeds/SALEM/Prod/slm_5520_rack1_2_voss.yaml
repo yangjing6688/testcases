@@ -1,0 +1,58 @@
+netelem1:
+  name:                     "VOSS"
+  hostname:                 ""
+  serial:                   "SB022108G-00096"
+  ip:                       "10.148.35.102"
+  port:                     "23"
+  console_ip:               "10.148.35.5"
+  console_port:             "5026"
+  username:                 "rwa"
+  password:                 "rwa"
+  connection_method:        "telnet"
+  os:                       "voss"
+  platform:                 "5520"
+  auth_mode:                "basic"
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "1/1"
+      intnet: "intnet1"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "1/12"
+      intnet: "intnet2"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "1/13"
+      intnet: "intnet3"
+    port_d:
+      ifname: &netelem1_tgen_port_d_ifname "1/24"
+      intnet: "intnet4"
+
+tgen1:
+  name:         &tgen1_name "robot_jets"
+  vendor:       "jets"
+  chassis_type: "jets"
+  software:     "N/A"
+  ip:           "10.148.35.100"
+  vm_ip:        "N/A"
+  username:     "root"
+  password:     "PASprt86"
+  port:         "22"
+  os:           "linux"
+
+tgen_ports:
+  netelem1:
+    port_a: &tgen_ports_netelem1_port_a
+      tgen_name: *tgen1_name
+      ifname:    "eth5"
+      #source_mac:
+    port_b: &tgen_ports_netelem1_port_b
+      tgen_name:  *tgen1_name
+      ifname:     "eth6"
+      #source_mac:
+    port_c: &tgen_ports_netelem1_port_c
+      tgen_name: *tgen1_name
+      ifname:    "eth7"
+      #source_mac:
+    port_d: &tgen_ports_netelem1_port_d
+      tgen_name: *tgen1_name
+      ifname:    "eth8"
+      #source_mac:
