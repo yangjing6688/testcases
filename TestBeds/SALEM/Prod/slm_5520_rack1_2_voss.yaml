@@ -2,6 +2,7 @@ netelem1:
   name:                     "VOSS"
   hostname:                 ""
   serial:                   "SB022108G-00096"
+  mac:                      "00DCB2976C00"
   ip:                       "10.148.35.102"
   port:                     "23"
   console_ip:               "10.148.35.5"
