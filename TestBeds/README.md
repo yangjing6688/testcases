@@ -21,6 +21,10 @@ We have standard test bed configurations that include setups for 1-5 node DUTs, 
 
 ![5-Node Topology](../doc/img/FiveNodeTopo.png)
 
+## 2-Node "Universal" Topology
+
+![2-Node Universal Topology](../doc/img/universalTwoNodeTopo.png)
+
 # The Test Bed Yaml Files
 The test bed yaml files have been standardized to ensure that they work with the extAuto and Econ Frameworks. All devices that are used in a test bed will be defined using the options below in a yaml file. There are example test bed files located [here](https://github.com/extremenetworks/extreme_automation_tests/tree/priv_elatour_config_files_update/TestBeds/Templates). In this directory you will see the template files for the type.
 
