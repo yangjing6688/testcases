@@ -1,0 +1,212 @@
+name: CI Workflow
+# Ensures only one instance of the CI workflow is running per branch
+# This stops multiple rapid commits from holding up the process
+concurrency: ci-${{ github.ref }}
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    branches: [main]
+
+env:
+  pytest_func_path: pytest_func_tests.txt
+  pytest_unit_path: pytest_unit_tests.txt
+  robot_func_path:  robot_func_tests.txt
+  robot_unit_path:  robot_unit_tests.txt
+  other_files_path:  other_files.txt
+  artifact_name: changed-files
+
+jobs:
+  check_changes:
+    name: Check for changes in test scripts
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # https://github.com/tj-actions/changed-files
+    - name: Get changed pytest functional tests
+      id: pytest-func
+      uses: tj-actions/changed-files@v10
+      with:
+        files: |
+          Tests/Pytest/Functional/([^/]+/)+TestCases/
+
+    - name: Get changed pytest unit tests
+      id: pytest-unit
+      uses: tj-actions/changed-files@v10
+      with:
+        files: |
+          Tests/Pytest/Unit/([^/]+/)+TestCases/
+        separator: ','
+
+    - name: Get changed robot functional tests
+      id: robot-func
+      uses: tj-actions/changed-files@v10
+      with:
+        files: |
+          Tests/Robot/Functional/([^/]+/)+TestCases/
+        separator: ','
+
+    - name: Get changed robot unit tests
+      id: robot-unit
+      uses: tj-actions/changed-files@v10
+      with:
+        files: |
+          Tests/Robot/Unit/([^/]+/)+TestCases/
+        separator: ','
+
+    - name: Get other changed files
+      id: other-files
+      uses: tj-actions/changed-files@v10
+      with:
+        files: |
+          Tests/Pytest/Functional/([^/]+/)+TestCases/
+          Tests/Pytest/Unit/([^/]+/)+TestCases/
+          Tests/Robot/Functional/([^/]+/)+TestCases/
+          Tests/Robot/Unit/([^/]+/)+TestCases/
+        separator: ','
+
+    - name: List all modified files
+      env:
+        PY_FUNC:     ${{ steps.pytest-func.outputs.all_modified_files }}
+        PY_UNIT:     ${{ steps.pytest-unit.outputs.all_modified_files }}
+        ROBOT_FUNC:  ${{ steps.robot-func.outputs.all_modified_files }}
+        ROBOT_UNIT:  ${{ steps.robot-unit.outputs.all_modified_files }}
+        OTHER_FILES:  ${{ steps.other-files.outputs.other_changed_files }}
+      run: |
+        echo $PY_FUNC > ${{ env.pytest_func_path }}
+        echo $PY_UNIT > ${{ env.pytest_unit_path }}
+        echo $ROBOT_FUNC > ${{ env.robot_func_path }}
+        echo $ROBOT_UNIT > ${{ env.robot_unit_path }}
+        echo $OTHER_FILES > ${{ env.other_files_path }}
+
+    - name: Upload test results to GH artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.artifact_name }}
+        path: |
+          ${{ env.pytest_func_path }}
+          ${{ env.pytest_unit_path }}
+          ${{ env.robot_func_path }}
+          ${{ env.robot_unit_path }}
+          ${{ env.other_files_path }}
+
+
+  check_tags:
+    needs: [check_changes]
+    name: Test tags/markers validation
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: ${{ env.artifact_name }}
+
+  check_names:
+    needs: [check_changes]
+    name: Test naming validation
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: ${{ env.artifact_name }}
+
+  check_testbed_type:
+    needs: [check_changes]
+    name: Testbed type validation
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: ${{ env.artifact_name }}
+
+  check_file:
+    needs: [check_changes]
+    name: File name and location validation
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: ${{ env.artifact_name }}
+
+  check_tests_functionality:
+    needs: [check_changes]
+    name: Test functionality validation
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: ${{ env.artifact_name }}
+
+
+  handle_results:
+    needs: [check_tests_functionality, check_file, check_testbed_type, check_names, check_tags]
+    name: Handle artifact uploads and result emails
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set environment variables
+      run: |
+        echo 'github actor: ${{ github.actor }}'
+        actor_email=$( jq -r '.${{ github.actor }}' .github/workflows/github_names_to_extr_email.json )
+        echo "ACTOR_EMAIL=${actor_email}" >> $GITHUB_ENV
+
+
+    # TODO: fix and uncomment this
+    # - name: Upload test results to GH artifacts
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: test-log-${{ github.event.repository.name }}-run-${{ github.run_number }}
+    #     path: ${{ env.TEST_OUTPUT_FILE }}
+
+    # TODO: Update subject line, body, and attachments
+    - name: Email results
+      uses: dawidd6/action-send-mail@v3
+      continue-on-error: true
+      with:
+        # Required mail server address:
+        server_address: smtp.office365.com
+        # Required mail server port:
+        server_port: 587
+        # Mail server username:
+        username: srv-econ-notify@extremenetworks.com
+        # Mail server password:
+        password: "[kkwm{Y-36{k"
+        # Required mail subject:
+        subject: CI Test Results
+        # Required recipients' addresses:
+        to: ${{ env.ACTOR_EMAIL }}
+        # Required sender full name (address can be skipped):
+        from: srv-econ-notify@extremenetworks.com
+        # Optional whether this connection use TLS (default is true if server_port is 465)
+        secure: false
+        # Optional plain body:
+        body: See attached log file for ${{ github.workflow	}} test results.
+        # Optional HTML body read from file:
+        # html_body: file://README.html
+        # Optional carbon copy recipients:
+        # cc:
+        # Optional blind carbon copy recipients:
+        # bcc:
+        # Optional unsigned/invalid certificates allowance:
+        ignore_cert: true
+        # Optional converting Markdown to HTML (set content_type to text/html too):
+        convert_markdown: true
+        # Optional attachments:
+        # attachments: ${{ env.TEST_OUTPUT_FILE }}
+        # Optional priority: 'high', 'normal' (default) or 'low'
+        priority: normal
