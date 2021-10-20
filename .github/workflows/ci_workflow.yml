@@ -12,6 +12,7 @@ on:
 env:
   pytest_func_path: pytest_func_tests.txt
   pytest_unit_path: pytest_unit_tests.txt
+  pytest_res:       pytest_resources.txt
   robot_func_path:  robot_func_tests.txt
   robot_unit_path:  robot_unit_tests.txt
   other_files_path:  other_files.txt
@@ -33,6 +34,7 @@ jobs:
       with:
         files: |
           Tests/Pytest/Functional/([^/]+/)+TestCases/
+        separator: ','
 
     - name: Get changed pytest unit tests
       id: pytest-unit
@@ -40,6 +42,14 @@ jobs:
       with:
         files: |
           Tests/Pytest/Unit/([^/]+/)+TestCases/
+        separator: ','
+
+    - name: Get changed pytest resources
+      id: pytest-resources
+      uses: tj-actions/changed-files@v10
+      with:
+        files: |
+          Tests/Pytest/([^/]+/)+Resources/
         separator: ','
 
     - name: Get changed robot functional tests
@@ -67,18 +77,21 @@ jobs:
           Tests/Pytest/Unit/([^/]+/)+TestCases/
           Tests/Robot/Functional/([^/]+/)+TestCases/
           Tests/Robot/Unit/([^/]+/)+TestCases/
+          Tests/Pytest/([^/]+/)+Resources/
         separator: ','
 
     - name: List all modified files
       env:
         PY_FUNC:     ${{ steps.pytest-func.outputs.all_modified_files }}
         PY_UNIT:     ${{ steps.pytest-unit.outputs.all_modified_files }}
+        PY_RES:      ${{ steps.pytest-resources.outputs.all_modified_files }}
         ROBOT_FUNC:  ${{ steps.robot-func.outputs.all_modified_files }}
         ROBOT_UNIT:  ${{ steps.robot-unit.outputs.all_modified_files }}
         OTHER_FILES:  ${{ steps.other-files.outputs.other_changed_files }}
       run: |
         echo $PY_FUNC > ${{ env.pytest_func_path }}
         echo $PY_UNIT > ${{ env.pytest_unit_path }}
+        echo $PY_RES > ${{ env.pytest_res }}
         echo $ROBOT_FUNC > ${{ env.robot_func_path }}
         echo $ROBOT_UNIT > ${{ env.robot_unit_path }}
         echo $OTHER_FILES > ${{ env.other_files_path }}
@@ -90,10 +103,10 @@ jobs:
         path: |
           ${{ env.pytest_func_path }}
           ${{ env.pytest_unit_path }}
+          ${{ env.pytest_res }}
           ${{ env.robot_func_path }}
           ${{ env.robot_unit_path }}
           ${{ env.other_files_path }}
-
 
   check_tags:
     needs: [check_changes]
@@ -106,15 +119,33 @@ jobs:
         name: ${{ env.artifact_name }}
 
   check_names:
-    needs: [check_changes]
-    name: Test naming validation
+    needs: [check_changes,check_file]
+    name: Resources function validation
     runs-on: ubuntu-latest
 
     steps:
 
+    - name: Checkout modified files
+      uses: actions/checkout@v2
+
     - uses: actions/download-artifact@v2
       with:
         name: ${{ env.artifact_name }}
+
+    - name: Process modified Pytest Resources files
+      run: |
+        for line in `cat ${{ env.pytest_res }} | tr ',' '\n'` ; do
+          printf "[*] Processing Pytest Resources file: $line ...\n"
+            for func in `grep -w def $line | awk '{print $2}'`; do
+              printf "Testing Function ${func} ...\n"
+              if [[ ${func} =~ ^test_.*$ ]] ; then
+                printf "Function ${func}: FAIL\n"
+                exit 1
+              else
+                printf "Function ${func}: PASS\n"
+              fi
+            done
+        done
 
   check_testbed_type:
     needs: [check_changes]
@@ -127,16 +158,48 @@ jobs:
       with:
         name: ${{ env.artifact_name }}
 
+
   check_file:
     needs: [check_changes]
     name: File name and location validation
     runs-on: ubuntu-latest
 
     steps:
-
     - uses: actions/download-artifact@v2
       with:
         name: ${{ env.artifact_name }}
+    - name: Process modified Pytest file(s)
+      run: |
+        IFS=','
+        for f in `cat ${{ env.pytest_func_path }} ${{ env.pytest_unit_path }} | sed -e 's/ //g'`
+          do printf "[*] Processing Pytest file: $f ...\n"
+             if [[ ! $f =~ .*\.py$ ]] ; then 
+                 printf "FAIL: $f is NOT a Pytest file!!\n"
+                 exit 1
+             elif [[ ! $f =~ _[a-zA-Z]+-[0-9]+\.py$ ]] ; then
+                 printf "FAIL: $f is NOT in a valid Pytest filename format!!\n"
+                 exit 1
+             else
+                printf "PASS: $f\n"
+             fi
+        done
+        unset IFS
+
+    - name: Process modified Robot file(s)
+      run: |
+        for f in `cat ${{ env.robot_func_path }} ${{ env.robot_unit_path }}`
+          do printf "[*] Processing Robot file: $f ...\n"
+             if [[ ! $f =~ .*\.py$ ]] ; then
+                 printf "FAIL: $f is NOT a Robot file!!\n"
+                 exit 1
+             elif [[ ! $f =~ _[a-zA-Z]+-[0-9]+\.robot$ ]] ; then
+                 printf "FAIL: $f is NOT in a valid Robot filename format!!\n"
+                 exit 1
+             else
+                printf "PASS: $f\n"
+             fi
+        done
+
 
   check_tests_functionality:
     needs: [check_changes]
