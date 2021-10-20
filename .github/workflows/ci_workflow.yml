@@ -147,6 +147,19 @@ jobs:
             done
         done
 
+    - name: Process modified Pytest Test files
+      run: |
+        for line in `cat ${{ env.pytest_func_path }} ${{ env.pytest_unit_path }} | tr ',' '\n'` ; do
+          printf "[*] Processing Pytest Test file: $line ...\n"
+            func=`grep -w def $line | awk '{print $2}' | grep ^test_`
+              if [[ ${func-} ]] ; then
+                printf "File ${line}: PASS\n"
+              else
+                printf "File ${line}: FAIL\n"
+                exit 1
+              fi
+        done
+
   check_testbed_type:
     needs: [check_changes]
     name: Testbed type validation
