@@ -7,6 +7,7 @@ from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
 from ExtremeAutomation.Utilities.Firmware.pytestLoadFirmware import PlatformLoadFirmware
 from ExtremeAutomation.Utilities.EconClient.econ_request_api import econAPI
 from ExtremeAutomation.Utilities.Framework.test_case_inventory import PytestItems
+from ExtremeAutomation.Utilities.Framework.test_case_inventory import PathTools
 #
 # @fixture(scope='session')
 # def apiUdks():
@@ -54,6 +55,7 @@ from ExtremeAutomation.Utilities.Framework.test_case_inventory import PytestItem
     # drvr.quit()
 
 def pytest_addoption(parser):
+    parser.addoption("--cfg", action="store", default=None, help="yaml cfg file. Auto path search used")
     parser.addoption("--tftpserver", action="store", default=None)
     parser.addoption("--imageFamilies", action="store", default=None)
     parser.addoption("--images", action="store", default=None)
@@ -69,6 +71,17 @@ def pytest_addoption(parser):
     parser.addoption("--b", action="store", default=None, help="build string for verification")
     parser.addoption("--u", action="store", default=None, help="job platform test module UUID")
     parser.addoption("--get_test_info", action="store", default=None, help="Dump checkdb or insert mod info")
+
+
+def pytest_configure(config):
+    if config.option.cfg is not None:
+        from pytest_testconfig import load_yaml
+        pt = PathTools()
+        cfg = config.getoption("--cfg")
+        print(f"TRYING TO LOAD YAML: {cfg}")
+        fCfg = pt.locateCfg(cfg)
+        print(f"FOUND YAML: {fCfg}")
+        load_yaml(fCfg, encoding='utf-8')
 
 def pytest_collection_finish(session):
     if session.config.option.get_test_info is not None:
