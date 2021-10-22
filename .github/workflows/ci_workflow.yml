@@ -108,9 +108,9 @@ jobs:
           ${{ env.robot_unit_path }}
           ${{ env.other_files_path }}
 
-  check_tags:
+  check_file:
     needs: [check_changes]
-    name: Test tags/markers validation
+    name: File name and location validation
     runs-on: ubuntu-latest
 
     steps:
@@ -118,9 +118,46 @@ jobs:
       with:
         name: ${{ env.artifact_name }}
 
+    - name: Process modified Pytest file(s)
+      run: |
+        IFS=','
+        for f in `cat ${{ env.pytest_func_path }} ${{ env.pytest_unit_path }} | sed -e 's/ //g'`
+          do printf "[*] Processing Pytest file: $f ...\n"
+            if [[ ! $f =~ .*\.py$ ]] ; then
+                printf "FAIL: $f is NOT a Pytest file!!\n"
+                exit 1
+            # Only allow __init__.py or files that conform to "test_<testname>_<valid_jira_id>.py"
+            # valid jira id: One or more letters followed by one or more numbers. A dash between the letters and numbers is optional.
+            # This can potentially be followed by _ and 1 or more numbers if multiple testcase files are needed for the same id.
+            # Examples: test_blah_app-45   test_blah_blah_app45_1   test_blah_app-45_1   test_blah_app45
+            # Note: inside bash [[ ]] you need to use extended regex format
+            elif [[ ! $f =~ test_.*_[a-zA-Z]+-?[0-9]+(_[0-9]+\.py|\.py)$|__init__\.py$ ]] ; then
+                printf "FAIL: $f is NOT in a valid Pytest filename format!!\n"
+                exit 1
+            else
+                printf "PASS: $f\n"
+            fi
+        done
+        unset IFS
+
+    - name: Process modified Robot file(s)
+      run: |
+        for f in `cat ${{ env.robot_func_path }} ${{ env.robot_unit_path }}`
+          do printf "[*] Processing Robot file: $f ...\n"
+            if [[ ! $f =~ .*\.py$ ]] ; then
+                printf "FAIL: $f is NOT a Robot file!!\n"
+                exit 1
+            elif [[ ! $f =~ _[a-zA-Z]+-[0-9]+\.robot$ ]] ; then
+                printf "FAIL: $f is NOT in a valid Robot filename format!!\n"
+                exit 1
+            else
+                printf "PASS: $f\n"
+            fi
+        done
+
   check_names:
-    needs: [check_changes,check_file]
-    name: Resources function validation
+    needs: [check_file]
+    name: Testcase naming validation
     runs-on: ubuntu-latest
 
     steps:
@@ -152,13 +189,25 @@ jobs:
         for line in `cat ${{ env.pytest_func_path }} ${{ env.pytest_unit_path }} | tr ',' '\n'` ; do
           printf "[*] Processing Pytest Test file: $line ...\n"
             func=`grep -w def $line | awk '{print $2}' | grep ^test_`
-              if [[ ${func-} ]] ; then
+              if [[ ${line} =~ __init__\.py ]] ; then
+                printf "File ${line}: PASS\n"
+              elif [[ ${func-} ]] ; then
                 printf "File ${line}: PASS\n"
               else
                 printf "File ${line}: FAIL\n"
                 exit 1
               fi
         done
+
+  check_tags:
+    needs: [check_changes]
+    name: Test tags/markers validation
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: ${{ env.artifact_name }}
 
   check_testbed_type:
     needs: [check_changes]
@@ -170,49 +219,6 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: ${{ env.artifact_name }}
-
-
-  check_file:
-    needs: [check_changes]
-    name: File name and location validation
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/download-artifact@v2
-      with:
-        name: ${{ env.artifact_name }}
-    - name: Process modified Pytest file(s)
-      run: |
-        IFS=','
-        for f in `cat ${{ env.pytest_func_path }} ${{ env.pytest_unit_path }} | sed -e 's/ //g'`
-          do printf "[*] Processing Pytest file: $f ...\n"
-             if [[ ! $f =~ .*\.py$ ]] ; then 
-                 printf "FAIL: $f is NOT a Pytest file!!\n"
-                 exit 1
-             elif [[ ! $f =~ _[a-zA-Z]+-[0-9]+\.py$ ]] ; then
-                 printf "FAIL: $f is NOT in a valid Pytest filename format!!\n"
-                 exit 1
-             else
-                printf "PASS: $f\n"
-             fi
-        done
-        unset IFS
-
-    - name: Process modified Robot file(s)
-      run: |
-        for f in `cat ${{ env.robot_func_path }} ${{ env.robot_unit_path }}`
-          do printf "[*] Processing Robot file: $f ...\n"
-             if [[ ! $f =~ .*\.py$ ]] ; then
-                 printf "FAIL: $f is NOT a Robot file!!\n"
-                 exit 1
-             elif [[ ! $f =~ _[a-zA-Z]+-[0-9]+\.robot$ ]] ; then
-                 printf "FAIL: $f is NOT in a valid Robot filename format!!\n"
-                 exit 1
-             else
-                printf "PASS: $f\n"
-             fi
-        done
-
 
   check_tests_functionality:
     needs: [check_changes]
