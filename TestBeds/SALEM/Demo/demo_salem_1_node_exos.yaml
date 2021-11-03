@@ -12,7 +12,7 @@ netelem1:
   os:                       "exos"
   platform:                 "x460G2"
   auth_mode:                "basic"
-  image_family:
+  image_family:             ""
 
   tgen:
     port_a:

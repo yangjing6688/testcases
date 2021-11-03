@@ -10,7 +10,7 @@ netelem1:
   os:                       "voss"
   host_mac:                 "00:04:96:f1:75:00"
   platform:                 "vsp8000"
-  image_family:
+  image_family:             ""
   tgen:
     port_a:
       ifname: &netelem1_tgen_port_a_ifname "1/1"
@@ -42,6 +42,7 @@ netelem2:
   connection_method:        "telnet"
   os:                       "exos"
   platform:                 "x460G2"
+  image_family:             ""
   tgen:
     port_a:
       ifname: &netelem2_tgen_port_a_ifname "1"
