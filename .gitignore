@@ -9,4 +9,17 @@
 **output.xml**
 **log.html**
 **.idea**
+/.pytest_cache/
+/libspecs/
+/log.html
+/output.xml
+/report.html
+/assets
+allure_output/
+/.idea/
+**__pycache__**
+**report.html**
+**log.html**
+**output.xml**
+.idea/**
 
