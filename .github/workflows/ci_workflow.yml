@@ -16,8 +16,12 @@ env:
   robot_func_path:  robot_func_tests.txt
   robot_unit_path:  robot_unit_tests.txt
   other_files_path:  other_files.txt
-  artifact_name: changed-files
+  changed_files_artifact_name: changed-files
+  pytest_report_path: pytest_report.txt
+  robot_report_path: robot_report.txt
+  tag_report_artifact_name: tag-and-marker-reports-${{ github.event.repository.name }}-run-${{ github.run_number }}
 
+# Future Improvement: Turn jobs into matracies to pytest and robot checks in parallel
 jobs:
   check_changes:
     name: Check for changes in test scripts
@@ -99,7 +103,7 @@ jobs:
     - name: Upload test results to GH artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ env.artifact_name }}
+        name: ${{ env.changed_files_artifact_name }}
         path: |
           ${{ env.pytest_func_path }}
           ${{ env.pytest_unit_path }}
@@ -116,7 +120,7 @@ jobs:
     steps:
     - uses: actions/download-artifact@v2
       with:
-        name: ${{ env.artifact_name }}
+        name: ${{ env.changed_files_artifact_name }}
 
     - name: Process modified Pytest file(s)
       run: |
@@ -144,10 +148,10 @@ jobs:
       run: |
         for f in `cat ${{ env.robot_func_path }} ${{ env.robot_unit_path }}`
           do printf "[*] Processing Robot file: $f ...\n"
-            if [[ ! $f =~ .*\.py$ ]] ; then
+            if [[ ! $f =~ .*\.robot$ ]] ; then
                 printf "FAIL: $f is NOT a Robot file!!\n"
                 exit 1
-            elif [[ ! $f =~ _[a-zA-Z]+-[0-9]+\.robot$ ]] ; then
+            elif [[ ! $f =~ _[a-zA-Z]+-?[0-9]+(_[0-9]+\.robot|\.robot)$ ]] ; then
                 printf "FAIL: $f is NOT in a valid Robot filename format!!\n"
                 exit 1
             else
@@ -167,8 +171,9 @@ jobs:
 
     - uses: actions/download-artifact@v2
       with:
-        name: ${{ env.artifact_name }}
+        name: ${{ env.changed_files_artifact_name }}
 
+    # TODO: fix this for __init__.py files
     - name: Process modified Pytest Resources files
       run: |
         for line in `cat ${{ env.pytest_res }} | tr ',' '\n'` ; do
@@ -200,28 +205,245 @@ jobs:
         done
 
   check_tags:
-    needs: [check_changes]
-    name: Test tags/markers validation
+    needs: [check_names]
+    name: Tags/Markers validation
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout local repo
+      uses: actions/checkout@v2
+
+    - name: Checkout framework
+      uses: actions/checkout@v2
+      with:
+        repository: extremenetworks/econ-automation-framework
+        token: ${{ secrets.REGISTRY_PAT }}
+        path: econ-automation-framework
+        ref: priv_psadej_ci
+
+    - name: Checkout qtest tools
+      uses: actions/checkout@v2
+      with:
+        repository: extremenetworks/econ-qtest-client
+        token: ${{ secrets.REGISTRY_PAT }}
+        path: econ-qtest-client
+
     - uses: actions/download-artifact@v2
       with:
-        name: ${{ env.artifact_name }}
+        name: ${{ env.changed_files_artifact_name }}
 
-  check_testbed_type:
-    needs: [check_changes]
-    name: Testbed type validation
-    runs-on: ubuntu-latest
+    - name: Prep environment
+      run: |
+        # Create report files to avoid problems in later jobs if something goes wrong
+        echo "" > ${{ env.pytest_report_path }}
+        echo "" > ${{ env.robot_report_path }}
 
-    steps:
+        # Check if any pytest files have been modified
+        pytest_files=$(cat ${{ env.pytest_func_path }} ${{ env.pytest_unit_path }} | tr ',\n' ' ')
+        trimmed_files=$(echo "${pytest_files}" | tr -d [:space:])
+        if [[ ! $trimmed_files ]]; then
+          run_pytest=false
+        else
+          run_pytest=true
+        fi
+        echo "Run pyTest: $run_pytest"
 
-    - uses: actions/download-artifact@v2
+        # Check if any robot files have been modified
+        robot_files=$(cat ${{ env.robot_func_path }} ${{ env.robot_unit_path }} | tr ',\n' ' ')
+        trimmed_files=$(echo "${robot_files}" | tr -d [:space:])
+        if [[ ! $trimmed_files ]]; then
+          run_robot=false
+        else
+          run_robot=true
+        fi
+        echo "Run Robot: $run_robot"
+
+        # Set env vars
+        echo "RUN_PYTEST=${run_pytest}" >> $GITHUB_ENV
+        echo "RUN_ROBOT=${run_robot}" >> $GITHUB_ENV
+        echo "PYTEST_FILES=${pytest_files}" >> $GITHUB_ENV
+        echo "ROBOT_FILES=${robot_files}" >> $GITHUB_ENV
+
+        printenv
+
+        # Install pytest/robot requirements
+        pip install -r requirements.txt
+
+# TODO: Figure out how to get pytest to only operate on input files. If that isn't viable
+#       run for all files and only grab the ones we want(would take SIGNIFICANTLY more time)
+# potential workaround: copy modified tests to another directory and run pytest there
+# this would require either making a whole mimiced dir tree or using a different method of identifying the tests
+    - name: Run pytest inventory tool
+      if: ${{env.RUN_PYTEST == 'true'}}
+      run: |
+        # Add framework to PYTHONPATH
+        export PYTHONPATH="${PYTHONPATH}:${PWD}/econ-automation-framework"
+
+        # Run pytest
+        pytest --get_test_info cicd ${{ env.PYTEST_FILES }} || true
+
+    - name: Run robot inventory tool
+      if: ${{env.RUN_ROBOT == 'true'}}
+      env:
+        ROBOT_TOOL_PATH: Tests/Robot/get_test_info.py
+      run: |
+        # Add framework to PYTHONPATH
+        export PYTHONPATH="${PYTHONPATH}:${PWD}/econ-automation-framework"
+
+        # Run robot
+        python $ROBOT_TOOL_PATH ${{ env.ROBOT_FILES }}
+
+    # Tags and Markers:
+    # Tests should contain Tags (Robot) or Markers (pyTest) to categorize the tests allowing test case selection during a test run.  This allows the automation system to select or omit specific tests.  For example, if tests are specific to a particular device and cannot be run on other devices you would want to add a tag or marker to identify the hardware the test can run on.   The number and types of tags are essentially limitless.  To avoid clutter please review existing tags and reuse them where possible.
+    #
+    # The following tags will be selected by the automation team, test developers must avoid using them (CI/CD will check for this):
+    # production, regression, nightly, sanity, p1, p2, p3, p4
+    #
+    # All tags or markers should be in lower case only.
+    # Developers must have two tags or markers.  The first tag or marker will identify the qTest project and test case number in the format: <project>_tc_<test case number>.  The second tag or marker must be: “development”, indicating that this test case is new to the automation system.
+    # The project names are short names that identify the qTest project.  The names and their matching project are listed below.
+    #
+    # Project Names
+    # csit -> csit
+    # xim -> XIQ Mainline
+    # exos -> EXOS
+    # voss -> VOSS
+    # xiq -> xiq
+    # xnt -> EXOS-NOS-TestPlans
+    # xna -> EXOS-NOS-UnifiedAgile
+    #
+    #  Robot:
+    # [Tags] csit_tc_4501    development
+    #
+    # PyTest:
+    # @pytest.mark.csit_tc_4501
+    # @pytest.mark.development
+    #
+    # Identifying the TestBed
+    # The type of testbed must be specified in the test suite.  This should be done by specifying the testbed type using “Force Tags” in robot or by marking the class in PyTest.  Possible options for the testbed type are limited to:
+    #
+    # testbed_1_node
+    # testbed_2_node
+    # testbed_3_node
+    # testbed_4_node
+    # testbed_5_node
+    #
+    # Robot:
+    # Robot uses “Force Tags” to mark all of the tests with the same tag.  The TestBed type must be identified in each Test Case.  Using “Force Tags” you can mark every test.  Here is an example:
+    #
+    # *** Settings ***
+    # Force Tags      testbed_1_node
+    #
+    # PyTest:
+    # To mark every test with the proper testbed you can mark the entire class with the testbed.  Here is an example:
+    #
+    # @mark.testbed_1_node
+    # Class DefaultTests:
+    #
+    - name: Check pytest markers
+      if: ${{env.RUN_PYTEST == 'true'}}
+      run: |
+        rc=0
+        testcase_files=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' pytest_data.json )
+        while IFS='|' read key value; do
+            echo "================================================================================" | tee -a ${{ env.pytest_report_path }}
+            echo "[*] Results for file: $key" | tee -a ${{ env.pytest_report_path }}
+            func=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' <<< $value )
+            while IFS='|' read key value; do
+                echo "[**] Results for test: $key" | tee -a ${{ env.pytest_report_path }}
+                # All lowercase check
+                result=$(jq -r '.all_tags_lower_case' <<< $value )
+                if [[ $result == 'false' ]]; then
+                    echo "[***] FAIL: One or more markers contain uppercase characters" | tee -a ${{ env.pytest_report_path }}
+                    rc=1
+                fi
+                # doesn't contain reserved tag check
+                result=$(jq -r '.contains_reserved_tag' <<< $value)
+                if [[ $result == 'true' ]]; then
+                    echo "[***] FAIL: One or more reserved markers were found. Reserved markers: [production, regression, nightly, sanity, p1, p2, p3, p4]" | tee -a ${{ env.pytest_report_path }}
+                    rc=1
+                fi
+                # contains development tag check
+                result=$(jq -r '.contains_development' <<< $value )
+                if [[ $result == 'false' ]]; then
+                    echo "[***] FAIL: 'development' marker not found" | tee -a ${{ env.pytest_report_path }}
+                    rc=1
+                fi
+                # contains testbed tag check
+                result=$(jq -r '.contains_testbed_tag' <<< $value )
+                if [[ $result == 'false' ]]; then
+                    echo "[***] FAIL: Testbed type marker not found" | tee -a ${{ env.pytest_report_path }}
+                    rc=1
+                fi
+                # contains qtest tag check
+                result=$(jq -r '.valid_qtest_tag' <<< $value )
+                if [[ $result == 'false' ]]; then
+                    echo "[***] FAIL: qtest marker invalid or not found" | tee -a ${{ env.pytest_report_path }}
+                    rc=1
+                fi
+            done <<< $func
+            echo "" | tee -a ${{ env.pytest_report_path }}
+        done <<< $testcase_files
+        exit $rc
+
+    - name: Check robot tags
+      if: ${{env.RUN_ROBOT == 'true'}}
+      run: |
+        rc=0
+        testcase_files=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' robot_data.json )
+        while IFS='|' read key value; do
+            echo "================================================================================" | tee -a ${{ env.pytest_report_path }}
+            echo "[*] Results for file: $key" | tee -a ${{ env.robot_report_path }}
+            func=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' <<< $value )
+            while IFS='|' read key value; do
+                echo "[**] Results for test: $key"
+                # All lowercase check
+                result=$(jq -r '.all_tags_lower_case' <<< $value )
+                if [[ $result == 'false' ]]; then
+                    echo "[***] FAIL: One or more markers contain uppercase characters" | tee -a ${{ env.robot_report_path }}
+                    rc=1
+                fi
+                # doesn't contain reserved tag check
+                result=$(jq -r '.contains_reserved_tag' <<< $value)
+                if [[ $result == 'true' ]]; then
+                    echo "[***] FAIL: One or more reserved markers were found. Reserved markers: [production, regression, nightly, sanity, p1, p2, p3, p4]" | tee -a ${{ env.robot_report_path }}
+                    rc=1
+                fi
+                # contains development tag check
+                result=$(jq -r '.contains_development' <<< $value )
+                if [[ $result == 'false' ]]; then
+                    echo "[***] FAIL: 'development' marker not found" | tee -a ${{ env.robot_report_path }}
+                    rc=1
+                fi
+                # contains testbed tag check
+                result=$(jq -r '.contains_testbed_tag' <<< $value )
+                if [[ $result == 'false' ]]; then
+                    echo "[***] FAIL: Testbed type marker not found" | tee -a ${{ env.robot_report_path }}
+                    rc=1
+                fi
+                # contains qtest tag check
+                result=$(jq -r '.valid_qtest_tag' <<< $value )
+                if [[ $result == 'false' ]]; then
+                    echo "[***] FAIL: qtest marker invalid or not found" | tee -a ${{ env.robot_report_path }}
+                    rc=1
+                fi
+            done <<< $func
+            echo "" | tee -a ${{ env.pytest_report_path }}
+        done <<< $testcase_files
+        exit $rc
+
+
+    - name: Upload test results to GH artifacts
+      uses: actions/upload-artifact@v2
+      if: ${{ always() }}
       with:
-        name: ${{ env.artifact_name }}
+        name: ${{ env.tag_report_artifact_name }}
+        path: |
+          ${{ env.pytest_report_path }}
+          ${{ env.robot_report_path }}
 
   check_tests_functionality:
-    needs: [check_changes]
+    needs: [check_tags]
     name: Test functionality validation
     runs-on: ubuntu-latest
 
@@ -229,12 +451,90 @@ jobs:
 
     - uses: actions/download-artifact@v2
       with:
-        name: ${{ env.artifact_name }}
+        name: ${{ env.changed_files_artifact_name }}
 
+    - name: Prep
+      run: |
+        # Get a session token for this run
+        session_token=$( curl -X GET  --no-progress-meter \
+                        "http://extreme-continuum.extremenetworks.com/auth/getSessionTokenFromPAT" \
+                        -H "accept: application/json" \
+                        -H "authorization: PAT ${{ secrets.AUTOIQ_PAT }}" \
+                        | jq -r '.result.sessionToken' )
+
+        # Get list of available testbeds for each harness
+        # harnesses: econ_auto(pytest), xiq_auto(robot), tcl
+        # 11111111-2222-2222-2222-111111111111 (pytest), 11111111-6666-6666-6666-111111111111 (robot), 11111111-5555-5555-5555-111111111111 (tcl)
+        available_testbeds_pytest=$( curl -X GET --no-progress-meter \
+                                    "http://extreme-continuum.extremenetworks.com/tbedmgr/jobmgr/cicdPlatforms/econ_auto" \
+                                    -H "accept: application/json" \
+                                    -H "authorization: Bearer ${session_token}" \
+                                    | jq '.result[]' )
+
+        available_testbeds_robot=$( curl -X GET --no-progress-meter \
+                                    "http://extreme-continuum.extremenetworks.com/tbedmgr/jobmgr/cicdPlatforms/xiq_auto" \
+                                    -H "accept: application/json" \
+                                    -H "authorization: Bearer ${session_token}" \
+                                    | jq '.result[]' )
+
+        echo "pytest testbeds: $available_testbeds_pytest"
+        echo "robot testbeds: $available_testbeds_robot"
+
+        # # Submit job for each platform on each NOS that runs all the tests
+
+        # # - name: Run Modified TestCases
+        # #   run: |
+        # curl -X POST --no-progress-meter \
+        # "https://extreme-continuum.extremenetworks.com/tbedmgr/jobmgr/createJob" \
+        # -H "accept: application/json" \
+        # -H "authorization: Bearer ${session_token}" \
+        # '{"jsonString":{ \
+        #     "description": "CI Verification Run", \
+        #     "priority": 3, \
+        #     "rerun": 0, \
+        #     "postResults": 1, \
+        #     "notifyOnStart": 0, \
+        #     "username": "CI_Service", \
+        #     "group": "CICD", \
+        #     "jobType": "private", \
+        #     "auxInfoList" : [ \
+        #       {"cicd_pr":1}, \
+        #       {"context": "econ-cron/test-context"}, \
+        #       {"repo":"extremenetworks/econ-cron"}, \
+        #       {"sha":"a964180c2aae2fd5c72d1137d9e20b6678217a82"} \
+        #     ], \
+        #     "jobPlatforms": [ \
+        #       { \
+        #           "platform": "i386", \
+        #           "hardwareConfiguration": "Standalone", \
+        #           "priority": 3, \
+        #           "auxInfoList": [], \
+        #           "jobPlatformTestModules" : \
+        #           [ \
+        #               { \
+        #                   "testModule_uuid": "11111111-2222-2222-2222-111111111111", \
+        #                   "auxInfoList" : [ \
+        #                                     {"nodeCount": 4}, \
+        #                                     {"universalTestBedOs": "EXOS"}, \
+        #                                     {"test_name": ["blah.py","Tests\whatever\blah.py", "Tests\"] } \
+        #                                     ] \
+        #               } \
+        #           ] \
+        #       } \
+        #     ] \
+        # }}'
+
+# robot testbeds: {
+#   "hardwareConfiguration": "Standalone",
+#   "nodeCount": 4,
+#   "platform": "i386",
+#   "universalTestBedOs": ["blah","test"]
+# }
 
   handle_results:
-    needs: [check_tests_functionality, check_file, check_testbed_type, check_names, check_tags]
-    name: Handle artifact uploads and result emails
+    needs: [check_tests_functionality, check_file, check_names, check_tags]
+    name: Send result emails
+    if: ${{ always() }}
     runs-on: ubuntu-latest
 
     steps:
@@ -247,13 +547,12 @@ jobs:
         actor_email=$( jq -r '.${{ github.actor }}' .github/workflows/github_names_to_extr_email.json )
         echo "ACTOR_EMAIL=${actor_email}" >> $GITHUB_ENV
 
+        # Clean up any .txt files that aren't report data
+        rm *.txt
 
-    # TODO: fix and uncomment this
-    # - name: Upload test results to GH artifacts
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: test-log-${{ github.event.repository.name }}-run-${{ github.run_number }}
-    #     path: ${{ env.TEST_OUTPUT_FILE }}
+    - uses: actions/download-artifact@v2
+      with:
+        name: ${{ env.tag_report_artifact_name }}
 
     # TODO: Update subject line, body, and attachments
     - name: Email results
@@ -269,7 +568,7 @@ jobs:
         # Mail server password:
         password: "[kkwm{Y-36{k"
         # Required mail subject:
-        subject: CI Test Results
+        subject: CI Test Results - ${{ github.repository }}
         # Required recipients' addresses:
         to: ${{ env.ACTOR_EMAIL }}
         # Required sender full name (address can be skipped):
@@ -280,15 +579,11 @@ jobs:
         body: See attached log file for ${{ github.workflow	}} test results.
         # Optional HTML body read from file:
         # html_body: file://README.html
-        # Optional carbon copy recipients:
-        # cc:
         # Optional blind carbon copy recipients:
         # bcc:
         # Optional unsigned/invalid certificates allowance:
         ignore_cert: true
         # Optional converting Markdown to HTML (set content_type to text/html too):
         convert_markdown: true
-        # Optional attachments:
-        # attachments: ${{ env.TEST_OUTPUT_FILE }}
-        # Optional priority: 'high', 'normal' (default) or 'low'
-        priority: normal
+        # Attachments: all text files in current dir
+        attachments: ./*.txt
