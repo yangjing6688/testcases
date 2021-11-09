@@ -1,0 +1,75 @@
+# VLAN Variables
+vlan_traffic:              "400"
+vlan_a:                    "500"
+vlan_b:                    "600"
+vlan_c:                    "700"
+vlan_d:                    "800"
+
+
+# MACsec Variables
+ca128:
+   name:         "RobotCA128"
+   psk:
+       ckn:      "RobotCKN128"
+       cak:      "0x000102030405060708090a0b0c0d0e0f"
+ca128_bad_ckn:
+   name:         "RobotCA128"
+   psk:
+      ckn:       "RobotCA128x"
+      cak:       "0x000102030405060708090a0b0c0d0e0f"
+ca128_bad_cak:
+   name:         "RobotCA128"
+   psk:
+      ckn:       "RobotCKN128"
+      cak:       "0x000102030405060708090a0b0c0d0e0e"
+
+ca256:
+   name:          "RobotCA256"
+   psk:
+      ckn:        "RobotCKN256"
+      cak:        "0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+
+ca256_a:
+   name:          "RobotCA256-A"
+   psk:
+      ckn:        "RobotCKN256-A"
+      cak:        "0xaaaaaaaaaaaaaaaa0123456789abcdef0123456789abcdef0123456789abcdef"
+
+ca256_b:
+   name:          "RobotCA256-B"
+   psk:
+      ckn:        "RobotCKN256-B"
+      cak:        "0xbbbbbbbbbbbbbbbb0123456789abcdef0123456789abcdef0123456789abcdef"
+
+
+# Traffic Generator Variables
+traffic:
+   netmask:       "255.255.255.0"
+   tgen1:
+      mac:        "00:00:00:11:11:11"
+      ip:         "100.1.1.26"
+   tgen2:
+      mac:        "00:00:00:22:22:22"
+      ip:         "100.1.1.27"
+
+
+# Packet Variables
+packetA:
+   name:                "packetA"
+   src_mac:             "00:00:00:aa:aa:aa"
+   dst_mac:             "00:00:00:bb:bb:bb"
+   uppercase_mac:       "00:00:00:AA:AA:AA"
+   noseparator_mac:     "000000AAAAAA"
+   hyphenated_mac:      "00-00-00-AA-AA-AA"
+
+packetB:
+   name:                "packetB"
+   src_mac:             "00:00:00:bb:bb:bb"
+   dst_mac:             "00:00:00:aa:aa:aa"
+   uppercase_mac:       "00:00:00:BB:BB:BB"
+   noseparator_mac:     "000000BBBBBB"
+   hyphenated_mac:      "00-00-00-BB-BB-BB"
+
+
+# Other category
+# ...

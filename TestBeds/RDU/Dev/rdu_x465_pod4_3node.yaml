@@ -1,26 +1,3 @@
-environment:
-  version:  "1.0"
-  topology_template:  "4node_template_physical.yaml"
-  type:   "physical"
-
-environment_host:
-  name:                   "VServer1"
-  ip:                     "10.69.2.40"
-  username:               "extreme"
-  password:               "extreme"
-  connection_method:      "ssh"
-  #ssh_port:              "9015"
-  #type:                  "vbox"
-  #os:                    "linux"
-
-testengine:
-  name:                     "robot_test_engine"
-  ip:                       "10.69.2.72"
-  vm_location:              ""
-  physical_device:          "True"
-  username:                 "administrator"
-  password:                 "BeExtreme!"
-
 netelem1:
   name:                     "x465_DUT1"
   ip:                       "10.69.50.165"

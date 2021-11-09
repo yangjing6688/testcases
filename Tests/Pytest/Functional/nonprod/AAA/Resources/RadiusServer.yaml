@@ -1,0 +1,26 @@
+# RADIUS SERVER Variables.. Using instance 1 will overwrite any existing server
+#  this is a good thing because if a pre-existing server is present at instance 1 it will
+#  be used and most likely will not behave the same.
+
+# EndSys1 - RADIUS SERVER
+endsysRadius:
+  name:                 "robotradius"
+  ip:                   "10.51.1.81"
+  instance:             "1"
+  shared_secret:        "robotRadius"
+  #vr:                   "VR-Mgmt"
+  #  Get the VR in use from netelem1.mgmt_vlan (which is actually the mgmt vr, not the mgmt_vlan).
+  username:             "root"
+  password:             "dogbert"
+  connection_method:    "ssh"
+  os:                   "linux"
+  vm_location:          "endsys1.ova"
+  vm_provider:          "virtualbox"
+  dynamic_deployment:   "False"
+  port:                 "1812"
+  port_a:
+    ifname:       "ens160"
+    ip: "10.51.1.81"
+    mask:    "23"
+    source_mac:   "00:0C:29:D5:6F:BC"
+    intnet:       "intnet15"

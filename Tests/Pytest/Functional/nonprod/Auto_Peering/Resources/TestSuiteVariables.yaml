@@ -1,0 +1,15 @@
+# VLAN Variables
+vlan_default:            "1"
+vlan_a:                  "202"
+vlan_b:                  "101"
+
+# Traffic Variables
+packet_name_a:           "packet_1"
+
+# L2 and L3 Keywords
+router_ip:               "10.52.16.1"
+router_mac:              "20:b3:99:ad:78:fb"
+router_interface:        "VLAN_0101"
+
+# Other category
+# ...

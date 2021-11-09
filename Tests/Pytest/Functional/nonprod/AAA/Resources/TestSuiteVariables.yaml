@@ -1,0 +1,92 @@
+
+# VLAN Variables
+vlan_default:              "1"
+vlan_100:                  "100"
+vlanName_100:              "V100"
+vlan_200:                  "200"
+vlanName_200:              "V200"
+vlan_300:                  "300"
+vlanName_300:              "V300"
+vlan_400:                  "400"
+vlanName_400:              "V400"
+vlan_500:                  "500"
+vlanName_500:              "V500"
+
+# Basic Policy Setup Variables
+policyName_a:           "Policy100"
+policyId_a:             "31"
+policyName_b:           "Policy200"
+policyId_b:             "32"
+policyName_c:           "Policy300"
+policyId_c:             "33"
+
+policy_reauth_timer:           "60"
+
+# Fabric Attach NSI Values (Configured in RADIUS SERVER)
+
+nsi1:   555
+nsi2:   777
+
+# Packet Variables
+packetA:
+   name:                "packetA"
+   src_mac:             "00:00:00:aa:aa:aa"
+   dst_mac:             "00:00:00:bb:bb:bb"
+   uppercase_mac:       "00:00:00:AA:AA:AA"
+   noseparator_mac:     "000000AAAAAA"
+   hyphenated_mac:      "00-00-00-AA-AA-AA"
+
+packetB:
+   name:                "packetB"
+   src_mac:             "00:00:00:bb:bb:bb"
+   dst_mac:             "00:00:00:aa:aa:aa"
+   uppercase_mac:       "00:00:00:BB:BB:BB"
+   noseparator_mac:     "000000BBBBBB"
+   hyphenated_mac:      "00-00-00-BB-BB-BB"
+
+# Packet Variables
+packetC:
+   name:                "packetC"
+   src_mac:             "00:00:00:cc:cc:cc"
+   dst_mac:             "00:00:00:dd:dd:dd"
+   uppercase_mac:       "00:00:00:CC:CC:CC"
+   noseparator_mac:     "000000CCCCCC"
+   hyphenated_mac:      "00-00-00-CC-CC-CC"
+
+packetD:
+   name:                "packetD"
+   src_mac:             "00:00:00:dd:dd:dd"
+   dst_mac:             "00:00:00:cc:cc:cc"
+   uppercase_mac:       "00:00:00:DD:DD:DD"
+   noseparator_mac:     "000000DDDDDD"
+   hyphenated_mac:      "00-00-00-DD-DD-DD"
+
+# Fabric Attach Packet Variables
+packetFA1:
+   name:                "packetFA1"
+   src_mac:             "00:00:fa:fa:00:00"
+   dst_mac:             "00:00:00:00:fa:fa"
+   uppercase_mac:       "00:00:FA:FA:00:00"
+   noseparator_mac:     "0000FAFA0000"
+   hyphenated_mac:      "00-00-FA-FA-00-00"
+
+packetFA2:
+   name:                "packetFA2"
+   src_mac:             "00:00:00:00:fa:fa"
+   dst_mac:             "00:00:fa:fa:00:00"
+   uppercase_mac:       "00:00:00:00:FA:FA"
+   noseparator_mac:     "00000000FAFA"
+   hyphenated_mac:      "00-00-00-00-FA-FA"
+
+
+# User Credentials
+user:
+  local:
+    username:            "carl-sagan"
+    password:            "pale-blue-dot"
+  remote:
+    username:            "robot"
+    password:            "robot"
+
+# Other category
+# ...
