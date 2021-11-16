@@ -252,24 +252,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout local repo
-      uses: actions/checkout@v2
-
-    - name: Checkout framework
-      uses: actions/checkout@v2
-      with:
-        repository: extremenetworks/econ-automation-framework
-        token: ${{ secrets.REGISTRY_PAT }}
-        path: econ-automation-framework
-        ref: priv_psadej_ci
-
-    - name: Checkout qtest tools
-      uses: actions/checkout@v2
-      with:
-        repository: extremenetworks/econ-qtest-client
-        token: ${{ secrets.REGISTRY_PAT }}
-        path: econ-qtest-client
-
     - uses: actions/download-artifact@v2
       with:
         name: ${{ env.changed_files_artifact_name }}
@@ -306,11 +288,32 @@ jobs:
         echo "PYTEST_FILES=${pytest_files}" >> $GITHUB_ENV
         echo "ROBOT_FILES=${robot_files}" >> $GITHUB_ENV
 
-        # Install pytest/robot requirements only if we are going to run against tests
-        if [[ $run_robot == "true" || $run_pytest == "true" ]]; then
-          grep -v pycurl requirements.txt > requirements.txt.tmp && mv requirements.txt.tmp requirements.txt
-          pip install -r requirements.txt
-        fi
+    # Only do the below steps if we need to evaluate any of the changes being committed
+    - name: Checkout local repo
+      if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
+      uses: actions/checkout@v2
+
+    - name: Checkout framework
+      if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
+      uses: actions/checkout@v2
+      with:
+        repository: extremenetworks/econ-automation-framework
+        token: ${{ secrets.REGISTRY_PAT }}
+        path: econ-automation-framework
+
+    - name: Checkout qtest tools
+      if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
+      uses: actions/checkout@v2
+      with:
+        repository: extremenetworks/econ-qtest-client
+        token: ${{ secrets.REGISTRY_PAT }}
+        path: econ-qtest-client
+
+    - name: Install python requirements
+      if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
+      run: |
+        grep -v pycurl requirements.txt > requirements.txt.tmp && mv requirements.txt.tmp requirements.txt
+        pip install -r requirements.txt
 
 # TODO: Figure out how to get pytest to only operate on input files. If that isn't viable
 #       run for all files and only grab the ones we want(would take SIGNIFICANTLY more time)
