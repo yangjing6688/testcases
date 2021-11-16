@@ -142,14 +142,15 @@ jobs:
       with:
         name: ${{ env.changed_files_artifact_name }}
 
-    - name: Process modified Pytest file(s)
+    - name: Process Pytest Production file(s)
       run: |
         IFS=','
-        for f in `cat ${{ env.pytest_func_path }} ${{ env.pytest_non_prod_path }} | sed -e 's/ //g'`
+        rc=0
+        for f in $( cat ${{ env.pytest_func_path }} | sed -e 's/ //g' )
           do printf "[*] Processing Pytest file: $f ...\n"
             if [[ ! $f =~ .*\.py$ ]] ; then
-                printf "FAIL: $f is NOT a Pytest file!!\n"
-                exit 1
+                printf "FAIL: $f is NOT a Pytest file!  Only .py files are allowed in this directory.\n"
+                rc=1
             # Only allow __init__.py or files that conform to "test_<testname>_<valid_jira_id>.py"
             # valid jira id: One or more letters followed by one or more numbers. A dash between the letters and numbers is optional.
             # This can potentially be followed by _ and 1 or more numbers if multiple testcase files are needed for the same id.
@@ -157,27 +158,74 @@ jobs:
             # Note: inside bash [[ ]] you need to use extended regex format
             elif [[ ! $f =~ test_.*_[a-zA-Z]+-?[0-9]+(_[0-9]+\.py|\.py)$|__init__\.py$ ]] ; then
                 printf "FAIL: $f is NOT in a valid Pytest filename format!!\n"
-                exit 1
+                rc=1
             else
                 printf "PASS: $f\n"
             fi
         done
         unset IFS
+        exit $rc
 
-    - name: Process modified Robot file(s)
+    - name: Process Pytest Non-Production file(s)
+      if: ${{ always() }}
       run: |
-        for f in `cat ${{ env.robot_func_path }} ${{ env.robot_non_prod_path }}`
-          do printf "[*] Processing Robot file: $f ...\n"
-            if [[ ! $f =~ .*\.robot$ ]] ; then
-                printf "FAIL: $f is NOT a Robot file!!\n"
-                exit 1
-            elif [[ ! $f =~ _[a-zA-Z]+-?[0-9]+(_[0-9]+\.robot|\.robot)$ ]] ; then
-                printf "FAIL: $f is NOT in a valid Robot filename format!!\n"
-                exit 1
+        IFS=','
+        rc=0
+        for f in $( cat ${{ env.pytest_non_prod_path }} | sed -e 's/ //g' )
+          do printf "[*] Processing Pytest file: $f ...\n"
+            if [[ ! $f =~ .*\.py$ ]] ; then
+                printf "FAIL: $f is NOT a Pytest file! Only .py files are allowed in this directory.\n"
+                rc=1
+            # Only allow __init__.py or files that conform to "test_<testname>.py"
+            # Note: inside bash [[ ]] you need to use extended regex format
+            elif [[ ! $f =~ ^test_.*.py$|^__init__\.py$ ]] ; then
+                printf "FAIL: $f is NOT in a valid Pytest filename format! \n"
+                rc=1
             else
                 printf "PASS: $f\n"
             fi
         done
+        unset IFS
+        exit $rc
+
+    - name: Process Robot Production file(s)
+      if: ${{ always() }}
+      run: |
+        IFS=','
+        rc=0
+        for f in $( cat ${{ env.robot_func_path }} | sed -e 's/ //g' )
+          do printf "[*] Processing Robot file: $f ...\n"
+            if [[ ! $f =~ .*\.robot$ ]] ; then
+                printf "FAIL: $f is NOT a Robot file! Only .robot files are allowed in this directory.\n"
+                rc=1
+            # Only allow files that conform to "test_<testname>_<valid_jira_id>.robot".
+            # See "Process Pytest Production file(s)" for definition of <valid_jira_id>
+            elif [[ ! $f =~ _[a-zA-Z]+-?[0-9]+(_[0-9]+\.robot|\.robot)$ ]] ; then
+                printf "FAIL: $f is NOT in a valid Robot filename format!!\n"
+                rc=1
+            else
+                printf "PASS: $f\n"
+            fi
+        done
+        unset IFS
+        exit $rc
+
+    - name: Process Robot Non-Production file(s)
+      if: ${{ always() }}
+      run: |
+        IFS=','
+        rc=0
+        for f in $( cat ${{ env.robot_non_prod_path }} | sed -e 's/ //g' )
+          do printf "[*] Processing Robot file: $f ...\n"
+            if [[ ! $f =~ .*\.robot$ ]] ; then
+                printf "FAIL: $f is NOT a Robot file! Only .robot files are allowed in this directory.\n"
+                rc=1
+            else
+                printf "PASS: $f\n"
+            fi
+        done
+        unset IFS
+        exit $rc
 
   check_dir:
     needs: [check_changes]
@@ -262,8 +310,9 @@ jobs:
         echo "" > ${{ env.pytest_report_path }}
         echo "" > ${{ env.robot_report_path }}
 
-        # Check if any pytest files have been modified
-        pytest_files=$(cat ${{ env.pytest_func_path }} ${{ env.pytest_non_prod_path }} | tr ',\n' ' ')
+        # Check if any prod pytest files have been modified
+        # pytest_files=$(cat ${{ env.pytest_func_path }} ${{ env.pytest_non_prod_path }} | tr ',\n' ' ')
+        pytest_files=$(cat ${{ env.pytest_func_path }} | tr ',\n' ' ')
         trimmed_files=$(echo "${pytest_files}" | tr -d [:space:])
         if [[ ! $trimmed_files ]]; then
           run_pytest=false
@@ -272,8 +321,9 @@ jobs:
         fi
         echo "Run pyTest: $run_pytest"
 
-        # Check if any robot files have been modified
-        robot_files=$(cat ${{ env.robot_func_path }} ${{ env.robot_non_prod_path }} | tr ',\n' ' ')
+        # Check if any prod robot files have been modified
+        # robot_files=$(cat ${{ env.robot_func_path }} ${{ env.robot_non_prod_path }} | tr ',\n' ' ')
+        robot_files=$(cat ${{ env.robot_func_path }} | tr ',\n' ' ')
         trimmed_files=$(echo "${robot_files}" | tr -d [:space:])
         if [[ ! $trimmed_files ]]; then
           run_robot=false
@@ -622,7 +672,7 @@ jobs:
         # Optional whether this connection use TLS (default is true if server_port is 465)
         secure: false
         # Optional plain body:
-        body: See attached log file for ${{ github.workflow	}} test results.
+        body: "The log files from your run of ${{ github.workflow }} are attached to this email. The full results for this run can be seen here: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}."
         # Optional HTML body read from file:
         # html_body: file://README.html
         # Optional blind carbon copy recipients:
