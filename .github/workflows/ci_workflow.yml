@@ -15,6 +15,7 @@ env:
   pytest_res:       pytest_resources.txt
   robot_func_path:  robot_func_tests.txt
   robot_non_prod_path:  robot_non_prod_tests.txt
+  testbed_files_path: testbeds.txt
   other_files_path:  other_files.txt
   changed_files_artifact_name: changed-files
   pytest_report_path: pytest_report.txt
@@ -72,6 +73,14 @@ jobs:
           Tests/Robot/NonProduction/([^/]+/)+TestCases/
         separator: ','
 
+    - name: Get changed Testbed YAML files
+      id: testbed
+      uses: tj-actions/changed-files@v10
+      with:
+        files: |
+          TestBeds
+        separator: ','
+
     # Outputs a list of files that we do and don't care about
     - name: Get other changed files
       id: other-files
@@ -106,18 +115,20 @@ jobs:
 
     - name: List all modified files
       env:
-        PY_FUNC:     ${{ steps.pytest-func.outputs.all_modified_files }}
+        PY_FUNC:         ${{ steps.pytest-func.outputs.all_modified_files }}
         PY_NON_PROD:     ${{ steps.pytest-non-prod.outputs.all_modified_files }}
-        PY_RES:      ${{ steps.pytest-resources.outputs.all_modified_files }}
-        ROBOT_FUNC:  ${{ steps.robot-func.outputs.all_modified_files }}
+        PY_RES:          ${{ steps.pytest-resources.outputs.all_modified_files }}
+        ROBOT_FUNC:      ${{ steps.robot-func.outputs.all_modified_files }}
         ROBOT_NON_PROD:  ${{ steps.robot-non-prod.outputs.all_modified_files }}
-        OTHER_FILES:  ${{ steps.other-files.outputs.other_changed_files }}
+        TESTBED_FILES:   ${{ steps.testbed.outputs.all_modified_files }}
+        OTHER_FILES:     ${{ steps.other-files.outputs.other_changed_files }}
       run: |
         echo $PY_FUNC > ${{ env.pytest_func_path }}
         echo $PY_NON_PROD > ${{ env.pytest_non_prod_path }}
         echo $PY_RES > ${{ env.pytest_res }}
         echo $ROBOT_FUNC > ${{ env.robot_func_path }}
         echo $ROBOT_NON_PROD > ${{ env.robot_non_prod_path }}
+        echo $TESTBED_FILES > ${{ env.testbed_files_path }}
         # echo $OTHER_FILES > ${{ env.other_files_path }}
 
     - name: Upload test results to GH artifacts
@@ -130,7 +141,25 @@ jobs:
           ${{ env.pytest_res }}
           ${{ env.robot_func_path }}
           ${{ env.robot_non_prod_path }}
+          ${{ env.testbed_files_path }}
           ${{ env.other_files_path }}
+
+  check_testbeds:
+    needs: [check_changes]
+    name: Testbed file validation
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: ${{ env.changed_files_artifact_name }}
+
+    - name: Check for lowercase keys in YAML
+      run: |
+        python .github/workflows/testbed_yaml_parser.py ${{ env.testbed_files_path }}
 
   check_file:
     needs: [check_changes]
@@ -255,7 +284,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
     - name: Checkout modified files
       uses: actions/checkout@v2
 
@@ -306,9 +334,9 @@ jobs:
 
     - name: Prep environment
       run: |
-        # Create report files to avoid problems in later jobs if something goes wrong
-        echo "" > ${{ env.pytest_report_path }}
-        echo "" > ${{ env.robot_report_path }}
+        # Create empty reports incase we don't generate them later
+        touch ${{ env.pytest_report_path }}
+        touch ${{ env.robot_report_path }}
 
         # Check if any prod pytest files have been modified
         # pytest_files=$(cat ${{ env.pytest_func_path }} ${{ env.pytest_non_prod_path }} | tr ',\n' ' ')
@@ -358,6 +386,11 @@ jobs:
         repository: extremenetworks/econ-qtest-client
         token: ${{ secrets.REGISTRY_PAT }}
         path: econ-qtest-client
+
+    - uses: actions/download-artifact@v2
+      if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
+      with:
+        name: ${{ env.changed_files_artifact_name }}
 
     - name: Install python requirements
       if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
@@ -634,6 +667,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: ${{ env.tag_report_artifact_name }}
+
     - name: Checkout
       uses: actions/checkout@v2
 
@@ -646,9 +683,9 @@ jobs:
         # Clean up any .txt files that aren't report data
         rm *.txt
 
-    - uses: actions/download-artifact@v2
-      with:
-        name: ${{ env.tag_report_artifact_name }}
+        # Create report files if they don't already exist
+        touch ${{ env.pytest_report_path }}
+        touch ${{ env.robot_report_path }}
 
     # TODO: Update subject line, body, and attachments
     - name: Email results
