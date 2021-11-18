@@ -1,0 +1,289 @@
+---
+LAB:                      "RDU"
+
+environment:
+  version:  "1.0"
+  topology_template:  "2node_template_physical.yaml"
+  type:   "physical"
+
+environment_host:
+  name:                   "VServer1"
+  ip:                     "10.69.2.40"
+  username:               "extreme"
+  password:               "extreme"
+  connection_method:      "ssh"
+  #ssh_port:              "9015"
+  #type:                  "vbox"
+  #os:                    "linux"
+
+testengine:
+  name:                     "robot_test_engine"
+  ip:                       "10.69.2.72"
+  vm_location:              ""
+  physical_device:          "True"
+  username:                 "administrator"
+  password:                 "BeExtreme!"
+
+      
+netelem1:
+  name:                     "i386_DUT1"
+  ip:                       "10.69.24.130"
+  pdu_ip:                   ""
+  pdu_port:                 ""
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  hostname:                 "RDU-VM-POD8-2NODE2-DUT1"
+  serial:                   "ESIMAAAA-4003"
+  console_ip:               "10.69.24.3"
+  console_port:             "2015"
+  default_template:         "5520-24T-EXOS-default-template"
+  mac:                      "0006AAAA4003"
+  image_family:             "i386"
+  platform:                 "5520-24T-EXOS"
+  host_mac:                 "00-06-AA-AA-40-03"
+  primary_test_target:      "True"
+  physical_device:          "True"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  vm_location:
+  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod8_4node/rdu_vm_pod8_4node_netelem3.cfg"
+  isl:
+    port_a:
+      ifname: &netelem1_isl_port_i_ifname "9"
+      intnet: "r1tr341"
+    port_b:
+      ifname: &netelem1_isl_port_j_ifname "10"
+      intnet: "r1tr342"
+    port_c:
+      ifname: &netelem1_isl_port_k_ifname "11"
+      intnet: "r1tr343"
+    port_d:
+      ifname: &netelem1_isl_port_l_ifname "12"
+      intnet: "r1tr344"
+
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "13"
+      intnet: "link16"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "14"
+      intnet: "link17"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "15"
+      intnet: "link18"
+    port_d:
+      ifname: &netelem1_tgen_port_d_ifname "16"
+      intnet: "link19"
+  nettools_fpp1:
+    ipv4_address: "172.16.65.82/24"
+    ipv6_address: "2172:16:65::103/64"
+    port_a:
+      ifname: &netelem1_nettools_fpp1_port_a_ifname "17"
+      intnet: "r1server1"
+  nettools_fpp2:
+    ipv4_address: "172.16.65.82/24"
+    ipv6_address: "2172:16:65::103/64"
+    port_a:
+      ifname: &netelem1_nettools_fpp2_port_a_ifname "17"
+      intnet: "r1server1"
+  radius:
+    port_a:
+      ifname: &netelem1_radius_port_a_ifname "mgmt"
+      intnet: "br1"
+  management:
+    port_a:
+      ifname:
+      intnet:
+
+netelem2:
+  name:                     "i386_DUT2"
+  ip:                       "10.69.24.131"
+  pdu_ip:                   ""
+  pdu_port:                 ""
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  hostname:                 "RDU-VM-POD8-2NODE2-DUT2"
+  serial:                   "ESIMAAAA-4004"
+  console_ip:               "10.69.24.3"
+  console_port:             "2016"
+  default_template:         "5520-24T-EXOS-default-template"
+  mac:                      "0006AAAA4004"
+  image_family:             "i386"
+  platform:                 "5520-24T-EXOS"
+  host_mac:                 "00-06-AA-AA-40-04"
+  primary_test_target:      "True"
+  physical_device:          "True"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  vm_location:
+  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod8_4node/rdu_vm_pod8_4node_netelem4.cfg"
+  isl:
+    port_a:
+      ifname: &netelem2_isl_port_i_ifname "9"
+      intnet: "r1tr341"
+    port_b:
+      ifname: &netelem2_isl_port_j_ifname "10"
+      intnet: "r1tr342"
+    port_c:
+      ifname: &netelem2_isl_port_k_ifname "11"
+      intnet: "r1tr343"
+    port_d:
+      ifname: &netelem2_isl_port_l_ifname "12"
+      intnet: "r1tr344"
+
+  tgen:
+    port_a:
+      ifname: &netelem2_tgen_port_a_ifname "13"
+      intnet: "link20"
+    port_b:
+      ifname: &netelem2_tgen_port_b_ifname "14"
+      intnet: "link21"
+    port_c:
+      ifname: &netelem2_tgen_port_c_ifname "15"
+      intnet: "link22"
+    port_d:
+      ifname: &netelem2_tgen_port_d_ifname "16"
+      intnet: "link23"
+  nettools_fpp1:
+    ipv4_address: "172.16.65.83/24"
+    ipv6_address: "2172:16:65::104/64"
+    port_a:
+      ifname: &netelem2_nettools_fpp1_port_a_ifname "17"
+      intnet: "r1server1"
+  nettools_fpp2:
+    ipv4_address: "172.16.65.83/24"
+    ipv6_address: "2172:16:65::104/64"
+    port_a:
+      ifname: &netelem2_nettools_fpp2_port_a_ifname "17"
+      intnet: "r1server1"
+  radius:
+    port_a:
+      ifname: &netelem2_radius_port_a_ifname "mgmt"
+      intnet: "br1"
+  management:
+    port_a:
+      ifname:
+      intnet:
+ 
+ 
+tgen1:
+  name:                     &tgen1_name "JETS"
+  vendor:                   "jets"
+  chassis_type:             "jets"
+  software:                 "N/A"
+  ip:                       "10.69.24.15"
+  vm_ip:                    "N/A"
+  username:                 "root"
+  password:                 "PASprt86"
+  ssh_port:                 "22"
+  vm_port:                  "22"
+  os:                       "linux"
+  dynamic_deployment:       "False"
+  vm_location:
+
+tgen_ports:
+  netelem1:
+    port_a: &tgen_ports_netelem1_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth25"
+      intnet:             "link16"
+    port_b: &tgen_ports_netelem1_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth26"
+      intnet:             "link17"
+    port_c: &tgen_ports_netelem1_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth27"
+      intnet:             "link18"
+    port_d: &tgen_ports_netelem1_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth28"
+      intnet:             "link19"
+  netelem2:
+    port_a: &tgen_ports_netelem2_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth29"
+      intnet:             "link20"
+    port_b: &tgen_ports_netelem2_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth30"
+      intnet:             "link21"
+    port_c: &tgen_ports_netelem2_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth31"
+      intnet:             "link22"
+    port_d: &tgen_ports_netelem2_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth32"
+      intnet:             "link23"
+
+nettools_fpp1:
+  name:                 "inband_server1"
+  ip:                   "172.16.250.1"
+  username:             "autotest"
+  password:             "autotest"
+  connection_method:    "ssh"
+  os:                   "linux"
+  vm_location:          "inband.ova"
+  vm_provider:          "virtualbox"
+  dynamic_deployment:   "False"
+  port:                 "none"
+  port_a:
+    ifname:       "eth0"
+    ip:           ""
+    mask:         "24"
+    source_mac:   ""
+    intnet:       ""
+    
+nettools_fpp2:
+  name:                 "inband_server2"
+  ip:                   "172.16.251.1"
+  username:             "autotest"
+  password:             "autotest"
+  connection_method:    "ssh"
+  os:                   "linux"
+  vm_location:          "inband.ova"
+  vm_provider:          "virtualbox"
+  dynamic_deployment:   "False"
+  port:                 "none"
+  port_a:
+    ifname:       "eth0"
+    ip:           ""
+    mask:         "24"
+    source_mac:   ""
+    intnet:       ""
+
+radius:
+  name:                 "outofband_server"
+  ip:                   "10.69.1.152"
+  username:             "autotest"
+  password:             "autotest"
+  connection_method:    "ssh"
+  os:                   "linux"
+  vm_location:          "radius.ova"
+  vm_provider:          "virtualbox"
+  dynamic_deployment:   "False"
+  port:                 "none"
+  port_a:
+    ifname:       "eth0"
+    ip:           ""
+    mask:         "24"
+    source_mac:   ""
+    intnet:       ""
+

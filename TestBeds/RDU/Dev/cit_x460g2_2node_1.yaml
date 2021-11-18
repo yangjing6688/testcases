@@ -1,3 +1,6 @@
+---
+LAB:                      "RDU"
+
 netelem1:
   name:                     "x460G2hd_DUT1"
   ip:                       "10.69.11.21"
@@ -9,7 +12,7 @@ netelem1:
   password:                 ""
   connection_method:        "telnet"
   os:                       "exos"
-  family:                   "summitx"
+  image_family:                   "summitx"
   platform:                 "X460G2-24p-24hp"
   host_mac:                 "00-04-96-9b-c1-b9"
   primary_test_target:      "True"
@@ -64,7 +67,7 @@ netelem2:
   password:                 ""
   connection_method:        "telnet"
   os:                       "exos"
-  family:                   "i386"
+  image_family:                   "i386"
   platform:                 "EXOS-VM"
   host_mac:                 "00-04-96-aa-c0-01"
   primary_test_target:      "False"

@@ -1,0 +1,151 @@
+---
+LAB:                      "RDU"
+
+netelem1:
+  name:                     "i386_DUT1"
+  ip:                       "10.69.24.100"
+  term_server:              "10.69.24.2 2001"
+  pdu_ip:                   ""
+  pdu_port:                 ""
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  image_family:             "i386"
+  platform:                 "EXOS-VM"
+  host_mac:                 "00-04-AA-AA-50-01"
+  primary_test_target:      "True"
+  physical_device:          "True"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  vm_location:
+  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod1_4node/rdu_vm_pod1_4node_netelem1.cfg"
+
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "13"
+      intnet: "link1"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "14"
+      intnet: "link2"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "15"
+      intnet: "link3"
+    port_d:
+      ifname: &netelem1_tgen_port_d_ifname "16"
+      intnet: "link4"
+  endsys1:
+    ipv4_address: "172.16.65.10/24"
+    ipv6_address: "2172:16:65::101/64"
+    port_a:
+      ifname: &netelem1_endsys1_port_a_ifname "17"
+      intnet: "r1server1"
+  endsys2:
+    ipv4_address: "172.16.65.10/24"
+    ipv6_address: "2172:16:65::101/64"
+    port_a:
+      ifname: &netelem1_endsys2_port_a_ifname "17"
+      intnet: "r1server1"
+  endsys3:
+    port_a:
+      ifname: &netelem1_endsys3_port_a_ifname "mgmt"
+      intnet: "br1"
+  management:
+    port_a:
+      ifname:
+      intnet:
+
+tgen1:
+  name:                     &tgen1_name "JETS"
+  vendor:                   "jets"
+  chassis_type:             "jets"
+  software:                 "N/A"
+  ip:                       "10.69.24.10"
+  vm_ip:                    "N/A"
+  username:                 "root"
+  password:                 "PASprt86"
+  ssh_port:                 "22"
+  vm_port:                  "22"
+  os:                       "linux"
+  dynamic_deployment:       "False"
+  vm_location:
+
+tgen_ports:
+  netelem1:
+    port_a: &tgen_ports_netelem1_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth1"
+      intnet:             "link1"
+    port_b: &tgen_ports_netelem1_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth2"
+      intnet:             "link2"
+    port_c: &tgen_ports_netelem1_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth3"
+      intnet:             "link3"
+    port_d: &tgen_ports_netelem1_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth4"
+      intnet:             "link4"
+
+endsys1:
+  name:                 "inband_server1"
+  ip:                   "172.16.250.1"
+  username:             "autotest"
+  password:             "autotest"
+  connection_method:    "ssh"
+  os:                   "linux"
+  vm_location:          "inband.ova"
+  vm_provider:          "virtualbox"
+  dynamic_deployment:   "False"
+  port:                 "none"
+  port_a:
+    ifname:       "eth0"
+    ip:           ""
+    mask:         "24"
+    source_mac:   ""
+    intnet:       ""
+    
+endsys2:
+  name:                 "inband_server2"
+  ip:                   "172.16.251.1"
+  username:             "autotest"
+  password:             "autotest"
+  connection_method:    "ssh"
+  os:                   "linux"
+  vm_location:          "inband.ova"
+  vm_provider:          "virtualbox"
+  dynamic_deployment:   "False"
+  port:                 "none"
+  port_a:
+    ifname:       "eth0"
+    ip:           ""
+    mask:         "24"
+    source_mac:   ""
+    intnet:       ""
+
+endsys3:
+  name:                 "outofband_server"
+  ip:                   "10.69.1.152"
+  username:             "autotest"
+  password:             "autotest"
+  connection_method:    "ssh"
+  os:                   "linux"
+  vm_location:          "radius.ova"
+  vm_provider:          "virtualbox"
+  dynamic_deployment:   "False"
+  port:                 "none"
+  port_a:
+    ifname:       "eth0"
+    ip:           ""
+    mask:         "24"
+    source_mac:   ""
+    intnet:       ""
+

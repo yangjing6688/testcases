@@ -1,0 +1,532 @@
+---
+LAB:                      "RDU"
+
+netelem1:
+  name:                     "i386_DUT1"
+  ip:                       "10.69.24.108"
+  term_server:              "10.69.24.2 2009"
+  pdu_ip:                   ""
+  pdu_port:                 ""
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  image_family:             "i386"
+  platform:                 "EXOS-VM"
+  host_mac:                 "00-04-AA-AA-50-C1"
+  primary_test_target:      "True"
+  physical_device:          "True"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  vm_location:
+  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod3_4node/rdu_vm_pod3_4node_netelem1.cfg"
+  isl:
+    port_a:
+      ifname: &netelem1_isl_port_a_ifname "1"
+      intnet: "r1tr121"
+    port_b:
+      ifname: &netelem1_isl_port_b_ifname "2"
+      intnet: "r1tr122"
+    port_c:
+      ifname: &netelem1_isl_port_c_ifname "3"
+      intnet: "r1tr123"
+    port_d:
+      ifname: &netelem1_isl_port_d_ifname "4"
+      intnet: "r1tr124"
+    port_e:
+      ifname: &netelem1_isl_port_e_ifname "5"
+      intnet: "r1tr131"
+    port_f:
+      ifname: &netelem1_isl_port_f_ifname "6"
+      intnet: "r1tr132"
+    port_g:
+      ifname: &netelem1_isl_port_g_ifname "7"
+      intnet: "r1tr133"
+    port_h:
+      ifname: &netelem1_isl_port_h_ifname "8"
+      intnet: "r1tr134"
+    port_i:
+      ifname: &netelem1_isl_port_i_ifname "9"
+      intnet: "r1tr141"
+    port_j:
+      ifname: &netelem1_isl_port_j_ifname "10"
+      intnet: "r1tr142"
+    port_k:
+      ifname: &netelem1_isl_port_k_ifname "11"
+      intnet: "r1tr143"
+    port_l:
+      ifname: &netelem1_isl_port_l_ifname "12"
+      intnet: "r1tr144"
+
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "13"
+      intnet: "link3"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "14"
+      intnet: "link4"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "15"
+      intnet: "link5"
+    port_d:
+      ifname: &netelem1_tgen_port_d_ifname "16"
+      intnet: "link6"
+  endsys1:
+    ipv4_address: "172.16.65.30/24"
+    ipv6_address: "2172:16:65::101/64"
+    port_a:
+      ifname: &netelem1_endsys1_port_a_ifname "17"
+      intnet: "r1server1"
+  endsys2:
+    ipv4_address: "172.16.65.30/24"
+    ipv6_address: "2172:16:65::101/64"
+    port_a:
+      ifname: &netelem1_endsys2_port_a_ifname "17"
+      intnet: "r1server1"
+  endsys3:
+    port_a:
+      ifname: &netelem1_endsys3_port_a_ifname "mgmt"
+      intnet: "br1"
+  management:
+    port_a:
+      ifname:
+      intnet:
+
+netelem2:
+  name:                     "i386_DUT2"
+  ip:                       "10.69.24.109"
+  term_server:              "10.69.24.2 2010"
+  pdu_ip:                   ""
+  pdu_port:                 ""
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  image_family:             "i386"
+  platform:                 "EXOS-VM"
+  host_mac:                 "00-04-AA-AA-50-C2"
+  primary_test_target:      "True"
+  physical_device:          "True"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  vm_location:
+  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod3_4node/rdu_vm_pod3_4node_netelem2.cfg"
+  isl:
+    port_a:
+      ifname: &netelem2_isl_port_a_ifname "1"
+      intnet: "r1tr121"
+    port_b:
+      ifname: &netelem2_isl_port_b_ifname "2"
+      intnet: "r1tr122"
+    port_c:
+      ifname: &netelem2_isl_port_c_ifname "3"
+      intnet: "r1tr123"
+    port_d:
+      ifname: &netelem2_isl_port_d_ifname "4"
+      intnet: "r1tr124"
+    port_e:
+      ifname: &netelem2_isl_port_e_ifname "5"
+      intnet: "r1tr231"
+    port_f:
+      ifname: &netelem2_isl_port_f_ifname "6"
+      intnet: "r1tr232"
+    port_g:
+      ifname: &netelem2_isl_port_g_ifname "7"
+      intnet: "r1tr233"
+    port_h:
+      ifname: &netelem2_isl_port_h_ifname "8"
+      intnet: "r1tr234"
+    port_i:
+      ifname: &netelem2_isl_port_i_ifname "9"
+      intnet: "r1tr241"
+    port_j:
+      ifname: &netelem2_isl_port_j_ifname "10"
+      intnet: "r1tr242"
+    port_k:
+      ifname: &netelem2_isl_port_k_ifname "11"
+      intnet: "r1tr243"
+    port_l:
+      ifname: &netelem2_isl_port_l_ifname "12"
+      intnet: "r1tr244"
+
+  tgen:
+    port_a:
+      ifname: &netelem2_tgen_port_a_ifname "13"
+      intnet: "link7"
+    port_b:
+      ifname: &netelem2_tgen_port_b_ifname "14"
+      intnet: "link8"
+    port_c:
+      ifname: &netelem2_tgen_port_c_ifname "15"
+      intnet: "link9"
+    port_d:
+      ifname: &netelem2_tgen_port_d_ifname "16"
+      intnet: "link10"
+  endsys1:
+    ipv4_address: "172.16.65.31/24"
+    ipv6_address: "2172:16:65::102/64"
+    port_a:
+      ifname: &netelem2_endsys1_port_a_ifname "17"
+      intnet: "r1server1"
+  endsys2:
+    ipv4_address: "172.16.65.31/24"
+    ipv6_address: "2172:16:65::102/64"
+    port_a:
+      ifname: &netelem2_endsys2_port_a_ifname "17"
+      intnet: "r1server1"
+  endsys3:
+    port_a:
+      ifname: &netelem2_endsys3_port_a_ifname "mgmt"
+      intnet: "br1"
+  management:
+    port_a:
+      ifname:
+      intnet:
+      
+      
+netelem3:
+  name:                     "i386_DUT3"
+  ip:                       "10.69.24.110"
+  term_server:              "10.69.24.2 2011"
+  pdu_ip:                   ""
+  pdu_port:                 ""
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  image_family:             "i386"
+  platform:                 "EXOS-VM"
+  host_mac:                 "00-04-AA-AA-50-C3"
+  primary_test_target:      "True"
+  physical_device:          "True"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  vm_location:
+  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod3_4node/rdu_vm_pod3_4node_netelem3.cfg"
+  isl:
+    port_a:
+      ifname: &netelem3_isl_port_a_ifname "1"
+      intnet: "r1tr131"
+    port_b:
+      ifname: &netelem3_isl_port_b_ifname "2"
+      intnet: "r1tr132"
+    port_c:
+      ifname: &netelem3_isl_port_c_ifname "3"
+      intnet: "r1tr133"
+    port_d:
+      ifname: &netelem3_isl_port_d_ifname "4"
+      intnet: "r1tr134"
+    port_e:
+      ifname: &netelem3_isl_port_e_ifname "5"
+      intnet: "r1tr231"
+    port_f:
+      ifname: &netelem3_isl_port_f_ifname "6"
+      intnet: "r1tr232"
+    port_g:
+      ifname: &netelem3_isl_port_g_ifname "7"
+      intnet: "r1tr233"
+    port_h:
+      ifname: &netelem3_isl_port_h_ifname "8"
+      intnet: "r1tr234"
+    port_i:
+      ifname: &netelem3_isl_port_i_ifname "9"
+      intnet: "r1tr341"
+    port_j:
+      ifname: &netelem3_isl_port_j_ifname "10"
+      intnet: "r1tr342"
+    port_k:
+      ifname: &netelem3_isl_port_k_ifname "11"
+      intnet: "r1tr343"
+    port_l:
+      ifname: &netelem3_isl_port_l_ifname "12"
+      intnet: "r1tr344"
+
+  tgen:
+    port_a:
+      ifname: &netelem3_tgen_port_a_ifname "13"
+      intnet: "link11"
+    port_b:
+      ifname: &netelem3_tgen_port_b_ifname "14"
+      intnet: "link12"
+    port_c:
+      ifname: &netelem3_tgen_port_c_ifname "15"
+      intnet: "link13"
+    port_d:
+      ifname: &netelem3_tgen_port_d_ifname "16"
+      intnet: "link14"
+  endsys1:
+    ipv4_address: "172.16.65.32/24"
+    ipv6_address: "2172:16:65::103/64"
+    port_a:
+      ifname: &netelem3_endsys1_port_a_ifname "17"
+      intnet: "r1server1"
+  endsys2:
+    ipv4_address: "172.16.65.32/24"
+    ipv6_address: "2172:16:65::103/64"
+    port_a:
+      ifname: &netelem3_endsys2_port_a_ifname "17"
+      intnet: "r1server1"
+  endsys3:
+    port_a:
+      ifname: &netelem3_endsys3_port_a_ifname "mgmt"
+      intnet: "br1"
+  management:
+    port_a:
+      ifname:
+      intnet:
+
+netelem4:
+  name:                     "i386_DUT4"
+  ip:                       "10.69.24.111"
+  term_server:              "10.69.24.2 2012"
+  pdu_ip:                   ""
+  pdu_port:                 ""
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  image_family:             "i386"
+  platform:                 "EXOS-VM"
+  host_mac:                 "00-04-AA-AA-50-C4"
+  primary_test_target:      "True"
+  physical_device:          "True"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  vm_location:
+  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod3_4node/rdu_vm_pod3_4node_netelem4.cfg"
+  isl:
+    port_a:
+      ifname: &netelem4_isl_port_a_ifname "1"
+      intnet: "r1tr141"
+    port_b:
+      ifname: &netelem4_isl_port_b_ifname "2"
+      intnet: "r1tr142"
+    port_c:
+      ifname: &netelem4_isl_port_c_ifname "3"
+      intnet: "r1tr143"
+    port_d:
+      ifname: &netelem4_isl_port_d_ifname "4"
+      intnet: "r1tr144"
+    port_e:
+      ifname: &netelem4_isl_port_e_ifname "5"
+      intnet: "r1tr241"
+    port_f:
+      ifname: &netelem4_isl_port_f_ifname "6"
+      intnet: "r1tr242"
+    port_g:
+      ifname: &netelem4_isl_port_g_ifname "7"
+      intnet: "r1tr243"
+    port_h:
+      ifname: &netelem4_isl_port_h_ifname "8"
+      intnet: "r1tr244"
+    port_i:
+      ifname: &netelem4_isl_port_i_ifname "9"
+      intnet: "r1tr341"
+    port_j:
+      ifname: &netelem4_isl_port_j_ifname "10"
+      intnet: "r1tr342"
+    port_k:
+      ifname: &netelem4_isl_port_k_ifname "11"
+      intnet: "r1tr343"
+    port_l:
+      ifname: &netelem4_isl_port_l_ifname "12"
+      intnet: "r1tr344"
+
+  tgen:
+    port_a:
+      ifname: &netelem4_tgen_port_a_ifname "13"
+      intnet: "link15"
+    port_b:
+      ifname: &netelem4_tgen_port_b_ifname "14"
+      intnet: "link16"
+    port_c:
+      ifname: &netelem4_tgen_port_c_ifname "15"
+      intnet: "link17"
+    port_d:
+      ifname: &netelem4_tgen_port_d_ifname "16"
+      intnet: "link18"
+  endsys1:
+    ipv4_address: "172.16.65.33/24"
+    ipv6_address: "2172:16:65::104/64"
+    port_a:
+      ifname: &netelem4_endsys1_port_a_ifname "17"
+      intnet: "r1server1"
+  endsys2:
+    ipv4_address: "172.16.65.33/24"
+    ipv6_address: "2172:16:65::104/64"
+    port_a:
+      ifname: &netelem4_endsys2_port_a_ifname "17"
+      intnet: "r1server1"
+  endsys3:
+    port_a:
+      ifname: &netelem4_endsys3_port_a_ifname "mgmt"
+      intnet: "br1"
+  management:
+    port_a:
+      ifname:
+      intnet:
+ 
+ 
+tgen1:
+  name:                     &tgen1_name "JETS"
+  vendor:                   "jets"
+  chassis_type:             "jets"
+  software:                 "N/A"
+  ip:                       "10.69.24.11"
+  vm_ip:                    "N/A"
+  username:                 "root"
+  password:                 "PASprt86"
+  ssh_port:                 "22"
+  vm_port:                  "22"
+  os:                       "linux"
+  dynamic_deployment:       "False"
+  vm_location:
+
+tgen_ports:
+  netelem1:
+    port_a: &tgen_ports_netelem1_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth1"
+      intnet:             "link3"
+    port_b: &tgen_ports_netelem1_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth2"
+      intnet:             "link4"
+    port_c: &tgen_ports_netelem1_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth3"
+      intnet:             "link5"
+    port_d: &tgen_ports_netelem1_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth4"
+      intnet:             "link6"
+  netelem2:
+    port_a: &tgen_ports_netelem2_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth5"
+      intnet:             "link7"
+    port_b: &tgen_ports_netelem2_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth6"
+      intnet:             "link8"
+    port_c: &tgen_ports_netelem2_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth7"
+      intnet:             "link9"
+    port_d: &tgen_ports_netelem2_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth8"
+      intnet:             "link10"
+  netelem3:
+    port_a: &tgen_ports_netelem3_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth9"
+      intnet:             "link11"
+    port_b: &tgen_ports_netelem3_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth10"
+      intnet:             "link12"
+    port_c: &tgen_ports_netelem3_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth11"
+      intnet:             "link13"
+    port_d: &tgen_ports_netelem3_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth12"
+      intnet:             "link14"
+  netelem4:
+    port_a: &tgen_ports_netelem4_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth13"
+      intnet:             "link15"
+    port_b: &tgen_ports_netelem4_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth14"
+      intnet:             "link16"
+    port_c: &tgen_ports_netelem4_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth15"
+      intnet:             "link17"
+    port_d: &tgen_ports_netelem4_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth16"
+      intnet:             "link18"
+
+endsys1:
+  name:                 "inband_server1"
+  ip:                   "172.16.250.1"
+  username:             "autotest"
+  password:             "autotest"
+  connection_method:    "ssh"
+  os:                   "linux"
+  vm_location:          "inband.ova"
+  vm_provider:          "virtualbox"
+  dynamic_deployment:   "False"
+  port:                 "none"
+  port_a:
+    ifname:       "eth0"
+    ip:           ""
+    mask:         "24"
+    source_mac:   ""
+    intnet:       ""
+    
+endsys2:
+  name:                 "inband_server2"
+  ip:                   "172.16.251.1"
+  username:             "autotest"
+  password:             "autotest"
+  connection_method:    "ssh"
+  os:                   "linux"
+  vm_location:          "inband.ova"
+  vm_provider:          "virtualbox"
+  dynamic_deployment:   "False"
+  port:                 "none"
+  port_a:
+    ifname:       "eth0"
+    ip:           ""
+    mask:         "24"
+    source_mac:   ""
+    intnet:       ""
+
+endsys3:
+  name:                 "outofband_server"
+  ip:                   "10.69.1.152"
+  username:             "autotest"
+  password:             "autotest"
+  connection_method:    "ssh"
+  os:                   "linux"
+  vm_location:          "radius.ova"
+  vm_provider:          "virtualbox"
+  dynamic_deployment:   "False"
+  port:                 "none"
+  port_a:
+    ifname:       "eth0"
+    ip:           ""
+    mask:         "24"
+    source_mac:   ""
+    intnet:       ""
+

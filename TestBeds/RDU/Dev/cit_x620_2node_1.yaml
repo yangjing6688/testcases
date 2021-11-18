@@ -1,3 +1,6 @@
+---
+LAB:                      "RDU"
+
 netelem1:
   name:                     "x620_DUT1"
   ip:                       "10.69.11.20"
@@ -9,7 +12,7 @@ netelem1:
   password:                 ""
   connection_method:        "telnet"
   os:                       "exos"
-  family:                   "summitx"
+  image_family:                   "summitx"
   platform:                 "x620-8t-2x"
   host_mac:                 "00-04-96-9a-f4-e8"
   primary_test_target:      "True"
@@ -67,7 +70,7 @@ netelem2:
   password:                 ""
   connection_method:        "telnet"
   os:                       "exos"
-  family:                   "i386"
+  image_family:                   "i386"
   platform:                 "EXOS-VM"
   host_mac:                 "00-04-96-AA-B0-01"
   primary_test_target:      "False"
