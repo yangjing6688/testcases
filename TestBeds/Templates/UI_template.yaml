@@ -1,5 +1,8 @@
 lab: "SALEM"  # The lab test information see lab_config.yaml for details
 
+
+# Network Elements plus the number # at the end
+
 netelem1:
   name:                     #(REQUIRED)                         unique netelem name
   hostname:                 #(REQUIRED)                         unique hostname
@@ -63,16 +66,17 @@ netelem1:
       ifname:               #(REQUIRED)                         The netelem's interface name, as it would be entered on the device (i.e "5", "2:3" "ge.1.2" or "eth1')
       intnet:               "intnetmgmt1"
 
+# Traffic Generators plus the number # at the end
 tgen1:
-  name: &tgen1_name   #(REQUIRED)                         unique tgen name
-  vendor:             #(REQUIRED)                         ixia/ostinato/spirent
-  chassis_type:       #(REQUIRED)                         ixia/ostinato/spirent
-  software:           #(REQUIRED)                         5.2.3
-  ip:                 #(REQUIRED)                         1.1.1.5
-  vm_ip:              #(IXIA REQUIREMENT)                 IPv4 address of Ixia Socket Listener - 1.2.3.4
-  port:               #(IXIA REQUIREMENT)                 "5678"
-  username:           #(REQUIRED)                         tgen1 username
-  password:           #(REQUIRED)                         tgen1 password
+  name: &tgen1_name         #(REQUIRED)                         unique tgen name
+  vendor:                   #(REQUIRED)                         ixia/ostinato/spirent
+  chassis_type:             #(REQUIRED)                         ixia/ostinato/spirent
+  software:                 #(REQUIRED)                         5.2.3
+  ip:                       #(REQUIRED)                         1.1.1.5
+  vm_ip:                    #(IXIA REQUIREMENT)                 IPv4 address of Ixia Socket Listener - 1.2.3.4
+  port:                     #(IXIA REQUIREMENT)                 "5678"
+  username:                 #(REQUIRED)                         tgen1 username
+  password:                 #(REQUIRED)                         tgen1 password
 
 tgen_ports:
   netelem1:
@@ -92,3 +96,79 @@ tgen_ports:
       tgen_name:            *tgen1_name
       ifname:               #(REQUIRED)                        The generator's interface name (i.e "1/12/1" or "eth1')
       intnet:               "intnet7"
+      
+      
+# AP plus the number # at the end
+ap1:
+  name:                     bui-flo-1564
+  connection_method:        "telnet"
+  ip:                       10.234.105.77
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '04102005201564'
+  console_ip:               10.234.105.230
+  console_port:             7046
+  mac:                      BCF3105E1C40
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP410C
+  template:                 AP_410C-default-template
+  make:                     Dual Boot
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           Test_np
+      ssid:                     AP230_01
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            3485843A5CC0
+      
+# A3_<type>server plus the number # at the end
+a3_1server1:
+  version:          3.1
+  ip:               10.234.188.104
+  node1_ip:         10.234.188.101
+  node2_ip:         10.234.188.102
+  node3_ip:         10.234.188.103
+  node1_hostname:        A3-312-N1-101
+  node2_hostname:        A3-312-N2-102
+  node3_hostname:        A3-312-N3-103
+  ui_username:           demo@demo.com
+  ui_password:           Extr_123
+  console_username:      root
+  console_password:      Extr_123
+  console_port:          22
+      
+# MU plus the number # at the end
+mu2:
+  ip:             10.234.105.227
+  port:           8270
+  username:       admin
+  password:       symbol
+  platform:       windows
+  interface:      wlan0
+  wifi_mac:       40B89A6C364B
+  ethernet_mac:   2C600CE10B68
+  wifi_network:   10.234.105
+  wifi_network_vlan10:    10.234.105
+
+# kali plus the number # at the end
+kali1:
+  ip:              10.234.178.151
+  port:            22
+  username:                root
+  password:                symbol
+  platform:                linux
+  

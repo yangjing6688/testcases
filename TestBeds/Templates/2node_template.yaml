@@ -1,4 +1,4 @@
-LAB: "SALEM"  # The lab test information see lab_config.yaml for details
+lab: "SALEM"  # The lab test information see lab_config.yaml for details
 
 netelem1:
     name:                     #(REQUIRED)                         unique netelem name
@@ -162,17 +162,16 @@ netelem2:
       intnet:               "intnetmgmt2"
 
 tgen1:
-  name: @tgen1_name         #(REQUIRED)                         unique tgen name
-  vendor:                   #(REQUIRED)                         ixia/ostinato/spirent
-  chassis_type:             #(REQUIRED)                         ixia/ostinato/spirent
-  software:                 #(REQUIRED)                         5.2.3
-  ip:                       #(REQUIRED)                         1.1.1.5
-  vm_ip:                    #(IXIA REQUIREMENT)                 IPv4 address of Ixia Socket Listener - 1.2.3.4
-  port:                     #(IXIA REQUIREMENT)                 "5678"
-  username:                 #(REQUIRED)                         tgen1 username
-  password:                 #(REQUIRED)                         tgen1 password
-  dynamic_deployment:       #(OPTIONAL)                         "True"/"False"
-  vm_location:              #(DYNAMIC DEPLOYMENT REQUIREMENT)   //server/tgen.ova
+  name: &tgen1_name   #(REQUIRED)                         unique tgen name
+  vendor:             #(REQUIRED)                         ixia/ostinato/spirent
+  chassis_type:       #(REQUIRED)                         ixia/ostinato/spirent
+  software:           #(REQUIRED)                         5.2.3
+  ip:                 #(REQUIRED)                         1.1.1.5
+  vm_ip:              #(IXIA REQUIREMENT)                 IPv4 address of Ixia Socket Listener - 1.2.3.4
+  port:               #(IXIA REQUIREMENT)                 "5678"
+  username:           #(REQUIRED)                         tgen1 username
+  password:           #(REQUIRED)                         tgen1 password
+  
 
 tgen_ports:
   netelem1:
