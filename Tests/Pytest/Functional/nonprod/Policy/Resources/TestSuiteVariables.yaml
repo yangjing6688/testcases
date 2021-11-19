@@ -1,0 +1,239 @@
+#
+#  ConfidenceLevel - 1->10 Higher the number the more validation is done.
+#
+defaultConfidenceLevel:          "10"
+#
+# Common Settings:
+#
+QadConfidence:            "1"
+LowConfidence:            "3"
+IntermediateConfidence:   "5"
+HighConfidence :          "8"
+FullConfidence:           "10"
+#
+# VLAN Variables
+#
+vlan_default:             "1"
+vlan_a:                   "1151"
+vlan_b:                   "4052"
+vlan_c:                   "4053"
+vman_b_name:              "VMAN_4052"
+
+vlan_list_a:
+    - "4052"
+    - "1151"
+vlan_list_b:
+    - "0"
+    - "1151"
+prio_list_a:
+    - "2"
+    - "7"
+prio_list_b:
+    - "5"
+    - "7"
+prio_list_c:
+    - "4"
+    - "7"
+prio_list_d:
+    - "3"
+    - "7"
+prio_list_0:
+    - "0"
+    - "7"
+tpid_list_a:
+    - "0x88a8"
+    - "0x8100"
+
+# Traffic Variables
+packet_name_a:            "packet_1"
+packet_name_b:            "packet_2"
+
+src_mac_a:                "00:11:11:11:11:11"
+src_mac_b:                "00:22:22:22:22:22"
+src_mac_c:                "00:33:33:33:33:33"
+dst_mac_a:                "00:44:44:44:44:44"
+dst_mac_b:                "00:66:66:66:66:66"
+dst_mac_c:                "00:88:88:88:88:88"
+bcast_mac:                "FF:FF:FF:FF:FF:FF"
+mcast_mac:                "01:55:55:55:55:55"
+mask_mac_a:               "00:00:00:00:00:00"
+mask_mac_b:               "00:11:00:00:00:00"
+mask_mac_c:               "00:11:10:00:00:00"
+mask_mac_d:               "00:11:11:00:00:00"
+mask_mac_e:               "00:11:11:10:00:00"
+mask_mac_f:               "00:11:11:11:00:00"
+mask_mac_g:               "00:11:11:11:10:00"
+mask_mac_h:               "00:11:11:11:11:00"
+mask_mac_i:               "00:11:11:11:11:10"
+
+vlan_default_ip:          "151.1.1.200"
+src_ip_a:                 "151.1.1.1"
+src_ip_a2:                "151.2.2.1"
+src_ip_b:                 "151.1.1.2"
+src_ip_b2:                "151.2.2.2"
+src_ip_c:                 "151.1.1.3"
+dst_ip_a:                 "151.1.1.33"
+dst_ip_b:                 "151.1.1.44"
+dst_ip_c:                 "151.1.1.55"
+mask_ip_a:                "151.0.0.0"
+mask_ip_b:                "151.1.0.0"
+mask_ip_c:                "151.1.1.0"
+mask_ip_c2:               "151.2.2.0"
+
+src_ip6_a:                "2151::1"
+src_ip6_b:                "2151::2"
+src_ip6_c:                "2151::3"
+dst_ip6_a:                "2151::33"
+dst_ip6_b:                "2151::44"
+dst_ip6_c:                "2151::55"
+mask_ip6_a:               "2152:0:0:0:0:0:0:0"
+mask_ip6_b:               "2152:1:0:0:0:0:0:0"
+mask_ip6_c:               "2152:1:1:0:0:0:0:0"
+mask_ip6_d:               "2152:1:1:1:0:0:0:0"
+mask_ip6_e:               "2152:1:1:1:1:0:0:0"
+mask_ip6_f:               "2152:1:1:1:1:1:0:0"
+mask_ip6_g:               "2152:1:1:1:1:1:1:0"
+mask_ip6_h:               "2152:1:1:1:1:1:1:1"
+
+l4_port_a:                "56151"
+l4_port_b:                "56152"
+l4_port_c:                "56153"
+src_socket:               "151.1.1.1:56151"
+dest_socket:              "151.1.1.33:56153"
+src6_socket:              "2151::1:56151"
+dest6_socket:             "2151::33:56153"
+l4_port_ip:               "56152:151.1.1.2"
+l4_src_socket:            "56151:151.1.1.1"
+l4_dst_socket:            "56153:151.1.1.33"
+l4_src6_socket:           "56151:2151::1"
+l4_dst6_socket:           "56153:2151::33"
+mask_l4port_a:            "56064"
+mask_l4ip_a:              "56064"
+mask_l4ip_b:              "56151"
+mask_l4ip_c:              "56151:151.0.0.0"
+mask_l4ip_d:              "56151:151.1.0.0"
+mask_l4ip_e:              "56151:151.1.1.0"
+mask_l4ip_f:              "56151:151.1.1.1"
+
+type_ipv4:                "0x0800"
+type_ipv6:                "0x86DD"
+mask_type_a:              "0x8000"
+mask_type_b:              "0x8600"
+mask_type_c:              "0x86D0"
+mask_type_d:              "0x86DD"
+type_ipx:                 "0x8137"
+pkt_id:                   "0x00a"
+mf_flag:                  "0x01"
+no_flag:                  "0x00"
+pkt_offset:               "1480"
+no_offset:                "0"
+ttl_a:                    "10"
+ttl_b:                    "20"
+mask_ttl_a:               "208"
+mask_ttl_b:               "212"
+tos_a:                    "151"
+tos_b:                    "222"
+mask_tos_a:               "208"
+mask_tos_b:               "212"
+class_a:                  "151"
+class_b:                  "222"
+proto_udp:                "17"
+proto_tcp:                "6"
+proto_icmp:               "1"
+proto_icmp6:              "58"
+proto_none:               "255"
+proto_none6:              "59"
+mask_proto_a:             "208"
+mask_proto_b:             "212"
+
+frag_next_header:         "44"
+udp_next_header:          "17"
+
+# QoS Variables
+qos_profile_1:            "1"
+qos_profile_2:            "2"
+qos_profile_3:            "3"
+qos_profile_4:            "4"
+qos_profile_5:            "5"
+qos_profile_6:            "6"
+qos_profile_7:            "7"
+qos_profile_8:            "8"
+qos_none:                 "none"
+
+priority_0:               "0"
+priority_1:               "1"
+priority_2:               "2"
+priority_3:               "3"
+priority_4:               "4"
+priority_5:               "5"
+priority_6:               "6"
+priority_7:               "7"
+
+cos_0:                    "0"
+cos_1:                    "1"
+cos_2:                    "2"
+cos_3:                    "3"
+cos_4:                    "4"
+cos_5:                    "5"
+cos_6:                    "6"
+cos_7:                    "7"
+
+# Stacked systems do not allow configuration of COS Queue 6 (6th entry is a "7" here)
+qos_profile_all:
+    - "2"
+    - "3"
+    - "4"
+    - "5"
+    - "6"
+#    - "7"
+
+# Policy Variables  delay of 10 has intermittent failures with received pkts. hopefully 11 will resolve them.
+policy_delay:              "11"
+profile_a:                 "1"
+profile_b:                 "11"
+
+#Port Variables
+#port_a:                  "5"
+#port_b:                  "6"
+
+# VLAN Variables
+vlan_default:              "1"
+vlan_100:                  "100"
+vlanName_100:              "V100"
+vlan_200:                  "200"
+vlanName_200:              "V200"
+vlan_300:                  "300"
+vlanName_300:              "V300"
+vlan_400:                  "400"
+vlanName_400:              "V400"
+vlan_500:                  "500"
+vlanName_500:              "V500"
+
+# Basic Policy Setup Variables
+policyName_a:           "Policy100"
+policyId_a:             "31"
+policyName_b:           "Policy200"
+policyId_b:             "32"
+policyName_c:           "Policy300"
+policyId_c:             "33"
+
+# Packet Variables
+packetA:
+   name:                "packetA"
+   src_mac:             "00:00:00:aa:aa:aa"
+   dst_mac:             "00:00:00:bb:bb:bb"
+   uppercase_mac:       "00:00:00:AA:AA:AA"
+   noseparator_mac:     "000000AAAAAA"
+   hyphenated_mac:      "00-00-00-AA-AA-AA"
+
+packetB:
+   name:                "packetB"
+   src_mac:             "00:00:00:bb:bb:bb"
+   dst_mac:             "00:00:00:aa:aa:aa"
+   uppercase_mac:       "00:00:00:BB:BB:BB"
+   noseparator_mac:     "000000BBBBBB"
+   hyphenated_mac:      "00-00-00-BB-BB-BB"
+
+
+# Other category
+# ...

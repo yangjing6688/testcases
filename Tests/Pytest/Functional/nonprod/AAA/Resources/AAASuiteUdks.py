@@ -79,11 +79,11 @@ class AAASuiteUdks():
     
     def AAA_Common_Failure_Info_Dump(self, shouldDump=False):
         if shouldDump:
-            Dump_AAA_Diagnostics()       
+            self.Dump_AAA_Diagnostics()       
     
     def AAA_UPM_Failure_Info_Dump(self, testFailed=False):
         if testFailed:
-            Dump_AAA_Diagnostics()
+            self.Dump_AAA_Diagnostics()
         #note used Dump_AAA_Diagnostics() did not set a Debug Dump UPM Failure Info method
         #Run Keyword If Test Failed  Debug Dump UPM Failure Info
             
@@ -227,10 +227,11 @@ class AAASuiteUdks():
     def Test_Suite_Cleanup(self):
         #    Log  (Cleanup Step 1) Test Cleanup Unconfigure stuff we configured earlier.
         #Clear AAA EMS Config
-        Clear_AAA_EMS_Config()
+        self.Clear_AAA_EMS_Config()
     #    Remove the policy profiles that we created
         # Basic Policy Cleanup
-        self.policySuiteUdks.Basic_Policy_Cleanup( netelem_name, policyId_a, policyId_b, policyId_c)
+        self.policySuiteUdks.Basic_Policy_Cleanup( self.pytestConfigHelper.config.netelem_name, self.pytestConfigHelper.config.policyId_a, self.pytestConfigHelper.config.policyId_b, 
+                                                   self.pytestConfigHelper.config.policyId_c)
     
     #    Remove the vlans that were created.configure port pvid
         # Remove Port/s from Untagged Egress for VLAN and Verify it is Removed  ${netelem1.name}  ${vlan_500}  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
@@ -245,11 +246,11 @@ class AAASuiteUdks():
         Remove VLAN and Verify it is Removed  ${netelem1.name}  ${vlan_400}
         Remove VLAN and Verify it is Removed  ${netelem1.name}  ${vlan_500}'''
         
-        self.vlanUDKs.Remove_VLAN_and_Verify_it_is_Removed(self.pytestConfigHelper.dut1.name, vlan_100)
-        self.vlanUDKs.Remove_VLAN_and_Verify_it_is_Removed(self.pytestConfigHelper.dut1.name, vlan_200)
-        self.vlanUDKs.Remove_VLAN_and_Verify_it_is_Removed(self.pytestConfigHelper.dut1.name, vlan_300)
-        self.vlanUDKs.Remove_VLAN_and_Verify_it_is_Removed(self.pytestConfigHelper.dut1.name, vlan_400)
-        self.vlanUDKs.Remove_VLAN_and_Verify_it_is_Removed(self.pytestConfigHelper.dut1.name, vlan_500)
+        self.vlanUDKs.Remove_VLAN_and_Verify_it_is_Removed(self.pytestConfigHelper.dut1.name, self.pytestConfigHelper.config.vlan_100)
+        self.vlanUDKs.Remove_VLAN_and_Verify_it_is_Removed(self.pytestConfigHelper.dut1.name, self.pytestConfigHelper.config.vlan_200)
+        self.vlanUDKs.Remove_VLAN_and_Verify_it_is_Removed(self.pytestConfigHelper.dut1.name, self.pytestConfigHelper.config.vlan_300)
+        self.vlanUDKs.Remove_VLAN_and_Verify_it_is_Removed(self.pytestConfigHelper.dut1.name, self.pytestConfigHelper.config.vlan_400)
+        self.vlanUDKs.Remove_VLAN_and_Verify_it_is_Removed(self.pytestConfigHelper.dut1.name, self.pytestConfigHelper.config.vlan_500)
                
         #    Put the port(s) back on the default vlan.
         # Add Port/s to Untagged Egress for VLAN and Verify it is Added  ${netelem1.name}  ${Vlan_Default}  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
@@ -345,39 +346,39 @@ class AAASuiteUdks():
 #
 #  These work...
 #
-    def Configure_UPM_Vlan_Script_dot1xAuthenticate(self):
-        UPM_DOT1X_AUTH_SCRIPT =  Create_List
+    '''def Configure_UPM_Vlan_Script_dot1xAuthenticate(self):
+        UPM_DOT1X_AUTH_SCRIPT =  self.Create_List()
         # create log message "UPM-Auth-Dot1X - Port: \'$(EVENT.USER_PORT)\' Vlan: \'$(EVENT.USER_VLAN)\'"
-        create_log_message ("UPM-Auth-Dot1X - Port: {}  Vlan: {}" + format(EVENT.USER_PORT,EVENT.USER_VLAN))        
+        self.create_log_message ("UPM-Auth-Dot1X - Port: {}  Vlan: {}" + format(EVENT.USER_PORT,EVENT.USER_VLAN))        
         #enable ip-security dhcp-snooping $(EVENT.USER_VLAN) ports $(EVENT.USER_PORT) violation-action none
         self.networkElementIpsecurityGenKeywords.ipsecurity_enable_dhcp_snooping(self.pytestConfigHelper.dut1.name,EVENT.USER_VLAN, EVENT.USER_PORT) 
         #upm set profile  ${netelem1.name}  dot1xAuthenticate  ${UPM_DOT1X_AUTH_SCRIPT}
-        self.networkElementUpmGenKeywords.upm_set_profile(self.pytestConfigHelper.dut1.name)
+        self.networkElementUpmGenKeywords.upm_set_profile(self.pytestConfigHelper.dut1.name)'''
 
     def Configure_UPM_Vlan_Script_macAuthenticate(self):
-        UPM_MAC_AUTH_SCRIPT =  Create_List
+        UPM_MAC_AUTH_SCRIPT =  self.Create_List()
         #create log message "UPM-Auth-MAC - Port: \'$(EVENT.USER_PORT)\' Vlan: \'$(EVENT.USER_VLAN)\'"
-        create_log_message ("UPM-Auth-Dot1X - Port: {}  Vlan: {}" + format(EVENT.USER_PORT,EVENT.USER_VLAN)) 
+        # self.create_log_message ("UPM-Auth-Dot1X - Port: {}  Vlan: {}" + format(EVENT.USER_PORT,EVENT.USER_VLAN)) 
         #enable ip-security dhcp-snooping $(EVENT.USER_VLAN) ports $(EVENT.USER_PORT) violation-action none
-        self.networkElementIpsecurityGenKeywords.ipsecurity_enable_dhcp_snooping(self.pytestConfigHelper.dut1.name,EVENT.USER_VLAN, EVENT.USER_PORT) 
+        # self.networkElementIpsecurityGenKeywords.ipsecurity_enable_dhcp_snooping(self.pytestConfigHelper.dut1.name,EVENT.USER_VLAN, EVENT.USER_PORT) 
         #upm set profile   ${netelem1.name}  macAuthenticate  ${UPM_MAC_AUTH_SCRIPT}
         self.networkElementUpmGenKeywords.upm_set_profile(self.pytestConfigHelper.dut1.name)
 
-    def Configure_UPM_Vlan_Script_dot1xUnAuthenticate(self):
+    '''def Configure_UPM_Vlan_Script_dot1xUnAuthenticate(self):
         UPM_DOT1X_UNAUTH_SCRIPT =  Create_List
         #create log message "UPM-UnAuth-Dot1X - Port: \'$(EVENT.USER_PORT)\' Vlan: \'$(EVENT.USER_VLAN)\'"
         create_log_message ("UPM-Auth-Dot1X - Port: {}  Vlan: {}" + format(EVENT.USER_PORT,EVENT.USER_VLAN)) 
         #disable ip-security dhcp-snooping $(EVENT.USER_VLAN) ports $(EVENT.USER_PORT) violation-action none
         self.networkElementIpsecurityGenKeywords.ipsecurity_disable_dhcp_snooping(self.pytestConfigHelper.dut1.name,EVENT.USER_VLAN, EVENT.USER_PORT) 
         #upm set profile e  ${netelem1.name}  dot1xUnAuthenticate  ${UPM_DOT1X_UNAUTH_SCRIPT}
-        self.networkElementUpmGenKeywords.upm_set_profile(self.pytestConfigHelper.dut1.name)
+        self.networkElementUpmGenKeywords.upm_set_profile(self.pytestConfigHelper.dut1.name)'''
 
     def Configure_UPM_Vlan_Script_macUnAuthenticate(self):
-        UPM_MAC_UNAUTH_SCRIPT =  Create_List
+        UPM_MAC_UNAUTH_SCRIPT =  self.Create_List()
         #create log message "UPM-UnAuth-Mac - Port: \'$(EVENT.USER_PORT)\' Vlan: \'$(EVENT.USER_VLAN)\'"
-        create_log_message ("UPM-Auth-Dot1X - Port: {}  Vlan: {}" + format(EVENT.USER_PORT,EVENT.USER_VLAN)) 
+        # create_log_message ("UPM-Auth-Dot1X - Port: {}  Vlan: {}" + format(EVENT.USER_PORT,EVENT.USER_VLAN)) 
         #disable ip-security dhcp-snooping $(EVENT.USER_VLAN) ports $(EVENT.USER_PORT) violation-action none
-        self.networkElementIpsecurityGenKeywords.ipsecurity_disable_dhcp_snooping(self.pytestConfigHelper.dut1.name,EVENT.USER_VLAN, EVENT.USER_PORT) 
+        # self.networkElementIpsecurityGenKeywords.ipsecurity_disable_dhcp_snooping(self.pytestConfigHelper.dut1.name,EVENT.USER_VLAN, EVENT.USER_PORT) 
         #upm set profile   ${netelem1.name}  macUnAuthenticate  ${UPM_MAC_UNAUTH_SCRIPT}
         self.networkElementUpmGenKeywords.upm_set_profile(self.pytestConfigHelper.dut1.name)
 
@@ -395,28 +396,28 @@ class AAASuiteUdks():
 
     def enable_UPM_macAuthenticate_and_macUnauthenticate(self):
         #upm set auth  ${netelem1.name}  macAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
-        self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, macAuthenticate,self.pytestConfigHelper.conf.port_a.ifname )
-        self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, macAuthenticate,self.pytestConfigHelper.conf.port_b.ifname )
+        self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, self.pytestConfigHelper.conf.macAuthenticate,self.pytestConfigHelper.conf.port_a.ifname )
+        self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, self.pytestConfigHelper.conf.macAuthenticate,self.pytestConfigHelper.conf.port_b.ifname )
     
         # upm set unauth  ${netelem1.name}  macUnAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
-        self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, macUnAuthenticate,self.pytestConfigHelper.conf.port_a.ifname )
-        self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, macUnAuthenticate,self.pytestConfigHelper.conf.port_b.ifname )
+        self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, self.pytestConfigHelper.conf.macUnAuthenticate,self.pytestConfigHelper.conf.port_a.ifname )
+        self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, self.pytestConfigHelper.conf.macUnAuthenticate,self.pytestConfigHelper.conf.port_b.ifname )
         # upm authenticate event should exist  ${netelem1.name}  macAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
         # upm unauthenticated event should exist  ${netelem1.name}  macUnAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
 
     def disable_UPM_macAuthenticate_and_macUnauthenticate(self):
         #upm set auth  ${netelem1.name}  macAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
-        self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, macAuthenticate,self.pytestConfigHelper.conf.port_a.ifname )
-        self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, macAuthenticate,self.pytestConfigHelper.conf.port_b.ifname )
+        self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, self.pytestConfigHelper.conf.macAuthenticate,self.pytestConfigHelper.conf.port_a.ifname )
+        self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, self.pytestConfigHelper.conf.macAuthenticate,self.pytestConfigHelper.conf.port_b.ifname )
             
         #upm set unauth  ${netelem1.name}  macUnAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
-        self.networkElementUpmGenKeywords.upm_set_unauth(self.pytestConfigHelper.dut1.name, macUnAuthenticate,self.pytestConfigHelper.conf.port_a.ifname )
-        self.networkElementUpmGenKeywords.upm_set_unauth(self.pytestConfigHelper.dut1.name, macUnAuthenticate,self.pytestConfigHelper.conf.port_b.ifname )
+        self.networkElementUpmGenKeywords.upm_set_unauth(self.pytestConfigHelper.dut1.name, self.pytestConfigHelper.conf.macUnAuthenticate,self.pytestConfigHelper.conf.port_a.ifname )
+        self.networkElementUpmGenKeywords.upm_set_unauth(self.pytestConfigHelper.dut1.name, self.pytestConfigHelper.conf.macUnAuthenticate,self.pytestConfigHelper.conf.port_b.ifname )
             
         #    upm authenticate event should not exist  ${netelem1.name}  macAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
         #    upm unauthenticated event should not exist  ${netelem1.name}  macUnAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
 
-    def enable_UPM_dot1XAuthenticate_and_dot1xUnauthenticate(self):
+    '''def enable_UPM_dot1XAuthenticate_and_dot1xUnauthenticate(self):
         #upm set auth  ${netelem1.name}  dot1XAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
         self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, dot1XAuthenticate,self.pytestConfigHelper.conf.port_a.ifname )
         self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, dot1XAuthenticate,self.pytestConfigHelper.conf.port_b.ifname )
@@ -426,9 +427,9 @@ class AAASuiteUdks():
         self.networkElementUpmGenKeywords.upm_set_unauth(self.pytestConfigHelper.dut1.name, dot1XUnAuthenticate,self.pytestConfigHelper.conf.port_b.ifname )
        
         #    upm authenticate event should exist  ${netelem1.name}  dot1XAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
-        #    upm unauthenticated event should exist  ${netelem1.name}  dot1XUnAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
+        #    upm unauthenticated event should exist  ${netelem1.name}  dot1XUnAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}'''
 
-    def disable_UPM_dot1XAuthenticate_and_dot1xUnauthenticate(self):
+    '''def disable_UPM_dot1XAuthenticate_and_dot1xUnauthenticate(self):
         #upm set auth  ${netelem1.name}  dot1XAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
         self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, dot1XAuthenticate,self.pytestConfigHelper.conf.port_a.ifname )
         self.networkElementUpmGenKeywords.upm_set_auth(self.pytestConfigHelper.dut1.name, dot1XAuthenticate,self.pytestConfigHelper.conf.port_b.ifname )
@@ -438,4 +439,4 @@ class AAASuiteUdks():
         self.networkElementUpmGenKeywords.upm_set_unauth(self.pytestConfigHelper.dut1.name, dot1XUnAuthenticate,self.pytestConfigHelper.conf.port_b.ifname )
                
         #    upm authenticate event should not exist  ${netelem1.name}  dot1XAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
-        #    upm unauthenticated event should not exist  ${netelem1.name}  dot1XUnAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}
+        #    upm unauthenticated event should not exist  ${netelem1.name}  dot1XUnAuthenticate  ${netelem1.tgen.port_a.ifname},${netelem1.tgen.port_b.ifname}'''
