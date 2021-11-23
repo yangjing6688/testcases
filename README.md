@@ -8,7 +8,7 @@ The Virtual Machine and Docker setups contains the framework and tools for both 
 
 ## Installing tools natively
 
-To install the AutoIQ framework and tools to your computer follow the instructions found [Here (in GitHub)](/doc/native_install).
+To install the AutoIQ framework and tools to your computer follow the instructions found [Here (in GitHub)](doc/native_install/README.md).
 
 ## Using the Virtual Machine
 
@@ -19,10 +19,13 @@ To use a VM with all of the tools for AutoIQ and extAuto installed, follow the i
 To use Docker containers with all of the tools for AutoIQ and extAuto installed, follow the instructions found [Here (in GitHub)](https://github.com/extremenetworks/econ-automation-framework/tree/main/vm_env/docker). 
 
 # Test Case Creation Guidlines
-Now that your development IDE is installed you can start to explore the Automation Framework. [Here (in GitHub)](doc/Test_Suite_Creation_Guidlines.md) is a guide that will help you understand the layout and design for you tests.
+
+Now that your development IDE is installed you can start to explore the Automation Framework. [Here (in GitHub)](doc/Test_Suite_Creation_Guidlines.md) is a guide that will help you understand the layout and design for your tests.
 
 # Advanced Framework Features
 
 ## Special Low Level API Keyword args
-There are special variables that you can pass into the low level keywords that will alter the behaivor the the keywords. Items like ignore failure or wait funtionality. See details [here (in GitHub)](doc/KeywordArguments.md)
+
+There are special variables that you can pass into the low level keywords that will alter the behaivor of the keywords. Items like ignore failure or wait funtionality. See details [here (in GitHub)](doc/KeywordArguments.md)
+
 

@@ -1,5 +1,7 @@
 # Test Case Creation Guidelines
-In this document you will learn how to create a new Test Suite with test cases. To ensure that all tests are simliar in design and file structure, please use the following format defined in the default template located in the econ-automation-test repository: `/econ-automation-tests/Demos/pytest/DefaultTemplate`.
+
+In this document you will learn how to create a new Test Suite with test cases. To ensure that all tests are simliar in design and file structure, please use the following format defined in the default template located in the extreme_automation_test repository: [Robot](https://github.com/extremenetworks/extreme_automation_tests/tree/main/Tests/Robot/Demos) and for [Pytest](https://github.com/extremenetworks/extreme_automation_tests/tree/main/Tests/Pytest/Demos)
+
 
 ![Import project](img/TestDesignFileFormat.png)
 
@@ -152,7 +154,8 @@ Note: all test cases should be created in the [Tests](https://github.com/extreme
 # Procedure:
 1. 	Open the configured IDE (PyCharm or other IDE)
 2.	Navigate to the DefaultTemplate directory
-	(econ_automation_tests/Demos/pytest/DefaultTemplate)
+	(extreme_automation_test/Pytest/Demos/DefaultTemplate) or (extreme_automation_test/Robot/Demos/DefaultTemplate)
+
 3.	Make a copy of this (DefaultTemplate) directory with a new directory name of your choice in the following area of the Tests/Staging [repository](https://github.com/extremenetworks/extreme_automation_tests/tree/main/Tests).
 4. Select a test bed topology that you will use to write you test. You can select one of the [standard test bed topologies](#Test-Bed-Standard-Configurations). When you write your test please ensure that you stick with the topology you have selected here. This will ensure that tests can be executed on a standard test bed setup.
 
