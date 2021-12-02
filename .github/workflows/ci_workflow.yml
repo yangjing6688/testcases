@@ -10,17 +10,19 @@ on:
     branches: [main]
 
 env:
-  pytest_func_path: pytest_func_tests.txt
-  pytest_non_prod_path: pytest_non_prod_tests.txt
-  pytest_res:       pytest_resources.txt
-  robot_func_path:  robot_func_tests.txt
-  robot_non_prod_path:  robot_non_prod_tests.txt
-  testbed_files_path: testbeds.txt
-  other_files_path:  other_files.txt
-  changed_files_artifact_name: changed-files
-  pytest_report_path: pytest_report.txt
-  robot_report_path: robot_report.txt
-  tag_report_artifact_name: tag-and-marker-reports-${{ github.event.repository.name }}-run-${{ github.run_number }}
+  pytest_func_path:             pytest_func_tests.txt
+  pytest_non_prod_path:         pytest_non_prod_tests.txt
+  pytest_libs_path:             pytest_libs.txt
+  pytest_res:                   pytest_resources.txt
+  robot_func_path:              robot_func_tests.txt
+  robot_non_prod_path:          robot_non_prod_tests.txt
+  robot_libs_path:              robot_libs.txt
+  testbed_files_path:           testbeds.txt
+  other_files_path:             other_files.txt
+  changed_files_artifact_name:  changed-files
+  pytest_report_path:           pytest_report.txt
+  robot_report_path:            robot_report.txt
+  tag_report_artifact_name:     tag-and-marker-reports-${{ github.event.repository.name }}-run-${{ github.run_number }}
 
 # Future Improvement: Turn jobs into matracies to pytest and robot checks in parallel
 jobs:
@@ -73,6 +75,22 @@ jobs:
           Tests/Robot/NonProduction/([^/]+/)+TestCases/
         separator: ','
 
+    - name: Get changed robot libraries
+      id: robot-libs
+      uses: tj-actions/changed-files@v10
+      with:
+        files: |
+          Tests/Robot/Libraries/([^/]+/)+
+        separator: ','
+
+    - name: Get changed pytest libraries
+      id: pytest-libs
+      uses: tj-actions/changed-files@v10
+      with:
+        files: |
+          Tests/Pytest/Libraries/([^/]+/)+
+        separator: ','
+
     - name: Get changed Testbed YAML files
       id: testbed
       uses: tj-actions/changed-files@v10
@@ -81,7 +99,7 @@ jobs:
           TestBeds
         separator: ','
 
-    # Outputs a list of files that we do and don't care about
+    # Outputs a list of files breaking directory rules that we do and don't care about
     - name: Get other changed files
       id: other-files
       uses: tj-actions/changed-files@v10
@@ -89,9 +107,10 @@ jobs:
         files: |
           Tests/Pytest/(Demos|Functional|NonProduction)/([^/]+/)+(TestCases|Resources)/
           Tests/Robot/(Demos|Functional|NonProduction)/([^/]+/)+(TestCases|Resources)/
+          Tests/(Pytest|Robot)/Libraries/([^/]+/)+
         separator: ','
 
-    # Outputs a list of files that we don't care about
+    # Outputs a list of files breaking directory rules that we don't care about
     - name: Get other changed files we dont care about
       id: other-files2
       uses: tj-actions/changed-files@v10
@@ -100,7 +119,8 @@ jobs:
           Tests
         separator: ','
 
-    # Diff two lists to get just the files we are about
+    # Diff two lists to get just the files we care about
+    # All files in this list need to conform to directory structure rules
     - name: Diff other files lists
       shell: python
       run: |
@@ -117,17 +137,21 @@ jobs:
       env:
         PY_FUNC:         ${{ steps.pytest-func.outputs.all_modified_files }}
         PY_NON_PROD:     ${{ steps.pytest-non-prod.outputs.all_modified_files }}
+        PY_LIBS:         ${{ steps.pytest-libs.outputs.all_modified_files }}
         PY_RES:          ${{ steps.pytest-resources.outputs.all_modified_files }}
         ROBOT_FUNC:      ${{ steps.robot-func.outputs.all_modified_files }}
         ROBOT_NON_PROD:  ${{ steps.robot-non-prod.outputs.all_modified_files }}
+        ROBOT_LIBS:      ${{ steps.robot-libs.outputs.all_modified_files }}
         TESTBED_FILES:   ${{ steps.testbed.outputs.all_modified_files }}
         OTHER_FILES:     ${{ steps.other-files.outputs.other_changed_files }}
       run: |
         echo $PY_FUNC > ${{ env.pytest_func_path }}
         echo $PY_NON_PROD > ${{ env.pytest_non_prod_path }}
+        echo $PY_LIBS > ${{ env.pytest_libs_path }}
         echo $PY_RES > ${{ env.pytest_res }}
         echo $ROBOT_FUNC > ${{ env.robot_func_path }}
         echo $ROBOT_NON_PROD > ${{ env.robot_non_prod_path }}
+        echo $ROBOT_LIBS > ${{ env.robot_libs_path }}
         echo $TESTBED_FILES > ${{ env.testbed_files_path }}
         # echo $OTHER_FILES > ${{ env.other_files_path }}
 
@@ -138,9 +162,11 @@ jobs:
         path: |
           ${{ env.pytest_func_path }}
           ${{ env.pytest_non_prod_path }}
+          ${{ env.pytest_libs_path }}
           ${{ env.pytest_res }}
           ${{ env.robot_func_path }}
           ${{ env.robot_non_prod_path }}
+          ${{ env.robot_libs_path }}
           ${{ env.testbed_files_path }}
           ${{ env.other_files_path }}
 
@@ -217,6 +243,23 @@ jobs:
         unset IFS
         exit $rc
 
+    - name: Process Pytest Library file(s)
+      if: ${{ always() }}
+      run: |
+        IFS=','
+        rc=0
+        for f in $( cat ${{ env.pytest_libs_path }} | sed -e 's/ //g' )
+          do printf "[*] Processing Python file: $f ...\n"
+            if [[ ! $f =~ .*\.py$ ]] ; then
+                printf "FAIL: $f is NOT a Python file! Only .py files are allowed in this directory.\n"
+                rc=1
+            else
+                printf "PASS: $f\n"
+            fi
+        done
+        unset IFS
+        exit $rc
+
     - name: Process Robot Production file(s)
       if: ${{ always() }}
       run: |
@@ -245,6 +288,23 @@ jobs:
         IFS=','
         rc=0
         for f in $( cat ${{ env.robot_non_prod_path }} | sed -e 's/ //g' )
+          do printf "[*] Processing Robot file: $f ...\n"
+            if [[ ! $f =~ .*\.robot$ ]] ; then
+                printf "FAIL: $f is NOT a Robot file! Only .robot files are allowed in this directory.\n"
+                rc=1
+            else
+                printf "PASS: $f\n"
+            fi
+        done
+        unset IFS
+        exit $rc
+
+    - name: Process Robot Library file(s)
+      if: ${{ always() }}
+      run: |
+        IFS=','
+        rc=0
+        for f in $( cat ${{ env.robot_libs_path }} | sed -e 's/ //g' )
           do printf "[*] Processing Robot file: $f ...\n"
             if [[ ! $f =~ .*\.robot$ ]] ; then
                 printf "FAIL: $f is NOT a Robot file! Only .robot files are allowed in this directory.\n"
