@@ -646,7 +646,7 @@ jobs:
       run: |
         # Get a session token for this run
         session_token=$( curl -X GET  --no-progress-meter \
-                        "http://extreme-continuum.extremenetworks.com/auth/getSessionTokenFromPAT" \
+                        "http://autoiq.extremenetworks.com/auth/getSessionTokenFromPAT" \
                         -H "accept: application/json" \
                         -H "authorization: PAT ${{ secrets.AUTOIQ_PAT }}" \
                         | jq -r '.result.sessionToken' )
@@ -655,13 +655,13 @@ jobs:
         # harnesses: econ_auto(pytest), xiq_auto(robot), tcl
         # 11111111-2222-2222-2222-111111111111 (pytest), 11111111-6666-6666-6666-111111111111 (robot), 11111111-5555-5555-5555-111111111111 (tcl)
         available_testbeds_pytest=$( curl -X GET --no-progress-meter \
-                                    "http://extreme-continuum.extremenetworks.com/tbedmgr/jobmgr/cicdPlatforms/econ_auto" \
+                                    "http://autoiq.extremenetworks.com/tbedmgr/jobmgr/cicdPlatforms/econ_auto" \
                                     -H "accept: application/json" \
                                     -H "authorization: Bearer ${session_token}" \
                                     | jq '.result[]' )
 
         available_testbeds_robot=$( curl -X GET --no-progress-meter \
-                                    "http://extreme-continuum.extremenetworks.com/tbedmgr/jobmgr/cicdPlatforms/xiq_auto" \
+                                    "http://autoiq.extremenetworks.com/tbedmgr/jobmgr/cicdPlatforms/xiq_auto" \
                                     -H "accept: application/json" \
                                     -H "authorization: Bearer ${session_token}" \
                                     | jq '.result[]' )
@@ -674,7 +674,7 @@ jobs:
         # # - name: Run Modified TestCases
         # #   run: |
         # curl -X POST --no-progress-meter \
-        # "https://extreme-continuum.extremenetworks.com/tbedmgr/jobmgr/createJob" \
+        # "https://autoiq.extremenetworks.com/tbedmgr/jobmgr/createJob" \
         # -H "accept: application/json" \
         # -H "authorization: Bearer ${session_token}" \
         # '{"jsonString":{ \
