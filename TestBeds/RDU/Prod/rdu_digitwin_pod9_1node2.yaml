@@ -1,5 +1,5 @@
 ---
-LAB:                      "RDU"
+lab:                      "RDU"
 
 netelem1:
   name:                     "i386_DUT1"
@@ -67,6 +67,20 @@ netelem1:
       ifname:
       intnet:
       
+tgen1:
+  name:                     &tgen1_name "JETS"
+  vendor:                   "jets"
+  chassis_type:             "jets"
+  software:                 "N/A"
+  ip:                       "10.69.24.18"
+  vm_ip:                    "N/A"
+  username:                 "root"
+  password:                 "PASprt86"
+  ssh_port:                 "22"
+  vm_port:                  "22"
+  os:                       "linux"
+  dynamic_deployment:       "False"
+  vm_location:
 
 tgen_ports:
   netelem1:

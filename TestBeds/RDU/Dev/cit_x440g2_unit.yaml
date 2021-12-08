@@ -1,5 +1,5 @@
 ---
-LAB:                      "RDU"
+lab:                      "RDU"
 
 netelem1:
   name:                     "x440g2_DUT1"

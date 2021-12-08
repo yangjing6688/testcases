@@ -1,5 +1,5 @@
 ---
-LAB:                      "RDU"
+lab:                      "RDU"
 
 netelem1_telnet:
   name:                     "x590_DUT1_telnet"

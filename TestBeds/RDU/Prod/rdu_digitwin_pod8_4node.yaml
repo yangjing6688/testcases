@@ -1,33 +1,5 @@
 ---
-LAB:                      "RDU"
-#                                ---   XiQ   ---
-LOCATION:                 "auto_location 20, Raleigh, building_01, floor_01"
-LOCATION_DISPLAY:         "auto_location 20 >> Raleigh >> building_01 >> floor_01"
-POLICY_NAME:              "EXOS_POLICY_AUTO"
-SSID_NAME:                "EXOS_SSID_AUTO"
-
-environment:
-  version:  "1.0"
-  topology_template:  "4node_template_physical.yaml"
-  type:   "physical"
-
-environment_host:
-  name:                   "VServer1"
-  ip:                     "10.69.2.40"
-  username:               "extreme"
-  password:               "extreme"
-  connection_method:      "ssh"
-  #ssh_port:              "9015"
-  #type:                  "vbox"
-  #os:                    "linux"
-
-testengine:
-  name:                     "robot_test_engine"
-  ip:                       "10.69.2.72"
-  vm_location:              ""
-  physical_device:          "True"
-  username:                 "administrator"
-  password:                 "BeExtreme!"
+lab:                      "RDU"
 
 netelem1:
   name:                     "i386_DUT1"

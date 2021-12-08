@@ -8,6 +8,7 @@ from ExtremeAutomation.Utilities.Firmware.pytestLoadFirmware import PlatformLoad
 from ExtremeAutomation.Utilities.EconClient.econ_request_api import econAPI
 from ExtremeAutomation.Utilities.Framework.test_case_inventory import PytestItems
 from ExtremeAutomation.Utilities.Framework.test_case_inventory import PathTools
+from ExtremeAutomation.Utilities.Framework.test_selection import CheckExecution
 #
 # @fixture(scope='session')
 # def apiUdks():
@@ -89,6 +90,53 @@ def pytest_collection_finish(session):
         PI.get_inventory_info()
         pytest.exit('Done!')
 
+@pytest.fixture(autouse=True)
+def skip_check(request):
+    # @mark.required_platform('Stack')
+    # @mark.skip_platform('Stack', 'VPEX')
+    # @mark.required_capability('Fabric')
+    # @mark.required_capability_dutlist('Fabric', '1,2,3')   TO BE DEVELOPED
+    # @mark.start_version('EXOS 31.1')    TO BE DEVELOPED
+    # @mark.end_version('EXOS 40.1')     TO BE DEVELOPED
+    if request.node.get_closest_marker('skip_platform'):
+        chkExec = CheckExecution(request, config)
+        out = chkExec.skipPlatform()
+        if out:
+            pytest.skip(f"skipped {request.node.name} on this platform: {out}")
+    if request.node.get_closest_marker('required_platform'):
+        chkExec = CheckExecution(request, config)
+        out = chkExec.requiredPlatform()
+        if out[0]:
+            pass
+        else:
+            pytest.skip(f"Skipped {request.node.name}. {out[1][0]} platform is required on DUT1")
+    if request.node.get_closest_marker('required_capability'):
+        chkExec = CheckExecution(request, config)
+        out = chkExec.requiredCapability()
+        if out[0]:
+            pass
+        else:
+            pytest.skip(f"skipped {request.node.name} on this platform: No support for {out[1]}")
+    if request.node.get_closest_marker('start_version'):
+        chkExec = CheckExecution(request, config)
+        out = chkExec.startVersion()
+        if out:
+            pytest.skip(f"skipped {request.node.name} on this verions: {out}")
+    if request.node.get_closest_marker('end_version'):
+        chkExec = CheckExecution(request, config)
+        out = chkExec.endVersion()
+        if out:
+            pytest.skip(f"skipped {request.node.name} on this version: {out}")
+    if request.node.get_closest_marker('required_nos'):
+        chkExec = CheckExecution(request, config)
+        out = chkExec.requiredNos()
+        if not out[0]:
+            pytest.skip(f"skipped {request.node.name} DUT1 must be NOS: {out[1]}")
+    if request.node.get_closest_marker('skip_nos'):
+        chkExec = CheckExecution(request, config)
+        out = chkExec.skipNos()
+        if out[0]:
+            pytest.skip(f"skipped {request.node.name} NOS is not supported: {out[1]}")
 @fixture(scope='session', autouse=True)
 def loadTestBedFirmware(request):
     status    = 'skipped'

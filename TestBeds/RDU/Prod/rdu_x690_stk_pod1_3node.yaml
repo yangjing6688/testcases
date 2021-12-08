@@ -1,5 +1,5 @@
 ---
-LAB:                      "RDU"
+lab:                      "RDU"
 
 netelem1:
   name:                     "x690stk_DUT1"
@@ -28,6 +28,13 @@ netelem1:
   snmp_privacy_password:    "extreme123"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x690_stk_pod1_3node/rdu_x690_stk_pod1_3node_netelem1.cfg"
+  stack:
+    slot1:
+      console_ip: "10.69.50.244"
+      console_port: "2011"
+    slot2:
+      console_ip: "10.69.50.244"
+      console_port: "2012"
   isl:
     port_a:
       ifname: &netelem1_isl_port_a_ifname "1:3"

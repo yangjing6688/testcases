@@ -24,7 +24,7 @@ from Tests.Pytest.Functional.nonprod.LLDP_Sync_on_Failover_Feature_Unit_Tests.Re
 from Tests.Pytest.Functional.nonprod.LLDP_Sync_on_Failover_Feature_Unit_Tests.Resources.SuiteVariables import SuiteVariable
 
 
-@mark.t_all
+@mark.required_platform('stack')
 class LLDPSyncOnFailoverTests:
 
     # [Setup]  Test class Setup

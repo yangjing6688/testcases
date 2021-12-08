@@ -5,6 +5,7 @@ from ExtremeAutomation.Imports.pytestExecutionHelper import PytestExecutionHelpe
 from pytest import mark
 from Tests.Pytest.Functional.nonprod.MACsec.Resources.MACsecSuiteUdks import MACsecSuiteUdks
 
+@mark.required_capability('MacsecXflow','MacsecOrHalfDuplex','MacsecEpdm')
 class MACsecBase:
 
     # [Setup]  Test class Setup

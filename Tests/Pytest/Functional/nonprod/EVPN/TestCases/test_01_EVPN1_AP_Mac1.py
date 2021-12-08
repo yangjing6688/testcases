@@ -19,7 +19,7 @@ from Tests.Pytest.Functional.nonprod.EVPN.Resources.SuiteUdks import SuiteUdk
 # The test should produce a report.html file when the run is completed
 #
 
-
+@mark.required_capability('Fabric')
 class EvpnApMacTests:
     ###########################################################################
     # This test suite is responsible for testing the Mac Move functionality

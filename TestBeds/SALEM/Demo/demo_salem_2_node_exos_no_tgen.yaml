@@ -1,3 +1,5 @@
+lab:                        "SALEM"
+
 netelem1:
   name:                     "VOSS"
   ip:                       "10.148.35.201"

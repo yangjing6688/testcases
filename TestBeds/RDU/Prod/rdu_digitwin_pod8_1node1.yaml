@@ -1,9 +1,10 @@
 ---
-LAB:                      "RDU"
+lab:                      "RDU"
 
 netelem1:
   name:                     "i386_DUT1"
   ip:                       "10.69.24.128"
+  topo:                     "VPEX"
   pdu_ip:                   ""
   pdu_port:                 ""
   mgmt_vlan:                "mgmt"
@@ -15,10 +16,11 @@ netelem1:
   serial:                   "ESIMAAAA-4001"
   console_ip:               "10.69.24.3"
   console_port:             "2013"
-  default_template:         "5520-24T-EXOS-default-template"
+  default_template:         "5520-24T-default-template"
   mac:                      "0006AAAA4001"
   image_family:             "i386"
-  platform:                 "5520-24T-EXOS"
+  platform:                 "5520-24T"
+  model:                    "5520-24T"
   host_mac:                 "00-06-AA-AA-40-01"
   primary_test_target:      "True"
   physical_device:          "True"
