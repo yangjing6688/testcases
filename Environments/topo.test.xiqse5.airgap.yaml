@@ -35,15 +35,6 @@ nac:
   ip:                      "10.69.70.53"
   name:                    "extauto-nac"
 
-xiq:
-  test_url:                "https://g2r1.qa.xcloudiq.com"
-  capwap_url:              "g2r1-cwpm-01.qa.xcloudiq.com"
-  sw_connection_host:      "g2r1.qa.xcloudiq.com"
-  tenant_username:         "xiqse1+automationA@gmail.com"
-  tenant_password:         "Aerohive123"
-  pilot_entitlements:      "10"
-  navigator_entitlements:  "2"
-
 # SSH into ESX and issue the following commands to identify the VM ID and Snapshot ID
 # List all VMs to find your vmId
 #     vim-cmd vmsvc/getall
@@ -56,22 +47,13 @@ upgrades:
       esx_ip:                    "10.69.60.15"
       esx_user:                  "root"
       esx_password:              "extrvmware"
-  - xmc:
-      version:                   "8.5.5.32"
-      xiqse_vm_id:               "1"
-      xiqse_snapshot_id:         "5"
-      nac_vm_id:                 "4"
-      nac_snapshot_id:           "3"
-      purview_vm_id:             "2"
-      purview_snapshot_id:       "3"
-      ng_analytics_vm_id:        "3"
   - xiqse:
-      version:                   "21.4.10.99"
-      xiqse_vm_id:               "1"
-      xiqse_snapshot_id:         "6"
+      version:                   "21.11.10.57"
+      xiqse_vm_id:               "7"
+      xiqse_snapshot_id:         "2"
       nac_vm_id:                 "4"
-      nac_snapshot_id:           "4"
+      nac_snapshot_id:           "6"
       purview_vm_id:             "2"
-      purview_snapshot_id:       "4"
-      ng_analytics_vm_id:        "3"
-      ng_analytics_snapshot_id:  "3"
+      purview_snapshot_id:       "6"
+      ng_analytics_vm_id:        "6"
+      ng_analytics_snapshot_id:  "1"
