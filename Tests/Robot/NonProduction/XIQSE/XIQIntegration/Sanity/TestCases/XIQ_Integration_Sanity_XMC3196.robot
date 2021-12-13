@@ -13,7 +13,7 @@
 #                   - confirms XIQ Site Engine values in Device 360 view
 #                   - confirms values of XIQSE-managed devices in Device 360 view
 #                   - confirms XIQSE-managed devices deleted from Devices view when XIQ Site Engine deleted
-#                 This is qTest test case TC-52224.
+#                 This is qTest test case TC-10786 in the CSIT project, and Jira story XMC-3196.
 
 *** Settings ***
 Library         Collections
@@ -30,10 +30,13 @@ Suite Teardown  Tear Down Test and Close Session
 
 *** Variables ***
 # Defaults
-${ENV}                  environment.remote.chrome.windows.hwhite.yaml
+${ENV}                  environment.remote.chrome.windows.xiqse1.yaml
 ${TOPO}                 topo.test.xiqse1.connected.yaml
 ${TESTBED}              SALEM/Dev/devices-salem-acceptance.yaml
 
+${XIQSE_URL}            ${xiqse.url}
+${XIQSE_USER}           ${xiqse.user}
+${XIQSE_PASSWORD}       ${xiqse.password}
 ${XIQSE_SERIAL}         ${xiqse.serial}
 ${XIQSE_IP}             ${xiqse.ip}
 ${XIQSE_MAC}            ${xiqse.mac}
@@ -64,7 +67,7 @@ ${COLUMN_LABELS}    SERIAL,MANAGED BY,MAC,MAKE,MODEL,MGT IP ADDRESS,OS,OS VERSIO
 *** Test Cases ***
 Test 1: Confirm Site Engine Onboarded
     [Documentation]     Confirms the XIQ Site Engine can be onboarded successfully
-    [Tags]              csit_tc_10796    development    xiqse    xiq_integration    xmc_3196    test1
+    [Tags]              csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test1
 
     # Onboard XIQSE to XIQ
     Switch To Window  ${XIQSE_WINDOW_INDEX}
@@ -78,7 +81,7 @@ Test 1: Confirm Site Engine Onboarded
 
 Test 2: Confirm Devices Managed by XIQSE are Automatically Onboarded and Connected
     [Documentation]     Confirms the test device managed by XIQSE is automatically onboarded into XIQ
-    [Tags]              csit_tc_10796    development    xiqse    xiq_integration    xmc_3196    test2
+    [Tags]              csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test2
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -87,7 +90,7 @@ Test 2: Confirm Devices Managed by XIQSE are Automatically Onboarded and Connect
 
 Test 3: Confirm XIQ Site Engine Values After Onboard
     [Documentation]     Confirms the XIQ Site Engine has the expected values in the Devices table after onboard
-    [Tags]              csit_tc_10796    development    xiqse    xiq_integration    xmc_3196    test3
+    [Tags]              csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test3
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -119,7 +122,7 @@ Test 3: Confirm XIQ Site Engine Values After Onboard
 
 Test 4: Confirm XIQSE-Managed Device Values After Onboard
     [Documentation]     Confirms the test device managed by XIQSE has the expected values in the Devices table after onboard
-    [Tags]              csit_tc_10796    development    xiqse    xiq_integration    xmc_3196    test4
+    [Tags]              csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test4
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -148,7 +151,7 @@ Test 4: Confirm XIQSE-Managed Device Values After Onboard
 
 Test 5: Confirm Device360 View Values for XIQ Site Engine
     [Documentation]     Confirms the Device360 view contains correct values for the XIQ Site Engine
-    [Tags]              csit_tc_10796    development    xiqse    xiq_integration    xmc_3196    test5
+    [Tags]              csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test5
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -176,7 +179,7 @@ Test 5: Confirm Device360 View Values for XIQ Site Engine
 
 Test 6: Confirm Device360 View Values for XIQSE-Managed Device
     [Documentation]     Confirms the Device360 view contains correct values for the XIQSE-managed test device
-    [Tags]              csit_tc_10796    development    xiqse    xiq_integration    xmc_3196    test6
+    [Tags]              csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test6
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -203,7 +206,7 @@ Test 6: Confirm Device360 View Values for XIQSE-Managed Device
 
 Test 7: Confirm Deleting XIQ Site Engine Removes XIQSE-Managed Devices
     [Documentation]     Confirms the test device managed by XIQSE is removed when the XIQ Site Engine is deleted from XIQ
-    [Tags]              csit_tc_10796    development    xiqse    xiq_integration    xmc_3196    test7
+    [Tags]              csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test7
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -234,7 +237,7 @@ Tear Down Test and Close Session
 XIQSE Log In and Set Window Index
     [Documentation]     Logs into XIQSE and sets the window index
 
-    Log Into XIQSE and Confirm Success    ${xiqse.user}    ${xiqse.password}    url=${xiqse.url}
+    Log Into XIQSE and Confirm Success    ${XIQSE_USER}  ${XIQSE_PASSWORD}  url=${XIQSE_URL}
 
     # Close any banner messages (Connection Lost with XIQ, License Expiration, etc.) and the Help panel, if displayed
     Close Panels on Login If Displayed
