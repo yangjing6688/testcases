@@ -42,18 +42,18 @@ nac:
 #     vim-cmd vmsvc/get.snapshotinfo <vmid>
 upgrades:
   - install_mode:                "AIRGAP"
-  - nsrelease_version:           "21.9.10.90"
+  - nsrelease_version:           "21.11.10.57"
   - esx:
       esx_ip:                    "10.69.60.16"
       esx_user:                  "root"
       esx_password:              "extrvmware"
   - xiqse:
       version:                   "21.11.10.57"
-      xiqse_vm_id:               "7"
-      xiqse_snapshot_id:         "2"
-      nac_vm_id:                 "4"
-      nac_snapshot_id:           "6"
-      purview_vm_id:             "2"
-      purview_snapshot_id:       "6"
-      ng_analytics_vm_id:        "6"
+      xiqse_vm_id:               "8"
+      xiqse_snapshot_id:         "1"
+      nac_vm_id:                 "11"
+      nac_snapshot_id:           "1"
+      purview_vm_id:             "10"
+      purview_snapshot_id:       "1"
+      ng_analytics_vm_id:        "9"
       ng_analytics_snapshot_id:  "1"

@@ -51,7 +51,7 @@ xiq:
 #     vim-cmd vmsvc/get.snapshotinfo <vmid>
 upgrades:
   - install_mode:                "CONNECTED"
-  - nsrelease_version:           "21.9.10.90"
+  - nsrelease_version:           "21.11.10.57"
   - esx:
       esx_ip:                    "10.69.60.10"
       esx_user:                  "root"
@@ -66,12 +66,12 @@ upgrades:
       purview_snapshot_id:       "5"
       ng_analytics_vm_id:        "11"
   - xiqse:
-      version:                   "21.4.10.99"
+      version:                   "21.11.10.57"
       xiqse_vm_id:               "3"
-      xiqse_snapshot_id:         "13"
+      xiqse_snapshot_id:         "14"
       nac_vm_id:                 "10"
-      nac_snapshot_id:           "6"
+      nac_snapshot_id:           "7"
       purview_vm_id:             "9"
-      purview_snapshot_id:       "6"
+      purview_snapshot_id:       "7"
       ng_analytics_vm_id:        "11"
-      ng_analytics_snapshot_id:  "2"
+      ng_analytics_snapshot_id:  "3"
