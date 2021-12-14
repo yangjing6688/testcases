@@ -6,7 +6,7 @@ xiqse:
   password:                "n7830466"
   version:                 "21.11"
   name:                    "auto-xiqse-2.extremenetworks.com"
-  serial:                  "XIQSE-31A69C181A544FF8A52FDB79FD2E3A24"
+  serial:                  "XIQSE-1EBC8EB378E245E2A6346B7EF813810D"
   mac:                     "005056BA77D7"
   profile:                 "snmp_v3_profile"
   platform:                "xiqse"
