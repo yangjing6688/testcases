@@ -5,7 +5,7 @@ xiqse:
   user:                    "root"
   password:                "n7830466"
   version:                 "21.11"
-  name:                    "extauto-xiqse.extremenetworks.com"
+  name:                    "auto-xiqse-5.extremenetworks.com"
   serial:                  "XIQSE-4464725328CD4130B8D425187D41000"
   mac:                     "005056BAE5C6"
   profile:                 "snmp_v3_profile"

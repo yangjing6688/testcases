@@ -5,7 +5,7 @@ xiqse:
   user:                    "root"
   password:                "n7830466"
   version:                 "21.11"
-  name:                    "extauto-xiqse.extremenetworks.com"
+  name:                    "auto-xiqse-4.extremenetworks.com"
   serial:                  "XIQSE-3766FC33E17F434DBFB706E2FBAC8023"
   mac:                     "005056BA2317"
   profile:                 "snmp_v3_profile"
@@ -68,7 +68,7 @@ upgrades:
   - xiqse:
       version:                   "21.11.10.57"
       xiqse_vm_id:               "7"
-      xiqse_snapshot_id:         "4"
+      xiqse_snapshot_id:         "5"
       nac_vm_id:                 "4"
       nac_snapshot_id:           "7"
       purview_vm_id:             "2"
