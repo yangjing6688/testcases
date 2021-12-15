@@ -1,0 +1,7 @@
+test_url:                 "https://g11r1.qa.xcloudiq.com"
+connection_method:        "https"
+capwap_url:               "g11r1-cwpm-01.qa.xcloudiq.com"
+sw_capwap_url:            "g11r1.qa.xcloudiq.com"
+tenant_username:          "xiqextremeqa+fw1-g11r1@gmail.com"
+tenant_password:          "Aerohive123"
+

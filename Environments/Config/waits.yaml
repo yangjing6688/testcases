@@ -1,0 +1,17 @@
+config_push_wait:                 180
+device_onboarding_wait:           10
+ap_reboot_wait:                   120
+router_reboot_wait:               120
+switch_reboot_wait:               300
+client_connect_wait:              60
+cp_page_open_wait:                10
+ap_clear_mac_wait:                10
+client_disconnect_wait:           10
+cwp_cache_duration_wait:          120
+auth_logs_duration_wait:          60
+auth_logs_client_connect_wait:    300
+self_registration_wait:           10
+browser_load_wait:                30
+acct_logs_duration_wait:          60
+max_config_push_time:             300
+xiq_device_connect_wait:          300

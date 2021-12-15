@@ -1,0 +1,69 @@
+ap1:
+  name:                     AH-RackC15-650-2
+  connection_method:        "telnet"
+  ip:                       10.69.61.124
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "16501811280032"
+  console_ip:               10.69.1.4
+  console_port:             2002
+  mac:                      3485841480C0
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP650X
+  template:                 AP650X-default-template
+  make:                     Dual Boot
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           Test_np
+      ssid:                     RackC15_AP650_1
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            7C95B1005700
+
+a3_1server1:
+  version:          3.1
+  ip:               10.16.137.10
+  node1_ip:         10.16.137.157
+  node2_ip:         10.16.137.158
+  node3_ip:         10.16.137.159
+  node1_hostname:        A3-31-N1
+  node2_hostname:        A3-31-N2
+  node3_hostname:        A3-31-N3
+  ui_username:           demo@demo.com
+  ui_password:           Extr_123
+  console_username:      root
+  console_password:      aerohive
+  console_port:          22
+
+mu1:
+  ip:             10.69.61.102
+  port:           8270
+  username:       extreme
+  password:       extreme
+  platform:       windows
+  interface:      wlan2
+  wifi_mac:       9A4827E73497
+  ethernet_mac:   0800272993F9
+  wifi_network:   20.1.1
+  wifi_network_vlan10:    10.69.61
+
+mails:
+  - id: sjtb1tenant1@gmail.com
+    password: Extreme@123
+  - id: sjtb1tenant2@gmail.com
+    password: Extreme@123
+

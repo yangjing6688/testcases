@@ -1,0 +1,7 @@
+test_url:             "https://extremecloudiq.com"
+capwap_url:           "redirector.aerohive.com"
+sw_capwap_url:        "ooma.extremecloudiq.com"
+wing_capwap_url:      "ooma-wing.extremecloudiq.com"
+tenant_username:      "xiqproductionqa+auto1-blr-tb2-ooma@gmail.com"
+tenant_password:      "Extreme@123"
+base_url:             "https://api.extremecloudiq.com"
