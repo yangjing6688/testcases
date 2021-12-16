@@ -12,7 +12,7 @@ Library     xiq/flows/common/Login.py
     [Documentation]     Check the login and logout functionality
     [Tags]      sanity      login
 
-    ${result1}=      Login User      ${xiq_environment.username}     ${xiq_environment.password}   url=${xiq_environment.test_url}
+    ${result1}=      Login User      ${tenant_username}     ${tenant_password}   url=${test_url}
     Should Be Equal As Strings      '${result1}'     '1'
     ${result2}=      Logout User
     Should Be Equal As Strings      '${result2}'     '1'

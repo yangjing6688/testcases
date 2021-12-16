@@ -62,10 +62,10 @@ class xiqTests():
          
             # Log into the xiq
             cls.init_xiq_libaries_and_login(cls,
-                                             cls.cfg['xiq_environment']['username'], 
-                                             cls.cfg['xiq_environment']['password'], 
-                                             url=cls.cfg['xiq_environment']['test_url'])
-            
+                                            cls.cfg['tenant_username'], 
+                                            cls.cfg['tenant_password'], 
+                                            url=cls.cfg['test_url'])
+
             # Call the setup
             cls.defaultLibrary.apiUdks.setupTeardownUdks.Base_Test_Suite_Setup()
             
@@ -78,9 +78,9 @@ class xiqTests():
     @classmethod
     def teardown_class(cls):
         cls.init_xiq_libaries_and_login(cls,
-                                         cls.cfg['xiq_environment']['username'],
-                                         cls.cfg['xiq_environment']['password'],
-                                         url=cls.cfg['xiq_environment']['test_url'])
+                                        cls.cfg['tenant_username'], 
+                                        cls.cfg['tenant_password'], 
+                                        url=cls.cfg['test_url'])
         cls.deactivate_xiq_libaries_and_logout(cls)
         cls.defaultLibrary.apiUdks.setupTeardownUdks.Base_Test_Suite_Cleanup()
         
