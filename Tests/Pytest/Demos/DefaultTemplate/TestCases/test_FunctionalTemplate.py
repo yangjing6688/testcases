@@ -31,7 +31,6 @@ from ..Resources.SuiteUdks import SuiteUdk
 class DefaultTests:
     
     # [Setup]  Test class Setup
-    @mark.Stack
     @classmethod
     def setup_class(cls):
         try:
