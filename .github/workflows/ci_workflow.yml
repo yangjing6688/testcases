@@ -232,24 +232,29 @@ jobs:
       run: |
         IFS=','
         rc=0
-        for f in $( cat ${{ env.pytest_func_path }} | sed -e 's/ //g' )
-          do printf "[*] Processing Pytest file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
-            if [[ ! $f =~ .*\.py$ ]] ; then
-                printf "FAIL: $f is NOT a Pytest file!  Only .py files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
-                rc=1
-            # Only allow __init__.py or files that conform to "test_<testname>_<valid_jira_id>.py"
-            # valid jira id: One or more letters followed by one or more numbers. A dash between the letters and numbers is optional.
-            # This can potentially be followed by _ and 1 or more numbers if multiple testcase files are needed for the same id.
-            # Examples: test_blah_app-45   test_blah_blah_app45_1   test_blah_app-45_1   test_blah_app45
-            # Note: inside bash [[ ]] you need to use extended regex format
-            elif [[ ! $f =~ test_.*_[a-zA-Z]+-?[0-9]+(_[0-9]+\.py|\.py)$|__init__\.py$ ]] ; then
-                printf "FAIL: $f is NOT in a valid Pytest filename format!!\n" | tee -a ${{ env.testcase_files_report_path }}
-                rc=1
-            else
-                printf "PASS: $f\n" | tee -a ${{ env.testcase_files_report_path }}
-            fi
+        files_tested=0
+        for f in $( cat ${{ env.pytest_func_path }} | sed -e 's/ //g' ); do
+          let "files_tested += 1"
+          printf "[*] Processing Pytest file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          if [[ ! $f =~ .*\.py$ ]] ; then
+              printf "FAIL: $f is NOT a Pytest file!  Only .py files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              rc=1
+          # Only allow __init__.py or files that conform to "test_<testname>_<valid_jira_id>.py"
+          # valid jira id: One or more letters followed by one or more numbers. A dash between the letters and numbers is optional.
+          # This can potentially be followed by _ and 1 or more numbers if multiple testcase files are needed for the same id.
+          # Examples: test_blah_app-45   test_blah_blah_app45_1   test_blah_app-45_1   test_blah_app45
+          # Note: inside bash [[ ]] you need to use extended regex format
+          elif [[ ! $f =~ test_.*_[a-zA-Z]+-?[0-9]+(_[0-9]+\.py|\.py)$|__init__\.py$ ]] ; then
+              printf "FAIL: $f is NOT in a valid Pytest filename format!!\n" | tee -a ${{ env.testcase_files_report_path }}
+              rc=1
+          else
+              printf "PASS: $f\n" | tee -a ${{ env.testcase_files_report_path }}
+          fi
         done
         unset IFS
+        if (( files_tested == 0 )); then
+          echo "[*] No Pytest Production files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
+        fi
         exit $rc
 
     - name: Process Pytest Non-Production file(s)
@@ -257,21 +262,26 @@ jobs:
       run: |
         IFS=','
         rc=0
-        for f in $( cat ${{ env.pytest_non_prod_path }} | sed -e 's/ //g' )
-          do printf "[*] Processing Pytest file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
-            if [[ ! $f =~ .*\.py$ ]] ; then
-                printf "FAIL: $f is NOT a Pytest file! Only .py files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
-                rc=1
-            # Only allow __init__.py or files that conform to "test_<testname>.py"
-            # Note: inside bash [[ ]] you need to use extended regex format
-            elif [[ ! $f =~ ^test_.*.py$|^__init__\.py$ ]] ; then
-                printf "FAIL: $f is NOT in a valid Pytest filename format! \n" | tee -a ${{ env.testcase_files_report_path }}
-                rc=1
-            else
-                printf "PASS: $f\n" | tee -a ${{ env.testcase_files_report_path }}
-            fi
+        files_tested=0
+        for f in $( cat ${{ env.pytest_non_prod_path }} | sed -e 's/ //g' ); do
+          let "files_tested += 1"
+          printf "[*] Processing Pytest file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          if [[ ! $f =~ .*\.py$ ]] ; then
+              printf "FAIL: $f is NOT a Pytest file! Only .py files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              rc=1
+          # Only allow __init__.py or files that conform to "test_<testname>.py"
+          # Note: inside bash [[ ]] you need to use extended regex format
+          elif [[ ! $f =~ ^test_.*.py$|^__init__\.py$ ]] ; then
+              printf "FAIL: $f is NOT in a valid Pytest filename format! \n" | tee -a ${{ env.testcase_files_report_path }}
+              rc=1
+          else
+              printf "PASS: $f\n" | tee -a ${{ env.testcase_files_report_path }}
+          fi
         done
         unset IFS
+        if (( files_tested == 0 )); then
+          echo "[*] No Pytest Non-Production files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
+        fi
         exit $rc
 
     - name: Process Pytest Library file(s)
@@ -279,16 +289,21 @@ jobs:
       run: |
         IFS=','
         rc=0
-        for f in $( cat ${{ env.pytest_libs_path }} | sed -e 's/ //g' )
-          do printf "[*] Processing Python file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
-            if [[ ! $f =~ .*\.py$ ]] ; then
-                printf "FAIL: $f is NOT a Python file! Only .py files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
-                rc=1
-            else
-                printf "PASS: $f\n" | tee -a ${{ env.testcase_files_report_path }}
-            fi
+        files_tested=0
+        for f in $( cat ${{ env.pytest_libs_path }} | sed -e 's/ //g' ); do
+          let "files_tested += 1"
+          printf "[*] Processing Python file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          if [[ ! $f =~ .*\.py$ ]] ; then
+              printf "FAIL: $f is NOT a Python file! Only .py files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              rc=1
+          else
+              printf "PASS: $f\n" | tee -a ${{ env.testcase_files_report_path }}
+          fi
         done
         unset IFS
+        if (( files_tested == 0 )); then
+          echo "[*] No Pytest Library files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
+        fi
         exit $rc
 
     - name: Process Robot Production file(s)
@@ -296,21 +311,26 @@ jobs:
       run: |
         IFS=','
         rc=0
-        for f in $( cat ${{ env.robot_func_path }} | sed -e 's/ //g' )
-          do printf "[*] Processing Robot file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
-            if [[ ! $f =~ .*\.robot$ ]] ; then
-                printf "FAIL: $f is NOT a Robot file! Only .robot files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
-                rc=1
-            # Only allow files that conform to "test_<testname>_<valid_jira_id>.robot".
-            # See "Process Pytest Production file(s)" for definition of <valid_jira_id>
-            elif [[ ! $f =~ _[a-zA-Z]+-?[0-9]+(_[0-9]+\.robot|\.robot)$ ]] ; then
-                printf "FAIL: $f is NOT in a valid Robot filename format!!\n" | tee -a ${{ env.testcase_files_report_path }}
-                rc=1
-            else
-                printf "PASS: $f\n"
-            fi
+        files_tested=0
+        for f in $( cat ${{ env.robot_func_path }} | sed -e 's/ //g' ); do
+          let "files_tested += 1"
+          printf "[*] Processing Robot file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          if [[ ! $f =~ .*\.robot$ ]] ; then
+              printf "FAIL: $f is NOT a Robot file! Only .robot files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              rc=1
+          # Only allow files that conform to "test_<testname>_<valid_jira_id>.robot".
+          # See "Process Pytest Production file(s)" for definition of <valid_jira_id>
+          elif [[ ! $f =~ _[a-zA-Z]+-?[0-9]+(_[0-9]+\.robot|\.robot)$ ]] ; then
+              printf "FAIL: $f is NOT in a valid Robot filename format!!\n" | tee -a ${{ env.testcase_files_report_path }}
+              rc=1
+          else
+              printf "PASS: $f\n"
+          fi
         done
         unset IFS
+        if (( files_tested == 0 )); then
+          echo "[*] No Robot Production files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
+        fi
         exit $rc
 
     - name: Process Robot Non-Production file(s)
@@ -318,16 +338,21 @@ jobs:
       run: |
         IFS=','
         rc=0
-        for f in $( cat ${{ env.robot_non_prod_path }} | sed -e 's/ //g' )
-          do printf "[*] Processing Robot file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
-            if [[ ! $f =~ .*\.robot$ ]] ; then
-                printf "FAIL: $f is NOT a Robot file! Only .robot files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
-                rc=1
-            else
-                printf "PASS: $f\n" | tee -a ${{ env.testcase_files_report_path }}
-            fi
+        files_tested=0
+        for f in $( cat ${{ env.robot_non_prod_path }} | sed -e 's/ //g' ); do
+          let "files_tested += 1"
+          printf "[*] Processing Robot file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          if [[ ! $f =~ .*\.robot$ ]] ; then
+              printf "FAIL: $f is NOT a Robot file! Only .robot files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              rc=1
+          else
+              printf "PASS: $f\n" | tee -a ${{ env.testcase_files_report_path }}
+          fi
         done
         unset IFS
+        if (( files_tested == 0 )); then
+          echo "[*] No Robot Non-Production files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
+        fi
         exit $rc
 
     - name: Process Robot Library file(s)
@@ -335,16 +360,21 @@ jobs:
       run: |
         IFS=','
         rc=0
-        for f in $( cat ${{ env.robot_libs_path }} | sed -e 's/ //g' )
-          do printf "[*] Processing Robot file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
-            if [[ ! $f =~ .*\.robot$ ]] ; then
-                printf "FAIL: $f is NOT a Robot file! Only .robot files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
-                rc=1
-            else
-                printf "PASS: $f\n" | tee -a ${{ env.testcase_files_report_path }}
-            fi
+        files_tested=0
+        for f in $( cat ${{ env.robot_libs_path }} | sed -e 's/ //g' ); do
+          let "files_tested += 1"
+          printf "[*] Processing Robot file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          if [[ ! $f =~ .*\.robot$ ]] ; then
+              printf "FAIL: $f is NOT a Robot file! Only .robot files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              rc=1
+          else
+              printf "PASS: $f\n" | tee -a ${{ env.testcase_files_report_path }}
+          fi
         done
         unset IFS
+        if (( files_tested == 0 )); then
+          echo "[*] No Robot Library files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
+        fi
         exit $rc
 
     - name: Upload test results to GH artifacts
@@ -385,6 +415,8 @@ jobs:
             echo "[**] $path" | tee -a ${{ env.directory_struct_report_path }}
           done
           exit 1
+        else
+          echo "[*] PASS: No files/directories found in protected areas." | tee -a ${{ env.directory_struct_report_path }}
         fi
 
     - name: Upload test results to GH artifacts
@@ -420,7 +452,9 @@ jobs:
     # TODO: fix this for __init__.py files
     - name: Process modified Pytest Resources files
       run: |
+        files_tested=0
         for line in $( cat ${{ env.pytest_res }} | tr ',' '\n' ) ; do
+          let "files_tested += 1"
           printf "[*] Processing Pytest Resources file: $line ...\n" | tee -a ${{ env.testcase_naming_report_path }}
             for func in `grep -w def $line | awk '{print $2}'`; do
               printf "Testing Function ${func} ...\n" | tee -a ${{ env.testcase_naming_report_path }}
@@ -432,10 +466,15 @@ jobs:
               fi
             done
         done
+        if (( files_tested == 0 )); then
+          echo "[*] No Pytest Resource files found. Skipping these tests..." | tee -a ${{ env.testcase_naming_report_path }}
+        fi
 
     - name: Process modified Pytest Test files
       run: |
+        files_tested=0
         for line in $( cat ${{ env.pytest_func_path }} ${{ env.pytest_non_prod_path }} | tr ',' '\n' ) ; do
+          let "files_tested += 1"
           printf "[*] Processing Pytest Test file: $line ...\n" | tee -a ${{ env.testcase_naming_report_path }}
             func=`grep -w def $line | awk '{print $2}' | grep ^test_`
               if [[ ${line} =~ __init__\.py ]] ; then
@@ -447,6 +486,9 @@ jobs:
                 exit 1
               fi
         done
+        if (( files_tested == 0 )); then
+          echo "[*] No Pytest Test files found. Skipping these tests..." | tee -a ${{ env.testcase_naming_report_path }}
+        fi
 
     - name: Upload test results to GH artifacts
       uses: actions/upload-artifact@v2
@@ -482,6 +524,7 @@ jobs:
         trimmed_files=$(echo "${pytest_files}" | tr -d [:space:])
         if [[ ! $trimmed_files ]]; then
           run_pytest=false
+          echo "[*] No PyTest Test files found. Skipping these tests..." | tee -a ${{ env.tag_marker_report_path }}
         else
           run_pytest=true
         fi
@@ -493,6 +536,7 @@ jobs:
         trimmed_files=$(echo "${robot_files}" | tr -d [:space:])
         if [[ ! $trimmed_files ]]; then
           run_robot=false
+          echo "[*] No Robot Test files found. Skipping these tests..." | tee -a ${{ env.tag_marker_report_path }}
         else
           run_robot=true
         fi

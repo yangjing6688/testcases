@@ -58,5 +58,7 @@ if list_of_testbed_files:
     for file in list_of_testbed_files:
         find_bad_keys(file)
         print()
+else:
+    print("[*] No testbed files found. Skipping these tests...")
 
 exit(rc)
