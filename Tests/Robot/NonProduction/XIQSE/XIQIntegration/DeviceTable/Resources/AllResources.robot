@@ -7,8 +7,11 @@ Resource    ../../../../../Libraries/XIQSE/lib_devices.robot
 Resource    ../../../../../Libraries/XIQSE/lib_diagnostics.robot
 Resource    ../../../../../Libraries/XIQSE/lib_login.robot
 Resource    ../../../../../Libraries/XIQSE/lib_options.robot
+Resource    ../../../../../Libraries/XIQSE/lib_profiles.robot
+Resource    ../../../../../Libraries/XIQSE/lib_snmp_creds.robot
 Resource    ../../../../../Libraries/XIQSE/lib_xiq.robot
 
+Variables   Environments/Config/waits.yaml
 Variables   TestBeds/${TESTBED}
 Variables   Environments/${TOPO}
 Variables   Environments/${ENV}
