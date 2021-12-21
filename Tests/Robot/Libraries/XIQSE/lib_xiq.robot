@@ -115,6 +115,13 @@ Confirm Device MAC Address Present
     ${result}=  Wait Until Device Added    device_mac=${mac}
     Should Be Equal As Integers            ${result}    1
 
+Confirm Device OS Version Present
+    [Documentation]     Confirms the "OS Version" field is populated for the device in the Devices table
+    [Arguments]         ${serial}
+
+    ${result}=  Wait Until Device Data Present  ${serial}   OS VERSION
+    Should Be Equal As Integers                 ${result}   1
+
 Confirm Device Serial Not Present
     [Documentation]     Confirms the device with the specified serial number is not present in the Devices table
     [Arguments]         ${serial}
