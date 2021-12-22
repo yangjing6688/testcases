@@ -381,20 +381,13 @@ XIQ Log In and Set Window Index
 Set Up XIQSE Components
     [Documentation]     Sets up the XIQSE components for the test
 
-    # Make sure the correct Serial Number is being used
-    Confirm XIQSE Serial Number     ${XIQSE_SERIAL}
-
-    # Make sure sharing with XIQ is enabled
-    Enable XIQ Connection Sharing and Confirm Success
-
-    # Set the HTTP session timeout
-    Set Option Web Server Session Timeout and Confirm Success  7  day(s)
+    Confirm Serial Number and Set Common Options    ${XIQSE_SERIAL}
 
     # Create an invalid profile for causing a device disconnect
     XIQSE Create Invalid Profile
 
     # Add a test device to XIQSE
-    Add Device to XIQSE and Confirm Success           ${XIQSE_DUT_IP}    ${XIQSE_DUT_PROFILE}
+    Add Device to XIQSE and Confirm Success         ${XIQSE_DUT_IP}    ${XIQSE_DUT_PROFILE}
 
 Set Up XIQ Components
     [Documentation]     Sets up the XIQ components for the test
