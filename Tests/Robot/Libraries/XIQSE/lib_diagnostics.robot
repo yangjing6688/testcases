@@ -43,14 +43,43 @@ Enter XIQ Credentials to Auto Onboard XIQSE
     ${onboard_result}=  XIQSE Auto Onboard XIQSE  ${xiq_email}  ${xiq_pwd}
     Should Be Equal As Integers         ${onboard_result}     1
 
-Confirm Device Has Expected Onboard Status
-    [Documentation]     Confirms the device has the expected onboard status in the XIQ Device Message Details table
+Confirm Device Has Expected Onboard Status Using Refresh
+    [Documentation]     Confirms the device has the expected onboard status in the XIQ Device Message Details table.
+    ...                 This keyword uses the Refresh button to update the data which is sometimes failing, so a new
+    ...                 keyword is being created to update the data performing navigation steps instead
+    ...                 (the original name of "Confirm Device Has Expected Onboard Status").
     [Arguments]         ${ip}  ${type}  ${status}
 
     XIQSE XIQ Device Message Details Show Columns  Onboard Status  Onboard
 
     ${result}=  XIQSE Wait Until Device Has Expected Onboard Status  ${ip}  ${type}  ${status}
     Should Be Equal As Integers  ${result}  1
+
+Confirm Device Has Expected Onboard Status
+    [Documentation]     Confirms the device has the expected onboard status in the XIQ Device Message Details table
+    [Arguments]         ${ip}  ${type}  ${status}
+
+    XIQSE XIQ Device Message Details Show Columns  Onboard Status  Onboard
+
+    Wait Until Keyword Succeeds  30x  10s
+    ...  Confirm Device Has Expected Onboard Status Using Navigation  ${ip}  ${type}  ${status}
+
+Confirm Device Has Expected Onboard Status Using Navigation
+    [Documentation]     Confirms the device has the expected onboard status in the XIQ Device Message Details table
+    ...                 using navigation (away from / back to the page) to force the data to update.  This is done
+    ...                 instead of the refresh as sometimes the refresh was never completing, and causes failures.
+    [Arguments]         ${ip}  ${type}  ${status}
+
+    ${result}=  XIQSE Confirm Onboard Status  ${ip}  ${type}  ${status}
+    Run Keyword If  '${result}' == '-1'  Refresh Device Message Details Using Navigation
+    Should Be Equal As Integers  ${result}  1
+
+Refresh Device Message Details Using Navigation
+    [Documentation]     Performs a refresh of the Device Message Details view by navigating to the Server> Server Log
+    ...                 view and then back to the System> ExtremeCloud IQ Device Message Details view.
+
+    XIQSE Select Server Log Tree Node
+    XIQSE Select XIQ Device Message Details Tree Node
 
 Confirm XIQSE Has Expected Onboard Status
     [Documentation]     Confirms XIQSE has the expected onboard status in the XIQ Device Message Details table
