@@ -27,3 +27,31 @@ Confirm Serial Number and Set Common Options
 
     # Set the Device Tree to display by IP Address
     Set Option Device Tree Name Format and Confirm Success   IP Address
+
+Onboard XIQSE To XIQ If In Connected Mode
+    [Documentation]     If XIQSE is running in connected mode, it is onboarded to XIQ
+    [Arguments]         ${xiqse_mode}  ${xiqse_ip}  ${xiq_email}  ${xiq_password}
+
+    Run Keyword If  'CONNECTED' in '${xiqse_mode}'
+    ...     Run Keywords
+    ...         Navigate to XIQ Device Message Details and Confirm Success
+    ...         AND
+    ...         Onboard XIQSE if Not Onboarded    ${xiqse_ip}  ${xiq_email}  ${xiq_password}
+    ...         AND
+    ...         Confirm XIQSE Onboarded Successfully    ${xiqse_ip}
+    ...     ELSE
+    ...     Log To Console  This is an AirGap deployment so no need to onboard XIQSE to XIQ
+
+Remove XIQSE From XIQ If In Connected Mode
+    [Documentation]     If XIQSE is runing in connected mode, it is removed from XIQ
+    [Arguments]         ${xiqse_mode}  ${xiq_email}  ${xiq_password}  ${xiq_url}  ${xiqse_mac}
+
+    Run Keyword If  'CONNECTED' in '${xiqse_mode}'
+    ...     Run Keywords
+    ...         Log Into XIQ and Confirm Success  ${xiq_email}  ${xiq_password}  url=${xiq_url}
+    ...         AND
+    ...         Navigate and Remove Device by MAC From XIQ    ${xiqse_mac}
+    ...         AND
+    ...         Log Out of XIQ and Quit Browser
+    ...     ELSE
+    ...     Log To Console  This is an AirGap deployment so no need to remove XIQSE from XIQ

@@ -35,25 +35,30 @@ nac:
   ip:                      "10.69.70.53"
   name:                    "extauto-nac"
 
+xiq:
+  test_url:                "https://g2r1.qa.xcloudiq.com"
+  tenant_username:         "xiqse5+automationG2@gmail.com"
+  tenant_password:         "Aerohive123"
+
 # SSH into ESX and issue the following commands to identify the VM ID and Snapshot ID
 # List all VMs to find your vmId
 #     vim-cmd vmsvc/getall
 # List all snapshots of a VM
 #     vim-cmd vmsvc/get.snapshotinfo <vmid>
 upgrades:
-  - install_mode:                "AIRGAP"
-  - nsrelease_version:           "21.11.10.57"
-  - esx:
-      esx_ip:                    "10.69.60.15"
-      esx_user:                  "root"
-      esx_password:              "extrvmware"
-  - xiqse:
-      version:                   "21.11.10.57"
-      xiqse_vm_id:               "8"
-      xiqse_snapshot_id:         "1"
-      nac_vm_id:                 "11"
-      nac_snapshot_id:           "1"
-      purview_vm_id:             "10"
-      purview_snapshot_id:       "1"
-      ng_analytics_vm_id:        "9"
-      ng_analytics_snapshot_id:  "1"
+  install_mode:                "AIRGAP"
+  nsrelease_version:           "21.11.10.57"
+  esx:
+    esx_ip:                    "10.69.60.15"
+    esx_user:                  "root"
+    esx_password:              "extrvmware"
+  xiqse:
+    version:                   "21.11.10.57"
+    xiqse_vm_id:               "8"
+    xiqse_snapshot_id:         "1"
+    nac_vm_id:                 "11"
+    nac_snapshot_id:           "1"
+    purview_vm_id:             "10"
+    purview_snapshot_id:       "1"
+    ng_analytics_vm_id:        "9"
+    ng_analytics_snapshot_id:  "1"
