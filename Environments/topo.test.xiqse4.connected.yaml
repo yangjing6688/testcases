@@ -50,28 +50,28 @@ xiq:
 # List all snapshots of a VM
 #     vim-cmd vmsvc/get.snapshotinfo <vmid>
 upgrades:
-  - install_mode:                "CONNECTED"
-  - nsrelease_version:           "21.11.10.57"
-  - esx:
-      esx_ip:                    "10.69.60.13"
-      esx_user:                  "root"
-      esx_password:              "extrvmware"
-  - xmc:
-      version:                   "8.5.5.32"
-      xiqse_vm_id:               "7"
-      xiqse_snapshot_id:         "1"
-      nac_vm_id:                 "4"
-      nac_snapshot_id:           "5"
-      purview_vm_id:             "2"
-      purview_snapshot_id:       "5"
-      ng_analytics_vm_id:        "6"
-  - xiqse:
-      version:                   "21.11.10.57"
-      xiqse_vm_id:               "7"
-      xiqse_snapshot_id:         "5"
-      nac_vm_id:                 "4"
-      nac_snapshot_id:           "7"
-      purview_vm_id:             "2"
-      purview_snapshot_id:       "7"
-      ng_analytics_vm_id:        "6"
-      ng_analytics_snapshot_id:  "2"
+  install_mode:                "CONNECTED"
+  nsrelease_version:           "21.11.10.57"
+  esx:
+    esx_ip:                    "10.69.60.13"
+    esx_user:                  "root"
+    esx_password:              "extrvmware"
+  xmc:
+    version:                   "8.5.5.32"
+    xiqse_vm_id:               "7"
+    xiqse_snapshot_id:         "1"
+    nac_vm_id:                 "4"
+    nac_snapshot_id:           "5"
+    purview_vm_id:             "2"
+    purview_snapshot_id:       "5"
+    ng_analytics_vm_id:        "6"
+  xiqse:
+    version:                   "21.11.10.57"
+    xiqse_vm_id:               "7"
+    xiqse_snapshot_id:         "5"
+    nac_vm_id:                 "4"
+    nac_snapshot_id:           "7"
+    purview_vm_id:             "2"
+    purview_snapshot_id:       "7"
+    ng_analytics_vm_id:        "6"
+    ng_analytics_snapshot_id:  "2"
