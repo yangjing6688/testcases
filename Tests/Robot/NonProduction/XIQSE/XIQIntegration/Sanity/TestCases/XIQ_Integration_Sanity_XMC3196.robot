@@ -16,8 +16,6 @@
 #                 This is qTest test case TC-10786 in the CSIT project, and Jira story XMC-3196.
 
 *** Settings ***
-Library         Collections
-Library         xiq/flows/manage/Device360.py
 Library         xiq/flows/manage/FilterManageDevices.py
 
 Resource        ../../Sanity/Resources/AllResources.robot
