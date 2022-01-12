@@ -66,7 +66,8 @@ Test 3: Verify Device Is Up After Restart
     [Documentation]     Confirms device status is up after restart
     [Tags]              csit_tc_876    xmc_5451    development    xiqse    acceptance    restart    test3
 
-    Verify Device Is Up After Restart    ${DUT_IP}
+    Navigate to Devices and Confirm Success
+    Confirm Device Status Up     ${DUT_IP}
 
 
 *** Keywords ***
@@ -131,11 +132,3 @@ Restore Option Device Tree Name Format To Default and Confirm Success
 
     ${result_seg}=  XIQSE Restore Default Site Engine General Options and Save
     Should Be Equal As Integers    ${result_seg}     1
-
-Verify Device Is Up After Restart
-    [Documentation]     Confirms device status is up after restart
-    [Arguments]         ${ip}
-
-    Navigate to Devices and Confirm Success
-    ${result}=  XIQSE Wait Until Device Status Up    ${ip}
-    Should Be Equal As Integers  ${result}      1

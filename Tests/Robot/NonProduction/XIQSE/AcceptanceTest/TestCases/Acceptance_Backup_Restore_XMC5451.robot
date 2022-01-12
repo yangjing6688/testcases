@@ -34,6 +34,7 @@ ${DUT_IP}                   ${netelem1.ip}
 ${DUT_PROFILE}              ${netelem1.profile}
 
 ${WORLD_SITE}               World
+${TEST_ARCHIVE}             Site Engine Archive
 ${BACKUP_ARCHIVE}           Archive Save Site Engine Archive
 ${SITE_ENGINE_ARCHIVE}      Site Engine Archive
 ${OPS_PANEL_RETRIEVED}      Site Engine Archive - Configuration Retrieved
@@ -76,7 +77,7 @@ Test 5: Verify Device Is Up After Restore
     [Tags]              csit_tc_868    xmc_5451    development    xiqse    acceptance    backup    restore    test5
 
     Navigate to Devices and Confirm Success
-    Wait Until Device Status Is Up          ${DUT_IP}
+    Confirm Device Status Up          ${DUT_IP}
 
 Test 6: Confirm Operations Panel Message - Restore
     [Documentation]     Confirms the operations panel contains the expected message
@@ -93,6 +94,12 @@ Test 7: Confirm Events - Restore Configuration
 
     Confirm Event Row Contains Text                 Configuration Restore Site Engine Archive
     Clear Event Search String and Confirm Success
+
+Test 8: Delete Archive and Confirm Success
+    [Documentation]     Confirms an archive can be deleted
+    [Tags]              csit_tc_868    xmc_5451    development    xiqse    acceptance    backup    restore    test8
+
+    Navigate and Delete Archive     ${TEST_ARCHIVE}
 
 
 *** Keywords ***
@@ -157,11 +164,4 @@ Restore Option Device Tree Name Format To Default and Confirm Success
 
     ${result_seg}=  XIQSE Restore Default Site Engine General Options and Save
     Should Be Equal As Integers    ${result_seg}     1
-    
-Wait Until Device Status Is Up
-    [Documentation]    Checks the status of the device after restore to verify it is up
-    [Arguments]         ${ip}
-
-    ${result}=  XIQSE Wait Until Device Status Up    ${ip}
-    Should Be Equal As Integers  ${result}      1
     
