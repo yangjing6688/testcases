@@ -107,6 +107,13 @@ Set Device Profile and Confirm Success
     ${result}=  XIQSE Device Set Profile    ${ip}    ${profile}
     Should Be Equal As Integers             ${result}       1
 
+Restart Device and Confirm Success
+    [Documentation]     Restarts the specified device and confirms the action was successful
+    [Arguments]         ${ip}
+
+    ${result}=  XIQSE Perform Restart Device   ${ip}
+    Should Be Equal As Integers                ${result}       1
+
 Delete Device and Confirm Success
     [Documentation]     Deletes the specified device from XIQ-SE and confirms it was removed successfully
     [Arguments]         ${ip}

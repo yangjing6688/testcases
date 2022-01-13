@@ -35,7 +35,6 @@ ${DUT_IP}                   ${netelem1.ip}
 ${DUT_PROFILE}              ${netelem1.profile}
 
 ${WORLD_SITE}               World
-${OPS_PANEL_RESTART}        Device Restart - Operation Complete
 
 
 *** Test Cases ***
@@ -43,16 +42,12 @@ Test 1: Restart Switch
     [Documentation]     Restarts the switch
     [Tags]              csit_tc_876    xmc_5451    development    xiqse    acceptance    restart    test1
 
-    Clear Operations Panel and Confirm Success
-    XIQSE Select Device   ${DUT_IP}
-    XIQSE Restart Device  ${DUT_IP}
-    XIQSE Click Start Restart Button
-    XIQSE Click Start Restart Yes Button
-    XIQSE Click Restart Devices Close Button
+    Navigate to Devices and Confirm Success
+    Restart Device and Confirm Success   ${DUT_IP}
 
 Test 2: Confirm Events
     [Documentation]     Confirms the events view contains the expected event
-    [Tags]              csit_tc_876    xmc_5451    development    xiqse    acceptance    restart    test6
+    [Tags]              csit_tc_876    xmc_5451    development    xiqse    acceptance    restart    test2
 
     Navigate to Events and Confirm Success
     Set Event Time Range and Confirm Success        Last 30 Minutes
