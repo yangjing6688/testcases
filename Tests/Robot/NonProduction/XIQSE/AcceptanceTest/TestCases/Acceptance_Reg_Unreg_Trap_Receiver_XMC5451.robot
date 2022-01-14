@@ -115,51 +115,11 @@ Tear Down Test and Close Session
 
     Navigate to Devices and Confirm Success
     Delete Device and Confirm Success             ${DUT_IP}
-    Restore Option Web Server Session Timeout To Default and Confirm Success
-    Restore Option Device Tree Name Format To Default and Confirm Success
+    Restore Web Server Options to Default and Confirm Success
+    Restore Site Engine General Options to Default and Confirm Success
     Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
     Log Out of XIQSE and Quit Browser
     Remove XIQSE From XIQ If In Connected Mode    ${INSTALL_MODE}  ${XIQ_EMAIL}  ${XIQ_PASSWORD}  ${XIQ_URL}  ${XIQSE_MAC}
-
-Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver
-    [Documentation]     In the Sites Actions tab, uncheck the boxes for Add Trap Receiver & Add Syslog Receiver
-    [Arguments]         ${site}
-
-    Navigate to Site Tab and Confirm Success    ${site}
-
-    ${actions_result}=  XIQSE Site Select Actions Tab
-    Should Be Equal As Integers         ${actions_result}     1
-
-    XIQSE Actions Set Add Trap Receiver         false
-    XIQSE Actions Set Add Syslog Receiver       false
-    XIQSE Actions Set Add To Archive            false
-    Save Site Changes
-
-Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver
-    [Documentation]     In the Sites Actions tab, check the boxes for Add Trap Receiver & Add Syslog Receiver
-    [Arguments]         ${site}
-
-    Navigate to Site Tab and Confirm Success    ${site}
-
-    ${actions_result}=  XIQSE Site Select Actions Tab
-    Should Be Equal As Integers         ${actions_result}     1
-
-    XIQSE Actions Set Add Trap Receiver         true
-    XIQSE Actions Set Add Syslog Receiver       true
-    XIQSE Actions Set Add To Archive            true
-    Save Site Changes
-
-Restore Option Web Server Session Timeout To Default and Confirm Success
-    [Documentation]     Restores the default value for the HTTP Session Timeout option, saves the change, and confirms the action was successful
-
-    ${result_ws}=  XIQSE Restore Default Web Server Options and Save
-    Should Be Equal As Integers    ${result_ws}     1
-
-Restore Option Device Tree Name Format To Default and Confirm Success
-    [Documentation]     Restores the default value for the Device Tree Name Format option, saves the change, and confirms the action was successful
-
-    ${result_seg}=  XIQSE Restore Default Site Engine General Options and Save
-    Should Be Equal As Integers    ${result_seg}     1
 
 Verify Register Trap Receiver Completes
     [Documentation]     Checks the operations panel and waits for the register trap receiver to complete

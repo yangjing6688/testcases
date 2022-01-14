@@ -66,7 +66,7 @@ Test 3: Discover IP Range
     Wait Until Device License Check Completes
     Wait Until Discover Site Actions Completes
     Clean Up IP Range Discovery Settings and Confirm Success    ${DISCOVER_IP_START}  ${DISCOVER_IP_END}  ${DISCOVER_PROFILE}
-    Save Site Changes
+    Save Site Changes and Confirm Success
 
 Test 4: Navigate and Confirm IP Address Present in Devices Table
     [Documentation]     Confirms the specified IP address is present in the Devices table
@@ -122,22 +122,10 @@ Log In and Set Up Test
 Tear Down Test and Close Session
     [Documentation]     Logs in and cleans up all items that were set up for the test
 
-    Restore Option Web Server Session Timeout To Default and Confirm Success
-    Restore Option Device Tree Name Format To Default and Confirm Success
+    Restore Web Server Options to Default and Confirm Success
+    Restore Site Engine General Options to Default and Confirm Success
     Log Out of XIQSE and Quit Browser
     Remove XIQSE From XIQ If In Connected Mode        ${INSTALL_MODE}  ${XIQ_EMAIL}  ${XIQ_PASSWORD}  ${XIQ_URL}  ${XIQSE_MAC}
-
-Restore Option Web Server Session Timeout To Default and Confirm Success
-    [Documentation]     Restores the default value for the HTTP Session Timeout option, saves the change, and confirms the action was successful
-
-    ${result_ws}=  XIQSE Restore Default Web Server Options and Save
-    Should Be Equal As Integers    ${result_ws}     1
-
-Restore Option Device Tree Name Format To Default and Confirm Success
-    [Documentation]     Restores the default value for the Device Tree Name Format option, saves the change, and confirms the action was successful
-
-    ${result_seg}=  XIQSE Restore Default Site Engine General Options and Save
-    Should Be Equal As Integers    ${result_seg}     1
 
 Wait Until Device License Check Completes
     [Documentation]     Checks operations panel and waits until the Device License Check operation completes

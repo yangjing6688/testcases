@@ -33,6 +33,18 @@ Set Option Device Tree Name Format and Confirm Success
     ${result}=  XIQSE Set Device Tree Name Format and Save   ${value}
     Should Be Equal As Integers     ${result}     1
 
+Restore Web Server Options to Default and Confirm Success
+    [Documentation]     Restores the default value for the HTTP Session Timeout option, saves the change, and confirms the action was successful
+
+    ${result_ws}=  XIQSE Restore Default Web Server Options and Save
+    Should Be Equal As Integers    ${result_ws}     1
+
+Restore Site Engine General Options to Default and Confirm Success
+    [Documentation]     Restores the default value for the Device Tree Name Format option, saves the change, and confirms the action was successful
+
+    ${result_seg}=  XIQSE Restore Default Site Engine General Options and Save
+    Should Be Equal As Integers    ${result_seg}     1
+
 Disable XIQ Connection Sharing and Confirm Success
     [Documentation]     Disables the ExtremeCloud IQ Connection: Enable Sharing option, saves the change, and confirms the action was successful
 

@@ -95,8 +95,48 @@ Select Site and Confirm Success
     ${sel_tree}=  XIQSE Devices Select Site Tree Node  ${site}
     Should Be Equal As Integers     ${sel_tree}     1
 
-Save Site Changes
+Save Site Changes and Confirm Success
     [Documentation]  Clicks Save on the Site tab to save the changes
 
     ${save_result}=  XIQSE Site Click Save
     Should Be Equal As Integers      ${save_result}    1
+
+Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver
+    [Documentation]     In the Sites Actions tab, uncheck the boxes for Add to Archive, Add Trap Receiver & Add Syslog Receiver
+    [Arguments]         ${site}
+
+    Navigate to Site Tab and Confirm Success    ${site}
+
+    ${actions_result}=  XIQSE Site Select Actions Tab
+    Should Be Equal As Integers         ${actions_result}        1
+
+    ${actions_result}=  XIQSE Actions Set Add Trap Receiver      false
+    Should Be Equal As Integers         ${actions_result}        1
+
+    ${actions_result}=  XIQSE Actions Set Add Syslog Receiver    false
+    Should Be Equal As Integers         ${actions_result}        1
+
+    ${actions_result}=  XIQSE Actions Set Add To Archive         false
+    Should Be Equal As Integers         ${actions_result}        1
+
+    Save Site Changes and Confirm Success
+
+Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver
+    [Documentation]     In the Sites Actions tab, check the boxes for Add to Archive, Add Trap Receiver & Add Syslog Receiver
+    [Arguments]         ${site}
+
+    Navigate to Site Tab and Confirm Success    ${site}
+
+    ${actions_result}=  XIQSE Site Select Actions Tab
+    Should Be Equal As Integers         ${actions_result}     1
+
+    ${actions_result}=  XIQSE Actions Set Add Trap Receiver   true
+    Should Be Equal As Integers         ${actions_result}     1
+
+    ${actions_result}=  XIQSE Actions Set Add Syslog Receiver  true
+    Should Be Equal As Integers         ${actions_result}     1
+
+    ${actions_result}=  XIQSE Actions Set Add To Archive       true
+    Should Be Equal As Integers         ${actions_result}     1
+
+    Save Site Changes and Confirm Success
