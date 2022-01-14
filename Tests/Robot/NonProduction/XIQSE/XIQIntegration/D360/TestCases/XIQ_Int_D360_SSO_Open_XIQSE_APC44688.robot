@@ -8,7 +8,7 @@
 # Description   : Test Suite for testing XIQSE-XIQ Integration for the Single Sign On functionality
 #                 from the Device 360 view.  This is Jira story APC-44688.
 #                 This is qTest test case in the CSIT project:
-#                   TC-8351: XIQ-SE SSO - Role: Administrator - D360 view > Open Site Engine
+#                   TC-11878: XIQ-SE SSO - Role: Administrator - D360 view > Open Site Engine
 
 
 *** Settings ***
@@ -46,9 +46,9 @@ ${DUT_SERIAL}           ${netelem1.serial}
 
 
 *** Test Cases ***
-Test Case - TC-8351 - Open Site Engine Link: XIQ-SE Managed Device
+Test 1: Open Site Engine Link: XIQ-SE Managed Device
     [Documentation]     Confirms that the D360 "Open Site Engine" link works for a device managed by XIQ Site Engine
-    [Tags]              csit_tc_8351    apc_44688    development    xiqse    xiq_integration    d360     sso
+    [Tags]              csit_tc_11878    apc_44688    development    xiqse    xiq_integration    d360     sso    test1
 
     XIQ Navigate to Devices and Confirm Success
     XIQ Device360 Click Open Site Engine Link       ${DUT_MAC}
