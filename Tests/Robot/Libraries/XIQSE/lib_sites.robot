@@ -10,6 +10,7 @@
 *** Settings ***
 Library     xiqse/flows/network/devices/tree_panel/XIQSE_NetworkDevicesTreePanel.py
 Library     xiqse/flows/network/devices/site/XIQSE_NetworkDevicesSite.py
+Library     xiqse/flows/network/devices/site/actions/XIQSE_NetworkDevicesSiteActions.py
 
 
 *** Keywords ***
