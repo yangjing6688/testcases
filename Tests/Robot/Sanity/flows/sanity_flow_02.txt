@@ -1,0 +1,3 @@
+Tests/Robot/Sanity/device_onboarding.robot
+Tests/Robot/Sanity/private_pre_shared_key.robot
+Tests/Robot/Sanity/location_sanity.robot

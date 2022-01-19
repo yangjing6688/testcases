@@ -1,7 +1,7 @@
 From this directory:
 
-    /automation/tests/extreme_automation_tests/Tests/Robot/Demos/DefaultTemplate
+    /automation/tests/extreme_automation_tests/Tests/Robot/Demos/DefaultTemplate/
 
 Run the script in the Dev VM:
 
-    robot --variable TestBedVariable:/automation/tests/extreme_automation_tests/TestBeds/SALEM/Demo/demo_salem_1_node_exos.yaml TestCases
+    robot -v TESTBED:SALEM/Demo/demo_salem_1_node_exos.yaml TestCases

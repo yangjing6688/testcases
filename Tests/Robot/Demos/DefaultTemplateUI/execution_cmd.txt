@@ -1,7 +1,7 @@
 From this directory:
 
-    /automation/tests/extreme_automation_tests/Tests/Robot/Demos/DefaultTemplateUI
+    /automation/tests/extreme_automation_tests/Tests/Robot/Demos/DefaultTemplateUI/
 
 Run the script in the Dev VM:
 
-    robot --variable TestBedVariable:/automation/tests/extreme_automation_tests/TestBeds/SALEM/Demo/demo_salem_1_node_exos.yaml --variable EnvVariable:/automation/tests/extreme_automation_tests/Environments/environment.local.chrome.yaml --variable TopoVariable:/automation/tests/extreme_automation_tests/Environments/topo.test.g2r1.yaml TestCases
+    robot -v TESTBED:SALEM/Demo/demo_salem_1_node_exos.yaml -v ENV:environment.local.chrome.yaml -v TOPO:topo.test.g2r1.yaml TestCases
