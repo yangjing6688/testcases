@@ -13,8 +13,16 @@ netelem1:
   password:                 ""
   connection_method:        "telnet"
   os:                       "exos"
-  platform:                 "5420"
+  platform:                 "Stack"
   auth_mode:                "basic"
+  stack:
+    slot1:
+      console_ip:           "10.148.35.5"
+      console_port:         "5017"
+    slot2:
+      console_ip:           "10.148.35.5"
+      console_port:         "5018"
+
   tgen:
     port_a:
       ifname: &netelem1_tgen_port_a_ifname "1/1"
