@@ -157,9 +157,9 @@ Enable SSH on VOSS Switch and Confirm SSH Session Can Be Established
     [Documentation]     Enables SSH for the VOSS Switch
     [Tags]              sanity              voss            ssh         production      test8
 
-    @{ip_port}=                         Device360 Enable SSH CLI Connectivity   ${DUT_MAC}
-    ${ip}=                              Set Variable  ${ip_port}[0]
-    ${port}=                            Set Variable  ${ip_port}[1]
+    &{ip_port_info}=                    Device360 Enable SSH CLI Connectivity   ${DUT_MAC}
+    ${ip}=                              Get From Dictionary  ${ip_port_info}  ip
+    ${port}=                            Get From Dictionary  ${ip_port_info}  port
 
     ${ssh_spawn}=                       Open pxssh Spawn    ${ip}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${port}
     ${cmd_result}=  Send pxssh  ${ssh_spawn}  show sys-info | include Serial

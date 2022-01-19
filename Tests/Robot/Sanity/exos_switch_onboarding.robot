@@ -93,7 +93,10 @@ Test3: Verify ExOS SSH connectivity
     [Tags]              sanity   regression  ssh    P1   production
     ${LOGIN_XIQ}=         Login User          ${tenant_username}      ${tenant_password}
     ${ENABLE_SSH}=         Enable SSH Availability
-    ${IP ADDR}  ${PORT NUM}      Device360 Enable SSH CLI Connectivity     device_mac=${netelem1.mac}    run_time=${SSH_TIMEOUT}
+
+    &{ip_port_info}=       Device360 Enable SSH CLI Connectivity     device_mac=${SW1_MAC}    run_time=${SSH_TIMEOUT}
+    ${IP ADDR}=            Get From Dictionary  ${ip_port_info}  ip
+    ${PORT NUM}=           Get From Dictionary  ${ip_port_info}  port
 
     ${SPAWN1}=          Open Paramiko SSH Spawn    ${IP ADDR}   ${netelem1.username}    ${netelem1.password}  ${PORT NUM}
     ${OUTPUT1}=         Send Paramiko CMD           ${SPAWN1}           show version
