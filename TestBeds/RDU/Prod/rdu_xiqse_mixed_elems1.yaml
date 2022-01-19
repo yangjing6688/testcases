@@ -59,7 +59,7 @@ ap1:
   console_ip:               "10.69.1.4"
   console_port:             "2006"
   username:                 "admin"
-  password:                 "aerohive"
+  password:                 "Aerohive123"
   connection_method:        "telnet"
   os:                       "Cloud IQ Engine"
   platform:                 "aerohive"
