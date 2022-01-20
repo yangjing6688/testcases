@@ -1,12 +1,20 @@
+#----------------------------------------------------------------------
+# Copyright (C) 2022... 2022 Extreme Networks Inc.
+# This software is copyright protected and may not be reproduced in any
+# form or fashion without the written consent of Extreme Networks Inc.
+#----------------------------------------------------------------------
+#
 # Author        : Heidi S. White
 # Description   : Verifies the columns in the Manage Device columns are as expected and contain information:
 #                   - MGT IP Address (CSIT: TC-7013)
 #                   - Public IP Address (CSIT: TC-7071)
 
 *** Settings ***
-Library     common/Cli.py
+Library          common/Cli.py
 
-Resource    ../../ManageDevices/Resources/AllResources.robot
+Resource         ../../ManageDevices/Resources/AllResources.robot
+
+Force Tags       testbed_1_node
 
 Suite Setup      Log In and Set Up Test
 Suite Teardown   Tear Down Test and Close Session
@@ -30,7 +38,7 @@ ${LOCATION}             San Jose, building_01, floor_02
 
 
 *** Test Cases ***
-TC-50335: Confirm MGT IP Address Column
+Test 1: Confirm MGT IP Address Column
     [Documentation]     Confirms the MGT IP Address column is present, contains information, and IPv4 is not present
     [Tags]              csit_tc_7013    aiq_1332    development    xiq    managed_devices    column_validation    mgt_ip    test1
 
@@ -45,7 +53,7 @@ TC-50335: Confirm MGT IP Address Column
     ${value}=  Get Device Details                                   ${DUT_SERIAL}  MGT IP ADDRESS
     Should Not Be Equal As Strings                                  '${value}'  ''
 
-TC-50334: Confirm Public IP Address Column
+Test 2: Confirm Public IP Address Column
     [Documentation]     Confirms the Public IP Address column is present and contains information
     [Tags]              csit_tc_7071    aiq_1332    development    xiq    managed_devices    column_validation    public_ip    test2
 
