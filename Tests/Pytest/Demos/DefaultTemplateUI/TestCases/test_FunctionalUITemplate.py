@@ -15,10 +15,9 @@ from ..Resources.SuiteUdks import SuiteUdk
 
 @fixture()
 def xiq_helper_test_setup_teardown(request):
-    request.instance.executionHelper.testSkipCheck()
-    request.instance.init_xiq_libaries_and_login(request.instance.cfg['xiq_environment']['username'],
-                                                 request.instance.cfg['xiq_environment']['password'],
-                                                 url=request.instance.cfg['xiq_environment']['test_url'])
+    request.instance.init_xiq_libaries_and_login(request.instance.cfg['tenant_username'],
+                                                 request.instance.cfg['tenant_password'],
+                                                 url=request.instance.cfg['test_url'])
     def teardown():
         request.instance.deactivate_xiq_libaries_and_logout()
         
@@ -26,9 +25,9 @@ def xiq_helper_test_setup_teardown(request):
 
 
 # To run this demo you will need to supply the following yaml files:
-# A Test Bed yaml (--tc-file=TestEnvironments/Rdu/Physical/Exos/rdu_x460g2_pod3_3node.yaml)
-# An XIQ Environment yaml (--tc-file=TestEnvironments/Xiq/Base/environment.yaml  
-# An XIQ Main Topology yaml --tc-file=TestEnvironments/Xiq/Base/topology.yaml  
+# A Test Bed yaml (--tc-file=TestBeds/SALEM/Demo/demo_salem_1_node_exos.yaml)
+# An XIQ Environment yaml (--tc-file=Environments/environment.local.chrome.yaml
+# An XIQ Main Topology yaml --tc-file=Environments/topo.test.g2r1.yaml
 
 @mark.testbed_1_node
 class xiqTests():
