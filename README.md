@@ -16,7 +16,7 @@ To use a VM with all of the tools for AutoIQ and extAuto installed, follow the i
 
 ## Creating a docker environment
 
-To use Docker containers with all of the tools for AutoIQ and extAuto installed, follow the instructions found [Here (in GitHub)](https://github.com/extremenetworks/econ-automation-framework/tree/main/vm_env/docker). 
+To use Docker containers with all of the tools for AutoIQ and extAuto installed, follow the instructions found [Here (in GitHub)](https://github.com/extremenetworks/extreme_automation_framework/tree/main/vm_env/docker). 
 
 # Test Case Creation Guidlines
 

@@ -1,3 +1,8 @@
+# **** PLEASE NOTE ****
+The documentation on this page is deprecated and is no longer up-to-date.  It remains as a reference in the event someone wants to try to setup RED to use a debugger for robot scripts.
+
+# **** PLEASE NOTE ****
+
 # Test Case Creation Guidlines
 In this document you will learn how to create a new Test Suite with test cases. To ensure that all tests are simliar in design and file strcuture, please use the following format defined in the default template located in the econ-robot-tests repository: `/econ-robot-tests/Demos/NetworkElements/DefaultTemplate`.
 

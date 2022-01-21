@@ -1,13 +1,13 @@
 ## Requirements
-This guide assumes that you have pulled the econ-automation-framework and extreme_automation_tests repositories and have created the virutal environment. It also asssumes that you have installed the correct requirements for the Automation Framework and pytest by installing the requirements.txt in your virtual enviroment. Please continue if this is the case, otherwise complete the Setup for Framework steps in the [README](../README.md) before continuing.
+This guide assumes that you have pulled the extreme_automation_framework and extreme_automation_tests repositories and have created the virutal environment. It also asssumes that you have installed the correct requirements for the Automation Framework and pytest by installing the requirements.txt in your virtual enviroment. Please continue if this is the case, otherwise complete the Setup for Framework steps in the [README](../README.md) before continuing.
 
 ## Set your PYTHONPATH
-Make sure that your PYTHONPATH is set for both the extreme_automation_tests and econ-automation-framework repositories.
+Make sure that your PYTHONPATH is set for both the extreme_automation_tests and extreme_automation_framework repositories.
 
 ### PYTHONPATH - Linux
 Use the `export` command to set the paths. You can set this in your ~./bashrc to automatically execute when you log in. The command is:
 
-    export PYTHONPATH=<directory where your source is>/extreme_automation_tests:<directory where your source is>/econ-automation-framework
+    export PYTHONPATH=<directory where your source is>/extreme_automation_tests:<directory where your source is>/extreme_automation_framework
 
 ### PYTHONPATH - Windows
 You can set your PYTHON path using the windows environment variables. click on the start menu and type: `environment`, above you should see the menu option.
@@ -18,7 +18,7 @@ When the window appears click on the Environment Variables button. Under the sys
 
 
     Variable name: PYTHONPATH
-    Variable value: <directory where your source is>\extreme_automation_tests:<directory where your source is>\econ-automation-framework
+    Variable value: <directory where your source is>\extreme_automation_tests:<directory where your source is>\extreme_automation_framework
 
 Click on the OK button and restart any windows terminal / Pycharm so that the changes are read in.
 
@@ -32,14 +32,17 @@ Start up pycharm and the when the IDE is loaded there should be a `Welcome to Py
 
 ![example project](img/Pycharm_welcome.png)
 
-First you will load the `extreme_automation_tests` code to the project and next you will load the `econ-automation-framework` code and attach it to the same project.
+First you will load the `extreme_automation_tests` code to the project and next you will load the `extreme_automation_framework` code and attach it to the same project.
 
         1. From the PyCharm UI, navigate to File-->Open...
-        2. Navigate to extreme_automation_tests directory and click ok.
-        5. From the PyCharm UI, navigate to File-->Open...
-        6. Navigate to econ-automation-framework directory and click ok.
-        7. Select 'Attach'.
-        8. Hit OK.
+        1. Navigate to extreme_automation_tests directory and click ok.
+        1. From the PyCharm UI, navigate to File-->Open...
+        1. Navigate to extreme_automation_framework directory and click ok.
+        1. Select 'Attach'.
+        1. From the PyCharm UI, navigate to File-->Open...
+        1. Navigate to cw_automation directory and click ok.
+        1. Select 'Attach'.
+        1. Hit OK.
 
 ![example project](img/Pycharm_open_test_project.png)
 ![example project](img/Pycharm_open_framework_project.png)

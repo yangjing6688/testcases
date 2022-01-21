@@ -1,3 +1,8 @@
+# **** PLEASE NOTE ****
+The documentation on this page is deprecated and is no longer up-to-date.  It remains as a reference in the event someone wants to try to setup RED to use a debugger for robot scripts.
+
+# **** PLEASE NOTE ****
+
 ## Install the GIT plugin
 Next you will need to install GIT Plugin into RED. Select '`Help->Eclipse Marketplace...`'
 

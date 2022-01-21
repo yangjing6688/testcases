@@ -4,21 +4,21 @@
 Install [Python 3](https://www.python.org/downloads/) on your developement system. This is required to run these tests.
 
 ## Step 2: Install the Extreme Automation Framework Repository
-You will need pull the GIT repository for the AutoIQ Framework [here](https://github.com/extremenetworks/econ-automation-framework). For Example, choose a directory on your local system and use the following commands to pull down the AutoIQ and  repositories. From a command window:
+You will need pull the GIT repository for the AutoIQ Framework [here](https://github.com/extremenetworks/extreme_automation_framework). For Example, choose a directory on your local system and use the following commands to pull down the AutoIQ and  repositories. From a command window:
 
-    git clone git@github.com:extremenetworks/econ-automation-framework.git
-    git clone git@github.extremenetworks.com:Engineering/extauto.git
+    git clone git@github.com:extremenetworks/extreme_automation_framework.git
     git clone git@github.com:extremenetworks/extreme_automation_tests.git
+    git clone git@github.extremenetworks.com:Engineering/cw_automation.git
 
 Next you will need to set your system PYTHONPATH environment variable for the OS to the base directory of these repositories.
 
 - Windows:
 
-        PYTHONPATH=<Base Directory>/econ-automation-framework;<Base Directory>/extreme_automation_tests;<Base Directory>/extauto
+        PYTHONPATH=<Base Directory>/extreme_automation_framework;<Base Directory>/extreme_automation_tests;<Base Directory>/extauto
 
 - Linux:
 
-        PYTHONPATH=<Base Directory>/econ-automation-framework:<Base Directory>/extreme_automation_tests:<Base Directory>/extauto
+        PYTHONPATH=<Base Directory>/extreme_automation_framework:<Base Directory>/extreme_automation_tests:<Base Directory>/extauto
 
 
 ## Step 3: Create a Virtual Environment

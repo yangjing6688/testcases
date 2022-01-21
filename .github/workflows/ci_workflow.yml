@@ -591,9 +591,9 @@ jobs:
       if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
       uses: actions/checkout@v2
       with:
-        repository: extremenetworks/econ-automation-framework
+        repository: extremenetworks/extreme_automation_framework
         token: ${{ secrets.REGISTRY_PAT }}
-        path: econ-automation-framework
+        path: extreme_automation_framework
 
     - name: Checkout qtest tools
       if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
@@ -622,7 +622,7 @@ jobs:
       if: ${{env.RUN_PYTEST == 'true'}}
       run: |
         # Add framework to PYTHONPATH
-        export PYTHONPATH="${PYTHONPATH}:${PWD}/econ-automation-framework"
+        export PYTHONPATH="${PYTHONPATH}:${PWD}/extreme_automation_framework"
 
         # Run pytest
         pytest --get_test_info cicd ${{ env.PYTEST_FILES }} || true
@@ -633,7 +633,7 @@ jobs:
         ROBOT_TOOL_PATH: Tests/Robot/get_test_info.py
       run: |
         # Add framework to PYTHONPATH
-        export PYTHONPATH="${PYTHONPATH}:${PWD}/econ-automation-framework"
+        export PYTHONPATH="${PYTHONPATH}:${PWD}/extreme_automation_framework"
 
         # Run robot
         python $ROBOT_TOOL_PATH ${{ env.ROBOT_FILES }}
