@@ -46,7 +46,8 @@ class DefaultTests:
 
             # Create new objects to use in test. Here we will import everything from the default library
             cls.defaultLibrary = DefaultLibrary()
-          
+            cls.mySess = cls.defaultLibrary.deviceNetworkElement.networkElementConnectionManager
+
             # Call the setup
             cls.defaultLibrary.apiUdks.setupTeardownUdks.Base_Test_Suite_Setup()
         except Exception :
@@ -67,7 +68,6 @@ class DefaultTests:
     def test_01_do_something(self):
         self.executionHelper.testSkipCheck()
         print("test_01_dosomething")
-        
     @mark.p2  # Marked as a P2 test case
     def test_02_do_something_else(self):
         self.executionHelper.testSkipCheck()

@@ -10,7 +10,7 @@ netelem1:
   mgmt_vlan:                "mgmt"
   username:                 "admin"
   password:                 ""
-  connection_method:        "telnet"
+  connection_method:        "console"
   os:                       "exos"
   hostname:                 "RDU-X460G2-STK-POD1-4NODE-DUT1"
   serial:                   "1850N-43241"
@@ -31,8 +31,6 @@ netelem1:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
-  vm_location:
-  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x460g2_stk_pod1_4node/rdu_x460g2_stk_pod1_4node_netelem1.cfg"
   stack:
     slot1:
       console_ip: "10.69.50.244"
@@ -140,8 +138,6 @@ netelem2:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
-  vm_location:
-  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x460g2_stk_pod1_4node/rdu_x460g2_stk_pod1_4node_netelem2.cfg"
   isl:
     port_a:
       ifname: &netelem2_isl_port_a_ifname "3"
@@ -243,8 +239,6 @@ netelem3:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
-  vm_location:
-  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x460g2_stk_pod1_4node/rdu_x460g2_stk_pod1_4node_netelem3.cfg"
   isl:
     port_a:
       ifname: &netelem3_isl_port_a_ifname "7"
@@ -345,8 +339,6 @@ netelem4:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
-  vm_location:
-  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x460g2_stk_pod1_4node/rdu_x460g2_stk_pod1_4node_netelem4.cfg"
   isl:
     port_a:
       ifname: &netelem4_isl_port_a_ifname "9"
