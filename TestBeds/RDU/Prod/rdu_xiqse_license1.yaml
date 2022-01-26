@@ -61,12 +61,10 @@ nav2:
   platform:                 "cisco"
 
 nav3:
-  name:                     "GNS3-7750-13"
+  name:                     "GNS3-c1720-61-13"
   ip:                       "10.69.61.13"
   profile:                  "public_v2_Profile"
-  serial:                   "b6e5ff000001"
-  mac:                      "b6e5ff000001"
-  model:                    "Alcatel 7750"
+  serial:                   "2342056275"
+  mac:                      "d002140c0000"
+  model:                    "Cisco 1720"
   platform:                 "cisco"
-
-

@@ -157,12 +157,72 @@ Confirm Device Serial Offline
     ${result}=  Wait Until Device Offline   ${serial}
     Should Be Equal As Integers             ${result}    1
 
+Navigate Filter and Confirm Device Serial Present
+    [Documentation]     Navigates, filters, and confirms the specified device serial is present in the table
+    [Arguments]         ${serial}
+
+    Navigate to XIQ Devices and Confirm Success
+    Search XIQ Devices Table and Confirm Success  ${serial}
+    Confirm Device Serial Present  ${serial}
+    Clear Search on XIQ Devices Table and Confirm Success
+
+Navigate Filter and Confirm Device MAC Present
+    [Documentation]     Navigates, filters, and confirms the specified device MAC is present in the table
+    [Arguments]         ${mac}
+
+    Navigate to XIQ Devices and Confirm Success
+    Search XIQ Devices Table and Confirm Success  ${mac}
+    Confirm Device MAC Address Present  ${mac}
+    Clear Search on XIQ Devices Table and Confirm Success
+
+Navigate Filter and Confirm Device Serial Not Present
+    [Documentation]     Navigates, filters, and confirms the specified device serial is not present in the table
+    [Arguments]         ${serial}
+
+    Navigate to XIQ Devices and Confirm Success
+    Search XIQ Devices Table and Confirm Success  ${serial}
+    Confirm Device Serial Not Present  ${serial}
+    Clear Search on XIQ Devices Table and Confirm Success
+
+Navigate Filter and Confirm Device MAC Not Present
+    [Documentation]     Navigates, filters, and confirms the specified device MAC is not present in the table
+    [Arguments]         ${mac}
+
+    Navigate to XIQ Devices and Confirm Success
+    Search XIQ Devices Table and Confirm Success  ${mac}
+    Confirm Device MAC Address Not Present  ${mac}
+    Clear Search on XIQ Devices Table and Confirm Success
+
+Confirm Entitlement Counts for Feature Matches Expected
+    [Documentation]     Confirms the specified feature in the Entitlements table has the expected counts
+    [Arguments]         ${feature}  ${available}  ${activated}  ${devices}
+
+    # Wait until the entitlement counts match what we expect.
+    ${result}=  Wait Until Entitlement Counts for Feature Matches  ${feature}  ${available}  ${activated}  ${devices}
+    Should Be Equal As Integers  ${result}  1
+
 Confirm Entitlement Device Count for Feature Matches Expected
     [Documentation]     Confirms the specified feature has the expected number of devices associated with it
     [Arguments]         ${feature}  ${expected}
 
-    # Wait until the entitlement count matches what we expect.  This could take 2-3 minutes for the counts to "settle".
+    # Wait until the "Device Count" entitlement value matches what we expect.
     ${result}=  Wait Until Entitlement Device Count for Feature Matches  ${expected}  feature=${feature}
+    Should Be Equal As Integers  ${result}  1
+
+Confirm Entitlement Available Count for Feature Matches Expected
+    [Documentation]     Confirms the specified feature has the expected number of available entitlements associated with it
+    [Arguments]         ${feature}  ${expected}
+
+    # Wait until the "Available" entitlement value matches what we expect.
+    ${result}=  Wait Until Entitlement Available Count for Feature Matches  ${expected}  feature=${feature}
+    Should Be Equal As Integers  ${result}  1
+
+Confirm Entitlement Activated Count for Feature Matches Expected
+    [Documentation]     Confirms the specified feature has the expected number of activated entitlements associated with it
+    [Arguments]         ${feature}  ${expected}
+
+    # Wait until the "Activated" entitlement value matches what we expect.
+    ${result}=  Wait Until Entitlement Activated Count for Feature Matches  ${expected}  feature=${feature}
     Should Be Equal As Integers  ${result}  1
 
 Log License Information From CoPilot Dashboard
@@ -277,7 +337,7 @@ Get Navigator License Consumed Count From CoPilot Dashboard
 
     [Return]  ${retval}
 
-Confirm Total License Entitlements
+Confirm Total License Entitlements From CoPilot Dashboard
     [Documentation]     Confirms the expected number of Pilot and Navigator license entitlements matches
     ...                 what is displayed on the CoPilot Dashboard
     [Arguments]         ${expected_pilots}  ${expected_navigators}
@@ -306,7 +366,7 @@ Confirm Total License Entitlements
     Should Be Equal As Integers  ${total_pilots}      ${expected_pilots}
     Should Be Equal As Integers  ${total_navigators}  ${expected_navigators}
 
-Confirm Total Pilot License Entitlements
+Confirm Total Pilot License Entitlements From CoPilot Dashboard
     [Documentation]     Confirms the expected number of Pilot license entitlements matches
     ...                 what is displayed on the CoPilot Dashboard
     [Arguments]         ${expected_pilots}
@@ -314,7 +374,7 @@ Confirm Total Pilot License Entitlements
     ${total_pilots}=  Get Total Pilot License Entitlements From CoPilot Dashboard
     Should Be Equal As Integers  ${total_pilots}      ${expected_pilots}
 
-Confirm Total Navigator License Entitlements
+Confirm Total Navigator License Entitlements From CoPilot Dashboard
     [Documentation]     Confirms the expected number of Navigator license entitlements matches
     ...                 what is displayed on the CoPilot Dashboard
     [Arguments]         ${expected_navigators}
@@ -322,7 +382,7 @@ Confirm Total Navigator License Entitlements
     ${total_navigators}=  Get Total Navigator License Entitlements From CoPilot Dashboard
     Should Be Equal As Integers  ${total_navigators}  ${expected_navigators}
 
-Confirm Number of Licenses Consumed
+Confirm Number of Licenses Consumed From CoPilot Dashboard
     [Documentation]     Confirms the number of Pilot and Navigator licenses expected to be consumed matches
     ...                 what is displayed on the CoPilot Dashboard
     [Arguments]         ${expected_pilots}  ${expected_navigators}
@@ -347,7 +407,7 @@ Confirm Number of Licenses Consumed
     Should Be Equal As Integers  ${pilots_consumed}      ${expected_pilots}
     Should Be Equal As Integers  ${navigators_consumed}  ${expected_navigators}
 
-Confirm Number of Pilot Licenses Consumed
+Confirm Number of Pilot Licenses Consumed From CoPilot Dashboard
     [Documentation]     Confirms the number of Pilot licenses expected to be consumed matches
     ...                 what is displayed on the CoPilot Dashboard
     [Arguments]         ${expected_pilots}
@@ -355,7 +415,7 @@ Confirm Number of Pilot Licenses Consumed
     ${pilots_consumed}=  Get Pilot License Consumed Count From CoPilot Dashboard
     Should Be Equal As Integers  ${pilots_consumed}  ${expected_pilots}
 
-Confirm Number of Navigator Licenses Consumed
+Confirm Number of Navigator Licenses Consumed From CoPilot Dashboard
     [Documentation]     Confirms the number of Navigator licenses expected to be consumed matches
     ...                 what is displayed on the CoPilot Dashboard
     [Arguments]         ${expected_navigators}
@@ -363,7 +423,31 @@ Confirm Number of Navigator Licenses Consumed
     ${navigators_consumed}=  Get Navigator License Consumed Count From CoPilot Dashboard
     Should Be Equal As Integers  ${navigators_consumed}  ${expected_navigators}
 
-Confirm Number of Licenses Available
+Wait and Confirm Expected Number of Licenses Consumed From CoPilot Dashboard
+    [Documentation]  Confirms the expected number of licenses are consumed within the specified time
+    ...              on the copilot dashboard
+    [Arguments]      ${expected_pilots}  ${expected_navigators}  ${retry_count}=10x  ${retry_interval}=30s
+
+    Wait Until Keyword Succeeds  ${retry_count}  ${retry_interval}
+    ...  Confirm Number of Licenses Consumed From CoPilot Dashboard  ${expected_pilots}  ${expected_navigators}
+
+Wait and Confirm Expected Pilot Licenses Consumed From CoPilot Dashboard
+    [Documentation]  Confirms the expected number of pilot licenses are consumed within the specified time
+    ...              on the copilot dashboard
+    [Arguments]      ${value}  ${retry_count}=10x  ${retry_interval}=30s
+
+    Wait Until Keyword Succeeds  ${retry_count}  ${retry_interval}
+    ...  Confirm Number of Pilot Licenses Consumed From CoPilot Dashboard  ${value}
+
+Wait and Confirm Expected Navigator Licenses Consumed From CoPilot Dashboard
+    [Documentation]  Confirms the expected number of navigator licenses are consumed within the specified time
+    ...              on the copilot dashboard
+    [Arguments]      ${value}  ${retry_count}=10x  ${retry_interval}=30s
+
+    Wait Until Keyword Succeeds  ${retry_count}  ${retry_interval}
+    ...  Confirm Number of Navigator Licenses Consumed From CoPilot Dashboard  ${value}
+
+Confirm Number of Licenses Available From CoPilot Dashboard
     [Documentation]     Confirms the number of Pilot and Navigator licenses expected to be available matches
     ...                 what is displayed on the CoPilot Dashboard
     [Arguments]         ${expected_pilots}  ${expected_navigators}
@@ -388,7 +472,7 @@ Confirm Number of Licenses Available
     Should Be Equal As Integers  ${pilots_available}      ${expected_pilots}
     Should Be Equal As Integers  ${navigators_available}  ${expected_navigators}
 
-Confirm Number of Pilot Licenses Available
+Confirm Number of Pilot Licenses Available From CoPilot Dashboard
     [Documentation]     Confirms the number of Pilot licenses expected to be available matches
     ...                 what is displayed on the CoPilot Dashboard
     [Arguments]         ${expected_pilots}
@@ -396,13 +480,63 @@ Confirm Number of Pilot Licenses Available
     ${pilots_available}=  Get Pilot License Available Count From CoPilot Dashboard
     Should Be Equal As Integers  ${pilots_available}  ${expected_pilots}
 
-Confirm Number of Navigator Licenses Available
+Confirm Number of Navigator Licenses Available From CoPilot Dashboard
     [Documentation]     Confirms the number of Navigator licenses expected to be available matches
     ...                 what is displayed on the CoPilot Dashboard
     [Arguments]         ${expected_navigators}
 
     ${navigators_available}=  Get Navigator License Available Count From CoPilot Dashboard
     Should Be Equal As Integers  ${navigators_available}  ${expected_navigators}
+
+Wait and Confirm Expected Number of Licenses Available From CoPilot Dashboard
+    [Documentation]  Confirms the expected number of licenses are available within the specified time
+    ...              on the copilot dashboard
+    [Arguments]      ${expected_pilots}  ${expected_navigators}  ${retry_count}=10x  ${retry_interval}=30s
+
+    Wait Until Keyword Succeeds  ${retry_count}  ${retry_interval}
+    ...  Confirm Number of Licenses Available From CoPilot Dashboard  ${expected_pilots}  ${expected_navigators}
+
+Wait and Confirm Expected Pilot Licenses Available From CoPilot Dashboard
+    [Documentation]  Confirms the expected number of pilot licenses are available within the specified time
+    ...              on the copilot dashboard
+    [Arguments]      ${value}  ${retry_count}=10x  ${retry_interval}=30s
+
+    Wait Until Keyword Succeeds  ${retry_count}  ${retry_interval}
+    ...  Confirm Number of Pilot Licenses Available From CoPilot Dashboard  ${value}
+
+Wait and Confirm Expected Navigator Licenses Available From CoPilot Dashboard
+    [Documentation]  Confirms the expected number of navigator licenses are available within the specified time
+    ...              on the copilot dashboard
+    [Arguments]      ${value}  ${retry_count}=10x  ${retry_interval}=30s
+
+    Wait Until Keyword Succeeds  ${retry_count}  ${retry_interval}
+    ...  Confirm Number of Navigator Licenses Available From CoPilot Dashboard  ${value}
+
+Confirm Expected Pilot Licenses Consumed
+    [Documentation]  Confirms the expected number of pilot licenses are consumed based on the entitlements
+    [Arguments]      ${entitlements}  ${consumed}  ${feature}=PRD-XIQ-PIL-S-C
+
+    ${available}=  Evaluate  ${entitlements} - ${consumed}
+
+    # Confirm counts on CoPilot Dashboard page
+    Wait and Confirm Expected Pilot Licenses Consumed From CoPilot Dashboard   ${consumed}
+    Wait and Confirm Expected Pilot Licenses Available From CoPilot Dashboard  ${available}
+
+    # Confirm counts on License Management page
+    Confirm Entitlement Counts for Feature Matches Expected  ${feature}  ${available}  ${consumed}  ${consumed}
+
+Confirm Expected Navigator Licenses Consumed
+    [Documentation]  Confirms the expected number of navigator licenses are consumed based on the entitlements
+    [Arguments]      ${entitlements}  ${consumed}  ${feature}=PRD-XIQ-NAV-S-C
+
+    ${available}=  Evaluate  ${entitlements} - ${consumed}
+
+    # Confirm counts on CoPilot Dashboard page
+    Wait and Confirm Expected Navigator Licenses Consumed From CoPilot Dashboard   ${consumed}
+    Wait and Confirm Expected Navigator Licenses Available From CoPilot Dashboard  ${available}
+
+    # Confirm counts on License Management page
+    Confirm Entitlement Counts for Feature Matches Expected  ${feature}  ${available}  ${consumed}  ${consumed}
 
 Search XIQ Devices Table and Confirm Success
     [Documentation]     Performs a search on the Devices table in XIQ and confirms success.
