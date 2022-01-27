@@ -31,6 +31,13 @@ Create Open Express Policy With Switch Template and Confirm Success
     ${result}=  Assign Switch Template  ${policy}  ${template_name}
     Should Be Equal As Integers         ${result}  1
 
+Assign Policy to Device and Confirm Success
+    [Documentation]     Updates the network policy to the device and confirms the action was successful
+    [Arguments]         ${policy}  ${serial}
+
+    ${update_result}=               Update Network Policy To AP  policy_name=${policy}  ap_serial=${serial}
+    Should Be Equal As Integers     ${update_result}  1
+
 Delete Policy and Confirm Success
     [Documentation]     Deletes the policy and confirms the action was successful
     [Arguments]         ${policy}
