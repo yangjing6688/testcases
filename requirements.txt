@@ -5,7 +5,7 @@ image==1.5.28
 netmiko==3.0.0
 paramiko==2.7.1
 pexpect==4.8.0
-robotframework==3.1.2
+robotframework==4.1.1
 robotframework-debuglibrary==2.2.2
 sauceclient==1.0.0
 selenium==3.141.0
