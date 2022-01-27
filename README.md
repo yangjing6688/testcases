@@ -2,7 +2,16 @@
 Welcome to the extreme_automation_test repository! This repostory uses the extreme_automation_test as the base for the tests that are contained in this repository. The tests are written in the [Python language](https://python.org/) and the [Robot language](https://robotframework.org/) executed with the [Pytest](https://docs.pytest.org/en/stable/) and [Robot](https://robotframework.org/) frameworks. For reporting we use the standard Robot reporting and for pytest we use a standard html file and [Allure](http://allure.qatools.ru/) for local runs. This provides a robost reporting for pytest using the [plugin allure-pytest](https://pypi.org/project/allure-pytest/). 
 
 # Setup for Framework
-There are three methods for setting up the AutoIQ python based framework.  Installing the tools natively will likely run faster on whichever system you are using but the instructions for this only contain the AutoIQ framework and tools.  If you intend to use the extAuto framework (UI Testing) and tools you'll need to install them as well.
+There are three methods for setting up the AutoIQ python based framework.  Installing the tools natively will likely run faster on whichever system you are using but the instructions for this only contain the AutoIQ framework and tools. The AutoIQ framework includes both the XIQ UI, Switch testing and Traffic generation keywords. There are 3 paths that must be included in the PYTHONPATH in order to get the tests cases to work.
+
+Linux:
+
+      PYTHONPATH=<path to repo>/extreme_automation_framework:<path to repo>/extreme_automation_framework/extauto:<path to repo>/extreme_automation_tests
+      
+Windows:
+
+      PYTHONPATH=<path to repo>/extreme_automation_framework;<path to repo>/extreme_automation_framework/extauto;<path to repo>/extreme_automation_tests
+    
 
 The Virtual Machine and Docker setups contains the framework and tools for both AutoIQ as well as extAuto.  Using either of those methods to setup your framework allows you to use either Robot or python to create your tests.
 
