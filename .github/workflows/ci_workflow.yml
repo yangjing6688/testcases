@@ -111,6 +111,7 @@ jobs:
           Tests/Pytest/(Demos|Functional|NonProduction)/([^/]+/)+(TestCases|Resources)/
           Tests/Robot/(Demos|Functional|NonProduction)/([^/]+/)+(TestCases|Resources)/
           Tests/(Pytest|Robot)/Libraries/([^/]+/)+
+          __init__.py
         separator: ','
 
     # Outputs a list of files breaking directory rules that we don't care about
@@ -281,7 +282,7 @@ jobs:
               rc=1
           # Only allow __init__.py or files that conform to "test_<testname>.py"
           # Note: inside bash [[ ]] you need to use extended regex format
-          elif [[ ! $f =~ ^test_.*.py$|^__init__\.py$ ]] ; then
+          elif [[ ! "$f" =~ test_[^/\\]*\.py$|__init__\.py$ ]] ; then
               printf "FAIL: $f is NOT in a valid Pytest filename format! \n" | tee -a ${{ env.testcase_files_report_path }}
               rc=1
           else
