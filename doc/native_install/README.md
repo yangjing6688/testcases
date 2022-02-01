@@ -51,4 +51,4 @@ This should install all of the requirements for the Automation Framework and pyt
 ## Step 5: Install and Configuration an IDE
 There are a numerous of ways that a new developer can set up this framework and tests.
 
-- We have directions to install [PyCharm](doc/PYCHARM.md) IDE to develop test cases.
+- We have directions to install [PyCharm](../PYCHARM.md) IDE to develop test cases.
