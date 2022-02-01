@@ -14,11 +14,11 @@ Next you will need to set your system PYTHONPATH environment variable for the OS
 
 - Windows:
 
-        PYTHONPATH=<Base Directory>/extreme_automation_framework;<Base Directory>/extreme_automation_tests;<Base Directory>/extauto
+        PYTHONPATH=<Base Directory>/extreme_automation_framework;<Base Directory>/extreme_automation_tests;<Base Directory>/extreme_automation_tests/extauto
 
 - Linux:
 
-        PYTHONPATH=<Base Directory>/extreme_automation_framework:<Base Directory>/extreme_automation_tests:<Base Directory>/extauto
+        PYTHONPATH=<Base Directory>/extreme_automation_framework:<Base Directory>/extreme_automation_tests:<Base Directory>/extreme_automation_tests/extauto
 
 
 ## Step 3: Create a Virtual Environment
