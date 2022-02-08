@@ -22,6 +22,6 @@ Library     xiq/flows/common/Login.py
     [Documentation]     Check the login and logout functionality
     [Tags]      sanity      login
 
-    Login User      bob     bob   url=${test_url}  expect_error=true
+    Login User      bob     bob   url=${test_url}  IRV=true  expect_error=true
     Quit Browser
 
