@@ -32,12 +32,10 @@ def xiq_helper_test_setup_teardown(request):
 @mark.testbed_1_node
 class xiqTests():
     
-    def init_xiq_libaries_and_login(self, username, password, capture_version=False, code="default", url="default", incognito_mode="False"):
+    def init_xiq_libaries_and_login(self, username, password, capture_version=False, code="default", url="default", incognito_mode="False", **kwargs):
         self.xiq = XiqLibrary()
         time.sleep(5)
-        res = self.xiq.init_xiq_libaries_and_login(username, password, capture_version=capture_version, code=code, url=url, incognito_mode=incognito_mode)
-        if res != 1:
-            pytest.fail('Could not Login')
+        self.xiq.init_xiq_libaries_and_login(username, password, capture_version=capture_version, code=code, url=url, incognito_mode=incognito_mode, **kwargs)
             
     def deactivate_xiq_libaries_and_logout(self):
         self.xiq.login.logout_user()
@@ -55,39 +53,32 @@ class xiqTests():
             cls.cfg['${OUTPUT DIR}'] = os.getcwd()
             cls.cfg['${TEST_NAME}'] = 'SETUP'
 
-
             # Create new objects to use in test. Here we will import everything from the default library
             cls.defaultLibrary = DefaultLibrary()
-         
-            # Log into the xiq
-            cls.init_xiq_libaries_and_login(cls,
-                                            cls.cfg['tenant_username'], 
-                                            cls.cfg['tenant_password'], 
-                                            url=cls.cfg['test_url'])
 
             # Call the setup
             cls.defaultLibrary.apiUdks.setupTeardownUdks.Base_Test_Suite_Setup()
             
         except Exception as e:
             cls.executionHelper.setSetupFailure(True)
-        finally:
-            # Clean up the xiq libraries
-            cls.deactivate_xiq_libaries_and_logout(cls)
 
     @classmethod
     def teardown_class(cls):
-        cls.init_xiq_libaries_and_login(cls,
-                                        cls.cfg['tenant_username'], 
-                                        cls.cfg['tenant_password'], 
-                                        url=cls.cfg['test_url'])
-        cls.deactivate_xiq_libaries_and_logout(cls)
         cls.defaultLibrary.apiUdks.setupTeardownUdks.Base_Test_Suite_Cleanup()
         
     # """ Test Cases """
     @mark.p1
     def test_dosomething(self, xiq_helper_test_setup_teardown):
+        """ This is the test case description for test one """
         self.executionHelper.testSkipCheck()
         print("do something")
+        
+    @mark.p1
+    def test_expect_login_fail(self):
+        """ This is the test case description for test two """
+        # IRV = Internal Results Verification
+        self.init_xiq_libaries_and_login("bob", "bob", url=self.tb.config['test_url'], IRV=True, expect_error=True)
+        self.xiq.login.quit_browser()
         
    
   

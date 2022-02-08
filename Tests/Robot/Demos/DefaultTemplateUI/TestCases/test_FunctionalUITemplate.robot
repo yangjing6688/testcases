@@ -18,4 +18,10 @@ Library     xiq/flows/common/Login.py
     Should Be Equal As Strings      '${result2}'     '1'
     Quit Browser
 
+02 expect_to_fail
+    [Documentation]     Check the login and logout functionality
+    [Tags]      sanity      login
+
+    Login User      bob     bob   url=${test_url}  expect_error=true
+    Quit Browser
 

@@ -1,8 +1,10 @@
 import pytest
+import inspect
 from pytest import fixture
 from pytest_testconfig import config
 import threading
 import queue
+import logging
 from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
 from ExtremeAutomation.Utilities.Firmware.pytestLoadFirmware import PlatformLoadFirmware
 from ExtremeAutomation.Utilities.EconClient.econ_request_api import econAPI
@@ -74,7 +76,11 @@ def pytest_addoption(parser):
     parser.addoption("--get_test_info", action="store", default=None, help="Dump checkdb or insert mod info")
 
 
+@pytest.hookimpl(trylast=True)
 def pytest_configure(config):
+    terminal_reporter = config.pluginmanager.getplugin('terminalreporter')
+    config.pluginmanager.register(TestDescriptionPlugin(terminal_reporter), 'testdescription')
+
     if config.option.cfg is not None:
         from pytest_testconfig import load_yaml
         pt = PathTools()
@@ -137,6 +143,7 @@ def skip_check(request):
         out = chkExec.skipNos()
         if out[0]:
             pytest.skip(f"skipped {request.node.name} NOS is not supported: {out[1]}")
+
 @fixture(scope='session', autouse=True)
 def loadTestBedFirmware(request):
     status    = 'skipped'
@@ -320,3 +327,62 @@ def loadTestBedFirmware(request):
                                              rtype='put', payload=upData)
 
         pytest.skip("Download Firmware Failed.")
+
+class TestDescriptionPlugin:
+
+    def __init__(self, terminal_reporter):
+        self.terminal_reporter = terminal_reporter
+        self.logger =  logging.getLogger('HEADER')
+        self.desc = None
+
+        self.BLUE = '\033[94m'
+        self.BOLD = '\033[1m'
+        self.END = '\033[0m'
+
+    def pytest_runtest_protocol(self, item):
+        self.desc = inspect.getdoc(item.obj)
+
+    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
+    def pytest_runtest_setup(self, item):
+        if self.terminal_reporter.verbosity == 0:
+            yield
+        else:
+            self.logger.info(self.BLUE + self.BOLD + f'**********************************************************************************************' + self.END)
+            self.logger.info(self.BLUE + self.BOLD + f'*****************  Test Case SETUP '+ self.END)
+            self.logger.info(self.BLUE + self.BOLD + f'*****************  Test Case: {item.location[2]}' + self.END)
+            self.logger.info(self.BLUE + self.BOLD + f'**********************************************************************************************\n'+ self.END)
+            yield
+
+    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
+    def pytest_runtest_teardown(self, item, nextitem):
+        if self.terminal_reporter.verbosity == 0:
+            yield
+        else:
+            self.logger.info(self.BLUE + self.BOLD + f'**********************************************************************************************'+ self.END)
+            self.logger.info(self.BLUE + self.BOLD + f'****************  Test Case TEARDOWN '+ self.END)
+            self.logger.info(self.BLUE + self.BOLD + f'****************  Test Case: {item.location[2]}' + self.END)
+            self.logger.info(self.BLUE + self.BOLD + f'**********************************************************************************************\n'+ self.END)
+            yield
+
+    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
+    def pytest_runtest_logstart(self, nodeid, location):
+        if self.terminal_reporter.verbosity == 0:
+            yield
+        else:
+            self.logger.info(self.BLUE + self.BOLD + f'**********************************************************************************************'+ self.END)
+            self.logger.info(self.BLUE + self.BOLD + f'****************  Test Case: {location[2]} START' + self.END)
+            if self.desc:
+                self.logger.info(self.BLUE + self.BOLD + f'****************  '+ self.END)
+                self.logger.info(self.BLUE + self.BOLD + f'****************  Description: {self.desc}'+ self.END)
+            self.logger.info(self.BLUE + self.BOLD + f'**********************************************************************************************\n'+ self.END)
+            yield
+
+    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
+    def pytest_runtest_logfinish(self, nodeid, location):
+        if self.terminal_reporter.verbosity == 0:
+            yield
+        else:
+            self.logger.info(self.BLUE + self.BOLD + f'**********************************************************************************************' + self.END)
+            self.logger.info(self.BLUE + self.BOLD + f'****************  Test Case: {location[2]} END' + self.END)
+            self.logger.info(self.BLUE + self.BOLD + f'**********************************************************************************************\n' + self.END)
+            yield
