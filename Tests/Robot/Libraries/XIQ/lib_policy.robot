@@ -12,6 +12,7 @@ Library          xiq/flows/configure/CommonObjects.py
 Library          xiq/flows/configure/ExpressNetworkPolicies.py
 Library          xiq/flows/configure/NetworkPolicy.py
 Library          xiq/flows/configure/SwitchTemplate.py
+Library          xiq/flows/manage/Devices.py
 
 
 *** Keywords ***
@@ -36,6 +37,13 @@ Assign Policy to Device and Confirm Success
     [Arguments]         ${policy}  ${serial}
 
     ${update_result}=               Update Network Policy To AP  policy_name=${policy}  ap_serial=${serial}
+    Should Be Equal As Integers     ${update_result}  1
+
+Assign Policy to Switch and Confirm Success
+    [Documentation]     Updates the network policy to the switch and confirms the action was successful
+    [Arguments]         ${policy}  ${serial}
+
+    ${update_result}=               Update Network Policy To Switch  policy_name=${policy}  serial=${serial}
     Should Be Equal As Integers     ${update_result}  1
 
 Delete Policy and Confirm Success

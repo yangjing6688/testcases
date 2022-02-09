@@ -59,6 +59,23 @@ netelem3:
   product:                  "VSP_XA_1480"
   function:                 "Switch"
 
+sw1:
+  name:                     "AH-Switch"
+  serial:                   '23481812230043'
+  mac:                      "B87CF20269A8"
+  ip:                       "10.54.12.102"
+  make:                     "Extreme - Aerohive"
+  model:                    "SR2348P"
+  device_template:          "SR_2348P-default-template"
+  os:
+  network_policy:
+  username:                 "admin"
+  password:                 "Aerohive123"
+  platform:                 "aerohive-switch"
+  console_ip:               "10.54.7.2"
+  console_port:             "7012"
+  test_port:                "1/0/2"
+
 ap1:
   name:                     "bui-flo-0019"
   hostname:                 "bui-flo-0019"
