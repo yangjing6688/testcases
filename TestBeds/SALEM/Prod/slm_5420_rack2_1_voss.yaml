@@ -3,8 +3,8 @@ lab:                        "SALEM"
 netelem1:
   name:                     "VOSS"
   hostname:                 ""
-  serial:                   "JA052131G-00032 "
-  mac:                      "F4CE48BAD000'
+  serial:                   "JA052131G-00032"
+  mac:                      "F4CE48BAD000"
   ip:                       "10.148.35.121"
   port:                     "23"
   console_ip:               "10.148.35.5"
