@@ -58,6 +58,8 @@ netelem3:
   model:                    "XA1480"
   product:                  "VSP_XA_1480"
   function:                 "Switch"
+  test_port:                "1/3"
+  test_port_num:            "3"
 
 sw1:
   name:                     "AH-Switch"
