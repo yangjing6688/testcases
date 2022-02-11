@@ -84,9 +84,11 @@ Confirm Column Picker Selections Persist For User in New Browser Session
 
 Confirm Column Picker Selections Do Not Apply To Other View Types
     [Documentation]     Confirms the column picker selections only apply to the current view type
-    [Tags]              csit_tc_6875   aiq_1332    development    xiq    manage_devices    column_persistence_wan    test3
+    [Tags]              known_issue    csit_tc_6875   aiq_1332    development    xiq    manage_devices    column_persistence_wan    test3
 
     [Setup]     Log In and Navigate to Devices      ${WIN_1}  ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
+
+    Log to Console  KNOWN ISSUE: XIQ-595
 
     # Confirm column selections are at defaults for view types other than what is being tested
     Run Keyword If  '${VIEW_TYPE}'.startswith('WAN')
