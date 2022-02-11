@@ -16,7 +16,7 @@ Library          xiq/flows/manage/Location.py
 
 Resource         ../../VOSS/Resources/AllResources.robot
 
-Force Tags       testbed_1_node
+Force Tags       testbed_voss_node
 
 Suite Setup      Log Into XIQ and Set Up Test
 Suite Teardown   Tear Down Test and Close Session
