@@ -19,6 +19,14 @@ Navigate to Devices and Confirm Success
     ${result}=  Navigate to Devices
     Should Be Equal As Integers  ${result}  1
 
+Select Table View Type and Confirm Success
+    [Documentation]     Selects the view type for the Devices table and confirms the action was successful
+    [Arguments]         ${view_type}
+
+    Log To Console  Selecting ${view_type} for Devices Table
+    ${result}=  Select Table View Type      ${view_type}
+    Should Be Equal As Integers  ${result}  1
+
 Delete Device and Confirm Success
     [Documentation]     Deletes the specified device from the Manage> Devices list and confirms the action was successful
     [Arguments]         ${serial}

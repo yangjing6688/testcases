@@ -14,6 +14,7 @@ BROWSER:                  chrome
 
 # Remote System
 WINDOWS10:                10.69.70.44
+WINDOWS10_2:              10.69.70.34
 
 # Configure this to True to print the WebElement descriptions in definitions
 ELEMENT_INFO:             None

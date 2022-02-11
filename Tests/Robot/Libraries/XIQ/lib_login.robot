@@ -19,6 +19,13 @@ Log Into XIQ and Confirm Success
     ${result}=  Login User          ${user}  ${pwd}  url=${url}
     Should Be Equal As Integers     ${result}     1
 
+Log Into XIQ with Incognito Mode and Confirm Success
+    [Documentation]     Logs into XIQ with incognito mode and confirms the login was successful
+    [Arguments]         ${user}  ${pwd}  ${url}
+
+    ${result}=      Login User      ${user}  ${pwd}  url=${url}  incognito_mode=True
+    Should Be Equal As Integers     ${result}     1
+
 Log Out of XIQ and Confirm Success
     [Documentation]     Logs out of XIQ and confirms the action was successful
 
