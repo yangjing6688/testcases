@@ -3,7 +3,7 @@ lab:                        "SALEM"
 netelem1:
   name:                     "EXOS"
   hostname:                 ""
-  serial:                   "JA052131G-00059"
+  serial:                   "JA052131G-00059,JA052131G-00079"
   mac:                      "F4CE48BB3C00"
   ip:                       "10.148.35.122"
   port:                     "23"
@@ -14,6 +14,7 @@ netelem1:
   connection_method:        "telnet"
   os:                       "exos"
   platform:                 "Stack"
+  model:                    "5420F-16W-32P-4XE"
   auth_mode:                "basic"
   stack:
     slot1:
