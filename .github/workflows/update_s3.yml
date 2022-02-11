@@ -1,0 +1,31 @@
+name: Update Test Infomation in S3 for the UI
+# Ensures only one instance of this workflow is running at a time
+# This stops accidental multiple runs when manually starting a workflow
+concurrency: update-s3
+on:
+  workflow_dispatch:
+  # Only run on pushes to main that include files in the Testbeds directory(except in the Templates subdir).
+  push:
+    branches: [main]
+    paths:
+      - 'Testbeds/**'
+      - '!Testbeds/Templates/**'
+jobs:
+  promote_image_staging:
+    name: Update S3 Info
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Upload testbed yaml files
+      run: |
+        aws s3 sync Testbeds s3://econgit/extreme_automation_tests/main/Testbeds --exclude "*" --include "*/Prod/*.yaml"

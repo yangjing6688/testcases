@@ -27,6 +27,7 @@ env:
   tag_marker_report_path:       tag_and_marker_report.txt
   testcase_func_report_path:    testcase_functionality_report.txt
   report_artifact_name:         CI-reports-${{ github.event.repository.name }}-run-${{ github.run_number }}
+  documentation_url:            https://extremenetworks2com.sharepoint.com/:w:/r/sites/qa-extauto/_layouts/15/Doc.aspx?sourcedoc=%7B357F1F2C-B274-4739-9D87-A67A72875846%7D&file=Automation%20Process%20-%20Draft.docx
 
 jobs:
   check_changes:
@@ -248,7 +249,7 @@ jobs:
           let "files_tested += 1"
           printf "[*] Processing Pytest file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
           if [[ ! $f =~ .*\.py$ ]] ; then
-              printf "FAIL: $f is NOT a Pytest file!  Only .py files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf "[*] FAIL: $f is NOT a Pytest file!  Only .py files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
               rc=1
           # Only allow __init__.py or files that conform to "test_<testname>_<valid_jira_id>.py"
           # valid jira id: One or more letters followed by one or more numbers. A dash between the letters and numbers is optional.
@@ -256,10 +257,11 @@ jobs:
           # Examples: test_blah_app-45   test_blah_blah_app45_1   test_blah_app-45_1   test_blah_app45
           # Note: inside bash [[ ]] you need to use extended regex format
           elif [[ ! $f =~ test_.*_[a-zA-Z]+-?[0-9]+(_[0-9]+\.py|\.py)$|__init__\.py$ ]] ; then
-              printf "FAIL: $f is NOT in a valid Pytest filename format!!\n" | tee -a ${{ env.testcase_files_report_path }}
+              echo "[*] FAIL: $f is NOT in a valid Pytest filename format!" | tee -a ${{ env.testcase_files_report_path }}
+              echo '[*] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
               rc=1
           else
-              printf "PASS: $f\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf "[*] PASS: $f\n" | tee -a ${{ env.testcase_files_report_path }}
           fi
         done
         unset IFS
@@ -278,15 +280,16 @@ jobs:
           let "files_tested += 1"
           printf "[*] Processing Pytest file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
           if [[ ! $f =~ .*\.py$ ]] ; then
-              printf "FAIL: $f is NOT a Pytest file! Only .py files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf "[*] FAIL: $f is NOT a Pytest file! Only .py files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
               rc=1
           # Only allow __init__.py or files that conform to "test_<testname>.py"
           # Note: inside bash [[ ]] you need to use extended regex format
           elif [[ ! "$f" =~ test_[^/\\]*\.py$|__init__\.py$ ]] ; then
-              printf "FAIL: $f is NOT in a valid Pytest filename format! \n" | tee -a ${{ env.testcase_files_report_path }}
+              echo "[*] FAIL: $f is NOT in a valid Pytest filename format!" | tee -a ${{ env.testcase_files_report_path }}
+              echo '[*] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
               rc=1
           else
-              printf "PASS: $f\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf "[*] PASS: $f\n" | tee -a ${{ env.testcase_files_report_path }}
           fi
         done
         unset IFS
@@ -327,15 +330,16 @@ jobs:
           let "files_tested += 1"
           printf "[*] Processing Robot file: $f ...\n" | tee -a ${{ env.testcase_files_report_path }}
           if [[ ! $f =~ .*\.robot$ ]] ; then
-              printf "FAIL: $f is NOT a Robot file! Only .robot files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf "[*] FAIL: $f is NOT a Robot file! Only .robot files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
               rc=1
           # Only allow files that conform to "test_<testname>_<valid_jira_id>.robot".
           # See "Process Pytest Production file(s)" for definition of <valid_jira_id>
           elif [[ ! $f =~ _[a-zA-Z]+-?[0-9]+(_[0-9]+\.robot|\.robot)$ ]] ; then
-              printf "FAIL: $f is NOT in a valid Robot filename format!!\n" | tee -a ${{ env.testcase_files_report_path }}
+              echo "[*] FAIL: $f is NOT in a valid Robot filename format!" | tee -a ${{ env.testcase_files_report_path }}
+              echo '[*] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
               rc=1
           else
-              printf "PASS: $f\n"
+              printf "[*] PASS: $f\n"
           fi
         done
         unset IFS
@@ -428,8 +432,11 @@ jobs:
       run: |
         trimmed_files=$(cat ${{ env.other_files_path }} | tr -d [:space:])
         if [[ $trimmed_files ]]; then
+          echo "[*] FAIL: New directories and files not allowed in protected areas." | tee -a ${{ env.directory_struct_report_path }}
+          echo '[*] For more information see the Test Suite Location section of ${{ env.documentation_url }}' | tee -a ${{ env.directory_struct_report_path }}
+          echo "[*] Offending files/directories:" | tee -a ${{ env.directory_struct_report_path }}
+
           IFS=','
-          echo "[*] New directories and files not allowed in protected areas. Offending files/directories:" | tee -a ${{ env.directory_struct_report_path }}
           for path in $trimmed_files ; do
             echo "[**] $path" | tee -a ${{ env.directory_struct_report_path }}
           done
