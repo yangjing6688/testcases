@@ -1,5 +1,5 @@
 #----------------------------------------------------------------------
-# Copyright (C) 2021... 2021 Extreme Networks Inc.
+# Copyright (C) 2021... 2022 Extreme Networks Inc.
 # This software is copyright protected and may not be reproduced in any
 # form or fashion without the written consent of Extreme Networks Inc.
 #----------------------------------------------------------------------
@@ -12,10 +12,9 @@
 
 
 *** Settings ***
-Library         Collections
 Library         xiqse/flows/admin/users/XIQSE_AdminAuthorizedUsers.py
 
-Resource        ../../DeviceTable/Resources/AllResources.robot
+Resource        ../../D360/Resources/AllResources.robot
 
 Force Tags      testbed_1_node
 
@@ -44,6 +43,9 @@ ${DUT_PROFILE}          ${netelem1.profile}
 ${DUT_MAC}              ${netelem1.mac}
 ${DUT_SERIAL}           ${netelem1.serial}
 
+${XIQ_WINDOW_INDEX}             0
+${XIQSE_WINDOW_INDEX}           0
+@{XIQSE_OSE_WINDOW_INDEXES}     []
 
 *** Test Cases ***
 Test 1: Open Site Engine Link: XIQ-SE Managed Device
@@ -66,7 +68,7 @@ Log In and Set Up Test
     Set Up XIQSE Components
 
     XIQ Log In and Set Window Index
-    Set Up XIQ Components
+    XIQ Navigate to Devices and Confirm Success
 
     # Onboard the XIQ Site Engine
     Onboard XIQ Site Engine and Confirm Success
@@ -107,11 +109,6 @@ XIQSE Log In and Set Window Index
     ${xiqse_win}=  XIQSE Get Window Index
     Log To Console  Setting XIQ Site Engine Window Index to ${xiqse_win}
     Set Suite Variable                              ${XIQSE_WINDOW_INDEX}  ${xiqse_win}
-
-Set Up XIQ Components
-    [Documentation]     Sets up the XIQ components for the test
-
-    XIQ Navigate to Devices and Confirm Success
 
 Set Up XIQSE Components
     [Documentation]     Sets up the XIQ Site Engine components for the test
@@ -202,7 +199,6 @@ XIQ Device360 Click Open Site Engine Link
     sleep  30s
     XIQSE Obtain Child Window Indexes
 
-    # [Teardown]  Close Device360 Window
     [Teardown]  Close XIQ Device360 Window and Confirm Success
 
 Confirm XIQ User Logged in to XIQ Site Engine
