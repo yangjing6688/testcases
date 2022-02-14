@@ -36,7 +36,7 @@ tgen1:
   vendor:       "jets"
   chassis_type: "jets"
   software:     "N/A"
-  ip:           "10.148.35.125"
+  ip:           "10.148.35.130"
   vm_ip:        "N/A"
   username:     "root"
   password:     "PASprt86"
