@@ -98,7 +98,7 @@ netelem5:
   name:                     "10.54.142.28"
   hostname:                 "10.54.142.28"
   serial:                   "XLIR948T200018"
-  mac:                      "048A155FE500"
+  mac:                      "001F0A2C3800"
   ip:                       "10.54.142.28"
   profile:                  "BOSS_v2_Profile"
   console_ip:               ""
