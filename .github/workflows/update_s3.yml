@@ -28,4 +28,4 @@ jobs:
 
     - name: Upload testbed yaml files
       run: |
-        aws s3 sync Testbeds s3://econgit/extreme_automation_tests/main/Testbeds --exclude "*" --include "*/Prod/*.yaml"
+        aws s3 sync TestBeds s3://econgit/extreme_automation_tests/main/TestBeds --exclude "*" --include "*/Prod/*.yaml"
