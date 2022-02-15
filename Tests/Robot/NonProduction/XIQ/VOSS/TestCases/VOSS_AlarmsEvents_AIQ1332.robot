@@ -149,13 +149,6 @@ Onboard New Test Device
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 
-Confirm Device Status
-    [Documentation]     Checks the status of the specified device and confirms it matches the expected value
-    [Arguments]         ${serial}  ${expected_status}
-
-    ${device_status}=       Get Device Status       device_serial=${serial}
-    Should Contain          ${device_status}   ${expected_status}
-
 Clean Up Test Device and Confirm Success
     [Documentation]     Deletes the specified device and confirms the action was successful
     [Arguments]         ${serial}
