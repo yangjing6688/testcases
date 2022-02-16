@@ -26,6 +26,8 @@ Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 
+Force Tags   flow2   flow6
+
 Library	            Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   MU1
 
 *** Variables ***

@@ -34,6 +34,7 @@ Variables    Environments/Config/device_commands.yaml
 Resource     router_xr_sanity_config.robot
 Resource     wireless_networks_config.robot
 
+Force Tags   flow1   flow4   flow5
 *** Keywords ***
 
 *** Test Cases ***

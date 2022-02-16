@@ -28,6 +28,8 @@ Variables    Environments/Config/device_commands.yaml
 
 Resource    advanced_onboarding_config.robot
 
+Force Tags   flow3   flow7
+
 Suite Setup     Cleanup-Delete AP   ${ap1.serial}
 
 *** Keywords ***

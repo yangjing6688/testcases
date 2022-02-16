@@ -1,0 +1,24 @@
+#--argumentfile  OR -A    robot -A sanity_flow_01.txt
+#--variable ENV=local
+#--variable TOPO=g2r2
+#
+#Tests/Robot/Functional/XIQ/Wireless/Sanity/TestCases/device_onboarding.robot
+#Tests/Robot/Functional/XIQ/Wireless/Sanity/TestCases/alarms.robot
+#Tests/Robot/Functional/XIQ/Wireless/Sanity/TestCases/config_push.robot
+#Tests/Robot/Functional/XIQ/Wireless/Sanity/TestCases/auto_provisioning.robot
+--test  Test1 - TC-49861 - Onboard Aerohive AP
+--test  Test2 - TC-49861 - Config AP to Report AIO
+--test  Test3 - TC-49861 - Check AP Status On UI
+--test  TC-52856 - Quick Onboard Simulated Device
+--test  Test1: Generate And Validate Fake Alarms
+--test  Test1: Verification of config push complete config update
+--test  Test2: Verification of config push delta update
+--test  Tes3: Verification of the functionality "Upgrade on the next reboot"
+--test  Tes4: Update at specific time functionality
+--test  Test5: IQ engine upgrade to specific version
+--test  Tes6: IQ engine upgrade to lastest version
+--test  Tes7: Cleanup
+--test  TC-49869 - Configure AP Auto Provision Profile
+--test  TC-49870 - Configure Switch Auto Provision Profile
+--test  Clean-up
+Tests/Robot/Functional/XIQ/Wireless/Sanity/TestCases/

@@ -1,8 +1,0 @@
-#--argumentfile  OR -A    robot -A sanity_flow_01.txt
-#--variable ENV=local
-#--variable TOPO=g2r2
-#
-Tests/Robot/Sanity/device_onboarding.robot
-Tests/Robot/Sanity/alarms.robot
-Tests/Robot/Sanity/config_push.robot
-Tests/Robot/Sanity/auto_provisioning.robot

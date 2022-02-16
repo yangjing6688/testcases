@@ -63,7 +63,7 @@ Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
 Resource    test_email_ids.robot
-Resource    ppsk_upgrade_test_config.robot
+Resource    ppsk_upgrade_test_config_XIQ-000.robot
 
 Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   mu1
 

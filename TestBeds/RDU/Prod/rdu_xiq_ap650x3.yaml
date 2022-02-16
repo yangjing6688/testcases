@@ -1,14 +1,14 @@
 ap1:
-  name:                     AH-RackC15-650-3
+  name:                     bui-flo-0049
   connection_method:        "telnet"
-  ip:                       10.69.61.126
+  ip:                       10.69.61.136
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   "16501811280044"
-  console_ip:               10.69.1.4
-  console_port:             2003
-  mac:                      3485841483C0
+  serial:                   "16501811280049"
+  console_ip:               10.69.1.112
+  console_port:             2007
+  mac:                      348584148500
   os:                       Cloud IQ Engine
   platform:                 aerohive
   model:                    AP650X
@@ -33,21 +33,6 @@ ap1:
       version:                  6.5
       neighbour_serial:         06301908310556
       neighbour_mac:            7C95B1005700
-
-a3_1server1:
-  version:          3.1
-  ip:               10.16.137.10
-  node1_ip:         10.16.137.157
-  node2_ip:         10.16.137.158
-  node3_ip:         10.16.137.159
-  node1_hostname:        A3-31-N1
-  node2_hostname:        A3-31-N2
-  node3_hostname:        A3-31-N3
-  ui_username:           demo@demo.com
-  ui_password:           Extr_123
-  console_username:      root
-  console_password:      aerohive
-  console_port:          22
 
 mu1:
   ip:             10.69.61.103

@@ -30,6 +30,8 @@ Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 
+Force Tags   flow1   flow7
+
 *** Test Cases ***
 Test1: Generate And Validate Fake Alarms
     [Documentation]    Chek the generation of alarms

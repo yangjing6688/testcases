@@ -46,6 +46,8 @@ Variables    Environments/Config/waits.yaml
 
 Resource     xapi_presence_config.robot
 
+Force Tags   flow5
+
 Library	         Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   MU1
 Suite Setup      Pre Condition
 

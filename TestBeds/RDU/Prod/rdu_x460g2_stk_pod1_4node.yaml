@@ -35,9 +35,15 @@ netelem1:
     slot1:
       console_ip: "10.69.50.244"
       console_port: "2001"
+      serial:    "1850N-43241"
     slot2:
       console_ip: "10.69.50.244"
       console_port: "2002"
+      serial:    "1836N-41518"
+    slot3:
+      console_ip: "10.69.50.244"
+      console_port: "2003"
+      serial:    "1850N-43238"
   isl:
     port_a:
       ifname: &netelem1_isl_port_a_ifname "1:3"

@@ -1,2 +1,0 @@
-Tests/Robot/Sanity/advanced_onboarding.robot
-Tests/Robot/Sanity/monitor_rogue_devices.robot

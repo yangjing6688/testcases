@@ -50,6 +50,8 @@ Variables    Environments/Config//waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
 Resource    auto_provisioning_config.robot
+Force Tags   flow1   flow4
+
 
 Suite Setup     Cleanup-Delete AP   ${ap1.serial}       ${sw1.serial}
 

@@ -34,21 +34,6 @@ ap1:
       neighbour_serial:         06301908310556
       neighbour_mac:            7C95B1005700
 
-a3_1server1:
-  version:          3.1
-  ip:               10.16.137.10
-  node1_ip:         10.16.137.157
-  node2_ip:         10.16.137.158
-  node3_ip:         10.16.137.159
-  node1_hostname:        A3-31-N1
-  node2_hostname:        A3-31-N2
-  node3_hostname:        A3-31-N3
-  ui_username:           demo@demo.com
-  ui_password:           Extr_123
-  console_username:      root
-  console_password:      aerohive
-  console_port:          22
-
 mu1:
   ip:             10.69.61.101
   port:           8270

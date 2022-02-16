@@ -92,6 +92,8 @@ Variables    Environments/Config/device_commands.yaml
 Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   mu1
 Library	    Remote 	http://${mu2.ip}:${mu2.port}   WITH NAME   mu2
 
+Force Tags   flow2   flow6
+
 Suite Setup      Pre Condition
 
 *** Keywords ***

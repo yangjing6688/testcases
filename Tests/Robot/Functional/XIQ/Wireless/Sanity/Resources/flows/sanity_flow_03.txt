@@ -1,0 +1,2 @@
+Tests/Robot/Functional/XIQ/Wireless/Sanity/TestCases/advanced_onboarding.robot
+Tests/Robot/Functional/XIQ/Wireless/Sanity/TestCases/monitor_rogue_devices.robot

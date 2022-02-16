@@ -1,3 +1,0 @@
-Tests/Robot/Sanity/device_onboarding.robot
-Tests/Robot/Sanity/config_push.robot
-Tests/Robot/Sanity/auto_provisioning.robot

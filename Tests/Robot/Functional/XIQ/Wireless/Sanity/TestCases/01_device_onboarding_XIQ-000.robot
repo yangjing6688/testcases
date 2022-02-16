@@ -9,18 +9,20 @@
 ${LOCATION}                 auto_location_01, Santa Clara, building_02, floor_04
 
 *** Settings ***
-Library     common/Cli.py
-Library     common/TestFlow.py
-Library     xiq/flows/common/Login.py
-Library     xiq/flows/common/Navigator.py
-Library     xiq/flows/manage/Client.py
-Library     xiq/flows/manage/Devices.py
-Library     xiq/flows/globalsettings/GlobalSetting.py
+Library     extauto/common/Cli.py
+Library     extauto/common/TestFlow.py
+Library     extauto/xiq/flows/common/Login.py
+Library     extauto/xiq/flows/common/Navigator.py
+Library     extauto/xiq/flows/manage/Client.py
+Library     extauto/xiq/flows/manage/Devices.py
+Library     extauto/xiq/flows/globalsettings/GlobalSetting.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    Environments/Config/device_commands.yaml
+
+Force Tags   flow1   flow2   flow4   flow5   flow6
 
 Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   MU1
 

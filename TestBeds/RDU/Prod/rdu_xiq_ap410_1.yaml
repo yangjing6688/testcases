@@ -1,18 +1,18 @@
 ap1:
-  name:                     AH-RackC15-650-2
+  name:                     bui-flo-0000
   connection_method:        "telnet"
-  ip:                       10.69.61.124
+  ip:                       10.69.61.138
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   "16501811280032"
-  console_ip:               10.69.1.4
+  serial:                   "1951y1049600000"
+  console_ip:               10.69.1.112
   console_port:             2002
-  mac:                      3485841480C0
+  mac:                      489bd5fdc3ae
   os:                       Cloud IQ Engine
   platform:                 aerohive
-  model:                    AP650X
-  template:                 AP650X-default-template
+  model:                    AP410
+  template:                 AP410-default-template
   make:                     Dual Boot
   mgmt_vlan:                10
   country:                  United States
@@ -35,14 +35,14 @@ ap1:
       neighbour_mac:            7C95B1005700
 
 mu1:
-  ip:             10.69.61.102
+  ip:             10.69.61.105
   port:           8270
   username:       extreme
   password:       extreme
   platform:       windows
   interface:      wlan2
-  wifi_mac:       9A4827E73497
-  ethernet_mac:   0800272993F9
+  wifi_mac:       984827e0b51b
+  ethernet_mac:   080027010d0c
   wifi_network:   20.1.1
   wifi_network_vlan10:    10.69.61
 
