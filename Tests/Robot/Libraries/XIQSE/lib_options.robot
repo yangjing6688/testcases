@@ -81,3 +81,137 @@ Confirm XIQSE Serial Number
 
     ${serial}=  Get XIQSE Serial Number
     Should Be Equal As Strings  ${serial}  ${expected_value}
+
+
+Navigate and Select Inventory Manager Option
+    [Documentation]     Navigates and selects the Administration> Options> Inventory Manager view in XIQ-SE and confirms the action was successful
+
+    Navigate to Options and Confirm Success
+    Select Inventory Manager Option and Confirm Success
+
+Select Inventory Manager Option and Confirm Success
+    [Documentation]     Selects the Administration> Options> Inventory Manager view in XIQ-SE and confirms the action was successful
+
+    ${result}=  XIQSE Select Inventory Manager Option
+    Should Be Equal As Integers     ${result}     1
+
+Set Option SCP Login Information Anonymous and Confirm Success
+    [Documentation]     Configures the SCP Anonymous checkbox and confirms the action was successful
+    [Arguments]         ${value}
+
+    ${result}=  XIQSE Set SCP Login Information Anonymous    ${value}
+    Should Be Equal As Integers     ${result}     1
+
+Set Option SFTP Login Information Anonymous and Confirm Success
+    [Documentation]     Configures the SFTP Anonymous checkbox and confirms the action was successful
+    [Arguments]         ${value}
+
+    ${result}=  XIQSE Set SFTP Login Information Anonymous    ${value}
+    Should Be Equal As Integers     ${result}     1
+
+Navigate and Set Option SCP Login Information Anonymous and Confirm Success
+    [Documentation]     Navigates and configures the SCP Anonymous checkbox and confirms the action was successful
+    [Arguments]         ${value}
+
+    Navigate and Select Inventory Manager Option
+    Set Option SCP Login Information Anonymous and Confirm Success    ${value}
+
+Navigate and Set Option SFTP Login Information Anonymous and Confirm Success
+    [Documentation]     Navigates and configures the SFTP Anonymous checkbox and confirms the action was successful
+    [Arguments]         ${value}
+
+    Navigate and Select Inventory Manager Option
+    Set Option SFTP Login Information Anonymous and Confirm Success    ${value}
+
+Set Option SCP Username and Password Login Information and Confirm Success
+    [Documentation]     Configures the SCP Username and Password, saves the change, and confirms the action was successful
+    [Arguments]         ${username}  ${password}
+
+    ${result}=  XIQSE Set SCP Login Information Username    ${username}
+    Should Be Equal As Integers     ${result}     1
+
+    ${result}=  XIQSE Set SCP Login Information Password    ${password}
+    Should Be Equal As Integers     ${result}     1
+
+    Save Options and Confirm Success
+
+Set Option SFTP Username and Password Login Information and Confirm Success
+    [Documentation]     Configures the SFTP Username and Password, saves the change, and confirms the action was successful
+    [Arguments]         ${username}  ${password}
+
+    ${result}=  XIQSE Set SFTP Login Information Username    ${username}
+    Should Be Equal As Integers     ${result}     1
+
+    ${result}=  XIQSE Set SFTP Login Information Password    ${password}
+    Should Be Equal As Integers     ${result}     1
+
+    Save Options and Confirm Success
+
+Navigate and Set Option SCP Username and Password Login Information and Confirm Success
+    [Documentation]     Navigates and configures the SCP Username and Password, saves the change, and confirms the action was successful
+    [Arguments]         ${username}  ${password}
+
+    Navigate and Select Inventory Manager Option
+    Set Option SCP Username and Password Login Information and Confirm Success
+    Save Options and Confirm Success
+
+Navigate and Set Option SFTP Username and Password Login Information and Confirm Success
+    [Documentation]     Navigates and configures the SFTP Username and Password, saves the change, and confirms the action was successful
+    [Arguments]         ${username}  ${password}
+
+    XIQSE Navigate To Admin Options Tab
+    XIQSE Select Inventory Manager Option
+
+    ${result}=  XIQSE Set SFTP Login Information Username    ${value}
+    Should Be Equal As Integers     ${result}     1
+
+    ${result}=  XIQSE Set SFTP Login Information Password    ${value}
+    Should Be Equal As Integers     ${result}     1
+
+    Save Options and Confirm Success
+
+Save Options and Confirm Success
+    [Documentation]  Clicks Save on the selected tab to save the changes
+
+    ${save_result}=  XIQSE Save Options
+    Should Be Equal As Integers      ${save_result}    1
+
+Set Option Status Polling Group 2 Interval and Save
+    [Documentation]     Configures the Group 2 Interval option, saves the change, and confirms the action was successful
+    [Arguments]         ${value}
+
+    ${result}=  XIQSE Set Status Polling Group 2 Interval Value   ${value}
+    Should Be Equal As Integers     ${result}     1
+
+    Save Options and Confirm Success
+
+Navigate and Select Status Polling Option
+    [Documentation]     Navigates and selects the Administration> Options> Status Polling view and confirms the action was successful
+
+    Navigate to Options and Confirm Success
+    Select Status Polling Option and Confirm Success
+
+Select Status Polling Option and Confirm Success
+    [Documentation]     Selects the Administration> Options> Status Polling view and confirms the action was successful
+
+    ${result}=  XIQSE Select Status Polling Option
+    Should Be Equal As Integers     ${result}     1
+
+Navigate and Set Option Status Polling Group 2 Interval and Confirm Success
+    [Documentation]     Navigates and sets the Group 2 Interval option, saves the change, and confirms the action was successful
+    [Arguments]         ${value}
+
+    Navigate and Select Status Polling Option
+    Set Option Status Polling Group 2 Interval and Save    ${value}
+
+Restore Status Polling Options to Default and Confirm Success
+    [Documentation]     Restores the default value for the Status Polling option, saves the change, and confirms the action was successful
+
+    ${result}=  XIQSE Restore Default Status Polling Options and Save
+    Should Be Equal As Integers    ${result}     1
+
+Restore Default Inventory Manager Options and Confirm Success
+    [Documentation]      Restores the default value for the Inventory Manager option, saves the change, and confirms the action was successful
+
+    ${result}=  XIQSE Restore Default Inventory Manager Options and Save
+    Should Be Equal As Integers    ${result}     1
