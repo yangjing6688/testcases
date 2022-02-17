@@ -41,7 +41,7 @@ ${XIQ_PASSWORD}             ${xiq.tenant_password}
 *** Test Cases ***
 Test 1: Test Create And Delete Policy Role:
     [Documentation]    Creates and deletes a policy role in the test domain
-    [Tags]             csit_tc_881    xmc_5473    development    xiqse    control    policy    test1
+    [Tags]             xiqse_tc_881    xmc_5473    development    xiqse    control    policy    test1
 
     ${result}=  XIQSE Control Policy Create Role    TestRole
     Should Be Equal As Integers                 ${result}     1
