@@ -33,7 +33,7 @@ ${XIQ_PASSWORD}         ${xiq.tenant_password}
 *** Test Cases ***
 Test 1: Confirm Log In with Valid Credentials
     [Documentation]     Confirms successful log in with valid credentials
-    [Tags]              csit_tc_870    xmc_5451    development    xiqse    acceptance    login    test1
+    [Tags]              xiqse_tc_870    xmc_5451    development    xiqse    acceptance    login    test1
 
     Log Into XIQSE and Confirm Success    ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}  url=${XIQSE_URL}
 
@@ -42,7 +42,7 @@ Test 1: Confirm Log In with Valid Credentials
 
 Test 2: Confirm Log In with Invalid User
     [Documentation]     Confirms log in with invalid user fails
-    [Tags]              csit_tc_870    xmc_5451    development    xiqse    acceptance    login    test2
+    [Tags]              xiqse_tc_870    xmc_5451    development    xiqse    acceptance    login    test2
 
     ${result}=  XIQSE Load Page and Log In  BAD_USER  ${XIQSE_PASSWORD}  url=${XIQSE_URL}
     Should Be Equal As Integers             ${result}     -1
@@ -51,7 +51,7 @@ Test 2: Confirm Log In with Invalid User
 
 Test 3: Confirm Log In with Invalid Password
     [Documentation]     Confirms log in with invalid password fails
-    [Tags]              csit_tc_870    xmc_5451    development    xiqse    acceptance    login    test3
+    [Tags]              xiqse_tc_870    xmc_5451    development    xiqse    acceptance    login    test3
 
     ${result}=  XIQSE Load Page and Log In  ${XIQSE_USERNAME}  BAD_PASSWORD  url=${XIQSE_URL}
     Should Be Equal As Integers             ${result}     -1
@@ -60,7 +60,7 @@ Test 3: Confirm Log In with Invalid Password
 
 Test 4: Confirm Log In with Invalid User and Invalid Password
     [Documentation]     Confirms log in with invalid user and invalid password fails
-    [Tags]              csit_tc_870    xmc_5451    development    xiqse    acceptance    login    test4
+    [Tags]              xiqse_tc_870    xmc_5451    development    xiqse    acceptance    login    test4
 
     ${result}=  XIQSE Load Page and Log In  BAD_USER  BAD_PASSWORD  url=${XIQSE_URL}
     Should Be Equal As Integers             ${result}     -1
@@ -69,7 +69,7 @@ Test 4: Confirm Log In with Invalid User and Invalid Password
 
 Test 5: Confirm Log In with Valid Credentials after Invalid Credentials is Successful
     [Documentation]     Confirms log in with valid credentials works after failing with invalid credentials
-    [Tags]              ncsit_tc_870    xmc_5451    development    xiqse    acceptance    login    test5
+    [Tags]              nxiqse_tc_870    xmc_5451    development    xiqse    acceptance    login    test5
 
     ${invalid_result}=  XIQSE Load Page and Log In  BAD_USER  BAD_PASSWORD  url=${XIQSE_URL}
     Should Be Equal As Integers                     ${invalid_result}     -1

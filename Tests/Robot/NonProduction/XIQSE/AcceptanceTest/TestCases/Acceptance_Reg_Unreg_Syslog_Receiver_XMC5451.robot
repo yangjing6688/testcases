@@ -40,20 +40,20 @@ ${SITE_ENGINE_ARCHIVE}      Site Engine Archive
 *** Test Cases ***
 Test 1: Register Syslog Receiver
     [Documentation]     Confirms register syslog receiver is successful
-    [Tags]              csit_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test1
+    [Tags]              xiqse_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test1
 
     Clear Operations Panel and Confirm Success
     Navigate and Register Syslog Receiver            ${DUT_IP}
 
 Test 2: Verify Register Syslog Receiver Completes
     [Documentation]     Checks the operations panel and waits for the register syslog receiver to complete
-    [Tags]              csit_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test2
+    [Tags]              xiqse_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test2
 
     Verify Register Syslog Receiver Completes    Syslog Configuration
 
 Test 3: Create Backup After Register and Confirm Success
     [Documentation]     Creates a backup configuration on selected device
-    [Tags]              csit_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test3
+    [Tags]              xiqse_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test3
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO BACKUP CONFIGURATION
 #    Clear Operations Panel and Confirm Success
@@ -61,26 +61,26 @@ Test 3: Create Backup After Register and Confirm Success
 
 Test 4: Check Backup Configuration For Syslog Receiver Registered Entries Added
     [Documentation]     Confirms the device configuration includes entries for register syslog receiver
-    [Tags]              csit_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test4
+    [Tags]              xiqse_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test4
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO CHECK CONFIGURATION FILE TO VERIFY SYSLOG ENTRIES ADDED
 
 Test 5: Unregister Syslog Receiver
     [Documentation]     Confirms unregister syslog receiver is successful
-    [Tags]              csit_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test5
+    [Tags]              xiqse_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test5
 
     Clear Operations Panel and Confirm Success
     Navigate and Unregister Syslog Receiver          ${DUT_IP}
 
 Test 6: Verify Unregister Syslog Receiver Completes
     [Documentation]     Checks the operations panel and waits for the unregister syslog receiver to complete
-    [Tags]              csit_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test6
+    [Tags]              xiqse_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test6
 
     Verify Register Syslog Receiver Completes    Syslog Configuration
 
 Test 7: Create Backup After Unregister and Confirm Success
     [Documentation]     Creates a backup configuration on selected device
-    [Tags]              csit_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test7
+    [Tags]              xiqse_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test7
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO BACKUP CONFIGURATION
 #    Clear Operations Panel and Confirm Success
@@ -88,13 +88,13 @@ Test 7: Create Backup After Unregister and Confirm Success
 
 Test 8: Check Backup Configuration For Syslog Receiver Entries Removed
     [Documentation]     Confirms the device configuration no longer includes entries for register syslog receiver
-    [Tags]              csit_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test8
+    [Tags]              xiqse_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test8
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO CHECK CONFIGURATION FILE TO VERIFY SYSLOG ENTRIES REMOVED
 
 Test 9: Delete Archive
     [Documentation]     Confirms an archive can be deleted
-    [Tags]              csit_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test9
+    [Tags]              xiqse_tc_875    xmc_5451    development    xiqse    acceptance    syslog    test9
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO DELETE BACKUP CONFIGURATION
 #    Navigate and Delete Archive and Confirm Success     ${SITE_ENGINE_ARCHIVE}

@@ -52,7 +52,7 @@ ${TEST_NOTE}                AUTO NOTE
 *** Test Cases ***
 Test 1: Set Device Profile
     [Documentation]     Confirms the profile can be changed on a device
-    [Tags]              csit_tc_869    xmc_5451    development    xiqse    acceptance    configure    test1
+    [Tags]              xiqse_tc_869    xmc_5451    development    xiqse    acceptance    configure    test1
 
     Navigate and Create Profile      ${TEST_PROFILE}  ${TEST_PROFILE_VERSION}  ${TEST_PROFILE_READ}  ${TEST_PROFILE_WRITE}  ${TEST_PROFILE_MAX}  ${TEST_PROFILE_CLI}
 
@@ -80,7 +80,7 @@ Test 1: Set Device Profile
 
 Test 2: Configure Device
     [Documentation]     Confirms a device can be configured
-    [Tags]              csit_tc_869    xmc_5451    development    xiqse    acceptance    configure    test2
+    [Tags]              xiqse_tc_869    xmc_5451    development    xiqse    acceptance    configure    test2
 
     Navigate to Devices and Confirm Success
 

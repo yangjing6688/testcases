@@ -55,13 +55,13 @@ ${TEST_PROFILE_MAX_SECURITY}        AuthPriv
 *** Test Cases ***
 TEST 1: Create DUT Analytics Engine and Confirm Success
     [Documentation]     Creates an analytics engine
-    [Tags]              csit_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test1
+    [Tags]              xiqse_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test1
 
     Navigate and Add Analytics Engine       ${DUT_IP}  ${DUT_NAME}  ${TEST_PROFILE_NAME}
 
 TEST 2: Confirm Events - DUT Engine Added
     [Documentation]     Confirms the events view contains the expected event
-    [Tags]              csit_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test2
+    [Tags]              xiqse_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test2
 
     Navigate to Events and Confirm Success
     Set Event Time Range and Confirm Success        Last 30 Minutes
@@ -72,13 +72,13 @@ TEST 2: Confirm Events - DUT Engine Added
 
 TEST 3: Enforce DUT Engine and Confirm Success
     [Documentation]     Enforces an analytics engine
-    [Tags]              csit_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test3
+    [Tags]              xiqse_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test3
 
     Navigate and Enforce Analytics Engine            ${DUT_IP}
 
 TEST 4: Confirm Events - DUT Engine Enforced
     [Documentation]     Confirms the events view contains the expected event
-    [Tags]              csit_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test4
+    [Tags]              xiqse_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test4
 
     Navigate to Events and Confirm Success
     Set Event Search String and Confirm Success     Application Analytics Engine Enforcement
@@ -87,19 +87,19 @@ TEST 4: Confirm Events - DUT Engine Enforced
 
 TEST 5: Poll DUT Engine and Confirm Success
     [Documentation]     Polls an analytics engine
-    [Tags]              csit_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test5
+    [Tags]              xiqse_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test5
 
     Navigate and Poll Analytics Engine          ${DUT_IP}
 
 TEST 6: Restart Collector on DUT Engine and Confirm Success
     [Documentation]     Restarts collector on an analytics engine
-    [Tags]              csit_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test6
+    [Tags]              xiqse_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test6
 
     Restart Collector and Confirm Success       ${DUT_IP}
 
 TEST 7: Confirm Events - Restart Collector on DUT Engine
     [Documentation]     Confirms the events view contains the expected event
-    [Tags]              csit_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test7
+    [Tags]              xiqse_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test7
 
     Navigate to Events and Confirm Success
     Set Event Search String and Confirm Success     Application Analytics Engine Collector Restart
@@ -108,13 +108,13 @@ TEST 7: Confirm Events - Restart Collector on DUT Engine
 
 TEST 8: Delete DUT Analytics Engine and Confirm Success
     [Documentation]     Confirms a device can be deleted
-    [Tags]              csit_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test8
+    [Tags]              xiqse_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test8
 
     Navigate and Delete Analytics Engine        ${DUT_IP}
 
 TEST 9: Confirm Events - DUT Engine Deleted
     [Documentation]     Confirms the events view contains the expected event
-    [Tags]              csit_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test9
+    [Tags]              xiqse_tc_873    xmc_5451    development    xiqse    acceptance    analytics    test9
 
     Navigate to Events and Confirm Success
     Set Event Search String and Confirm Success     Application Analytics Engine Deleted

@@ -39,20 +39,20 @@ ${SITE_ENGINE_ARCHIVE}      Site Engine Archive
 *** Test Cases ***
 Test 1: Register Trap Receiver
     [Documentation]     Confirms register trap receiver is successful
-    [Tags]              csit_tc_874    xmc_5451    development    xiqse    acceptance    traps    test1
+    [Tags]              xiqse_tc_874    xmc_5451    development    xiqse    acceptance    traps    test1
 
     Clear Operations Panel and Confirm Success
     Navigate and Register Trap Receiver          ${DUT_IP}
 
 Test 2: Verify Register Trap Receiver Completes
     [Documentation]     Checks the operations panel and waits for the register trap receiver to complete
-    [Tags]              csit_tc_874    xmc_5451    development    xiqse    acceptance    traps    test2
+    [Tags]              xiqse_tc_874    xmc_5451    development    xiqse    acceptance    traps    test2
 
     Verify Register Trap Receiver Completes    Trap Configuration
 
 Test 3: Create Backup After Register and Confirm Success
     [Documentation]     Creates a backup configuration on selected device
-    [Tags]              csit_tc_874    xmc_5451    development    xiqse    acceptance    traps    test3
+    [Tags]              xiqse_tc_874    xmc_5451    development    xiqse    acceptance    traps    test3
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO BACKUP CONFIGURATION
 #    Clear Operations Panel and Confirm Success
@@ -60,26 +60,26 @@ Test 3: Create Backup After Register and Confirm Success
 
 Test 4: Check Backup Configuration For Trap Receiver Entries Added
     [Documentation]     Confirms the device configuration includes entries for register trap receiver
-    [Tags]              csit_tc_874    xmc_5451    development    xiqse    acceptance    traps    test4
+    [Tags]              xiqse_tc_874    xmc_5451    development    xiqse    acceptance    traps    test4
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO CHECK CONFIGURATION FILE TO VERIFY TRAP ENTRIES ADDED
 
 Test 5: Unregister Trap Receiver
     [Documentation]     Confirms unregister trap receiver is successful
-    [Tags]              csit_tc_874    xmc_5451    development    xiqse    acceptance    traps    test5
+    [Tags]              xiqse_tc_874    xmc_5451    development    xiqse    acceptance    traps    test5
 
     Clear Operations Panel and Confirm Success
     Navigate and Unregister Trap Receiver            ${DUT_IP}
 
 Test 6: Verify Unregister Trap Receiver Completes
     [Documentation]     Checks the operations panel and waits for the unregister trap receiver to complete
-    [Tags]              csit_tc_874    xmc_5451    development    xiqse    acceptance    trap receiver    test6
+    [Tags]              xiqse_tc_874    xmc_5451    development    xiqse    acceptance    trap receiver    test6
 
     Verify Unregister Trap Receiver Completes    Trap Configuration
 
 Test 7: Create Backup After Unregister and Confirm Success
     [Documentation]     Creates a backup configuration on selected device
-    [Tags]              csit_tc_874    xmc_5451    development    xiqse    acceptance    traps    test7
+    [Tags]              xiqse_tc_874    xmc_5451    development    xiqse    acceptance    traps    test7
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO BACKUP CONFIGURATION
 #    Clear Operations Panel and Confirm Success
@@ -87,13 +87,13 @@ Test 7: Create Backup After Unregister and Confirm Success
 
 Test 8: Check Backup Configuration To Verify Trap Receiver Entries Removed
     [Documentation]     Confirms the device configuration no longer includes entries for register trap receiver
-    [Tags]              csit_tc_874    xmc_5451    development    xiqse    acceptance    trap receiver    test8
+    [Tags]              xiqse_tc_874    xmc_5451    development    xiqse    acceptance    trap receiver    test8
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO CHECK CONFIGURATION FILE TO VERIFY TRAP ENTRIES REMOVED
 
 Test 9: Delete Archive
     [Documentation]     Confirms an archive can be deleted
-    [Tags]              csit_tc_874    xmc_5451    development    xiqse    acceptance    traps    test9
+    [Tags]              xiqse_tc_874    xmc_5451    development    xiqse    acceptance    traps    test9
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO DELETE BACKUP CONFIGURATION
 #    Navigate and Delete Archive and Confirm Success     ${SITE_ENGINE_ARCHIVE}
