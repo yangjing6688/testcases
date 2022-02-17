@@ -43,7 +43,7 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Resource     router_xr_sanity_config.robot
+Resource     ../Resources/router_xr_sanity_config.robot
 
 Suite Setup     Cleanup-Delete Router   ${router1.serial}
 

@@ -52,7 +52,7 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Resource     extreme_location_sanity_config.robot
+Resource     ../Resources/extreme_location_sanity_config.robot
 
 *** Test Cases ***
 

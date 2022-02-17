@@ -51,7 +51,7 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Resource    adsp_integration_config.robot
+Resource    ../Resources/adsp_integration_config.robot
 
 Library	        Remote 	http://${mu1.ip}:${mu1.port}  WITH NAME   Remote_Server
 Suite Setup      Pre Condition

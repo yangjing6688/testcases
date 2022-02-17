@@ -49,7 +49,7 @@ Variables    Environments/${ENV}
 Variables    Environments/Config//waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Resource    auto_provisioning_config.robot
+Resource     ../Resources/auto_provisioning_config.robot
 Force Tags   flow1   flow4
 
 
