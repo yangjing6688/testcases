@@ -7,17 +7,19 @@ on:
   # Only run on pushes to main that include files in the Testbeds directory(except in the Templates subdir).
   push:
     branches: [main]
-    paths:
-      - 'Testbeds/**'
-      - '!Testbeds/Templates/**'
+
 jobs:
-  promote_image_staging:
+  update_s3:
     name: Update S3 Info
     runs-on: ubuntu-latest
+    env:
+        WORK_DIR: workflow_output
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -26,6 +28,60 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
-    - name: Upload testbed yaml files
+    - name: Get changed Testbed YAML files
+      id: testbed
+      uses: tj-actions/changed-files@v15.1
+      with:
+        files: |
+          TestBeds
+        files_ignore: |
+          Testbeds/Templates
+
+    # Do this before we start hopping git branches
+    - name: Upload Testbed files
       run: |
-        aws s3 sync TestBeds s3://econgit/extreme_automation_tests/main/TestBeds --exclude "*" --include "*/Prod/*.yaml"
+        if [ ${{ steps.testbed.outputs.any_modified }} = true ]; then
+          echo "[*] Found changed testbed files. Uploading..."
+          aws s3 sync TestBeds s3://econgit/extreme_automation_tests/TestBeds --exclude "*" --include "*/Prod/*.yaml"
+        else
+          echo "[*] No testbed files changed. Skipping upload..."
+        fi
+
+    # Hippity hopping happens here :)
+    - name: Gather repository info
+      run: |
+        # Make clean directory that we can use to sync with S3
+        mkdir ${WORK_DIR}
+
+        # Get names of all remote branches and put in json array
+        git branch -r | sed -e "s/  origin\///" | sed -e "s/HEAD -> origin\/main//" | jq -ncR '[ inputs | select(length > 0) ]' > ${WORK_DIR}/branches.json
+
+        # Get tags and put in json array
+        git tag | jq -ncR '[inputs]' > ${WORK_DIR}/tags.json
+
+        for branch in $(jq -r '.[]' ${WORK_DIR}/branches.json); do
+          # Make directory for branch info
+          echo "[*] Working on branch: ${branch}"
+          branch_safe=$( echo ${branch} | sed -e "s/\///g") # Remove invalid filename chars before we use the branches to create folders
+          branch_work_dir="${WORK_DIR}/${branch_safe}"
+          mkdir ${branch_work_dir}
+
+          # Checkout remote branch for inspection
+          git checkout origin/${branch}
+
+          # Get sorted Topologies for branch
+          find ./Environments/ -type f -name "*topo.*" -printf "%f\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/topo.json
+
+          # Get sorted Environments for branch
+          find ./Environments/ -type f -name "environment.*" -printf "%f\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/env.json
+
+          # Get sorted list of Pytest files
+          find -type f -path './Tests/Pytest/*TestCases*' -name "test_*.py" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/pytest_test_cases.json
+
+          # Get sorted list of Robot files
+          find -type f -path './Tests/Robot/*TestCases*' -name "*.robot" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/robot_test_cases.json
+
+        done
+
+    - name: Upload Metadata
+      run: aws s3 sync ${WORK_DIR} s3://econgit/extreme_automation_tests

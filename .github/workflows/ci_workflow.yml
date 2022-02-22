@@ -332,9 +332,9 @@ jobs:
           if [[ ! $f =~ .*\.robot$ ]] ; then
               printf "[*] FAIL: $f is NOT a Robot file! Only .robot files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
               rc=1
-          # Only allow files that conform to "test_<testname>_<valid_jira_id>.robot".
+          # Only allow files that conform to "<testname>_<valid_jira_id>.robot" or "__init__.robot"
           # See "Process Pytest Production file(s)" for definition of <valid_jira_id>
-          elif [[ ! $f =~ _[a-zA-Z]+-?[0-9]+(_[0-9]+\.robot|\.robot)$ ]] ; then
+          elif [[ ! $f =~ _[a-zA-Z]+-?[0-9]+(_[0-9]+\.robot|\.robot)$|__init__\.robot$ ]] ; then
               echo "[*] FAIL: $f is NOT in a valid Robot filename format!" | tee -a ${{ env.testcase_files_report_path }}
               echo '[*] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
               rc=1
