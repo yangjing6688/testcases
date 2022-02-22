@@ -57,7 +57,7 @@ ${WORLD_SITE}               World
 *** Test Cases ***
 Test 1: Create Domain
     [Documentation]     Create a new policy domain
-    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    control    policy    create_domain    test1
+    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    acceptance    control    policy    create_domain    test1
     
     Navigate to Control Policy Tab and Dismiss Cached Window
 
@@ -66,7 +66,7 @@ Test 1: Create Domain
 
 Test 2: Assign Device to Domain
     [Documentation]     Assign a device to the current policy domain
-    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    control    policy    assign_device_to_domain    test2
+    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    acceptance    control    policy    assign_device_to_domain    test2
     
     XIQSE Control Policy Select Assign Devices to Domain Menu
 
@@ -82,56 +82,56 @@ Test 3: Create Role In The Domain
 
 Test 4: Create Service In The Domain
     [Documentation]     Create a "Local" service in the current policy domain
-    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    control    policy    create_service    test4
+    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    acceptance    control    policy    create_service    test4
     
     ${create_service_result}=  XIQSE Control Policy Create Service    ${SERVICE_NAME}   local
     Should Be Equal As Integers     ${create_service_result}     1
 
 Test 5: Create Rule In The Domain
     [Documentation]     Create a "Local" rule in the current policy domain
-    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    control    policy    create_rule    test5
+    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    acceptance    control    policy    create_rule    test5
     
     ${create_rule_result}=  XIQSE Control Policy Create Rule    ${RULE_NAME}  ${SERVICE_NAME}  local
     Should Be Equal As Integers     ${create_rule_result}     1
 
 Test 6: Delete Rule In The Domain
     [Documentation]     Delete a "Local" rule in the current policy domain
-    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    control    policy    delete_rule    test6
+    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    acceptance    control    policy    delete_rule    test6
     
     ${del_rule_result}=  XIQSE Control Policy Delete Rule    ${RULE_NAME}  ${SERVICE_NAME}  local
     Should Be Equal As Integers     ${del_rule_result}     1
 
 Test 7: Delete Service In The Domain
     [Documentation]     Delete a "Local" service in the current policy domain
-    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    control    policy    delete_service    test7
+    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    acceptance    control    policy    delete_service    test7
     
     ${del_serv_result}=  XIQSE Control Policy Delete Service    ${SERVICE_NAME}   local
     Should Be Equal As Integers     ${del_serv_result}     1
 
 Test 8: Delete Role In The Domain
     [Documentation]     Delete a role in the current policy domain
-    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    control    policy    delete_role    test8
+    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    acceptance    control    policy    delete_role    test8
     
     ${del_serv_result}=  XIQSE Control Policy Delete Role    ${ROLE_NAME}
     Should Be Equal As Integers     ${del_serv_result}     1
 
 Test 9: Save Domain
     [Documentation]     Save the current policy domain
-    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    control    policy    save_domain    test9
+    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    acceptance    control    policy    save_domain    test9
     
     ${save_domain_result}=  XIQSE Control Policy Save Domain
     Should Be Equal As Integers     ${save_domain_result}     1
 
 Test 10: Enforce Domain
     [Documentation]     Enforce the current policy domain
-    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    control    policy    enforce_domain    test10
+    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    acceptance    control    policy    enforce_domain    test10
     
     ${enforce_domain_result}=  XIQSE Control Policy Enforce Domain
     Should Be Equal As Integers     ${enforce_domain_result}     1
 
 Test 11: Verify Domain
     [Documentation]     Verify the current policy domain
-    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    control    policy    verify_domain    test11
+    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    acceptance    control    policy    verify_domain    test11
         
     # MUST save policy domain before perform Verify. If not, the "cache" dialog will interrupt the test
     XIQSE Control Policy Select Verify Domain Menu
@@ -141,7 +141,7 @@ Test 11: Verify Domain
 
 Test 12: Delete Domain
     [Documentation]     Delete the current policy domain
-    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    control    policy    delete_domain    test12
+    [Tags]              xiqse_tc_880    xmc_5473    development    xiqse    acceptance    control    policy    delete_domain    test12
     
     ${delete_result}=   XIQSE Control Policy Delete Domain      ${DOMAIN_NAME}
     Should Be Equal As Integers                                 ${delete_result}     1

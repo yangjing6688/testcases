@@ -11,7 +11,7 @@
 *** Settings ***
 Library     xiqse/flows/network/devices/site/actions/XIQSE_NetworkDevicesSiteActions.py
 
-Resource    ../../AcceptanceTest/Resources/AllResources.robot
+Resource    ../../Inventory/Resources/AllResources.robot
 
 Force Tags      testbed_1_node
 
@@ -52,7 +52,7 @@ ${TEST_NOTE}                AUTO NOTE
 *** Test Cases ***
 Test 1: Set Device Profile
     [Documentation]     Confirms the profile can be changed on a device
-    [Tags]              xiqse_tc_869    xmc_5451    development    xiqse    acceptance    configure    test1
+    [Tags]              xiqse_tc_869    xmc_5451    development    xiqse    acceptance    inventory    configure    test1
 
     Navigate and Create Profile      ${TEST_PROFILE}  ${TEST_PROFILE_VERSION}  ${TEST_PROFILE_READ}  ${TEST_PROFILE_WRITE}  ${TEST_PROFILE_MAX}  ${TEST_PROFILE_CLI}
 
@@ -80,7 +80,7 @@ Test 1: Set Device Profile
 
 Test 2: Configure Device
     [Documentation]     Confirms a device can be configured
-    [Tags]              xiqse_tc_869    xmc_5451    development    xiqse    acceptance    configure    test2
+    [Tags]              xiqse_tc_869    xmc_5451    development    xiqse    acceptance    inventory    configure    test2
 
     Navigate to Devices and Confirm Success
 

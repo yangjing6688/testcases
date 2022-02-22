@@ -12,7 +12,7 @@
 Library         xiqse/flows/network/devices/site/actions/XIQSE_NetworkDevicesSiteActions.py
 Library         xiqse/flows/network/devices/devices/XIQSE_NetworkDevicesDevicesRestartDevice.py
 
-Resource        ../../AcceptanceTest/Resources/AllResources.robot
+Resource        ../../Inventory/Resources/AllResources.robot
 
 Force Tags      testbed_1_node
 
@@ -40,14 +40,14 @@ ${WORLD_SITE}               World
 *** Test Cases ***
 Test 1: Restart Switch
     [Documentation]     Restarts the switch
-    [Tags]              xiqse_tc_876    xmc_5451    development    xiqse    acceptance    restart    test1
+    [Tags]              xiqse_tc_876    xmc_5451    development    xiqse    acceptance    inventory    restart    test1
 
     Navigate to Devices and Confirm Success
     Restart Device and Confirm Success   ${DUT_IP}
 
 Test 2: Confirm Events
     [Documentation]     Confirms the events view contains the expected event
-    [Tags]              xiqse_tc_876    xmc_5451    development    xiqse    acceptance    restart    test2
+    [Tags]              xiqse_tc_876    xmc_5451    development    xiqse    acceptance    inventory    restart    test2
 
     Navigate to Events and Confirm Success
     Set Event Time Range and Confirm Success        Last 30 Minutes
@@ -59,7 +59,7 @@ Test 2: Confirm Events
 
 Test 3: Verify Device Is Up After Restart
     [Documentation]     Confirms device status is up after restart
-    [Tags]              xiqse_tc_876    xmc_5451    development    xiqse    acceptance    restart    test3
+    [Tags]              xiqse_tc_876    xmc_5451    development    xiqse    acceptance    inventory    restart    test3
 
     Navigate to Devices and Confirm Success
     Confirm Device Status Up     ${DUT_IP}
