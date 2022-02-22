@@ -1,7 +1,7 @@
 ap1:
   name:                     AH-0059c0
   connection_method:        "telnet"
-  ip:                       10.16.166.245
+  ip:                       10.16.166.249
   port:                     22
   username:                 admin
   password:                 Aerohive123
@@ -37,7 +37,7 @@ ap1:
 ap2:
   name:                     AH-0053c0
   connection_method:        "telnet"
-  ip:                       10.16.166.246
+  ip:                       10.16.166.251
   port:                     22
   username:                 admin
   password:                 Aerohive123
@@ -74,7 +74,7 @@ ap2:
 ap3:
   name:                     AH-707580
   connection_method:        "telnet"
-  ip:                       10.234.105.76
+  ip:                       10.16.166.250
   port:                     22
   username:                 admin
   password:                 Aerohive123
@@ -139,9 +139,9 @@ a3_2server1:
 
 
 mu1:
-  ip:             192.162.1.227
+  ip:             10.16.166.237
   port:           8270
-  username:       root
+  username:       admin
   password:       symbol
   platform:       windows
   interface:      wlan0
@@ -151,10 +151,10 @@ mu1:
   wifi_network_vlan10:    10.16.166
 
 mu2:
-  ip:             192.162.1.226
+  ip:             10.16.166.236
   port:           8270
-  username:       extreme
-  password:       Extreme@123
+  username:       admin
+  password:       symbol
   platform:       windows
   interface:      wlan0
   wifi_mac:       380025295815
@@ -175,14 +175,14 @@ router1:
   password:                 Aerohive123
   platform:                 aerohive
   console_ip:               10.16.166.229
-  console_port:             4001
+  console_port:             4003
   make:                     Extreme - Aerohive
 
 wing1:
   name:                     ap7532-861180
   model:                    AP7532
   device_template:
-  serial:                   15061522201462
+  serial:                   "15061522201462"
   os_version:               7.6.0.1-004R
   mac:                      84248D861180
   bssid:
