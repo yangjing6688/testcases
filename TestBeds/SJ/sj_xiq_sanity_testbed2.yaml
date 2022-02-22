@@ -74,7 +74,7 @@ ap2:
 ap3:
   name:                     AH-0053c0
   connection_method:        "telnet"
-  ip:                       10.16.166.246
+  ip:                       10.16.172.154
   port:                     22
   username:                 admin
   password:                 Aerohive123
@@ -140,10 +140,10 @@ a3_2server1:
 
 
 mu1:
-  ip:             192.162.1.226
+  ip:             10.16.166.236
   port:           8270
-  username:       extreme
-  password:       Extreme@123
+  username:       admin
+  password:       symbol
   platform:       windows
   interface:      wlan0
   wifi_mac:       380025295815
@@ -152,9 +152,9 @@ mu1:
   wifi_network_vlan10:    10.16.172
 
 mu2:
-  ip:             192.162.1.227
+  ip:             10.16.166.237
   port:           8270
-  username:       root
+  username:       admin
   password:       symbol
   platform:       windows
   interface:      wlan0
@@ -173,8 +173,8 @@ exos1:
   username:                 admin
   password:                 Aerohive123
   ip:                       10.16.172.162
-  console_ip:               10.16.167.37
-  console_port:             10008
+  console_ip:               10.16.172.162
+  console_port:             22
   network_policy:           Test_np
   device_template:          5520-default-template
   os:                       31.1.1.3
