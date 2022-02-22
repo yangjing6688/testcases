@@ -98,7 +98,7 @@ Log Into XIQ and Set Up Test
 
     Onboard New Test Device                      ${DUT_SERIAL}  ${POLICY_NAME}  ${LOCATION}
     Assign Policy to Switch and Confirm Success  ${POLICY_NAME}  ${DUT_SERIAL}
-    Confirm Device Serial Has Exected Status     ${DUT_SERIAL}  ${STATUS_AFTER_UPDATE}
+    Confirm Device Serial Has Expected Status    ${DUT_SERIAL}  ${STATUS_AFTER_UPDATE}
 
 Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser

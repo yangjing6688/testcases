@@ -128,7 +128,7 @@ Test 3: Confirm Sorting on Updated Column - One Device Disconnected After Update
     Disconnect Device               ${DUT3_CONSOLE_IP}  ${DUT3_CONSOLE_PORT}  ${DUT3_USERNAME}
     ...                             ${DUT3_PASSWORD}  ${DUT3_PLATFORM}
     Confirm Device Serial Offline   ${DUT3_SERIAL}
-    Confirm Device Serial Has Exected Status  ${DUT3_SERIAL}  disconnected
+    Confirm Device Serial Has Expected Status  ${DUT3_SERIAL}  disconnected
 
     # Perform the sort
     Refresh Devices Page
@@ -148,7 +148,7 @@ Test 4: Confirm Sorting on Updated Column - One Device Disconnected Before Updat
     ...               Disconnect Device  ${DUT3_CONSOLE_IP}  ${DUT3_CONSOLE_PORT}  ${DUT3_USERNAME}
     ...                                  ${DUT3_PASSWORD}  ${DUT3_PLATFORM}
     Run Keyword If   '${device_status}' != 'disconnected'  Confirm Device Serial Offline   ${DUT3_SERIAL}
-    Confirm Device Serial Has Exected Status  ${DUT3_SERIAL}  disconnected
+    Confirm Device Serial Has Expected Status  ${DUT3_SERIAL}  disconnected
 
     # Perform an update on the devices which are still connected
     Assign Policy to Device and Confirm Success  ${POLICY_NAME}  ${DUT1_SERIAL}

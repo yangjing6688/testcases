@@ -60,6 +60,18 @@ netelem3:
   function:                 "Switch"
   test_port:                "1/3"
   test_port_num:            "3"
+  nos:
+    dir:
+      min:                  "8.1.60.0.GA"
+      old:                  "8.2.0.0.GA"
+      new:                  "8.2.5.0.GA"
+    version:
+      min:                  "8.1.60.0"
+      old:                  "8.2.0.0"
+      new:                  "8.2.5.0"
+  iqagent_version:
+    old:                    "0.3.5"
+    new:                    "0.4.0"
 
 sw1:
   name:                     "AH-Switch"

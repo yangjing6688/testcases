@@ -97,7 +97,7 @@ Confirm Device OS Version Present
     ${result}=  Wait Until Device Data Present  ${serial}   OS VERSION
     Should Be Equal As Integers                 ${result}   1
 
-Confirm Device Serial Has Exected Status
+Confirm Device Serial Has Expected Status
     [Documentation]     Checks the status of the specified device and confirms it matches the expected value
     [Arguments]         ${serial}  ${expected_status}
 
