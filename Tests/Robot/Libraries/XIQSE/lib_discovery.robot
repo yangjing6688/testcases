@@ -63,6 +63,17 @@ Perform Subnet Discovery and Confirm Success
     # Make sure we didn't get a license limit banner
     Confirm License Limit Warning Message Not Displayed
 
+Perform Seed Discovery and Confirm Success
+    [Documentation]  Performs a Seed discovery in XIQ-SE and confirms the action was successful
+    [Arguments]      ${seed_address}  ${profile}  ${auto_add}=false  ${trap}=false  ${syslog}=false  ${archive}=false
+
+    ${disc_result}=  XIQSE Site Perform Seed Discovery  ${seed_address}  ${profile}  auto_add=${auto_add}
+    ...  trap=${trap}  syslog=${syslog}  archive=${archive}
+    Should Be Equal As Integers  ${disc_result}  1
+
+    ${discovery_complete}=  XIQSE Site Wait Until Discovery Complete
+    Should Be Equal As Integers  ${discovery_complete}  1
+
 Clean Up IP Range Discovery Settings and Confirm Success
     [Documentation]     Cleans up the Site IP Range Discovery settings
     [Arguments]         ${ip_start}  ${ip_end}  ${profile}
@@ -85,6 +96,18 @@ Clean Up Subnet Discovery Settings and Confirm Success
 
     Should Be Equal As Integers  ${profile_result}  1
     Should Be Equal As Integers  ${subnet_result}   1
+    Should Be Equal As Integers  ${save_result}     1
+
+Clean Up Seed Discovery Settings and Confirm Success
+    [Documentation]     Cleans up the Site Seed Discovery settings
+    [Arguments]         ${seed_address}  ${profile}
+
+    ${profile_result}=  XIQSE Discover Set Accept Profile               ${profile}  false
+    ${seed_result}=     XIQSE Discover Addresses Delete Seed Address    ${seed_address}
+    ${save_result}=     XIQSE Site Save Changes
+
+    Should Be Equal As Integers  ${profile_result}  1
+    Should Be Equal As Integers  ${seed_result}    1
     Should Be Equal As Integers  ${save_result}     1
 
 Clear IP From Discovered and Confirm Success

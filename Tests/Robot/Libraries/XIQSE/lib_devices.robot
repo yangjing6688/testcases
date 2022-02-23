@@ -44,6 +44,12 @@ Navigate and Delete Device
     Navigate to Devices and Confirm Success
     Delete Device and Confirm Success           ${ip}
 
+Navigate and Delete All Devices
+    [Documentation]     Navigates to the Devices tab and deletes all of the devices, confirming they were removed
+
+    Navigate to Devices and Confirm Success
+    Delete All Devices and Confirm Success
+
 Create Device and Confirm Success
     [Documentation]     Creates the specified device in XIQ-SE and confirms it was added successfully
     [Arguments]         ${ip}  ${profile}
@@ -122,6 +128,15 @@ Delete Device and Confirm Success
     Should Be Equal As Integers                             ${del_result}      1
 
     ${confirm_result}=  XIQSE Wait Until Device Removed     ${ip}
+    Should Be Equal As Integers                             ${confirm_result}  1
+
+Delete All Devices and Confirm Success
+    [Documentation]     Deletes all devices from XIQ-SE and confirms they were removed successfully
+
+    ${del_result}=  XIQSE Delete All Devices
+    Should Be Equal As Integers                             ${del_result}      1
+
+    ${confirm_result}=  XIQSE Confirm Table Empty
     Should Be Equal As Integers                             ${confirm_result}  1
 
 Confirm IP Address Present in Devices Table
