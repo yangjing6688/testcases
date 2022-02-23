@@ -60,7 +60,8 @@ Test 1: Confirm Basic Device360 Values
 
     # Confirm Values in D360 View
     Switch To Window  ${XIQ_WINDOW_INDEX}
-    Navigate to Device360 Page with MAC  ${XIQSE_MAC}
+    ${nav_result}=  Navigate to Device360 Page with MAC  ${XIQSE_MAC}
+    Should Be Equal As Integers  ${nav_result}  1
     Confirm Device360 Title for XIQ Site Engine
     Confirm Device360 Side Bar Information for XIQ Site Engine
     Confirm Device360 Top Bar Information for XIQ Site Engine
@@ -87,7 +88,8 @@ Test 2: Confirm Alarm and Event Device360 Values
 
     # Confirm Values in D360 View
     Switch To Window  ${XIQ_WINDOW_INDEX}
-    Navigate to Device360 Page with MAC  ${XIQSE_MAC}
+    ${nav_result}=  Navigate to Device360 Page with MAC  ${XIQSE_MAC}
+    Should Be Equal As Integers  ${nav_result}  1
     Save Screen Shot
 
     Confirm Device360 Alarms

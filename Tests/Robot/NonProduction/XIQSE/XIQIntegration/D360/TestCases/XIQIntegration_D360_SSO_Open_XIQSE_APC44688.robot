@@ -191,7 +191,8 @@ XIQ Device360 Click Open Site Engine Link
     Switch To Window                                ${XIQ_WINDOW_INDEX}
     XIQ Navigate to Devices and Confirm Success
 
-    Navigate to Device360 Page with MAC             ${mac}
+    ${nav_result}=  Navigate to Device360 Page with MAC  ${mac}
+    Should Be Equal As Integers  ${nav_result}  1
     ${result}=  Device360 Click Open Site Engine Link
     Should Be Equal As Integers     ${result}   1
 

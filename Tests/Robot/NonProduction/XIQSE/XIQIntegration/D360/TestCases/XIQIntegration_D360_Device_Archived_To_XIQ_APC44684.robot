@@ -242,7 +242,8 @@ XIQ Confirm Device Archived Value
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
     # Confirm Values in D360 View
-    Navigate to Device360 Page with MAC  ${mac}
+    ${nav_result}=  Navigate to Device360 Page with MAC  ${mac}
+    Should Be Equal As Integers  ${nav_result}  1
     Confirm Device360 System Information Archived  ${archived}
 
     [Teardown]  Close Device360 Window

@@ -301,7 +301,8 @@ XIQ Confirm Device Annotation Values
     XIQ Navigate to Devices and Confirm Success
 
     # Confirm Values in D360 View
-    Navigate to Device360 Page with MAC  ${mac}
+    ${nav_result}=  Navigate to Device360 Page with MAC  ${mac}
+    Should Be Equal As Integers  ${nav_result}  1
     Confirm Device360 System Information Annotations  ${asset}  ${ud1}  ${ud2}  ${ud3}  ${ud4}  ${note}
 
     [Teardown]  Close Device360 Window
