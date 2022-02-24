@@ -58,7 +58,7 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Resource     ../Resources/extreme_location_sanity_config.robot
+Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_location_sanity_config.robot
 
 Suite Setup      Pre Condition
 

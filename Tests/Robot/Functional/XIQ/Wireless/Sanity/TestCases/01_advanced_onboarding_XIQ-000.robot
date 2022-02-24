@@ -26,7 +26,7 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Resource     ../Resources/advanced_onboarding_config.robot
+Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/advanced_onboarding_config.robot
 
 Force Tags   flow3   flow7
 

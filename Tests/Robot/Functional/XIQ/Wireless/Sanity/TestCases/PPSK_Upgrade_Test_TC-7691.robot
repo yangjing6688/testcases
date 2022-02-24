@@ -62,8 +62,8 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Resource    ../Resources/test_email_ids.robot
-Resource    ../Resources/ppsk_upgrade_test_config.robot
+Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/test_email_ids.robot
+Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/ppsk_upgrade_test_config.robot
 
 Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   mu1
 
@@ -104,7 +104,7 @@ Test Case Level Cleanup
 *** Test Cases ***
 TC-6759_Step1: Create User Group and Network for PPSK Upgrade Test
     [Documentation]    Create User Group and Network for PPSK Upgrade Test
-    [Tags]             TC-6759_Step1      upgrade-test
+    [Tags]             TC-6759      upgrade-test
 
     ${LOGIN_STATUS}=                  Login User              ${tenant_username}     ${tenant_password}
     should be equal as strings       '${LOGIN_STATUS}'        '1'

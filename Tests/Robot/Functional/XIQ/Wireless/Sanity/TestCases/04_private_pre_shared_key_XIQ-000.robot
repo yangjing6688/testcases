@@ -80,8 +80,8 @@ Library     xiq/flows/configure/CommonObjects.py
 Library     xiq/flows/mlinsights/MLInsightClient360.py
 Library     xiq/flows/globalsettings/GlobalSetting.py
 
-Resource    ../Resources/test_email_ids.robot
-Resource    ../Resources/private_pre_shared_key_config.robot
+Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/test_email_ids.robot
+Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/private_pre_shared_key_config.robot
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}

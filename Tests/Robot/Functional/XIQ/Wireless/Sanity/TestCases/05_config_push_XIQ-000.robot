@@ -31,8 +31,8 @@ Variables    Environments/${ENV}
 
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
-Resource     ../Resources/router_xr_sanity_config.robot
-Resource     ../Resources/wireless_networks_config.robot
+Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/router_xr_sanity_config.robot
+Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/wireless_networks_config.robot
 
 Force Tags   flow1   flow4   flow5
 *** Keywords ***

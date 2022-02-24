@@ -49,7 +49,7 @@ Variables    Environments/${ENV}
 Variables    Environments/Config//waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Resource     ../Resources/auto_provisioning_config.robot
+Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/auto_provisioning_config.robot
 Force Tags   flow1   flow4
 
 
@@ -102,7 +102,7 @@ Get XIQ Status on Aerohive Switch
 *** Test Cases ***
 TC-49869 - Configure AP Auto Provision Profile
     [Documentation]         Configure AP Autoporvision Profile
-    [Tags]                  P1        production    ap
+    [Tags]                  P1        production    ap   TC-49869
     ${result}=              Login User              ${tenant_username}     ${tenant_password}
     ${POLICY_STATUS}=       Create Open Auth Express Network Policy     ${POLICY_NAME_01}      ${SSID_NAME_01}
 
@@ -128,7 +128,7 @@ TC-49869 - Configure AP Auto Provision Profile
 
 TC-49870 - Configure Switch Auto Provision Profile
     [Documentation]         Configure Switch  Autoporvision Profile
-    [Tags]                  P1      production      sw
+    [Tags]                  P1      production      sw   TC-49870
     ${result}=              Login User              ${tenant_username}      ${tenant_password}
     ${POLICY_STATUS}=       Create Open Auth Express Network Policy         ${POLICY_NAME_02}      ${SSID_NAME_02}
 

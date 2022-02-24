@@ -70,7 +70,7 @@ Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 
-Resource     ../Resources/social_login_config.robot
+Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/social_login_config.robot
 
 Library	        Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
 Suite Setup      Pre Condition

@@ -1,7 +1,9 @@
 from ExtremeAutomation.Utilities.Framework.test_case_inventory import RobotTestData
+from robot.api.parsing import get_model
 import argparse
 import json
 import os
+import glob
 
 parser = argparse.ArgumentParser(description='Get info for Robot files.')
 parser.add_argument('files',
@@ -11,9 +13,11 @@ parser.add_argument('files',
 args = parser.parse_args()
 
 def main(path):
-    TS = RobotTestData(path)
-    output = TS.print_suite(TS.testsObj)
-    print(f"qTest Tag Count: {TS.qTestTagCount}\nqTest Tags: {TS.qTestTags}")
+    model = get_model(path)
+    printer = RobotTestData(model)
+    printer.visit(model)
+    output = printer.print_suite()
+    print(f"qTest Tag Count: {printer.qTestTagCount}\nqTest Tags: {printer.qTestTags}")
 
     return output
 
@@ -21,12 +25,21 @@ if __name__ == '__main__':
     # main(sys.argv[1])
     output_dict = {}
     for file in args.files:
-        result = main(file)
-        # merge the result dict into the output dict
-        output_dict = {**output_dict, **result}
-        # output_dict[file] = result
+        if os.path.isdir(file):
+            robo_file_match = os.path.join(file, '*.robot')
+            robo_files = glob.glob(robo_file_match)
+            for robo_file in robo_files:
+                print(f"robo file = {robo_file}")
+                result = main(robo_file)
+                # merge the result dict into the output dict
+                output_dict = {**output_dict, **result}
+        else:
+            result = main(file)
+            # merge the result dict into the output dict
+            output_dict = {**output_dict, **result}
+            # output_dict[file] = result
 
     # Output CICD info
-    print(json.dumps(output_dict))
+    #print(json.dumps(output_dict))
     with open(f'{os.getcwd()}/robot_data.json', 'w') as outfile:
         json.dump(output_dict, outfile)

@@ -48,7 +48,7 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Resource     ../Resources/monitor_rogue_devices_config.robot
+Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/monitor_rogue_devices_config.robot
 Force Tags   flow3
 
 Library	        Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server

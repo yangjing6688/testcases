@@ -56,7 +56,7 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Resource     ../Resources/extreme_location_sanity_config.robot
+Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_location_sanity_config.robot
 
 Suite Setup      Pre Condition
 
@@ -90,7 +90,7 @@ Pre Condition
 
 TC-7297: Validate XLOC Config in already subscribed account
     [Documentation]         Existing Customer - BrownField Scenario with subscription and XLOC Config validation
-    [Tags]                  production  sanity  config  subscription  brownfield
+    [Tags]                  production  sanity  config  subscription  brownfield   TC-7297
     ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
 
     ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME}     ap_serial=${ap1.serial}   update_method=Complete
@@ -126,7 +126,7 @@ TC-7297: Validate XLOC Config in already subscribed account
 
 TC-7298: Validate Presence and Category TC in already subscribed account after connecting client
     [Documentation]         Existing Customer - BrownField Scenario with Presence and Category TC after connecting client
-    [Tags]                  production  sanity  connect  presence  category  brownfield
+    [Tags]                  production  sanity  connect  presence  category  brownfield   TC-7298
     Depends On          TC-7297
     ${LOGIN_XIQ}=                  Login User          ${tenant_username}     ${tenant_password}
 
@@ -169,7 +169,7 @@ TC-7298: Validate Presence and Category TC in already subscribed account after c
 
 TC-10858: Switch off Client WiFi Interface, Delete Client and Validate Presence in Devices and Sites Page after DisConnecting Client
     [Documentation]         Existing Customer - BrownField Scenario - Switch off Client, Delete Client and Validate Presence
-    [Tags]                  production  sanity  switchoff  delete  presence  disconnect  brownfield
+    [Tags]                  production  sanity  switchoff  delete  presence  disconnect  brownfield   TC-10858
     Depends On          TC-7297
     ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
 
@@ -208,7 +208,7 @@ TC-10858: Switch off Client WiFi Interface, Delete Client and Validate Presence 
 
 TC-10860: Delete AP From Existing Customer Account
     [Documentation]         Existing Customer - BrownField Scenario - Delete AP
-    [Tags]                  production  sanity  brownfield  apdelete
+    [Tags]                  production  sanity  brownfield  apdelete   TC-10860
 
     ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
 

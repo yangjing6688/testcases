@@ -44,7 +44,7 @@ Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 
-Resource     ../Resources/xapi_presence_config.robot
+Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/xapi_presence_config.robot
 
 Force Tags   flow5
 

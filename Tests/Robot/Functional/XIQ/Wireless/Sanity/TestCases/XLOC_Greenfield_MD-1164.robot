@@ -52,13 +52,13 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Resource     ../Resources/extreme_location_sanity_config.robot
+Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_location_sanity_config.robot
 
 *** Test Cases ***
 
 TC-10862: Onboard AP on New customer Account
     [Documentation]         New Customer - GreenField Scenario with onboarding and assigning location to AP
-    [Tags]                  production  sanity  onboard  greenfield
+    [Tags]                  production  sanity  onboard  greenfield   TC-10862
 
     ${LOGIN_XIQ}=               Login User          ${tenant_username}     ${tenant_password}
 
@@ -85,7 +85,7 @@ TC-10862: Onboard AP on New customer Account
 
 TC-7281: Check for Subscription and Validate XLOC Config for New Customer
     [Documentation]         New Customer - GreenField Scenario with subscription and XLOC Config validation
-    [Tags]                  production  sanity  subscription  config  greenfield
+    [Tags]                  production  sanity  subscription  config  greenfield   TC-7281
     Depends On          TC-10862
     ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
 
@@ -108,7 +108,7 @@ TC-7281: Check for Subscription and Validate XLOC Config for New Customer
 
 TC-10847: Validate Presence TC after connecting client in new customer account
     [Documentation]         New Customer - GreenField Scenario with presence validation after connecting client
-    [Tags]                  production  sanity  presence  greenfield
+    [Tags]                  production  sanity  presence  greenfield   TC-10847
     Depends On          TC-7281
     ${LOGIN_XIQ}=                  Login User          ${tenant_username}     ${tenant_password}
     ${CLIENT_MAC_FORMAT}=          Convert To Client MAC  ${mu5.wifi_mac}
@@ -140,7 +140,7 @@ TC-10847: Validate Presence TC after connecting client in new customer account
 
 TC-10865 Step1: Perform BackUp VIQ
     [Documentation]         New Customer - GreenField Scenario with BackUp Customer Account Data
-    [Tags]                  production  sanity  backup  greenfield
+    [Tags]                  production  sanity  backup  greenfield   TC-10865
 
     ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
     ${BACKUP_VIQ_DATA}=             Backup VIQ Data

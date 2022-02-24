@@ -25,7 +25,7 @@ Variables    Environments/${ENV}
 *** Test Cases ***
 TC-52306 - Communications pages Validation
     [Documentation]  Check user navigate to communication pages without error
-    [Tags]             production       sanity          navigation
+    [Tags]             production       sanity          navigation   TC-52306
     ${LOGIN_XIQ}=       Login User      ${tenant_username}     ${tenant_password}
     ${XIQ_VERSION}=     Get XIQ Version
     Log to Console      ${XIQ_VERSION}
