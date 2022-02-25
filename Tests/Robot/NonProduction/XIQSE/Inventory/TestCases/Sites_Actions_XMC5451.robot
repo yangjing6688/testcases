@@ -58,14 +58,14 @@ Test 1: Perform Site Discovery with Auto Add Devices True
     Wait For Operations Panel Operation To Complete     Device License Check
     Wait For Operations Panel Operation To Complete     Discover Site Actions
 
-    #Confirm device automatically added to Devices table
+    # Confirm device automatically added to Devices table
     Navigate to Site Devices and Confirm Success        ${TEST_SITE}
     Confirm IP Address Present in Devices Table         ${DUT_IP}
 
-    #Confirm discovery event exists
+    # Confirm discovery event exists
     Navigate and Confirm Site Discovery Event
 
-    #Delete device from Site Devices table
+    # Delete device from Site Devices table
     Navigate to Site Devices and Confirm Success        ${TEST_SITE}
     Delete Device and Confirm Success                   ${DUT_IP}
 
@@ -78,14 +78,14 @@ Test 2: Perform Site Discovery with Auto Add Devices False
     Perform IP Range Discovery and Confirm Success      ${DISCOVER_IP_START}  ${DISCOVER_IP_END}  ${DISCOVER_PROFILE}  auto_add=false  trap=false  syslog=false  archive=false
     Wait For Operations Panel Operation To Complete     Discover Site
 
-    #Confirm device not automatically added to Devices table
+    # Confirm device not automatically added to Devices table
     Navigate to Site Devices and Confirm Success        ${TEST_SITE}
     Confirm IP Address Not Present in Devices Table     ${DUT_IP}
 
-    #Confirm device added to Discovered table
+    # Confirm device added to Discovered table
     Confirm IP Address Present in Discovered Table      ${DUT_IP}
 
-    #Clear Device from Discovered table
+    # Clear Device from Discovered table
     Navigate to Discovered and Confirm Success
     Clear IP From Discovered and Confirm Success        ${DUT_IP}
 
@@ -99,17 +99,17 @@ Test 3: Perform Site Discovery with Add to Archive True
     Wait For Operations Panel Operation To Complete     Device License Check
     Wait For Operations Panel Operation To Complete     Discover Site Actions
 
-    #Confirm device automatically added to Devices table
+    # Confirm device automatically added to Devices table
     Navigate to Site Devices and Confirm Success        ${TEST_SITE}
     Confirm IP Address Present in Devices Table         ${DUT_IP}
 
-    #Confirm archive created in archives tree
+    # Confirm archive created in archives tree
     Navigate and Confirm Archive Exists In Tree         ${TEST_ARCHIVE}
 
-    #Delete archive
+    # Delete archive
     Delete Archive and Confirm Success                  ${TEST_ARCHIVE}
 
-    #Delete device from Site Devices table
+    # Delete device from Site Devices table
     Navigate to Site Devices and Confirm Success        ${TEST_SITE}
     Delete Device and Confirm Success                   ${DUT_IP}
 
@@ -123,14 +123,14 @@ Test 4: Perform Site Discovery with Add to Archive False
     Wait For Operations Panel Operation To Complete         Device License Check
     Wait For Operations Panel Operation To Complete         Discover Site Actions
 
-    #Confirm device automatically added to Devices table
+    # Confirm device automatically added to Devices table
     Navigate to Site Devices and Confirm Success            ${TEST_SITE}
     Confirm IP Address Present in Devices Table             ${DUT_IP}
 
-    #Confirm archive was not created in Archives tree
+    # Confirm archive was not created in Archives tree
     Navigate and Confirm Archive Does Not Exist In Tree     ${TEST_ARCHIVE}
 
-    #Delete device from Site Devices table
+    # Delete device from Site Devices table
     Navigate to Site Devices and Confirm Success            ${TEST_SITE}
     Delete Device and Confirm Success                       ${DUT_IP}
 
@@ -145,21 +145,21 @@ Test 5: Perform Site Discovery with Add Trap Receiver True
     Wait For Operations Panel Operation To Complete         Discover Site Actions
     Wait For Operations Panel Operation To Complete         Trap Configuration
 
-    #Confirm device automatically added to Devices table
+    # Confirm device automatically added to Devices table
     Navigate to Site Devices and Confirm Success            ${TEST_SITE}
     Confirm IP Address Present in Devices Table             ${DUT_IP}
 
-    #Confirm trap status column shows registered
+    # Confirm trap status column shows registered
     Navigate and Confirm Trap Status                        ${DUT_IP}    ${TRAP_REGISTERED}
 
-    #Unregister trap receiver on device
+    # Unregister trap receiver on device
     Clear Operations Panel and Confirm Success
     Navigate and Unregister Trap Receiver                   ${DUT_IP}
 
-    #Confirm trap status column shows unregistered
+    # Confirm trap status column shows unregistered
     Navigate and Confirm Trap Status                        ${DUT_IP}    ${TRAP_UNREGISTERED}
 
-    #Delete device from Site Devices table
+    # Delete device from Site Devices table
     Navigate to Site Devices and Confirm Success            ${TEST_SITE}
     Delete Device and Confirm Success                       ${DUT_IP}
 
@@ -173,14 +173,14 @@ Test 6: Perform Site Discovery with Add Trap Receiver False
     Wait For Operations Panel Operation To Complete         Device License Check
     Wait For Operations Panel Operation To Complete         Discover Site Actions
 
-    #Confirm device automatically added to Devices table
+    # Confirm device automatically added to Devices table
     Navigate to Site Devices and Confirm Success            ${TEST_SITE}
     Confirm IP Address Present in Devices Table             ${DUT_IP}
 
-    #Confirm trap status column shows unregistered
+    # Confirm trap status column shows unregistered
     Navigate and Confirm Trap Status                        ${DUT_IP}    ${TRAP_UNREGISTERED}
 
-    #Delete device from Site Devices table
+    # Delete device from Site Devices table
     Navigate to Site Devices and Confirm Success            ${TEST_SITE}
     Delete Device and Confirm Success                       ${DUT_IP}
 
@@ -195,21 +195,21 @@ Test 7: Perform Site Discovery with Add Syslog Receiver True
     Wait For Operations Panel Operation To Complete         Discover Site Actions
     Wait For Operations Panel Operation To Complete         Syslog Configuration
 
-    #Confirm device automatically added to Devices table
+    # Confirm device automatically added to Devices table
     Navigate to Site Devices and Confirm Success            ${TEST_SITE}
     Confirm IP Address Present in Devices Table             ${DUT_IP}
 
-    #Confirm syslog status column shows registered
+    # Confirm syslog status column shows registered
     Navigate and Confirm Syslog Status                      ${DUT_IP}    ${SYSLOG_REGISTERED}
 
-    #Unregister syslog receiver on device
+    # Unregister syslog receiver on device
     Clear Operations Panel and Confirm Success
     Navigate and Unregister Syslog Receiver                 ${DUT_IP}
 
-    #Confirm syslog status column shows unregistered
+    # Confirm syslog status column shows unregistered
     Navigate and Confirm Syslog Status                      ${DUT_IP}    ${SYSLOG_UNREGISTERED}
 
-    #Delete device from Site Devices table
+    # Delete device from Site Devices table
     Navigate to Site Devices and Confirm Success            ${TEST_SITE}
     Delete Device and Confirm Success                       ${DUT_IP}
 
@@ -223,14 +223,14 @@ Test 8: Perform Site Discovery with Add Syslog Receiver False
     Wait For Operations Panel Operation To Complete         Device License Check
     Wait For Operations Panel Operation To Complete         Discover Site Actions
 
-    #Confirm device automatically added to Devices table
+    # Confirm device automatically added to Devices table
     Navigate to Site Devices and Confirm Success            ${TEST_SITE}
     Confirm IP Address Present in Devices Table             ${DUT_IP}
 
-    #Confirm syslog status column shows unregistered
+    # Confirm syslog status column shows unregistered
     Navigate and Confirm Syslog Status                      ${DUT_IP}    ${SYSLOG_UNREGISTERED}
 
-    #Delete device from Site Devices table
+    # Delete device from Site Devices table
     Navigate to Site Devices and Confirm Success            ${TEST_SITE}
     Delete Device and Confirm Success                       ${DUT_IP}
 
