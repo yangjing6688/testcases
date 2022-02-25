@@ -6,7 +6,7 @@
 #
 # Author        : David Truesdell
 # Description   : Test Suite for sanity testing of basic XIQSE sites seed discovery functionality.
-#                 This is qTest TC-871 in the XIQ-SE project.
+#                 This is qTest TC-950 in the XIQ-SE project.
 
 *** Settings ***
 Library         xiqse/flows/network/devices/site/actions/XIQSE_NetworkDevicesSiteActions.py
@@ -45,7 +45,7 @@ ${TEST_ARCHIVE}             /World/AutomationSite
 *** Test Cases ***
 Test 1: Discover Seed Address
     [Documentation]     Confirms a seed discovery can be performed
-    [Tags]              xiqse_tc_871    xmc_5451    development    xiqse    inventory    discovery    sites    test3
+    [Tags]              xiqse_tc_950    xmc_5451    development    xiqse    inventory    discovery    sites    test3
 
     Clear Operations Panel and Confirm Success
     Navigate to Site Tab and Confirm Success                    ${TEST_SITE}
@@ -57,20 +57,20 @@ Test 1: Discover Seed Address
 
 Test 2: Navigate and Confirm IP Address Present in Devices Table
     [Documentation]     Confirms the specified IP address is present in the Devices table
-    [Tags]              xiqse_tc_871    xmc_5451    development    xiqse    inventory    discovery    sites    test4
+    [Tags]              xiqse_tc_950    xmc_5451    development    xiqse    inventory    discovery    sites    test4
 
     Navigate to Devices and Confirm Success
     Confirm IP Address Present in Devices Table    ${DUT_IP}
 
 Test 3: Confirm Archive Exists In Tree
     [Documentation]     Confirms an archive exists in the Network> Archives tree in XIQ-SE and confirms the action was successful
-    [Tags]              xiqse_tc_871    xmc_5451    development    xiqse    inventory    discovery    sites    test5
+    [Tags]              xiqse_tc_950    xmc_5451    development    xiqse    inventory    discovery    sites    test5
 
     Navigate and Confirm Archive Exists In Tree     ${TEST_ARCHIVE}
 
 Test 4: Confirm Events - Site Discovery
     [Documentation]     Confirms the events view contains the expected event
-    [Tags]              xiqse_tc_871    xmc_5451    development    xiqse    inventory    discovery    sites    test6
+    [Tags]              xiqse_tc_950    xmc_5451    development    xiqse    inventory    discovery    sites    test6
 
     Navigate to Events and Confirm Success
     Set Event Time Range and Confirm Success        Last 30 Minutes

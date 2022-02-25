@@ -138,3 +138,17 @@ Confirm Archive Exists In Tree
 
     ${confirm_result}=  XIQSE Confirm Archive Exists    ${archive_name}
     Should Be Equal As Integers  ${confirm_result}  1
+
+Confirm Archive Does Not Exist In Tree
+    [Documentation]     Confirms an archive does not exist in the Network> Archives tree in XIQ-SE and confirms the action was successful
+    [Arguments]         ${archive_name}
+
+    ${confirm_result}=  XIQSE Confirm Archive Exists    ${archive_name}  false
+    Should Be Equal As Integers  ${confirm_result}  1
+
+Navigate and Confirm Archive Does Not Exist In Tree
+    [Documentation]     Navigates, confirms an archive does not exist in the Network> Archives tree in XIQ-SE and confirms the action was successful
+    [Arguments]         ${archive_name}
+
+    Navigate to Archives and Confirm Success
+    Confirm Archive Does Not Exist In Tree              ${archive_name}

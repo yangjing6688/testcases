@@ -44,3 +44,21 @@ Unregister Syslog Receiver and Confirm Success
 
     ${wait_result}=  XIQSE Operations Wait Until Operation Complete    Syslog Configuration
     Should Be Equal As Integers         ${wait_result}  1
+
+Confirm Syslog Status
+    [Documentation]     Verifies the syslog status on the specified device
+    [Arguments]         ${device_ip}    ${expected_value}
+
+    # Make sure the Syslog Status column is being displayed
+    ${col}=  XIQSE Devices Show Columns  Syslog Status
+    Should Be Equal As Integers          ${col}     1
+
+    ${returned_value}=  XIQSE Get Syslog Status       ${device_ip}
+    Should Be Equal As Strings              ${returned_value}    ${expected_value}
+
+Navigate and Confirm Syslog Status
+    [Documentation]     Navigates to the Devices tab and verifies the syslog status on the specified device
+    [Arguments]         ${device_ip}    ${expected_value}
+
+    Navigate to Devices and Confirm Success
+    Confirm Syslog Status       ${device_ip}    ${expected_value}
