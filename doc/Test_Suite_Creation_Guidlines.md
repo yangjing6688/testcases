@@ -172,7 +172,7 @@ Note: all test cases should be created in the [Tests](https://github.com/extreme
      * apiUDK - All of the UserDefinedKeywords should be loaded from the [framework](https://github.com/extremenetworks/econ-automation-framework/blob/main/ExtremeAutomation/Imports/Udks.py)
      * apiLowLevelApis - All of the low level APIs for NOS, loaded from [framework](https://github.com/extremenetworks/econ-automation-framework/blob/main/ExtremeAutomation/Imports/LowLevelApis.py)
      * apiLowLevelTrafficApi - All of the low level APIs for traffic Generators, loaded from [framework](https://github.com/extremenetworks/econ-automation-framework/blob/main/ExtremeAutomation/Imports/LowLevelTrafficApis.py)
-     * deviceEndSystem - All of the Keywords for End Systems, loaded from [framework](https://github.com/extremenetworks/econ-automation-framework/blob/main/ExtremeAutomation/Imports/EndSystemUtils.py.py)
+     * deviceEndSystem - All of the Keywords for End Systems, loaded from [framework](https://github.com/extremenetworks/econ-automation-framework/blob/main/ExtremeAutomation/Imports/EndSystemUtils.py)
      * deviceNetworkElement - All of the Keywords for Network Elements, loaded from [framework](https://github.com/extremenetworks/econ-automation-framework/blob/main/ExtremeAutomation/Imports/NetElementUtils.py)
      * deviceVirtualMachine - All of the Keywords for Virutal Machines, loaded from [framework](https://github.com/extremenetworks/econ-automation-framework/blob/main/ExtremeAutomation/Imports/VirtualMachineUtils.py)
 
