@@ -189,3 +189,75 @@ Confirm Device Status Down
 
     ${result}=  XIQSE Wait Until Device Status Down    ${ip}
     Should Be Equal As Integers                        ${result}     1
+
+Navigate and Confirm Device Historical Statistics
+    [Documentation]     Navigates and verifies the device historical statistics status on the specified device
+    [Arguments]         ${device_ip}    ${expected_value}
+
+    Navigate to Devices and Confirm Success
+    Confirm Device Historical Statistics                ${device_ip}
+
+Confirm Device Historical Statistics
+    [Documentation]     Verifies the device historical statistics status on the specified device
+    [Arguments]         ${device_ip}
+
+    # Make sure the Stats column is being displayed
+    ${col}=  XIQSE Devices Show Columns  Stats
+    Should Be Equal As Integers          ${col}     1
+
+    ${returned_value}=  XIQSE Wait Until Device Stats Historical      ${device_ip}
+    Should Be Equal As Integers         ${returned_value}     1
+
+Navigate and Confirm Device Threshold Alarms Statistics
+    [Documentation]     Navigates and verifies the device threshold alarms statistics status on the specified device
+    [Arguments]         ${device_ip}    ${expected_value}
+
+    Navigate to Devices and Confirm Success
+    Confirm Device Threshold Alarms Statistics                ${device_ip}
+
+Confirm Device Threshold Alarms Statistics
+    [Documentation]     Verifies the device threshold alarms statistics status on the specified device
+    [Arguments]         ${device_ip}
+
+    # Make sure the Stats column is being displayed
+    ${col}=  XIQSE Devices Show Columns  Stats
+    Should Be Equal As Integers          ${col}     1
+
+    ${returned_value}=  XIQSE Wait Until Device Stats Threshold Alarms      ${device_ip}
+    Should Be Equal As Integers         ${returned_value}     1
+
+Navigate and Confirm Device Statistics Disabled
+    [Documentation]     Navigates and verifies the device statistics status is disabled on the specified device
+    [Arguments]         ${device_ip}    ${expected_value}
+
+    Navigate to Devices and Confirm Success
+    Confirm Device Statistics Disabled                ${device_ip}
+
+Confirm Device Statistics Disabled
+    [Documentation]     Verifies the device statistics status is disabled on the specified device
+    [Arguments]         ${device_ip}
+
+    # Make sure the Stats column is being displayed
+    ${col}=  XIQSE Devices Show Columns  Stats
+    Should Be Equal As Integers          ${col}     1
+
+    ${returned_value}=  XIQSE Wait Until Device Stats Not Collecting      ${device_ip}
+    Should Be Equal As Integers         ${returned_value}     1
+
+Navigate and Confirm Device License
+    [Documentation]     Navigates and verifies the device license on the specified device
+    [Arguments]         ${device_ip}    ${license}
+
+    Navigate to Devices and Confirm Success
+    Confirm Device License               ${device_ip}    ${license}
+
+Confirm Device License
+    [Documentation]     Verifies the device license on the specified device
+    [Arguments]         ${device_ip}    ${expected_value}
+
+    # Make sure the Stats column is being displayed
+    ${col}=  XIQSE Devices Show Columns  License
+    Should Be Equal As Integers          ${col}     1
+
+    ${returned_value}=  XIQSE Get Device License       ${device_ip}
+    Should Be Equal As Strings             ${returned_value}    ${expected_value}    ignore_case=True
