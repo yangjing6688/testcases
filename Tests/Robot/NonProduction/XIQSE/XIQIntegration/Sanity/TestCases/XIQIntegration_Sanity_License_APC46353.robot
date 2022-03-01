@@ -132,7 +132,9 @@ Test 5: Delete Pilot Device and Check License Counts
 
 Test 6: Delete Navigator Device and Check License Counts
     [Documentation]     Deletes a navigator type device in XIQSE and confirms the license counts
-    [Tags]              csit_tc_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test6
+    [Tags]              known_issue    csit_tc_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test6
+
+    Log To Console  KNOWN ISSUE: XIQ-639
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 
