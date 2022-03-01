@@ -602,6 +602,7 @@ jobs:
         repository: extremenetworks/extreme_automation_framework
         token: ${{ secrets.REGISTRY_PAT }}
         path: extreme_automation_framework
+        ref: main
 
     - name: Checkout qtest tools
       if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
@@ -610,6 +611,7 @@ jobs:
         repository: extremenetworks/econ-qtest-client
         token: ${{ secrets.REGISTRY_PAT }}
         path: econ-qtest-client
+        ref: main
 
     - uses: actions/download-artifact@v2
       if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}

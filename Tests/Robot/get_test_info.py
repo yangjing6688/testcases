@@ -17,7 +17,7 @@ def main(path):
     printer = RobotTestData(model)
     printer.visit(model)
     output = printer.print_suite()
-    print(f"qTest Tag Count: {printer.qTestTagCount}\nqTest Tags: {printer.qTestTags}")
+    print(f"qTest Tag Count: {len(printer.qTestTags)}\nqTest Tags: {printer.qTestTags}")
 
     return output
 
@@ -37,7 +37,6 @@ if __name__ == '__main__':
             result = main(file)
             # merge the result dict into the output dict
             output_dict = {**output_dict, **result}
-            # output_dict[file] = result
 
     # Output CICD info
     #print(json.dumps(output_dict))

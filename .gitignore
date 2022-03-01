@@ -2,6 +2,7 @@
 /.pydevproject
 /.pytest_cache
 /venv
+/.venv
 /pycurl-7.43.0.5-cp39-cp39-win_amd64.whl
 **allure_output**
 **__pycache__**
