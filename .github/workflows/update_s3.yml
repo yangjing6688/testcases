@@ -26,6 +26,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
+        fetch-depth: 0
         ref: main
 
     - name: Configure AWS credentials
@@ -56,8 +57,9 @@ jobs:
   cleanup_branches:
     name: Remove Old Branch Info
     runs-on: ubuntu-latest
-    # Runs once at the beginning of each day
-    if: ${{ github.event_name == 'schedule' }}
+    # Runs once at the beginning of each day or on manual trigger
+    # Running on manual trigger effectively seeds the S3 bucket with all the necessary info
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' }}
 
     steps:
     - name: Checkout
@@ -77,6 +79,12 @@ jobs:
       run: |
         # Make clean directory that we can use to sync with S3
         mkdir ${WORK_DIR}
+
+        # Get names of all remote branches and put in json array
+        git branch -r | sed -e "s/  origin\///" | sed -e "s/HEAD -> origin\/main//" | jq -ncR '[ inputs | select(length > 0) ]' > ${WORK_DIR}/branches.json
+
+        # Get tags and put in json array
+        git tag | jq -ncR '[inputs]' > ${WORK_DIR}/tags.json
 
         for branch in $(jq -r '.[]' ${WORK_DIR}/branches.json); do
           # Make directory for branch info
@@ -104,7 +112,7 @@ jobs:
 
     - name: Upload Metadata
       # Only delete stale branch folders. Exclude top level files and TestBeds directory
-      run: aws s3 sync ${WORK_DIR} s3://econgit/extreme_automation_tests --delete --exclude "*" --include "*/*" --exclude "TestBeds/*"
+      run: aws s3 sync ${WORK_DIR} s3://econgit/extreme_automation_tests --delete --exclude "*" --include "*/*" --include "branches.json" --include "tags.json" --exclude "TestBeds/*"
 
   update_ref_lists:
     name: Update List of Branches/Tags
