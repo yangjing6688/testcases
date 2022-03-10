@@ -167,13 +167,8 @@ Set Up XIQSE Components
     # Confirm the serial number is correct and set the common options needed for automation
     Confirm Serial Number and Set Common Options    ${XIQSE_SERIAL}
 
-    # Remove the devices if already exist
-    Navigate and Delete Device                      ${DUT1_IP}
-    Delete Device and Confirm Success               ${DUT2_IP}
-    Delete Device and Confirm Success               ${DUT3_IP}
-    Delete Device and Confirm Success               ${DUT4_IP}
-    Delete Device and Confirm Success               ${DUT5_IP}
-    Delete Device and Confirm Success               ${DUT6_IP}
+    # Remove any devices that already exist
+    Navigate And Delete All Devices
 
     # Create the test devices
     Navigate and Create Device                      ${DUT1_IP}  ${DUT1_PROFILE}
@@ -230,15 +225,10 @@ Clean Up XIQSE Components
 
     Switch To Window                                ${XIQSE_WINDOW_INDEX}
     XIQSE Login User                                ${XIQSE_USER}    ${XIQSE_PASSWORD}
-    Navigate to Devices and Confirm Success
+    # Navigate to Devices and Confirm Success
 
-    # Delete the test devices
-    Delete Device and Confirm Success               ${DUT1_IP}
-    Delete Device and Confirm Success               ${DUT2_IP}
-    Delete Device and Confirm Success               ${DUT3_IP}
-    Delete Device and Confirm Success               ${DUT4_IP}
-    Delete Device and Confirm Success               ${DUT5_IP}
-    Delete Device and Confirm Success               ${DUT6_IP}
+    # Delete all the devices
+    Navigate and Delete All Devices
 
     # Delete the XIQ User from the Administration > Users > Authorized Users table
     XIQSE Delete the Authorized User                ${XIQ_USER}
