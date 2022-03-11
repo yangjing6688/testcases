@@ -2,7 +2,7 @@
 lab:                      "RDU"
 
 netelem1:
-  name:                     "10.69.61.86"
+  name:                     "VSP-5420F-48P-4XE"
   hostname:                 "10.69.61.86"
   serial:                   "JA042134G-00430"
   mac:                      "f4ce48e3d000"
@@ -16,12 +16,12 @@ netelem1:
   os:                       "VOSS"
   platform:                 "voss"
   image_family:             "5420"
-  template:                 "5420F_48P_4XE-default-template"
+  template:                 "VSP_5420F_48P_4XE-default-template"
   make:                     "VOSS"
   model:                    "5420F-48P-4XE"
   product:                  "5420F_48P_4XE"
   function:                 "Switch"
-  ccg:                      "Model_VOSSSWITCH"
+  ccg:                      "Model_VSP_SWITCH"
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
 

@@ -64,9 +64,8 @@ Test1: Onboard EXOS Switch on XIQ
     ${SWITCH_STATUS}=       Get Device Status       device_serial=${netelem1.serial}
     Should Be Equal As Strings             '${SWITCH_STATUS}'      'green'
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Test2: Verify EXOS Switch Information on Device 360 page
     [Documentation]         Verify EXOS Switch Information on Device 360 page
@@ -84,9 +83,8 @@ Test2: Verify EXOS Switch Information on Device 360 page
     ${DEVICE_SERIAL}=              Get From Dictionary      ${SYS_INFO_360_PAGE}    serial_number
     Should Be Equal As Strings    '${DEVICE_SERIAL}'        '${netelem1.serial}'
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Test3: Verify ExOS SSH connectivity
   [Documentation]       Verify ExOS SSH connectivity
@@ -112,9 +110,8 @@ Test3: Verify ExOS SSH connectivity
     ${SPAWN2}=          Open Paramiko SSH Spawn    ${IP ADDR}   ${netelem1.username}    ${netelem1.password}  ${PORT NUM}
     should be equal as strings          ${SPAWN2}     -1
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Test Suite Clean Up
     [Documentation]    delete Exos Switch

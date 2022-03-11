@@ -101,7 +101,7 @@ Test1: Onboard Aerohive XR Router Using Quick Add Method
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
-                 Close Spawn        ${ROUTER_SPAWN}
+    ...          AND                Close Spawn        ${ROUTER_SPAWN}
 
 test2: Onboard Aerohive XR Router Using Advance Onboarding Method
     [Documentation]         Onboard Aerohive XR Router Using Advance Onboarding Method
@@ -143,7 +143,7 @@ test2: Onboard Aerohive XR Router Using Advance Onboarding Method
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
-                 Close Spawn        ${ROUTER_SPAWN}
+    ...          AND                Close Spawn        ${ROUTER_SPAWN}
 
 Test3: Create Router XR Template
     [Documentation]         Create Router XR Template
@@ -176,7 +176,7 @@ Test3: Create Router XR Template
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
-                 Close Spawn        ${ROUTER_SPAWN}
+    ...          AND                Close Spawn        ${ROUTER_SPAWN}
 
 Test4: Upgrade Latest IQ Engine Router Firmware
     [Documentation]     Upgrate latest IQ Engine Router Firmware
@@ -201,7 +201,7 @@ Test4: Upgrade Latest IQ Engine Router Firmware
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
-                 Close Spawn        ${ROUTER_SPAWN}
+    ...          AND                Close Spawn        ${ROUTER_SPAWN}
 
 Test Suite Clean Up
     [Documentation]             delete created network policies, SSID, Device etc

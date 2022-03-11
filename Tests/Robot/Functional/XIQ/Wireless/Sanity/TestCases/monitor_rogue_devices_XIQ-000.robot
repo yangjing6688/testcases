@@ -75,10 +75,10 @@ Pre Condition
 Test0: Pre-config
     [Documentation]         Pre-config
     [Tags]                  sanity  add   Rougueap  wips_ssid   aerohive  P3  P4   regression
-    ${result}=          Login User          ${tenant_username}     ${tenant_password}
-    Onboard Device      ${ap2.serial}           ${ap2.make}       location=${LOCATION}      device_os=${ap2.os}
-    ${AP_SPAWN}=        Open Spawn          ${ap2.console_ip}   ${ap2.console_port}      ${ap2.username}       ${ap2.password}        ${ap2.platform}
-    Set Suite Variable  ${AP_SPAWN}
+    ${result}=           Login User          ${tenant_username}     ${tenant_password}
+    Onboard Device       ${ap2.serial}           ${ap2.make}       location=${LOCATION}      device_os=${ap2.os}
+    ${AP_SPAWN}=         Open Spawn        ${ap2.console_ip}   ${ap2.console_port}      ${ap2.username}       ${ap2.password}        ${ap2.platform}
+    Set Suite Variable   ${AP_SPAWN}
 
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
     Wait Until Device Online                ${ap2.serial}
@@ -86,9 +86,8 @@ Test0: Pre-config
     ${AP2_STATUS}=       Get AP Status       ap_mac=${ap2.mac}}
     Should Be Equal As Strings  '${AP2_STATUS}'     'green'
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Test1: TC-49871 - Configure WIPS Policy on AP
     [Documentation]         Configure WIPS Policies
@@ -125,9 +124,8 @@ Test1: TC-49871 - Configure WIPS Policy on AP
     Should Contain      ${WIPS_CONFIG}      security wlan-idp profile ${SSID_NAME} sta-report
     CLOSE SPAWN         ${AP_SPAWN}
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Test2: Make a WiFi connection with WIPS policy Configured Non-Permiited SSID
     [Documentation]         Make a WiFi connection with WIPS policy Configured Non-Permiited SSID
@@ -148,9 +146,8 @@ Test2: Make a WiFi connection with WIPS policy Configured Non-Permiited SSID
     ${CLIENT_STATUS}=   Get Client Status   client_mac=${MU1_WIFI_MAC}
     Should Be Equal As Strings              '${CLIENT_STATUS}'      '1'
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Test3: Verify the Rogue AP Logs with Non-Permitted SSID
     [Documentation]         Verify the Rogue AP
@@ -181,9 +178,8 @@ Test3: Verify the Rogue AP Logs with Non-Permitted SSID
     Should Be Equal As Strings    '${REPORTING_DEVICE}'   '${ap1.name}'
     Should Be Equal As Strings    '${REASON}'             '${ROGUE_REASON_NAME}'
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Test4: Make a WiFi connection with WIPS policy Configured Permitted SSID
     [Documentation]         Make a WiFi connection with WIPS policy Configured Permitted SSID
@@ -204,9 +200,8 @@ Test4: Make a WiFi connection with WIPS policy Configured Permitted SSID
     ${CLIENT_STATUS}=   Get Client Status   client_mac=${MU1_WIFI_MAC}
     Should Be Equal As Strings              '${CLIENT_STATUS}'      '1'
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Test5: Verify the Rogue AP Logs with Permitted SSID
     [Documentation]         Verify the Rogue AP
@@ -218,9 +213,8 @@ Test5: Verify the Rogue AP Logs with Permitted SSID
     # Logs Verification
     Should Be Equal As Strings        '${ROGUE_LOGS}'     '-1'
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Test6: Verify the Rogue Client
     [Documentation]         Verify the Rogue Client
@@ -243,9 +237,8 @@ Test6: Verify the Rogue Client
     ${LAST_TIME_SEEN}=     Get From Dictionary     ${ROGUE_LOGS}    endTime
     ${MITIGATION}=         Get From Dictionary     ${ROGUE_LOGS}    mitigationFlag
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Test7: Delete Wips Policy
     [Documentation]         Verify Delete Wips Policy
@@ -270,6 +263,5 @@ Test7: Delete Wips Policy
     Should Not Contain      ${WIPS_CONFIG}      security wlan-idp profile ${SSID_NAME} sta-report
     CLOSE SPAWN         ${AP_SPAWN}
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser

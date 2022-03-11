@@ -40,9 +40,21 @@ mu1:
   username:       extreme
   password:       extreme
   platform:       windows
-  interface:      wlan2
+  interface:      wlan0
   wifi_mac:       984827E725C8
   ethernet_mac:   080027AE858D
+  wifi_network:   20.1.1
+  wifi_network_vlan10:    10.69.61
+
+mu2:
+  ip:             10.69.61.109
+  port:           8270
+  username:       extreme
+  password:       extreme
+  platform:       windows
+  interface:      wlan0
+  wifi_mac:       502b73a9185d
+  ethernet_mac:   0800279c0584
   wifi_network:   20.1.1
   wifi_network_vlan10:    10.69.61
 

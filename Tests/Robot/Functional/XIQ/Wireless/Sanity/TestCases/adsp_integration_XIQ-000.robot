@@ -92,9 +92,8 @@ Test1: Onboard Sensor AP
     ${LOCATION_RESULT}=             Assign Location With Device Actions         ${ap1.serial}       ${LOCATION}
     Should Be Equal As Integers     ${LOCATION_RESULT}      1       Unable to Assign Location to Device
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Test2: Onboard AP to Generate DoS Deauthentication
     [Documentation]         Pre-config-Onboard AP to Generate DoS Deauthentication
@@ -115,9 +114,8 @@ Test2: Onboard AP to Generate DoS Deauthentication
     ${AP2_STATUS}=               Get AP Status       ap_mac=${ap2.mac}
     Should Be Equal As Strings  '${AP2_STATUS}'     'green'
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 
 Test3: Connect Client to Generate DoS Deauthentication
@@ -146,9 +144,8 @@ Test3: Connect Client to Generate DoS Deauthentication
     ${CLIENT_STATUS}=                Get Client Status   client_mac=${mu1.wifi_mac}
     Should Be Equal As Strings       '${CLIENT_STATUS}'      '1'
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Test4: Configure ADSP on AP
     [Documentation]         Configure ADSP on AP
@@ -309,6 +306,5 @@ Test Suite Clean Up
     ${result}=    Login User        ${tenant_username}     ${tenant_password}
     Delete Device                   device_serial=${ap1.serial}
     Delete Device                   device_serial=${ap2.serial}
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser

@@ -59,9 +59,8 @@ Onboard Aerohive Switch
     Delete Device           device_serial=${aerohive_sw1.serial}
     ${ONBOARD_RESULT}=      Onboard Device      ${aerohive_sw1.serial}           ${aerohive_sw1.make}       location=${LOCATION}
     should be equal as integers                 ${ONBOARD_RESULT}       1
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Config Aerohive/Fastpath Switch to Report AIO
     [Documentation]     Config Aerohive Switch to Report AIO
@@ -70,8 +69,7 @@ Config Aerohive/Fastpath Switch to Report AIO
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-fastpath'   Configure XIQ on Fastpath Switch        ${SW_SPAWN}         ${sw_capwap_url}
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-switch'     Configure XIQ on Aerohive Switch        ${SW_SPAWN}         ${capwap_url}
 
-    [Teardown]
-    Close Spawn         ${SW_SPAWN}
+    [Teardown]          Close Spawn         ${SW_SPAWN}
 
 Check Aerohive Switch Status On UI
     [Documentation]     Checks for switch status
@@ -80,9 +78,8 @@ Check Aerohive Switch Status On UI
     wait until device online                device_serial=${aerohive_sw1.serial}
     ${SW_STATUS}=       Get Device Status           device_serial=${aerohive_sw1.serial}
     Should Be Equal As Strings  '${SW_STATUS}'      'green'
-    [Teardown]
-    Delete Device       ${aerohive_sw1.serial}
-    Quit Browser
+    [Teardown]          run keywords     Delete Device       ${aerohive_sw1.serial}
+    ...                 AND              Quit Browser
 
 Onboard Aerohive Switch via advanced Onboarding
     [Documentation]         Checks for Aerohive switch(SR23XX) onboarding via advanced onboard
@@ -100,7 +97,6 @@ Onboard Aerohive Switch via advanced Onboarding
     should be equal as integers             ${onboard_result}       1
     should be equal as integers             ${search_result}        1
     Should Be Equal As Strings              '${SW_STATUS}'     'green'
-    [Teardown]
-    Delete Device           device_serial=${aerohive_sw1.serial}
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords     Delete Device           device_serial=${aerohive_sw1.serial}
+    ...                 AND             Logout User
+    ...                 AND             Quit Browser

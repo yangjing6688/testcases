@@ -52,9 +52,8 @@ Test1: Advance Onboard Extreme-Aerohive Access Point
     ${ONBOARD_STATUS}=               Advance Onboard Device         ${ap1.serial}    device_make=${DEVICE_MAKE_AEROHIVE}   dev_location=${LOCATION}
     should be equal as integers      ${ONBOARD_STATUS}       1
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Test2: Config AP to Report AIO
     [Documentation]     Configure Capwap client server
@@ -86,9 +85,8 @@ Test3: Check AP Status On UI
     ${AP_STATUS}=                           Get AP Status       ap_mac=${ap1.mac}
     Should Be Equal As Strings             '${AP_STATUS}'       'green'
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 Test Suite Clean Up
     [Documentation]    Test suite clean up
@@ -101,6 +99,5 @@ Test Suite Clean Up
     delete network policy      ${ADVANCE_NW_POLICY1}
     delete ssids     ${INTERNAL_SSID_NAME1}     ${GUEST_SSID_NAME1}
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser

@@ -5,6 +5,7 @@ from pytest_testconfig import config
 import threading
 import queue
 import logging
+import sys
 from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
 from ExtremeAutomation.Utilities.Firmware.pytestLoadFirmware import PlatformLoadFirmware
 from ExtremeAutomation.Utilities.EconClient.econ_request_api import econAPI
@@ -58,7 +59,10 @@ from ExtremeAutomation.Utilities.Framework.test_selection import CheckExecution
     # drvr.quit()
 
 def pytest_addoption(parser):
-    parser.addoption("--cfg", action="store", default=None, help="yaml cfg file. Auto path search used")
+    parser.addoption("--testbed", action="store", default=None, help="yaml testbed file Auto search")
+    parser.addoption("--cfg", action="store", default=None, help="dup arg same as --testbed")
+    parser.addoption("--env", action="store", default=None, help="yaml env file. Auto path search used")
+    parser.addoption("--topo", action="store", default=None, help="yaml topo file. Auto path search used")
     parser.addoption("--tftpserver", action="store", default=None)
     parser.addoption("--imageFamilies", action="store", default=None)
     parser.addoption("--images", action="store", default=None)
@@ -81,14 +85,47 @@ def pytest_configure(config):
     terminal_reporter = config.pluginmanager.getplugin('terminalreporter')
     config.pluginmanager.register(TestDescriptionPlugin(terminal_reporter), 'testdescription')
 
-    if config.option.cfg is not None:
+    if config.option.testbed is not None or config.option.cfg is not None or config.option.env is not None or \
+            config.option.topo is not None:
         from pytest_testconfig import load_yaml
         pt = PathTools()
+
+    if config.option.cfg is not None:
         cfg = config.getoption("--cfg")
-        print(f"TRYING TO LOAD YAML: {cfg}")
+        print(f"TRYING TO LOAD CFG YAML: {cfg}")
         fCfg = pt.locateCfg(cfg)
         print(f"FOUND YAML: {fCfg}")
-        load_yaml(fCfg, encoding='utf-8')
+        if fCfg:
+            load_yaml(fCfg, encoding='utf-8')
+        else:
+            sys.exit()
+    if config.option.testbed is not None:
+        cfg = config.getoption("--testbed")
+        print(f"TRYING TO LOAD TESTBED YAML: {cfg}")
+        fCfg = pt.locateCfg(cfg)
+        print(f"FOUND YAML: {fCfg}")
+        if fCfg:
+            load_yaml(fCfg, encoding='utf-8')
+        else:
+            sys.exit()
+    if config.option.env is not None:
+        env = config.getoption("--env")
+        print(f"TRYING TO LOAD ENV YAML: {env}")
+        fEnv = pt.locateEnv(env)
+        print(f"FOUND ENV YAML: {fEnv}")
+        if fEnv:
+            load_yaml(fEnv, encoding='utf-8')
+        else:
+            sys.exit()
+    if config.option.topo is not None:
+        topo = config.getoption("--topo")
+        print(f"TRYING TO LOAD TOPO YAML: {topo}")
+        fTopo = pt.locateTopo(topo)
+        print(f"FOUND TOPO YAML: {fTopo}")
+        if fTopo:
+            load_yaml(fTopo, encoding='utf-8')
+        else:
+            sys.exit()
 
 def pytest_collection_finish(session):
     if session.config.option.get_test_info is not None:

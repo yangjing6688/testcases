@@ -36,20 +36,20 @@ Suite Teardown   Tear Down Test and Close Session
 *** Variables ***
 ${TESTBED}                  slm_tb_1
 ${TOPO}                     topo-1
-${DEVICE}                   VSP-XA1480
+${DEVICE}                   ${netelem1.model}
 ${ENTRY_TYPE}               Manual
 # Please do not change the DUT variables - if you have AP1/SW1-prefixed variables in your device file,
 # just edit your device file, copy/paste those AP1/SW1 variables, and change the prefix to DEVICE.
-${DUT_SERIAL}               ${netelem2.serial}
-${DUT_NAME}                 ${netelem2.name}
-${DUT_MODEL}                ${netelem2.model}
-${DUT_MAC}                  ${netelem2.mac}
-${DUT_CONSOLE_IP}           ${netelem2.console_ip}
-${DUT_CONSOLE_PORT}         ${netelem2.console_port}
-${DUT_USERNAME}             ${netelem2.username}
-${DUT_PASSWORD}             ${netelem2.password}
-${DUT_PLATFORM}             ${netelem2.platform}
-${DUT_TYPE}                 ${netelem2.make}
+${DUT_SERIAL}               ${netelem1.serial}
+${DUT_NAME}                 ${netelem1.name}
+${DUT_MODEL}                ${netelem1.model}
+${DUT_MAC}                  ${netelem1.mac}
+${DUT_CONSOLE_IP}           ${netelem1.console_ip}
+${DUT_CONSOLE_PORT}         ${netelem1.console_port}
+${DUT_USERNAME}             ${netelem1.username}
+${DUT_PASSWORD}             ${netelem1.password}
+${DUT_PLATFORM}             ${netelem1.platform}
+${DUT_TYPE}                 ${netelem1.make}
 
 ${STATUS_BEFORE_UPDATE}     config audit mismatch
 ${STATUS_AFTER_UPDATE}      green

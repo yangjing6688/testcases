@@ -42,9 +42,8 @@ test1: Onboard WiNG AP
     should be equal as integers             ${result}               1
     should be equal as integers             ${search_result}        1
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]      run keywords    logout user
+     ...                            quit browser
 
 test2: Config AP to Report XIQ
     [Documentation]     Configure Capwap client server
@@ -61,8 +60,7 @@ test2: Config AP to Report XIQ
     ${OUTPUT2}=         Send                ${AP_SPAWN}         show running-config rf-domain default
     ${OUTPUT3}=         Send                ${AP_SPAWN}         self, show context, end
 
-    [Teardown]
-    Close Spawn         ${AP_SPAWN}
+    [Teardown]          Close Spawn         ${AP_SPAWN}
 
 test3: Check AP Status On UI
     [Documentation]     Checks for ap status
@@ -96,9 +94,8 @@ test3: Check AP Status On UI
     Should Be Equal As Strings  ${SERIAL}           ${wing1.serial}
     Should Be Equal As Strings  ${MODEL}            ${wing1.model}        ignore_case=True
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]      run keywords    logout user
+     ...                            quit browser
 
 test4: Check for SSH CLI Reachability
     [Documentation]     Check for SSH CLI Reachability
@@ -119,8 +116,8 @@ test4: Check for SSH CLI Reachability
     ${SPAWN2}=          Open PXSSH Spawn    ${IP_ADDR}      ${wing1.username}    ${wing1.password}      ${PORT_NUM}
     Should be Equal As Integers             ${SPAWN2}       -1
 
-    [Teardown]
-    Quit Browser
+    [Teardown]          run keywords        quit browser
+     ...       AND      close spawn         ${SPAWN2}
 
 test5: Check for SSH WEB Reachability
     [Documentation]     Check for SSH WEB Reachability
@@ -141,8 +138,7 @@ test5: Check for SSH WEB Reachability
     ${RESULT2}=           CURL COMMAND       ${URL}
     Should be Equal As Integers         ${RESULT2}      0
 
-    [Teardown]
-    Quit Browser
+    [Teardown]         Quit Browser
 
 test6: Cleanup
     [Documentation]     Check for SSH WEB Reachability
@@ -153,5 +149,4 @@ test6: Cleanup
     ${DELETE_STATUS}=   Delete Device       device_serial=${wing1.serial}
     Should be Equal As Integers             ${DELETE_STATUS}      1
 
-    [Teardown]
-    Quit Browser
+    [Teardown]        Quit Browser

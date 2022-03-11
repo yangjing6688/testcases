@@ -42,7 +42,6 @@ TC-52306 - Communications pages Validation
     Save Screen shot
     should be equal as strings       '${NEW_IN_XIQ}'   '1'
 
-    [Teardown]
-    Logout User
-    Quit Browser
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 

@@ -1,20 +1,21 @@
-ap1:
-  name:                     bui-flo-0000
-  connection_method:        "telnet"
+wing1:
+  name:                     ap410-fdc3ae
   ip:                       10.69.61.138
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   "1951y1049600000"
+  serial:                   "1951y-10496"
   console_ip:               10.69.1.112
   console_port:             2002
   mac:                      489bd5fdc3ae
   os:                       Cloud IQ Engine
-  platform:                 aerohive
+  os_version:               7.6.3.0-012R
+  platform:                 wing
   model:                    AP410
-  template:                 AP410-default-template
-  make:                     Dual Boot
+  device_template:          AP410-default-template
+  make:                     Controllers
   mgmt_vlan:                10
+  bssid:
   country:                  United States
   location:                 auto_location_01, Santa Clara, building_02, floor_04
   power_strip:
@@ -40,9 +41,21 @@ mu1:
   username:       extreme
   password:       extreme
   platform:       windows
-  interface:      wlan2
+  interface:      wlan0
   wifi_mac:       984827e0b51b
   ethernet_mac:   080027010d0c
+  wifi_network:   20.1.1
+  wifi_network_vlan10:    10.69.61
+
+mu2:
+  ip:             10.69.61.110
+  port:           8270
+  username:       extreme
+  password:       extreme
+  platform:       windows
+  interface:      wlan0
+  wifi_mac:       502b73ac0269
+  ethernet_mac:   080027802629
   wifi_network:   20.1.1
   wifi_network_vlan10:    10.69.61
 
