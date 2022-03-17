@@ -18,10 +18,9 @@ def xiq_helper_test_setup_teardown(request):
     request.instance.init_xiq_libaries_and_login(request.instance.cfg['tenant_username'],
                                                  request.instance.cfg['tenant_password'],
                                                  url=request.instance.cfg['test_url'])
-    def teardown():
-        request.instance.deactivate_xiq_libaries_and_logout()
-        
-    request.addfinalizer(teardown)
+    yield
+    # Teardown (after yield)
+    request.instance.deactivate_xiq_libaries_and_logout()
 
 
 # To run this demo you will need to supply the following yaml files:
