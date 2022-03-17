@@ -63,16 +63,16 @@ netelem2:
 
   tgen:
     port_a:
-      ifname: &netelem1_tgen_port_a_ifname "1:1"
+      ifname: &netelem2_tgen_port_a_ifname "1:1"
       intnet: "intnet1"
     port_b:
-      ifname: &netelem1_tgen_port_b_ifname "2:24"
+      ifname: &netelem2_tgen_port_b_ifname "2:24"
       intnet: "intnet2"
     port_c:
-      ifname: &netelem1_tgen_port_c_ifname "1:25"
+      ifname: &netelem2_tgen_port_c_ifname "1:25"
       intnet: "intnet3"
     port_d:
-      ifname: &netelem1_tgen_port_d_ifname "2:48"
+      ifname: &netelem2_tgen_port_d_ifname "2:48"
       intnet: "intnet4"
 
   isl:

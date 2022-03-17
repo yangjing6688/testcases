@@ -54,16 +54,16 @@ netelem2:
   auth_mode:                "basic"
   tgen:
     port_a:
-      ifname: &netelem1_tgen_port_a_ifname "1"
+      ifname: &netelem2_tgen_port_a_ifname "1"
       intnet: "intnet1"
     port_b:
-      ifname: &netelem1_tgen_port_b_ifname "12"
+      ifname: &netelem2_tgen_port_b_ifname "12"
       intnet: "intnet2"
     port_c:
-      ifname: &netelem1_tgen_port_c_ifname "13"
+      ifname: &netelem2_tgen_port_c_ifname "13"
       intnet: "intnet3"
     port_d:
-      ifname: &netelem1_tgen_port_d_ifname "24"
+      ifname: &netelem2_tgen_port_d_ifname "24"
       intnet: "intnet4"
 
   isl:
@@ -89,34 +89,26 @@ tgen_ports:
     port_a: &tgen_ports_netelem1_port_a
       tgen_name: *tgen1_name
       ifname:    "eth1"
-      #source_mac:
     port_b: &tgen_ports_netelem1_port_b
       tgen_name:  *tgen1_name
       ifname:     "eth2"
-      #source_mac:
     port_c: &tgen_ports_netelem1_port_c
       tgen_name: *tgen1_name
       ifname:    "eth3"
-      #source_mac:
     port_d: &tgen_ports_netelem1_port_d
       tgen_name: *tgen1_name
       ifname:    "eth4"
-      #source_mac:
   netelem2:
     port_a: &tgen_ports_netelem2_port_a
       tgen_name: *tgen1_name
       ifname:    "eth5"
-      #source_mac:
     port_b: &tgen_ports_netelem2_port_b
       tgen_name:  *tgen1_name
       ifname:     "eth6"
-      #source_mac:
     port_c: &tgen_ports_netelem2_port_c
       tgen_name: *tgen1_name
       ifname:    "eth7"
-      #source_mac:
     port_d: &tgen_ports_netelem2_port_d
       tgen_name: *tgen1_name
       ifname:    "eth8"
-      #source_mac:
 
