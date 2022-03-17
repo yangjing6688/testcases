@@ -1,0 +1,34 @@
+ap1:
+  name:                     AP460C
+  connection_method:        "telnet"
+  ip:                       10.234.213.1
+  port:                     7028
+  username:                 admin
+  password:                 aerohive
+  serial:                   '24602005230062'
+  console_ip:               10.234.213.1
+  console_port:             7028
+  mac:                      BCF310651580
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP460C
+  template:                 AP_460C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           Test_np
+      ssid:                     AP230_01
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            3485843A5CC0
