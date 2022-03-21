@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
   pull_request:
-    branches: [main]
+    branches: [main, RELEASE-**, 2022_Q1r2]
 
 env:
   pytest_func_path:             pytest_func_tests.txt
