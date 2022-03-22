@@ -65,6 +65,7 @@ Test 1: Bulk Add
     # Obtain the number of rows in the XIQ Device Message Details table before the discovery
     XIQSE Navigate to XIQ Device Message Details View and Confirm Success
     XIQSE XIQ Device Message Details Refresh Table
+    Refresh Device Message Details Using Navigation
     ${diag_before}=  XIQSE Get XIQ Device Message Details Row Count
     Log To Console  XIQ-SE Diagnostics XIQ Device Message Details Row Count Before Delete Is ${diag_before}
 
@@ -72,6 +73,7 @@ Test 1: Bulk Add
     XIQSE Navigate to XIQ Device Message Details View and Confirm Success
     XIQSE XIQ Device Message Details Show Columns  Onboard Status  Onboard
     XIQSE XIQ Device Message Details Refresh Table
+    Refresh Device Message Details Using Navigation
     Filter XIQ Device Message Details Table and Confirm Success  SUCCESS
     ${diag_success_before}=  XIQSE Get XIQ Device Message Details Row Count
     Clear XIQ Device Message Details Table Filter and Confirm Success
@@ -103,6 +105,7 @@ Test 2: Bulk Delete
     # Obtain the number of rows in the XIQ Device Message Details table before the delete
     XIQSE Navigate to XIQ Device Message Details View and Confirm Success
     XIQSE XIQ Device Message Details Refresh Table
+    Refresh Device Message Details Using Navigation
     ${diag_before}=  XIQSE Get XIQ Device Message Details Row Count
     Log To Console  XIQ-SE Diagnostics XIQ Device Message Details Row Count Before Delete Is ${diag_before}
 
@@ -327,6 +330,7 @@ XIQSE Confirm Diagnostics Shows Devices Onboarded Successfully
     # Confirm the number of rows in the view, plus the number of rows existing before,
     # is equal to the number of devices added
     XIQSE XIQ Device Message Details Refresh Table
+    Refresh Device Message Details Using Navigation
     ${current_count}=  XIQSE Get XIQ Device Message Details Row Count
     Should Be True  ${before_count} + ${added_count} == ${current_count}
 
@@ -348,6 +352,7 @@ XIQSE Confirm Diagnostics Removes Onboarded Devices
     # Confirm the number of rows in the view, plus one more to account for the XIQ-SE server, is greater than or equal to
     # the number of devices discovered
     XIQSE XIQ Device Message Details Refresh Table
+    Refresh Device Message Details Using Navigation
     ${current_count}=  XIQSE Get XIQ Device Message Details Row Count
     Should Be True  ${before_count} - ${removed_count} == ${current_count}
 
