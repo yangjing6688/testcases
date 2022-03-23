@@ -40,6 +40,8 @@ class ArpTests:
             cls.udks.setupTeardownUdks.Base_Test_Suite_Setup()
             cls.udks.portUdks.Enable_Port_and_Validate_Port_is_Enabled(cls.tb.dut1_name, cls.tb.dut1_isl_dut2_port_a.ifname)
             cls.udks.portUdks.Enable_Port_and_Validate_Port_is_Enabled(cls.tb.dut2_name, cls.tb.dut2_isl_dut1_port_a.ifname)
+            cls.udks.portUdks.Verify_Xstp_Forwarding_State(cls.tb.dut1_name,cls.tb.dut1_isl_dut2_port_a.ifname)
+            cls.udks.portUdks.Verify_Xstp_Forwarding_State(cls.tb.dut2_name,cls.tb.dut2_isl_dut1_port_a.ifname)
             cls.udks.vlanUdks.Create_VLAN_and_Add_Ports_Untagged_then_Verify(cls.tb.dut1_name, vlan_a, cls.tb.dut1_isl_dut2_port_a.ifname)
             cls.udks.vlanUdks.Create_VLAN_and_Add_Ports_Untagged_then_Verify(cls.tb.dut2_name, vlan_a, cls.tb.dut2_isl_dut1_port_a.ifname)
             cls.defaultLibrary.apiLowLevelApis.interface.interface_set_ipv4_primary_addr_netmask(cls.tb.dut1_name, vlan_a, vlan_a_ip_address, vlan_a_ip_mask)
