@@ -7,6 +7,7 @@
 **allure_output**
 **__pycache__**
 **report.html**
+**report_**.html
 **output.xml**
 **log.html**
 **.idea**
@@ -15,6 +16,7 @@
 /log.html
 /output.xml
 /report.html
+/report_**.html
 /assets
 allure_output/
 /.idea/
