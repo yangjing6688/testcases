@@ -4,7 +4,7 @@ netelem1:
   name:                     "EXOS"
   hostname:                 ""
   serial:                   "JA052131G-00059,JA052131G-00079"
-  mac:                      "F4CE48BB3C00"
+  mac:                      "F6CE48BB3C00"
   ip:                       "10.148.35.122"
   port:                     "23"
   console_ip:               "10.148.35.5"
