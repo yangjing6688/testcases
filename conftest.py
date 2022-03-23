@@ -6,6 +6,7 @@ import threading
 import queue
 import logging
 import sys
+from datetime import datetime
 from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
 from ExtremeAutomation.Utilities.Firmware.pytestLoadFirmware import PlatformLoadFirmware
 from ExtremeAutomation.Utilities.EconClient.econ_request_api import econAPI
@@ -78,12 +79,25 @@ def pytest_addoption(parser):
     parser.addoption("--b", action="store", default=None, help="build string for verification")
     parser.addoption("--u", action="store", default=None, help="job platform test module UUID")
     parser.addoption("--get_test_info", action="store", default=None, help="Dump checkdb or insert mod info")
-
+    parser.addoption("--customReportDate", action="store_true", default=False, help="Adds a report date to the report_<%m-%d-%Y_%H.%M.%S>.html file")
 
 @pytest.hookimpl(trylast=True)
 def pytest_configure(config):
     terminal_reporter = config.pluginmanager.getplugin('terminalreporter')
     config.pluginmanager.register(TestDescriptionPlugin(terminal_reporter), 'testdescription')
+
+def pytest_configure(config):
+    # Set log levels for 3rd party packages
+    # Disable all child loggers of urllib3, e.g. urllib3.connectionpool
+    logging.getLogger("urllib3").propagate = False
+
+    if config.option.customReportDate is not None:
+        config._metadata = None
+        # set the timestamp
+        report_date = datetime.now().strftime("%m-%d-%Y_%H.%M.%S")
+        # update the pytest-html path
+        config.option.htmlpath = config.option.htmlpath.replace('.html', "_" + report_date + ".html")
+        print("Custom HTML Report: " + config.option.htmlpath)
 
     if config.option.testbed is not None or config.option.cfg is not None or config.option.env is not None or \
             config.option.topo is not None:
