@@ -109,9 +109,10 @@ jobs:
       uses: tj-actions/changed-files@v10
       with:
         files: |
-          Tests/Pytest/(Demos|Functional|NonProduction)/([^/]+/)+(TestCases|Resources)/
-          Tests/Robot/(Demos|Functional|NonProduction)/([^/]+/)+(TestCases|Resources)/
+          Tests/Pytest/(Functional|NonProduction)/([^/]+/)+(TestCases|Resources)/
+          Tests/Robot/(Functional|NonProduction)/([^/]+/)+(TestCases|Resources)/
           Tests/(Pytest|Robot)/Libraries/([^/]+/)+
+          Tests/(Pytest|Robot)/Demos/
           __init__.py
         separator: ','
 
