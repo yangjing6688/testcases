@@ -10,6 +10,13 @@ on:
     branches: [main, RELEASE-**, 2022_Q1r2]
 
 env:
+  # List of users authorized to skip checks and perform other admin operations
+  authorized_users: |
+    petersadej
+    ghundertmark
+    elatour2000
+    jeffrwsd
+    jsubler93
   pytest_func_path:             pytest_func_tests.txt
   pytest_non_prod_path:         pytest_non_prod_tests.txt
   pytest_libs_path:             pytest_libs.txt
@@ -596,8 +603,34 @@ jobs:
       if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
       uses: actions/checkout@v2
 
-    - name: Checkout framework
+    - name: Handle Skip Requests
       if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
+      run: |
+        # Check for CI skip flag in PR title
+        skip_requested=${{ startsWith(github.event.pull_request.title, '[Skip Checks]') }}
+        skip_check=false
+        current_user=${{ github.actor }}
+        if [[ $skip_requested ]]; then
+            # Verify the user is allowed to skip checks
+            # TODO: Come back this. I tried putting this list in a separate file, but there is some sort of bug in GitHub actions preventing me from reading the file here. See: https://github.com/extremenetworks/extreme_automation_tests/runs/5724285683?check_suite_focus=true
+            for user in ${authorized_users}; do
+                if [[ $user == $current_user ]]; then
+                    skip_check=true
+                fi
+            done
+            if [[ $skip_check == 'true' ]]; then
+                echo "[*] Tests skipped by an authorized user..." | tee -a ${{ env.tag_marker_report_path }}
+            else
+                echo "[*] Tests skip requested, but current user is not authorized. Exiting..." | tee -a ${{ env.tag_marker_report_path }}
+                exit 1
+            fi
+        fi
+
+        # Set env var
+        echo "SKIP_CHECK=${skip_check}" >> $GITHUB_ENV
+
+    - name: Checkout framework
+      if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
       uses: actions/checkout@v2
       with:
         repository: extremenetworks/extreme_automation_framework
@@ -606,7 +639,7 @@ jobs:
         ref: main
 
     - name: Checkout qtest tools
-      if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
+      if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
       uses: actions/checkout@v2
       with:
         repository: extremenetworks/econ-qtest-client
@@ -615,12 +648,12 @@ jobs:
         ref: main
 
     - uses: actions/download-artifact@v2
-      if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
+      if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
       with:
         name: ${{ env.changed_files_artifact_name }}
 
     - name: Install python requirements
-      if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
+      if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
       run: |
         grep -v pycurl requirements.txt > requirements.txt.tmp && mv requirements.txt.tmp requirements.txt
         pip install -r requirements.txt
@@ -630,7 +663,7 @@ jobs:
     # potential workaround: copy modified tests to another directory and run pytest there
     # this would require either making a whole mimiced dir tree or using a different method of identifying the tests
     - name: Run pytest inventory tool
-      if: ${{env.RUN_PYTEST == 'true'}}
+      if: ${{env.SKIP_CHECK == 'false' && env.RUN_PYTEST == 'true'}}
       run: |
         # Add framework to PYTHONPATH
         export PYTHONPATH="${PYTHONPATH}:${PWD}/extreme_automation_framework"
@@ -639,7 +672,7 @@ jobs:
         pytest --get_test_info cicd ${{ env.PYTEST_FILES }} || true
 
     - name: Run robot inventory tool
-      if: ${{env.RUN_ROBOT == 'true'}}
+      if: ${{env.SKIP_CHECK == 'false' && env.RUN_ROBOT == 'true'}}
       env:
         ROBOT_TOOL_PATH: Tests/Robot/get_test_info.py
       run: |
@@ -697,7 +730,7 @@ jobs:
     # Class DefaultTests:
     #
     - name: Check pytest markers
-      if: ${{env.RUN_PYTEST == 'true'}}
+      if: ${{env.SKIP_CHECK == 'false' && env.RUN_PYTEST == 'true'}}
       run: |
         rc=0
         testcase_files=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' pytest_data.json )
@@ -743,7 +776,7 @@ jobs:
         exit $rc
 
     - name: Check robot tags
-      if: ${{env.RUN_ROBOT == 'true'}}
+      if: ${{env.SKIP_CHECK == 'false' && env.RUN_ROBOT == 'true'}}
       run: |
         rc=0
         testcase_files=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' robot_data.json )
