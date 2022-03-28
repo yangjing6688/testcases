@@ -6,6 +6,7 @@ import threading
 import queue
 import logging
 import sys
+import requests.adapters
 from datetime import datetime
 from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
 from ExtremeAutomation.Utilities.Firmware.pytestLoadFirmware import PlatformLoadFirmware
@@ -89,7 +90,9 @@ def pytest_configure(config):
 def pytest_configure(config):
     # Set log levels for 3rd party packages
     # Disable all child loggers of urllib3, e.g. urllib3.connectionpool
-    logging.getLogger("urllib3").propagate = False
+    # logging.getLogger("urllib3").propagate = False
+    patch_https_connection_pool(maxsize=100)
+    patch_http_connection_pool(maxsize=100)
 
     if config.option.customReportDate is not None:
         config._metadata = None
@@ -437,3 +440,37 @@ class TestDescriptionPlugin:
             self.logger.info(self.BLUE + self.BOLD + f'****************  Test Case: {location[2]} END' + self.END)
             self.logger.info(self.BLUE + self.BOLD + f'**********************************************************************************************\n' + self.END)
             yield
+
+def patch_http_connection_pool(**constructor_kwargs):
+    """
+    This allows to override the default parameters of the
+    HTTPConnectionPool constructor.
+    For example, to increase the poolsize to fix problems
+    with "HttpConnectionPool is full, discarding connection"
+    call this function with maxsize=16 (or whatever size
+    you want to give to the connection pool)
+    """
+    from urllib3 import connectionpool, poolmanager
+
+    class MyHTTPConnectionPool(connectionpool.HTTPConnectionPool):
+        def __init__(self, *args,**kwargs):
+            kwargs.update(constructor_kwargs)
+            super(MyHTTPConnectionPool, self).__init__(*args,**kwargs)
+    poolmanager.pool_classes_by_scheme['http'] = MyHTTPConnectionPool
+
+def patch_https_connection_pool(**constructor_kwargs):
+    """
+    This allows to override the default parameters of the
+    HTTPConnectionPool constructor.
+    For example, to increase the poolsize to fix problems
+    with "HttpSConnectionPool is full, discarding connection"
+    call this function with maxsize=16 (or whatever size
+    you want to give to the connection pool)
+    """
+    from urllib3 import connectionpool, poolmanager
+
+    class MyHTTPSConnectionPool(connectionpool.HTTPSConnectionPool):
+        def __init__(self, *args,**kwargs):
+            kwargs.update(constructor_kwargs)
+            super(MyHTTPSConnectionPool, self).__init__(*args,**kwargs)
+    poolmanager.pool_classes_by_scheme['https'] = MyHTTPSConnectionPool
