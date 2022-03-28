@@ -94,7 +94,7 @@ def pytest_configure(config):
     patch_https_connection_pool(maxsize=100)
     patch_http_connection_pool(maxsize=100)
 
-    if config.option.customReportDate is not None:
+    if config.option.customReportDate:
         config._metadata = None
         # set the timestamp
         report_date = datetime.now().strftime("%m-%d-%Y_%H.%M.%S")
