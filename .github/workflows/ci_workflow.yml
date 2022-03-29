@@ -607,10 +607,10 @@ jobs:
       if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
       run: |
         # Check for CI skip flag in PR title
-        skip_requested=${{ startsWith(github.event.pull_request.title, '[Skip Checks]') }}
+        skip_requested=${{ startsWith(github.event.pull_request.title, '[Skip Checks: Tags]') }}
         skip_check=false
         current_user=${{ github.actor }}
-        if [[ $skip_requested ]]; then
+        if [[ $skip_requested == 'true' ]]; then
             # Verify the user is allowed to skip checks
             # TODO: Come back this. I tried putting this list in a separate file, but there is some sort of bug in GitHub actions preventing me from reading the file here. See: https://github.com/extremenetworks/extreme_automation_tests/runs/5724285683?check_suite_focus=true
             for user in ${authorized_users}; do
