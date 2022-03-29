@@ -10,13 +10,6 @@ on:
     branches: [main, RELEASE-**, 2022_Q1r2]
 
 env:
-  # List of users authorized to skip checks and perform other admin operations
-  authorized_users: |
-    petersadej
-    ghundertmark
-    elatour2000
-    jeffrwsd
-    jsubler93
   pytest_func_path:             pytest_func_tests.txt
   pytest_non_prod_path:         pytest_non_prod_tests.txt
   pytest_libs_path:             pytest_libs.txt
@@ -606,28 +599,52 @@ jobs:
     - name: Handle Skip Requests
       if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
       run: |
-        # Check for CI skip flag in PR title
-        skip_requested=${{ startsWith(github.event.pull_request.title, '[Skip Checks: Tags]') }}
+        # Check for Tags skip flag in PR title. Note: startsWith() is not case sensitive so this will accept any variation of [skip checks: tags]
+        skip_check_requested=${{ startsWith(github.event.pull_request.title, '[Skip Checks: Tags]') }}
         skip_check=false
         current_user=${{ github.actor }}
-        if [[ $skip_requested == 'true' ]]; then
+        if [[ $skip_check_requested == 'true' ]]; then
             # Verify the user is allowed to skip checks
-            # TODO: Come back this. I tried putting this list in a separate file, but there is some sort of bug in GitHub actions preventing me from reading the file here. See: https://github.com/extremenetworks/extreme_automation_tests/runs/5724285683?check_suite_focus=true
+            authorized_users=$( jq -r '(.admins + .tags_check)[]' .github/workflows/authorized_users.json )
             for user in ${authorized_users}; do
                 if [[ $user == $current_user ]]; then
                     skip_check=true
+                    break
                 fi
             done
+
             if [[ $skip_check == 'true' ]]; then
-                echo "[*] Tests skipped by an authorized user..." | tee -a ${{ env.tag_marker_report_path }}
+                echo "[*] All Tag/Marker checks skipped by [$current_user]..." | tee -a ${{ env.tag_marker_report_path }}
             else
-                echo "[*] Tests skip requested, but current user is not authorized. Exiting..." | tee -a ${{ env.tag_marker_report_path }}
+                echo "[*] Tests skip requested, but [$current_user] is not authorized. Exiting..." | tee -a ${{ env.tag_marker_report_path }}
+                exit 1
+            fi
+        fi
+
+        # Check for Reserved Tags skip flag in PR title. Note: startsWith() is not case sensitive so this will accept any variation of [skip checks: reserved tags]
+        skip_reserved_tags_requested=${{ startsWith(github.event.pull_request.title, '[Skip Checks: Reserved Tags]') }}
+        skip_reserved_tags=false
+        if [[ $skip_reserved_tags_requested == 'true' ]]; then
+            # Verify the user is allowed to skip checks
+            authorized_users=$( jq -r '(.admins + .tags_check + .reserved_tags)[]' .github/workflows/authorized_users.json )
+            for user in ${authorized_users}; do
+                if [[ $user == $current_user ]]; then
+                    skip_reserved_tags=true
+                    break
+                fi
+            done
+
+            if [[ $skip_reserved_tags == 'true' ]]; then
+                echo "[*] Reserved Tag/Marker tests skipped by [$current_user]..." | tee -a ${{ env.tag_marker_report_path }}
+            else
+                echo "[*] Tests skip requested, but [$current_user] is not authorized. Exiting..." | tee -a ${{ env.tag_marker_report_path }}
                 exit 1
             fi
         fi
 
         # Set env var
         echo "SKIP_CHECK=${skip_check}" >> $GITHUB_ENV
+        echo "SKIP_RESERVED_TAGS=${skip_reserved_tags}" >> $GITHUB_ENV
 
     - name: Checkout framework
       if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
@@ -748,13 +765,13 @@ jobs:
                 fi
                 # doesn't contain reserved tag check
                 result=$(jq -r '.contains_reserved_tag' <<< $value)
-                if [[ $result == 'true' ]]; then
+                if [[ $result == 'true' && $SKIP_RESERVED_TAGS == 'false' ]]; then
                     echo "[***] FAIL: One or more reserved markers were found. Reserved markers: [production, regression, nightly, sanity, p1, p2, p3, p4]" | tee -a ${{ env.tag_marker_report_path }}
                     rc=1
                 fi
                 # contains development tag check
                 result=$(jq -r '.contains_development' <<< $value )
-                if [[ $result == 'false' ]]; then
+                if [[ $result == 'false' && $SKIP_RESERVED_TAGS == 'false' ]]; then
                     echo "[***] FAIL: 'development' marker not found" | tee -a ${{ env.tag_marker_report_path }}
                     rc=1
                 fi
@@ -794,13 +811,13 @@ jobs:
                 fi
                 # doesn't contain reserved tag check
                 result=$(jq -r '.contains_reserved_tag' <<< $value)
-                if [[ $result == 'true' ]]; then
+                if [[ $result == 'true' && $SKIP_RESERVED_TAGS == 'false' ]]; then
                     echo "[***] FAIL: One or more reserved markers were found. Reserved markers: [production, regression, nightly, sanity, p1, p2, p3, p4]" | tee -a ${{ env.tag_marker_report_path }}
                     rc=1
                 fi
                 # contains development tag check
                 result=$(jq -r '.contains_development' <<< $value )
-                if [[ $result == 'false' ]]; then
+                if [[ $result == 'false' && $SKIP_RESERVED_TAGS == 'false' ]]; then
                     echo "[***] FAIL: 'development' marker not found" | tee -a ${{ env.tag_marker_report_path }}
                     rc=1
                 fi
@@ -970,7 +987,7 @@ jobs:
     - name: Set environment variables
       run: |
         echo 'github actor: ${{ github.actor }}'
-        actor_email=$( jq -r '.${{ github.actor }}' .github/workflows/github_names_to_extr_email.json )
+        actor_email=$( jq -r '."${{ github.actor }}"' .github/workflows/github_names_to_extr_email.json )
         echo "ACTOR_EMAIL=${actor_email}" >> $GITHUB_ENV
 
         # Set default status values for email subject line and body
