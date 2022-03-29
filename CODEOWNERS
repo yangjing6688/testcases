@@ -6,4 +6,5 @@
 # will be requested for review when someone opens a pull request.
 
 
-/Tests/Robot/Functional/XIQ/Wired @rktavva @gparamar @ragrajan @raganapathi
+/Tests/Robot/Functional/XIQ/Wired @extremenetworks/XIQ-Wired-IT
+/Tests/Robot/NonProduction/XIQ/Wired/ @extremenetworks/XIQ-Wired-IT
