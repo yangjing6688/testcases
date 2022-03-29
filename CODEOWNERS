@@ -5,6 +5,5 @@
 # the repo. Unless a later match takes precedence, and
 # will be requested for review when someone opens a pull request.
 
-
 /Tests/Robot/Functional/XIQ/Wired @extremenetworks/xiq-wired-it
 /Tests/Robot/NonProduction/XIQ/Wired/ @extremenetworks/xiq-wired-it
