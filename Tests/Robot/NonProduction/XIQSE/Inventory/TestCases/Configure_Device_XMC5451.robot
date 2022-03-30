@@ -80,7 +80,7 @@ Test 1: Set Device Profile
 
 Test 2: Configure Device
     [Documentation]     Confirms a device can be configured
-    [Tags]              xiqse_tc_869    xmc_5451    development    xiqse    acceptance    inventory    configure    test2
+    [Tags]              known_issue    xiqse_tc_869    xmc_5451    development    xiqse    acceptance    inventory    configure    test2
 
     Navigate to Devices and Confirm Success
 
