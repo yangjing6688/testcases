@@ -11,6 +11,8 @@
     "directory_check": [],
     "testcase_name_check": [],
     "tags_check": [],
-    "reserved_tags": [],
+    "reserved_tags": [
+        "raganapathi"
+    ],
     "functionality_check": []
 }
