@@ -1,0 +1,51 @@
+ap1:
+  name:                     AP302W
+  connection_method:        "telnet"
+  ip:                       10.234.221.5
+  port:                     7023
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '03022012080115'
+  console_ip:               10.234.221.5
+  console_port:             7023
+  mac:                      40882F57D040
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP302W
+  template:                 AP_302W-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+
+
+ap2:
+  name:                     AP305C
+  connection_method:        "telnet"
+  ip:                       10.234.221.5
+  port:                     7026
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '03051907020068'
+  console_ip:               10.234.221.5
+  console_port:             7026
+  mac:                      BCF310004240
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP305C
+  template:                 AP_305C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+
+
+mu1:
+  ip:                       10.234.153.101
+  port:                     8270
+  username:                 extreme
+  password:                 Extreme@123
+  platform:                 windows
+  interface:                wlan0
+  wifi_mac:                 38002529AE41
+  ethernet_mac:             D8C49744FD40
+  wifi_network:             10.234.105
+  wifi_network_vlan10:      10.234.105

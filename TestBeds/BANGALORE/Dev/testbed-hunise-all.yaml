@@ -1,0 +1,369 @@
+ap1:
+  name:                     AP460C
+  connection_method:        "telnet"
+  ip:                       10.234.213.1
+  port:                     7028
+  username:                 admin
+  password:                 aerohive
+  serial:                   '24602005230062'
+  console_ip:               10.234.213.1
+  console_port:             7028
+  mac:                      BCF310651580
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP460C
+  template:                 AP_460C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+
+
+ap2:
+  name:                     AP4000U-WW
+  connection_method:        "telnet"
+  ip:                       10.234.221.5
+  port:                     7028
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '64002107010069'
+  console_ip:               10.234.221.5
+  console_port:             7028
+  mac:                      B027CF6EF600
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP4000U-WW
+  template:                 AP_4000U-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+
+
+ap3:
+  name:                     AP305C
+  connection_method:        "telnet"
+  ip:                       10.234.221.5
+  port:                     7026
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '03051907020068'
+  console_ip:               10.234.221.5
+  console_port:             7026
+  mac:                      BCF310004240
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP305C
+  template:                 AP_305C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+
+
+ap4:
+  name:                     AP305CX
+  connection_method:        "telnet"
+  ip:                       10.234.221.5
+  port:                     7027
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '13051907040023'
+  console_ip:               10.234.221.5
+  console_port:             7027
+  mac:                      BCF310005140
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP305CX
+  template:                 AP_305CX-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+
+
+ap5:
+  name:                     AP302W
+  connection_method:        "telnet"
+  ip:                       10.234.221.5
+  port:                     7025
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '03022012080071'
+  console_ip:               10.234.221.5
+  console_port:             7025
+  mac:                      40882F57C540
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP302W
+  template:                 AP_302W-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+
+
+ap6:
+  name:                     AP302W
+  connection_method:        "telnet"
+  ip:                       10.234.221.5
+  port:                     7024
+  username:                 admin
+  password:                 symbol
+  serial:                   '03022012080216'
+  console_ip:               10.234.221.5
+  console_port:             7024
+  mac:                      40882F57E980
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP302W
+  template:                 AP_302W-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+
+
+ap7:
+  name:                     AP302W
+  connection_method:        "telnet"
+  ip:                       10.234.221.5
+  port:                     7023
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '03022012080115'
+  console_ip:               10.234.221.5
+  console_port:             7023
+  mac:                      40882F57D040
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP302W
+  template:                 AP_302W-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+
+
+ap8:
+  name:                     AP250
+  connection_method:        "telnet"
+  ip:                       10.127.3.6
+  port:                     10004
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '02501609210943'
+  console_ip:               10.127.3.6
+  console_port:             10004
+  mac:
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP250
+  template:                 AP_250-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+
+
+ap9:
+  name:                     AP550
+  connection_method:        "telnet"
+  ip:                       10.234.221.5
+  port:                     7020
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '05501808101509'
+  console_ip:               10.234.221.5
+  console_port:             7020
+  mac:                      B87CF26B93C0
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP550
+  template:                 AP_550-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+
+
+ap10:
+  name:                     AP150W
+  connection_method:        "telnet"
+  ip:                       10.234.221.5
+  port:                     7021
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '01501807130013'
+  console_ip:               10.234.221.5
+  console_port:             7021
+  mac:                      7C95B110C600
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP150W
+  template:                 AP_150W-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+
+
+ap11:
+  name:                     AP630
+  connection_method:        "telnet"
+  ip:                       10.127.3.6
+  port:                     10005
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '06301811090766'
+  console_ip:               10.127.3.6
+  console_port:             10005
+  mac:
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP630
+  template:                 AP_630-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+
+
+ap12:
+  name:                     AP230
+  connection_method:        "telnet"
+  ip:                       10.16.134.2
+  port:                     7003
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '02301504031436'
+  console_ip:               10.16.134.2
+  console_port:             7003
+  mac:
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP230
+  template:                 AP_230-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+
+
+sw1:
+  name:                     sr22000008
+  model:                    SR2208P
+  device_template:          SR2208P-default-template
+  serial:                   '22081903030388'
+  os:                       Linux 3.6.5
+  mac:                      B87CF2029544
+  network_policy:
+  username:                 admin
+  password:                 Aerohive123
+  platform:                 aerohive-fastpath
+  connection_method:        "telnet"
+  console_ip:               10.234.221.5
+  console_port:             7005
+  test_port:
+  make:                     Extreme - Aerohive
+
+
+sw2:
+  name:                     XA1480
+  model:                    XA1480
+  device_template:          XA1480-default-template
+  serial:                   '1919C-W0004'
+  os:                       Linux 3.6.5
+  mac:                      DCB808B68800
+  network_policy:
+  username:                 rwa
+  password:                 rwa
+  platform:                 VOSS
+  connection_method:        "telnet"
+  console_ip:               10.234.221.5
+  console_port:             7003
+  test_port:
+  make:                     VOSS
+
+
+router1:
+  name:                     XR200P
+  model:                    XR200P
+  device_template:          XR200P-default-template
+  serial:                   '20318040900276'
+  os:                       Linux 3.6.5
+  mac:                      F09CE9CA4B80
+  network_policy:
+  username:                 admin
+  password:                 Aerohive123
+  platform:                 aerohive-fastpath
+  connection_method:        "telnet"
+  console_ip:               10.234.213.1
+  console_port:             7021
+  test_port:
+  make:                     Extreme - Aerohive
+
+
+vgva:
+  name:                     VG-VA
+  model:                    VG-VA
+  device_template:
+  serial:                   '91011505197915'
+  os:                       Linux 3.6.5
+  mac:                      F09CE9CA4B80
+  network_policy:
+  username:                 admin
+  password:                 aerohive
+  platform:                 aerohive-fastpath
+  connection_method:        "SSH"
+  console_ip:               10.234.153.10
+  console_port:             22
+  test_port:
+  make:                     Extreme - Aerohive
+
+
+wing1:
+  name:                     VX9000
+  model:                    VX9000
+  device_template:
+  serial:                   2E20CD43C18A76EE
+  os_version:
+  mac:                      000C29D81316
+  bssid:
+  network_policy:
+  username:                 admin
+  password:                 symbol
+  platform:                 wing
+  ip:
+  console_ip:
+  console_port:
+  country:                  United Kingdom
+  make:                     Controllers
+
+
+wing2:
+  name:                     RFS4K
+  model:                    RFS4K
+  device_template:
+  serial:                   9336521800098
+  os_version:
+  mac:                      00236822D098
+  bssid:
+  network_policy:
+  username:                 admin
+  password:                 symbol
+  platform:                 wing
+  ip:
+  console_ip:
+  console_port:
+  country:                  United Kingdom
+  make:                     Controllers
+
+
+mu1:
+  ip:                       10.234.153.101
+  port:                     8270
+  username:                 extreme
+  password:                 Extreme@123
+  platform:                 windows
+  interface:                wlan0
+  wifi_mac:                 38002529AE41
+  ethernet_mac:             D8C49744FD40
+  wifi_network:             10.234.105
+  wifi_network_vlan10:      10.234.105
+
+
+
+
+
+
+
+
