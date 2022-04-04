@@ -13,15 +13,10 @@ from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
 from ExtremeAutomation.Imports.XiqLibraryHelper import XiqLibraryHelper
 
 @fixture()
-def xiq_helper_test_setup_teardown(request):
+def test_case_one_setup_teardown_skip_test(request):
     request.instance.executionHelper.testSkipCheck()
-    request.instance.init_xiq_libaries_and_login(request.instance.cfg['TENANT_USERNAME'], 
-                                                 request.instance.cfg['TENANT_PASSWORD'], 
-                                                 url=request.instance.cfg['TEST_URL'])
-    def teardown():
-        request.instance.deactivate_xiq_libaries_and_logout()
-        
-    request.addfinalizer(teardown)
+    yield
+    # Teardown (after yield)
 
 
 # To run this demo you will need to supply the following yaml files:
@@ -33,19 +28,7 @@ def xiq_helper_test_setup_teardown(request):
 
 @mark.testbed_1_node
 class xiqTests():
-    
-    def init_xiq_libaries_and_login(self, username, password, capture_version=False, code="default", url="default", incognito_mode="False"):
-        self.xiq = XiqLibrary()
-        time.sleep(5)
-        res = self.xiq.init_xiq_libaries_and_login(username, password, capture_version=capture_version, code=code, url=url, incognito_mode=incognito_mode)
-        if res != 1:
-            pytest.fail('Could not Login')
-            
-    def deactivate_xiq_libaries_and_logout(self):
-        self.xiq.login.logout_user()
-        self.xiq.login.quit_browser()
-        self.xiq = None
-    
+
     @classmethod
     def setup_class(self):
         try: 
@@ -62,10 +45,12 @@ class xiqTests():
             self.defaultLibrary = DefaultLibrary()
             self.udks = self.defaultLibrary.apiUdks
             self.devCmd = self.defaultLibrary.deviceNetworkElement.networkElementCliSend
-            self.init_xiq_libaries_and_login(self,
-                                             self.cfg['TENANT_USERNAME'], 
-                                             self.cfg['TENANT_PASSWORD'], 
-                                             url=self.cfg['TEST_URL'])
+            # Create the new object for the XIQ / XIQSE Libraries
+            self.xiq = XiqLibrary()
+            self.xiq.login.login_user(self.tb.config.tenant_username,
+                                     self.tb.config.tenant_password,
+                                     url=self.tb.config.test_url,
+                                     IRV=True)
 
             # Clear out the device information
             self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1.serial)
@@ -76,26 +61,23 @@ class xiqTests():
             # self.devCmd.send_cmd(self.tb.dut1_name, 'configure dns-client add name-server 8.8.8.8 vr vr-mgmt')
         except Exception as e:
             self.executionHelper.setSetupFailure(True)
-        finally:
-            # Clean up the xiq libraries
-            self.deactivate_xiq_libaries_and_logout(self)
 
     @classmethod
     def teardown_class(self):
-        self.init_xiq_libaries_and_login(self,
-                                         self.cfg['TENANT_USERNAME'],
-                                         self.cfg['TENANT_PASSWORD'],
-                                         url=self.cfg['TEST_URL'])
-        
+        # self.init_xiq_libaries_and_login(self,
+        #                                  self.cfg['TENANT_USERNAME'],
+        #                                  self.cfg['TENANT_PASSWORD'],
+        #                                  url=self.cfg['TEST_URL'])
         self.devCmd.send_cmd(self.tb.dut1_name, 'configure dns-client delete name-server 8.8.8.8 vr vr-mgmt')
         self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1.serial)
         self.xiq.xflowscommonDevices.search_device_serial(self.tb.dut1.serial)
         self.xiq.xflowscommonDevices.delete_device(device_serial=self.tb.dut1.serial)
-        self.deactivate_xiq_libaries_and_logout(self)
+        self.xiq.login.logout_user(IRV=True)
+        self.xiq.login.quit_browser()
         
     # """ Test Cases """
     @mark.p1
-    def test_Onboard(self, xiq_helper_test_setup_teardown): 
+    def test_Onboard(self,test_case_one_setup_teardown_skip_test):
         # Checks for Exos switch advanced onboarding on XIQ
         self.cfg['${TEST_NAME}'] = 'test_Onboard'
         self.devCmd.send_cmd_verify_output(self.tb.dut1_name, 'show process iqagent', 'Ready', max_wait=30, interval=10)
@@ -121,7 +103,7 @@ class xiqTests():
         self.xiq.xflowscommonDevices.delete_device(device_serial=self.tb.dut1.serial)
         
     @mark.skip("Select Device Type is not working")
-    def test_AdvanceOnboard(self, xiq_helper_test_setup_teardown):
+    def test_AdvanceOnboard(self,test_case_one_setup_teardown_skip_test):
         #Checks for Exos switch advanced onboarding on XIQ
         self.cfg['${TEST_NAME}'] = 'test_Onboard'
         # self.devCmd.send_cmd_verify_output(self.tb.dut1_name, 'show process iqagent', 'Ready', max_wait=30, interval=10)

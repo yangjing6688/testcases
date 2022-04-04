@@ -163,12 +163,4 @@ mu2:
   ethernet_mac:   2C600CE10B68
   wifi_network:   10.234.105
   wifi_network_vlan10:    10.234.105
-
-# kali plus the number # at the end
-kali1:
-  ip:              10.234.178.151
-  port:            22
-  username:                root
-  password:                symbol
-  platform:                linux
   
