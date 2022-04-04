@@ -1,0 +1,7 @@
+test_url:             #(REQUIRED)       The Test URL for XIQ
+capwap_url:           #(OPTIONAL)       The Test URL for XIQ
+sw_capwap_url:        #(OPTIONAL)       The capwap URL
+wing_capwap_url:      #(OPTIONAL)       The Wing Capwap URL
+tenant_username:      #(REQUIRED)       The tenant user name
+tenant_password:      #(REQUIRED)       The tenant password
+base_url:             #(REQUIRED)       The API url for XIQ
