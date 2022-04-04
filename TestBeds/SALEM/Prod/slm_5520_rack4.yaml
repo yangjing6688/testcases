@@ -18,29 +18,29 @@ netelem1:
   auth_mode:                "basic"
   tgen:
     port_a:
-      ifname: &netelem1_tgen_port_a_ifname "1/1"
+      ifname: &netelem1_tgen_port_a_ifname "1"
       intnet: "intnet1"
     port_b:
-      ifname: &netelem1_tgen_port_b_ifname "1/12"
+      ifname: &netelem1_tgen_port_b_ifname "12"
       intnet: "intnet2"
     port_c:
-      ifname: &netelem1_tgen_port_c_ifname "1/13"
+      ifname: &netelem1_tgen_port_c_ifname "13"
       intnet: "intnet3"
     port_d:
-      ifname: &netelem1_tgen_port_d_ifname "1/24"
+      ifname: &netelem1_tgen_port_d_ifname "24"
       intnet: "intnet4"
   isl:
     port_a:
-      ifname: &netelem1_isl_port_a_ifname "1/15"
+      ifname: &netelem1_isl_port_a_ifname "15"
       intnet: "intnet15"
     port_b:
-      ifname: &netelem1_isl_port_b_ifname "1/16"
+      ifname: &netelem1_isl_port_b_ifname "16"
       intnet: "intnet16"
     port_c:
-      ifname: &netelem1_isl_port_c_ifname "1/17"
+      ifname: &netelem1_isl_port_c_ifname "17"
       intnet: "intnet17"
     port_d:
-      ifname: &netelem1_isl_port_d_ifname "1/18"
+      ifname: &netelem1_isl_port_d_ifname "18"
       intnet: "intnet18"
 
 netelem2:
