@@ -1,0 +1,128 @@
+lab:                        "SALEM"
+
+netelem1:
+  name:                     "EXOS"
+  hostname:                 ""
+  serial:                   "SB022108G-00024"
+  mac:                      "00DCB2964C00"
+  ip:                       "10.148.35.101"
+  port:                     "23"
+  console_ip:               "10.148.35.5"
+  console_port:             "5025"
+  username:                 "rwa"
+  password:                 "rwa"
+  connection_method:        "telnet"
+  os:                       "voss"
+  platform:                 "5520"
+  model:                    "5520-24T"
+  auth_mode:                "basic"
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "1"
+      intnet: "intnet1"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "12"
+      intnet: "intnet2"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "13"
+      intnet: "intnet3"
+    port_d:
+      ifname: &netelem1_tgen_port_d_ifname "24"
+      intnet: "intnet4"
+  isl:
+    port_a:
+      ifname: &netelem1_isl_port_a_ifname "17"
+      intnet: "intnet17"
+    port_b:
+      ifname: &netelem1_isl_port_b_ifname "18"
+      intnet: "intnet18"
+    port_c:
+      ifname: &netelem1_isl_port_c_ifname "19"
+      intnet: "intnet19"
+    port_d:
+      ifname: &netelem1_isl_port_d_ifname "20"
+      intnet: "intnet20"
+      
+netelem2:
+  name:                     "EXOS"
+  hostname:                 ""
+  serial:                   "SB022108G-00096"
+  mac:                      "00DCB2976C00"
+  ip:                       "10.148.35.102"
+  port:                     "23"
+  console_ip:               "10.148.35.5"
+  console_port:             "5026"
+  mgmt_vlan:                "VLAN_4000"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  platform:                 "5520"
+  model:                    "5520-24T"
+  auth_mode:                "basic"
+  tgen:
+    port_a:
+      ifname: &netelem2_tgen_port_a_ifname "1"
+      intnet: "intnet1"
+    port_b:
+      ifname: &netelem2_tgen_port_b_ifname "12"
+      intnet: "intnet2"
+    port_c:
+      ifname: &netelem2_tgen_port_c_ifname "13"
+      intnet: "intnet3"
+    port_d:
+      ifname: &netelem2_tgen_port_d_ifname "24"
+      intnet: "intnet4"
+  isl:
+    port_a:
+      ifname: &netelem2_isl_port_a_ifname "17"
+      intnet: "intnet17"
+    port_b:
+      ifname: &netelem2_isl_port_b_ifname "18"
+      intnet: "intnet18"
+    port_c:
+      ifname: &netelem2_isl_port_c_ifname "19"
+      intnet: "intnet19"
+    port_d:
+      ifname: &netelem2_isl_port_d_ifname "20"
+      intnet: "intnet20"
+
+tgen1:
+  name:         &tgen1_name "robot_jets"
+  vendor:       "jets"
+  chassis_type: "jets"
+  software:     "N/A"
+  ip:           "10.148.35.100"
+  vm_ip:        "N/A"
+  username:     "root"
+  password:     "PASprt86"
+  port:         "22"
+  os:           "linux"
+
+tgen_ports:
+  netelem1:
+    port_a: &tgen_ports_netelem1_port_a
+      tgen_name: *tgen1_name
+      ifname:    "eth1"
+    port_b: &tgen_ports_netelem1_port_b
+      tgen_name:  *tgen1_name
+      ifname:     "eth2"
+    port_c: &tgen_ports_netelem1_port_c
+      tgen_name: *tgen1_name
+      ifname:    "eth3"
+    port_d: &tgen_ports_netelem1_port_d
+      tgen_name: *tgen1_name
+      ifname:    "eth4"
+  netelem2:
+    port_a: &tgen_ports_netelem2_port_a
+      tgen_name: *tgen1_name
+      ifname: "eth5"
+    port_b: &tgen_ports_netelem2_port_b
+      tgen_name: *tgen1_name
+      ifname: "eth6"
+    port_c: &tgen_ports_netelem2_port_c
+      tgen_name: *tgen1_name
+      ifname: "eth7"
+    port_d: &tgen_ports_netelem2_port_d
+      tgen_name: *tgen1_name
+      ifname: "eth8"
