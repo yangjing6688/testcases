@@ -43,7 +43,7 @@ Variables   Environments/Config/waits.yaml
 *** Keywords ***
 
 #####  Get default device password Keywords   #####
-get default device password
+Get Default Device Password
     [Documentation]  get the default device password
     ${RESP}=  rest api get  ${DEVICE_PASSWORD_URI}
     ${PASSWORD}=  get json values  ${RESP}  key=password
@@ -51,7 +51,7 @@ get default device password
     [Return]  ${PASSWORD}
 
 #####  Change default device password Keywords   #####
-change default device password
+Change Default Device Password
     [Documentation]  change device password
     [Arguments]  ${PASSWORD}
     ${RESPCODE}=  rest api put v1  ${DEVICE_PASSWORD_URI}    ${PASSWORD}
@@ -73,7 +73,7 @@ Pre Condition-Get-Current-Device-Password
     [Tags]                  xim_tc_18342     development
     ${CUR_PASSWORD}=        get default device password
     log  ${CUR_PASSWORD}
-    set global variable     ${CUR_PASSWORD}
+    Set Suite Variable     ${CUR_PASSWORD}
 
 
 # Change the current device default password
@@ -89,7 +89,7 @@ TC-18342: get default device password
     [Documentation]         get the default device password
     [Tags]                  xim_tc_18342     development
     ${PASSWORD}=   get default device password
-    should be true  '${PASSWORD}'=='${NEW_DEVICE_PASSWORD}'
+    Should Be Equal As Strings    '${PASSWORD}'      '${NEW_DEVICE_PASSWORD}'
 
     [Teardown]
-    change default device password   ${CUR_PASSWORD}
+    Change Default Device Password   ${CUR_PASSWORD}
