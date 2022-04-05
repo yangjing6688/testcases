@@ -10,7 +10,7 @@
 *** Variables ***
 
 ${IQAGENT}                  ${CAPWAP_URL}
-${DUT_LOCATION}             Salem,Northeastern,Groundfloor
+${DUT_LOCATION}             Salem,North_mdqsi,wsxmg_floor
 ${delete_vlan_flag}         False
 *** Settings ***
 Resource    Tests/Robot/Libraries/XIQ/Wired/WiredCommon.robot
@@ -22,7 +22,7 @@ Force Tags      testbed_1_node
 TCXM-15265: Verify that WEB CLI is available for EXOS Stack
     #Onboarding:
     [Documentation]	This testcase Onboard and checks the Web CLI is available for stack
-    [Tags]              xim_tcxm_15265   development              p1   
+    [Tags]              xim_tcxm_15265   production              p1
  
     Delete Device     device_mac=${netelem1.mac}
     @{result} =    Split String    ${netelem1.serial}    ,
@@ -32,8 +32,8 @@ TCXM-15265: Verify that WEB CLI is available for EXOS Stack
 
     create_first_organization       Extreme       broadway        new york     Romania
 
-    delete_location_building_floor              Salem      Northeastern     Groundfloor
-    create_location_building_floor              Salem      Northeastern     Groundfloor
+    delete_location_building_floor              Salem      North_mdqsi     wsxmg_floor
+    create_location_building_floor              Salem      North_mdqsi     wsxmg_floor
     log to console          os  ${netelem1.os}      platform ${netelem1.platform}
     run keyword if  """${netelem1.os}"""== "exos" and """${netelem1.platform}""" != "Stack"
     ...  quick_onboarding_cloud_manual     ${netelem1.serial}    exos      ${DUT_LOCATION}
@@ -46,7 +46,7 @@ TCXM-15265: Verify that WEB CLI is available for EXOS Stack
     Configure IQAgent for EXOS Switch
 
     #Check Status:
-    sleep   10s
+    sleep   90s
     check device online
 
     #Check Managed status:
@@ -64,7 +64,7 @@ TCXM-15265: Verify that WEB CLI is available for EXOS Stack
 
 TCXM-15266: Ping command can be executed to a specific destination
     [Documentation]	Verify that the user can iniate a ping command from EXOS Stack through WEB CLI
-    [Tags]              xim_tcxm_15266   development              p1   
+    [Tags]              xim_tcxm_15266   production              p1
 	
     Navigate to Devices and Confirm Success
     refresh devices page
@@ -75,7 +75,7 @@ TCXM-15266: Ping command can be executed to a specific destination
 
 TCXM-15267: Traceroute command can be executed to a specific destination
     [Documentation]	Verify that the user can iniate a traceroute command from EXOS Stack through WEB CLI
-    [Tags]              xim_tcxm_15267   development              p1   
+    [Tags]              xim_tcxm_15267   production              p1
     Navigate to Devices and Confirm Success
     refresh devices page
     ${output}=              test device cli    traceroute www.google.com   device_mac=${netelem1.mac}      delay=60
@@ -87,7 +87,7 @@ TCXM-15267: Traceroute command can be executed to a specific destination
 
 TCXM-15268: Verify that the user can iniate show commands for interface, protocols through WEB CLI
     [Documentation]	Verify that the user can iniate show commands for interface, protocols through WEB CLI
-    [Tags]              xim_tcxm_15268   development              p1   
+    [Tags]              xim_tcxm_15268   production              p1
     Navigate to Devices and Confirm Success
     refresh devices page
     ${output}=              test device cli     show ports no-refresh       device_mac=${netelem1.mac}
@@ -103,7 +103,7 @@ TCXM-15268: Verify that the user can iniate show commands for interface, protoco
 
 TCXM-15269 Verify that the user can iniate bogus commands through WEB CLI
     [Documentation]	Verify that the user can iniate bogus commands through WEB CLI
-    [Tags]              xim_tcxm_15269   development              p1   
+    [Tags]              xim_tcxm_15269   production              p1
 
     Navigate to Devices and Confirm Success
     refresh devices page
@@ -115,7 +115,7 @@ TCXM-15269 Verify that the user can iniate bogus commands through WEB CLI
 
 TCXM-15270: Verify that the user has the ability for configuring items are supported in XIQ, through WEB CLI
     [Documentation]	Verify that the user has the ability for configuring items not supported in XIQ, through WEB CLI
-    [Tags]              xim_tcxm_15270   development              p1   
+    [Tags]              xim_tcxm_15270   production              p1
     Navigate to Devices and Confirm Success
     refresh devices page
     ${output}=              test device cli
@@ -157,7 +157,7 @@ Tear Down Test and Close Session
     FOR		${serialnumber}     IN    @{result}
     		Delete Device       device_serial=${serialnumber}
     END
-    delete_location_building_floor              Salem      Northeastern     Groundfloor
+    delete_location_building_floor              Salem      North_mdqsi     wsxmg_floor
     clear vlans
     Log Out of XIQ and Confirm Success
     Quit Browser
