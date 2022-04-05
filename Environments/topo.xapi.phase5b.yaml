@@ -1,3 +1,4 @@
-tenant_username:      "xiqextremeqa+cp1-eu2022@gmail.com"
+tenant_username:      "xiqproductionqa+auto1-blr-tb1-int1r1@gmail.com"
 tenant_password:      "Extreme@123"
-base_url:             "https://cp1-api.qa.xcloudiq.com"
+base_url:             "https://int1-api.qa.xcloudiq.com"
+test_url:             "https://int1.qa.xcloudiq.com"
