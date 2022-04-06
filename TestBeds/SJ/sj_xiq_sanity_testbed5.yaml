@@ -1,0 +1,157 @@
+ap1:
+  name:
+  connection_method:        "telnet"
+  ip:                       10.16.170.67
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "05501508210011"
+  console_ip:               10.16.170.37
+  console_port:             4002
+  mac:                      B87CF2001580
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP550
+  template:                 AP550-default-template
+  make:                     Dual Boot
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           Test_np
+      ssid:                     AP550_01
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            7C95B1005700
+
+ap2:
+  name:                     bui-flo-0019
+  connection_method:        "telnet"
+  ip:                       10.16.170.68
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "01501707240019"
+  console_ip:               10.16.170.68
+  console_port:             22
+  mac:                      7C95B1004DC0
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP150W
+  template:                 AP150W-default-template
+  make:                     Dual Boot
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           Test_np
+      ssid:                     AP150W_01
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            3485843A5CC0
+
+ap3:
+  name:                     bui-flo-0008
+  connection_method:        "telnet"
+  ip:                       10.16.170.69
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "04102001100008"
+  console_ip:               10.16.170.69
+  console_port:             22
+  mac:                      BCF310267600
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP410C
+  template:                 AP410C-default-template
+  make:                     Dual Boot
+  mgmt_vlan:                10
+  country:                  United States
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           BLR_TB2_AP410C_01
+      ssid:                     AP410C_01
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            3485843A5CC0
+
+
+
+
+router1:
+  name:                     bui-flo-0393
+  model:                    XR600P
+  device_template:          XR600P_test_automation
+  serial:                   "60018082400393"
+  ip:                       10.16.170.66
+  port:                     22
+  os:                       HiveOS 10.0r10b build-254127
+  mac:                      F4EAB52DCE00
+  network_policy:           Test_np
+  username:                 admin
+  password:                 Aerohive123
+  platform:                 aerohive
+  console_ip:               10.16.170.37
+  console_port:             4002
+  make:                     Extreme - Aerohive
+
+
+
+mu1:
+  ip:             10.16.170.35
+  port:           22
+  username:       root
+  password:       aerohive
+  platform:       mac
+  mac_wifi_port:  en1
+  wifi_mac:       F018988C41A8
+
+
+mu2:
+  ip:             10.16.170.36
+  port:           22
+  username:       root
+  password:       aerohive
+  platform:       mac
+  mac_wifi_port:  en1
+  wifi_mac:       F0189888A3FF
+
+
+mails:
+  - id1: sj1tb1tenant1@gmail.com
+    password: Extreme@123
+  - id2: sj1tb1tenant2@gmail.com
+    password: Extreme@123
+  - id3: sj1tb1tenant3@gmail.com
+    password: Extreme@123

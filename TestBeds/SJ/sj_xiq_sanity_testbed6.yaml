@@ -1,18 +1,18 @@
 ap1:
-  name:                     bui-flo-0088
+  name:                     bui-flo-1996
   connection_method:        "telnet"
-  ip:                       10.16.168.209
+  ip:                       10.16.171.71
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   '03022012080088'
-  console_ip:               10.16.168.209
-  console_port:             22
-  mac:                      40882F57C980
+  serial:                   "01301506171996"
+  console_ip:               10.16.171.37
+  console_port:             4000
+  mac:                      885BDD3E0280
   os:                       Cloud IQ Engine
   platform:                 aerohive
-  model:                    AP302W
-  template:                 AP302W-default-template
+  model:                    AP130
+  template:                 AP130-default-template
   make:                     Dual Boot
   mgmt_vlan:                10
   country:                  United States
@@ -29,26 +29,26 @@ ap1:
   extra:
       country:                  United Kingdom
       network_policy:           Test_np
-      ssid:                     AP302W_01
+      ssid:                     AP130_01
       version:                  6.5
       neighbour_serial:         06301908310556
-      neighbour_mac:            3485843A5CC0
+      neighbour_mac:            7C95B1005700
 
 ap2:
-  name:                     bui-flo-0100
+  name:                     bui-flo-0005
   connection_method:        "telnet"
-  ip:                       10.16.168.202
+  ip:                       10.16.171.74
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   '01501707240100'
-  console_ip:               10.16.168.202
-  console_port:             22
-  mac:                      7C95B1006200
+  serial:                   "01301511060005"
+  console_ip:               10.16.171.37
+  console_port:             4002
+  mac:                      885BDD4BE380
   os:                       Cloud IQ Engine
   platform:                 aerohive
-  model:                    AP150W
-  template:                 AP150W-default-template
+  model:                    AP130
+  template:                 AP130-default-template
   make:                     Dual Boot
   mgmt_vlan:                10
   country:                  United States
@@ -66,26 +66,26 @@ ap2:
   extra:
       country:                  United Kingdom
       network_policy:           Test_np
-      ssid:                     AP150W_01
+      ssid:                     AP130_01
       version:                  6.5
       neighbour_serial:         06301908310556
       neighbour_mac:            3485843A5CC0
 
 ap3:
-  name:                     bui-flo-0072
+  name:                     bui-flo-0096
   connection_method:        "telnet"
-  ip:                       10.16.168.118
+  ip:                       10.16.170.69
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   '24602001170072'
-  console_ip:               10.16.168.118
-  console_port:             22
-  mac:                      BCF3102AA000
+  serial:                   "02301511180096"
+  console_ip:               10.16.171.37
+  console_port:             4003
+  mac:                      BCF310267600
   os:                       Cloud IQ Engine
   platform:                 aerohive
-  model:                    AP460C
-  template:                 AP460C-default-template
+  model:                    AP230
+  template:                 AP230-default-template
   make:                     Dual Boot
   mgmt_vlan:                10
   country:                  United States
@@ -100,23 +100,24 @@ ap3:
     type:
   extra:
       country:                  United Kingdom
-      network_policy:           BLR_TB2_AP150W_01
-      ssid:                     AP460C_01
+      network_policy:           BLR_TB2_AP230_01
+      ssid:                     AP230_01
       version:                  6.5
       neighbour_serial:         06301908310556
       neighbour_mac:            3485843A5CC0
 
+
 ap4:
-  name:                     bui-flo-0142
+  name:                     bui-flo-0090
   connection_method:        "telnet"
-  ip:                       10.16.168.200
+  ip:                       10.16.170.69
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   '04101912120142'
-  console_ip:               10.16.168.200
-  console_port:             22
-  mac:                      BCF1101EC000
+  serial:                   "04101912120090"
+  console_ip:               10.16.171.37
+  console_port:             4003
+  mac:                      BCF3101EB300
   os:                       Cloud IQ Engine
   platform:                 aerohive
   model:                    AP410C
@@ -141,21 +142,22 @@ ap4:
       neighbour_serial:         06301908310556
       neighbour_mac:            3485843A5CC0
 
+
 ap5:
-  name:                     bui-flo-0072
+  name:                     bui-flo-0090
   connection_method:        "telnet"
-  ip:                       10.16.168.118
+  ip:                       10.16.171.75
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   '24602001170072'
-  console_ip:               10.16.168.37
-  console_port:             4000
-  mac:                      BCF1101EC000
+  serial:                   "04101912120090"
+  console_ip:               10.16.171.37
+  console_port:             4003
+  mac:                      BCF3101EB300
   os:                       Cloud IQ Engine
   platform:                 aerohive
-  model:                    AP460C
-  template:                 AP460C-default-template
+  model:                    AP410C
+  template:                 AP410C-default-template
   make:                     Dual Boot
   mgmt_vlan:                10
   country:                  United States
@@ -170,42 +172,45 @@ ap5:
     type:
   extra:
       country:                  United Kingdom
-      network_policy:           BLR_TB2_AP460C_01
-      ssid:                     AP460C_01
+      network_policy:           BLR_TB2_AP410C_01
+      ssid:                     AP410C_01
       version:                  6.5
       neighbour_serial:         06301908310556
       neighbour_mac:            3485843A5CC0
 
 
-sw1:
-  name:               AH-Switch
-  model:              SR2348P
-  device_template:    SR2348P-default-template
-  serial:             '23481812230026'
-  os:                 Linux 3.6.5
-  mac:                B87CF2026E1C
-  network_policy:
-  username:           admin
-  password:           aerohive
-  platform:           aerohive-fastpath
-  console_ip:         10.16.168.37
-  console_port:       4000
-  test_port:
-  make:               Extreme - Aerohive
+
+router1:
+  name:                     bui-flo-0393
+  model:                    XR600P
+  device_template:          XR600P_test_automation
+  serial:                   "60018082400393"
+  ip:                       192.168.14.129
+  port:                     22
+  os:                       HiveOS 10.0r10b build-254127
+  mac:                      F4EAB52DCE00
+  network_policy:           Test_np
+  username:                 admin
+  password:                 Aerohive123
+  platform:                 aerohive
+  console_ip:               10.16.171.37
+  console_port:             4001
+  make:                     Extreme - Aerohive
+
 
 
 mu1:
-  ip:             10.16.168.35
+  ip:             10.16.171.35
   port:           22
   username:       root
   password:       aerohive
   platform:       mac
   mac_wifi_port:  en1
-  wifi_mac:       F0189887E57D
+  wifi_mac:       F018988C41A8
 
 
 mu2:
-  ip:             10.16.168.36
+  ip:             10.16.171.36
   port:           22
   username:       root
   password:       aerohive
@@ -213,40 +218,6 @@ mu2:
   mac_wifi_port:  en1
   wifi_mac:       F0189888A3FF
 
-
-exos1:
-  platform:                 EXOS
-  name:                     5520-24W-EXOS
-  model:                    EXOS 5520-24WX
-  serial:                   '2034G-00109'
-  mac:                      000496F4A800
-  username:                 admin
-  password:                 Aerohive123
-  ip:                       10.16.172.162
-  console_ip:               10.16.172.162
-  console_port:             22
-  network_policy:           Test_np
-  device_template:          5520-default-template
-  os:                       31.1.1.3
-  make:                     EXOS
-
-
-router1:
-  name:                     bui-flo-0260
-  model:                    XR200P
-  device_template:          XR200P_test_automation
-  serial:                   "20312112000260"
-  ip:                       10.16.168.203
-  port:                     22
-  os:                       HiveOS 10.0r10b build-254127
-  mac:                      08EA4440F040
-  network_policy:           Test_np
-  username:                 admin
-  password:                 Aerohive123
-  platform:                 aerohive
-  console_ip:               10.16.168.37
-  console_port:             4001
-  make:                     Extreme - Aerohive
 
 mails:
   - id1: sj1tb1tenant1@gmail.com
