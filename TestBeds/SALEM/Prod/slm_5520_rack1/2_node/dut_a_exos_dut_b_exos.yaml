@@ -12,9 +12,10 @@ netelem1:
   username:                 "rwa"
   password:                 "rwa"
   connection_method:        "telnet"
-  os:                       "voss"
+  os:                       "exos"
   platform:                 "5520"
-  model:                    "5520-24T"
+  model:                    "SwitchEngine5520_24T"
+  make:                     "exos"
   auth_mode:                "basic"
   tgen:
     port_a:
@@ -58,7 +59,8 @@ netelem2:
   connection_method:        "telnet"
   os:                       "exos"
   platform:                 "5520"
-  model:                    "5520-24T"
+  model:                    "SwitchEngine5520_24T"
+  make:                     "exos"
   auth_mode:                "basic"
   tgen:
     port_a:

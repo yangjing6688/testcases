@@ -14,7 +14,8 @@ netelem1:
   connection_method:        "telnet"
   os:                       "exos"
   platform:                 "5420"
-  model:                    "5420F-16W-32P-4XE"
+  model:                    "SwitchEngine5420F_16W_32P_4XE"
+  make:                     "exos"
   auth_mode:                "basic"
   tgen:
     port_a:

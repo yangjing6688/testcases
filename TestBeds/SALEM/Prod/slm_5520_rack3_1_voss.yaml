@@ -14,7 +14,8 @@ netelem1:
   connection_method:        "telnet"
   os:                       "voss"
   platform:                 "5520"
-  model:                    "5520-24W"
+  model:                    "FabricEngine5520_24W"
+  make:                     "voss"
   auth_mode:                "basic"
   tgen:
     port_a:

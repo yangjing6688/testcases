@@ -12,9 +12,10 @@ netelem1:
   username:                 "admin"
   password:                 ""
   connection_method:        "telnet"
-  os:                       "exos"
+  os:                       "voss"
   platform:                 "5420"
-  model:                    "5420F-16W-32P-4XE"
+  model:                    "FabricEngine5420F_16W_32P_4XE"
+  make:                     "voss"
   auth_mode:                "basic"
   tgen:
     port_a:

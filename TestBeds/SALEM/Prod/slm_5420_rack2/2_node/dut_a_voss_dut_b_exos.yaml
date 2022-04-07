@@ -14,7 +14,8 @@ netelem1:
   connection_method:        "telnet"
   os:                       "voss"
   platform:                 "5420"
-  model:                    "5420F-16W-32P-4XE"
+  model:                    "FabricEngine5420F_16W_32P_4XE"
+  make:                     "voss"
   auth_mode:                "basic"
   tgen:
     port_a:
@@ -58,17 +59,20 @@ netelem2:
   connection_method:        "telnet"
   os:                       "exos"
   platform:                 "Stack"
-  model:                    "5420F-16W-32P-4XE"
+  model:                    "SwitchEngine5420F_16W_32P_4XE"
+  make:                     "exos"
   auth_mode:                "basic"
   stack:
     slot1:
       console_ip:           "10.148.35.5"
       console_port:         "5017"
       serial:               "JA052131G-00059"
+      model:                "SwitchEngine5420F_16W_32P_4XE"
     slot2:
       console_ip:           "10.148.35.5"
       console_port:         "5018"
       serial:               "JA052131G-00079"
+      model:                "SwitchEngine5420F_16W_32P_4XE"
 
   tgen:
     port_a:

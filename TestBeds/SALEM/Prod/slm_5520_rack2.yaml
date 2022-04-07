@@ -14,7 +14,8 @@ netelem1:
   connection_method:        "telnet"
   os:                       "voss"
   platform:                 "5520"
-  model:                    "5520-48SE"
+  model:                    "FabricEngine5520_48SE"
+  make:                     "voss"
   auth_mode:                "basic"
   tgen:
     port_a:
@@ -58,7 +59,8 @@ netelem2:
   connection_method:        "telnet"
   os:                       "exos"
   platform:                 "5520"
-  model:                    "5520-48SE"
+  model:                    "SwitchEngine5520_48SE"
+  make:                     "exos"
   auth_mode:                "basic"
   tgen:
     port_a:
