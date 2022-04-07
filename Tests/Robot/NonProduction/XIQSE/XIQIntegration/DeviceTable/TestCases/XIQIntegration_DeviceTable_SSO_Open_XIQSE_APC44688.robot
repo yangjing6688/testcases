@@ -65,10 +65,10 @@ ${DUT5_PROFILE}         ${netelem5.profile}
 ${DUT5_MAC}             ${netelem5.mac}
 ${DUT5_SERIAL}          ${netelem5.serial}
 
-${DUT6_IP}              ${netelem8.ip}
-${DUT6_PROFILE}         ${netelem8.profile}
-${DUT6_MAC}             ${netelem8.mac}
-${DUT6_SERIAL}          ${netelem8.serial}
+${DUT6_IP}              ${netelem6.ip}
+${DUT6_PROFILE}         ${netelem6.profile}
+${DUT6_MAC}             ${netelem6.mac}
+${DUT6_SERIAL}          ${netelem6.serial}
 
 ${XIQ_WINDOW_INDEX}             0
 ${XIQSE_WINDOW_INDEX}           0

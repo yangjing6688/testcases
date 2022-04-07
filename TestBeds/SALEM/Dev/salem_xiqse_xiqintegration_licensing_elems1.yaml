@@ -1,0 +1,63 @@
+lab:                        "SALEM"
+
+pilot_ip_range:
+  start_ip:                 "10.57.235.233"
+  end_ip:                   "10.57.235.241"
+
+profile:
+  pilot:                    "public_v1_Profile"
+  nav:                      "public_v2_Profile"
+
+pilot1:
+  name:                     "SAPro-x440-235-230"
+  ip:                       "10.57.235.230"
+  profile:                  "public_v1_Profile"
+  serial:                   "1532G-235230"
+  mac:                      "00049639EBE6"
+  model:                    "X440-G2-24t-G4"
+  platform:                 "exos"
+
+pilot2:
+  name:                     "SAPro-x440-235-231"
+  ip:                       "10.57.235.231"
+  profile:                  "public_v1_Profile"
+  serial:                   "1532G-235231"
+  mac:                      "00049639EBE7"
+  model:                    "X440-G2-24t-G4"
+  platform:                 "exos"
+
+pilot3:
+  name:                     "SAPro-x440-235-232"
+  ip:                       "10.57.235.232"
+  profile:                  "public_v1_Profile"
+  serial:                   "1532G-235232"
+  mac:                      "00049639EBE8"
+  model:                    "X440-G2-24t-G4"
+  platform:                 "exos"
+
+nav1:
+  name:                     "SAPro-c3750X-229-170"
+  ip:                       "10.57.229.170"
+  profile:                  "public_v2_Profile"
+  serial:                   "FD0A39E5AA"
+  mac:                      "D0D0FDE5AA00"
+  model:                    "Cisco 3750"
+  platform:                 "cisco"
+
+nav2:
+  name:                     "SAPro-c3750X-229-171"
+  ip:                       "10.57.229.171"
+  profile:                  "public_v2_Profile"
+  serial:                   "FD0A39E5AB"
+  mac:                      "D0D0FDE5AB00"
+  model:                    "Cisco 3750"
+  platform:                 "cisco"
+
+nav3:
+  name:                     "SAPro-c3750X-229-172"
+  ip:                       "10.57.229.172"
+  profile:                  "public_v2_Profile"
+  serial:                   "FD0A39E5AC"
+  mac:                      "D0D0FDE5AC00"
+  model:                    "Cisco 3750"
+  platform:                 "cisco"
