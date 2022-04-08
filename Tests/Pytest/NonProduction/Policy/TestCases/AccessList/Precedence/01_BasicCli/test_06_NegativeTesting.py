@@ -23,7 +23,7 @@ class NegativeTestingTests(PolicyBase):
         #[Documentation]  Test_Objective: Check_that_tests_that_should_fail_actually_fail.
         
         print('(Step_1) Basic_Test_Case_Setup. (N/A)')
-        self.localPolicyUdks.networkElementConnectionManager.change_netelem_connection_agent(self.tb.config.netelem1.name,'telnet')
+        self.localPolicyUdks.networkElementConnectionManager.netelem_agent_connection_modify(self.tb.config.netelem1.name,'telnet')
     
         print('(Step_2) Create_policy_profile, rules, and_admin_port_rule.')
         self.localPolicyUdks.policyUdks.Create_Policy_Profile_with_PVID_and_PVID_Status_Enabled_and_TCI_Overwrite_Enabled(
@@ -82,7 +82,7 @@ class NegativeTestingTests(PolicyBase):
         self.localPolicyUdks.networkElementPolicyGenKeywords.policy_set_access_list(  self.tb.config.netelem1.name,'Legit_Actions','icmptype 4.4','EMPTY',
                                                                                       expect_error=True)
     
-        self.localPolicyUdks.networkElementConnectionManager.change_netelem_connection_agent(self.tb.config.netelem1.name,  'telnet')
+        self.localPolicyUdks.networkElementConnectionManager.netelem_agent_connection_modify(self.tb.config.netelem1.name,  'telnet')
     
         print('(Test_Step_5) AccessList.Name_more_that_31_chars_each_in_policy_assignment.')
         self.localPolicyUdks.networkElementPolicyGenKeywords.policy_set_access_list_profile_index(self.tb.config.netelem1.name,self.tb.config.profile_a,
