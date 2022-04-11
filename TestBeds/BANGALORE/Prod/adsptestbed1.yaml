@@ -1,21 +1,23 @@
 ap1:
   name:                     bui-flo-1564
-  connection_method:        "ssh"
+  connection_method:        "telnet"
   ip:                       10.234.201.222
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '04102005201640'
-  console_ip:               10.234.201.222
-  console_port:             22
+  console_ip:               10.234.201.225
+  console_port:             7029
   mac:                      BCF3105E2F40
   os:                       Cloud IQ Engine
   platform:                 aerohive
   model:                    AP410C
   template:                 AP_410C-default-template
+  template_Name:            AP410C-ADSP_Prod
   make:                     Dual Boot
   mgmt_vlan:                10
   country:                  United States
+  location:                 auto_location_01, San Jose, building_01, floor_01
   power_strip:
     ip:
     port:
@@ -29,14 +31,14 @@ ap1:
 
 ap2:
   name:                     bui-flo-1565
-  connection_method:        "ssh"
+  connection_method:        "telnet"
   ip:                       10.234.201.221
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '24602001170047'
-  console_ip:               10.234.201.221
-  console_port:             22
+  console_ip:               10.234.201.225
+  console_port:             7030
   mac:                      BCF3102A99C0
   os:                       Cloud IQ Engine
   platform:                 aerohive
@@ -45,6 +47,7 @@ ap2:
   make:                     Dual Boot
   mgmt_vlan:                10
   country:                  United States
+  location:                 auto_location_01, San Jose, building_01, floor_01
   power_strip:
     ip:
     port:

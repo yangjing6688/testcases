@@ -90,18 +90,22 @@ Test1: Onboard Sensor AP
     [Tags]                  tccs_12494      adsp        development
     ${LOGIN_XIQ}=               Login User          ${tenant_username}     ${tenant_password}
 
-    ${ONBOARD_RESULT}=      Onboard Device      ${ap1.serial}           ${ap1.make}       location=${ap1.location}      device_os=${ap1.os}
+    ${ONBOARD_RESULT}=          Onboard Device      ${ap1.serial}           ${ap1.make}       location=${ap1.location}      device_os=${ap1.os}
 
-    ${AP_SPAWN}=               Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=                open pxssh spawn     ${ap1.ip}       ${ap1.username}     ${ap1.password}     ${ap1.port}
+
     Set Suite Variable          ${AP_SPAWN}
-    ${OUTPUT0}=                 Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
+
+    ${OUTPUT0}=                 send commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
     Wait Until Device Online    ${ap1.serial}
 
     Refresh Devices Page
 
-    ${AP1_STATUS}=               Get AP Status       ap_mac=${ap1.mac}
+    ${AP1_STATUS}=              Get AP Status       ap_mac=${ap1.mac}
     Should Be Equal As Strings  '${AP1_STATUS}'     'green'
+
+    close Spawn  ${AP_SPAWN}
 
     [Teardown]         run keywords    logout user
      ...                               quit browser
@@ -112,11 +116,11 @@ Test2: Onboard AP to Generate DoS Deauthentication
     Depends On              Test1
     ${LOGIN_XIQ}=               Login User          ${tenant_username}     ${tenant_password}
 
-    ${ONBOARD_RESULT}=      Onboard Device      ${ap2.serial}           ${ap2.make}       location=${ap2.location}      device_os=${ap2.os}
+    ${ONBOARD_RESULT}=          Onboard Device      ${ap2.serial}           ${ap2.make}       location=${ap2.location}      device_os=${ap2.os}
 
-    ${AP_SPAWN}=               Open Spawn          ${ap2.console_ip}   ${ap2.console_port}      ${ap2.username}       ${ap2.password}        ${ap2.platform}
-    Set Suite Variable          ${AP_SPAWN}
-    ${OUTPUT0}=                 Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
+    ${AP2_SPAWN}=               Open PXSSH Spawn          ${ap2.ip}        ${ap2.username}       ${ap2.password}        ${ap2.port}
+    Set Suite Variable          ${AP2_SPAWN}
+    ${OUTPUT0}=                 send commands      ${AP2_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
     Wait Until Device Online    ${ap2.serial}
 
@@ -124,6 +128,8 @@ Test2: Onboard AP to Generate DoS Deauthentication
 
     ${AP2_STATUS}=               Get AP Status       ap_mac=${ap2.mac}
     Should Be Equal As Strings  '${AP2_STATUS}'     'green'
+
+    close Spawn  ${AP2_SPAWN}
 
     [Teardown]         run keywords    logout user
      ...                               quit browser
@@ -161,10 +167,10 @@ Test4: Configure ADSP on AP
     Depends On              Test1
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
 
-    ${CREATE_POLICY1}=         Create Network Policy   ${NW_POLICY_NAME}        &{ADSP_OPEN_NW}
+    ${CREATE_POLICY1}=         Create Network Policy   ${NW_POLICY_NAME}       &{ADSP_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap2.model}        &{AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap1.model}     ${ap1.template_Name}        &{AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings   '${CREATE_AP_TEMPLATE}'   '1'
 
     ${CONFIG_WIPS_POLICY}      Configure WIPS Policy On Common Objects   ${WIPS_POLICY_NAME}
@@ -178,9 +184,11 @@ Test4: Configure ADSP on AP
     ${AP1_UPDATE_CONFIG}=      Update Network Policy To AP   ${NW_POLICY_NAME}     ap_serial=${ap1.serial}   update_method=Complete
     Should Be Equal As Strings              '${AP1_UPDATE_CONFIG}'       '1'
 
-    ${AP_SPAWN}=               Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=               open PXSSH spawn         ${ap1.ip}        ${ap1.username}       ${ap1.password}        ${ap1.port}
     ${SENSOR_WIFI_CONFIG}=     Send                ${AP_SPAWN}         show running-config | include "interface wifi2"
     Should Contain             ${SENSOR_WIFI_CONFIG}      interface wifi2 mode adsp-sensor
+
+    close spawn   ${AP_SPAWN}
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
@@ -193,7 +201,7 @@ Test5: Generate DoS Deauthentication Alarm on Kali Linux
 
     FOR    ${i}    IN RANGE   20
           ${KALI_SPAWN}=               Open PxSSH Spawn         ${Kali_server1.ip}   ${Kali_server1.username}       ${Kali_server1.password}
-          ${DOS_ALARM_CMD}=            Send PxSSH               ${KALI_SPAWN}        aireplay-ng -D wlan1 --deauth 0 -a ${mu1.wifi_mac}
+          ${DOS_ALARM_CMD}=            Send                ${KALI_SPAWN}        aireplay-ng -D wlan1 --deauth 0 -a ${mu1.wifi_mac}
           Should Contain               ${DOS_ALARM_CMD}   Sending DeAuth
           close spawn   ${KALI_SPAWN}
     END
