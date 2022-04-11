@@ -50,11 +50,13 @@ Variables    Environments/${ENV}
 Variables    TestBeds/SJ/${TESTBED}
 Variables    Environments/Config/device_commands.yaml
 
+Force Tags   sj_xiq_sanity_testbed2.yaml
+
 *** Test Cases ***
 TCXM-18636: N360M_DeviceScoring_DeviceAvailabilityScore_100_1
     [Documentation]   Correctness of N360M Device Availability Score is verified.
 #                     Assumption is that there is only 1 Device (added by this script) listed in XIQ, in this location.
-    [Tags]            TCXM-18636
+    [Tags]            tcxm-18636	development
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
