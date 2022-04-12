@@ -257,7 +257,7 @@ jobs:
           # This can potentially be followed by _ and 1 or more numbers if multiple testcase files are needed for the same id.
           # Examples: test_blah_app-45   test_blah_blah_app45_1   test_blah_app-45_1   test_blah_app45
           # Note: inside bash [[ ]] you need to use extended regex format
-          elif [[ ! $f =~ test_.*_[a-zA-Z]+-?[0-9]+(_[0-9]+\.py|\.py)$|__init__\.py$ ]] ; then
+          elif [[ ! $f =~ test_.*_[a-zA-Z]+[\-_]?[0-9]+(_[0-9]+)?\.py$|__init__\.py$ ]] ; then
               echo "[*] FAIL: $f is NOT in a valid Pytest filename format!" | tee -a ${{ env.testcase_files_report_path }}
               echo '[*] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
               rc=1
