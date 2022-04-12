@@ -10,7 +10,7 @@
 #     Cloud     AP
 # Pre-config:
 # -----------
-#
+#Ensure the device under test has description, shoud not be null
 #
 
 # Execution Command:
