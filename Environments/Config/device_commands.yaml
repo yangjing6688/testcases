@@ -7,3 +7,6 @@ output_capwap_status:             Connected securely to the CAPWAP server
 output_process_eciq:              Ready
 cmd_clear_client_mac:             clear auth station mac  MU1_WIFI_MAC
 cmd_show_station:                 show station
+cmd_console_page_0:               console page 0
+cmd_show_version_detail:          show version detail
+cmd_show_capwap_client:           show capwap client
