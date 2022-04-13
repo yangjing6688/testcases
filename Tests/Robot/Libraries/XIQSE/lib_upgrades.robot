@@ -178,17 +178,17 @@ Check NGAnalytics Exit Code
 Check Server Is Up
     [Documentation]    Checks the server is up and running.
     [Arguments]
-    # XIQSE Load Page has a 60 second timeout, we want to wait max 5 minutes.
-    # We expect failures here so ignore errors. 
-    FOR    ${index}    IN RANGE    5
+
+    # We expect failures here so ignore errors.
+    FOR    ${index}    IN RANGE    45
         ${passed}  ${value}   Run Keyword And Ignore Error  XIQSE Load Page    url=${XIQSE_URL}
         Log  result is ${passed}
         XIQSE Quit Browser
         Exit For Loop If  "${passed}"=="PASS"
         Log  Waiting for Server
-        # No need to sleep, the XIQSE Load Page has a built in wait of 60 seconds
+        Sleep  60s
     END
-    # Run one more login, this will be the offical results, a failure here 
+    # Run one more login, this will be the offical results, a failure here
     # means something is not right and should be recorded.
     ${result}=    XIQSE Load Page    url=${XIQSE_URL}
     XIQSE Quit Browser
