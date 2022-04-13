@@ -41,7 +41,7 @@ ${DUT_MAKE}             ${netelem1.make}
 *** Test Cases ***
 Test 1: Confirm Connected Device Has Correct Status In XIQSE and XIQ
     [Documentation]     Confirms a device with connected status in XIQSE shows as connected in XIQ
-    [Tags]              csit_tc_8995    xmc_3196    development    xiqse    xiq_integration    device_status    updates    test1
+    [Tags]              nightly1    release_testing    csit_tc_8995    xmc_3196    development    xiqse    xiq_integration    device_status    updates    test1
 
     # Confirm Device Status in XIQ
     Switch To Window  ${XIQ_WINDOW_INDEX}
@@ -55,7 +55,7 @@ Test 1: Confirm Connected Device Has Correct Status In XIQSE and XIQ
 
 Test 2: Confirm Disconnected Device Has Correct Status In XIQSE and XIQ
     [Documentation]     Confirms a device with disconnected status in XIQSE shows as disconnected in XIQ
-    [Tags]              csit_tc_8995    xmc_3196    development    xiqse    xiq_integration    device_status    updates    test2
+    [Tags]              nightly1    release_testing    csit_tc_8995    xmc_3196    development    xiqse    xiq_integration    device_status    updates    test2
 
     # Disconnect the device in XIQSE
     Disconnect XIQSE Test Device and Confirm Success    ${DUT_IP}    BAD_PROFILE
@@ -67,7 +67,7 @@ Test 2: Confirm Disconnected Device Has Correct Status In XIQSE and XIQ
 
 Test 3: Confirm Re-connected Device Has Correct Status In XIQSE and XIQ
     [Documentation]     Confirms a device which re-establishes connection in XIQSE shows as connected in XIQ
-    [Tags]              csit_tc_8995    xmc_3196    development    xiqse    xiq_integration    device_status    updates    test3
+    [Tags]              nightly1    release_testing    csit_tc_8995    xmc_3196    development    xiqse    xiq_integration    device_status    updates    test3
 
     # Reconnect the device in XNC
     Reconnect XIQSE Test Device and Confirm Success     ${DUT_IP}    ${DUT_PROFILE}
@@ -79,7 +79,7 @@ Test 3: Confirm Re-connected Device Has Correct Status In XIQSE and XIQ
 
 Test 4: Confirm XIQ Site Engine and XIQSE-Managed Device Status When Sharing Disabled
     [Documentation]     Confirms XIQ displays unknown status for XIQSE-managed devices when XIQSE has disconnected status
-    [Tags]              csit_tc_8995    xmc_3196    development    xiqse    xiq_integration    device_status    updates    test4
+    [Tags]              nightly1    release_testing    csit_tc_8995    xmc_3196    development    xiqse    xiq_integration    device_status    updates    test4
 
     # Disable sharing
     Switch To Window  ${XIQSE_WINDOW_INDEX}
@@ -95,7 +95,7 @@ Test 4: Confirm XIQ Site Engine and XIQSE-Managed Device Status When Sharing Dis
 
 Test 5: Confirm XIQ Site Engine and XIQSE-Managed Device Status When Sharing Re-enabled - Device Down
     [Documentation]     Confirms XIQ displays correct status for XIQ Site Engine and XIQSE-managed devices when sharing is re-enabled and test device is down
-    [Tags]              csit_tc_8995    xmc_3196    development    xiqse    xiq_integration    device_status    updates    test5
+    [Tags]              nightly1    release_testing    csit_tc_8995    xmc_3196    development    xiqse    xiq_integration    device_status    updates    test5
 
     # Disable sharing
     Switch To Window  ${XIQSE_WINDOW_INDEX}
@@ -123,7 +123,7 @@ Test 5: Confirm XIQ Site Engine and XIQSE-Managed Device Status When Sharing Re-
 
 Test 6: Confirm XIQ Site Engine and XIQSE-Managed Device Status When Sharing Re-enabled - Device Up
     [Documentation]     Confirms XIQ displays correct status for XIQ Site Engine and XIQSE-managed devices when sharing is re-enabled and test device is up
-    [Tags]              csit_tc_8995    xmc_3196    development    xiqse    xiq_integration    device_status    updates    test6
+    [Tags]              nightly1    release_testing    csit_tc_8995    xmc_3196    development    xiqse    xiq_integration    device_status    updates    test6
 
     # Disable sharing
     Switch To Window  ${XIQSE_WINDOW_INDEX}
