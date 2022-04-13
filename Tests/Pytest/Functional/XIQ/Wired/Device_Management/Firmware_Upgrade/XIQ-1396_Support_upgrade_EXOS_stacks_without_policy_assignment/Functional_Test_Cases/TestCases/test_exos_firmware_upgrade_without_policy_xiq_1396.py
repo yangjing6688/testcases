@@ -306,7 +306,6 @@ class xiqTests():
     # """ Test Cases """
 
     @mark.xim_tcxm_15977
-    @mark.development
     @mark.p1
     @mark.testbed_1_node
     def test_15977_check_update_option_stack_device(self):
@@ -329,7 +328,6 @@ class xiqTests():
 
 
     @mark.xim_tcxm_15978
-    @mark.development
     @mark.p2
     @mark.testbed_1_node
     def test_15978_check_update_function_stack_device(self):
