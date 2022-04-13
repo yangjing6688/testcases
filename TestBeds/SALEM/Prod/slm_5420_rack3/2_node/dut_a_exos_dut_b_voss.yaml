@@ -48,7 +48,7 @@ netelem2:
   name:                     "VOSS"
   hostname:                 ""
   serial:                   "JA052131G-00070"
-  mac:                      "F4CE48BB7800"
+  mac:                      "F4CE48BB6800"
   ip:                       "10.148.35.137"
   port:                     "23"
   console_ip:               "10.148.35.5"
