@@ -173,10 +173,3 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
     ${availability}     ${hw_health}     ${fw_health}=    Get Network360monitor Device Health Overall Score   ${FLOOR_NAME}
     Log to Console      DeviceHardwareHealthScore ${fw_health}
     Should Be Equal As Integers           ${fw_health}       ${EXPECTED_FW_HEALTH}
-
-
-Tes7: Cleanup
-    [Tags]			        cleanup         test7
-    ${LOGIN_STATUS}=    Login User    ${tenant_username}    ${tenant_password}
-    Delete Device       device_serial=${ap1.serial}
-    [Teardown]    Quit Browser
