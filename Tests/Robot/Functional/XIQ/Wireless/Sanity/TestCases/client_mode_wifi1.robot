@@ -1,8 +1,8 @@
 #########################################################################################################
 # Author        : Binh Nguyen
 # Date          : January 29th 2022
-# Description   : APC-49419: TCXM-15129 - TCXM-15131 - TCXM-16058 : Client Mode
-#
+# Description   : APC-49419: TCXM-15129 - TCXM-15131 - TCXM-16058
+#                 Client Mode Wifi1 End to End with Web GUI
 #########################################################################################################
 
 **** Variables ***
@@ -28,13 +28,13 @@ ${DEVICE_MAKE_AEROHIVE}      Extreme - Aerohive
 &{AP_TEMPLATE_CONFIG_1}         wifi0_configuration=&{AP_TEMPLATE_CONFIG_1_WIFI0}   wifi1_configuration=&{AP_TEMPLATE_CONFIG_1_WIFI1}
 &{AP_TEMPLATE_CONFIG_1_WIFI0}   radio_status=Off  radio_profile=radio_ng_11ax-2g     client_mode=Disable    client_mode_profile=&{client_mode_profile_wifi0}  client_access=Disable     backhaul_mesh_link=Disable   sensor=Disable
 &{AP_TEMPLATE_CONFIG_1_WIFI1}   radio_status=On   radio_profile=radio_ng_11ax-5g     client_mode=Disable    client_mode_profile=&{client_mode_profile_wifi1}  client_access=Enable      backhaul_mesh_link=Disable   sensor=Disable
-##### AP150W #####
+##### AP150W & AP302W #####
 &{AP_TEMPLATE_CONFIG_2}         wifi0_configuration=&{AP_TEMPLATE_CONFIG_2_WIFI0}   wifi1_configuration=&{AP_TEMPLATE_CONFIG_2_WIFI1}
 &{AP_TEMPLATE_CONFIG_2_WIFI0}   radio_status=On   radio_profile=radio_ng_ng0     client_mode=Disable    client_mode_profile=&{client_mode_profile_wifi0}  client_access=Enable      backhaul_mesh_link=Disable   sensor=Disable
 &{AP_TEMPLATE_CONFIG_2_WIFI1}   radio_status=On   radio_profile=radio_a0         client_mode=Enable   client_mode_profile=&{client_mode_profile_wifi1}    client_access=Disable     backhaul_mesh_link=Disable   sensor=Disable
 
-&{CLIENT_MODE_PROFILE_WIFI0}    client_mode_profice_name=wif0       dhcp_server_scope=192.168.150.1     local_web_page=Enable
-&{CLIENT_MODE_PROFILE_WIFI1}    client_mode_profice_name=wif1       dhcp_server_scope=192.168.151.1     local_web_page=Enable      ssid_name=""       password=""     auth_method=Pre-Shared Key    key_type=ASCII
+&{CLIENT_MODE_PROFILE_WIFI0}    client_mode_profice_name=wifi0       dhcp_server_scope=192.168.150.1     local_web_page=Enable
+&{CLIENT_MODE_PROFILE_WIFI1}    client_mode_profice_name=wifi1       dhcp_server_scope=192.168.151.1     local_web_page=Enable      ssid_name=""       password=""     auth_method=Pre-Shared Key    key_type=ASCII
 
 *** Settings ***
 Library     String
@@ -129,10 +129,6 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15129 - TCXM-15131 -
     Set Suite Variable          ${SSID}                         bk_1_${NUM}
     Set Suite Variable          ${AP_TEMP_NAME}                 ${ap1.model}_${NUM}
     Set To Dictionary           ${WIRELESS_PESRONAL_ENT_01}     ssid_name=${SSID}
-#    Set Suite Variable          ${CLIENT_PROFLE_NAME}           wifi1_${NUM}
-#    Set To Dictionary           ${CLIENT_MODE_PROFILE_WIFI1}    client_mode_profice_name=${CLIENT_PROFLE_NAME}
-#    Set To Dictionary           ${AP_TEMPLATE_CONFIG_1_WIFI1}   client_mode_profile=${CLIENT_MODE_PROFILE_WIFI1}
-#    Set To Dictionary           ${AP_TEMPLATE_CONFIG_1}         wifi1_configuration=${AP_TEMPLATE_CONFIG_1_WIFI1}
 
     Set Suite Variable          ${POLICY_CM}                    CM_wifi1_${NUM}
     Set Suite Variable          ${SSID_CM}                      CM_1_${NUM}
@@ -226,10 +222,11 @@ Setup AP in Client Mode
 Start Selenium
     [Arguments]       ${mu}
     ${spawn}    open pxssh spawn     ${mu}[ip]     ${mu}[username]     ${mu}[password]
-    ${out}      Send pxssh 		     ${spawn}       ifconfig
+    sleep       8s
+    ${out}      Send pxssh 		     ${spawn}       ifconfig en1    10
     ${out}      convert to string    ${out}
     log         ${out}
-    ${out}      Send pxssh           ${spawn}       nohup java -jar /Users/admin/Downloads/selenium-server-standalone-3.5.3.jar -log /tmp/selenium.log \ \&
+    ${out}      Send pxssh           ${spawn}       nohup java -jar /Users/admin/Downloads/selenium-server-standalone-3.5.3.jar -log /tmp/selenium.log \ \&     10
     log         ${out}
     ${match}    ${selenium_pid}      Should Match Regexp       ${out}       \\[\\d+\\]\\s+(\\d+)
     log         ${selenium_pid}
@@ -239,7 +236,8 @@ Start Selenium
 Stop Selenium
     [Arguments]      ${mu}      ${SELE_PID}
     ${spawn}    open pxssh spawn     ${mu}[ip]     ${mu}[username]     ${mu}[password]
-    Send pxssh  		             ${spawn}       kill -9 ${SELE_PID}
+    sleep       8s
+    Send pxssh  		             ${spawn}       kill -9 ${SELE_PID}     10
     Close pxssh Spawn                ${spawn}
 
 Get Check Ping
@@ -274,12 +272,14 @@ Verify client mode ap
 
 Verify station
     [Arguments]    ${mu}
-    ${spawn}    open pxssh spawn     ${mu}[ip]     ${mu}[username]     ${mu}[password]
-    ${out}      Send pxssh           ${spawn}       traceroute www.google.com      30
+    ${spawn}    open paramiko ssh_spawn     ${mu}[ip]     ${mu}[username]     ${mu}[password]
+    ${out}      send paramiko cmd           ${spawn}       ping -c 5 192.168.151.1           10
     log         ${out}
     sleep       10s
-    ${out}      Send pxssh           ${spawn}       ping -c 10 www.google.com      30
+    ${out}      send paramiko cmd           ${spawn}       traceroute -m 5 www.google.com    10
+    log         ${out}
+    ${out}      send paramiko cmd           ${spawn}       ping -c 5 www.google.com          10
     log         ${out}
     ${loss}     Get Check Ping       ${out}
     Should Be Equal As Strings      '${loss}'       '0.0'
-    Close pxssh Spawn    ${spawn}
+    close paramiko spawn             ${spawn}
