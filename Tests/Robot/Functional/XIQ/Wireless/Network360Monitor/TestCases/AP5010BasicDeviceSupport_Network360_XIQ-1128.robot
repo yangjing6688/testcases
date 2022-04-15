@@ -3,7 +3,7 @@
 # Description   : XIQ-1128 AP5010 Basic Device Support - Network 360
 # Only Devices onboarded by this automamation script can be in the location under test.
 #
-# Topology      :
+# Topology:
 # Host ----- AIO
 #
 #  To run using topo and environment:
@@ -28,7 +28,7 @@ ${AVAILABILITY_SCORE}       100
 ${EXPECTED_HW_HEALTH}       100
 ${EXPECTED_FW_HEALTH}       80
 ${SLEEP_TIME}               240s
-${FLOOR_NAME}               Floor1
+${FLOOR_NAME}               floor_04
 ${CONFIG_PUSH_SSID_01}      SSID_01
 ${CONFIG_PUSH_SSID_02}      SSID_02
 ${RETRY_DURATION}           40
