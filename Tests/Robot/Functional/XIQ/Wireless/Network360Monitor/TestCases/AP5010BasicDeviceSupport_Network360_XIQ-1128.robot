@@ -58,7 +58,7 @@ Library     extauto/xiq/flows/manage/Client.py
 
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
-Variables    TestBeds/SJ/${TESTBED}
+Variables    TestBeds/${TESTBED}
 Variables    Environments/Config/device_commands.yaml
 Resource     Tests/Robot/Functional/XIQ/Wireless/Network360Monitor/Resources/wireless_networks_config.robot
 
@@ -68,7 +68,7 @@ Force Tags   testbed_1_node
 Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
     [Documentation]   Correctness of N360M Device Availability Score is verified.
 #                     Assumption is that there is only 1 Device (added by this script) listed in XIQ, in this location.
-    [Tags]            xiq_tc_18636    development
+    [Tags]            xim_tc_18636    development
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
@@ -100,7 +100,7 @@ Test2 - TCXM-18674 - N360M_DeviceScoring_DeviceHardwareHealthScore_100_1
 #                     Assumption is that:
 #                     there is only 1 Device listed in XIQ, in this location.
 #                     "TCXM-18636: N360M_DeviceScoring_DeviceAvailabilityScore_100_1" was executed and Device was onboarded
-    [Tags]            xiq_tc_18674    development
+    [Tags]            xim_tc_18674    development
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
@@ -117,7 +117,7 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
 #                     Assumption is that:
 #                     there is only 1 Device listed in XIQ, in this location.
 #                     "TCXM-18636: N360M_DeviceScoring_DeviceAvailabilityScore_100_1" was executed and Device was onboarded
-    [Tags]            xiq_tc_18644    development
+    [Tags]            xim_tc_18644    development
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
