@@ -127,7 +127,7 @@ Inject XIQ AIO property into NSJBoss Properties File and Restart
     ${output} =  Send Paramiko CMD        ${sshSession}  echo extreme.xiq.baseUrl=${XIQ_BASE_URL} >> /usr/local/Extreme_Networks/NetSight/appdata/NSJBoss.properties
     ${output} =  Send Paramiko CMD        ${sshSession}  echo DeveloperOptions.airGapSerialNumber=${XIQSE_SERIAL} >> ~/NetSight/DeveloperOptions.properties
     ${output} =  Send Paramiko CMD        ${sshSession}  ${XIQSE_RESTART_SERVER}
-    sleep   300s
+    Check Server Is Up
 
 Inject XIQ CLOUD properties into NSJBoss Properties File and Restart
     [Documentation]     Injects Base and Redirector XIQ Urls into NSJBoss.properties file and restarts XIQSE service
@@ -139,7 +139,7 @@ Inject XIQ CLOUD properties into NSJBoss Properties File and Restart
     # DO NOT DELETE - Specifically setting the Serial Number here so the VM will retain the expected serial number
     ${output} =  Send Paramiko CMD        ${sshSession}  echo DeveloperOptions.airGapSerialNumber=${XIQSE_SERIAL} >> ~/NetSight/DeveloperOptions.properties
     ${output} =  Send Paramiko CMD        ${sshSession}  ${XIQSE_RESTART_SERVER}
-    sleep   600s
+    Check Server Is Up
 
 
 #### Keywords for checking success of installations

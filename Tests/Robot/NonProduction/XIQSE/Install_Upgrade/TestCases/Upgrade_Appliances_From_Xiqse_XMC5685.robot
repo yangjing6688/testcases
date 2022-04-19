@@ -23,7 +23,7 @@ ${XIQSE_PASSWORD}                   ${xiqse.password}
 ${XIQSE_IP_ADDRESS}                 ${xiqse.ip}
 ${XIQSE_SERIAL}                     ${xiqse.serial}
 ${INSTALL_MODE}                     ${upgrades.install_mode}
-${XIQSE_RESTART_SERVER}             systemctl nsserver restart
+${XIQSE_RESTART_SERVER}             systemctl restart nsserver
 
 ${NAC_IP}                           ${nac.ip}
 ${PURVIEW_IP}                       ${purview.ip}
@@ -111,7 +111,7 @@ Test 4: CLI NGAnalytics Appliance From XIQSE
     ${version} =   Get From Dictionary   ${UPGRADE_TEST_XIQSE}  version
     Run Keyword If    'ngAnalyticsSnapShotId' in ${UPGRADE_TEST_XIQSE}   NGAnalytics Engine Upgrade  ${UPGRADE_TEST_XIQSE}
     ...    ELSE  Log   Skipping NG Analytics Upgrade From XMC ${version}
-    
+
 Test 5: Check Server Log
     [Documentation]   Check server.log for exceptions.
     [Tags]            known_issue    xiqse_tcxe_958    xmc_5685    development    xiqse    acceptance    exception_check    test5
