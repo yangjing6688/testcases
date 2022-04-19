@@ -3,6 +3,7 @@ Documentation  This file contains all folders containing the resources and varia
 
 Resource    ../../../../../Libraries/XIQ/lib_devices.robot
 Resource    ../../../../../Libraries/XIQ/lib_login.robot
+Resource    ../../../../../Libraries/XIQ/lib_rbac_config.robot
 
 Variables   Environments/Config/waits.yaml
 

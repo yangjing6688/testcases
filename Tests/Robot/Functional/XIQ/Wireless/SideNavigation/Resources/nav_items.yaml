@@ -12,24 +12,21 @@ nav:
       tag:                "automation-header-nav-policy"
       url:                "/config"
       pilot_number:       1
-    applications:
-      tag:                "automation-header-nav-application"
-      url:                "/appservice"
-      pilot_number:       2
     common:
       tag:                "automation-header-nav-common"
-      pilot_number:       3
+      pilot_number:       2
     users:
       tag:                "automation-header-nav-configure-users"
-      pilot_number:       4
+      pilot_number:       3
     guest:
       tag:                "automation-header-nav-configure-guest-essentials-users"
       url:                "/guestessentialsusers"
-      pilot_number:       5
+      pilot_number:       4
   manage:
     tag:                "automation-header-manage"
     icon_class:         "img-manage"
     pilot_number:       3
+    helpdesk_number:    1
     summary:
       tag:                "automation-header-nav-summary"
       url:                "/dashboard"
@@ -42,6 +39,7 @@ nav:
       tag:                "automation-header-nav-devices"
       url:                "/devices"
       pilot_number:       3
+      helpdesk_number:    1
     clients:
       tag:                "automation-header-nav-clients"
       url:                "/clientsoverview"
@@ -70,6 +68,11 @@ nav:
       tag:                "automation-header-nav-security"
       url:                "/rogueaps"
       pilot_number:       10
+    diagnosis:
+      tag:                "automation-header-nav-clientmonitor-Diagnosis"
+      url:                "/tools/issueList"
+      pilot_number:       11
+      helpdesk_number:    2
   insights:
     tag:                "automation-header-n360"
     icon_class:         "img-insights"
@@ -86,14 +89,10 @@ nav:
       tag:                "automation-header-nav-clientsoverview"
       url:                "/clientsoverview"
       pilot_number:       3
-    diagnosis:
-      tag:                "automation-header-nav-clientmonitor-Diagnosis"
-      url:                "/tools/issueList"
-      pilot_number:       4
     retail:
       tag:                "automation-header-nav-retail"
       url:                "/retail"
-      pilot_number:       5
+      pilot_number:       4
   essentials:
     tag:                "automation-header-essentials"
     icon_class:         "img-essentials"

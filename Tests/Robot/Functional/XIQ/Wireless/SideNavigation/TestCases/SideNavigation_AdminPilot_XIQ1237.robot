@@ -85,6 +85,7 @@ TCXM-18162: Confirm Manage Menu
     Confirm Side Nav Menu Item   ${nav.manage.reports.tag}   ${nav.manage.reports.pilot_number}
     Confirm Side Nav Menu Item   ${nav.manage.applications.tag}   ${nav.manage.applications.pilot_number}
     Confirm Side Nav Menu Item   ${nav.manage.security.tag}   ${nav.manage.security.pilot_number}
+    Confirm Side Nav Menu Item   ${nav.manage.diagnosis.tag}   ${nav.manage.diagnosis.pilot_number}
 
     # check all submenus open the correct pages
     ${nav_result}=      Navigate To Manage Summary
@@ -137,6 +138,11 @@ TCXM-18162: Confirm Manage Menu
     ${nav_url}=         Is The Expected Url   ${nav.manage.security.url}
     Should Be Equal As Integers   ${nav_url}   1
 
+    ${nav_result}=      Navigate To Client Monitor And Diagnosis Tab
+    Should Be Equal As Integers   ${nav_result}   1
+    ${nav_url}=         Is The Expected Url   ${nav.manage.diagnosis.url}
+    Should Be Equal As Integers   ${nav_url}   1
+
 TCXM-18163: Confirm ML Insights Menu
     [Documentation]     Confirms the ML Insights side nav menu item is the 4th menu, has the correct icon and has all expected submenus
     [Tags]              xim_tc_18163   development
@@ -153,7 +159,6 @@ TCXM-18163: Confirm ML Insights Menu
     Confirm Side Nav Menu Item   ${nav.insights.monitor.tag}   ${nav.insights.monitor.pilot_number}
     Confirm Side Nav Menu Item   ${nav.insights.scorecard.tag}   ${nav.insights.scorecard.pilot_number}
     Confirm Side Nav Menu Item   ${nav.insights.clients.tag}   ${nav.insights.clients.pilot_number}
-    Confirm Side Nav Menu Item   ${nav.insights.diagnosis.tag}   ${nav.insights.diagnosis.pilot_number}
 #    Handle this later when we add the needed automation tags to check industry
 #    Confirm Side Nav Menu Item   ${nav.insights.retail.tag}   ${nav.insights.retail.pilot_number}
 
@@ -169,11 +174,6 @@ TCXM-18163: Confirm ML Insights Menu
     ${nav_result}=      Navigate To Client360
     Should Be Equal As Integers   ${nav_result}   1
     ${nav_url}=         Is The Expected Url   ${nav.insights.clients.url}
-    Should Be Equal As Integers   ${nav_url}   1
-
-    ${nav_result}=      Navigate To Client Monitor And Diagnosis Tab
-    Should Be Equal As Integers   ${nav_result}   1
-    ${nav_url}=         Is The Expected Url   ${nav.insights.diagnosis.url}
     Should Be Equal As Integers   ${nav_url}   1
 
 #    Handle this later when we add the needed automation tags to check industry
