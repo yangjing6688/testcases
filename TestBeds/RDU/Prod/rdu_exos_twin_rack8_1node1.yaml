@@ -13,7 +13,7 @@ netelem1:
   connection_method:        "telnet"
   os:                       "exos"
   hostname:                 "RDU-VM-POD8-4NODE-DUT1"
-  serial:                   "ESIMAAAA-4001"
+  serial:                   "SIMAAAA-4001"
   console_ip:               "10.69.24.3"
   console_port:             "2013"
   default_template:         "5520-24T-default-template"
