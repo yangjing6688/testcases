@@ -1,0 +1,15 @@
+netelem1:
+  name:                     "VOSS"
+  hostname:                 ""
+  serial:                   "1929C-W0376"
+  ip:                       "10.139.121.49"
+  port:                     "23"
+  username:                 "rwa"
+  password:                 "rwa"
+  connection_method:        "telnet"
+  os:                       "voss"
+  platform:                 "1400"
+  location:                 "auto_location_01,San Jose,building_01,floor_01"
+  model:                    "VSPXA_1440"
+  make:                     "voss"
+

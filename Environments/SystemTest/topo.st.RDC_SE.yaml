@@ -1,0 +1,8 @@
+test_url:                 "https://extremecloudiq.com"
+capwap_url:               "extremecloudiq.com"
+sw_connection_host:       "extremecloudiq.com"
+tenant_username:          "releaseextreme+se@gmail.com"
+tenant_password:          "PASprt86"
+rdc:                      "Extreme_SE"
+data_center_name:         "Cloud_Sweden"
+build_version:            "22.1"

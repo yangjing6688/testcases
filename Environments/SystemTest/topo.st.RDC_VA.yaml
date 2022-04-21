@@ -1,0 +1,8 @@
+test_url:                 "https://extremecloudiq.com"
+capwap_url:               "extremecloudiq.com"
+sw_connection_host:       "extremecloudiq.com"
+tenant_username:          "releaseextreme+va@gmail.com"
+tenant_password:          "PASprt86"
+rdc:                      "Extreme_VA"
+data_center_name:         "US_East"
+build_version:            "22.1"

@@ -1,0 +1,16 @@
+netelem1:
+  name:                     "VOSS"
+  hostname:                 ""
+  serial:                   "TB042141K-H0002"
+  ip:                       "10.139.121.45"
+  port:                     "23"
+  username:                 "rwa"
+  password:                 "rwa"
+  connection_method:        "telnet"
+  os:                       "voss"
+  platform:                 "5320"
+  location:                 "auto_location_01,San Jose,building_01,floor_01"
+  model:                    "FabricEngine5520_48T_8XE"
+  make:                     "voss"
+
+

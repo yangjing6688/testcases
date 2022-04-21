@@ -1,0 +1,9 @@
+test_url:                 "https://extremecloudiq.com"
+capwap_url:               "extremecloudiq.com"
+sw_connection_host:       "extremecloudiq.com"
+tenant_username:          "releaseextreme+aca@gmail.com"
+tenant_password:          "PASprt86"
+rdc:                      "Extreme_ACA"
+data_center_name:         "Azure_CANADA_CENTRAL"
+build_version:            "22.1"
+

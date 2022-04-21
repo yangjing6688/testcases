@@ -1,0 +1,15 @@
+netelem1:
+  name:                     "VOSS"
+  hostname:                 ""
+  serial:                   "2022F-10136"
+  ip:                       "10.139.121.50"
+  port:                     "23"
+  username:                 "rwa"
+  password:                 "rwa"
+  connection_method:        "telnet"
+  os:                       "voss"
+  platform:                 "4900"
+  location:                 "auto_location_01,San Jose,building_01,floor_01"
+  model:                    "VSP4900_24S"
+  make:                     "voss"
+
