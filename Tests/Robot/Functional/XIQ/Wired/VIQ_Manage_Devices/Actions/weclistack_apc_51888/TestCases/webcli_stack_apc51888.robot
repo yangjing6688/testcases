@@ -1,3 +1,4 @@
+@@ -1,206 +0,0 @@
 # Author        : Siva prasath
 # Description   : This script run the below tests for WEB CLI feature according with APC-51888 story
 # Testcases      : TCXM-15265,TCXM-15266,TCXM-15267,TCXM-15268,TCXM-15269,TCXM-15270
@@ -23,7 +24,7 @@ TCXM-15265: Verify that WEB CLI is available for EXOS Stack
     #Onboarding:
     [Documentation]	This testcase Onboard and checks the Web CLI is available for stack
     [Tags]              xim_tcxm_15265   production              p1
- 
+
     Delete Device     device_mac=${netelem1.mac}
     @{result} =    Split String    ${netelem1.serial}    ,
     FOR		${serialnumber}     IN    @{result}
@@ -65,7 +66,7 @@ TCXM-15265: Verify that WEB CLI is available for EXOS Stack
 TCXM-15266: Ping command can be executed to a specific destination
     [Documentation]	Verify that the user can iniate a ping command from EXOS Stack through WEB CLI
     [Tags]              xim_tcxm_15266   production              p1
-	
+
     Navigate to Devices and Confirm Success
     refresh devices page
     ${output}=              test device cli   ping 127.0.0.1        device_mac=${netelem1.mac}
@@ -146,7 +147,7 @@ Log Into XIQ and Confirm Success
 
 Navigate to Devices and Confirm Success
     [Documentation]     Navigates to the Manage> Devices view and confirms the action was successful
-    
+
     ${nav_result}=  Navigate to Devices
     Should Be Equal As Integers  ${nav_result}  1
 

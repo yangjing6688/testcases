@@ -1,13 +1,16 @@
-import argparse
+from argparse import ArgumentParser
 from collections import abc
+from re import compile, match, VERBOSE, IGNORECASE
 from sys import exit
-import yaml
+from yaml import safe_load as safe_load_yaml
 
-parser = argparse.ArgumentParser()
+parser = ArgumentParser()
 parser.add_argument("file", help="File that contains the list of testbed yaml files", type=str)
-args = parser.parse_args()
+parser.add_argument('--warn', help="Don't return a bad return code. Only print problems.", action='store_true')
 
 # Comment to test without the need to read in a list of files from a file
+args = parser.parse_args()
+
 try:
     with open(args.file, "r") as f:
         list_of_testbed_files = f.read().strip()
@@ -15,11 +18,44 @@ except Exception as e:
     raise Exception('The CI script encountered a problem.') from e
 
 list_of_testbed_files = list_of_testbed_files.split(",") if list_of_testbed_files else  []
+# End comment here --------------------
 
-# Uncomment to test without the need to read in a list of files from a file
-# list_of_testbed_files = ["TestBeds\\RDU\\Dev\\rdu_x590_pod5_3node.yam", "TestBeds\\RDU\\Dev\\rdu_x690_stk_pod1_3node.yaml"]
+# # Uncomment to test without the need to read in a list of files from a file
+# list_of_testbed_files = ["TestBeds\RDU\Dev\\rdu_x590_pod5_3node.yam", "TestBeds\RDU\Dev\\rdu_x690_stk_pod1_3node.yaml", "TestBeds\BANGALORE\Prod\\testbed2.yaml"]
 
 rc=0
+# VALID_MAKES = ["Controllers", "Extreme - Aerohive", "VOSS", "EXOS", "Dell", "Universal Appliance", "XMC"]
+# XMC MAKES = [A10, APC, Advantage, Albis, Allied Telesyn, Apple, Avaya, Broadcom, Brocade, Cannon, Cisco, Clickarray, D-Link, Dell, Extreme, HP, IBM, Intel, Juniper, KCP, Konica, Lantronix, Microsoft, NetSNMP, Nokia, Oracle, Packeteer, Palo Alto, Panasonic, RuggedCom, SNMP Research, Siemens, Sigma, Sonus, UCD, UNIX, VMware, Xerox]
+VALID_MAKES_REGEX = compile(r"Controllers|Extreme - Aerohive|VOSS|EXOS|Dell|Universal Appliance|XMC|A10|APC|Advantage|Albis|Allied Telesyn|Apple|Avaya|Broadcom|Brocade|Cannon|Cisco|Clickarray|D-Link|Dell|Extreme|HP|IBM|Intel|Juniper|KCP|Konica|Lantronix|Microsoft|NetSNMP|Nokia|Oracle|Packeteer|Palo Alto|Panasonic|RuggedCom|SNMP Research|Siemens|Sigma|Sonus|UCD|UNIX|VMware|Xerox", IGNORECASE)
+# VALID_TOP_LEVEL_KEYS = [r"ap[0-9]+", r"netelem[0-9]+", r"mu[0-9]+", r"mails", r"lab", r"tgen[0-9]+", r"tgen_ports", r"a3server[0-9]+", r"endsys[0-9]+"]
+VALID_TOP_LEVEL_KEYS_REGEX = compile(r"""
+                                        mails          # Static words
+                                        |lab
+                                        |tgen_ports
+                                        |(
+                                            |ap        # Words + incrementing number
+                                            |netelem
+                                            |mu
+                                            |tgen
+                                            |a3server
+                                            |endsys
+                                            |kali
+                                        )[0-9]+
+                                        """, VERBOSE)
+# DEVICES_WITH_MAKE = ["ap", "netelem"]
+APS_NETELEMS = compile(r"ap[0-9]+|netelem[0-9]+")
+VALID_LOCATIONS = compile(r"""
+                            auto_location_01,San Jose,building_01,floor_01
+                            |auto_location_01,San Jose,building_01,floor_02
+                            |auto_location_01,Santa Clara,building_02,floor_03
+                            |auto_location_01,Santa Clara,building_02,floor_04
+                            """, VERBOSE)
+
+WARN_PREFIX="[*] WARNING: "
+FAIL_PREFIX="[*] FAIL: "
+
+print_prefix = WARN_PREFIX if args.warn else FAIL_PREFIX
+
 
 # yields every key from a nested dict
 def nested_dict_iter(nested):
@@ -30,35 +66,89 @@ def nested_dict_iter(nested):
             yield key
 
 def find_bad_keys(file):
-    global rc
-    try:
-        with open(file, "r") as stream:
-            testbed_file = yaml.safe_load(stream)
-            # print(testbed_file)
-    except Exception as e:
-        print(f"[*] FAIL: {file} failed! Unable to load Testbed YAML file. Exception: {e}")
-        rc=1
-        return
+    yaml_reader = nested_dict_iter(file)
 
-    yaml_reader = nested_dict_iter(testbed_file)
-
-    offending_keys = []
+    bad_keys = []
     for key in yaml_reader:
         if not key.islower():
-            offending_keys.append(key)
+            bad_keys.append(key)
 
-    if offending_keys:
-        print(f"[*] FAIL: {file} failed! Uppercase keys found.")
-        print(f"[**] Offending keys: {offending_keys}")
-        rc=1
-    else:
-        print(f"[*] PASS: {file} passed!")
+    return bad_keys
 
 if list_of_testbed_files:
-    for file in list_of_testbed_files:
-        find_bad_keys(file)
-        print()
+    for file_path in list_of_testbed_files:
+        file_passed = True
+        # Read in testbed yaml file
+        try:
+            with open(file_path, "r") as stream:
+                testbed_file = safe_load_yaml(stream)
+                print(f"[*] Checking file: {file_path}.", end='\n\n')
+        except Exception as e:
+            print(f"{print_prefix}{file_path} failed! Unable to load Testbed YAML file. Exception: {e}", end='\n\n')
+            rc=1
+            continue
+
+        # Look for uppercase or otherwise bad keys in yaml
+        #
+        keys_bad = find_bad_keys(testbed_file)
+
+        keys_missing_model = []
+        keys_bad_make = []
+        keys_invalid_name = []
+        for top_level_key in testbed_file:
+            # Invalid top-level keys check
+            #
+            if not match(VALID_TOP_LEVEL_KEYS_REGEX, top_level_key):
+                keys_invalid_name.append(top_level_key)
+                # Skip other tests because key is invalid(we don't know what tests to run)
+                continue
+
+            # print(f"Key: {top_level_key}, Val: {testbed_file[top_level_key]}")
+
+            # Make, Model, and Location checks
+            #
+            if match(APS_NETELEMS, top_level_key):
+                if not isinstance(testbed_file[top_level_key].get("model", None), str):
+                    keys_missing_model.append(top_level_key)
+
+                make = testbed_file[top_level_key].get("make", "")
+                if not match(VALID_MAKES_REGEX, make):
+                    keys_bad_make.append(top_level_key)
+
+        # Print file results
+        #
+        if keys_bad:
+            print(f"{print_prefix}{file_path} failed! Uppercase keys found.")
+            print(f"[**] Offending keys: {keys_bad}", end='\n\n')
+
+        if keys_missing_model:
+            print(f"{print_prefix}{file_path} failed! One or more network elements do not contain a valid 'model' value.")
+            print(f"[*] model must be a string.")
+            print(f"[**] Offending network elements: {keys_missing_model}", end='\n\n')
+
+        if keys_bad_make:
+            print(f"{print_prefix}{file_path} failed! One or more network elements do not contain a valid 'make' value.")
+            print(f"[*] Valid make values: {VALID_MAKES_REGEX.pattern}.")
+            print(f"[**] Offending network elements: {keys_bad_make}", end='\n\n')
+
+        if keys_invalid_name:
+            print(f"{print_prefix}{file_path} failed! One or more invalid top-level keys found.")
+            # print(f"[*] Valid top-level keys: {VALID_TOP_LEVEL_KEYS_REGEX.pattern}.")
+            print(f"[**] Offending keys: {keys_invalid_name}", end='\n\n')
+
+        if keys_bad or keys_missing_model or keys_bad_make or keys_invalid_name:
+            file_passed = False
+            rc=1
+
+        if file_passed:
+            print(f"[*] PASS: {file_path} passed!")
+
+        print() # Add blank line between files
+
 else:
     print("[*] No testbed files found. Skipping these tests...")
 
-exit(rc)
+if args.warn:
+    exit(0)
+else:
+    exit(rc)
