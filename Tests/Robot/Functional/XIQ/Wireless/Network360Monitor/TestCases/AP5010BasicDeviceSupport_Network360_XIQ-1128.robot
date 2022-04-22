@@ -45,7 +45,6 @@ Library     common/ImageHandler.py
 Library     common/ScreenDiff.py
 Library     xiq/flows/manage/Devices.py
 Library     xiq/flows/mlinsights/Network360Monitor.py
-# Library     common/Mu.py
 Library     common/ImageAnalysis.py
 Library     xiq/flows/globalsettings/GlobalSetting.py
 Library     xiq/flows/configure/NetworkPolicy.py
@@ -55,6 +54,7 @@ Library     extauto/common/TestFlow.py
 Library     extauto/xiq/flows/common/Login.py
 Library     extauto/xiq/flows/common/Navigator.py
 Library     extauto/xiq/flows/manage/Client.py
+Library     common/tools/remote/WinMuConnect.py
 
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
@@ -139,7 +139,7 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
     ${VERSION_DETAIL}=     Send              ${SPAWN1}         show version detail
     ${AP_BUILD_VERSION}=   Get AP Version    ${SPAWN1}
     Log to Console         AP_BUILD_VERSN2   ${AP_BUILD_VERSION}
-
+    Close Spawn             ${SPAWN1}
     Should Not Contain      ${REBOOT_OUTPUT}    Next reboot Scheduled
     Should Contain          ${VERSION_DETAIL}   Running image:      Current version
     Should Contain          ${VERSION_DETAIL}   Load after reboot:  Current version
@@ -161,7 +161,7 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
     ${DEPLOY_STATUS}=         Deploy Network Policy with Complete Update      config_push_${POLICY_01}          ${ap1.serial}
     Log to Console            DeployStatus ${DEPLOY_STATUS}
     Wait Until Device Online   ${ap1.serial}  None   30   20
-    Close Spawn               ${SPAWN1}
+
     ${SPAWN}=                 Open Spawn      ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     ${OUTPUT1}=               Send            ${SPAWN}            show ssid
     Close Spawn               ${SPAWN}
