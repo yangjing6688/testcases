@@ -139,7 +139,6 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
     ${VERSION_DETAIL}=     Send              ${SPAWN1}         show version detail
     ${AP_BUILD_VERSION}=   Get AP Version    ${SPAWN1}
     Log to Console         AP_BUILD_VERSN    ${AP_BUILD_VERSION}
-    Close Spawn             ${SPAWN1}
     Should Not Contain      ${REBOOT_OUTPUT}    Next reboot Scheduled
     Should Contain          ${VERSION_DETAIL}   Running image:      Current version
     Should Contain          ${VERSION_DETAIL}   Load after reboot:  Current version
@@ -161,18 +160,17 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
     ${DEPLOY_STATUS}=         Deploy Network Policy with Complete Update      config_push_${POLICY_01}          ${ap1.serial}
     Log to Console            DeployStatus ${DEPLOY_STATUS}
     Wait Until Device Online  ${ap1.serial}  None  30  20
-    sleep                     30
-    ${SPAWN}=                 Open Spawn      ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
-    sleep                     30
-    ${OUTPUT1}=               Send            ${SPAWN}            show ssid
-    sleep                     30
-    Close Spawn               ${SPAWN}
+    Close Spawn               ${SPAWN1}
+    sleep                     30s
+    ${AP_SPAWN1}=             Open Spawn      ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${OUTPUT_SSID}=           Send            ${AP_SPAWN1}        show ssid
+    Close Spawn               ${AP_SPAWN1}
     Log to Console            POLICY_STATUS ${POLICY_STATUS}
     Log to Console            DEPLOY_STATUS ${DEPLOY_STATUS}
     should be equal as integers             ${POLICY_STATUS}            1
     should be equal as integers             ${DEPLOY_STATUS}            1
-    Log to Console            show_ssid ${OUTPUT1}
-    Should Contain            ${OUTPUT1}    ${SSID_01}
+    Log to Console            show_ssid ${OUTPUT_SSID}
+    Should Contain            ${OUTPUT_SSID}    ${SSID_01}
     ${EDIT_STATUS}=           Edit Network Policy SSID    config_push_${POLICY_01}    ${SSID_01}    ${NEW_SSID_NAME_1}
     sleep                     ${SLEEP_TIME}
     ${availability}     ${hw_health}     ${fw_health}=    Get Network360monitor Device Health Overall Score   ${FLOOR_NAME}
