@@ -21,7 +21,7 @@ pilot1:
   profile:                  "public_v1_Profile"
   serial:                   "SIM3333Z-99901"
   mac:                      "0cfd64a30000"
-  model:                    "5520-24T"
+  model:                    "SwitchEngine5520_24T"
   platform:                 "exos"
 
 pilot2:
@@ -30,7 +30,7 @@ pilot2:
   profile:                  "public_v1_Profile"
   serial:                   "SIM3333Z-99902"
   mac:                      "0c0d41e00000"
-  model:                    "5420F-24T-4XE"
+  model:                    "SwitchEngine5420F_24T_4XE"
   platform:                 "exos"
 
 pilot3:
@@ -39,7 +39,7 @@ pilot3:
   profile:                  "public_v1_Profile"
   serial:                   "SIM3333Z-99903"
   mac:                      "0cae53eb0000"
-  model:                    "5520-24T"
+  model:                    "SwitchEngine5520_24T"
   platform:                 "exos"
 
 nav1:

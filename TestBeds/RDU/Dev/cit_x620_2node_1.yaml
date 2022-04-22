@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "x620_DUT1"
+  model:                    "X620-8t-2x"
   ip:                       "10.69.11.20"
   term_server:              "10.69.1.244 2027"
   pdu_ip:                   "10.69.11.2"
@@ -61,6 +62,7 @@ netelem1:
 # NetworkElement2
 netelem2:
   name:                     "x620_DUT2"
+  model:                    "X620-8t-2x"
   ip:                       "10.69.2.101"
   term_server:              ""
   pdu_ip:                   ""

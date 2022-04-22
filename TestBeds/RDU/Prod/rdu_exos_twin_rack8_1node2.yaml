@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "i386_DUT1"
+  model:                    "Fabric Engine 5520-24T"
   ip:                       "10.69.24.129"
   pdu_ip:                   ""
   pdu_port:                 ""

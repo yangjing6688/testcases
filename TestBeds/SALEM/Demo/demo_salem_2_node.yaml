@@ -2,6 +2,7 @@ lab:                        "SALEM"
 
 netelem1:
   name:                     "VOSS"
+  model:                    "vsp8000"
   serial:                   "2024G-00147"
   mac:                      "000496F17400"
   ip:                       "10.148.35.201"
@@ -35,6 +36,7 @@ netelem1:
 
 netelem2:
   name:                     "EXOS"
+  model:                    "X460G2_24p_10_G4"
   serial:                   "2010G-00015"
   mac:                      "000496EDF800"
   ip:                       "10.148.35.202"

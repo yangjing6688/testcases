@@ -20,7 +20,7 @@ netelem1:
   mac:                      "0006AAAA4001"
   image_family:             "i386"
   platform:                 "5520-24T"
-  model:                    "5520-24T"
+  model:                    "SwitchEngine5520_24T"
   host_mac:                 "00-06-AA-AA-40-01"
   primary_test_target:      "True"
   physical_device:          "True"

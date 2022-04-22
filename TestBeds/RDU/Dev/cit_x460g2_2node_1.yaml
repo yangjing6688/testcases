@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "x460G2hd_DUT1"
+  model:                    "X460G2_24p_24hp_10_G4"
   ip:                       "10.69.11.21"
   term_server:              "10.69.1.244 2028"
   pdu_ip:                   "10.69.11.2"
@@ -58,6 +59,7 @@ netelem1:
 # NetworkElement2
 netelem2:
   name:                     "x460G2hd_DUT2"
+  model:                    "X460G2_24p_24hp_10_G4"
   ip:                       "10.69.2.102"
   pdu_ip:                   ""
   pdu_port:                 ""

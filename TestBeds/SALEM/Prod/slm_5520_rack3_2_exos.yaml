@@ -16,7 +16,6 @@ netelem1:
   os:                       "exos"
   platform:                 "5520"
   model:                    "SwitchEngine5520_24W"
-  model:                    "5520-24W"
   make:                     "exos"
   auth_mode:                "basic"
   tgen:

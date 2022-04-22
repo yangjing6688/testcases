@@ -1,5 +1,6 @@
 netelem1:
   name:                     "SalemRobot_SUM56_X460G2"
+  model:                    "X460G2_24p_10_G4"
   ip:                       "10.51.3.57"
   port:                     "10016"
   system_type:              "x460g2"

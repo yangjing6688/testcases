@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "x465_DUT1"
+  model:                    "X46524MU"
   ip:                       "10.69.50.186"
   term_server:              "10.69.50.250 2009"
   pdu_ip:                   "10.69.50.249"
@@ -101,6 +102,7 @@ netelem1:
 
 netelem2:
   name:                     "x465_DUT2"
+  model:                    "X46524MU"
   ip:                       "10.69.50.187"
   term_server:              "10.69.50.250 2010"
   pdu_ip:                   "10.69.50.249"
@@ -200,6 +202,7 @@ netelem2:
       
 netelem3:
   name:                     "x465_DUT3"
+  model:                    "X46524MU"
   ip:                       "10.69.50.188"
   term_server:              "10.69.50.250 2011"
   pdu_ip:                   "10.69.50.249"
@@ -298,6 +301,7 @@ netelem3:
 
 netelem4:
   name:                     "x465_DUT4"
+  model:                    "X46524MU"
   ip:                       "10.69.50.189"
   term_server:              "10.69.50.250 2012"
   pdu_ip:                   "10.69.50.249"

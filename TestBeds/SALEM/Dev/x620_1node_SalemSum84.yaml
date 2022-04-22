@@ -2,6 +2,7 @@
 
 netelem1:
   name:                     "X620_DUT1"
+  model:                    "X620_48"
   ip:                       "10.51.100.84"
   username:                 "admin"
   password:                 ""

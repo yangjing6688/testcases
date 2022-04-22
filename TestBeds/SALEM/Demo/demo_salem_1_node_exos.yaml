@@ -2,6 +2,7 @@ lab:                        "SALEM"
 
 netelem1:
   name:                     "EXOS"
+  model:                    "X460G2_24p_10_G4"
   hostname:                 ""
   serial:                   "2010G-00015"
   mac:                      "000496EDF800"

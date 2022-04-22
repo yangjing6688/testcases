@@ -2,6 +2,7 @@ lab:                        "SALEM"
 
 netelem1:
   name:                     "VOSS"
+  model:                    "vsp8000"
   ip:                       "10.148.35.201"
   port:                     "23"
   username:                 "rwa"
@@ -18,6 +19,7 @@ netelem1:
 
 netelem2:
   name:                     "EXOS"
+  model:                    "X460G2_24p_10_G4"
   ip:                       "10.148.35.202"
   port:                     "23"
   mgmt_vlan:                "VLAN_4000"

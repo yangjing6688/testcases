@@ -254,7 +254,7 @@ mu2:
 exos1:
   platform:                 EXOS
   name:                     5520-24W-EXOS
-  model:                    EXOS 5520-24WX
+  model:                    "SwitchEngine5520_24W"
   serial:                   '2034G-00109'
   mac:                      000496F4A800
   username:                 admin

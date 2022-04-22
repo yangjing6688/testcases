@@ -251,7 +251,7 @@ router1:
 netelem1:
   platform:                 EXOS
   name:                     X440G2-24p-10G4
-  model:                    X440-G2-24p-10G4
+  model:                    X440G2_24p_10_G4
   serial:                   '1741N-40088'
   mac:                      000496A08ABE
   username:                 admin
@@ -305,7 +305,7 @@ netelem2:
   mac:                   489BD59EB400
   platform:              voss
   make:                  VOSS
-  model:                 VSP 4900-48P
+  model:                 VSP4900_48P
   product:               VSP_4900_48P
   os:                    VOSS
   default_template:      VSP_4900_48P-default-template

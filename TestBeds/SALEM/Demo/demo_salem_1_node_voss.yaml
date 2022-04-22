@@ -2,6 +2,7 @@ lab:                        "SALEM"
 
 netelem1:
   name:                     "VOSS"
+  model:                    "vsp8000"
   hostname:                 ""
   serial:                   "2024G-00147"
   mac:                      "000496F17400"

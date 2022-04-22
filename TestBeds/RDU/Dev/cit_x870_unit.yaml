@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "x870_DUT1"
+  model:                    "X870-96x-8c" 
   ip:                       "10.69.11.17"
   term_server:              "10.69.1.244 2022"
   pdu_ip:                   "10.69.11.2"

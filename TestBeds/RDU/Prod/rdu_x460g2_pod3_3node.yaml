@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "x460g2_DUT1"
+  model:                    "X460G2_24t_10_G4"
   hostname:                 "RDU_X460G2_POD3_3NODE_DUT1"
   serial:                   "1836N-41510"
   ip:                       "10.69.50.162"
@@ -94,6 +95,7 @@ netelem1:
 
 netelem2:
   name:                     "x460g2_DUT2"
+  model:                    "X460G2_24t_10_G4"
   ip:                       "10.69.50.163"
   term_server:              "10.69.50.250 2024"
   pdu_ip:                   "10.69.50.249"
@@ -180,6 +182,7 @@ netelem2:
       
 netelem3:
   name:                     "x460g2_DUT3"
+  model:                    "X460G2_24t_10_G4"
   ip:                       "10.69.50.164"
   term_server:              "10.69.50.250 2025"
   pdu_ip:                   "10.69.50.249"

@@ -225,7 +225,7 @@ router1:
 
 wing1:
   name:                     ap7532-861180
-  model:                    AP-7532I
+  model:                    "AP7532I"
   device_template:          AP-7532I-default-template
   serial:                   "15061522201462"
   os_version:               7.6.0.1-004R
@@ -244,7 +244,7 @@ wing1:
 
 voss1:
   name:                     bui-flo-0140
-  model:                    VSP4900
+  model:                    "VSP4900"
   device_template:          VSP4900-default-template
   serial:                   "2002F-20140"
   mac:                      000496E00C81
@@ -262,7 +262,7 @@ voss1:
 exos1:
   platform:                 EXOS
   name:                     bui-flo-0139
-  model:                    EXOSSWITCH
+  model:                    "EXOSSWITCH"
   serial:                   '1924F-10139'
   mac:                      000496BA7F0C
   username:                 admin

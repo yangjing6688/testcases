@@ -8,6 +8,7 @@ environment:
 
 netelem1:
   name:                     "X460G2_DUT1_sum26"
+  model:                    "X460G2_24p_10_G4"
   ip:                       "10.51.100.26"
   username:                 "admin"
   password:                 ""
@@ -61,6 +62,7 @@ netelem1:
 
 netelem2:
   name:                     "X460G2_DUT2_sum27"
+  model:                    "X460G2_24p_10_G4"
   ip:                       "10.51.100.27"
   username:                 "admin"
   password:                 ""

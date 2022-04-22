@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "i386_DUT1"
+  model:                    "SwitchEngine5520_24T"
   ip:                       "10.69.24.136"
   pdu_ip:                   ""
   pdu_port:                 ""
@@ -80,6 +81,7 @@ netelem1:
 
 netelem2:
   name:                     "i386_DUT2"
+  model:                    "SwitchEngine5520_24T"
   ip:                       "10.69.24.137"
   pdu_ip:                   ""
   pdu_port:                 ""

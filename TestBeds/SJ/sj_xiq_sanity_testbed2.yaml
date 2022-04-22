@@ -169,7 +169,7 @@ mu5:
 exos1:
   platform:                 EXOS
   name:                     5520-24W-EXOS
-  model:                    5520-24W
+  model:                    "SwitchEngine5520_24W"
   serial:                   '2034G-00066'
   mac:                      000496F51000
   username:                 admin
@@ -186,7 +186,7 @@ exos1:
 exos2:
   platform:                 EXOS
   name:                     5520-48W-EXOS
-  model:                    5520-48W
+  model:                    "SwitchEngine5520_48W"
   serial:                   '2034G-00109'
   mac:                      000496F4A800
   username:                 admin
