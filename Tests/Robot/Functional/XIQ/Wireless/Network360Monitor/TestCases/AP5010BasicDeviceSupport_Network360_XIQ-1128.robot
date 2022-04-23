@@ -181,7 +181,7 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
 Test4 - TCXM-18725: N360M_Client_Count_1_1
     [Documentation]   Correctness of Client count is verified in N360M Client Health, CLIENTS widget.
 #                     Assumption is that there is only one Client connected.
-    [Tags]              xim_tc_18725
+    [Tags]              xim_tc_18725    development
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
