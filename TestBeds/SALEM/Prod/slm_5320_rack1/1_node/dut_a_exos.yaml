@@ -1,0 +1,24 @@
+lab:                        "SALEM"
+
+netelem1:
+  name:                     "EXOS"
+  hostname:                 ""
+  serial:                   "TB032140K-H0010"
+  mac:                      "F4CE48A27400"
+  ip:                       "10.148.35.141"
+  port:                     "23"
+  console_ip:               "10.148.35.5"
+  console_port:             "5015"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  os:                       "exos"
+  platform:                 "5320"
+  model:                    "SwitchEngine5320_48P_8XE"
+  make:                     "exos"
+  auth_mode:                "basic"
+
+
+
+
+
