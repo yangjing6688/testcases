@@ -189,6 +189,7 @@ Test4 - TCXM-18725: N360M_Client_Count_1_1
     ...          AND              Quit Browser
     Depends On          Test3
 
+    ${result1}=           Login User      ${TENANT_USERNAME}     ${TENANT_PASSWORD}
     ${CONNECT_STATUS}=    Remote_Server.Connect Open Network    ${SSID_01}
     should be equal as strings            '${CONNECT_STATUS}'    '1'
     Log to Console        Sleep for ${client_connect_wait}
@@ -197,7 +198,6 @@ Test4 - TCXM-18725: N360M_Client_Count_1_1
     ${CLIENT_CONNECTION}=   Get Client Status   client_mac=${mu1.wifi_mac} Verify station
     Should Be Equal As Strings             '${CLIENT_CONNECTION}'      '1'
 
-    ${result1}=         Login User      ${TENANT_USERNAME}     ${TENANT_PASSWORD}
     ${client_count_2G}     ${client_count_5G}     ${client_count_6G}=       Get Network360monitor Clients Health Client Count   ${FLOOR_NAME}
     Log to Console      clientCount2G ${client_count_2G}
     Log to Console      clientCount5G ${client_count_5G}
