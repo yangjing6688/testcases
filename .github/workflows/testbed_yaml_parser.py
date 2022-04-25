@@ -39,7 +39,6 @@ VALID_TOP_LEVEL_KEYS_REGEX = compile(r"""
                                             |tgen
                                             |a3server
                                             |endsys
-                                            |kali
                                         )[0-9]+
                                         """, VERBOSE)
 # DEVICES_WITH_MAKE = ["ap", "netelem"]
@@ -53,6 +52,7 @@ VALID_LOCATIONS = compile(r"""
 
 WARN_PREFIX="[*] WARNING: "
 FAIL_PREFIX="[*] FAIL: "
+LINE_BREAK="-" * 10
 
 print_prefix = WARN_PREFIX if args.warn else FAIL_PREFIX
 
@@ -82,7 +82,7 @@ if list_of_testbed_files:
         try:
             with open(file_path, "r") as stream:
                 testbed_file = safe_load_yaml(stream)
-                print(f"[*] Checking file: {file_path}.", end='\n\n')
+                print(f"{LINE_BREAK} Checking file: {file_path}. {LINE_BREAK}", end='\n\n')
         except Exception as e:
             print(f"{print_prefix}{file_path} failed! Unable to load Testbed YAML file. Exception: {e}", end='\n\n')
             rc=1
@@ -123,18 +123,18 @@ if list_of_testbed_files:
 
         if keys_missing_model:
             print(f"{print_prefix}{file_path} failed! One or more network elements do not contain a valid 'model' value.")
-            print(f"[*] model must be a string.")
             print(f"[**] Offending network elements: {keys_missing_model}", end='\n\n')
+            print(f"[*] model must be a string.")
 
         if keys_bad_make:
             print(f"{print_prefix}{file_path} failed! One or more network elements do not contain a valid 'make' value.")
-            print(f"[*] Valid make values: {VALID_MAKES_REGEX.pattern}.")
             print(f"[**] Offending network elements: {keys_bad_make}", end='\n\n')
+            print(f"[*] Valid make values: {VALID_MAKES_REGEX.pattern}.")
 
         if keys_invalid_name:
             print(f"{print_prefix}{file_path} failed! One or more invalid top-level keys found.")
-            # print(f"[*] Valid top-level keys: {VALID_TOP_LEVEL_KEYS_REGEX.pattern}.")
             print(f"[**] Offending keys: {keys_invalid_name}", end='\n\n')
+            # print(f"[*] Valid top-level keys: {VALID_TOP_LEVEL_KEYS_REGEX.pattern}.")
 
         if keys_bad or keys_missing_model or keys_bad_make or keys_invalid_name:
             file_passed = False

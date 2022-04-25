@@ -222,11 +222,18 @@ jobs:
 
         EOL
 
-    - name: Check production test bed files
+    - name: Handle Skip Requests
       run: |
+        python .github/workflows/skip_handler.py --actor "${{ github.actor }}" --title '${{ github.event.pull_request.title }}' --check testbed | tee -a ${{ env.testbed_files_report_path }}
+
+    - name: Check production test bed files
+      if: ${{env.SKIP_CHECK == 'false'}}
+      run: |
+        set -o pipefail # Preserves the return code from the python script in pipeline below
         python .github/workflows/testbed_yaml_parser.py ${{ env.testbed_prod_path }} | tee -a ${{ env.testbed_files_report_path }}
 
     - name: Check non-production test bed files
+      if: ${{env.SKIP_CHECK == 'false'}}
       run: |
         printf '%s\n' "[*] Checking non-production testbed files..."
         python .github/workflows/testbed_yaml_parser.py ${{ env.testbed_non_prod_path }} | tee -a ${{ env.testbed_files_report_path }}

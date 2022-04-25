@@ -6,7 +6,9 @@
         "jeffrwsd",
         "jsubler93"
     ],
-    "testbed_check": [],
+    "testbed_check": [
+        "jstokes1967"
+    ],
     "filename_and_location_check": [],
     "directory_check": [],
     "testcase_name_check": [],
