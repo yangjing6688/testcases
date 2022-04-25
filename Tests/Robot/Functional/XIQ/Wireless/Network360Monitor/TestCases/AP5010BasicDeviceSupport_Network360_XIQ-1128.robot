@@ -8,7 +8,7 @@
 #
 #  To run using topo and environment:
 #  ----------------------------------
-#  robot -v TOPO:topology.yaml -v ENV:environment.yaml -v TESTBED:FT_testbed1.yaml -i xim_tc_18674 XIQ-1128.robot
+#  robot -v TOPO:topology.yaml -v ENV:environment.yaml -v TESTBED:SJ/FT_testbed1.yaml -i xim_tc_18725 XIQ-1128.robot
 #
 #
 #  ---------------------
@@ -34,6 +34,7 @@ ${CONFIG_PUSH_SSID_02}      SSID_02
 ${RETRY_DURATION}           40
 ${RETRY_COUNT}              20
 ${MAX_CONFIG_PUSH_TIME}     100
+${SSID_01}                  yrxorrzfee
 
 *** Settings ***
 # import libraries
@@ -54,12 +55,13 @@ Library     extauto/common/TestFlow.py
 Library     extauto/xiq/flows/common/Login.py
 Library     extauto/xiq/flows/common/Navigator.py
 Library     extauto/xiq/flows/manage/Client.py
-Library     common/tools/remote/WinMuConnect.py
+Library     extauto/common/tools/remote/WinMuConnect.py
 
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    TestBeds/${TESTBED}
 Variables    Environments/Config/device_commands.yaml
+Variables    Environments/Config/waits.yaml
 Resource     Tests/Robot/Functional/XIQ/Wireless/Network360Monitor/Resources/wireless_networks_config.robot
 
 Library	     Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
@@ -189,10 +191,10 @@ Test4 - TCXM-18725: N360M_Client_Count_1_1
 
     ${CONNECT_STATUS}=    Remote_Server.Connect Open Network    ${SSID_01}
     should be equal as strings            '${CONNECT_STATUS}'    '1'
-    Log to Console        Sleep for ${SLEEP_TIME}
-    sleep                 ${SLEEP_TIME}
+    Log to Console        Sleep for ${client_connect_wait}
+    sleep                 ${client_connect_wait}
 
-    ${CLIENT_CONNECTION}=   Get Client Status   client_mac=${mu1.wifi_mac}
+    ${CLIENT_CONNECTION}=   Get Client Status   client_mac=${mu1.wifi_mac} Verify station
     Should Be Equal As Strings             '${CLIENT_CONNECTION}'      '1'
 
     ${result1}=         Login User      ${TENANT_USERNAME}     ${TENANT_PASSWORD}
