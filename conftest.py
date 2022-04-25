@@ -80,7 +80,7 @@ def pytest_addoption(parser):
     parser.addoption("--b", action="store", default=None, help="build string for verification")
     parser.addoption("--u", action="store", default=None, help="job platform test module UUID")
     parser.addoption("--get_test_info", action="store", default=None, help="Dump checkdb or insert mod info")
-    parser.addoption("--customReportDate", action="store_true", default=False, help="Adds a report date to the report_<%m-%d-%Y_%H.%M.%S>.html file")
+    parser.addoption("--customReportDate", action="store_true", default=False, help="Adds a report date to the report_<date>.html file")
 
 @pytest.hookimpl(trylast=True)
 def pytest_configure(config):
