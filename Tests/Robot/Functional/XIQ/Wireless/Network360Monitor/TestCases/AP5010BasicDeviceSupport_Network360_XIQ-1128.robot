@@ -34,7 +34,7 @@ ${CONFIG_PUSH_SSID_02}      SSID_02
 ${RETRY_DURATION}           40
 ${RETRY_COUNT}              20
 ${MAX_CONFIG_PUSH_TIME}     100
-${SSID_01}                  yrxorrzfee
+${SSID_01}                  fhxusfmdgd
 
 *** Settings ***
 # import libraries
@@ -62,9 +62,10 @@ Variables    Environments/${ENV}
 Variables    TestBeds/${TESTBED}
 Variables    Environments/Config/device_commands.yaml
 Variables    Environments/Config/waits.yaml
+
 Resource     Tests/Robot/Functional/XIQ/Wireless/Network360Monitor/Resources/wireless_networks_config.robot
 
-Library	     Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
+Library	        Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
 
 Force Tags   testbed_1_node
 
