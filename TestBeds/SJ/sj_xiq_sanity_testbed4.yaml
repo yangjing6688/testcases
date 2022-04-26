@@ -13,7 +13,7 @@ ap1:
   platform:                 aerohive
   model:                    AP250
   template:                 AP250-default-template
-  make:                     Dual Boot
+  make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
   location:                 auto_location_01, Santa Clara, building_02, floor_04
@@ -49,7 +49,7 @@ ap2:
   platform:                 aerohive
   model:                    AP230
   template:                 AP230-default-template
-  make:                     Dual Boot
+  make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
   location:                 auto_location_01, Santa Clara, building_02, floor_04
@@ -86,7 +86,7 @@ ap3:
   platform:                 aerohive
   model:                    AP410C
   template:                 AP410C-default-template
-  make:                     Dual Boot
+  make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
   power_strip:
@@ -121,7 +121,7 @@ ap4:
   platform:                 aerohive
   model:                    AP460C
   template:                 AP460C-default-template
-  make:                     Dual Boot
+  make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
   power_strip:
@@ -156,7 +156,7 @@ ap5:
   platform:                 aerohive
   model:                    AP150W
   template:                 AP150W-default-template
-  make:                     Dual Boot
+  make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
   power_strip:

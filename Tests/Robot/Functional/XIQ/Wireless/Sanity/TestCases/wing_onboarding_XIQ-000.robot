@@ -8,6 +8,7 @@
 *** Variables ***
 
 *** Settings ***
+Library     Collections
 Library     common/Utils.py
 Library     common/Cli.py
 Library     common/Rest.py
@@ -26,14 +27,17 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
+Force Tags   testbed_1_node
+
 *** Keywords ***
 
 *** Test Cases ***
-test1: Onboard WiNG AP
+TCCS-7279_Step1: Onboard WiNG AP
     [Documentation]         Checks for ap onboarding is success in case of valid scenario
-    [Tags]                  sanity              onboard         P1      production      test1
+
+    [Tags]                  production      tccs_7279_step1
     ${result}=              Login User          ${tenant_username}      ${tenant_password}
-    ${DELETE_RESULT}=       Delete AP           ap_serial=${wing1.serial}
+    ${DELETE_RESULT}=       Delete Device           device_serial=${wing1.serial}
     Log                     ${DELETE_RESULT}
 
     ${ONBOARD_RESULT}=      Onboard WiNG AP         ${wing1.serial}         ${wing1.mac}   ${wing1.make}
@@ -45,10 +49,11 @@ test1: Onboard WiNG AP
     [Teardown]      run keywords    logout user
      ...                            quit browser
 
-test2: Config AP to Report XIQ
+TCCS-7279_Step2: Config AP to Report XIQ
     [Documentation]     Configure Capwap client server
-    [Tags]              sanity              ap-config       P1          production      test2
-    Depends On          test1
+
+    [Tags]              production      tccs_7279_step2
+    Depends On          tccs_7279_step1
     ${AP_SPAWN}=        Open Spawn          ${wing1.console_ip}   ${wing1.console_port}      ${wing1.username}       ${wing1.password}        ${wing1.platform}
 
     Set Suite Variable  ${AP_SPAWN}
@@ -62,10 +67,11 @@ test2: Config AP to Report XIQ
 
     [Teardown]          Close Spawn         ${AP_SPAWN}
 
-test3: Check AP Status On UI
+TCCS-7279_Step3: Check AP Status On UI
     [Documentation]     Checks for ap status
-    [Tags]              sanity              status-check        P1          production      test3
-    Depends On          test1               test2
+
+    [Tags]              production      tccs_7279_step3
+    Depends On          tccs_7279_step1               tccs_7279_step2
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
 
     Wait Until Device Online                ${wing1.serial}
@@ -97,14 +103,19 @@ test3: Check AP Status On UI
     [Teardown]      run keywords    logout user
      ...                            quit browser
 
-test4: Check for SSH CLI Reachability
+TCCS-7279_Step4: Check for SSH CLI Reachability
     [Documentation]     Check for SSH CLI Reachability
-    [Tags]              sanity              cli-ssh        P1              production      test4
-    Depends On          test1               test2               test3
+
+    [Tags]              production      tccs_7279_step4
+    Depends On          tccs_7279_step1               tccs_7279_step2               tccs_7279_step3
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
     Enable SSH Availability
     Navigate To Devices
-    ${IP_ADDR}   ${PORT_NUM}              Device360 Enable SSH CLI Connectivity   device_name=${wing1.name}         run_time=5
+
+	&{ip_port_info}=       Device360 Enable SSH CLI Connectivity     device_mac=${wing1.name}    run_time=5
+
+    ${IP ADDR}=            Get From Dictionary  ${ip_port_info}  ip
+    ${PORT NUM}=           Get From Dictionary  ${ip_port_info}  port
 
     ${SPAWN1}=          Open PXSSH Spawn    ${IP_ADDR}      ${wing1.username}    ${wing1.password}      ${PORT_NUM}
     ${OUTPUT1}=         Send Commands       ${SPAWN1}       en, show version
@@ -116,13 +127,16 @@ test4: Check for SSH CLI Reachability
     ${SPAWN2}=          Open PXSSH Spawn    ${IP_ADDR}      ${wing1.username}    ${wing1.password}      ${PORT_NUM}
     Should be Equal As Integers             ${SPAWN2}       -1
 
-    [Teardown]          run keywords        quit browser
-     ...       AND      close spawn         ${SPAWN2}
+    Sleep				3min
 
-test5: Check for SSH WEB Reachability
+    [Teardown]   run keywords       logout user
+    ...                             quit browser
+
+TCCS-7279_Step5: Check for SSH WEB Reachability
     [Documentation]     Check for SSH WEB Reachability
-    [Tags]              sanity              web-ssh        P1              production      test5
-    Depends On          test1               test2               test3           test4
+
+    [Tags]              production      tccs_7279_step5
+    Depends On          tccs_7279_step1               tccs_7279_step2               tccs_7279_step3           tccs_7279_step4
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
 
     ${URL}=             Device360 Enable SSH WEB Connectivity   device_name=${wing1.name}         run_time=5
@@ -138,15 +152,17 @@ test5: Check for SSH WEB Reachability
     ${RESULT2}=           CURL COMMAND       ${URL}
     Should be Equal As Integers         ${RESULT2}      0
 
-    [Teardown]         Quit Browser
+    [Teardown]   run keywords       logout user
+    ...                             quit browser
 
-test6: Cleanup
-    [Documentation]     Check for SSH WEB Reachability
-    [Tags]              sanity              web-ssh        P1              production      test5
-    Depends On          test1               test2               test3           test4
+Cleanup
+    [Documentation]     Cleanup
+
+    [Tags]              production		cleanup
     Login User          ${tenant_username}  ${tenant_password}
 
     ${DELETE_STATUS}=   Delete Device       device_serial=${wing1.serial}
     Should be Equal As Integers             ${DELETE_STATUS}      1
 
-    [Teardown]        Quit Browser
+    [Teardown]   run keywords       logout user
+    ...                             quit browser

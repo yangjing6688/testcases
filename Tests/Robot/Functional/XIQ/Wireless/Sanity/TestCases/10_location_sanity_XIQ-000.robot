@@ -26,7 +26,7 @@ Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 
-Force Tags   flow2   flow6
+Force Tags   testbed_1_node
 
 Library	            Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   MU1
 
@@ -38,7 +38,7 @@ ${LOCATION_DISPLAY}         auto_location_01 >> Santa Clara >> building_02 >> fl
 ${FLOOR}                    floor_04
 
 *** Test Cases ***
-test1: Assign Location to AP Device
+TCCS-7284: Assign Location to AP Device
     [Documentation]                 Assigns a location to the AP being tested and confirms the action was successful
     ...                             Steps:
     ...                             Login
@@ -48,7 +48,7 @@ test1: Assign Location to AP Device
     ...                             Update Delta config to AP
     ...                             Validate Update result, AP's Location & Policy from Devices Grid
 
-    [Tags]                          production
+    [Tags]                          production      tccs_7284
 
     ${result}=                      Login User      ${tenant_username}          ${tenant_password}
     ${POLICY_NAME}                  Get Random String
@@ -62,9 +62,6 @@ test1: Assign Location to AP Device
     ${NP_RESULT}=                   Update Network Policy To AP     policy_name=${POLICY_NAME}     ap_serial=${ap1.serial}
     Should Be Equal As Integers     ${NP_RESULT}            1       Unable to Update the Network Policy to AP
 
-    ${LOCATION_RESULT}=             Assign Location With Device Actions         ${ap1.serial}       ${LOCATION}
-    Should Be Equal As Integers     ${LOCATION_RESULT}      1       Unable to Assign Location to Device
-
     ${UPDATE_RESULT}=               update_device_delta_configuration           ${ap1.serial}
 
     Wait Until Device Online        ${ap1.serial}
@@ -76,12 +73,13 @@ test1: Assign Location to AP Device
     should be equal as strings      ${NP_FROM_UI}           ${POLICY_NAME}
     Should Contain                  ${loc_result}           ${LOCATION_DISPLAY}
 
-    [Teardown]
-    Quit Browser
+    [Teardown]   run keywords       Logout User
+    ...                             Quit Browser
 
-test2: Verify AP Hostname in ML Insights Plan Tab
+TCCS-11596: Verify AP Hostname in ML Insights Plan Tab
     [Documentation]                 Verify AP Hostname in ML Insights Plan Tab
-    [Tags]                          production      test2
+
+    [Tags]                          production      tccs_11596
     Login User                      ${tenant_username}      ${tenant_password}
 
     ${FLOOR_SEARCH}=                search_floor_in_network360Plan                  ${FLOOR}
@@ -91,15 +89,16 @@ test2: Verify AP Hostname in ML Insights Plan Tab
     Should Contain                  ${AP_LIST}              ${ap1.name}             ignore_case=True
     Save Screen shot
 
-    [Teardown]
-    Quit Browser
+    [Teardown]   run keywords       Logout User
+    ...                             Quit Browser
 
-test3: Verify AP Hostname and Client in ML Insights Monitor Tab
+TCCS-11597: Verify AP Hostname and Client in ML Insights Monitor Tab
     [Documentation]                 Verify AP Hostname and Client in ML Insights Monitor Tab
-    [Tags]                          production      test3
+
+    [Tags]                          production      tccs_11597
     Login User                      ${tenant_username}      ${tenant_password}
 
-    Sleep                           300
+
     ${CONNECT_STATUS}=              MU1.connect_open_network         ${SSID_NAME}
     should be equal as strings      '${CONNECT_STATUS}'    '1'
 
@@ -115,5 +114,15 @@ test3: Verify AP Hostname and Client in ML Insights Monitor Tab
     Log                             ${CLIENT_LIST}
     Should Contain                  ${CLIENT_LIST}          ${mu1.wifi_mac}
 
-    [Teardown]
-    Quit Browser
+    [Teardown]   run keywords       Logout User
+    ...                             Quit Browser
+
+Tes4: Cleanup
+    [Tags]			        production          cleanup
+    ${LOGIN_STATUS}=        Login User                      ${tenant_username}      ${tenant_password}
+    Delete Device           device_serial=${ap1.serial}
+    Delete Network Polices                  ${POLICY_NAME}
+    Delete SSIDs                            ${SSID_NAME}
+
+    [Teardown]   run keywords       Logout User
+    ...                             Quit Browser

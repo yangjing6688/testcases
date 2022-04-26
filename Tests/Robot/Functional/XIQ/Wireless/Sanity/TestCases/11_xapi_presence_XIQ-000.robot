@@ -46,7 +46,7 @@ Variables    Environments/Config/waits.yaml
 
 Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/xapi_presence_config.robot
 
-Force Tags   flow5
+Force Tags   testbed_1_node
 
 Library	         Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   MU1
 Suite Setup      Pre Condition
@@ -68,8 +68,8 @@ Pre Condition
     [Documentation]   AP Should be onboarded  and it is online
     ${result}=                      Login User        ${tenant_username}     ${tenant_password}
 
-    ${${base_url}}=                    Get Base Url Of Current Page
-    set global variable             ${${base_url}}
+    ${base_url}=                    Get Base Url Of Current Page
+    set global variable             ${base_url}
 
     ${AP_STATUS}=                   Get AP Status     ap_mac=${ap1.mac}
     Should Be Equal As Strings     '${AP_STATUS}'     'green'
@@ -92,19 +92,21 @@ Pre Condition
      ...                            quit browser
 
 *** Test Cases ***
-Test1 Step1: Get The Autherization Code
+TCCS-7472_Step1: Get The Autherization Code
      [Documentation]   generate auterization code
-     [Tags]            XAPI    P1     production
+
+     [Tags]            production   tccs_7472_step1
      ${AUTH_CODE}=         Generate Auth Code    ${test_url}   ${CLIENT_ID}     ${tenant_username}      ${tenant_password}
      set global variable   ${AUTH_CODE}
 
 
-Test1 Step2: Get Access Token And Refresh Token
+TCCS-7472_Step2: Get Access Token And Refresh Token
      [Documentation]   generate the access and extract access token and refresh token from json data
-     [Tags]            XAPI    P1     production
 
-     depends on             Test1 Step1
-     ${JSON_DATA}=          Generate Access Token                    ${AUTH_CODE}    ${CLIENT_SECRET}    ${CLIENT_ID}   ${test_url}
+     [Tags]            production   tccs_7472_step2
+
+     depends on             tccs_7472_step1
+     ${JSON_DATA}=          Generate Access Token                    ${AUTH_CODE}    ${CLIENT_SECRET}    ${CLIENT_ID}   ${test_rdc_url}
 
      ${ACCESS_TOKEN}=       Get Value From Gen Access Token Resp     ${JSON_DATA}    ${OWNER_ID}         accessToken
      set global variable    ${ACCESS_TOKEN}
@@ -112,11 +114,12 @@ Test1 Step2: Get Access Token And Refresh Token
      ${REFRESH_TOKEN}=      Get Value From Gen Access Token Resp     ${JSON_DATA}    ${OWNER_ID}        refreshToken
      set global variable    ${REFRESH_TOKEN}
 
-Test1 Step3: Validate The Access Token In Xiq Global Settings
+TCCS-7472_Step3: Validate The Access Token In Xiq Global Settings
      [Documentation]   Validate the access token with automatically updated token in API Token Management
-     [Tags]            XAPI    P1     production
 
-     depends on                     Test1 Step2
+     [Tags]            production   tccs_7472_step3
+
+     depends on                     tccs_7472_step2
      ${RESULT}=                     Login User        ${tenant_username}      ${tenant_password}
      should be equal as strings    '${RESULT}'             '1'
 
@@ -129,33 +132,41 @@ Test1 Step3: Validate The Access Token In Xiq Global Settings
      ...                         quit browser
 
 
-Test1 Step4: API Call To Get The Device IDs
+TCCS-7472_Step4: API Call To Get The Device IDs
      [Documentation]   API call to get the device id's
-     [Tags]            XAPI    P1     production
 
-     depends on             Test1 Step2
-     ${API_RESP}=           xapi_get_method   ${${base_url}}/xapi/v1/monitor/devices?ownerId=${OWNER_ID}     ${CLIENT_SECRET}   ${CLIENT_ID}   ${ACCESS_TOKEN}
+     [Tags]            production   tccs_7472_step4
+
+     depends on             tccs_7472_step3
+     ${API_RESP}=           xapi_get_method   ${base_url}/xapi/v1/monitor/devices?ownerId=${OWNER_ID}     ${CLIENT_SECRET}   ${CLIENT_ID}   ${ACCESS_TOKEN}
 
      ${DEVICE_ID}=          get_data_from_api_resp    ${API_RESP}    ${ap1.mac}  deviceId
      set global variable    ${DEVICE_ID}
 
-Test1 Step5: Get The Locationid Of The Device
+TCCS-7472_Step5: Get The Locationid Of The Device
      [Documentation]   API call to get the device Location id
-     [Tags]            XAPI    P1     production
 
-     depends on            Test1 Step4
-     ${API_RESP}=          xapi_get_method   ${${base_url}}/xapi/v1/monitor/devices/${DEVICE_ID}?ownerId=${OWNER_ID}     ${CLIENT_SECRET}   ${CLIENT_ID}   ${ACCESS_TOKEN}
+     [Tags]            production   tccs_7472_step5
+
+     depends on            tccs_7472_step4
+     ${API_RESP}=          xapi_get_method   ${base_url}/xapi/v1/monitor/devices/${DEVICE_ID}?ownerId=${OWNER_ID}     ${CLIENT_SECRET}   ${CLIENT_ID}   ${ACCESS_TOKEN}
      ${LOCATION_ID}=       get_location_id_from_api_resp      ${API_RESP}
      set global variable   ${LOCATION_ID}
 
-Test1 Step6: Get The Presence Information Of Client
+TCCS-7472_Step6: Get The Presence Information Of Client
      [Documentation]   API call to get Presence of client
-     [Tags]            XAPI    P1     production
 
-     depends on            Test1 Step5
+     [Tags]            production   tccs_7472_step6
+
+     depends on            tccs_7472_step5
+     ${CURRENT_DATE}=      Get Current Date
+     ${START_HOUR}         Set Variable           T00:01:00.000
+     ${END_HOUR}           Set Variable           T23:59:00.000
+     LOG TO CONSOLE         ${CURRENT_DATE}${START_HOUR}
+     LOG TO CONSOLE         ${CURRENT_DATE}${END_HOUR}
      sleep                 5 minutes
-     ${END_TIME}=          get_utc_iso_time_format
-     ${PRESENCE_RESP}=     xapi_get_method     ${${base_url}}/xapi/v2/clientlocation/clientpresence?ownerId=${OWNER_ID}&location=${LOCATION_ID}&startTime=${START_TIME}Z&endTime=${END_TIME}Z&timeUnit=FiveMinutes
+     ${PRESENCE_RESP}=     xapi_get_method     ${base_url}/xapi/v2/clientlocation/clientpresence?ownerId=${OWNER_ID}&location=${LOCATION_ID}&startTime=${CURRENT_DATE}${START_HOUR}Z&endTime=${CURRENT_DATE}${END_HOUR}Z&timeUnit=FiveMinutes
+
      ...                   ${CLIENT_SECRET}   ${CLIENT_ID}   ${ACCESS_TOKEN}
 
      ${CLIENT_MAC}=        Get Presence Of Client From Api Response     ${PRESENCE_RESP}    ${mu1.wifi_mac}     clientMacAddress
@@ -166,10 +177,12 @@ Test1 Step6: Get The Presence Information Of Client
 
 Test Suite Clean Up
     [Documentation]    cleaning the createst SSID
-    [Tags]    XAPI    P1     production
+
+    [Tags]    production    cleanup
 
     ${result}=    Login User       ${tenant_username}        ${tenant_password}
     Update Network Policy To Ap     policy_name=OPEN_AUTO      ap_serial=${ap1.serial}
+	Delete Device                 device_serial=${ap1.serial}
 
     delete network policy         ${XAPI_NW}
     delete ssid                   ${XAPI_SSID}

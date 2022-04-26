@@ -22,14 +22,16 @@ Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 
+Force Tags   testbed_none
+
 *** Test Cases ***
-TC-52306 - Communications pages Validation
+TCCS-7294: Communications pages Validation
     [Documentation]  Check user navigate to communication pages without error
-    [Tags]             production       sanity          navigation   TC-52306
+
+    [Tags]             production       tccs_7294
     ${LOGIN_XIQ}=       Login User      ${tenant_username}     ${tenant_password}
-    ${XIQ_VERSION}=     Get XIQ Version
-    Log to Console      ${XIQ_VERSION}
-    ${COMM_PAGE}=       Validate Communications Page         ${XIQ_VERSION}
+
+    ${COMM_PAGE}=       Validate Communications Page
     Save Screen shot
     should be equal as strings       '${COMM_PAGE}'     '1'
     ${NOTIFICATION}=    Validate Notifications Page

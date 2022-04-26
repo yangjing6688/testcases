@@ -22,16 +22,16 @@ Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    Environments/Config/device_commands.yaml
 
-Force Tags   flow1   flow2   flow4   flow5   flow6
-
-Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   MU1
+Force Tags   testbed_1_node
 
 *** Keywords ***
 
 *** Test Cases ***
-Test1 - TC-49861 - Onboard Aerohive AP
+TCCS-7651_Step1: Onboard Aerohive AP
     [Documentation]         Checks for ap onboarding is success in case of valid scenario
-    [Tags]                  production      test1           TC-49861
+
+    [Tags]                  production      tccs_7651       tccs_7651_step_1
+
     ${result}=              Login User          ${tenant_username}      ${tenant_password}
     Delete AP               ap_serial=${ap1.serial}
     Change Device Password                      Aerohive123
@@ -44,10 +44,12 @@ Test1 - TC-49861 - Onboard Aerohive AP
 
 
 
-Test2 - TC-49861 - Config AP to Report AIO
+TCCS-7651_Step2: Config AP to Report AIO
     [Documentation]     Configure Capwap client server
-    [Tags]              production      test2           TC-49861
-    Depends On          test1
+
+    [Tags]              production      tccs_7651       tccs_7651_step_2
+
+    Depends On          tccs_7651_step_1
     ${AP_SPAWN}=        Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
@@ -63,19 +65,24 @@ Test2 - TC-49861 - Config AP to Report AIO
     [Teardown]    Close Spawn    ${AP_SPAWN}
 
 
-Test3 - TC-49861 - Check AP Status On UI
+TCCS-7651_Step3: Check AP Status On UI
     [Documentation]     Checks for ap status
-    [Tags]              production      test3           TC-49861
-    Depends On          test2
+
+    [Tags]              production      tccs_7651       tccs_7651_step_3
+
+    Depends On          tccs_7651_step_2
+
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
     Wait Until Device Online                ${ap1.serial}
-    ${AP_STATUS}=       Get AP Status       ap_mac=${ap1.mac}
+    ${AP_STATUS}=       Get AP Status       ap_serial=${ap1.serial}
     Should Be Equal As Strings  '${AP_STATUS}'     'green'
     [Teardown]    Run Keywords    Logout User   Quit Browser
 
-TC-52856 - Quick Onboard Simulated Device
+TCCS-7651_Step4: Quick Onboard Simulated Device
     [Documentation]         Quick Onboarding - Add Simulated Devices
-    [Tags]                  production      test1           TC-49861          simulated
+
+    [Tags]                  production      tccs_7651       tccs_7651_step_4
+
     ${result}=              Login User          ${tenant_username}          ${tenant_password}
     ${SIM_SERIAL}=          Onboard Simulated Device                AP460C             location=${LOCATION}
 

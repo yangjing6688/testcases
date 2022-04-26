@@ -24,18 +24,19 @@ ${LOCATION}                  auto_location_01, Santa Clara, building_02, floor_0
 ${CLEANUP_TAG}              production
 
 *** Settings ***
-Library     common/Cli.py
-Library     common/Utils.py
-Library     common/TestFlow.py
+Library     extauto/common/Cli.py
+Library     extauto/common/Utils.py
+Library     extauto/common/TestFlow.py
 
-Library     xiq/flows/common/Login.py
+Library     extauto/xiq/flows/common/Login.py
+Library     extauto/xiq/flows/common/Navigator.py
 
-Library     xiq/flows/manage/Devices.py
-Library     xiq/flows/manage/AdvanceOnboarding.py
+Library     extauto/xiq/flows/manage/Devices.py
+Library     extauto/xiq/flows/manage/AdvanceOnboarding.py
 
-Library     xiq/flows/configure/NetworkPolicy.py
-Library     xiq/flows/configure/CommonObjects.py
-Library     xiq/flows/configure/RouterTemplate.py
+Library     extauto/xiq/flows/configure/NetworkPolicy.py
+Library     extauto/xiq/flows/configure/CommonObjects.py
+Library     extauto/xiq/flows/configure/RouterTemplate.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -45,6 +46,8 @@ Variables    Environments/Config/device_commands.yaml
 
 Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/router_xr_sanity_config.robot
 
+Force Tags   testbed_1_node
+
 Suite Setup     Cleanup-Delete Router   ${router1.serial}
 
 *** Keywords ***
@@ -52,7 +55,8 @@ Cleanup-Delete Router
     [Arguments]             ${SERIAL}
     Login User              ${tenant_username}      ${tenant_password}
     Run Keyword If   '${CLEANUP_TAG}'=='production'  run keywords   Create Network Policy    default_network_policy     &{CONFIG_PUSH_OPEN_NW_01}
-    ...     AND       Update Network Policy To Router   default_network_policy    router_serial=${router1.serial}
+    ...     AND       Navigate To Devices
+    ...     AND       Refresh Devices Page
     ...     AND       Delete Device  device_serial=${router1.serial}
     ...     AND       Delete Network Policy  ${NW_POLICY_NAME}
     ...     AND       Delete SSID  ${SSID_NAME}
@@ -60,13 +64,14 @@ Cleanup-Delete Router
     ...     AND       Delete Sub Network Profile  ${SUB_NETWORK_NAME}
     ...     AND       Delete Port Type Profile    ${PORT_TYPE_NAME}
     ...     AND       Delete Vlan Profile   ${VLAN_NAME}
-    Logout User
-    Quit Browser
+    [Teardown]   run keywords       logout user
+    ...                             quit browser
 
 *** Test Cases ***
-Test1: Onboard Aerohive XR Router Using Quick Add Method
+TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     [Documentation]         Onboard Aerohive XR Router Using Quick Add Method
-    [Tags]                  sanity   onboard  router  XR  P2  P3  P4  production  regression    Test1
+
+    [Tags]                  production      tccs_7766_step1
 
     ${LOGIN_XIQ}=           Login User              ${tenant_username}      ${tenant_password}   capture_version=True
     Should Be Equal As Integers             ${LOGIN_XIQ}            1
@@ -93,19 +98,20 @@ Test1: Onboard Aerohive XR Router Using Quick Add Method
 
     Wait Until Device Online    ${router1.serial}
     ${ROUTER_STATUS}=       Get Device Status       device_serial=${router1.serial}
-    Should Be Equal As Strings             '${ROUTER_STATUS}'      'green'
+
 
     ${CAPWAP_STATUS}=       Send            ${ROUTER_SPAWN}         ${cmd_capwap_client_state}
     Should Contain                          ${CAPWAP_STATUS}        ${output_capwap_status}
 
 
-    [Teardown]   run keywords       Logout User
-    ...                             Quit Browser
+    [Teardown]   run keywords       logout user
+    ...          AND                quit browser
     ...          AND                Close Spawn        ${ROUTER_SPAWN}
 
-test2: Onboard Aerohive XR Router Using Advance Onboarding Method
+TCCS-7766_Step2: Onboard Aerohive XR Router Using Advance Onboarding Method
     [Documentation]         Onboard Aerohive XR Router Using Advance Onboarding Method
-    [Tags]                  sanity   onboard  router  XR  P2  P3  P4  production   regression   test2
+
+    [Tags]                  production      tccs_7766_step2
 
     ${LOGIN_XIQ}=           Login User          ${tenant_username}      ${tenant_password}
     Should Be Equal As Integers             ${LOGIN_XIQ}            1
@@ -135,21 +141,22 @@ test2: Onboard Aerohive XR Router Using Advance Onboarding Method
     sleep                   ${config_push_wait}
 
     ${ROUTER_STATUS}=       Get Device Status       device_serial=${router1.serial}
-    Should Be Equal As Strings             '${ROUTER_STATUS}'      'green'
+
 
     ${CAPWAP_STATUS}=       Send            ${ROUTER_SPAWN}         ${cmd_capwap_client_state}
     Should Contain                          ${CAPWAP_STATUS}        ${output_capwap_status}
 
 
-    [Teardown]   run keywords       Logout User
-    ...                             Quit Browser
+    [Teardown]   run keywords       logout user
+    ...          AND                quit browser
     ...          AND                Close Spawn        ${ROUTER_SPAWN}
 
-Test3: Create Router XR Template
+TCCS-12330: Create Router XR Template
     [Documentation]         Create Router XR Template
-    [Tags]                  sanity    router-template  XR  P2  P3  P4   regression      Test3  production
 
-    Depends On              Test2
+    [Tags]                  production      tccs_12330
+
+    Depends On              tccs_7766_step1
 
     ${LOGIN_XIQ}=           Login User              ${tenant_username}      ${tenant_password}
 
@@ -174,15 +181,16 @@ Test3: Create Router XR Template
     Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  allowed-vlan ${EXPECTED_TRUNK_VLANS}
 
 
-    [Teardown]   run keywords       Logout User
-    ...                             Quit Browser
+    [Teardown]   run keywords       logout user
+    ...          AND                quit browser
     ...          AND                Close Spawn        ${ROUTER_SPAWN}
 
-Test4: Upgrade Latest IQ Engine Router Firmware
+TCCS-7351: Upgrade Latest IQ Engine Router Firmware
     [Documentation]     Upgrate latest IQ Engine Router Firmware
-    [Tags]              sanity   upgrade  XR  P2  P3  P4  regression    Test4  production
 
-    Depends On              Test3
+    [Tags]              production      tccs_7351
+
+    Depends On              tccs_7766_step1
     ${LOGIN_XIQ}=           Login User              ${tenant_username}      ${tenant_password}
     ${LATEST_VERSION}=      Upgrade Device To Latest Version         ${router1.serial}
 
@@ -193,27 +201,27 @@ Test4: Upgrade Latest IQ Engine Router Firmware
     ${ROUTER_SPAWN}=        Open Spawn          ${router1.console_ip}   ${router1.console_port}      ${router1.username}       ${router1.password}        ${router1.platform}
     ${ROUTER_FM_VER}=       Send          ${ROUTER_SPAWN}           show version | include Version
     ${SHOW_RUN_CONFIG}=     Send          ${ROUTER_SPAWN}           ${CMD_SHOW_CONFIG}
-    Close Spawn             ${ROUTER_SPAWN}
+
 
     should contain          ${ROUTER_FM_VER}        ${LATEST_VERSION}
     Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  mode bridge-802.1q
     Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  allowed-vlan ${EXPECTED_TRUNK_VLANS}
 
-    [Teardown]   run keywords       Logout User
-    ...                             Quit Browser
+    [Teardown]   run keywords       logout user
+    ...          AND                quit browser
     ...          AND                Close Spawn        ${ROUTER_SPAWN}
 
 Test Suite Clean Up
     [Documentation]             delete created network policies, SSID, Device etc
-    [Tags]                      sanity   router  P2   P3  P4  production  regression
+
+    [Tags]                      production      cleanup
     Login User              ${tenant_username}      ${tenant_password}
-    Run Keyword If   '${CLEANUP_TAG}'=='production'  run keywords  Update Network Policy To Router   default_network_policy    router_serial=${router1.serial}
-    ...     AND       Delete Device  device_serial=${router1.serial}
+    Run Keyword If   '${CLEANUP_TAG}'=='production'  run keywords  Delete Device  device_serial=${router1.serial}
     ...     AND       Delete Network Policy  ${NW_POLICY_NAME}
     ...     AND       Delete SSID  ${SSID_NAME}
     ...     AND       Delete Router Template  default_network_policy  ${router1.device_template}
     ...     AND       Delete Sub Network Profile  ${SUB_NETWORK_NAME}
     ...     AND       Delete Port Type Profile    ${PORT_TYPE_NAME}
     ...     AND       Delete Vlan Profile   ${VLAN_NAME}
-    Logout User
-    Quit Browser
+    [Teardown]   run keywords       logout user
+    ...                             quit browser

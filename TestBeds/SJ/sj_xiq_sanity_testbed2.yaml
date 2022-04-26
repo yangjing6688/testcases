@@ -13,7 +13,7 @@ ap1:
   platform:                 aerohive
   model:                    AP460S12C
   template:                 AP460S12C-default-template
-  make:                     Dual Boot
+  make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
   power_strip:
@@ -50,7 +50,7 @@ ap2:
   platform:                 aerohive
   model:                    AP305C
   template:                 AP305C-default-template
-  make:                     Dual Boot
+  make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
   location:                 auto_location_01, Santa Clara, building_02, floor_04
@@ -88,7 +88,7 @@ ap3:
   platform:                 aerohive
   model:                    AP410C
   template:                 AP_410C-default-template
-  make:                     Dual Boot
+  make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
   location:                 auto_location_01, Santa Clara, building_02, floor_04

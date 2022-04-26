@@ -1,0 +1,19 @@
+router1:
+  name:                     Yok-XR600P-2
+  model:                    XR600P
+  device_template:          XR600P_test_automation
+  serial:                   "60018071200247"
+  ip:                       10.16.166.230
+  port:                     22
+  os:                       HiveOS 10.0r10b build-254127
+  mac:                      F4EAB52C4A80
+  network_policy:           Test_np
+  username:                 admin
+  password:                 Aerohive123
+  platform:                 aerohive
+  console_ip:               10.16.166.229
+  console_port:             4003
+  make:                     Extreme - Aerohive
+
+
+

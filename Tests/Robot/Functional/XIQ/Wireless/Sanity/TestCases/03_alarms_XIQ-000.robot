@@ -30,12 +30,13 @@ Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 
-Force Tags   flow1   flow7
+Force Tags   testbed_1_node
 
 *** Test Cases ***
-Test1: Generate And Validate Fake Alarms
+TCCS-11616: Generate And Validate Fake Alarms
     [Documentation]    Chek the generation of alarms
-    [Tags]             production     alarms   P1
+
+    [Tags]             production     tccs_11616
 
     ${LOGIN_STATUS}=                 Login User              ${tenant_username}     ${tenant_password}
     should be equal as strings      '${LOGIN_STATUS}'        '1'
@@ -52,6 +53,16 @@ Test1: Generate And Validate Fake Alarms
     should be equal as strings       '${ALARM_DETAILS}[category]'       'System'
     should be equal as strings       '${ALARM_DETAILS}[description]'    'fan failure.'
     should be equal as strings       '${ALARM_DETAILS}[deviceMac]'      '${ap1.mac}'
+    [Teardown]   run keywords        Logout User
+    ...                              quit browser
+
+Clean-up
+    [Documentation]         Cleanup script
+
+    [Tags]                  cleanup
+    Login User                     ${tenant_username}          ${tenant_password}
+    Delete Device                  device_serial=${ap1.serial}
 
     [Teardown]   run keywords        Logout User
     ...                              quit browser
+
