@@ -147,7 +147,7 @@ mu1:
   platform:       windows
   interface:      wlan0
   wifi_mac:       843A4B916850
-  ethernet_mac:   02004C4F4F50
+  ethernet_mac:   2c59e50325bc
   wifi_network:   20.1.1
   wifi_network_vlan10:    10.16.172
 

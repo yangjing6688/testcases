@@ -79,7 +79,7 @@ Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
-    ${result1}=             Login User          ${tenant_username}      ${tenant_password}
+    ${result1}=             Login User          ${tenant_username}    ${tenant_password}
     should be equal as integers                 ${result1}            1
     Delete AP               ap_serial=${ap1.serial}
     ${onboard_result}=      Onboard Device      ${ap1.serial}         ${ap1.make}       location=${ap1.location}      device_os=${ap1.os}
