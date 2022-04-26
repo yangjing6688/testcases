@@ -67,6 +67,7 @@ Resource     Tests/Robot/Functional/XIQ/Wireless/Network360Monitor/Resources/wir
 Library	        Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
 
 Force Tags   testbed_1_node
+Suite Setup   Cleanup
 
 *** Test Cases ***
 Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
@@ -153,6 +154,7 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
     ${NEW_SSID_NAME_1}=       Get Random String
 
     Set Suite Variable        ${POLICY_01}
+    Set Suite Variable        ${SSID_01}
     Set To Dictionary         ${CONFIG_PUSH_OPEN_NW_01}    ssid_name=${SSID_01}
     Log to Console            ${CONFIG_PUSH_OPEN_NW_01}
 
@@ -204,3 +206,12 @@ Test4 - TCXM-18725: N360M_Client_Count_1_1
     Should Be Equal As Strings          '${client_count_2G}'     '0 (0%)'
     Should Be Equal As Strings          '${client_count_5G}'     '1 (100%)'
     Should Be Equal As Strings          '${client_count_6G}'     '0 (0%)'
+
+
+*** Keywords ***
+Cleanup
+    Login User      ${tenant_username}      ${tenant_password}
+    delete all aps
+    delete all network policies
+    Logout User
+    Quit Browser
