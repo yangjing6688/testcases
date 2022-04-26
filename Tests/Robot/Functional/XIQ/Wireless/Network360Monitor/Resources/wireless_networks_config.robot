@@ -1,6 +1,6 @@
 *** Variables ***
 ################# Open Authentication network Profile for cloud captive web portal #####################################
-&{CONFIG_PUSH_OPEN_NW_01}    ssid_name=${CONFIG_PUSH_SSID_01}         network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}   auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
+&{CONFIG_PUSH_OPEN_NW_01}    ssid_name=${CONFIG_PUSH_SSID_01}         network_type=standard    ssid_profile=&{BORADCAST_SSID_03}   auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
 &{CONFIG_PUSH_OPEN_NW_02}    ssid_name=${CONFIG_PUSH_SSID_02}         network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}   auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
 &{OPEN_NW_1}                 ssid_name=test_social_login_fb           network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}   auth_profile=&{OPEN_AUTHENTICATION_PROFILE1}
 &{OPEN_NW_2}                 ssid_name=test_social_login_google       network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}   auth_profile=&{OPEN_AUTHENTICATION_PROFILE2}
