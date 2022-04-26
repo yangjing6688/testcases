@@ -146,7 +146,7 @@ mu1:
   password:       symbol
   platform:       windows
   interface:      wlan0
-  wifi_mac:       380025295815
+  wifi_mac:       843a4b916850
   ethernet_mac:   02004C4F4F50
   wifi_network:   20.1.1
   wifi_network_vlan10:    10.16.172

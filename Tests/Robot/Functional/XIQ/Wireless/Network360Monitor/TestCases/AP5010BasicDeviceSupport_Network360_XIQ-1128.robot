@@ -34,7 +34,7 @@ ${CONFIG_PUSH_SSID_02}      SSID_02
 ${RETRY_DURATION}           40
 ${RETRY_COUNT}              20
 ${MAX_CONFIG_PUSH_TIME}     100
-${SSID_01}                  fhxusfmdgd
+${SSID_01}                  ylbyukugfz
 
 *** Settings ***
 # import libraries
