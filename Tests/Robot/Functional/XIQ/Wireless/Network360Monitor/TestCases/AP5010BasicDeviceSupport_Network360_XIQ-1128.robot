@@ -196,7 +196,7 @@ Test4 - TCXM-18725: N360M_Client_Count_1_1
     Log to Console        Sleep for ${client_connect_wait}
     sleep                 ${client_connect_wait}
 
-    ${CLIENT_CONNECTION}=   Get Client Status   client_mac=${mu1.wifi_mac} Verify station
+    ${CLIENT_CONNECTION}=   Get Client Status   client_mac=${mu1.wifi_mac}
     Should Be Equal As Strings             '${CLIENT_CONNECTION}'      '1'
 
     ${client_count_2G}     ${client_count_5G}     ${client_count_6G}=       Get Network360monitor Clients Health Client Count   ${FLOOR_NAME}
