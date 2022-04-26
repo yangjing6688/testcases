@@ -680,31 +680,14 @@ jobs:
     - name: Handle Skip Requests
       if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
       run: |
+        # Handle skipping entire Tags section
+        #
         python .github/workflows/skip_handler.py --actor "${{ github.actor }}" --title '${{ github.event.pull_request.title }}' --check tags | tee -a ${{ env.tag_marker_report_path }}
 
-        # Check for Reserved Tags skip flag in PR title. Note: startsWith() is not case sensitive so this will accept any variation of [skip checks: reserved tags]
-        skip_reserved_tags_requested=${{ startsWith(github.event.pull_request.title, '[Skip Checks: Reserved Tags]') }}
-        skip_reserved_tags=false
-        if [[ $skip_reserved_tags_requested == 'true' ]]; then
-            # Verify the user is allowed to skip checks
-            authorized_users=$( jq -r '(.admins + .tags_check + .reserved_tags)[]' .github/workflows/authorized_users.json )
-            for user in ${authorized_users}; do
-                if [[ $user == $current_user ]]; then
-                    skip_reserved_tags=true
-                    break
-                fi
-            done
-
-            if [[ $skip_reserved_tags == 'true' ]]; then
-                echo "[*] Reserved Tag/Marker tests skipped by [$current_user]..." | tee -a ${{ env.tag_marker_report_path }}
-            else
-                echo "[*] Tests skip requested, but [$current_user] is not authorized. Exiting..." | tee -a ${{ env.tag_marker_report_path }}
-                exit 1
-            fi
-        fi
-
-        # Set env var
-        echo "SKIP_RESERVED_TAGS=${skip_reserved_tags}" >> $GITHUB_ENV
+        # Handle skipping entire only reserved tags checks (sanity, p1, p2, etc.)
+        #
+        python .github/workflows/skip_handler.py --actor "${{ github.actor }}" --title '${{ github.event.pull_request.title }}' \
+            --check "reserved tags" --extended_auth "tags" --envvar "SKIP_RESERVED_TAGS" | tee -a ${{ env.tag_marker_report_path }}
 
     - name: Checkout framework
       if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
@@ -938,7 +921,12 @@ jobs:
 
     #     EOL
 
+    - name: Handle Skip Requests
+      run: |
+        python .github/workflows/skip_handler.py --actor "${{ github.actor }}" --title '${{ github.event.pull_request.title }}' --check func | tee -a ${{ env.testcase_func_report_path }}
+
     - name: Pre-job-submission prep
+      if: ${{env.SKIP_CHECK == 'false'}}
       run: |
         # TODO: get this function working
         ################################
@@ -1019,6 +1007,7 @@ jobs:
     # Submit job for each platform on each NOS that runs all the tests
     #
     - name: Run Modified TestCases
+      if: ${{env.SKIP_CHECK == 'false'}}
       run: |
         # CreateJob body template
         job_template='{
