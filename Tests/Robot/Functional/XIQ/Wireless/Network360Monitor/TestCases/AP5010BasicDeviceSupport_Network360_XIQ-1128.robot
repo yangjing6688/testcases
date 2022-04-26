@@ -48,6 +48,7 @@ Library     common/ImageAnalysis.py
 Library     xiq/flows/globalsettings/GlobalSetting.py
 Library     xiq/flows/configure/NetworkPolicy.py
 Library     xiq/flows/configure/ExpressNetworkPolicies.py
+Library     xiq/flows/configure/CommonObjects.py
 Library     extauto/common/Cli.py
 Library     extauto/common/TestFlow.py
 Library     extauto/xiq/flows/common/Login.py
@@ -212,6 +213,7 @@ Test4 - TCXM-18725: N360M_Client_Count_1_1
 Cleanup
     Login User      ${tenant_username}      ${tenant_password}
     delete all aps
+    delete_all_ssids
     delete all network policies
     Logout User
     Quit Browser
