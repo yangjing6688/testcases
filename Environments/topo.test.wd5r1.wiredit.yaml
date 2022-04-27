@@ -1,7 +1,7 @@
 test_url:                 "https://wd5r1.qa.xcloudiq.com"
 capwap_url:               "wd5r1-cwpm-01.qa.xcloudiq.com"
 sw_capwap_url:            "wd5r1.qa.xcloudiq.com"
-tenant_username:          "wiredit+wd5r1+apr2022@gmail.com"
+tenant_username:          "wd5r1+wiredit+apr22@gmail.com"
 tenant_password:          "Aerohive123"
 sw_connection_host:            "wd5r1.qa.xcloudiq.com"
 wing_capwap_url:          "wd5r1-wing.qa.xcloudiq.com"
