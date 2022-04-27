@@ -40,14 +40,21 @@ Skipping CI checks requires authorization. You are unable to perform a skip unle
 
 ### Instructions
 1. Request access (see notes above)
-2. Add `[Skip Checks: <check to skip>]` to the *beginning* of the title for your pull request.
+2. Add `[Skip Checks: <check to skip>, <check to skip>]` to the *beginning* of the title for your pull request.
     - If you have already created a pull request, you can edit the title by going to your pull request page and clicking edit in the top right corner of the page. The title will then become editable.
     - This string is not case sensitive, but the spacing does matter.
     - Example title: `[Skip Checks: Tags] XIQ-1000: do something`
+    - Example multi-skip title: `[Skip Checks: Tags, Testbed] XIQ-1000: do something`
 3. The skip only applies to your GitHub username. So, if you are working with multiple people on a PR or are performing a skip for someone else you will need to be the last person to have commited a change to the PR. This can be a real change or a dummy change that is just for the purposes of skipping the CI check.
 
 ### More info on the supported skips
-The currently supported skips are: `Reserved Tags` and `Tags`
+The currently supported skips are: `Testbed`, `Dir`, `Reserved Tags`, `Tags`, `Func`
+
+`Testbed`
+    - Skips the entire "Testbed file validation" section of the CI
+
+`Dir`
+    - Skips the entire "Directory structure validation" section of the CI
 
 `Reserved Tags`
     - Removes the restriction that disallowes adding certain reserved tags/markers to a testcase. ( production, regression, nightly, sanity, p1, p2, p3, p4 )
@@ -55,6 +62,11 @@ The currently supported skips are: `Reserved Tags` and `Tags`
 
 `Tags`
     - Skips the entire "Tags/Markers validation" section of the CI
+
+
+`Func`
+    - Skips the entire "Test functionality validation" section of the CI
+    
 
 # Advanced Framework Features
 
