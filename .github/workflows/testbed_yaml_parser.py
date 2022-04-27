@@ -20,7 +20,7 @@ except Exception as e:
 list_of_testbed_files = list_of_testbed_files.split(",") if list_of_testbed_files else  []
 # End comment here --------------------
 
-# # Uncomment to test without the need to read in a list of files from a file
+# Uncomment to test without the need to read in a list of files from a file
 # list_of_testbed_files = ["TestBeds\RDU\Dev\\rdu_x590_pod5_3node.yam", "TestBeds\RDU\Dev\\rdu_x690_stk_pod1_3node.yaml", "TestBeds\BANGALORE\Prod\\testbed2.yaml"]
 
 rc=0
