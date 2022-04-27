@@ -68,7 +68,7 @@ Resource     Tests/Robot/Functional/XIQ/Wireless/Network360Monitor/Resources/wir
 Library	        Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
 
 Force Tags   testbed_1_node
-Suite Setup   Cleanup
+#Test Teardown   Cleanup
 
 *** Test Cases ***
 Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
@@ -207,6 +207,9 @@ Test4 - TCXM-18725: N360M_Client_Count_1_1
     Should Be Equal As Strings          '${client_count_2G}'     '0 (0%)'
     Should Be Equal As Strings          '${client_count_5G}'     '1 (100%)'
     Should Be Equal As Strings          '${client_count_6G}'     '0 (0%)'
+    delete all aps
+    delete_all_ssids
+    delete all network policies
 
 
 *** Keywords ***
@@ -216,4 +219,5 @@ Cleanup
     delete_all_ssids
     delete all network policies
     Logout User
+    Sleep   10
     Quit Browser
