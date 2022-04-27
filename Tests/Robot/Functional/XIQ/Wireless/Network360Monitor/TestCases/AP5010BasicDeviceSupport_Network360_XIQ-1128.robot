@@ -68,7 +68,7 @@ Resource     Tests/Robot/Functional/XIQ/Wireless/Network360Monitor/Resources/wir
 Library	        Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
 
 Force Tags   testbed_1_node
-Test Teardown    Cleanup
+Test Setup    Cleanup
 
 *** Test Cases ***
 Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
