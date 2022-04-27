@@ -16,7 +16,7 @@ netelem1:
   image_family:             ""
   template:                 "X440_G2_24t_G4-default-template"
   make:                     "EXOS"
-  model:                    "X440G2_12t_G4"
+  model:                    "X440G2-24t-G4"
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
 
@@ -35,7 +35,7 @@ netelem2:
   image_family:             ""
   template:                 "X440_G2_24t_G4-default-template"
   make:                     "EXOS"
-  model:                    "X440G2_12t_G4"
+  model:                    "X440G2-24t-G4"
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
 
@@ -54,7 +54,7 @@ netelem3:
   image_family:             ""
   template:                 "X440_G2_24t_G4-default-template"
   make:                     "EXOS"
-  model:                    "X440G2_12t_G4"
+  model:                    "X440G2-24t-G4"
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
 
@@ -73,7 +73,7 @@ netelem4:
   image_family:             ""
   template:                 "X440_G2_24t_G4-default-template"
   make:                     "EXOS"
-  model:                    "X440G2_12t_G4"
+  model:                    "X440G2-24t-G4"
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
 
@@ -92,7 +92,7 @@ netelem5:
   image_family:             ""
   template:                 "X440_G2_24t_G4-default-template"
   make:                     "EXOS"
-  model:                    "X440G2_12t_G4"
+  model:                    "X440G2-24t-G4"
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
 
@@ -111,7 +111,7 @@ netelem6:
   image_family:             ""
   template:                 "X440_G2_24t_G4-default-template"
   make:                     "EXOS"
-  model:                    "X440G2_12t_G4"
+  model:                    "X440G2-24t-G4"
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
 
