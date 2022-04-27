@@ -68,6 +68,7 @@ Resource     Tests/Robot/Functional/XIQ/Wireless/Network360Monitor/Resources/wir
 Library	        Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
 
 Force Tags   testbed_1_node
+Suite Teardown    Cleanup
 
 *** Test Cases ***
 Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
@@ -137,15 +138,8 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
     Wait Until Device Reboots                 ${ap1.serial}
     sleep                   10
     ${SPAWN1}=             Open Spawn         ${ap1.console_ip}     ${ap1.console_port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${CLOCK_OUTPUT}=       Send              ${SPAWN1}         show clock
-    ${REBOOT_OUTPUT}=      Send              ${SPAWN1}         show reboot schedule
-    ${VERSION_DETAIL}=     Send              ${SPAWN1}         show version detail
     ${AP_BUILD_VERSION}=   Get AP Version    ${SPAWN1}
     Log to Console         AP_BUILD_VERSN    ${AP_BUILD_VERSION}
-    Should Not Contain     ${REBOOT_OUTPUT}    Next reboot Scheduled
-    Should Contain         ${VERSION_DETAIL}   Running image:      Current version
-    Should Contain         ${VERSION_DETAIL}   Load after reboot:  Current version
-    Should Contain         ${VERSION_DETAIL}   Uptime:             0 weeks, 0 days, 0 hours
 
     Should Be Equal As Strings  ${LATEST_VERSION}           ${AP_BUILD_VERSION}
 
@@ -207,3 +201,12 @@ Test4 - TCXM-18725: N360M_Client_Count_1_1
     Should Be Equal As Strings          '${client_count_5G}'     '1 (100%)'
     Should Be Equal As Strings          '${client_count_6G}'     '0 (0%)'
 
+*** Keywords ***
+Cleanup
+    Login User      ${tenant_username}      ${tenant_password}
+    delete all aps
+    delete_all_ssids
+    delete all network policies
+    Logout User
+    Sleep   10
+    Quit Browser
