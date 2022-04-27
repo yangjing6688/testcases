@@ -34,15 +34,6 @@ TCCS-7294: Communications pages Validation
     ${COMM_PAGE}=       Validate Communications Page
     Save Screen shot
     should be equal as strings       '${COMM_PAGE}'     '1'
-    ${NOTIFICATION}=    Validate Notifications Page
-    Save Screen shot
-    should be equal as strings       '${NOTIFICATION}'      '1'
-    ${PREVIEW}=         Validate Preview Page
-    Save Screen shot
-    should be equal as strings       '${PREVIEW}'   '1'
-    ${NEW_IN_XIQ}=      Validate New In Extremecloud Page
-    Save Screen shot
-    should be equal as strings       '${NEW_IN_XIQ}'   '1'
 
     [Teardown]         run keywords    logout user
      ...                               quit browser

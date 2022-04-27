@@ -59,7 +59,7 @@ TCCS-11616: Generate And Validate Fake Alarms
 Clean-up
     [Documentation]         Cleanup script
 
-    [Tags]                  cleanup
+    [Tags]                  cleanup     production
     Login User                     ${tenant_username}          ${tenant_password}
     Delete Device                  device_serial=${ap1.serial}
 
