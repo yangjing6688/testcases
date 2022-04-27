@@ -135,8 +135,8 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
     Sleep                   ${browser_load_wait}
 
     Wait Until Device Reboots                 ${ap1.serial}
-
-    ${SPAWN1}=             Open Spawn        ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    sleep                   10
+    ${SPAWN1}=             Open Spawn         ${ap1.console_ip}     ${ap1.console_port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
     ${CLOCK_OUTPUT}=       Send              ${SPAWN1}         show clock
     ${REBOOT_OUTPUT}=      Send              ${SPAWN1}         show reboot schedule
     ${VERSION_DETAIL}=     Send              ${SPAWN1}         show version detail
