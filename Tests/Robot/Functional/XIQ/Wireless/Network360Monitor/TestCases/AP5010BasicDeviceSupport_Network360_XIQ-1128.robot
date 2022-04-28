@@ -135,12 +135,6 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
     Sleep                   ${browser_load_wait}
 
     Wait Until Device Reboots                 ${ap1.serial}
-    sleep                   10
-    ${SPAWN1}=             Open Spawn         ${ap1.console_ip}     ${ap1.console_port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${AP_BUILD_VERSION}=   Get AP Version    ${SPAWN1}
-    Log to Console         AP_BUILD_VERSN    ${AP_BUILD_VERSION}
-
-    Should Be Equal As Strings  ${LATEST_VERSION}           ${AP_BUILD_VERSION}
 
     ${POLICY_01}=             Get Random String
     ${SSID_01}=               Get Random String
@@ -152,26 +146,29 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
     Log to Console            ${CONFIG_PUSH_OPEN_NW_01}
 
     ${POLICY_STATUS}=         Create Network Policy   policy=config_push_${POLICY_01}      &{CONFIG_PUSH_OPEN_NW_01}
-
     ${DEPLOY_STATUS}=         Deploy Network Policy with Complete Update      config_push_${POLICY_01}          ${ap1.serial}
-    Log to Console            DeployStatus ${DEPLOY_STATUS}
-    Wait Until Device Online  ${ap1.serial}  None  30  20
-    Close Spawn               ${SPAWN1}
-    Sleep                     ${browser_load_wait}
-    ${AP_SPAWN1}=             Open Spawn      ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
-    ${OUTPUT_SSID}=           Send            ${AP_SPAWN1}        show ssid
-    Close Spawn               ${AP_SPAWN1}
     Log to Console            POLICY_STATUS ${POLICY_STATUS}
-    Log to Console            DEPLOY_STATUS ${DEPLOY_STATUS}
-    should be equal as integers             ${POLICY_STATUS}            1
-    should be equal as integers             ${DEPLOY_STATUS}            1
+    Log to Console            DeployStatus ${DEPLOY_STATUS}
+    should be equal as integers   ${POLICY_STATUS}    1
+    should be equal as integers   ${DEPLOY_STATUS}    1
+    Wait Until Device Online  ${ap1.serial}  None  30  20
+
+    Sleep                     ${browser_load_wait}
+    ${AP_SPAWN1}=             Open Spawn        ${ap1.console_ip}   ${ap1.console_port}   ${ap1.username}   ${ap1.password}   ${ap1.platform}
+    ${OUTPUT_SSID}=           Send              ${AP_SPAWN1}        show ssid
+    ${AP_BUILD_VERSION}=      Get AP Version    ${AP_SPAWN1}
+    Close Spawn               ${AP_SPAWN1}
+
     Log to Console            show_ssid ${OUTPUT_SSID}
     Should Contain            ${OUTPUT_SSID}    ${SSID_01}
+    Log to Console            AP_BUILD_VERSN    ${AP_BUILD_VERSION}
+    Should Be Equal As Strings  ${LATEST_VERSION}   ${AP_BUILD_VERSION}
+
     ${EDIT_STATUS}=           Edit Network Policy SSID    config_push_${POLICY_01}    ${SSID_01}    ${NEW_SSID_NAME_1}
     sleep                     ${ap_reporting_time}
     ${availability}     ${hw_health}     ${fw_health}=    Get Network360monitor Device Health Overall Score   ${FLOOR_NAME}
     Log to Console            DeviceHardwareHealthScore ${fw_health}
-    Should Be Equal As Integers           ${fw_health}       ${EXPECTED_FW_HEALTH}
+    Should Be Equal As Integers          ${fw_health}   ${EXPECTED_FW_HEALTH}
 
 
 Test4 - TCXM-18725: N360M_Client_Count_1_1
