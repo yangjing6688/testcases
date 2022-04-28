@@ -68,7 +68,7 @@ Resource     Tests/Robot/Functional/XIQ/Wireless/Network360Monitor/Resources/wir
 Library	        Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
 
 Force Tags   testbed_1_node
-Suite Teardown    Cleanup
+Suite Setup    Cleanup
 
 *** Test Cases ***
 Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
@@ -81,7 +81,7 @@ Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
 
     ${result1}=             Login User          ${tenant_username}    ${tenant_password}
     should be equal as integers                 ${result1}            1
-    Delete AP               ap_serial=${ap1.serial}
+#    Delete AP               ap_serial=${ap1.serial}
     ${onboard_result}=      Onboard Device      ${ap1.serial}         ${ap1.make}       location=${ap1.location}      device_os=${ap1.os}
     ${search_result}=       Search AP Serial    ${ap1.serial}
     should be equal as integers                 ${onboard_result}     1
@@ -192,7 +192,7 @@ Test4 - TCXM-18725: N360M_Client_Count_1_1
 
     ${CLIENT_CONNECT}=    Get Client Status   client_mac=${mu1.wifi_mac}
     Should Be Equal As Strings          '${CLIENT_CONNECT}'      '1'
-    sleep                 ${ap_reports_client}
+    sleep                 ${ap_reporting_time}
     ${client_count_2G}     ${client_count_5G}     ${client_count_6G}=       Get Network360monitor Clients Health Client Count   ${FLOOR_NAME}
     Log to Console        clientCount2G ${client_count_2G}
     Log to Console        clientCount5G ${client_count_5G}
