@@ -153,27 +153,28 @@ TCCS-7472_Step5: Get The Locationid Of The Device
      ${LOCATION_ID}=       get_location_id_from_api_resp      ${API_RESP}
      set global variable   ${LOCATION_ID}
 
-TCCS-7472_Step6: Get The Presence Information Of Client
-     [Documentation]   API call to get Presence of client
-
-     [Tags]            production   tccs_7472_step6
-
-     depends on            tccs_7472_step5
-     ${CURRENT_DATE}=      Get Current Date
-     ${START_HOUR}         Set Variable           T00:01:00.000
-     ${END_HOUR}           Set Variable           T23:59:00.000
-     LOG TO CONSOLE         ${CURRENT_DATE}${START_HOUR}
-     LOG TO CONSOLE         ${CURRENT_DATE}${END_HOUR}
-     sleep                 5 minutes
-     ${PRESENCE_RESP}=     xapi_get_method     ${base_url}/xapi/v2/clientlocation/clientpresence?ownerId=${OWNER_ID}&location=${LOCATION_ID}&startTime=${CURRENT_DATE}${START_HOUR}Z&endTime=${CURRENT_DATE}${END_HOUR}Z&timeUnit=FiveMinutes
-
-     ...                   ${CLIENT_SECRET}   ${CLIENT_ID}   ${ACCESS_TOKEN}
-
-     ${CLIENT_MAC}=        Get Presence Of Client From Api Response     ${PRESENCE_RESP}    ${mu1.wifi_mac}     clientMacAddress
-     should be equal as strings     '${CLIENT_MAC}'     '${mu1.wifi_mac}'
-
-     [Teardown]   run keywords     MU1.disconnect_wifi
-     ...          AND              MU1.delete_wlan_profile   ${XAPI_SSID}
+#   Commenting the test case based on AIQ-1601
+#TCCS-7472_Step6: Get The Presence Information Of Client
+#     [Documentation]   API call to get Presence of client
+#
+#     [Tags]            production   tccs_7472_step6
+#
+#     depends on            tccs_7472_step5
+#     ${CURRENT_DATE}=      Get Current Date
+#     ${START_HOUR}         Set Variable           T00:01:00.000
+#     ${END_HOUR}           Set Variable           T23:59:00.000
+#     LOG TO CONSOLE         ${CURRENT_DATE}${START_HOUR}
+#     LOG TO CONSOLE         ${CURRENT_DATE}${END_HOUR}
+#     sleep                 5 minutes
+#     ${PRESENCE_RESP}=     xapi_get_method     ${base_url}/xapi/v2/clientlocation/clientpresence?ownerId=${OWNER_ID}&location=${LOCATION_ID}&startTime=${CURRENT_DATE}${START_HOUR}Z&endTime=${CURRENT_DATE}${END_HOUR}Z&timeUnit=FiveMinutes
+#
+#     ...                   ${CLIENT_SECRET}   ${CLIENT_ID}   ${ACCESS_TOKEN}
+#
+#     ${CLIENT_MAC}=        Get Presence Of Client From Api Response     ${PRESENCE_RESP}    ${mu1.wifi_mac}     clientMacAddress
+#     should be equal as strings     '${CLIENT_MAC}'     '${mu1.wifi_mac}'
+#
+#     [Teardown]   run keywords     MU1.disconnect_wifi
+#     ...          AND              MU1.delete_wlan_profile   ${XAPI_SSID} 
 
 Test Suite Clean Up
     [Documentation]    cleaning the createst SSID
