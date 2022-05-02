@@ -1,0 +1,17 @@
+wing1:
+  name:                     vx9000-C95C19
+  model:                    VX9000
+  device_template:
+  serial:                   100A405DFA4702C0
+  os_version:               7.6.3.0-012R
+  mac:                      000C29C95C19
+  bssid:
+  network_policy:           Test_np
+  username:                 admin
+  password:                 symbol
+  platform:                 wing
+  ip:
+  console_ip:               10.234.137.23
+  console_port:             22
+  country:                  United Kingdom
+  make:                     Controllers

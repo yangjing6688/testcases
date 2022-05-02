@@ -1,0 +1,74 @@
+ap1:
+  name:                     AH-1ec000#
+  connection_method:        'telnet'
+  ip:                       10.16.168.200
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '04101912120142'
+  console_ip:               10.16.168.37
+  console_port:             4003
+  mac:                      BCF3101EC000
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP410C
+  template:                 AP410C-default-template
+  make:                     Signle Boot
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+
+ap2:
+  name:                     AH-57c980#
+  connection_method:        'telnet'
+  ip:                       10.16.168.209
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '03022012080088'
+  console_ip:               10.16.168.37
+  console_port:             4002
+  mac:                      40882F57C980
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP302W
+  template:                 AP_302W-default-template
+  make:                     Single Boot
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+
+ap3:
+  name:                     AH-006200#
+  connection_method:        'telnet'
+  ip:                       10.16.168.117
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '01501707240100'
+  console_ip:               10.16.168.37
+  console_port:             4001
+  mac:                      7C95B1006200
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP150W
+  template:                 AP_150W-default-template
+  make:                     Single Boot
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+
+mu1:
+  ip:             10.16.168.35
+  port:           8270
+  username:       admin
+  password:       aerohive
+  platform:       macmini
+
+mu2:
+  ip:             10.16.168.36
+  port:           8270
+  username:       admin
+  password:       aerohive
+  platform:       macmini
+

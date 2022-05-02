@@ -10,7 +10,7 @@
 &{CONFIG_PUSH_OPEN_NW_01}    ssid_name=Openauthsocial                 network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}   auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
 
 ####Router Template Config###
-&{ROUTER_TEMPLATE_CONFIG1}       router_model=XR200P  template_name=XR200P_test_automation  interface_name=ETH2    new_port_type_config=&{PORT_TYPE_CONFIG1}   network_allocation_config=&{NETWORK_ALLOCATION_CONFIG1}
+&{ROUTER_TEMPLATE_CONFIG1}       router_model=XR200P  template_name=${router1.device_template}  interface_name=ETH2    new_port_type_config=&{PORT_TYPE_CONFIG1}   network_allocation_config=&{NETWORK_ALLOCATION_CONFIG1}
 &{PORT_TYPE_CONFIG1}             port_type_name=test_trunk_xr   description=Trunk  port_status=Enable   port_usage_config=&{PORT_USAGE_CONFIG1}    mac_authentication=Disable  traffic_filter_settings=&{TRAFFIC_FILTER_DEFAULT}
 &{NETWORK_ALLOCATION_CONFIG1}    vlan_object_config=&{VLAN_OBJECT_CONFIG1}  sub_network_config=&{SUB_NETWORK_CONFIG1}
 &{VLAN_OBJECT_CONFIG1}           vlan_name=test_router_vlan   vlan_id=98

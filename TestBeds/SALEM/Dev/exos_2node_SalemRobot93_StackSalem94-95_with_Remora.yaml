@@ -8,6 +8,7 @@ environment:
 
 netelem1:
   name:                     "DUT1_X450G2_Standalone"
+  model:                    "X450G2_48p_G4"
   ip:                       "10.51.136.93"
   username:                 "admin"
   password:                 ""
@@ -63,6 +64,7 @@ netelem1:
 
 netelem2:
   name:                     "DUT2_X450G2_Stack"
+  model:                    "X450G2_48p_G4"
   ip:                       "10.51.136.94"
   username:                 "admin"
   password:                 ""

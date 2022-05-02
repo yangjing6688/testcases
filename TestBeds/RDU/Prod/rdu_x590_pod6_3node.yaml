@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "x590_DUT1"
+  model:                    "X590_24x_1q_2c"
   ip:                       "10.69.50.183"
   term_server:              "10.69.50.253 2019"
   pdu_ip:                   "10.69.50.252"
@@ -88,6 +89,7 @@ netelem1:
 
 netelem2:
   name:                     "x590_DUT2"
+  model:                    "X590_24x_1q_2c"
   ip:                       "10.69.50.184"
   term_server:              "10.69.50.253 2020"
   pdu_ip:                   "10.69.50.252"
@@ -174,6 +176,7 @@ netelem2:
       
 netelem3:
   name:                     "x590_DUT3"
+  model:                    "X590_24x_1q_2c"
   ip:                       "10.69.50.185"
   term_server:              "10.69.50.253 2021"
   pdu_ip:                   "10.69.50.252"

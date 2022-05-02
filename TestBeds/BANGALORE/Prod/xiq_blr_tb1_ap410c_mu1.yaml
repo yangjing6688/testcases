@@ -1,0 +1,46 @@
+ap1:
+  name:                     bui-flo-0183
+  connection_method:        "telnet"
+  ip:                       10.234.207.75
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '04102005200183'
+  console_ip:               10.234.207.75
+  console_port:             22
+  mac:                      BCF3105CC300
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP410C
+  template:                 AP_410C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           BLR_TB2_AP410C_01
+      ssid:                     AP410C_01
+      version:                  6.5
+      neighbour_serial:         24602001170042
+      neighbour_mac:            BCF3102A9880
+
+mu1:
+  ip:             10.234.207.223
+  port:           8270
+  username:       extreme
+  password:       Extreme@123
+  platform:       windows
+  interface:      wlan0
+  wifi_mac:       548D5A693CAA
+  ethernet_mac:   2CEA7F023ADB
+  wifi_network:   10.234.207
+  wifi_network_vlan10:    10.234.207

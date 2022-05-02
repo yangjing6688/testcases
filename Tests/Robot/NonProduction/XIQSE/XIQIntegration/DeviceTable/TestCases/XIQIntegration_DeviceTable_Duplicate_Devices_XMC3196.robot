@@ -51,7 +51,7 @@ ${LOCATION}             San Jose, building_01, floor_02
 *** Test Cases ***
 Test 1: TC-52234 - Device Onboarded to XIQ & Subsequently Onboarded to XIQSE
     [Documentation]     Confirms if a device is managed by XIQ it is not added as XIQSE-managed device when added to XIQSE
-    [Tags]              csit_tc_52234    xmc_3196    development    xiqse    xiq_integration    device_table    test1
+    [Tags]              nightly1    release_testing    csit_tc_52234    xmc_3196    development    xiqse    xiq_integration    device_table    test1
 
     # Onboard Device to XIQ
     Switch To Window  ${XIQ_WINDOW_INDEX}
@@ -67,7 +67,7 @@ Test 1: TC-52234 - Device Onboarded to XIQ & Subsequently Onboarded to XIQSE
 
 Test 2: TC-52235 - Device Onboarded to XIQSE & Subsequently Onboarded to XIQ
     [Documentation]     Confirms an XIQSE-managed device onbaorded to XIQ cannot be onboarded directly into XIQ
-    [Tags]              csit_tc_52235    xmc_3196    development    xiqse    xiq_integration    device_table    test2
+    [Tags]              nightly1    release_testing    csit_tc_52235    xmc_3196    development    xiqse    xiq_integration    device_table    test2
 
     # Add device to XIQSE
     Switch To Window  ${XIQSE_WINDOW_INDEX}
@@ -86,7 +86,7 @@ Test 2: TC-52235 - Device Onboarded to XIQSE & Subsequently Onboarded to XIQ
 
 Test 3: TC-52236 - Device in XIQ and XIQSE then Deleted from XIQ
     [Documentation]     Confirms a device which has been onboarded in XIQ and also exists in XIQSE is onboarded as an XIQSE-managed device when deleted from XIQ
-    [Tags]              known_issue    csit_tc_52236    xmc_3196    development    xiqse    xiq_integration    device_table    test3
+    [Tags]              nightly1    release_testing    known_issue    csit_tc_52236    xmc_3196    development    xiqse    xiq_integration    device_table    test3
 
     Log To Console  KNOWN ISSUE: APC-44759
 

@@ -1,0 +1,37 @@
+ap1:
+  name:                     bui-flo-0015
+  connection_method:        "telnet"
+  ip:                       10.16.166.251
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "02301402270015"
+  console_ip:               10.16.166.228
+  console_port:             4001
+  mac:                      9C5D120053C0
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP230
+  template:                 AP230-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           Test_np
+      ssid:                     AP230_01
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            3485843A5CC0
+

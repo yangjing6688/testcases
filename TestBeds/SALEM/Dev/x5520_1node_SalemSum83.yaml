@@ -2,6 +2,7 @@
 
 netelem1:
   name:                     "5520_DUT1"
+  model:                    "SwitchEngine5520_48T"
   ip:                       "10.51.100.83"
   username:                 "admin"
   password:                 ""

@@ -102,11 +102,15 @@ jobs:
           # Get sorted Environments for branch
           find ./Environments/ -type f -name "environment.*" -printf "%f\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/env.json
 
-          # Get sorted list of Pytest files
-          find -type f -path './Tests/Pytest/*TestCases*' -name "test_*.py" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/pytest_test_cases.json
+          # Get sorted list of Pytest files and dirs
+          pytest_dirs=$( find -type d -path './Tests/Pytest/*' -name "TestCases" )
+          pytest_files=$( find -type f -path './Tests/Pytest/*TestCases*' -name "test_*.py" )
+          echo "$pytest_dirs $pytest_files" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/pytest_test_cases.json
 
-          # Get sorted list of Robot files
-          find -type f -path './Tests/Robot/*TestCases*' -name "*.robot" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/robot_test_cases.json
+          # Get sorted list of Robot files and dirs
+          robot_dirs=$( find -type d -path './Tests/Robot/*' -name "TestCases" )
+          robot_files=$( find -type f -path './Tests/Robot/*TestCases*' -name "*.robot" )
+          echo "$robot_dirs $robot_files" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/robot_test_cases.json
 
         done
 
@@ -186,11 +190,15 @@ jobs:
         # Get sorted Environments for branch
         find ./Environments/ -type f -name "environment.*" -printf "%f\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/env.json
 
-        # Get sorted list of Pytest files
-        find -type f -path './Tests/Pytest/*TestCases*' -name "test_*.py" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/pytest_test_cases.json
+        # Get sorted list of Pytest files and dirs
+          pytest_dirs=$( find -type d -path './Tests/Pytest/*' -name "TestCases" )
+          pytest_files=$( find -type f -path './Tests/Pytest/*TestCases*' -name "test_*.py" )
+          echo "$pytest_dirs $pytest_files" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/pytest_test_cases.json
 
-        # Get sorted list of Robot files
-        find -type f -path './Tests/Robot/*TestCases*' -name "*.robot" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/robot_test_cases.json
+          # Get sorted list of Robot files and dirs
+          robot_dirs=$( find -type d -path './Tests/Robot/*' -name "TestCases" )
+          robot_files=$( find -type f -path './Tests/Robot/*TestCases*' -name "*.robot" )
+          echo "$robot_dirs $robot_files" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/robot_test_cases.json
 
     - name: Upload Metadata
       run: aws s3 sync ${WORK_DIR} s3://econgit/extreme_automation_tests

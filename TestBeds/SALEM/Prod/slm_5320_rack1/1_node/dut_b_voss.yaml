@@ -1,0 +1,22 @@
+lab:                        "SALEM"
+
+netelem1:
+  name:                     "VOSS"
+  hostname:                 ""
+  serial:                   "TB042128K-H0007"
+  mac:                      "F0642671F800"
+  ip:                       "10.148.35.142"
+  port:                     "23"
+  console_ip:               "10.148.35.5"
+  console_port:             "5016"
+  username:                 "rwa"
+  password:                 "rwa"
+  connection_method:        "telnet"
+  os:                       "voss"
+  platform:                 "5320"
+  model:                    "FabricEngine5420_48T_8XE"
+  make:                     "voss"
+  auth_mode:                "basic"
+
+
+

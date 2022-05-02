@@ -50,10 +50,10 @@ Variables    Environments/Config//waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
 Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/auto_provisioning_config.robot
-Force Tags   flow1   flow4
+Force Tags   testbed_1_node
 
 
-Suite Setup     Cleanup-Delete AP   ${ap1.serial}       ${sw1.serial}
+Suite Setup     Cleanup-Delete AP   ${ap1.serial}       ${aerohive_sw1.serial}
 
 *** Keywords ***
 Cleanup-Delete AP
@@ -100,9 +100,10 @@ Get XIQ Status on Aerohive Switch
     Should Contain      ${HM_ADDRESS}       ${sw_capwap_url}
 
 *** Test Cases ***
-TC-49869 - Configure AP Auto Provision Profile
+TCCS-7632: Configure AP Auto Provision Profile
     [Documentation]         Configure AP Autoporvision Profile
-    [Tags]                  P1        production    ap   TC-49869
+
+    [Tags]                  production      tccs_7632
     ${result}=              Login User              ${tenant_username}     ${tenant_password}
     ${POLICY_STATUS}=       Create Open Auth Express Network Policy     ${POLICY_NAME_01}      ${SSID_NAME_01}
 
@@ -126,34 +127,35 @@ TC-49869 - Configure AP Auto Provision Profile
     [Teardown]   run keywords      logout user
     ...                            quit browser
 
-TC-49870 - Configure Switch Auto Provision Profile
+TCCS-7571: Configure Switch Auto Provision Profile
     [Documentation]         Configure Switch  Autoporvision Profile
-    [Tags]                  P1      production      sw   TC-49870
+
+    [Tags]                  production      tccs_7571
     ${result}=              Login User              ${tenant_username}      ${tenant_password}
     ${POLICY_STATUS}=       Create Open Auth Express Network Policy         ${POLICY_NAME_02}      ${SSID_NAME_02}
 
-    Run Keyword If     '${sw1.platform}'=='aerohive-fastpath'               Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR22_SR23_01}
-    Run Keyword If     '${sw1.platform}'=='aerohive-switch'                 Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR20_SR21_01}
+    Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-fastpath'               Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR22_SR23_01}
+    Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-switch'                 Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR20_SR21_01}
 
     Auto Provision Advanced Settings                &{SW_ADVANCED_SETTINGS_03}
     Auto Provision Device Credential                &{DEVICE_CREDENTIAL_01}
     Auto Provision Capwap Configurations            &{CAPWAP_CONFIGURATION_01}
     Save and Enable Auto Provision Policy           ${APP_POLICY_NAME_SW_01}
 
-    ${ONBOARD_RESULT}=      Onboard Device          ${sw1.serial}           ${sw1.make}       location=${LOCATION}
+    ${ONBOARD_RESULT}=      Onboard Device          ${aerohive_sw1.serial}           ${aerohive_sw1.make}       location=${LOCATION}
 
     Should Be Equal As Integers                     ${ONBOARD_RESULT}          1
 
-    ${SW_SPAWN}=        Open Spawn                  ${sw1.console_ip}   ${sw1.console_port}      ${sw1.username}       ${sw1.password}        ${sw1.platform}
+    ${SW_SPAWN}=        Open Spawn                  ${aerohive_sw1.console_ip}   ${aerohive_sw1.console_port}      ${aerohive_sw1.username}       ${aerohive_sw1.password}        ${aerohive_sw1.platform}
 
-    Run Keyword If     '${sw1.platform}'=='aerohive-fastpath'   Configure XIQ on Fastpath Switch        ${SW_SPAWN}     ${sw_capwap_url}
-    Run Keyword If     '${sw1.platform}'=='aerohive-switch'     Configure XIQ on Aerohive Switch        ${SW_SPAWN}     ${capwap_url}
+    Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-fastpath'   Configure XIQ on Fastpath Switch        ${SW_SPAWN}     ${sw_capwap_url}
+    Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-switch'     Configure XIQ on Aerohive Switch        ${SW_SPAWN}     ${capwap_url}
 
     Log to Console      Waiting until the switch is online
     Sleep               ${config_push_wait}
-    wait_until_device_online        ${sw1.serial}       retry_count=15
+    wait_until_device_online        ${aerohive_sw1.serial}       retry_count=15
 
-    ${verify_result}=   Verify Auto Provision Policy Update     serial=${sw1.serial}       country_code=NA    &{SW_SR22_SR23_01}
+    ${verify_result}=   Verify Auto Provision Policy Update     serial=${aerohive_sw1.serial}       country_code=NA    &{SW_SR22_SR23_01}
     Should Be Equal As Integers                     ${verify_result}        1
 
     [Teardown]   run keywords      logout user
@@ -161,11 +163,15 @@ TC-49870 - Configure Switch Auto Provision Profile
 
 Clean-up
     [Documentation]         Cleanup script
+
     [Tags]                  production      cleanup
     Login User                     ${tenant_username}          ${tenant_password}
     Delete All Auto Provision Policies
     Navigate To Devices
     Delete Device                  device_serial=${ap1.serial}
-    Delete Device                  device_serial=${sw1.serial}
-    [Teardown]
-    Quit Browser
+    Delete Device                  device_serial=${aerohive_sw1.serial}
+    Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}
+    Delete SSIDs                            ${SSID_NAME_01}             ${SSID_NAME_02}
+
+    [Teardown]   run keywords               logout user
+    ...                                     quit browser

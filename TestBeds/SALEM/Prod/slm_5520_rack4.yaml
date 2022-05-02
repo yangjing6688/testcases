@@ -1,7 +1,7 @@
 lab:                        "SALEM"
 
 netelem1:
-  name:                     "VOSS"
+  name:                     "EXOS"
   hostname:                 ""
   serial:                   "SB032048G-00015"
   mac:                      "F06426905400"
@@ -14,26 +14,35 @@ netelem1:
   connection_method:        "telnet"
   os:                       "voss"
   platform:                 "5520"
-  model:                    "5520-24W"
+  model:                    "FabricEngine5520_24W"
+  make:                     "voss"
   auth_mode:                "basic"
   tgen:
     port_a:
-      ifname: &netelem1_tgen_port_a_ifname "1/1"
+      ifname: &netelem1_tgen_port_a_ifname "1"
       intnet: "intnet1"
     port_b:
-      ifname: &netelem1_tgen_port_b_ifname "1/12"
+      ifname: &netelem1_tgen_port_b_ifname "12"
       intnet: "intnet2"
     port_c:
-      ifname: &netelem1_tgen_port_c_ifname "1/13"
+      ifname: &netelem1_tgen_port_c_ifname "13"
       intnet: "intnet3"
     port_d:
-      ifname: &netelem1_tgen_port_d_ifname "1/24"
+      ifname: &netelem1_tgen_port_d_ifname "24"
       intnet: "intnet4"
   isl:
     port_a:
-      ifname: &netelem1_isl_port_a_ifname "1/11"
-      intnet: "intnet11"
-
+      ifname: &netelem1_isl_port_a_ifname "15"
+      intnet: "intnet15"
+    port_b:
+      ifname: &netelem1_isl_port_b_ifname "16"
+      intnet: "intnet16"
+    port_c:
+      ifname: &netelem1_isl_port_c_ifname "17"
+      intnet: "intnet17"
+    port_d:
+      ifname: &netelem1_isl_port_d_ifname "18"
+      intnet: "intnet18"
 
 netelem2:
   name:                     "EXOS"
@@ -50,7 +59,8 @@ netelem2:
   connection_method:        "telnet"
   os:                       "exos"
   platform:                 "5520"
-  model:                    "5520-24W"
+  model:                    "SwitchEngine5520_24W"
+  make:                     "exos"
   auth_mode:                "basic"
   tgen:
     port_a:
@@ -68,8 +78,17 @@ netelem2:
 
   isl:
     port_a:
-      ifname: &netelem2_isl_port_a_ifname "11"
-      intnet: "intnet11"
+      ifname: &netelem2_isl_port_a_ifname "15"
+      intnet: "intnet15"
+    port_b:
+      ifname: &netelem2_isl_port_b_ifname "16"
+      intnet: "intnet16"
+    port_c:
+      ifname: &netelem2_isl_port_c_ifname "17"
+      intnet: "intnet17"
+    port_d:
+      ifname: &netelem2_isl_port_d_ifname "18"
+      intnet: "intnet18"
 
 
 tgen1:

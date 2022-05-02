@@ -1,0 +1,16 @@
+router1:
+  name:                     bui-flo-0260
+  model:                    XR200P
+  device_template:          XR200P_test_automation
+  serial:                   "20312112000260"
+  ip:                       10.16.168.112
+  port:                     22
+  os:                       HiveOS 10.0r10b build-254127
+  mac:                      08EA4440F040
+  network_policy:           Test_np
+  username:                 admin
+  password:                 Aerohive123
+  platform:                 aerohive
+  console_ip:               10.16.168.37
+  console_port:             4001
+  make:                     Extreme - Aerohive

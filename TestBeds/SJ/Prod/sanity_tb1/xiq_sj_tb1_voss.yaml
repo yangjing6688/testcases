@@ -1,0 +1,16 @@
+netelem1:
+  name:                     bui-flo-0140
+  model:                    VSP4900
+  device_template:          VSP4900-default-template
+  serial:                   "2002F-20140"
+  mac:                      000496E00C81
+  bssid:
+  network_policy:           Test_np
+  username:                 rwa
+  password:                 rwa
+  platform:                 voss
+  ip:                       10.16.148.9
+  console_ip:               10.16.128.22
+  console_port:             7046
+  country:                  United Kingdom
+  make:                     VOSS

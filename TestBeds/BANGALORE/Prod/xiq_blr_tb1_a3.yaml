@@ -1,0 +1,15 @@
+
+a4_0server1:
+  version:           4.0
+  ip:                10.234.63.114
+  node1_ip:          10.234.63.111
+  node2_ip:          10.234.63.112
+  node3_ip:          10.234.63.113
+  node1_hostname:    A3-4AN1-111
+  node2_hostname:    A3-4AN2-112
+  node3_hostname:    A3-4AN3-113
+  ui_username:       demo@demo.com
+  ui_password:       Extr_123
+  console_username:  sshuser
+  console_password:  Extr_123 
+  console_port:      22

@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "x450g2_DUT1"
+  model:                    "X450G2_24t_10_G4"
   ip:                       "10.69.11.12"
   term_server:              "10.69.1.244 2019"
   pdu_ip:                   "10.69.11.2"

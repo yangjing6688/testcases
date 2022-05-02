@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "x440g2_DUT1"
+  model:                    "X440G2_12t_10_G4"
   ip:                       "10.69.11.11"
   term_server:              "10.69.1.244 2018"
   pdu_ip:                   "10.69.11.2"

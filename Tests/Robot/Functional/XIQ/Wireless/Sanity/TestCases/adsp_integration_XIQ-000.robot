@@ -25,6 +25,9 @@ ${SSID_NAME2}               alarm_generation_ssid
 ${EXPECTED_ALARM}           DoS Deauthentication
 
 *** Settings ***
+
+Force Tags   testbed_adsp
+
 Library     Collections
 Library     String
 Library     common/Utils.py
@@ -55,6 +58,7 @@ Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/adsp_integratio
 
 Library	        Remote 	http://${mu1.ip}:${mu1.port}  WITH NAME   Remote_Server
 Suite Setup      Pre Condition
+Suite Teardown   Test Suite Clean Up
 
 *** Keywords ***
 Pre Condition
@@ -69,43 +73,54 @@ Pre Condition
     Logout User
     Quit Browser
 
+Test Suite Clean Up
+    [Documentation]    Delete Devices / cleanup scripts
+    ${result}=    Login User        ${tenant_username}     ${tenant_password}
+    Delete Device                   device_serial=${ap1.serial}
+    Delete Device                   device_serial=${ap2.serial}
+    Remote_Server.Disconnect_wifi
+    logout user
+    quit browser
+
+
 *** Test Cases ***
 
 Test1: Onboard Sensor AP
     [Documentation]         Onboard Sensor AP
-    [Tags]                  sanity  aerohive  P1   production   regression
+    [Tags]                  tccs_12494      adsp        development
     ${LOGIN_XIQ}=               Login User          ${tenant_username}     ${tenant_password}
 
-    ${ONBOARD_RESULT}=      Onboard Device      ${ap1.serial}           ${ap1.make}       location=${ap1.location}      device_os=${ap1.os}
+    ${ONBOARD_RESULT}=          Onboard Device      ${ap1.serial}           ${ap1.make}       location=${ap1.location}      device_os=${ap1.os}
 
-    ${AP_SPAWN}=               Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=                open pxssh spawn     ${ap1.ip}       ${ap1.username}     ${ap1.password}     ${ap1.port}
+
     Set Suite Variable          ${AP_SPAWN}
-    ${OUTPUT0}=                 Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
+
+    ${OUTPUT0}=                 send commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
     Wait Until Device Online    ${ap1.serial}
 
     Refresh Devices Page
 
-    ${AP1_STATUS}=               Get AP Status       ap_mac=${ap1.mac}
+    ${AP1_STATUS}=              Get AP Status       ap_mac=${ap1.mac}
     Should Be Equal As Strings  '${AP1_STATUS}'     'green'
 
-    ${LOCATION_RESULT}=             Assign Location With Device Actions         ${ap1.serial}       ${LOCATION}
-    Should Be Equal As Integers     ${LOCATION_RESULT}      1       Unable to Assign Location to Device
+    close Spawn  ${AP_SPAWN}
 
     [Teardown]         run keywords    logout user
      ...                               quit browser
 
 Test2: Onboard AP to Generate DoS Deauthentication
     [Documentation]         Pre-config-Onboard AP to Generate DoS Deauthentication
-    [Tags]                  sanity  aerohive  P1   production   regression
-    Depends On          Test1
+    [Tags]                  tccs_12495      adsp        development
+    Depends On              Test1
     ${LOGIN_XIQ}=               Login User          ${tenant_username}     ${tenant_password}
 
-    ${ONBOARD_RESULT}=      Onboard Device      ${ap2.serial}           ${ap2.make}       location=${ap2.location}      device_os=${ap2.os}
+    ${ONBOARD_RESULT}=          Onboard Device      ${ap2.serial}           ${ap2.make}       location=${ap2.location}      device_os=${ap2.os}
 
-    ${AP_SPAWN}=               Open Spawn          ${ap2.console_ip}   ${ap2.console_port}      ${ap2.username}       ${ap2.password}        ${ap2.platform}
-    Set Suite Variable          ${AP_SPAWN}
-    ${OUTPUT0}=                 Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
+    ${AP2_SPAWN}=               Open PXSSH Spawn          ${ap2.ip}        ${ap2.username}       ${ap2.password}        ${ap2.port}
+    Set Suite Variable          ${AP2_SPAWN}
+    ${OUTPUT0}=                 send commands      ${AP2_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
     Wait Until Device Online    ${ap2.serial}
 
@@ -114,18 +129,17 @@ Test2: Onboard AP to Generate DoS Deauthentication
     ${AP2_STATUS}=               Get AP Status       ap_mac=${ap2.mac}
     Should Be Equal As Strings  '${AP2_STATUS}'     'green'
 
+    close Spawn  ${AP2_SPAWN}
+
     [Teardown]         run keywords    logout user
      ...                               quit browser
 
 
 Test3: Connect Client to Generate DoS Deauthentication
     [Documentation]         Pre-config-Connect Client to Generate DoS Deauthentication
-    [Tags]                  sanity  aerohive  P1   production   regression
-    Depends On          Test1  Test2
+    [Tags]                  tccs_12496      adsp        development
+    Depends On              Test1  Test2
     ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
-
-    ${LOCATION_RESULT}=             Assign Location With Device Actions         ${ap2.serial}       ${LOCATION}
-    Should Be Equal As Integers     ${LOCATION_RESULT}      1       Unable to Assign Location to Device
 
     ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME2}      &{OPEN_NW_02}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
@@ -149,17 +163,17 @@ Test3: Connect Client to Generate DoS Deauthentication
 
 Test4: Configure ADSP on AP
     [Documentation]         Configure ADSP on AP
-    [Tags]                  sanity   adsp   P1  production  regression
-    Depends On          Test1
+    [Tags]                  tccs_12497      adsp        development
+    Depends On              Test1
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
 
-    ${CREATE_POLICY1}=         Create Network Policy   ${NW_POLICY_NAME}      &{ADSP_OPEN_NW}
+    ${CREATE_POLICY1}=         Create Network Policy   ${NW_POLICY_NAME}       &{ADSP_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap2.model}    &{AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap1.model}     ${ap1.template_Name}        &{AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings   '${CREATE_AP_TEMPLATE}'   '1'
 
-    ${CONFIG_WIPS_POLICY}      Configure WIPS Policy On Common Objects   &{WIPS_CONFIG_SETTINGS}
+    ${CONFIG_WIPS_POLICY}      Configure WIPS Policy On Common Objects   ${WIPS_POLICY_NAME}
     Should Be Equal As Strings   '${CONFIG_WIPS_POLICY}'   '1'
 
     Clear All ADSP Alarms
@@ -170,30 +184,32 @@ Test4: Configure ADSP on AP
     ${AP1_UPDATE_CONFIG}=      Update Network Policy To AP   ${NW_POLICY_NAME}     ap_serial=${ap1.serial}   update_method=Complete
     Should Be Equal As Strings              '${AP1_UPDATE_CONFIG}'       '1'
 
-    ${AP_SPAWN}=               Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=               open PXSSH spawn         ${ap1.ip}        ${ap1.username}       ${ap1.password}        ${ap1.port}
     ${SENSOR_WIFI_CONFIG}=     Send                ${AP_SPAWN}         show running-config | include "interface wifi2"
     Should Contain             ${SENSOR_WIFI_CONFIG}      interface wifi2 mode adsp-sensor
+
+    close spawn   ${AP_SPAWN}
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
 
 Test5: Generate DoS Deauthentication Alarm on Kali Linux
     [Documentation]         Generate DoS Deauthentication Alarm on Kali Linux
-    [Tags]                  sanity  aerohive  P1   production   regression
+    [Tags]                  tccs_12498      adsp        development
 
-    Depends On          Test2  Test3   Test4
+    Depends On              Test2  Test3   Test4
 
     FOR    ${i}    IN RANGE   20
-          ${KALI_SPAWN}=               Open PxSSH Spawn         ${kali1.ip}   ${kali1.username}       ${kali1.password}
-          ${DOS_ALARM_CMD}=            Send PxSSH               ${KALI_SPAWN}        aireplay-ng -D wlan1mon --deauth 0 -a ${mu1.wifi_mac}
+          ${KALI_SPAWN}=               Open PxSSH Spawn         ${Kali_server1.ip}   ${Kali_server1.username}       ${Kali_server1.password}
+          ${DOS_ALARM_CMD}=            Send                ${KALI_SPAWN}        aireplay-ng -D wlan1 --deauth 0 -a ${mu1.wifi_mac}
           Should Contain               ${DOS_ALARM_CMD}   Sending DeAuth
           close spawn   ${KALI_SPAWN}
     END
 
 Test6: Validate Alarm Grid Information
     [Documentation]         Test3: Validate Alarm Grid Information
-    [Tags]                  sanity   adsp   P1  production  regression
-    Depends On          Test4   Test5
+    [Tags]                  tccs_12499      adsp        development
+    Depends On              Test4   Test5
     ${LOGIN_XIQ}=                   Login User                ${tenant_username}      ${tenant_password}
 
     ${ALARM_DETAILS_ON_GRID}=       Get ADSP Alarm Details    ${mu1.wifi_mac}
@@ -223,7 +239,7 @@ Test6: Validate Alarm Grid Information
 
     ${TIME_ALARM_FORMAT}=           Get Current Date Time     time_format=%d %b %Y %I
     ${ALARM_ACTIVE_TIME}=           Get From Dictionary       ${ALARM_DETAILS_ON_GRID}    alarmActiveAt
-    ${ALARM_ACTIVE_TIME_MATCH}=     Get Regexp Matches        ${ALARM_ACTIVE_TIME}  (?i)(\\d+\\s+\\w+\\s+\\d+\\s+\\d+):\\d+:\\d+   1
+    ${ALARM_ACTIVE_TIME_MATCH}=     String.Get Regexp Matches        ${ALARM_ACTIVE_TIME}  (?i)(\\d+\\s+\\w+\\s+\\d+\\s+\\d+):\\d+:\\d+   1
     ${FINAL_ALARM_TIME}=            Set Variable              ${ALARM_ACTIVE_TIME_MATCH}[0]
     Should Be Equal As Strings     '${FINAL_ALARM_TIME}'     '${TIME_ALARM_FORMAT}'
 
@@ -235,8 +251,8 @@ Test6: Validate Alarm Grid Information
 
 Test7: Change Wireless Thread Detection Status
     [Documentation]         Change Wireless Thread Detection Status
-    [Tags]                  sanity   adsp   P1  production  regression
-    Depends On          Test4
+    [Tags]                  tccs_12500      adsp        development
+    Depends On              Test4
     ${LOGIN_XIQ}=                 Login User          ${tenant_username}      ${tenant_password}
     ${CHANGE_WTD_STATUS}=         Change Wireless Thread Detection Status   ${WIPS_POLICY_NAME}    OFF
     Should Be Equal As Strings   '${CHANGE_WTD_STATUS}'   '1'
@@ -246,8 +262,8 @@ Test7: Change Wireless Thread Detection Status
 
 Test8: Verify Alarms Overview Widget Count
     [Documentation]         Verify Alarms Overview Widget Count
-    [Tags]                  sanity   adsp   P1  production  regression
-    Depends On          Test4  Test7
+    [Tags]                  tccs_12501      adsp        development
+    Depends On              Test4  Test7
     ${LOGIN_XIQ}=                 Login User          ${tenant_username}      ${tenant_password}
 
     ${AP1_UPDATE_CONFIG}=         Update Network Policy To AP   ${NW_POLICY_NAME}     ap_serial=${ap1.serial}   update_method=Delta
@@ -265,8 +281,8 @@ Test8: Verify Alarms Overview Widget Count
 
 Test9: Verify Alarms By Severity Widget Count
     [Documentation]         Verify Alarms By Severity Widget Count
-    [Tags]                  sanity   adsp   P1  production  regression
-    Depends On          Test4  Test7
+    [Tags]                  tccs_12502      adsp        development
+    Depends On              Test4  Test7
     ${LOGIN_XIQ}=                 Login User          ${tenant_username}      ${tenant_password}
 
     ${ALARM_COUNT_ON_GRID}=       Get Total ADSP Alarm Count
@@ -279,8 +295,8 @@ Test9: Verify Alarms By Severity Widget Count
 
 Test10: Verify Alarm InActive Time
     [Documentation]         Verify Alarm InActive Time
-    [Tags]                  sanity   adsp   P1  production  regression
-    Depends On          Test4  Test6
+    [Tags]                  tccs_12503      adsp        development
+    Depends On              Test4  Test6
 
     Log to Console      Sleep for 30 Minutes to Validate Alarm InActive Time
     Sleep                   30m
@@ -300,11 +316,3 @@ Test10: Verify Alarm InActive Time
     [Teardown]   run keywords     Logout User
     ...                           Quit Browser
 
-Test Suite Clean Up
-    [Documentation]    Delete Devices
-    [Tags]             sanity  regression  personal   psk  wpa2  auth-error  P1  P2  P3  P4   production
-    ${result}=    Login User        ${tenant_username}     ${tenant_password}
-    Delete Device                   device_serial=${ap1.serial}
-    Delete Device                   device_serial=${ap2.serial}
-    [Teardown]         run keywords    logout user
-     ...                               quit browser

@@ -13,7 +13,7 @@ ap1:
   platform:                 aerohive
   model:                    AP410C
   template:                 AP_410C-default-template
-  make:                     Dual Boot
+  make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
   power_strip:

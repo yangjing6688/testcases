@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "x435_DUT1"
+  model:                    "X4358T_4S"
   ip:                       "10.69.11.15"
   term_server:              "10.69.1.244 2031"
   pdu_ip:                   "10.69.11.2"
