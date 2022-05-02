@@ -1,15 +1,15 @@
 from argparse import ArgumentParser
 from collections import abc
-from re import compile, match, VERBOSE, IGNORECASE
+from re import compile, fullmatch, VERBOSE, IGNORECASE
 from sys import exit
 from yaml import safe_load as safe_load_yaml
 
 parser = ArgumentParser()
 parser.add_argument("file", help="File that contains the list of testbed yaml files", type=str)
 parser.add_argument('--warn', help="Don't return a bad return code. Only print problems.", action='store_true')
+args = parser.parse_args()
 
 # Comment to test without the need to read in a list of files from a file
-args = parser.parse_args()
 
 try:
     with open(args.file, "r") as f:
@@ -21,26 +21,14 @@ list_of_testbed_files = list_of_testbed_files.split(",") if list_of_testbed_file
 # End comment here --------------------
 
 # Uncomment to test without the need to read in a list of files from a file
-# list_of_testbed_files = ["TestBeds\RDU\Dev\\rdu_x590_pod5_3node.yam", "TestBeds\RDU\Dev\\rdu_x690_stk_pod1_3node.yaml", "TestBeds\BANGALORE\Prod\\testbed2.yaml"]
+# list_of_testbed_files = ["TestBeds\RDU\Dev\\rdu_x590_pod5_3node.yam", "TestBeds\BANGALORE\Prod\\testbed2.yaml"]
 
 rc=0
 # VALID_MAKES = ["Controllers", "Extreme - Aerohive", "VOSS", "EXOS", "Dell", "Universal Appliance", "XMC"]
 # XMC MAKES = [A10, APC, Advantage, Albis, Allied Telesyn, Apple, Avaya, Broadcom, Brocade, Cannon, Cisco, Clickarray, D-Link, Dell, Extreme, HP, IBM, Intel, Juniper, KCP, Konica, Lantronix, Microsoft, NetSNMP, Nokia, Oracle, Packeteer, Palo Alto, Panasonic, RuggedCom, SNMP Research, Siemens, Sigma, Sonus, UCD, UNIX, VMware, Xerox]
 VALID_MAKES_REGEX = compile(r"Controllers|Extreme - Aerohive|VOSS|EXOS|Dell|Universal Appliance|XMC|A10|APC|Advantage|Albis|Allied Telesyn|Apple|Avaya|Broadcom|Brocade|Cannon|Cisco|Clickarray|D-Link|Dell|Extreme|HP|IBM|Intel|Juniper|KCP|Konica|Lantronix|Microsoft|NetSNMP|Nokia|Oracle|Packeteer|Palo Alto|Panasonic|RuggedCom|SNMP Research|Siemens|Sigma|Sonus|UCD|UNIX|VMware|Xerox", IGNORECASE)
-# VALID_TOP_LEVEL_KEYS = [r"ap[0-9]+", r"netelem[0-9]+", r"mu[0-9]+", r"mails", r"lab", r"tgen[0-9]+", r"tgen_ports", r"a3server[0-9]+", r"endsys[0-9]+"]
-VALID_TOP_LEVEL_KEYS_REGEX = compile(r"""
-                                        mails          # Static words
-                                        |lab
-                                        |tgen_ports
-                                        |(
-                                            |ap        # Words + incrementing number
-                                            |netelem
-                                            |mu
-                                            |tgen
-                                            |a3server
-                                            |endsys
-                                        )[0-9]+
-                                        """, VERBOSE)
+VALID_TOP_LEVEL_KEYS = [r"ap[0-9]+", r"netelem[0-9]+", r"mu[0-9]+", r"mails", r"lab", r"tgen[0-9]+", r"tgen_ports", r"a3server[0-9]+", r"endsys[0-9]+"]
+VALID_TOP_LEVEL_KEYS_REGEX = compile( "|".join(VALID_TOP_LEVEL_KEYS) )
 # DEVICES_WITH_MAKE = ["ap", "netelem"]
 APS_NETELEMS = compile(r"ap[0-9]+|netelem[0-9]+")
 VALID_LOCATIONS = compile(r"""
@@ -98,21 +86,21 @@ if list_of_testbed_files:
         for top_level_key in testbed_file:
             # Invalid top-level keys check
             #
-            if not match(VALID_TOP_LEVEL_KEYS_REGEX, top_level_key):
+            if not fullmatch(VALID_TOP_LEVEL_KEYS_REGEX, top_level_key):
                 keys_invalid_name.append(top_level_key)
-                # Skip other tests because key is invalid(we don't know what tests to run)
+                # Skip other tests. We don't know what tests to run because key is invalid
                 continue
 
             # print(f"Key: {top_level_key}, Val: {testbed_file[top_level_key]}")
 
             # Make, Model, and Location checks
             #
-            if match(APS_NETELEMS, top_level_key):
+            if fullmatch(APS_NETELEMS, top_level_key):
                 if not isinstance(testbed_file[top_level_key].get("model", None), str):
                     keys_missing_model.append(top_level_key)
 
                 make = testbed_file[top_level_key].get("make", "")
-                if not match(VALID_MAKES_REGEX, make):
+                if not fullmatch(VALID_MAKES_REGEX, make):
                     keys_bad_make.append(top_level_key)
 
         # Print file results
@@ -123,18 +111,18 @@ if list_of_testbed_files:
 
         if keys_missing_model:
             print(f"{print_prefix}{file_path} failed! One or more network elements do not contain a valid 'model' value.")
-            print(f"[**] Offending network elements: {keys_missing_model}", end='\n\n')
-            print(f"[*] model must be a string.")
+            print(f"[**] Offending network elements: {keys_missing_model}")
+            print(f"[**] model must be a string.", end='\n\n')
 
         if keys_bad_make:
             print(f"{print_prefix}{file_path} failed! One or more network elements do not contain a valid 'make' value.")
-            print(f"[**] Offending network elements: {keys_bad_make}", end='\n\n')
-            print(f"[*] Valid make values: {VALID_MAKES_REGEX.pattern}.")
+            print(f"[**] Offending network elements: {keys_bad_make}")
+            print(f"[**] Valid make values: {VALID_MAKES_REGEX.pattern.split('|')}.", end='\n\n')
 
         if keys_invalid_name:
             print(f"{print_prefix}{file_path} failed! One or more invalid top-level keys found.")
-            print(f"[**] Offending keys: {keys_invalid_name}", end='\n\n')
-            # print(f"[*] Valid top-level keys: {VALID_TOP_LEVEL_KEYS_REGEX.pattern}.")
+            print(f"[**] Offending keys: {keys_invalid_name}")
+            print(f"[**] Valid top-level keys: {VALID_TOP_LEVEL_KEYS}.", end='\n\n')
 
         if keys_bad or keys_missing_model or keys_bad_make or keys_invalid_name:
             file_passed = False
@@ -149,6 +137,5 @@ else:
     print("[*] No testbed files found. Skipping these tests...")
 
 if args.warn:
-    exit(0)
-else:
-    exit(rc)
+    rc=0
+exit(rc)
