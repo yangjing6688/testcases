@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "x870_DUT1"
+  model:                    "X870_32c"
   ip:                       "10.69.50.168"
   term_server:              "10.69.50.253 2004"
   pdu_ip:                   "10.69.50.252"
@@ -88,6 +89,7 @@ netelem1:
 
 netelem2:
   name:                     "x870_DUT2"
+  model:                    "X870_32c"
   ip:                       "10.69.50.169"
   term_server:              "10.69.50.253 2005"
   pdu_ip:                   "10.69.50.252"
@@ -174,6 +176,7 @@ netelem2:
       
 netelem3:
   name:                     "x870_DUT3"
+  model:                    "X870_32c"
   ip:                       "10.69.50.170"
   term_server:              "10.69.50.253 2006"
   pdu_ip:                   "10.69.50.252"

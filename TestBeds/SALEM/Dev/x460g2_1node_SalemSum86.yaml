@@ -2,6 +2,7 @@
 
 netelem1:
   name:                     "X460G2_DUT1"
+  model:                    "X460G2_24p_10_G4"
   ip:                       "10.51.100.86"
   username:                 "admin"
   password:                 ""

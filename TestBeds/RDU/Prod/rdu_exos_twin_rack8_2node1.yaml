@@ -4,6 +4,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "i386_DUT1"
+  model:                    "SwitchEngine5520_24T"
   ip:                       "10.69.24.128"
   pdu_ip:                   ""
   pdu_port:                 ""
@@ -13,7 +14,7 @@ netelem1:
   connection_method:        "telnet"
   os:                       "exos"
   hostname:                 "RDU-VM-POD8-2NODE1-DUT1"
-  serial:                   "ESIMAAAA-4001"
+  serial:                   "SIMAAAA-4001"
   console_ip:               "10.69.24.3"
   console_port:             "2013"
   default_template:         "5520-24T-EXOS-default-template"
@@ -82,6 +83,7 @@ netelem1:
 
 netelem2:
   name:                     "i386_DUT2"
+  model:                    "SwitchEngine5520_24T"
   ip:                       "10.69.24.129"
   pdu_ip:                   ""
   pdu_port:                 ""
@@ -91,7 +93,7 @@ netelem2:
   connection_method:        "telnet"
   os:                       "exos"
   hostname:                 "RDU-VM-POD8-2NODE1-DUT2"
-  serial:                   "ESIMAAAA-4002"
+  serial:                   "SIMAAAA-4002"
   console_ip:               "10.69.24.3"
   console_port:             "2014"
   default_template:         "5520-24T-EXOS-default-template"

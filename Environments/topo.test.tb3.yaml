@@ -1,0 +1,15 @@
+################# AIO or QxRx ######################
+#test_url:                 "http://10.16.145.13/"
+#capwap_url:               "10.16.145.13"
+#tenant_username:          "admin@cust001.com"
+#tenant_password:          "aerohive"
+#base_url:                 "http://10.16.145.13/"
+
+test_url:                 "https://g2r1.qa.xcloudiq.com"
+capwap_url:               "g2r1-cwpm-01.qa.xcloudiq.com"
+sw_capwap_url:            "g2r1.qa.xcloudiq.com"
+tenant_username:          "ahqatest+tb3-cm@gmail.com"
+tenant_password:          "Aerohive123"
+sw_capwap_url:            "g2r1.qa.xcloudiq.com"
+wing_capwap_url:          "g2r1-wing.qa.xcloudiq.com"
+base_url:                 "https://g2r1.qa.xcloudiq.com"

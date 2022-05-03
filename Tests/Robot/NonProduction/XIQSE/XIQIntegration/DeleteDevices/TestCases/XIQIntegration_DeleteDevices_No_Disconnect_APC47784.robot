@@ -51,7 +51,7 @@ ${TEST_ARCHIVE}         Automation_Archive
 *** Test Cases ***
 Test 1: Delete Device - No Server Disconnect
     [Documentation]  Confirms a device deleted from XIQSE is removed from XIQ
-    [Tags]           csit_tc_10311    apc_47884    development    xiqse    xiq_integration    delete_device    no_disconnect    test1
+    [Tags]           nightly1    release_testing    csit_tc_10311    apc_47884    development    xiqse    xiq_integration    delete_device    no_disconnect    test1
 
     XIQSE Add Device and Confirm Success        ${DUT_IP}  ${DUT_PROFILE}
     XIQSE Confirm Device Onboarded to XIQ       ${DUT_IP}
@@ -67,7 +67,7 @@ Test 1: Delete Device - No Server Disconnect
 
 Test 2: Delete Device With Note - No Server Disconnect
     [Documentation]  Confirms a device deleted from XIQSE which has a note is removed from XIQ
-    [Tags]           csit_tc_10311    apc_47884    development    xiqse    xiq_integration    delete_device    no_disconnect    test2
+    [Tags]           nightly1    release_testing    csit_tc_10311    apc_47884    development    xiqse    xiq_integration    delete_device    no_disconnect    test2
 
     XIQSE Add Device and Confirm Success                    ${DUT_IP}  ${DUT_PROFILE}
     XIQSE Confirm Device Onboarded to XIQ                   ${DUT_IP}
@@ -85,7 +85,7 @@ Test 2: Delete Device With Note - No Server Disconnect
 
 Test 3: Delete Archived Device - No Server Disconnect
     [Documentation]  Confirms an archived device deleted from XIQSE is removed from XIQ
-    [Tags]           csit_tc_10311    apc_47884    development    xiqse    xiq_integration    delete_device    no_disconnect    test3
+    [Tags]           nightly1    release_testing    csit_tc_10311    apc_47884    development    xiqse    xiq_integration    delete_device    no_disconnect    test3
 
     XIQSE Add Device and Confirm Success                        ${DUT_IP}  ${DUT_PROFILE}
     XIQSE Confirm Device Onboarded to XIQ                       ${DUT_IP}

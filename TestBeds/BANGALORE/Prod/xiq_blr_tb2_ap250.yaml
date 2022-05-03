@@ -1,0 +1,34 @@
+ap1:
+  name:                     bui-flo-0797
+  connection_method:        "telnet"
+  ip:                       10.234.105.86
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '02502008120797'
+  console_ip:               10.234.105.230
+  console_port:             7042
+  mac:                      7C95B13E0F40
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP250W
+  template:                 AP_250W-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           BLR_TB2_AP250W_01
+      ssid:                     AP250W_01
+      version:                  6.5
+      neighbour_serial:         24602005230531
+      neighbour_mac:            BCF310658AC0

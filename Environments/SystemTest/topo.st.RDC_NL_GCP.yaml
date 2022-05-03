@@ -1,0 +1,8 @@
+test_url:                 "https://extremecloudiq.com"
+capwap_url:               "extremecloudiq.com"
+sw_connection_host:       "extremecloudiq.com"
+tenant_username:          "releaseextreme+nlgcp@gmail.com"
+tenant_password:          "PASprt86"
+rdc:                      "Extreme_NL-GCP"
+data_center_name:         "EU_Germany"
+build_version:            "22.1"

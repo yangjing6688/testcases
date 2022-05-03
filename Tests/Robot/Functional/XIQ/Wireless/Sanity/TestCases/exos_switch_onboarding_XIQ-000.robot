@@ -28,6 +28,8 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
+Force Tags   testbed_1_node
+
 Suite Setup     Cleanup-Delete Switch   ${netelem1.serial}
 
 *** Keywords ***
@@ -35,13 +37,15 @@ Cleanup-Delete Switch
     [Arguments]     ${SERIAL}
     Login User      ${tenant_username}      ${tenant_password}
     Delete Device        device_serial=${netelem1.serial}
-    Logout User
-    Quit Browser
+    [Teardown]   run keywords       Logout User
+    ...                             Quit Browser
 
 *** Test Cases ***
-Test1: Onboard EXOS Switch on XIQ
+TCCS-7292_Step1: Onboard EXOS Switch on XIQ
     [Documentation]         Checks for Exos switch onboarding on XIQ
-    [Tags]                  sanity    EXOS  Real  Manual   quick-add  onboard   P1   production  regression
+
+    [Tags]                  production      tccs_7292_step1
+
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
     ${ONBOARD_RESULT}=      Onboard Switch      ${netelem1.serial}       ${netelem1.make}    location=${LOCATION}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
@@ -53,7 +57,7 @@ Test1: Onboard EXOS Switch on XIQ
 
     ${SW_SPAWN}=            Open Spawn          ${netelem1.console_ip}   ${netelem1.console_port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.platform}
     ${CONF_SWITCH_HOST}=    Send                ${SW_SPAWN}         configure iqagent server ipaddress ${SWITCH_CONNECTION_HOST}
-    ${CONF_VR}=             Send                ${SW_SPAWN}         configure iqagent server vr VR-Mgmt
+    ${CONF_VR}=             Send                ${SW_SPAWN}         configure iqagent server vr VR-Default
     ${CONF_VR}=             Send                ${SW_SPAWN}         save config
     ${SHOW_PROCESS}=        Send                ${SW_SPAWN}         show process iqagent
     Should Contain                              ${SHOW_PROCESS}     Ready
@@ -62,14 +66,14 @@ Test1: Onboard EXOS Switch on XIQ
 
     Wait Until Device Online    ${netelem1.serial}
     ${SWITCH_STATUS}=       Get Device Status       device_serial=${netelem1.serial}
-    Should Be Equal As Strings             '${SWITCH_STATUS}'      'green'
 
     [Teardown]         run keywords    logout user
      ...                               quit browser
 
-Test2: Verify EXOS Switch Information on Device 360 page
+TCCS-7292_Step2: Verify EXOS Switch Information on Device 360 page
     [Documentation]         Verify EXOS Switch Information on Device 360 page
-    [Tags]                  sanity    P2   regression   device360   P1   production
+
+    [Tags]                  production      tccs_7292_step2
     ${LOGIN_XIQ} =                 Login User               ${tenant_username}      ${tenant_password}
     ${SYS_INFO_360_PAGE}=          Get ExOS Switch 360 Information  device_mac=${netelem1.mac}
     ${HOST_NAME}=                  Get From Dictionary      ${SYS_INFO_360_PAGE}    host_name
@@ -86,13 +90,14 @@ Test2: Verify EXOS Switch Information on Device 360 page
     [Teardown]         run keywords    logout user
      ...                               quit browser
 
-Test3: Verify ExOS SSH connectivity
+TCCS-7292_Step3: Verify ExOS SSH connectivity
   [Documentation]       Verify ExOS SSH connectivity
-    [Tags]              sanity   regression  ssh    P1   production
+
+    [Tags]              production      tccs_7292_step3
     ${LOGIN_XIQ}=         Login User          ${tenant_username}      ${tenant_password}
     ${ENABLE_SSH}=         Enable SSH Availability
 
-    &{ip_port_info}=       Device360 Enable SSH CLI Connectivity     device_mac=${SW1_MAC}    run_time=${SSH_TIMEOUT}
+    &{ip_port_info}=       Device360 Enable SSH CLI Connectivity     device_mac=${netelem1.mac}    run_time=${SSH_TIMEOUT}
     ${IP ADDR}=            Get From Dictionary  ${ip_port_info}  ip
     ${PORT NUM}=           Get From Dictionary  ${ip_port_info}  port
 
@@ -115,8 +120,10 @@ Test3: Verify ExOS SSH connectivity
 
 Test Suite Clean Up
     [Documentation]    delete Exos Switch
-    [Tags]      sanity   enterprise  wpa2  P1  regression  production
+
+    [Tags]              production   cleanup
      ${result}=    Login User        ${tenant_username}     ${tenant_password}
      ${DELETE_RESULT}=      Delete Device       device_serial=${netelem1.serial}
      Should Be Equal As Integers                ${DELETE_RESULT}     1
-     Quit Browser
+     [Teardown]   run keywords       Logout User
+    ...                             Quit Browser

@@ -1,0 +1,80 @@
+ap1:
+  name:                     bui-flo-1564
+  connection_method:        "telnet"
+  ip:                       10.234.201.222
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '04102005201640'
+  console_ip:               10.234.201.225
+  console_port:             7029
+  mac:                      BCF3105E2F40
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP410C
+  template:                 AP_410C-default-template
+  template_Name:            AP410C-ADSP_Prod
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, San Jose, building_01, floor_01
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+
+
+ap2:
+  name:                     bui-flo-1565
+  connection_method:        "telnet"
+  ip:                       10.234.201.221
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '24602001170047'
+  console_ip:               10.234.201.225
+  console_port:             7030
+  mac:                      BCF3102A99C0
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP460C
+  template:                 AP_460C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, San Jose, building_01, floor_01
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+
+
+Kali_server1:
+  ip:                 "10.234.201.101"
+  username:           "root"
+  password:           "symbol"
+  connection_method:  "ssh"
+  port:               "22"
+  platform:           "linux"
+
+mu1:
+  ip:             10.234.201.181
+  port:           8270
+  username:       extreme
+  password:       Extreme@123
+  platform:       windows
+  interface:      wlan0
+  wifi_mac:       8045DD71D969
+  ethernet_mac:   8C47BE4F677E
+  wifi_network:   10.234.201
+

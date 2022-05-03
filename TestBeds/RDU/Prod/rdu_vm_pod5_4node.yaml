@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "i386_DUT1"
+  model:                    "SwitchEngine5520_24T"
   ip:                       "10.69.24.116"
   term_server:              "10.69.24.3 2001"
   pdu_ip:                   ""
@@ -100,6 +101,7 @@ netelem1:
 
 netelem2:
   name:                     "i386_DUT2"
+  model:                    "SwitchEngine5520_24T"
   ip:                       "10.69.24.117"
   term_server:              "10.69.24.3 2002"
   pdu_ip:                   ""
@@ -198,6 +200,7 @@ netelem2:
       
 netelem3:
   name:                     "i386_DUT3"
+  model:                    "SwitchEngine5520_24T"
   ip:                       "10.69.24.118"
   term_server:              "10.69.24.3 2003"
   pdu_ip:                   ""
@@ -295,6 +298,7 @@ netelem3:
 
 netelem4:
   name:                     "i386_DUT4"
+  model:                    "SwitchEngine5520_24T"
   ip:                       "10.69.24.119"
   term_server:              "10.69.24.3 2004"
   pdu_ip:                   ""

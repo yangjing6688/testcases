@@ -1,0 +1,15 @@
+netelem1:
+  platform:                 EXOS
+  name:                     bui-flo-2267
+  model:                    X440-G2-48p-10G4
+  serial:                   '1904N-42267'
+  mac:                      000496B3FC9D
+  username:                 test
+  password:                 test1234
+  ip:                       10.234.135.120
+  console_ip:               10.234.135.150
+  console_port:             7007
+  network_policy:           Test_np
+  device_template:          X440G2-default-template
+  os:                       31.5.1.6
+  make:                     EXOS

@@ -6,6 +6,7 @@ import threading
 import queue
 import logging
 import sys
+import requests.adapters
 from datetime import datetime
 from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
 from ExtremeAutomation.Utilities.Firmware.pytestLoadFirmware import PlatformLoadFirmware
@@ -59,6 +60,8 @@ from ExtremeAutomation.Utilities.Framework.test_selection import CheckExecution
     # # teardown
     # drvr.quit()
 
+custom_report_title = None
+
 def pytest_addoption(parser):
     parser.addoption("--testbed", action="store", default=None, help="yaml testbed file Auto search")
     parser.addoption("--cfg", action="store", default=None, help="dup arg same as --testbed")
@@ -79,7 +82,22 @@ def pytest_addoption(parser):
     parser.addoption("--b", action="store", default=None, help="build string for verification")
     parser.addoption("--u", action="store", default=None, help="job platform test module UUID")
     parser.addoption("--get_test_info", action="store", default=None, help="Dump checkdb or insert mod info")
-    parser.addoption("--customReportDate", action="store_true", default=False, help="Adds a report date to the report_<%m-%d-%Y_%H.%M.%S>.html file")
+    parser.addoption("--customReportDate", action="store_true", default=False, help="Adds a report date to the report_<date>.html file")
+    parser.addoption("--customReportTitle", action="store", default=None, help="Adds a Custom title to the report htmls file")
+
+def pytest_html_report_title(report):
+    global custom_report_title
+    if custom_report_title:
+        report.title = custom_report_title
+
+def pytest_sessionfinish(session):
+    global custom_report_title
+    if custom_report_title:
+        htmlfile = session.config.getoption('htmlpath')
+        with open(htmlfile) as readFile:
+            text = readFile.read().replace('<title>Test Report</title>', '<title>' + custom_report_title +'</title>')
+        with open(htmlfile, "w") as writeFile:
+            writeFile.write(text)
 
 @pytest.hookimpl(trylast=True)
 def pytest_configure(config):
@@ -87,17 +105,23 @@ def pytest_configure(config):
     config.pluginmanager.register(TestDescriptionPlugin(terminal_reporter), 'testdescription')
 
 def pytest_configure(config):
+    global custom_report_title
     # Set log levels for 3rd party packages
     # Disable all child loggers of urllib3, e.g. urllib3.connectionpool
-    logging.getLogger("urllib3").propagate = False
+    # logging.getLogger("urllib3").propagate = False
+    patch_https_connection_pool(maxsize=100)
+    patch_http_connection_pool(maxsize=100)
 
-    if config.option.customReportDate is not None:
+    if config.option.customReportDate:
         config._metadata = None
         # set the timestamp
         report_date = datetime.now().strftime("%m-%d-%Y_%H.%M.%S")
         # update the pytest-html path
         config.option.htmlpath = config.option.htmlpath.replace('.html', "_" + report_date + ".html")
         print("Custom HTML Report: " + config.option.htmlpath)
+
+    if config.option.customReportTitle:
+        custom_report_title = config.option.customReportTitle
 
     if config.option.testbed is not None or config.option.cfg is not None or config.option.env is not None or \
             config.option.topo is not None:
@@ -437,3 +461,37 @@ class TestDescriptionPlugin:
             self.logger.info(self.BLUE + self.BOLD + f'****************  Test Case: {location[2]} END' + self.END)
             self.logger.info(self.BLUE + self.BOLD + f'**********************************************************************************************\n' + self.END)
             yield
+
+def patch_http_connection_pool(**constructor_kwargs):
+    """
+    This allows to override the default parameters of the
+    HTTPConnectionPool constructor.
+    For example, to increase the poolsize to fix problems
+    with "HttpConnectionPool is full, discarding connection"
+    call this function with maxsize=16 (or whatever size
+    you want to give to the connection pool)
+    """
+    from urllib3 import connectionpool, poolmanager
+
+    class MyHTTPConnectionPool(connectionpool.HTTPConnectionPool):
+        def __init__(self, *args,**kwargs):
+            kwargs.update(constructor_kwargs)
+            super(MyHTTPConnectionPool, self).__init__(*args,**kwargs)
+    poolmanager.pool_classes_by_scheme['http'] = MyHTTPConnectionPool
+
+def patch_https_connection_pool(**constructor_kwargs):
+    """
+    This allows to override the default parameters of the
+    HTTPConnectionPool constructor.
+    For example, to increase the poolsize to fix problems
+    with "HttpSConnectionPool is full, discarding connection"
+    call this function with maxsize=16 (or whatever size
+    you want to give to the connection pool)
+    """
+    from urllib3 import connectionpool, poolmanager
+
+    class MyHTTPSConnectionPool(connectionpool.HTTPSConnectionPool):
+        def __init__(self, *args,**kwargs):
+            kwargs.update(constructor_kwargs)
+            super(MyHTTPSConnectionPool, self).__init__(*args,**kwargs)
+    poolmanager.pool_classes_by_scheme['https'] = MyHTTPSConnectionPool

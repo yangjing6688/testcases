@@ -8,6 +8,7 @@ environment:
 
 netelem1:
   name:                     "X460G2_DUT1"
+  model:                    "X460G2_24p_10_G4"
   ip:                       "10.51.136.80"
   username:                 "admin"
   password:                 ""
@@ -52,6 +53,7 @@ netelem1:
 
 netelem2:
   name:                     "X460G2_DUT2"
+  model:                    "X460G2_24p_10_G4"
   ip:                       "10.51.136.81"
   username:                 "admin"
   password:                 ""
@@ -96,6 +98,7 @@ netelem2:
 
 netelem3:
   name:                     "X460G2_DUT3"
+  model:                    "X460G2_24p_10_G4"
   ip:                       "10.51.136.82"
   username:                 "admin"
   password:                 ""
@@ -140,6 +143,7 @@ netelem3:
       
 netelem4:
   name:                     "X465_DUT4"
+  model:                    "X46548P"
   ip:                       "10.51.136.83"
   username:                 "admin"
   password:                 ""

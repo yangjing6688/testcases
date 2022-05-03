@@ -1,0 +1,26 @@
+netelem1:
+  name:                  VSP-4900-48P
+  serial:                1935F-10077
+  ip:                    10.234.137.105
+  profile:               VOSS_v2_Profile
+  mac:                   489BD59EB400
+  platform:              voss
+  make:                  VOSS
+  model:                 VSP 4900-48P
+  product:               VSP 4900-48P
+  os:                    VOSS
+  default_template:      VSP-4900-48P-default-template
+  ccg:                   Model_VSP_SWITCH
+  console_ip:            10.234.137.231
+  console_port:          7021
+  username:              rwa
+  password:              rwa
+  test_port:             1/3
+  nos_dir_min:           8.1.60.0.GA
+  nos_dir_old:           8.4.1.0.GA
+  nos_dir_new:           8.6.0.1.GA
+  nos_version_min:       8.1.60.0
+  nos_version_old:       8.4.1.0
+  nos_version_new:       8.6.0.1
+  iqagent_version_old:   0.3.5
+  iqagent_version_new:   0.5.9

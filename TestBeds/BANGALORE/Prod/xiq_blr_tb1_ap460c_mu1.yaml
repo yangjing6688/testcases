@@ -1,0 +1,46 @@
+ap1:
+  name:                     bui-flo-0042
+  connection_method:        "telnet"
+  ip:                       10.234.178.60
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '24602001170042'
+  console_ip:               10.234.178.230
+  console_port:             7009
+  mac:                      BCF3102A9880
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP460C
+  template:                 AP_460C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           BLR_TB2_AP460C_01
+      ssid:                     AP460C_01
+      version:                  6.5
+      neighbour_serial:         03051911260334
+      neighbour_mac:            BCF31018EAC0
+
+mu1:
+  ip:             10.234.178.226
+  port:           8270
+  username:       extreme
+  password:       Extreme@123
+  platform:       windows
+  interface:      wlan0
+  wifi_mac:       380025295815
+  ethernet_mac:   02004C4F4F50
+  wifi_network:   10.234.178
+  wifi_network_vlan10:    10.234.178

@@ -50,7 +50,7 @@ ${SYSLOG_UNREGISTERED}      Syslog Receiver Unregistered
 *** Test Cases ***
 Test 1: Perform Site Discovery with Auto Add Devices True
     [Documentation]     Sets Site Actions Automatically Add Devices to True and confirms device was automatically added to Devices table
-    [Tags]              xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test1
+    [Tags]              nightly1    xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test1
 
     Clear Operations Panel and Confirm Success
     Navigate to Site Tab and Confirm Success            ${TEST_SITE}
@@ -71,7 +71,7 @@ Test 1: Perform Site Discovery with Auto Add Devices True
 
 Test 2: Perform Site Discovery with Auto Add Devices False
     [Documentation]     Sets Site Actions Automatically Add Devices to False and confirms device is in Discovered panel
-    [Tags]              xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test2
+    [Tags]              nightly1    xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test2
 
     Clear Operations Panel and Confirm Success
     Navigate to Site Tab and Confirm Success            ${TEST_SITE}
@@ -91,7 +91,7 @@ Test 2: Perform Site Discovery with Auto Add Devices False
 
 Test 3: Perform Site Discovery with Add to Archive True
     [Documentation]     Sets Site Actions Add to Archive to True and confirms archive exists in the Archives panel tree
-    [Tags]              xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test3
+    [Tags]              nightly1    xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test3
 
     Clear Operations Panel and Confirm Success
     Navigate to Site Tab and Confirm Success            ${TEST_SITE}
@@ -115,7 +115,7 @@ Test 3: Perform Site Discovery with Add to Archive True
 
 Test 4: Perform Site Discovery with Add to Archive False
     [Documentation]     Sets Site Actions Add to Archive to False and confirms archive does not exist in the Archives panel tree
-    [Tags]              xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test4
+    [Tags]              nightly1    xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test4
 
     Clear Operations Panel and Confirm Success
     Navigate to Site Tab and Confirm Success                ${TEST_SITE}
@@ -136,7 +136,7 @@ Test 4: Perform Site Discovery with Add to Archive False
 
 Test 5: Perform Site Discovery with Add Trap Receiver True
     [Documentation]     Sets Site Actions Add Trap Receiver to True and confirms the device is registered as a trap receiver
-    [Tags]              xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test5
+    [Tags]              nightly1    xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test5
 
     Clear Operations Panel and Confirm Success
     Navigate to Site Tab and Confirm Success                ${TEST_SITE}
@@ -165,7 +165,7 @@ Test 5: Perform Site Discovery with Add Trap Receiver True
 
 Test 6: Perform Site Discovery with Add Trap Receiver False
     [Documentation]     Sets Site Actions Add Trap Receiver to False and confirms the device is not registered as a trap receiver
-    [Tags]              xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test6
+    [Tags]              nightly1    xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test6
 
     Clear Operations Panel and Confirm Success
     Navigate to Site Tab and Confirm Success                ${TEST_SITE}
@@ -186,7 +186,7 @@ Test 6: Perform Site Discovery with Add Trap Receiver False
 
 Test 7: Perform Site Discovery with Add Syslog Receiver True
     [Documentation]     Sets Site Actions Add Syslog Receiver to True and confirms the device is registered as a syslog receiver
-    [Tags]              xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test7
+    [Tags]              nightly1    xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test7
 
     Clear Operations Panel and Confirm Success
     Navigate to Site Tab and Confirm Success                ${TEST_SITE}
@@ -215,7 +215,7 @@ Test 7: Perform Site Discovery with Add Syslog Receiver True
 
 Test 8: Perform Site Discovery with Add Syslog Receiver False
     [Documentation]     Sets Site Actions Add Syslog Receiver to False and confirms the device is not registered as a syslog receiver
-    [Tags]              xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test8
+    [Tags]              nightly1    xiqse_tc_949    xmc_5451    development    xiqse    acceptance    sites    discovery    add_actions    test8
 
     Clear Operations Panel and Confirm Success
     Navigate to Site Tab and Confirm Success                ${TEST_SITE}

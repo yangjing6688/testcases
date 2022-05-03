@@ -14,15 +14,24 @@ from ExtremeAutomation.Imports.XiqLibraryHelper import XiqLibraryHelper
 from ..Resources.SuiteUdks import SuiteUdk
 
 @fixture()
-def xiq_helper_test_setup_teardown(request):
-    request.instance.init_xiq_libaries_and_login(request.instance.cfg['tenant_username'],
-                                                 request.instance.cfg['tenant_password'],
-                                                 url=request.instance.cfg['test_url'])
+# Test case setup and tear down
+def test_case_one_setup_teardown_skip_test(request):
+    request.instance.executionHelper.testSkipCheck()
+    # request.instance.xiq.login.login_user(request.instance.tb.config.tenant_username,
+    #                                       request.instance.tb.config.tenant_password,
+    #                                       url=request.instance.tb.config.test_url,
+    #                                       IRV=True)
     yield
     # Teardown (after yield)
-    request.instance.deactivate_xiq_libaries_and_logout()
+    # request.instance.xiq.login.logout_user()
+    # request.instance.xiq.login.quit_browser()
 
-
+@fixture()
+# Test case setup and tear down
+def test_case_one_setup_teardown_print(request):
+    print("TEST STARTED")
+    yield
+    print("TEST END")
 # To run this demo you will need to supply the following yaml files:
 # A Test Bed yaml (--tc-file=TestBeds/SALEM/Demo/demo_salem_1_node_exos.yaml)
 # An XIQ Environment yaml (--tc-file=Environments/environment.local.chrome.yaml
@@ -30,30 +39,27 @@ def xiq_helper_test_setup_teardown(request):
 
 @mark.testbed_1_node
 class xiqTests():
-    
-    def init_xiq_libaries_and_login(self, username, password, capture_version=False, code="default", url="default", incognito_mode="False", **kwargs):
-        self.xiq = XiqLibrary()
-        time.sleep(5)
-        self.xiq.init_xiq_libaries_and_login(username, password, capture_version=capture_version, code=code, url=url, incognito_mode=incognito_mode, **kwargs)
-            
-    def deactivate_xiq_libaries_and_logout(self):
-        self.xiq.login.logout_user()
-        self.xiq.login.quit_browser()
-        self.xiq = None
-    
+
     @classmethod
     def setup_class(cls):
         try: 
             cls.executionHelper = PytestExecutionHelper()
             # Create an instance of the helper class that will read in the test bed yaml file and provide basic methods and variable access.
             # The user can also get to the test bed yaml by using the config dictionary
+            config['${OUTPUT DIR}'] = os.getcwd()
+            config['${TEST_NAME}'] = 'SETUP'
             cls.tb = PytestConfigHelper(config)
-            cls.cfg = config
-            cls.cfg['${OUTPUT DIR}'] = os.getcwd()
-            cls.cfg['${TEST_NAME}'] = 'SETUP'
 
-            # Create new objects to use in test. Here we will import everything from the default library
+            # Creae the new object for the Switch / Traffic Generator Libraries
             cls.defaultLibrary = DefaultLibrary()
+
+            # Create the new object for the XIQ / XIQSE Libraries
+            cls.xiq = XiqLibrary()
+
+            cls.xiq.login.login_user(cls.tb.config.tenant_username,
+                                          cls.tb.config.tenant_password,
+                                          url=cls.tb.config.test_url,
+                                          IRV=True)
 
             # Call the setup
             cls.defaultLibrary.apiUdks.setupTeardownUdks.Base_Test_Suite_Setup()
@@ -64,20 +70,20 @@ class xiqTests():
     @classmethod
     def teardown_class(cls):
         cls.defaultLibrary.apiUdks.setupTeardownUdks.Base_Test_Suite_Cleanup()
+        cls.xiq.login.logout_user()
+        cls.xiq.login.quit_browser()
         
     # """ Test Cases """
     @mark.p1
-    def test_dosomething(self, xiq_helper_test_setup_teardown):
+    def test_logout_user(self, test_case_one_setup_teardown_skip_test, test_case_one_setup_teardown_print):
         """ This is the test case description for test one """
-        self.executionHelper.testSkipCheck()
-        print("do something")
+        self.xiq.login.logout_user()
         
-    @mark.p1
-    def test_expect_login_fail(self):
+    @mark.p2
+    def test_expect_login_fail(self, test_case_one_setup_teardown_skip_test):
         """ This is the test case description for test two """
         # IRV = Internal Results Verification
-        self.init_xiq_libaries_and_login("bob", "bob", url=self.tb.config['test_url'], IRV=True, expect_error=True)
-        self.xiq.login.quit_browser()
+        self.xiq.login.login_user("bob", "bob", url=self.tb.config['test_url'], IRV=True, expect_error=True)
         
    
   

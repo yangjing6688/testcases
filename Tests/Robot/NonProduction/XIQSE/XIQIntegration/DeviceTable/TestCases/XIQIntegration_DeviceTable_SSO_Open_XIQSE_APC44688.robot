@@ -65,10 +65,10 @@ ${DUT5_PROFILE}         ${netelem5.profile}
 ${DUT5_MAC}             ${netelem5.mac}
 ${DUT5_SERIAL}          ${netelem5.serial}
 
-${DUT6_IP}              ${netelem8.ip}
-${DUT6_PROFILE}         ${netelem8.profile}
-${DUT6_MAC}             ${netelem8.mac}
-${DUT6_SERIAL}          ${netelem8.serial}
+${DUT6_IP}              ${netelem6.ip}
+${DUT6_PROFILE}         ${netelem6.profile}
+${DUT6_MAC}             ${netelem6.mac}
+${DUT6_SERIAL}          ${netelem6.serial}
 
 ${XIQ_WINDOW_INDEX}             0
 ${XIQSE_WINDOW_INDEX}           0
@@ -77,7 +77,7 @@ ${XIQSE_WINDOW_INDEX}           0
 *** Test Cases ***
 Test 1: XIQ-SE SSO - Role: Administrator - ACTIONS > Open Site Engine
     [Documentation]     Selects the Open Site Engine link within the ACTIONS menu for a device managed by an 21.9.10.x XIQ-SE.
-    [Tags]      csit_tc_11879    apc_44688    development    xiqse    xiq_integration    sso    test1
+    [Tags]              nightly1    release_testing    csit_tc_11879    apc_44688    development    xiqse    xiq_integration    sso    test1
 
     XIQ Navigate to Devices and Confirm Success
     Select Device                                   ${DUT1_MAC}
@@ -88,7 +88,7 @@ Test 1: XIQ-SE SSO - Role: Administrator - ACTIONS > Open Site Engine
 
 Test 2: XIQ-SE SSO - UI: Limit "Open Site Engine" when multiple devices selected
     [Documentation]     Verify that a maximum of five windows are opened when the Open Site Engine action is run for multiple devices.
-    [Tags]      csit_tc_11880    apc_44688    development    xiqse    xiq_integration    sso    test2
+    [Tags]              nightly1    release_testing    csit_tc_11880    apc_44688    development    xiqse    xiq_integration    sso    test2
 
     XIQ Navigate to Devices and Confirm Success
     Select Device Rows                              device_macs=${DUT1_MAC},${DUT2_MAC},${DUT3_MAC},${DUT4_MAC},${DUT5_MAC},${DUT6_MAC}
@@ -100,7 +100,7 @@ Test 2: XIQ-SE SSO - UI: Limit "Open Site Engine" when multiple devices selected
 
 Test 3: XIQ-SE SSO - UI: Open XIQ-SE for multiple devices
     [Documentation]     Verify separate windows are opened when the Open Site Engine action is run for multiple devices.
-    [Tags]      csit_tc_11879    apc_44688    development    xiqse    xiq_integration    sso    test3
+    [Tags]              nightly1    release_testing    csit_tc_11879    apc_44688    development    xiqse    xiq_integration    sso    test3
 
     XIQ Navigate to Devices and Confirm Success
     Select Device Rows                              device_macs=${DUT2_MAC},${DUT3_MAC}

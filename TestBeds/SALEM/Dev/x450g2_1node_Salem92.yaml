@@ -2,6 +2,7 @@
 
 netelem1:
   name:                     "X450G2_DUT1"
+  model:                    "X450G2_48p_G4"
   ip:                       "10.51.136.92"
   username:                 "admin"
   password:                 ""

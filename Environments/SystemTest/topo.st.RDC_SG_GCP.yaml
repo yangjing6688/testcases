@@ -1,0 +1,8 @@
+test_url:                 "https://extremecloudiq.com"
+capwap_url:               "extremecloudiq.com"
+sw_connection_host:       "extremecloudiq.com"
+tenant_username:          "releaseextreme+sggcp@gmail.com"
+tenant_password:          "PASprt86"
+rdc:                      "Extreme_SG-GCP"
+data_center_name:         "SG_GCP"
+build_version:            "22.1"

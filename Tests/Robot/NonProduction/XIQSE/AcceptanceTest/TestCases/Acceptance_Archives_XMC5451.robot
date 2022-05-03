@@ -42,19 +42,19 @@ ${OPS_PANEL_EQUAL}          AUTO_ARCHIVE - Configurations Are Equal
 *** Test Cases ***
 Test 1: Create Archive and Confirm Success
     [Documentation]     Confirms an archive can be created
-    [Tags]              xiqse_tc_866    xmc_5451    development    xiqse    acceptance    archives    test1
+    [Tags]              nightly1    xiqse_tc_866    xmc_5451    development    xiqse    acceptance    archives    test1
 
     Navigate and Create Archive        ${TEST_ARCHIVE}    ${DUT_IP}
 
 Test 2: Confirm Operations Panel Message - Retrieved
     [Documentation]     Confirms the operations panel contains the expected message
-    [Tags]              xiqse_tc_866    xmc_5451    development    xiqse    acceptance    archives    test2
+    [Tags]              nightly1    xiqse_tc_866    xmc_5451    development    xiqse    acceptance    archives    test2
 
     Confirm Operations Panel Message For Type      Inventory Audit  ${OPS_PANEL_RETRIEVED}
 
 Test 3: Confirm Events - Create Archive
     [Documentation]     Confirms the events view contains the expected event
-    [Tags]              xiqse_tc_866    xmc_5451    development    xiqse    acceptance    archives    test3
+    [Tags]              nightly1    xiqse_tc_866    xmc_5451    development    xiqse    acceptance    archives    test3
 
     Navigate to Events and Confirm Success
     Set Event Time Range and Confirm Success        Last 30 Minutes
@@ -65,19 +65,19 @@ Test 3: Confirm Events - Create Archive
 
 Test 4: Stamp New Version and Confirm Success
     [Documentation]     Confirms stamp new version on existing archive can be created
-    [Tags]              xiqse_tc_866    xmc_5451    development    xiqse    acceptance    archives    test4
+    [Tags]              nightly1    xiqse_tc_866    xmc_5451    development    xiqse    acceptance    archives    test4
 
     Navigage and Stamp New Version     ${TEST_ARCHIVE}
 
 Test 5: Confirm Operations Panel Message - Equal
     [Documentation]     Confirms the operations panel contains the expected message
-    [Tags]              xiqse_tc_866    xmc_5451    development    xiqse    acceptance    archives    test5
+    [Tags]              nightly1    xiqse_tc_866    xmc_5451    development    xiqse    acceptance    archives    test5
 
     Confirm Operations Panel Message For Type      Inventory Audit  ${OPS_PANEL_EQUAL}
 
 Test 6: Confirm Events - Stamp New Version
     [Documentation]     Confirms the events view contains the expected event
-    [Tags]              xiqse_tc_866    xmc_5451    development    xiqse    acceptance    archives    test6
+    [Tags]              nightly1    xiqse_tc_866    xmc_5451    development    xiqse    acceptance    archives    test6
 
     Navigate to Events and Confirm Success
     Set Event Search String and Confirm Success     Archive Save
@@ -86,7 +86,7 @@ Test 6: Confirm Events - Stamp New Version
 
 Test 7: Delete Archive and Confirm Success
     [Documentation]     Confirms an archive can be deleted
-    [Tags]              xiqse_tc_866    xmc_5451    development    xiqse    acceptance    archives    test7
+    [Tags]              nightly1    xiqse_tc_866    xmc_5451    development    xiqse    acceptance    archives    test7
 
     Navigate and Delete Archive     ${TEST_ARCHIVE}
 

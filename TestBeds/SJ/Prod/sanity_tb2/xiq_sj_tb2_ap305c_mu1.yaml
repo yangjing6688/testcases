@@ -1,0 +1,50 @@
+ap1:
+  name:                     AH-009540
+  connection_method:        "telnet"
+  ip:                       10.16.172.155
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '03051909190062'
+  console_ip:               10.16.167.37
+  console_port:             10003
+  mac:                      BCF310009540
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP305C
+  template:                 AP305C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           Test_np
+      ssid:                     AP230_01
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            3485843A5CC0
+
+
+mu1:
+  ip:             10.16.166.237
+  port:           8270
+  username:       admin
+  password:       symbol
+  platform:       windows
+  interface:      wlan0
+  wifi_mac:       0024D765CDB8
+  ethernet_mac:   D067E5429420
+  wifi_network:   20.1.1
+  wifi_network_vlan10:    10.16.172
+
+

@@ -16,7 +16,7 @@ router1:
 exos1:
   platform:                 EXOS
   name:                     bui-flo-2267
-  model:                    X440-G2-48p-10G4
+  model:                    X440G2_48p_10_G4
   serial:                   '1904N-42267'
   mac:                      000496B3FC9D
   username:                 test

@@ -28,7 +28,7 @@ Variables    Environments/Config/device_commands.yaml
 
 Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/advanced_onboarding_config.robot
 
-Force Tags   flow3   flow7
+Force Tags   testbed_1_node
 
 Suite Setup     Cleanup-Delete AP   ${ap1.serial}
 
@@ -38,13 +38,14 @@ Cleanup-Delete AP
     Login User      ${tenant_username}      ${tenant_password}
     Delete AP       ap_serial=${SERIAL}
     Change Device Password                  Aerohive123
-    Logout User
-    Quit Browser
+    [Teardown]   run keywords       Logout User
+    ...                             Quit Browser
 
 *** Test Cases ***
-Test1: Advance Onboard Extreme-Aerohive Access Point
+TCCS-7709_Step1: Advance Onboard Extreme-Aerohive Access Point
     [Documentation]
-    [Tags]             sanity     adv-onboard   Test1       production
+
+    [Tags]             production   tccs_7709       tccs_7709_step1
 
     ${LOGIN_STATUS}=                  Login User                     ${tenant_username}     ${tenant_password}
     should be equal as strings       '${LOGIN_STATUS}'     '1'
@@ -55,10 +56,12 @@ Test1: Advance Onboard Extreme-Aerohive Access Point
     [Teardown]         run keywords    logout user
      ...                               quit browser
 
-Test2: Config AP to Report AIO
+TCCS-7709_Step2: Config AP to Report AIO
     [Documentation]     Configure Capwap client server
-    [Tags]              production          ap-config       P1                Test2
-    Depends On          Test1
+
+    [Tags]              production          tccs_7709       tccs_7709_step2
+
+    Depends On          tccs_7709_step1
     ${AP_SPAWN}=        Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     Set Suite Variable  ${AP_SPAWN}
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
@@ -72,10 +75,14 @@ Test2: Config AP to Report AIO
 
     Should Be Equal as Integers             ${OUTPUT1}          1
 
-Test3: Check AP Status On UI
+    [Teardown]    Close Spawn    ${AP_SPAWN}
+
+TCCS-7709_Step3: Check AP Status On UI
     [Documentation]     Checks for ap status
-    [Tags]              sanity              status-check        P1          production      Test3
-    Depends On          test2
+
+    [Tags]              production      tccs_7709       tccs_7709_step3
+
+    Depends On          tccs_7709_step2
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
     Wait Until Device Online                ${ap1.serial}
 
@@ -90,7 +97,8 @@ Test3: Check AP Status On UI
 
 Test Suite Clean Up
     [Documentation]    Test suite clean up
-    [Tags]             production   adv-onboard
+
+    [Tags]             production   cleanup
 
     ${result}=    Login User       ${tenant_username}        ${tenant_password}
     Create Network Policy          OPEN_AUTO                 &{CONFIG_PUSH_OPEN_NW_01}

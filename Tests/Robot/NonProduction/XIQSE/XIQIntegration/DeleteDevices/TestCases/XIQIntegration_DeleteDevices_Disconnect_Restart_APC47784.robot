@@ -50,7 +50,7 @@ ${TEST_ARCHIVE}         Automation_Archive
 *** Test Cases ***
 Test Setup: Configure Test Requirements
     [Documentation]     Sets up the components needed for the test
-    [Tags]              csit_tc_10309    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    restart    test_setup
+    [Tags]              nightly1    release_testing    csit_tc_10309    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    restart    test_setup
 
     [Setup]    Log Into XIQSE and XIQ and Confirm Success
 
@@ -62,7 +62,7 @@ Test Setup: Configure Test Requirements
 
 Test 1: Add Device and Disconnect XIQSE
     [Documentation]  Adds a device to XIQSE, adds a note, confirms it is onboarded to XIQ, and disconnects XIQSE
-    [Tags]           csit_tc_10309    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    restart    test1
+    [Tags]           nightly1    release_testing    csit_tc_10309    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    restart    test1
 
     [Setup]    Log Into XIQSE and XIQ and Confirm Success
 
@@ -91,7 +91,7 @@ Test 1: Add Device and Disconnect XIQSE
 
 Test 2: Reconnect XIQSE and Confirm Success
     [Documentation]  Reconnects XIQSE
-    [Tags]           csit_tc_10309    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    restart    test2
+    [Tags]           nightly1    release_testing    csit_tc_10309    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    restart    test2
 
     [Setup]    Log Into XIQ and Obtain Window Index
 
@@ -107,7 +107,7 @@ Test 2: Reconnect XIQSE and Confirm Success
 
 Test 3: Delete Device - Server Restarted
     [Documentation]  Confirms a device deleted from XIQSE is removed from XIQ after the XIQSE server has been restarted
-    [Tags]           csit_tc_10309    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    restart    test3
+    [Tags]           nightly1    release_testing    csit_tc_10309    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    restart    test3
 
     [Setup]    Log Into XIQSE and XIQ and Confirm Success
 
@@ -125,7 +125,7 @@ Test 3: Delete Device - Server Restarted
 
 Test Cleanup: Tear Down Test and Close Session
     [Documentation]     Cleans up XIQ and XIQSE test components
-    [Tags]              csit_tc_10309    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    restart    test_cleanup
+    [Tags]              nightly1    release_testing    csit_tc_10309    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    restart    test_cleanup
 
     [Setup]    Log Into XIQSE and XIQ and Confirm Success
 
