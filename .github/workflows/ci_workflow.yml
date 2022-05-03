@@ -331,8 +331,7 @@ jobs:
         IFS=','
         rc=0
         files_tested=0
-        cat ${{ env.pytest_non_prod_path }}
-        for f in $( cat ${{ env.pytest_non_prod_path }} | sed -e 's/ //g' ); do
+        for path in $( cat ${{ env.pytest_non_prod_path }} | sed -e 's/ //g' ); do
           errors=0
           f=$( basename "$path" )
           let "files_tested += 1"
@@ -368,8 +367,7 @@ jobs:
         IFS=','
         rc=0
         files_tested=0
-        cat ${{ env.pytest_libs_path }}
-        for f in $( cat ${{ env.pytest_libs_path }} | sed -e 's/ //g' ); do
+        for path in $( cat ${{ env.pytest_libs_path }} | sed -e 's/ //g' ); do
           f=$( basename "$path" )
           let "files_tested += 1"
           printf "[*] Processing Python file: $path ...\n" | tee -a ${{ env.testcase_files_report_path }}
