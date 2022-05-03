@@ -331,6 +331,7 @@ jobs:
         IFS=','
         rc=0
         files_tested=0
+        cat ${{ env.pytest_non_prod_path }}
         for f in $( cat ${{ env.pytest_non_prod_path }} | sed -e 's/ //g' ); do
           errors=0
           f=$( basename "$path" )
@@ -367,6 +368,7 @@ jobs:
         IFS=','
         rc=0
         files_tested=0
+        cat ${{ env.pytest_libs_path }}
         for f in $( cat ${{ env.pytest_libs_path }} | sed -e 's/ //g' ); do
           f=$( basename "$path" )
           let "files_tested += 1"
