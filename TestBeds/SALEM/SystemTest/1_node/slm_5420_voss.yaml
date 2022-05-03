@@ -1,0 +1,20 @@
+netelem1:
+  name:                     "VOSS"
+  hostname:                 ""
+  serial:                   "JA132040G-00440"
+  mac:                      "40882FE1D400"
+  ip:                       "10.139.121.181"
+  port:                     "23"
+  console_ip:               "10.139.120.8"
+  console_port:             "5017"
+  username:                 "rwa"
+  password:                 "rwa"
+  connection_method:        "telnet"
+  os:                       "voss"
+  platform:                 "5420"
+  location:                 "auto_location_01,San Jose,building_01,floor_01"
+  model:                    "FabricEngine5520M_48T_4YE"
+  make:                     "voss"
+
+
+

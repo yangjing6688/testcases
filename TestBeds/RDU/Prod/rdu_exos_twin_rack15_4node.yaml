@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "i386_DUT1"
+  model:                    "SwitchEngine5520_24T"
   ip:                       "10.69.24.152"
   pdu_ip:                   ""
   pdu_port:                 ""
@@ -12,7 +13,7 @@ netelem1:
   connection_method:        "telnet"
   os:                       "exos"
   hostname:                 "RDU-VM-POD15-4NODE-DUT1"
-  serial:                   "ESIMAAAA-3001"
+  serial:                   "SIMAAAA-3001"
   console_ip:               "10.69.24.5"
   console_port:             "2009"
   default_template:         "5520-24T-EXOS-default-template"
@@ -105,6 +106,7 @@ netelem1:
 
 netelem2:
   name:                     "i386_DUT2"
+  model:                    "SwitchEngine5520_24T"
   ip:                       "10.69.24.153"
   pdu_ip:                   ""
   pdu_port:                 ""
@@ -114,7 +116,7 @@ netelem2:
   connection_method:        "telnet"
   os:                       "exos"
   hostname:                 "RDU-VM-POD15-4NODE-DUT2"
-  serial:                   "ESIMAAAA-3002"
+  serial:                   "SIMAAAA-3002"
   console_ip:               "10.69.24.5"
   console_port:             "2010"
   default_template:         "5520-24T-EXOS-default-template"
@@ -208,6 +210,7 @@ netelem2:
       
 netelem3:
   name:                     "i386_DUT3"
+  model:                    "SwitchEngine5520_24T"
   ip:                       "10.69.24.154"
   pdu_ip:                   ""
   pdu_port:                 ""
@@ -217,7 +220,7 @@ netelem3:
   connection_method:        "telnet"
   os:                       "exos"
   hostname:                 "RDU-VM-POD15-4NODE-DUT3"
-  serial:                   "ESIMAAAA-3003"
+  serial:                   "SIMAAAA-3003"
   console_ip:               "10.69.24.5"
   console_port:             "2011"
   default_template:         "5520-24T-EXOS-default-template"
@@ -310,6 +313,7 @@ netelem3:
 
 netelem4:
   name:                     "i386_DUT4"
+  model:                    "SwitchEngine5520_24T"
   ip:                       "10.69.24.155"
   pdu_ip:                   ""
   pdu_port:                 ""
@@ -319,7 +323,7 @@ netelem4:
   connection_method:        "telnet"
   os:                       "exos"
   hostname:                 "RDU-VM-POD15-4NODE-DUT4"
-  serial:                   "ESIMAAAA-3004"
+  serial:                   "SIMAAAA-3004"
   console_ip:               "10.69.24.5"
   console_port:             "2012"
   default_template:         "5520-24T-EXOS-default-template"

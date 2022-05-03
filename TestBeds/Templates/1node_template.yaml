@@ -3,18 +3,22 @@ lab: "SALEM"  # The lab test information see lab_config.yaml for details
 netelem1:
   name:                     #(REQUIRED)                         unique netelem name
   hostname:                 #(REQUIRED)                         unique hostname
+  make:                     #(REQUIRED)                         Make of the device.
+                            #                                     XIQ makes: [Controllers, Extreme - Aerohive, VOSS, EXOS, Dell, Universal Appliance, XMC]
+                            #                                       Valid makes can be found in XIQ under the Device Onboarding menu, then under the "DEVICE MAKE" dropdown
+                            #                                     XMC makes: [A10, APC, Advantage, Albis, Allied Telesyn, Apple, Avaya, Broadcom, Brocade, Cannon, Cisco, Clickarray, D-Link, Dell, Extreme, HP, IBM, Intel, Juniper, KCP, Konica, Lantronix, Microsoft, NetSNMP, Nokia, Oracle, Packeteer, Palo Alto, Panasonic, RuggedCom, SNMP Research, Siemens, Sigma, Sonus, UCD, UNIX, VMware, Xerox]
+                            #                                       Valid makes can be found in XMC under the "Administration" tab on the left side of the page, then under the "Vendor Profiles" tab at the top of the page.
+  model:                    #(REQUIRED)                         Model of the device.
+                            #                                     XIQ models: Valid models can be found in XIQ under the "Configure" tab on the left side of the page, then under "COMMON OBJECTS" -> "Policy" -> ("AP Template" or "Switch Template") depending on the device you are using.
+                            #                                     XMC models: Valid models can be found in XMC under the "Administration" tab on the left side of the page, then under the "Vendor Profiles" tab at the top of the page
   os:                       #(REQUIRED)                         exos/eos/linux
   platform:                 #(REQUIRED)                         x460G2
   image_family:             #(REQUIRED)                         Image family for download firmware (summitx)
   ip:                       #(REQUIRED)                         1.1.1.3
-  port:                     #(OPTIONAL)                         rewrite L4 port for static port forwarding
-  mgmt_vlan:                #(OPTIONAL)                         The netelem VLAN that provides connectivity outside of the test environment (i.e. lab network) - "VLAN_123"
   username:                 #(REQUIRED)                         netelem1 username
   password:                 #(REQUIRED)                         netelem1 password
   connection_method:        #(REQUIRED)                         telnet/ssh/snmp/rest
-  console_ip:               #(OPTIONAL)                         The console IP
-  console_port:             #(OPTIONAL)                         The console port
-  auth_mode:                #(OPTIONAL)                         "basic" 
+
   snmp_version:             #(SNMP REQUIREMENT)                 "v2c"            # The snmp version to use (v1, v2c, or v3).
   snmp_community_name:      #(SNMP REQUIREMENT)                 "extreme123"     # The community security name for v1 or v2c.
   snmp_user_name:           #(SNMP REQUIREMENT)                 "user_md5_des"   # The user security name for v3 USM.
@@ -22,6 +26,12 @@ netelem1:
   snmp_auth_password:       #(SNMP REQUIREMENT)                 "extreme123"     # The clear text password for the auth_protocol.
   snmp_privacy_protocol:    #(SNMP REQUIREMENT)                 "des"            # The privacy protocol used by the user_name ('nopriv', 'des', '3des', 'aes128', 'aes192', or 'aes256').
   snmp_privacy_password:    #(SNMP REQUIREMENT)                 "extreme123"     # The clear text password for the privacy_protocol.
+
+  port:                     #(OPTIONAL)                         rewrite L4 port for static port forwarding
+  mgmt_vlan:                #(OPTIONAL)                         The netelem VLAN that provides connectivity outside of the test environment (i.e. lab network) - "VLAN_123"
+  console_ip:               #(OPTIONAL)                         The console IP
+  console_port:             #(OPTIONAL)                         The console port
+  auth_mode:                #(OPTIONAL)                         "basic"
   primary_test_target:      #(OPTIONAL)                         "True"/"False"
   base_cfg_location:        #(OPTIONAL)                         {path}/netelem1.cfg
   host_mac:                 #(OPTIONAL)                         00-aa-bb-cc-dd-ee
@@ -36,7 +46,6 @@ netelem1:
         plug_a:             #(OPTIONAL)                         The 1st plug
         plug_b:             #(OPTIONAL)                         The 2nd plug ...
     type:                   #(OPTIONAL)                         The type of power strip
-    
   template:                 #(OPTIONAL)                         AP_230-default-template
   country:                  #(OPTIONAL)                         United Kingdom
   network_policy:           #(OPTIONAL)                         Test_np
@@ -44,7 +53,6 @@ netelem1:
   version:                  #(OPTIONAL)                         6.5
   neighbour_serial:         #(OPTIONAL)                         06301908310556
   neighbour_mac:            #(OPTIONAL)                         3485843A5CC0
-      
   tgen:
     port_a:
       ifname:               #(REQUIRED)                         The netelem's interface name, as it would be entered on the device (i.e "5", "2:3" "ge.1.2" or "eth1')
@@ -69,10 +77,11 @@ tgen1:
   chassis_type:       #(REQUIRED)                         ixia/ostinato/spirent
   software:           #(REQUIRED)                         5.2.3
   ip:                 #(REQUIRED)                         1.1.1.5
-  vm_ip:              #(IXIA REQUIREMENT)                 IPv4 address of Ixia Socket Listener - 1.2.3.4
-  port:               #(IXIA REQUIREMENT)                 "5678"
   username:           #(REQUIRED)                         tgen1 username
   password:           #(REQUIRED)                         tgen1 password
+
+  vm_ip:              #(IXIA REQUIREMENT)                 IPv4 address of Ixia Socket Listener - 1.2.3.4
+  port:               #(IXIA REQUIREMENT)                 "5678"
 
 tgen_ports:
   netelem1:

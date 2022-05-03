@@ -1,0 +1,147 @@
+nav:
+  copilot:
+    tag:                "automation-header-copilotdash"
+    url:                "/codash"
+    icon_class:         "img-copilot-dash"
+    pilot_number:       1
+  configure:
+    tag:                "automation-header-configure"
+    icon_class:         "img-configure"
+    pilot_number:       2
+    policies:
+      tag:                "automation-header-nav-policy"
+      url:                "/config"
+      pilot_number:       1
+    common:
+      tag:                "automation-header-nav-common"
+      pilot_number:       2
+    users:
+      tag:                "automation-header-nav-configure-users"
+      pilot_number:       3
+    guest:
+      tag:                "automation-header-nav-configure-guest-essentials-users"
+      url:                "/guestessentialsusers"
+      pilot_number:       4
+  manage:
+    tag:                "automation-header-manage"
+    icon_class:         "img-manage"
+    pilot_number:       3
+    helpdesk_number:    1
+    summary:
+      tag:                "automation-header-nav-summary"
+      url:                "/dashboard"
+      pilot_number:       1
+    plan:
+      tag:                "automation-header-nav-plan"
+      url:                "/plan/"
+      pilot_number:       2
+    devices:
+      tag:                "automation-header-nav-devices"
+      url:                "/devices"
+      pilot_number:       3
+      helpdesk_number:    1
+    clients:
+      tag:                "automation-header-nav-clients"
+      url:                "/clientsoverview"
+      pilot_number:       4
+    users:
+      tag:                "automation-header-nav-manage-clients"
+      url:                "/activeusers"
+      pilot_number:       5
+    events:
+      tag:                "automation-header-nav-events"
+      url:                "/activeevents"
+      pilot_number:       6
+    alarms:
+      tag:                "automation-header-nav-alarms"
+      url:                "/activealarms"
+      pilot_number:       7
+    reports:
+      tag:                "automation-header-nav-reports"
+      url:                "/reports"
+      pilot_number:       8
+    applications:
+      tag:                "automation-header-nav-apps"
+      url:                "/topapps"
+      pilot_number:       9
+    security:
+      tag:                "automation-header-nav-security"
+      url:                "/rogueaps"
+      pilot_number:       10
+    diagnosis:
+      tag:                "automation-header-nav-clientmonitor-Diagnosis"
+      url:                "/tools/issueList"
+      pilot_number:       11
+      helpdesk_number:    2
+  insights:
+    tag:                "automation-header-n360"
+    icon_class:         "img-insights"
+    pilot_number:       4
+    monitor:
+      tag:                "automation-header-nav-tracker"
+      url:                "/tracker/"
+      pilot_number:       1
+    scorecard:
+      tag:                "automation-header-nav-scorecard"
+      url:                "/scorecard"
+      pilot_number:       2
+    clients:
+      tag:                "automation-header-nav-clientsoverview"
+      url:                "/clientsoverview"
+      pilot_number:       3
+    retail:
+      tag:                "automation-header-nav-retail"
+      url:                "/retail"
+      pilot_number:       4
+  essentials:
+    tag:                "automation-header-essentials"
+    icon_class:         "img-essentials"
+    pilot_number:       5
+    iot:
+      tag:                "automation-header-iot-essentials"
+      url:                "/essentials/extremeiot"
+      pilot_number:       1
+      dashboard:
+        tag:                "automation-header-iot-essentials-dashboard"
+        url:                "/essentials/extremeiot/xiotDashboard"
+        pilot_number:       1
+      devices:
+        tag:                "automation-header-iot-essentials-devices"
+        url:                "/essentials/extremeiot/devices"
+        pilot_number:       2
+      clients:
+        tag:                "automation-header-iot-essentials-clients"
+        url:                "/essentials/extremeiot/clients"
+        pilot_number:       3
+      userprofile:
+        tag:                "automation-header-iot-essentials-userProfile"
+        url:                "/essentials/extremeiot/userProfile"
+        pilot_number:       4
+      groups:
+        tag:                "automation-header-iot-essentials-groups"
+        url:                "/essentials/extremeiot/groups"
+        pilot_number:       5
+    airdefense:
+      tag:                "automation-header-airdefense-essentials"
+      url:                "/essentials/airDefense"
+      pilot_number:       2
+    guest:
+      tag:                "automation-header-guest-essentials"
+      url:                "/essentials/guest"
+      pilot_number:       3
+    location:
+      tag:                "automation-header-location-essentials"
+      url:                "/essentials/location"
+      pilot_number:       4
+  a3:
+    tag:                "automation-header-a3"
+    icon_class:         "img-a3"
+    pilot_number:       6
+    inventory:
+      tag:                "automation-header-a3-inventory"
+      url:                "/a3/inventory"
+      pilot_number:       1
+    reporting:
+      tag:                "automation-header-a3-reporting"
+      url:                "/a3/reporting"
+      pilot_number:       2

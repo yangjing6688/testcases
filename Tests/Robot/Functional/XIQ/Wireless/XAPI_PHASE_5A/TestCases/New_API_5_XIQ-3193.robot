@@ -121,7 +121,7 @@ delete ppsk user
 
 # generate the key once per suite
 Pre Condition-Login
-    [Documentation]   AP Should be onboarded  and it is online
+    [Documentation]   Login and generate access_token
     [Tags]                  xim_tc_16480     development
     
     ${ACCESS_TOKEN}=        generate_access_token    ${tenant_username}      ${tenant_password}      login

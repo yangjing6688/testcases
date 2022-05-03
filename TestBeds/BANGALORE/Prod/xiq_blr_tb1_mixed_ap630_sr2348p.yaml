@@ -1,0 +1,51 @@
+ap1:
+  name:                     bui-flo-0556
+  connection_method:        "telnet"
+  ip:                       10.234.178.66
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '06301908310556'
+  console_ip:               10.234.178.230
+  console_port:             7005
+  mac:                      3485843A5CC0
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP630
+  template:                 AP_630-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           Test_np
+      ssid:                     BLR_TB1_AP630_01
+      version:                  6.5
+      neighbour_serial:         02301404251465
+      neighbour_mac:            9C5D1213AD80
+
+aerohive_sw1:
+  name:               AH-Switch
+  model:              SR2348P
+  device_template:    SR2348P-default-template
+  serial:             '23481812230013'
+  os:                 Linux 3.6.5
+  mac:                B87CF2026DFC
+  network_policy:
+  username:           admin
+  password:           Aerohive123
+  platform:           aerohive-fastpath
+  console_ip:         10.234.178.230
+  console_port:       7004
+  test_port:
+  make:               Extreme - Aerohive

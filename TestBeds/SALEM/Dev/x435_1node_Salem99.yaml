@@ -2,6 +2,7 @@
 
 netelem1:
   name:                     "X435_DUT1"
+  model:                    "X43524T_4S"
   ip:                       "10.51.136.99"
   username:                 "admin"
   password:                 ""

@@ -1,0 +1,19 @@
+netelem1:
+  name:                     "VOSS"
+  hostname:                 ""
+  serial:                   "2025Q-30034"
+  mac:                      "489BD58BA000"
+  ip:                       "10.139.121.48"
+  port:                     "23"
+  console_ip:               "10.139.120.8"
+  console_port:             "5024"
+  username:                 "rwa"
+  password:                 "rwa"
+  connection_method:        "telnet"
+  os:                       "voss"
+  platform:                 "7400"
+  location:                 "auto_location_01,San Jose,building_01,floor_01"
+  model:                    "VSP7432CQ"
+  make:                     "voss"
+
+

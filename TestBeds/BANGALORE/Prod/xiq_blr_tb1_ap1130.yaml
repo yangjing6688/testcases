@@ -1,0 +1,35 @@
+ap1:
+  name:                     bui-flo-0136
+  connection_method:        "telnet"
+  ip:                       10.234.178.56
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '11301810220136'
+  console_ip:               10.234.178.56
+  console_port:             22
+  mac:                      F09CE9F8AC00
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP1130
+  template:                 AP_1130-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           BLR_TB2_AP1130_01
+      ssid:                     AP1130_01
+      version:                  6.5
+      neighbour_serial:         24602001170042
+      neighbour_mac:            BCF3102A9880
+

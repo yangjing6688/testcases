@@ -16,7 +16,7 @@ netelem1:
   image_family:             ""
   template:                 "X450_G2_24t_G4-default-template"
   make:                     "EXOS"
-  model:                    "X440-G2-24t-G4"
+  model:                    "X440G2-24t-G4"
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
   ccg:                      "Model_EXOSSWITCH"
@@ -66,7 +66,7 @@ netelem3:
   image_family:             ""
   template:                 "X460_G2_48x_10G4-default-template"
   make:                     "EXOS"
-  model:                    "X460-G2-48x-10G4"
+  model:                    "X460G2-48x-10G4"
   product:                  "X460_G2_48x_10G4"
   function:                 "Switch"
   ccg:                      "Model_EXOSSWITCH"
@@ -147,4 +147,3 @@ netelem6:
   ccg:                      ""
   contact:                  "Salem Automation Team"
   location:                 "Salem NH Automation Lab"
-

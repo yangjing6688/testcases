@@ -29,6 +29,8 @@ Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 
+Force Tags   testbed_1_node
+
 Suite Setup      Log Into XIQ and Set Up Test
 Suite Teardown   Tear Down Test and Close Session
 
@@ -62,27 +64,30 @@ ${TEMPLATE_NAME}            VOSS_TEMPLATE_AUTO
 
 
 *** Test Cases ***
-Configure VOSS Switch
+TCCS-7299_Step1: Configure VOSS Switch
     [Documentation]     Resets the VOSS switch to the factory defaults and configures the IQ agent on he VOSS switch
-    [Tags]              sanity              voss            production      reset       test1
+
+    [Tags]              production      tccs_7299_step1
 
     Reset VOSS Switch to Factory Defaults       ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
     Configure iqagent for VOSS Switch           ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${sw_capwap_url}
 
-Onboard VOSS Device With Policy and Location Set Using Quick Add
+TCCS-7299_Step2: Onboard VOSS Device With Policy and Location Set Using Quick Add
     [Documentation]     Confirms a VOSS switch can be onboarded with policy and location set via the Quick Add workflow
-    [Tags]              sanity              onboard             voss        production      test2
 
-    Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_TYPE}  ${POLICY_NAME}  ${LOCATION}
-    
-Confirm VOSS Device Values After Onboard
+    [Tags]              production      tccs_7299_step2
+
+    Onboard New Test Device                     ${DUT_SERIAL}  ${POLICY_NAME}  ${LOCATION}
+
+TCCS-7299_Step3: Confirm VOSS Device Values After Onboard
     [Documentation]     Confirms the VOSS switch has the expected values in the Devices table after onboard
-    [Tags]              sanity              voss        production          values          test3
+
+    [Tags]              production      tccs_7299_step3
 
     Navigate to Devices and Confirm Success
     Refresh Devices Page
 
-    Confirm Device Status   ${DUT_SERIAL}  ${STATUS_BEFORE_UPDATE}
+
 
     &{device_info}=     Get Device Row Values  ${DUT_SERIAL}  POLICY,LOCATION,SERIAL,MODEL
     ${policy_result}=   Get From Dictionary     ${device_info}  POLICY
@@ -95,22 +100,25 @@ Confirm VOSS Device Values After Onboard
     Should Be Equal     ${serial_result}        ${DUT_SERIAL}
     Should Be Equal     ${model_result}         ${DUT_MODEL}
 
-Confirm iqagent for VOSS Switch is Connected to XIQ After Onboard
+TCCS-7299_Step4: Confirm iqagent for VOSS Switch is Connected to XIQ After Onboard
     [Documentation]     Confirms the iqagent for the VOSS switch is connected to XIQ
-    [Tags]              sanity              voss        production          iqagent         test4
+
+    [Tags]              production      tccs_7299_step4
 
     Confirm iqagent for VOSS Switch is Connected to XIQ     ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}
     ...                                                     ${DUT_USERNAME}  ${DUT_PASSWORD}  ${sw_capwap_url}
 
-Perform Device Update on VOSS Switch
+TCCS-7299_Step5: Perform Device Update on VOSS Switch
     [Documentation]     Performs a device update on the VOSS switch
-    [Tags]              sanity              voss        production          update          test5
+    [Tags]              production      tccs_7299_step5
 
-    Update Switch Policy and Configuration    ${DUT_SERIAL}
+    ${result}=  Update Switch Policy and Configuration    ${DUT_SERIAL}
+    Should Be Equal As Integers     ${result}     1
 
-Confirm VOSS Device Values After Update
+TCCS-7299_Step6: Confirm VOSS Device Values After Update
     [Documentation]     Confirms the device table contains expected values for the VOSS switch after an update
-    [Tags]              sanity              voss        production          values          test6
+
+    [Tags]              production      tccs_7299_step6
 
     Refresh Devices Page
 
@@ -127,9 +135,10 @@ Confirm VOSS Device Values After Update
     Should Be Equal     ${serial_result}        ${DUT_SERIAL}
     Should Be Equal     ${model_result}         ${DUT_MODEL}
 
-Confirm Device360 View Values for VOSS Switch
+TCCS-7299_Step7: Confirm Device360 View Values for VOSS Switch
     [Documentation]     Confirms the Device360 view contains correct values for the VOSS Switch
-    [Tags]              sanity              voss        production          values          test7
+
+    [Tags]              production      tccs_7299_step7
 
     Refresh Devices Page
 
@@ -153,9 +162,10 @@ Confirm Device360 View Values for VOSS Switch
     ${config_template}=         Get From Dictionary  ${device_config_info}  device_template
     Should Be Equal             ${config_template}  ${TEMPLATE_NAME}
 
-Enable SSH on VOSS Switch and Confirm SSH Session Can Be Established
+TCCS-7299_Step8: Enable SSH on VOSS Switch and Confirm SSH Session Can Be Established
     [Documentation]     Enables SSH for the VOSS Switch
-    [Tags]              sanity              voss            ssh         production      test8
+
+    [Tags]              production      tccs_7299_step8
 
     &{ip_port_info}=                    Device360 Enable SSH CLI Connectivity   ${DUT_MAC}
     ${ip}=                              Get From Dictionary  ${ip_port_info}  ip
@@ -192,7 +202,7 @@ Tear Down Test and Close Session
     Clean Up Test Device and Confirm Success    ${DUT_SERIAL}
     Clean Up Open Policy For Switch             ${POLICY_NAME}  ${SSID_NAME}  ${TEMPLATE_NAME}
     Log Out of XIQ and Confirm Success
-    Quit Browser
+    [Teardown]   run keywords       quit browser
 
 Disable SSH and Close Device360 Window
     Device360 Disable SSH Connectivity
@@ -220,7 +230,7 @@ Navigate to Devices and Confirm Success
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${type}  ${policy}  ${location}
+    [Arguments]         ${serial}  ${policy}  ${location}
 
     Navigate to Devices and Confirm Success
 
@@ -230,8 +240,8 @@ Onboard New Test Device
     ${search_result}=  Search Device Serial   ${serial}
 
     # Onboard the device
-    Run Keyword If  '${search_result}' != '1'    Onboard VOSS Device  device_serial=${serial}  device_type=${type}  entry_type=${ENTRY_TYPE}   policy_name=${policy}  loc_name=${location}
-    Run Keyword If  '${search_result}' != '1'    Sleep   ${device_onboarding_wait}
+    Run Keyword If  '${search_result}' != '1'    Onboard VOSS Device  device_serial=${serial}  entry_type=${ENTRY_TYPE}   policy_name=${policy}  loc_name=${location}
+    Run Keyword If  '${search_result}' != '1'    Sleep   ${voss_device_connect_wait}
 
     # Confirm the device was added successfully
     ${search_result}=  Search Device Serial  ${serial}
@@ -283,6 +293,7 @@ Configure iqagent for VOSS Switch
 
     ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss
 
+    ${reset_iq_agent}=      Send Commands  ${spawn}  enable, configure terminal, show application iqagent, application, no iqagent enable, software iqagent reinstall , iqagent enable, show application iqagent , end
     ${conf_results}=        Send Commands  ${spawn}  enable, configure terminal, application, no iqagent enable, iqagent server ${iqagent}, iqagent enable
     Log To Console          Command results are ${conf_results}
     Should Contain          ${conf_results}  ${iqagent}

@@ -15,7 +15,7 @@ netelem1:
   image_family:             ""
   template:                 "X460_G2_48t_10_G4-default-template"
   make:                     "EXOS"
-  model:                    "X460-G2-48t-10G4"
+  model:                    "X460G2-48t-10G4"
   product:                  "X460_G2_48t_10_G4"
   function:                 "Switch"
 
@@ -34,7 +34,7 @@ netelem2:
   image_family:             ""
   template:                 "X440_G2_24t_G4-default-template"
   make:                     "EXOS"
-  model:                    "X440-G2-24t-G4"
+  model:                    "X440G2-24t-G4"
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
 

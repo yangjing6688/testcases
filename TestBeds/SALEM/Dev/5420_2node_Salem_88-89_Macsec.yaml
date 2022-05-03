@@ -8,6 +8,7 @@ environment:
 
 netelem1:
   name:                     "5420_DUT1"
+  model:                    "SwitchEngine5420F_48P_4XE"
   ip:                       "10.51.100.88"
   username:                 "admin"
   password:                 ""
@@ -64,6 +65,7 @@ netelem1:
 
 netelem2:
   name:                     "5420_DUT2"
+  model:                    "SwitchEngine5420F_48P_4XE"
   ip:                       "10.51.100.89"
   username:                 "admin"
   password:                 ""

@@ -3,6 +3,7 @@ lab:                      "RDU"
 
 netelem1:
   name:                     "x690stk_DUT1"
+  model:                    "X690_48x_2q_4c"
   topology:                 "Stack"
   ip:                       "10.69.50.138"
   term_server:              "10.69.50.244 2011"
@@ -97,6 +98,7 @@ netelem1:
 
 netelem2:
   name:                     "x690stk_DUT2"
+  model:                    "X690_48x_2q_4c"
   ip:                       "10.69.50.139"
   term_server:              "10.69.50.244 2014"
   pdu_ip:                   "10.69.50.243"
@@ -183,6 +185,7 @@ netelem2:
       
 netelem3:
   name:                     "x690stk_DUT3"
+  model:                    "X690_48x_2q_4c"
   ip:                       "10.69.50.140"
   term_server:              "10.69.50.244 2015"
   pdu_ip:                   "10.69.50.243"

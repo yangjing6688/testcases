@@ -92,7 +92,7 @@ ${COLUMN_LABELS}     HOST NAME,MANAGED BY,MGT IP ADDRESS,MAC,CLOUD CONFIG GROUPS
 *** Test Cases ***
 Test 1: Confirm XIQ Site Engine Values
     [Documentation]     Confirms the XIQ Site Engine has the expected values in the Devices table
-    [Tags]              csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test1
+    [Tags]              nightly1    release_testing    csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test1
 
     Refresh Devices Page
 
@@ -119,7 +119,7 @@ Test 1: Confirm XIQ Site Engine Values
 
 Test 2: Confirm Pre-Existing XIQSE-Managed Device Values
     [Documentation]     Confirms the pre-existing XIQSE-managed device has the expected values in the Devices table
-    [Tags]              csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test2
+    [Tags]              nightly1    release_testing    csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test2
 
     Refresh Devices Page
 
@@ -143,7 +143,7 @@ Test 2: Confirm Pre-Existing XIQSE-Managed Device Values
 
 Test 3: Confirm Adding New Devices Onboards to XIQ
     [Documentation]     Confirms newly-added devices in XIQSE are onboarded to XIQ
-    [Tags]              csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test3
+    [Tags]              nightly1    release_testing    csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test3
 
     # Add new devices to XIQ-SE
     XIQSE Add Device and Confirm Success           ${DUT3_IP}    ${DUT3_PROFILE}
@@ -155,7 +155,7 @@ Test 3: Confirm Adding New Devices Onboards to XIQ
 
 Test 4: Confirm Newly-Added XIQSE-Managed Device Values
     [Documentation]     Confirms the newly-added XIQSE-managed device has the expected values in the Devices table
-    [Tags]              csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test4
+    [Tags]              nightly1    release_testing    csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test4
 
     Refresh Devices Page
 
@@ -179,7 +179,7 @@ Test 4: Confirm Newly-Added XIQSE-Managed Device Values
 
 Test 5: Confirm Device360 View Can Be Opened for New Device
     [Documentation]     Confirms the Device360 view can be opened for a newly-added XIQSE-managed device
-    [Tags]              csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test5
+    [Tags]              nightly1    release_testing    csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test5
 
     # Open the Device360 view
     Navigate to Device360 Page with MAC  ${DUT3_MAC}
@@ -188,7 +188,7 @@ Test 5: Confirm Device360 View Can Be Opened for New Device
 
 Test 6: Confirm Device360 View Values for New Device
     [Documentation]     Confirms the Device360 view contains correct values for a newly-added XIQSE-managed device
-    [Tags]              csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test6
+    [Tags]              nightly1    release_testing    csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test6
 
     Refresh Devices Page
     &{overview_info}=       Get Device360 Overview Information    ${DUT3_MAC}
@@ -213,7 +213,7 @@ Test 6: Confirm Device360 View Values for New Device
 
 Test 7: Confirm Device360 View Can Be Opened for Pre-Existing Device
     [Documentation]     Confirms the Device360 view can be opened for a pre-existing XIQSE-managed device
-    [Tags]              csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test7
+    [Tags]              nightly1    release_testing    csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test7
 
     # Open the Device360 view
     Navigate to Device360 Page with MAC  ${DUT1_MAC}
@@ -222,7 +222,7 @@ Test 7: Confirm Device360 View Can Be Opened for Pre-Existing Device
 
 Test 8: Confirm Device360 View Values for Pre-Existing Device
     [Documentation]     Confirms the Device360 view contains correct values for a pre-existing XIQSE-managed device
-    [Tags]              csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test8
+    [Tags]              nightly1    release_testing    csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test8
 
     Refresh Devices Page
     &{overview_info}=       Get Device360 Overview Information    ${DUT1_MAC}
@@ -247,7 +247,7 @@ Test 8: Confirm Device360 View Values for Pre-Existing Device
 
 Test 9: Confirm Device360 View Can Be Opened for XIQSE
     [Documentation]     Confirms the Device360 view can be opened for XIQSE
-    [Tags]              csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test9
+    [Tags]              nightly1    release_testing    csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test9
 
     # Open the Device360 view
     Navigate to Device360 Page with MAC  ${XIQSE_MAC}
@@ -256,7 +256,7 @@ Test 9: Confirm Device360 View Can Be Opened for XIQSE
 
 Test 10: Confirm Device360 View Values for XIQSE
     [Documentation]     Confirms the Device360 view contains correct values for XIQSE
-    [Tags]              csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test10
+    [Tags]              nightly1    release_testing    csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test10
 
     Refresh Devices Page
     &{overview_info}=       Get Device360 Overview Information  ${XIQSE_MAC}
@@ -280,7 +280,7 @@ Test 10: Confirm Device360 View Values for XIQSE
 
 Test 11: Confirm Deleting Newly-Added Devices Removes Devices from XIQ
     [Documentation]     Confirms newly-added devices which are deleted from XIQSE are removed from XIQ
-    [Tags]              csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test11
+    [Tags]              nightly1    release_testing    csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test11
 
     # Remove newly-added devices from XIQ-SE
     XIQSE Delete Device and Confirm Success           ${DUT3_IP}
@@ -292,7 +292,7 @@ Test 11: Confirm Deleting Newly-Added Devices Removes Devices from XIQ
 
 Test 12: Confirm Deleting Pre-Existing Device Removes Device from XIQ
     [Documentation]     Confirms a pre-existing device which is deleted from XIQSE is removed from XIQ
-    [Tags]              csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test12
+    [Tags]              nightly1    release_testing    csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test12
 
     # Remove pre-existing device from XIQ-SE
     XIQSE Delete Device and Confirm Success           ${DUT2_IP}
@@ -302,7 +302,7 @@ Test 12: Confirm Deleting Pre-Existing Device Removes Device from XIQ
 
 Test 13: Confirm Deleted and Re-Created Device is Added Back to XIQ
     [Documentation]     Confirms a pre-existing device which was deleted from and readded to XIQSE is added back to XIQ
-    [Tags]              csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test13
+    [Tags]              nightly1    release_testing    csit_tc_11793    apc_48178    development    xiqse    xiq_integration    dedicated_sanity    test13
 
     # Add back the pre-existing device to XIQ-SE
     XIQSE Add Device and Confirm Success           ${DUT2_IP}    ${DUT2_PROFILE}
