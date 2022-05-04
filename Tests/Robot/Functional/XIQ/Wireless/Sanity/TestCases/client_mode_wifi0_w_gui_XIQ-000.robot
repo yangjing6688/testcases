@@ -11,30 +11,31 @@ ${LOCATION}                  auto_location_01, Santa Clara, building_02, floor_0
 ${DEVICE_MAKE_AEROHIVE}      Extreme - Aerohive
 
 ################## Policy Detail & Wireless Network ###############################
-&{WIRELESS_PESRONAL_ENT_00}       ssid_name=ENT_00      network_type=Standard    ssid_profile=&{BORADCAST_SSID_ENT_00}      auth_profile=&{PERSONAL_AUTH_PROFILE}
-&{WIRELESS_PESRONAL_ENT_01}       ssid_name=ENT_01      network_type=Standard    ssid_profile=&{BORADCAST_SSID_ENT_01}      auth_profile=&{PERSONAL_AUTH_PROFILE}
-&{WIRELESS_PESRONAL_CM}           ssid_name=CM          network_type=Standard    ssid_profile=&{BORADCAST_SSID_CM}          auth_profile=&{PERSONAL_AUTH_PROFILE}
+&{WIRELESS_PESRONAL_ENT_00}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_ENT_00}      auth_profile=&{PERSONAL_AUTH_PROFILE}
+&{WIRELESS_PESRONAL_ENT_01}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_ENT_01}      auth_profile=&{PERSONAL_AUTH_PROFILE}
+&{WIRELESS_PESRONAL_CM}         ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_CM}          auth_profile=&{PERSONAL_AUTH_PROFILE}
 
 &{BORADCAST_SSID_ENT_00}=       WIFI0=Enable        WIFI1=Disable
 &{BORADCAST_SSID_ENT_01}=       WIFI0=Disable       WIFI1=Enable
 &{BORADCAST_SSID_CM}=           WIFI0=Enable        WIFI1=Enable
 
-&{PERSONAL_AUTH_PROFILE}           auth_type=PSK   key_encryption=&{PSK_KEY_ENCRYPTION}   cwp_config=&{PSK_CWP_DEFAULT}
-&{PSK_KEY_ENCRYPTION}              key_management=WPA2-(WPA2 Personal)-PSK    encryption_method=CCMP (AES)   key_type=ASCII Key     key_value=aerohive
-&{PSK_CWP_DEFAULT}                 enable_cwp=Disable
+&{PERSONAL_AUTH_PROFILE}        auth_type=PSK   key_encryption=&{PSK_KEY_ENCRYPTION}   cwp_config=&{PSK_CWP_DEFAULT}
+&{PSK_KEY_ENCRYPTION}           key_management=WPA2-(WPA2 Personal)-PSK    encryption_method=CCMP (AES)   key_type=ASCII Key     key_value=aerohive
+&{PSK_CWP_DEFAULT}              enable_cwp=Disable
 
 ################## Device Templates ###############################
 ##### AP410C ######
 &{AP_TEMPLATE_CONFIG_1}         wifi0_configuration=&{AP_TEMPLATE_CONFIG_1_WIFI0}   wifi1_configuration=&{AP_TEMPLATE_CONFIG_1_WIFI1}
 &{AP_TEMPLATE_CONFIG_1_WIFI0}   radio_status=On    radio_profile=radio_ng_11ax-2g     client_mode=Disable    client_mode_profile=&{client_mode_profile_wifi0}  client_access=Enable     backhaul_mesh_link=Disable   sensor=Disable
 &{AP_TEMPLATE_CONFIG_1_WIFI1}   radio_status=Off   radio_profile=radio_ng_11ax-5g     client_mode=Disable    client_mode_profile=&{client_mode_profile_wifi1}  client_access=Disable    backhaul_mesh_link=Disable   sensor=Disable
+
 ##### AP150W & AP302W #####
 &{AP_TEMPLATE_CONFIG_2}         wifi0_configuration=&{AP_TEMPLATE_CONFIG_2_WIFI0}   wifi1_configuration=&{AP_TEMPLATE_CONFIG_2_WIFI1}
 &{AP_TEMPLATE_CONFIG_2_WIFI0}   radio_status=On   radio_profile=radio_ng_ng0        client_mode=Enable     client_mode_profile=&{client_mode_profile_wifi0}    client_access=Disable    backhaul_mesh_link=Disable   sensor=Disable
 &{AP_TEMPLATE_CONFIG_2_WIFI1}   radio_status=On   radio_profile=radio_ng_11ax-5g    client_mode=Disable    client_mode_profile=&{client_mode_profile_wifi1}    client_access=Enable     backhaul_mesh_link=Disable   sensor=Disable
 
-&{CLIENT_MODE_PROFILE_WIFI0}    client_mode_profice_name=wifi0       dhcp_server_scope=192.168.150.1     local_web_page=Enable
-&{CLIENT_MODE_PROFILE_WIFI1}    client_mode_profice_name=wifi1       dhcp_server_scope=192.168.151.1     local_web_page=Enable      ssid_name=""       password=""     auth_method=Pre-Shared Key    key_type=ASCII
+&{CLIENT_MODE_PROFILE_WIFI0}    client_mode_profile_name=""    dhcp_server_scope=192.168.150.1     local_web_page=Enable     ssid_name=""     password=""    auth_method=Pre-Shared Key    key_type=ASCII
+&{CLIENT_MODE_PROFILE_WIFI1}    client_mode_profile_name=""    dhcp_server_scope=192.168.151.1     local_web_page=Enable     ssid_name=""     password=""    auth_method=Pre-Shared Key    key_type=ASCII
 
 *** Settings ***
 Library     String
@@ -49,6 +50,7 @@ Library     xiq/flows/common/Login.py
 Library     xiq/flows/manage/AdvOnboard.py
 Library     xiq/flows/manage/AdvanceOnboarding.py
 Library     xiq/flows/manage/Devices.py
+Library     xiq/flows/manage/DevicesActions.py
 Library     xiq/flows/manage/DeviceConfig.py
 Library     xiq/flows/manage/DeviceCliAccess.py
 
@@ -75,10 +77,10 @@ Test1: Advance Onboard AP1 and AP2 - TCXM-15129 - TCXM-15131
     [Documentation]    Advance Onboard AP1 and AP2
     [Tags]             xim_tc_15129     xim_tc_15131    development     test1     test
     ${aps}=      Create List        ${ap1}        ${ap2}
-    ${LOGIN_STATUS}=                Login User                     ${tenant_username}     ${tenant_password}
+    ${LOGIN_STATUS}=                Login User               ${tenant_username}     ${tenant_password}
     should be equal as strings     '${LOGIN_STATUS}'      '1'
     FOR     ${ap}   IN    @{aps}
-        ${ONBOARD_STATUS}=               Advance Onboard Device         ${ap}[serial]    device_make=${DEVICE_MAKE_AEROHIVE}   dev_location=${LOCATION}
+        ${ONBOARD_STATUS}=               Onboard Device      ${ap}[serial]    ${ap}[make]    location=${LOCATION}    device_os=${ap}[os]
         should be equal as integers      ${ONBOARD_STATUS}       1
     END
     [Teardown]      run keywords     Logout User
@@ -111,7 +113,6 @@ Test3: Check AP1 and AP2 Status On UI - TCXM-15129 - TCXM-15131
     ${aps}=      Create List        ${ap1}        ${ap2}
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
     FOR    ${ap}    IN    @{aps}
-        Wait Until Device Online                ${ap}[serial]
         Wait Until Device Reboots               ${ap}[serial]
         Wait Until Device Online                ${ap}[serial]
         ${AP_STATUS}=                           Get AP Status       ap_mac=${ap}[mac]
@@ -124,7 +125,7 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15129 - TCXM-15131 -
     [Documentation]     Create policy and Update policy to AP1 and AP2
     [Tags]              xim_tc_15129     xim_tc_15131    xim_tc_16058     development     test4      test
     Depends On          Test3
-    ${NUM}=                     Generate Random String    4     0123456789
+    ${NUM}=                     Generate Random String    5     0123456789
     Set Suite Variable          ${POLICY}                       BkHaul_wifi0_${NUM}
     Set Suite Variable          ${SSID}                         bk_0_${NUM}
     Set Suite Variable          ${AP_TEMP_NAME}                 ${ap1.model}_${NUM}
@@ -135,9 +136,9 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15129 - TCXM-15131 -
     Set Suite Variable          ${AP_TEMP_NAME_CM}              ${ap2.model}_${NUM}
     Set To Dictionary           ${WIRELESS_PESRONAL_CM}         ssid_name=${SSID_CM}
     ${CLIENT_PROFLE_NAME_CM}    set variable                    wifi0_${NUM}
-    Set To Dictionary           ${CLIENT_MODE_PROFILE_WIFI0}    client_mode_profice_name=${CLIENT_PROFLE_NAME_CM}
+    Set To Dictionary           ${CLIENT_MODE_PROFILE_WIFI0}    client_mode_profile_name=${CLIENT_PROFLE_NAME_CM}
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2_WIFI0}   client_mode_profile=${CLIENT_MODE_PROFILE_WIFI0}
-    Set To Dictionary           ${AP_TEMPLATE_CONFIG_2}         wifi1_configuration=${AP_TEMPLATE_CONFIG_2_WIFI0}
+    Set To Dictionary           ${AP_TEMPLATE_CONFIG_2}         wifi0_configuration=${AP_TEMPLATE_CONFIG_2_WIFI0}
 
     ${result}=                     Login User                 ${tenant_username}     ${tenant_password}
     Create Network Policy          policy=${POLICY}     &{WIRELESS_PESRONAL_ENT_00}
@@ -154,7 +155,7 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15129 - TCXM-15131 -
     ${SELECT_AP_TEMPLATE}=         add ap template to network policy       ${AP_TEMP_NAME_CM}      ${POLICY_CM}
     Should Be Equal As Strings     '${SELECT_AP_TEMPLATE}'   '1'
 
-    ${UPDATE}=                     Update Network Policy To Ap    policy_name=${POLICY}      ap_serial=${ap1.serial}     update_method=Complete
+    ${UPDATE}=                     Update Network Policy To Ap    policy_name=${POLICY}       ap_serial=${ap1.serial}     update_method=Complete
     should be equal as strings     '${UPDATE}'               '1'
     Wait Until Device Reboots      ${ap1.serial}
     Wait Until Device Online       ${ap1.serial}
@@ -162,7 +163,7 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15129 - TCXM-15131 -
     Should Be Equal As Strings     '${AP1_STATUS}'            'green'
 
     ${UPDATE}=                     Update Network Policy To Ap    policy_name=${POLICY_CM}    ap_serial=${ap2.serial}     update_method=Complete
-    should be equal as strings     '${UPDATE}'              '1'
+    should be equal as strings     '${UPDATE}'               '1'
     Wait Until Device Reboots      ${ap2.serial}
     Wait Until Device Online       ${ap2.serial}
     ${AP2_STATUS}=                 Get AP Status              ap_mac=${ap2.mac}
@@ -182,10 +183,10 @@ Test5: Setup WIFI on STA2 and Connect to AP2 - TCXM-16058
     ${WEBDRIVER_PORT}     set variable               4444
     ${test_url}           set variable               http://${AP_TEMPLATE_CONFIG_1_WIFI0}[client_mode_profile][dhcp_server_scope]/
 
+    Setup AP in Client Mode          ${ap2}
     ${pid}                           Start Selenium      ${mu}
     mu.connect wpa2 ppsk network     ${SSID_CM}          aerohive
     Stop Selenium                    ${mu}               ${pid}
-    Setup AP in Client Mode          ${ap2}
     ${pid}                           Start Selenium      ${mu}
     log                              ${pid}
     ${LOGIN_STATUS}                  login user client mode    ${ap2.username}     ${ap2.password}
@@ -203,7 +204,7 @@ Test6: Verify Connection - TCXM-16058
     Depends On          Test5
     ${mu}               set variable        ${mu2}
     Verify client mode ap     ${ap2}        ${CM_IP}
-    Verify station            ${mu}
+    Verify station            ${mu}         ${AP_TEMPLATE_CONFIG_2}[wifi0_configuration][client_mode_profile][dhcp_server_scope]
 
 *** Keywords ***
 Setup AP in Client Mode
@@ -249,13 +250,16 @@ Get Check Ping
     [Return]  ${loss}
 
 Cleanup
-#    [Arguments]     @{ap_templates}
-#    log             ${ap_templates}
     Login User      ${tenant_username}      ${tenant_password}
+    ${failed}     ${success}      reset device to default    ${ap1.serial}      ${ap2.serial}
+#    ${TEST_PASS}                  Set Variable If    ${failed}    ${success}    PASS
+    log to console                Wait for 2 minutes for completing reboot....
+    sleep         2m
     delete all aps
     delete all network policies
-#    Delete AP Templates            ${ap_templates}[0]       ${ap_templates}[1]
-    Change Device Password         Aerohive123
+    delete all ap templates
+    delete_all_client_mode_profiles
+#    Change Device Password         Aerohive123
     Logout User
     Quit Browser
 
@@ -271,13 +275,14 @@ Verify client mode ap
     Close Spawn         ${spawn}
 
 Verify station
-    [Arguments]    ${mu}
+    [Arguments]    ${mu}    ${cm_gw_ip}
     ${spawn}    open paramiko ssh_spawn     ${mu}[ip]     ${mu}[username]     ${mu}[password]
-    ${out}      send paramiko cmd           ${spawn}       ping -c 5 192.168.150.1           10
+    ${out}      send paramiko cmd           ${spawn}       ping -c 5 ${cm_gw_ip}           10
     log         ${out}
     sleep       10s
     ${out}      send paramiko cmd           ${spawn}       traceroute -m 5 www.google.com    10
     log         ${out}
+    Should Contain      ${out}              ${cm_gw_ip}
     ${out}      send paramiko cmd           ${spawn}       ping -c 5 www.google.com          10
     log         ${out}
     ${loss}     Get Check Ping       ${out}
