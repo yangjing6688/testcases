@@ -78,27 +78,11 @@ TCCS-7279_Step3: Check AP Status On UI
 
     ${AP_STATUS}=       Get AP Status       ap_mac=${wing1.mac}
 
-    ${HOST_NAME}=       Get Device Details  ${wing1.mac}          HOST NAME
-    Log To Console      ${HOST_NAME}
-
-    ${SERIAL}=          Get Device Details  ${wing1.mac}          SERIAL
-    Log To Console      ${SERIAL}
-
-    ${OS_VERSION}=      Get Device Details  ${wing1.mac}          OS VERSION
-    Log To Console      ${OS_VERSION}
-
-    ${MODEL}=           Get Device Details  ${wing1.mac}          MODEL
-    Log To Console      ${MODEL}
-
     ${MGT_IP_ADDRESS}=  Get Device Details  ${wing1.mac}          MGT IP ADDRESS
     Log To Console      ${MGT_IP_ADDRESS}
 
     Should Be Equal As Strings  '${AP_STATUS}'     'green'
-
-    Should Contain              ${OS_VERSION}       ${wing1.os_version}
-    Should Be Equal As Strings  ${HOST_NAME}        ${wing1.name}
-    Should Be Equal As Strings  ${SERIAL}           ${wing1.serial}
-    Should Be Equal As Strings  ${MODEL}            ${wing1.model}        ignore_case=True
+    Should Be Equal As Strings  ${MGT_IP_ADDRESS}       ${wing1.ip}
 
     [Teardown]      run keywords    logout user
      ...                            quit browser
