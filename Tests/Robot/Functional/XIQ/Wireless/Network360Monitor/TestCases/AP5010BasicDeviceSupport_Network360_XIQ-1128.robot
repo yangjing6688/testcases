@@ -8,32 +8,31 @@
 #
 #  To run using topo and environment:
 #  ----------------------------------
-#  robot -v TOPO:topology.yaml -v ENV:environment.yaml -v TESTBED:testbed.yaml XIQ-1128.robot
+#  robot -v TOPO:topology.yaml -v ENV:environment.yaml -v TESTBED:SJ/FT_testbed1.yaml -i xim_tc_18725 XIQ-1128.robot
 #
 #
 #  ---------------------
 #  This file contains test cases.
 #
 #  Test Cases:
-#  TCXM-18636: N360M_DeviceScoring_DeviceAvailabilityScore_100_1
+#  Test1 - TCXM-18636: N360M_DeviceScoring_DeviceAvailabilityScore_100_1
 #              Verifies that N360M_DEVICES_DeviceAvailabilityScore is 100.
-#  TCXM-18674 - N360M_DeviceScoring_DeviceHardwareHealthScore_100_1
+#  Test2 - TCXM-18674 - N360M_DeviceScoring_DeviceHardwareHealthScore_100_1
 #              Verifies that N360M_DEVICES_DeviceHardwareHealthScore is 100.
-# TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
+# Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
 #              Verifies that N360M_DEVICES_Config&FirmwareScore is 80.
+# Test4 - TCXM-18725: N360M_Client_Count_1_1
+#              Verifies that N360M_CLIENTS_CLIENTS count is 1 5GHz client.
 ########################################################################################################################
 
 *** Variables ***
 ${AVAILABILITY_SCORE}       100
 ${EXPECTED_HW_HEALTH}       100
 ${EXPECTED_FW_HEALTH}       80
-${SLEEP_TIME}               240s
 ${FLOOR_NAME}               floor_04
 ${CONFIG_PUSH_SSID_01}      SSID_01
 ${CONFIG_PUSH_SSID_02}      SSID_02
-${RETRY_DURATION}           40
-${RETRY_COUNT}              20
-${MAX_CONFIG_PUSH_TIME}     100
+${SSID_01}                  ylbyukugfz
 
 *** Settings ***
 # import libraries
@@ -45,24 +44,31 @@ Library     common/ImageHandler.py
 Library     common/ScreenDiff.py
 Library     xiq/flows/manage/Devices.py
 Library     xiq/flows/mlinsights/Network360Monitor.py
-Library     common/Mu.py
 Library     common/ImageAnalysis.py
 Library     xiq/flows/globalsettings/GlobalSetting.py
 Library     xiq/flows/configure/NetworkPolicy.py
 Library     xiq/flows/configure/ExpressNetworkPolicies.py
+Library     xiq/flows/configure/CommonObjects.py
 Library     extauto/common/Cli.py
 Library     extauto/common/TestFlow.py
 Library     extauto/xiq/flows/common/Login.py
 Library     extauto/xiq/flows/common/Navigator.py
 Library     extauto/xiq/flows/manage/Client.py
+Library     extauto/common/tools/remote/WinMuConnect.py
 
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    TestBeds/${TESTBED}
 Variables    Environments/Config/device_commands.yaml
+Variables    Environments/Config/waits.yaml
+Variables    Tests/Robot/Functional/XIQ/Wireless/Network360Monitor/Resources/n360waits.yaml
+
 Resource     Tests/Robot/Functional/XIQ/Wireless/Network360Monitor/Resources/wireless_networks_config.robot
 
+Library	        Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
+
 Force Tags   testbed_1_node
+Suite Setup    Cleanup
 
 *** Test Cases ***
 Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
@@ -73,9 +79,8 @@ Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
-    ${result1}=             Login User          ${tenant_username}      ${tenant_password}
+    ${result1}=             Login User          ${tenant_username}    ${tenant_password}
     should be equal as integers                 ${result1}            1
-    Delete AP               ap_serial=${ap1.serial}
     ${onboard_result}=      Onboard Device      ${ap1.serial}         ${ap1.make}       location=${ap1.location}      device_os=${ap1.os}
     ${search_result}=       Search AP Serial    ${ap1.serial}
     should be equal as integers                 ${onboard_result}     1
@@ -90,7 +95,7 @@ Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
     ${OUTPUT3}=             Wait For CLI Output                       ${AP_SPAWN}         ${CMD_CAPWAP_CLIENT_STATE}          ${OUTPUT_CAPWAP_STATUS}
     Close Spawn             ${AP_SPAWN}
     Should Be Equal as Integers                 ${OUTPUT3}            1
-    sleep     ${SLEEP_TIME}
+    sleep     ${ap_reporting_time}
     ${availability}     ${hw_health}     ${fw_health}=                Get Network360monitor Device Health Overall Score     ${FLOOR_NAME}
     Log to Console          DeviceAvailabilityScore ${availability}
     Should Be Equal As Integers                 ${availability}       ${AVAILABILITY_SCORE}
@@ -107,6 +112,7 @@ Test2 - TCXM-18674 - N360M_DeviceScoring_DeviceHardwareHealthScore_100_1
     Depends On          Test1
     ${result1}=         Login User    ${tenant_username}    ${tenant_password}
     should be equal as integers       ${result1}            1
+    sleep     ${ap_reporting_time}
     ${availability}   ${hw_health}    ${fw_health}=         Get Network360monitor Device Health Overall Score     ${FLOOR_NAME}
     Log to Console                    DeviceHardwareHealthScore ${hw_health}
     Should Be Equal As Integers       ${hw_health}          ${EXPECTED_HW_HEALTH}
@@ -126,23 +132,9 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
     ${LOGIN_STATUS}=        Login User        ${tenant_username}      ${tenant_password}
     should be equal as integers               ${LOGIN_STATUS}         1
     ${LATEST_VERSION}=      Upgrade Device To Latest Version          ${ap1.serial}
-    Sleep                   30                          Sleep 30 Seconds
+    Sleep                   ${browser_load_wait}
 
     Wait Until Device Reboots                 ${ap1.serial}
-
-    ${SPAWN1}=             Open Spawn        ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
-    ${CLOCK_OUTPUT}=       Send              ${SPAWN1}         show clock
-    ${REBOOT_OUTPUT}=      Send              ${SPAWN1}         show reboot schedule
-    ${VERSION_DETAIL}=     Send              ${SPAWN1}         show version detail
-    ${AP_BUILD_VERSION}=   Get AP Version    ${SPAWN1}
-    Log to Console         AP_BUILD_VERSN2   ${AP_BUILD_VERSION}
-
-    Should Not Contain      ${REBOOT_OUTPUT}    Next reboot Scheduled
-    Should Contain          ${VERSION_DETAIL}   Running image:      Current version
-    Should Contain          ${VERSION_DETAIL}   Load after reboot:  Current version
-    Should Contain          ${VERSION_DETAIL}   Uptime:             0 weeks, 0 days, 0 hours
-
-    Should Be Equal As Strings  ${LATEST_VERSION}           ${AP_BUILD_VERSION}
 
     ${POLICY_01}=             Get Random String
     ${SSID_01}=               Get Random String
@@ -154,22 +146,63 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
     Log to Console            ${CONFIG_PUSH_OPEN_NW_01}
 
     ${POLICY_STATUS}=         Create Network Policy   policy=config_push_${POLICY_01}      &{CONFIG_PUSH_OPEN_NW_01}
-
     ${DEPLOY_STATUS}=         Deploy Network Policy with Complete Update      config_push_${POLICY_01}          ${ap1.serial}
-    Log to Console            DeployStatus ${DEPLOY_STATUS}
-    Wait Until Device Online   ${ap1.serial}  None   30   20
-    Close Spawn               ${SPAWN1}
-    ${SPAWN}=                 Open Spawn      ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
-    ${OUTPUT1}=               Send            ${SPAWN}            show ssid
-    Close Spawn               ${SPAWN}
     Log to Console            POLICY_STATUS ${POLICY_STATUS}
-    Log to Console            DEPLOY_STATUS ${DEPLOY_STATUS}
-    should be equal as integers             ${POLICY_STATUS}            1
-    should be equal as integers             ${DEPLOY_STATUS}            1
-    Log to Console            show_ssid ${OUTPUT1}
-    Should Contain            ${OUTPUT1}    ${SSID_01}
+    Log to Console            DeployStatus ${DEPLOY_STATUS}
+    should be equal as integers   ${POLICY_STATUS}    1
+    should be equal as integers   ${DEPLOY_STATUS}    1
+    Wait Until Device Online  ${ap1.serial}  None  30  20
+
+    Sleep                     ${browser_load_wait}
+    ${AP_SPAWN1}=             Open Spawn        ${ap1.console_ip}   ${ap1.console_port}   ${ap1.username}   ${ap1.password}   ${ap1.platform}
+    ${OUTPUT_SSID}=           Send              ${AP_SPAWN1}        show ssid
+    ${AP_BUILD_VERSION}=      Get AP Version    ${AP_SPAWN1}
+    Close Spawn               ${AP_SPAWN1}
+
+    Log to Console            show_ssid ${OUTPUT_SSID}
+    Should Contain            ${OUTPUT_SSID}    ${SSID_01}
+    Log to Console            AP_BUILD_VERSN    ${AP_BUILD_VERSION}
+    Should Be Equal As Strings  ${LATEST_VERSION}   ${AP_BUILD_VERSION}
+
     ${EDIT_STATUS}=           Edit Network Policy SSID    config_push_${POLICY_01}    ${SSID_01}    ${NEW_SSID_NAME_1}
-    sleep               ${SLEEP_TIME}
+    sleep                     ${ap_reporting_time}
     ${availability}     ${hw_health}     ${fw_health}=    Get Network360monitor Device Health Overall Score   ${FLOOR_NAME}
-    Log to Console      DeviceHardwareHealthScore ${fw_health}
-    Should Be Equal As Integers           ${fw_health}       ${EXPECTED_FW_HEALTH}
+    Log to Console            DeviceHardwareHealthScore ${fw_health}
+    Should Be Equal As Integers          ${fw_health}   ${EXPECTED_FW_HEALTH}
+
+
+Test4 - TCXM-18725: N360M_Client_Count_1_1
+    [Documentation]   Correctness of Client count (one 5GHz Client) is verified in N360M Client Health, CLIENTS widget.
+#                     Assumption is that there is only one Client connected.
+    [Tags]              xim_tc_18725    development
+    [Teardown]   run keywords     Logout User
+    ...          AND              Sleep   10
+    ...          AND              Quit Browser
+    Depends On          Test3
+
+    ${result1}=           Login User     ${tenant_username}    ${tenant_password}
+    ${CONNECT_STATUS}=    Remote_Server.Connect Open Network    ${SSID_01}
+    should be equal as strings          '${CONNECT_STATUS}'    '1'
+    Log to Console        Sleep for ${client_connect_wait}
+    sleep                 ${client_connect_wait}
+
+    ${CLIENT_CONNECT}=    Get Client Status   client_mac=${mu1.wifi_mac}
+    Should Be Equal As Strings          '${CLIENT_CONNECT}'      '1'
+    sleep                 ${ap_reporting_time}
+    ${client_count_2G}     ${client_count_5G}     ${client_count_6G}=       Get Network360monitor Clients Health Client Count   ${FLOOR_NAME}
+    Log to Console        clientCount2G ${client_count_2G}
+    Log to Console        clientCount5G ${client_count_5G}
+    Log to Console        clientCount6G ${client_count_6G}
+    Should Be Equal As Strings          '${client_count_2G}'     '0 (0%)'
+    Should Be Equal As Strings          '${client_count_5G}'     '1 (100%)'
+    Should Be Equal As Strings          '${client_count_6G}'     '0 (0%)'
+
+*** Keywords ***
+Cleanup
+    Login User      ${tenant_username}      ${tenant_password}
+    delete all aps
+    delete_all_ssids
+    delete all network policies
+    Logout User
+    Sleep   10
+    Quit Browser
