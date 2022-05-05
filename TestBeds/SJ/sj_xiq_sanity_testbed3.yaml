@@ -21,7 +21,7 @@ ap1:
 ap2:
   name:                     AH-57c980#
   connection_method:        'telnet'
-  ip:                       10.16.168.209
+  ip:                       10.16.168.208
   port:                     22
   username:                 admin
   password:                 Aerohive123

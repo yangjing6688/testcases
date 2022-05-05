@@ -18,7 +18,6 @@ ${EXIT_LEVEL}               test_suite
 ${CURL_CODE_SUCCESS}        {"code": "ok"}
 ${A3_PAGE_TITLE}            Administrator - A3
 ${UNLINK_A3_PAGE_TEXT}      You do not have any A3 instances connected to your account.
-${CLOUD_GDC_URL}            https://cloud.aerohive.com
 ${a3_version}               a4_0server1
 
 *** Settings ***
