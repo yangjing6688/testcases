@@ -10,8 +10,8 @@ wing1:
   username:                 admin
   password:                 symbol
   platform:                 wing
-  ip:
+  ip:                       10.234.137.23
   console_ip:               10.234.137.23
-  console_port:             22
+  console_port:             '22'
   country:                  United Kingdom
   make:                     Controllers

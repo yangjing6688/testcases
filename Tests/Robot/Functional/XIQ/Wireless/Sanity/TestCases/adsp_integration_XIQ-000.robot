@@ -69,7 +69,7 @@ Pre Condition
     Delete Network Polices          ${NW_POLICY_NAME}   ${NW_POLICY_NAME2}
     Delete SSIDs                    ${SSID_NAME}   ${SSID_NAME2}
     Delete Wips Policy Profile      ${WIPS_POLICY_NAME}
-    Delete AP Template Profile      ${ap2.model}
+    Delete AP Template Profile      ${ap1.model}
     Logout User
     Quit Browser
 
