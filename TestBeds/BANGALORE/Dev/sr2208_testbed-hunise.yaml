@@ -1,0 +1,16 @@
+sw1:
+  name:                     sr22000008
+  model:                    SR2208P
+  device_template:          SR2208P-default-template
+  serial:                   '22081903030388'
+  os:                       Linux 3.6.5
+  mac:                      B87CF2029544
+  network_policy:
+  username:                 admin
+  password:                 Aerohive123
+  platform:                 aerohive-fastpath
+  connection_method:        "telnet"
+  console_ip:               10.234.221.5
+  console_port:             7005
+  test_port:
+  make:                     Extreme - Aerohive
