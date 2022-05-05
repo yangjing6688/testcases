@@ -144,7 +144,8 @@ Log Into XIQSE and XIQ and Confirm Success
 Log Into XIQSE and Obtain Window Index
     [Documentation]     Logs into XIQSE and obtains the window index
 
-    Log Into XIQSE and Confirm Success    ${XIQSE_USER}    ${XIQSE_PASSWORD}    url=${XIQSE_URL}
+    Log Into XIQSE and Confirm Success              ${XIQSE_USER}  ${XIQSE_PASSWORD}  url=${XIQSE_URL}
+    Handle License Agreement If Displayed           ${XIQ_USER}  ${XIQ_PASSWORD}
 
     # Close any banner messages (Connection Lost with XIQ, License Expiration, etc.) and the Help panel, if displayed
     Close Panels on Login If Displayed

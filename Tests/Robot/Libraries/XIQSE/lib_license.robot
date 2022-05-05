@@ -40,6 +40,10 @@ Handle License Agreement and Onboard to XIQ
 
     Accept License Agreement
     Enter XIQ Credentials on Onboard Page    ${xiq_email}  ${xiq_pwd}
+
+    # Make sure the XIQSE version is set
+    Get XIQSE Version
+
     Run Keyword If  '21.4' not in '${XIQSE_OS_VERSION}'  Confirm User Is Logged Into XIQSE
 
 Accept License Agreement

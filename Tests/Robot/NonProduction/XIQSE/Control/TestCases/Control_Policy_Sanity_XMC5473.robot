@@ -151,7 +151,9 @@ Test 12: Delete Domain
 Log In and Set Up Test
     [Documentation]     Logs in and sets up the components for the test
 
-    Log Into XIQSE and Close Panels              ${XIQSE_USERNAME}    ${XIQSE_PASSWORD}    url=${XIQSE_URL}
+    Log Into XIQSE and Confirm Success                 ${XIQSE_USERNAME}    ${XIQSE_PASSWORD}    url=${XIQSE_URL}
+    Handle License Agreement If Displayed              ${XIQ_EMAIL}  ${XIQ_PASSWORD}
+    Close Panels on Login If Displayed
     Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
     Onboard XIQSE To XIQ If In Connected Mode    ${INSTALL_MODE}  ${XIQSE_IP_ADDRESS}  ${XIQ_EMAIL}  ${XIQ_PASSWORD}
     Navigate and Create Device                   ${DUT_IP}  ${DUT_PROFILE}

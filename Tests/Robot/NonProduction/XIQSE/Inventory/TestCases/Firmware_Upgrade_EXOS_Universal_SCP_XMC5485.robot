@@ -95,7 +95,9 @@ Test 3: Confirm Events
 Log In and Set Up Test
     [Documentation]     Logs in and configures everything that is required for the test to run
 
-    Log Into XIQSE and Close Panels                  ${XIQSE_USERNAME}    ${XIQSE_PASSWORD}    url=${XIQSE_URL}
+    Log Into XIQSE and Confirm Success                 ${XIQSE_USERNAME}    ${XIQSE_PASSWORD}    url=${XIQSE_URL}
+    Handle License Agreement If Displayed              ${XIQ_EMAIL}  ${XIQ_PASSWORD}
+    Close Panels on Login If Displayed
     Set Option Web Server Session Timeout and Confirm Success  7  day(s)
     Set Option Device Tree Name Format and Confirm Success     IP Address
     Navigate and Set Option Status Polling Group 2 Interval and Confirm Success       2

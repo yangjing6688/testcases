@@ -52,7 +52,9 @@ Test 1: Test Create And Delete Policy Role:
 Log In and Set Up Test
     [Documentation]     Logs in and sets up the components for the test
 
-    Log Into XIQSE and Close Panels              ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}  url=${XIQSE_URL}
+    Log Into XIQSE and Confirm Success                 ${XIQSE_USERNAME}    ${XIQSE_PASSWORD}    url=${XIQSE_URL}
+    Handle License Agreement If Displayed              ${XIQ_EMAIL}  ${XIQ_PASSWORD}
+    Close Panels on Login If Displayed
     Onboard XIQSE To XIQ If In Connected Mode    ${INSTALL_MODE}  ${XIQSE_IP_ADDRESS}  ${XIQ_EMAIL}  ${XIQ_PASSWORD}
     XIQSE Navigate To Control Policy Tab
 

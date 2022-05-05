@@ -85,7 +85,9 @@ Test 5: Confirm Log In with Valid Credentials after Invalid Credentials is Succe
 Log In and Set Up Test
     [Documentation]     Logs in and configures everything that is required for the test to run
 
-    Log Into XIQSE and Close Panels                 ${XIQSE_USERNAME}    ${XIQSE_PASSWORD}    url=${XIQSE_URL}
+    Log Into XIQSE and Confirm Success                 ${XIQSE_USERNAME}    ${XIQSE_PASSWORD}    url=${XIQSE_URL}
+    Handle License Agreement If Displayed              ${XIQ_EMAIL}  ${XIQ_PASSWORD}
+    Close Panels on Login If Displayed
     Onboard XIQSE To XIQ If In Connected Mode        ${INSTALL_MODE}  ${XIQSE_IP_ADDRESS}  ${XIQ_EMAIL}  ${XIQ_PASSWORD}
     Log Out of XIQSE and Quit Browser
 
