@@ -36,6 +36,7 @@ TCCS-7279_Step1: Onboard WiNG AP
     [Documentation]         Checks for ap onboarding is success in case of valid scenario
 
     [Tags]                  production      tccs_7279_step1
+
     ${result}=              Login User          ${tenant_username}      ${tenant_password}
     ${DELETE_RESULT}=       Delete Device           device_serial=${wing1.serial}
     Log                     ${DELETE_RESULT}
@@ -53,6 +54,7 @@ TCCS-7279_Step2: Config AP to Report XIQ
     [Documentation]     Configure Capwap client server
 
     [Tags]              production      tccs_7279_step2
+
     Depends On          tccs_7279_step1
     ${AP_SPAWN}=        Open Spawn          ${wing1.console_ip}   ${wing1.console_port}      ${wing1.username}       ${wing1.password}        ${wing1.platform}
 
@@ -71,6 +73,7 @@ TCCS-7279_Step3: Check AP Status On UI
     [Documentation]     Checks for ap status
 
     [Tags]              production      tccs_7279_step3
+
     Depends On          tccs_7279_step1               tccs_7279_step2
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
 
@@ -82,7 +85,6 @@ TCCS-7279_Step3: Check AP Status On UI
     Log To Console      ${MGT_IP_ADDRESS}
 
     Should Be Equal As Strings  '${AP_STATUS}'     'green'
-    Should Be Equal As Strings  ${MGT_IP_ADDRESS}       ${wing1.ip}
 
     [Teardown]      run keywords    logout user
      ...                            quit browser
@@ -91,12 +93,13 @@ TCCS-7279_Step4: Check for SSH CLI Reachability
     [Documentation]     Check for SSH CLI Reachability
 
     [Tags]              production      tccs_7279_step4
+
     Depends On          tccs_7279_step1               tccs_7279_step2               tccs_7279_step3
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
     Enable SSH Availability
     Navigate To Devices
 
-	&{ip_port_info}=       Device360 Enable SSH CLI Connectivity     device_mac=${wing1.name}    run_time=5
+	&{ip_port_info}=       Device360 Enable SSH CLI Connectivity     device_mac=${wing1.mac}    run_time=5
 
     ${IP ADDR}=            Get From Dictionary  ${ip_port_info}  ip
     ${PORT NUM}=           Get From Dictionary  ${ip_port_info}  port

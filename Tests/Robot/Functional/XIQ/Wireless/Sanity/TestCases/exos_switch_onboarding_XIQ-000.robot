@@ -21,6 +21,7 @@ Library     xiq/flows/manage/Switch.py
 Library     xiq/flows/manage/Tools.py
 Library     xiq/flows/configure/NetworkPolicy.py
 Library     xiq/flows/globalsettings/GlobalSetting.py
+Library     common/TestFlow.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -74,6 +75,8 @@ TCCS-7292_Step2: Verify EXOS Switch Information on Device 360 page
     [Documentation]         Verify EXOS Switch Information on Device 360 page
 
     [Tags]                  production      tccs_7292_step2
+
+    Depends On              tccs_7292_step1
     ${LOGIN_XIQ} =                 Login User               ${tenant_username}      ${tenant_password}
     ${SYS_INFO_360_PAGE}=          Get ExOS Switch 360 Information  device_mac=${netelem1.mac}
     ${HOST_NAME}=                  Get From Dictionary      ${SYS_INFO_360_PAGE}    host_name
@@ -94,6 +97,8 @@ TCCS-7292_Step3: Verify ExOS SSH connectivity
   [Documentation]       Verify ExOS SSH connectivity
 
     [Tags]              production      tccs_7292_step3
+
+    Depends On          tccs_7292_step2
     ${LOGIN_XIQ}=         Login User          ${tenant_username}      ${tenant_password}
     ${ENABLE_SSH}=         Enable SSH Availability
 
