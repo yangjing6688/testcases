@@ -54,7 +54,7 @@ ${DISCOVERY_TYPE}         RANGE
 *** Test Cases ***
 Test 1: Bulk Add
     [Documentation]     Confirms a bulk add in XIQ-SE adds all devices to XIQ
-    [Tags]              nightly1    release_testing    csit_tc_8968    xmc_3196    development    xiqse    xiq_integration    bulk    test1
+    [Tags]              nightly1    release_testing    license_testing    csit_tc_8968    xmc_3196    development    xiqse    xiq_integration    bulk    test1
 
     # Obtain the number of devices in XIQ before the discovery
     Switch To Window  ${XIQ_WINDOW_INDEX}
@@ -99,7 +99,7 @@ Test 1: Bulk Add
 
 Test 2: Bulk Delete
     [Documentation]     Confirms a bulk delete in XIQ-SE removes all devices from XIQ
-    [Tags]              nightly1    release_testing    csit_tc_8968    xmc_3196    development    xiqse    xiq_integration    bulk    test2
+    [Tags]              nightly1    release_testing    license_testing    csit_tc_8968    xmc_3196    development    xiqse    xiq_integration    bulk    test2
     Depends On          test1
 
     # Obtain the number of rows in the XIQ Device Message Details table before the delete
