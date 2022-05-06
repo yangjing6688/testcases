@@ -5,7 +5,7 @@ netelem1:
   serial:                   '1924F-10139'
   mac:                      000496BA7F0C
   username:                 admin
-  password:
+  password:                 Aerohive123
   ip:                       10.16.152.98
   console_ip:               10.16.128.23
   console_port:             7036

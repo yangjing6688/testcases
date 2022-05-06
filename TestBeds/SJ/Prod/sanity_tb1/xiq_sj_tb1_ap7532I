@@ -1,18 +1,18 @@
 ap1:
-  name:                     bui-flo-2816
+  name:                     bui-flo-0046
   connection_method:        "telnet"
-  ip:                       10.16.166.250
+  ip:                       10.16.166.232
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   "04102006082816"
-  console_ip:               10.16.166.229
+  serial:                   "15061522201462"
+  console_ip:               10.16.166.228
   console_port:             4002
-  mac:                      BCF310707580
+  mac:                      84248d861180
   os:                       Cloud IQ Engine
   platform:                 aerohive
-  model:                    AP410C
-  template:                 AP410C-default-template
+  model:                    AP460S6C
+  template:                 AP460S6C-default-template
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
@@ -27,20 +27,8 @@ ap1:
     type:
   extra:
       country:                  United Kingdom
-      network_policy:           BLR_TB2_AP305C_01
-      ssid:                     AP410C_01
+      network_policy:           BLR_TB2_AP460S6C_01
+      ssid:                     AP460S6C_01
       version:                  6.5
       neighbour_serial:         06301908310556
       neighbour_mac:            3485843A5CC0
-
-
-mu1:
-  ip:             10.16.166.237
-  port:           22
-  username:       admin
-  password:       symbol
-  platform:       windows
-  mac_wifi_port:  en1
-  wifi_mac:       0024D765CDB8
-  # wifi_network:   10.234.178
-  # wifi_network_vlan10:    10.234.178

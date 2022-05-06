@@ -34,10 +34,12 @@ ap1:
       neighbour_mac:            3485843A5CC0
 
 mu1:
-  ip:             10.16.166.235
+  ip:             10.16.166.236
   port:           22
-  username:       root
-  password:       aerohive
-  platform:       mac
+  username:       admin
+  password:       symbol
+  platform:       windows
   mac_wifi_port:  en1
-  wifi_mac:       F0189888A3FF
+  wifi_mac:       843a4b916850
+  # wifi_network:   10.234.178
+  # wifi_network_vlan10:    10.234.178
