@@ -14,6 +14,19 @@ from ExtremeAutomation.Utilities.EconClient.econ_request_api import econAPI
 from ExtremeAutomation.Utilities.Framework.test_case_inventory import PytestItems
 from ExtremeAutomation.Utilities.Framework.test_case_inventory import PathTools
 from ExtremeAutomation.Utilities.Framework.test_selection import CheckExecution
+
+@fixture()
+# used to skip test cases
+def test_case_skip_check(request):
+    request.instance.executionHelper.testSkipCheck()
+    yield
+
+@fixture()
+# Test case setup and tear down
+def test_case_started_ended_print(request):
+    print("TEST STARTED")
+    yield
+    print("TEST END")
 #
 # @fixture(scope='session')
 # def apiUdks():

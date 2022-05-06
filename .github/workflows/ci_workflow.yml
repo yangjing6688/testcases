@@ -568,46 +568,68 @@ jobs:
 
         EOL
 
-    # TODO: fix this for __init__.py files
+    # Checks for testcases being mistakenly put in the resources directory
     - name: Process modified Pytest Resources files
       run: |
         files_tested=0
-        for line in $( cat ${{ env.pytest_res }} | tr ',' '\n' ) ; do
-          let "files_tested += 1"
-          printf "[*] Processing Pytest Resources file: $line ...\n" | tee -a ${{ env.testcase_naming_report_path }}
-            for func in `grep -w def $line | awk '{print $2}'`; do
-              printf "Testing Function ${func} ...\n" | tee -a ${{ env.testcase_naming_report_path }}
-              if [[ ${func} =~ ^test_.*$ ]] ; then
-                printf "Function ${func}: FAIL\n" | tee -a ${{ env.testcase_naming_report_path }}
-                exit 1
-              else
-                printf "Function ${func}: PASS\n" | tee -a ${{ env.testcase_naming_report_path }}
-              fi
+        rc=0
+        for path in $( cat ${{ env.pytest_res }} | tr ',' '\n' ) ; do
+            filename=$( basename "$path" )
+            let "files_tested += 1"
+            echo "[*] Processing Pytest Resources file: $path ..." | tee -a ${{ env.testcase_naming_report_path }}
+
+            # skip __init__.py files
+            #
+            if [[ ${filename} =~ __init__\.py$ ]] ; then
+                echo "[**] PASS - File: ${path}" | tee -a ${{ env.testcase_naming_report_path }}
+                continue
+            fi
+
+            for func in $( grep -w def $path | awk '{print $2}' ); do
+                echo "Testing Function: ${func} ..." | tee -a ${{ env.testcase_naming_report_path }}
+
+                if [[ ${func} =~ ^test_.*$ ]] ; then
+                  echo "[**] FAIL - Function: ${func}" | tee -a ${{ env.testcase_naming_report_path }}
+                  rc=1
+                else
+                  echo "[**] PASS - Function: ${func}" | tee -a ${{ env.testcase_naming_report_path }}
+                fi
             done
         done
         if (( files_tested == 0 )); then
           echo "[*] No Pytest Resource files found. Skipping these tests..." | tee -a ${{ env.testcase_naming_report_path }}
         fi
+        exit $rc
 
+    # Checks for non-testcases in testcase directory
     - name: Process modified Pytest Test files
       run: |
         files_tested=0
-        for line in $( cat ${{ env.pytest_func_path }} ${{ env.pytest_non_prod_path }} | tr ',' '\n' ) ; do
-          let "files_tested += 1"
-          printf "[*] Processing Pytest Test file: $line ...\n" | tee -a ${{ env.testcase_naming_report_path }}
-            func=`grep -w def $line | awk '{print $2}' | grep ^test_`
-              if [[ ${line} =~ __init__\.py ]] ; then
-                printf "File ${line}: PASS\n" | tee -a ${{ env.testcase_naming_report_path }}
-              elif [[ ${func-} ]] ; then
-                printf "File ${line}: PASS\n" | tee -a ${{ env.testcase_naming_report_path }}
-              else
-                printf "File ${line}: FAIL\n" | tee -a ${{ env.testcase_naming_report_path }}
-                exit 1
-              fi
+        rc=0
+        for path in $( cat ${{ env.pytest_func_path }} ${{ env.pytest_non_prod_path }} | tr ',' '\n' ) ; do
+            filename=$( basename "$path" )
+            let "files_tested += 1"
+            echo "[*] Processing Pytest Test file: $path ..." | tee -a ${{ env.testcase_naming_report_path }}
+
+            # skip __init__.py files
+            #
+            if [[ ${filename} =~ __init__\.py$ ]] ; then
+                echo "[**] PASS - File: ${path}" | tee -a ${{ env.testcase_naming_report_path }}
+                continue
+            fi
+
+            func=$( grep -w def $path | awk '{print $2}' | grep ^test_ )
+            if [[ ${func-} ]] ; then
+              echo "[**] PASS - File: ${path}" | tee -a ${{ env.testcase_naming_report_path }}
+            else
+              echo "[**] FAIL - File: ${path}" | tee -a ${{ env.testcase_naming_report_path }}
+              rc=1
+            fi
         done
         if (( files_tested == 0 )); then
           echo "[*] No Pytest Test files found. Skipping these tests..." | tee -a ${{ env.testcase_naming_report_path }}
         fi
+        exit $rc
 
     - name: Upload test results to GH artifacts
       uses: actions/upload-artifact@v2
