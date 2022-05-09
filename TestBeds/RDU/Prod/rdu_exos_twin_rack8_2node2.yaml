@@ -1,33 +1,10 @@
 ---
 lab:                      "RDU"
 
-environment:
-  version:  "1.0"
-  topology_template:  "2node_template_physical.yaml"
-  type:   "physical"
-
-environment_host:
-  name:                   "VServer1"
-  ip:                     "10.69.2.40"
-  username:               "extreme"
-  password:               "extreme"
-  connection_method:      "ssh"
-  #ssh_port:              "9015"
-  #type:                  "vbox"
-  #os:                    "linux"
-
-testengine:
-  name:                     "robot_test_engine"
-  ip:                       "10.69.2.72"
-  vm_location:              ""
-  physical_device:          "True"
-  username:                 "administrator"
-  password:                 "BeExtreme!"
-
-      
 netelem1:
   name:                     "i386_DUT1"
   model:                    "SwitchEngine5520_24T"
+  make:                     "EXOS"
   ip:                       "10.69.24.130"
   pdu_ip:                   ""
   pdu_port:                 ""
@@ -106,6 +83,7 @@ netelem1:
 
 netelem2:
   name:                     "i386_DUT2"
+  make:                     "EXOS"
   model:                    "SwitchEngine5520_24T"
   ip:                       "10.69.24.131"
   pdu_ip:                   ""
@@ -182,8 +160,8 @@ netelem2:
     port_a:
       ifname:
       intnet:
- 
- 
+
+
 tgen1:
   name:                     &tgen1_name "JETS"
   vendor:                   "jets"
@@ -252,7 +230,7 @@ nettools_fpp1:
     mask:         "24"
     source_mac:   ""
     intnet:       ""
-    
+
 nettools_fpp2:
   name:                 "inband_server2"
   ip:                   "172.16.251.1"

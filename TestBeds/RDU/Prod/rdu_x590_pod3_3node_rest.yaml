@@ -1,35 +1,9 @@
 ---
 lab:                      "RDU"
 
-netelem1_telnet:
-  name:                     "x590_DUT1_telnet"
-  model:                    "X590_24x_1q_2c"
-  ip:                       "10.69.50.171"
-  term_server:              "10.69.50.253 2007"
-  pdu_ip:                   "10.69.50.252"
-  pdu_port:                 "7"
-  mgmt_vlan:                "VR-Mgmt"
-  username:                 "admin"
-  password:                 ""
-  connection_method:        "telnet"
-  os:                       "exos"
-  image_family:             "onie_x86"
-  platform:                 "X590-24x-1q-2c"
-  host_mac:                 "00-04-96-CE-DD-84"
-  primary_test_target:      "True"
-  physical_device:          "True"
-  snmp_version:             "v2c"
-  snmp_community_name:      "extreme123"
-  snmp_user_name:           "user_md5_des"
-  snmp_auth_protocol:       "md5"
-  snmp_auth_password:       "extreme123"
-  snmp_privacy_protocol:    "des"
-  snmp_privacy_password:    "extreme123"
-  vm_location:
-  base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x590_pod3_3node/rdu_x590_pod3_3node_netelem1.cfg"
-
 netelem1:
   name:                     "x590_DUT1"
+  make:                     "EXOS"
   model:                    "X590_24x_1q_2c"
   ip:                       "10.69.50.171"
   term_server:              "10.69.50.253 2007"
@@ -116,6 +90,7 @@ netelem1:
 
 netelem2:
   name:                     "x590_DUT2"
+  make:                     "EXOS"
   model:                    "X590_24x_1q_2c"
   ip:                       "10.69.50.172"
   term_server:              "10.69.50.253 2008"
@@ -203,6 +178,7 @@ netelem2:
 
 netelem3:
   name:                     "x590_DUT3"
+  make:                     "EXOS"
   model:                    "X590_24x_1q_2c"
   ip:                       "10.69.50.173"
   term_server:              "10.69.50.253 2009"

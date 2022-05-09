@@ -1,11 +1,3 @@
-environment:
-  version:           "1.0"
-  topology_template: "NONE"
-  number_of_nodes:   "2-node"
-  test_bed_name:     "SalemRobot90-91-MACSEC"
-  url:               ""
-
-
 netelem1:
   name:                     "X450G2_DUT1"
   model:                    "X450G2_48p_G4"

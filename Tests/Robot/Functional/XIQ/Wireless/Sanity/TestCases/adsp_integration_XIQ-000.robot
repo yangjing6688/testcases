@@ -170,7 +170,7 @@ Test4: Configure ADSP on AP
     ${CREATE_POLICY1}=         Create Network Policy   ${NW_POLICY_NAME}       &{ADSP_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap1.model}     ${ap1.template_Name}        &{AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap1.model}     ${ap1.template_name}        &{AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings   '${CREATE_AP_TEMPLATE}'   '1'
 
     ${CONFIG_WIPS_POLICY}      Configure WIPS Policy On Common Objects   ${WIPS_POLICY_NAME}
@@ -200,7 +200,7 @@ Test5: Generate DoS Deauthentication Alarm on Kali Linux
     Depends On              Test2  Test3   Test4
 
     FOR    ${i}    IN RANGE   20
-          ${KALI_SPAWN}=               Open PxSSH Spawn         ${Kali_server1.ip}   ${Kali_server1.username}       ${Kali_server1.password}
+          ${KALI_SPAWN}=               Open PxSSH Spawn         ${kali1.ip}   ${kali1.username}       ${kali1.password}
           ${DOS_ALARM_CMD}=            Send                ${KALI_SPAWN}        aireplay-ng -D wlan1 --deauth 0 -a ${mu1.wifi_mac}
           Should Contain               ${DOS_ALARM_CMD}   Sending DeAuth
           close spawn   ${KALI_SPAWN}

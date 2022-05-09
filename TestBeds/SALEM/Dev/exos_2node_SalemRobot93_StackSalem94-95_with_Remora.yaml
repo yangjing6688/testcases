@@ -1,11 +1,3 @@
-environment:
-  version:           "1.0"
-  topology_template: "NONE"
-  number_of_nodes:   "2-node"
-  test_bed_name:     "SalemRobot93_StackSalemRobot94-95_with_Remora"
-  url:               ""
-
-
 netelem1:
   name:                     "DUT1_X450G2_Standalone"
   model:                    "X450G2_48p_G4"

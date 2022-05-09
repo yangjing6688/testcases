@@ -23,7 +23,7 @@ Next you will need to set your system PYTHONPATH environment variable for the OS
 
 ## Step 3: Create a Virtual Environment
 ### Creating a Virtual Environment on Windows
-Install python 3 on your system https://www.python.org/downloads/ and 
+Install python 3 on your system https://www.python.org/downloads/ and
 Issue the following commands in a command prompt at the base root for the project extreme_automation_tests:
 
 - Issue the following commands at the prompt:
@@ -32,30 +32,24 @@ Issue the following commands in a command prompt at the base root for the projec
         venv\\Scripts\\activate.bat
 
 ### Creating a Virtual Environment on Linux
-Install python 3 on your system https://www.python.org/downloads/ and 
+Install python 3 on your system https://www.python.org/downloads/ and
 Issue the following commands in a command prompt at the base root for the project extreme_automation_tests:
 
 - Issue the following commands at the prompt:
 
         python -m venv venv
         source venv/bin/activate
-        
-## Step 4: (Ubuntu only) - Install required packages
-If you are installing on Ubuntu make sure the following libraries are installed and up to date with the following command. This will ensure the pycurl can be installed later on in the instructions.
 
-    sudo apt-get update
-    sudo apt-get install libssl-dev libcurl4-openssl-dev python3-dev
-
-## Step 5: Install the Framework Requirements in the Virtual Environment
+## Step 4: Install the Framework Requirements in the Virtual Environment
 
 You will need to install the requirements.txt file in your virtual enviroment so that all of the required python packages will be installed. To do this start your virtual environment located in the `extreme_automation_tests` directory. Cd to the `extreme_automation_tests` repository and run the following command in your virutal environment:
 
         pip install -r requirements.txt
 
-This should install all of the requirements for the Automation Framework and pytest. You can verify this by typing `pip list` and see that the same packages located in [this](https://github.com/extremenetworks/extreme_automation_tests/blob/main/requirements.txt) file are installed. 
+This should install all of the requirements for the Automation Framework and pytest. You can verify this by typing `pip list` and see that the same packages located in [this](https://github.com/extremenetworks/extreme_automation_tests/blob/main/requirements.txt) file are installed.
 
-    
-## Step 6: Install and Configuration an IDE
+
+## Step 5: Install and Configuration an IDE
 There are a numerous of ways that a new developer can set up this framework and tests.
 
 - We have directions to install [PyCharm](../PYCHARM.md) IDE to develop test cases.

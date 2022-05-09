@@ -13,7 +13,7 @@ ap1:
   platform:                 aerohive
   model:                    AP410C
   template:                 AP_410C-default-template
-  template_Name:            AP410C-ADSP_Prod
+  template_name:            AP410C-ADSP_Prod
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
@@ -59,7 +59,7 @@ ap2:
     type:
 
 
-Kali_server1:
+kali1:
   ip:                 "10.234.201.101"
   username:           "root"
   password:           "symbol"

@@ -651,6 +651,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{ steps.set-output.outputs.status }}
+    env:
+      pytest_result_file: pytest_data.json
+      robot_result_file: robot_data.json
 
     steps:
     - uses: actions/download-artifact@v2
@@ -723,7 +726,6 @@ jobs:
     - name: Install python requirements
       if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
       run: |
-        grep -v pycurl requirements.txt > requirements.txt.tmp && mv requirements.txt.tmp requirements.txt
         pip install -r requirements.txt
 
     # TODO: Figure out how to get pytest to only operate on input files. If that isn't viable
@@ -739,6 +741,12 @@ jobs:
         # Run pytest
         pytest --get_test_info cicd ${{ env.PYTEST_FILES }} || true
 
+        # Check if inventory tool had problems
+        if [[ ! -f "${{ env.pytest_result_file }}" ]]; then
+            echo "Error: output file not found. Check above exception."
+            exit 1
+        fi
+
     - name: Run robot inventory tool
       if: ${{env.SKIP_CHECK == 'false' && env.RUN_ROBOT == 'true'}}
       env:
@@ -749,6 +757,12 @@ jobs:
 
         # Run robot
         python $ROBOT_TOOL_PATH ${{ env.ROBOT_FILES }}
+
+        # Check if inventory tool had problems
+        if [[ ! -f "${{ env.robot_result_file }}" ]]; then
+            echo "Error: output file not found. Check above exception."
+            exit 1
+        fi
 
     # Tags and Markers:
     # Tests should contain Tags (Robot) or Markers (pyTest) to categorize the tests allowing test case selection during a test run.  This allows the automation system to select or omit specific tests.  For example, if tests are specific to a particular device and cannot be run on other devices you would want to add a tag or marker to identify the hardware the test can run on.   The number and types of tags are essentially limitless.  To avoid clutter please review existing tags and reuse them where possible.
@@ -801,7 +815,7 @@ jobs:
       if: ${{env.SKIP_CHECK == 'false' && env.RUN_PYTEST == 'true'}}
       run: |
         rc=0
-        testcase_files=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' pytest_data.json )
+        testcase_files=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' ${{ env.pytest_result_file }} )
         # printf '%s\n' "DEBUG: testcase_files: $testcase_files"
         while IFS='|' read -r key value; do
             # printf '%s\n%s\n' "DEBUG: key: $key" "DEBUG: value: $value"
@@ -849,7 +863,7 @@ jobs:
       if: ${{env.SKIP_CHECK == 'false' && env.RUN_ROBOT == 'true'}}
       run: |
         rc=0
-        testcase_files=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' robot_data.json )
+        testcase_files=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' ${{ env.robot_result_file }} )
         # printf '%s\n' "DEBUG: testcase_files: $testcase_files"
         while IFS='|' read -r key value; do
             # printf '%s\n%s\n' "DEBUG: key: $key" "DEBUG: value: $value"

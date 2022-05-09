@@ -1,11 +1,3 @@
-environment:
-  version:           "1.0"
-  topology_template: "NONE"
-  number_of_nodes:   "2-node"
-  test_bed_name:     "460g2_2node_SalemRobot26-27Jets"
-  url:               ""
-
-
 netelem1:
   name:                     "X460G2_DUT1_sum26"
   model:                    "X460G2_24p_10_G4"
