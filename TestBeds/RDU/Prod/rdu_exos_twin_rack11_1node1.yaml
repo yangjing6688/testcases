@@ -12,6 +12,7 @@ netelem1:
   password:                 ""
   connection_method:        "telnet"
   os:                       "exos"
+  make:                     "EXOS"
   hostname:                 "RDU-VM-POD11-4NODE-DUT1"
   serial:                   "SIMAAAA-3001"
   console_ip:               "10.69.24.4"

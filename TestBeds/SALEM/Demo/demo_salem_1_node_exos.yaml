@@ -15,6 +15,7 @@ netelem1:
   password:                 ""
   connection_method:        "telnet"
   os:                       "exos"
+  make:                     "EXOS"
   platform:                 "x460G2"
   auth_mode:                "basic"
   image_family:             ""

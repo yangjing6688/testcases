@@ -14,6 +14,7 @@ netelem1:
   password:                 "rwa"
   connection_method:        "telnet"
   os:                       "voss"
+  make:                     "VOSS"
   platform:                 "vsp8000"
   auth_mode:                "basic"
   image_family:             ""
