@@ -33,7 +33,7 @@ ap1:
       neighbour_serial:         06301908310556
       neighbour_mac:            3485843A5CC0
 
-aerohive_sw1:
+sw1:
   name:               bui-flo-0026
   model:              SR2348P
   device_template:    SR2348P-default-template

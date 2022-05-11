@@ -35,7 +35,7 @@ ap1:
 
 mu1:
   ip:             10.16.166.236
-  port:           22
+  port:           8270
   username:       admin
   password:       symbol
   platform:       windows

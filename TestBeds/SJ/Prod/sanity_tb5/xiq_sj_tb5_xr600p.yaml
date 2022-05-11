@@ -2,11 +2,11 @@ router1:
   name:                     bui-flo-0393
   model:                    XR600P
   device_template:          XR600P_test_automation
-  serial:                   "60018082400393"
+  serial:                   "60018082400365"
   ip:                       10.16.170.66
   port:                     22
   os:                       HiveOS 10.0r10b build-254127
-  mac:                      F4EAB52DCE00
+  mac:                      F4EAB52DC700
   network_policy:           Test_np
   username:                 admin
   password:                 Aerohive123

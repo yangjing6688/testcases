@@ -33,11 +33,19 @@ ap1:
       neighbour_serial:         06301908310556
       neighbour_mac:            3485843A5CC0
 
-mu1:
-  ip:             10.16.171.35
-  port:           22
-  username:       root
-  password:       aerohive
-  platform:       mac
-  mac_wifi_port:  en1
-  wifi_mac:       F018988C41A8
+sw1:
+  name:               bui-flo-0026
+  model:              SR2348P
+  device_template:    SR2348P-default-template
+  serial:             '23481812230026'
+  os:                 Linux 3.6.5
+  mac:                B87CF2026C18 
+  ip:                 10.16.171.34
+  network_policy:
+  username:           admin
+  password:           aerohive
+  platform:           aerohive-fastpath
+  console_ip:         10.16.171.37
+  console_port:       4000
+  test_port:
+  make:               Extreme - Aerohive
