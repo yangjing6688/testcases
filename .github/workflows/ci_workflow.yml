@@ -298,13 +298,13 @@ jobs:
           fi
 
           # Test for "test_" prefix. Ignore __init__.py, conftest.py, .pylintrc files
-          if [[ ! $f =~ ^test_.*\.py$|__init__\.py$|conftest.py$|.pylintrc$ ]] ; then
+          if [[ ! $f =~ ^test_.*\.py$|__init__\.py$|conftest\.py$|\.pylintrc$ ]] ; then
               echo "[**] FAIL: $path is missing the \"test_\" prefix!" | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
 
           # Check for valid Jira ID suffix. Ignore __init__.py, conftest.py, .pylintrc files
-          if [[ ! $f =~ ^test_.*_[a-zA-Z]+[\-_]?[0-9]+(_[0-9]+)?\.py$|__init__\.py$|conftest.py$|.pylintrc$ ]] ; then
+          if [[ ! $f =~ ^test_.*_[a-zA-Z]+[\-_]?[0-9]+(_[0-9]+)?\.py$|__init__\.py$|conftest\.py$|\.pylintrc$ ]] ; then
               echo "[**] FAIL: $path does not contain a valid Jira ID suffix!" | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
@@ -340,7 +340,7 @@ jobs:
 
           # Only allow files that conform to "test_<testname>.py". Ignore __init__.py, conftest.py, .pylintrc files
           # Note: inside bash [[ ]] you need to use extended regex format
-          if [[ ! "$f" =~ ^test_.*\.py$|__init__\.py$|conftest.py$|.pylintrc$ ]] ; then
+          if [[ ! "$f" =~ ^test_.*\.py$|__init__\.py$|conftest\.py$|\.pylintrc$ ]] ; then
               echo "[**] FAIL: $path is missing the \"test_\" prefix!" | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
@@ -574,9 +574,9 @@ jobs:
             let "files_tested += 1"
             echo "[*] Processing Pytest Resources file: $path ..." | tee -a ${{ env.testcase_naming_report_path }}
 
-            # skip __init__.py files
+            # Skip __init__.py, conftest.py, .pylintrc files
             #
-            if [[ ${filename} =~ __init__\.py$ ]] ; then
+            if [[ ${filename} =~ __init__\.py$|conftest\.py$|\.pylintrc$ ]] ; then
                 echo "[**] PASS - File: ${path}" | tee -a ${{ env.testcase_naming_report_path }}
                 continue
             fi
@@ -607,9 +607,9 @@ jobs:
             let "files_tested += 1"
             echo "[*] Processing Pytest Test file: $path ..." | tee -a ${{ env.testcase_naming_report_path }}
 
-            # skip __init__.py files
+            # Skip __init__.py, conftest.py, .pylintrc files
             #
-            if [[ ${filename} =~ __init__\.py$ ]] ; then
+            if [[ ${filename} =~ __init__\.py$|conftest\.py$|\.pylintrc$ ]] ; then
                 echo "[**] PASS - File: ${path}" | tee -a ${{ env.testcase_naming_report_path }}
                 continue
             fi
