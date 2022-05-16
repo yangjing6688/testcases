@@ -129,6 +129,7 @@ jobs:
           Tests/(Pytest|Robot)/Libraries/([^/]+/)+
           Tests/(Pytest|Robot)/Demos/
           __init__.py
+          .pylintrc
         separator: ','
 
     # Outputs a list of files breaking directory rules that we don't care about
@@ -138,11 +139,6 @@ jobs:
       with:
         files: |
           Tests
-        files_ignore: |
-          Tests/(Pytest|Robot)/(SystemTest|Functional|NonProduction)/([^/]+/)+(TestCases|Resources)/
-          Tests/(Pytest|Robot)/Libraries/([^/]+/)+
-          Tests/(Pytest|Robot)/Demos/
-          __init__.py
         separator: ','
 
     # Diff two lists to get just the files we care about
@@ -301,14 +297,14 @@ jobs:
               rc=1; let "errors += 1"
           fi
 
-          # Test for "test_" prefix. Ignore __init__.py files
-          if [[ ! $f =~ ^test_.*\.py$|__init__\.py$ ]] ; then
+          # Test for "test_" prefix. Ignore __init__.py, conftest.py, .pylintrc files
+          if [[ ! $f =~ ^test_.*\.py$|__init__\.py$|conftest.py$|.pylintrc$ ]] ; then
               echo "[**] FAIL: $path is missing the \"test_\" prefix!" | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
 
-          # Check for valid Jira ID suffix. Ignore __init__.py files
-          if [[ ! $f =~ ^test_.*_[a-zA-Z]+[\-_]?[0-9]+(_[0-9]+)?\.py$|__init__\.py$ ]] ; then
+          # Check for valid Jira ID suffix. Ignore __init__.py, conftest.py, .pylintrc files
+          if [[ ! $f =~ ^test_.*_[a-zA-Z]+[\-_]?[0-9]+(_[0-9]+)?\.py$|__init__\.py$|conftest.py$|.pylintrc$ ]] ; then
               echo "[**] FAIL: $path does not contain a valid Jira ID suffix!" | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
@@ -342,9 +338,9 @@ jobs:
               rc=1; let "errors += 1"
           fi
 
-          # Only allow __init__.py or files that conform to "test_<testname>.py"
+          # Only allow files that conform to "test_<testname>.py". Ignore __init__.py, conftest.py, .pylintrc files
           # Note: inside bash [[ ]] you need to use extended regex format
-          if [[ ! "$f" =~ ^test_.*\.py$|__init__\.py$ ]] ; then
+          if [[ ! "$f" =~ ^test_.*\.py$|__init__\.py$|conftest.py$|.pylintrc$ ]] ; then
               echo "[**] FAIL: $path is missing the \"test_\" prefix!" | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
