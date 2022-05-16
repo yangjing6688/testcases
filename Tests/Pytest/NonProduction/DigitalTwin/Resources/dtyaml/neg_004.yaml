@@ -1,0 +1,6 @@
+# Invalid card type
+system:
+  license:
+  slots:
+    - num: 1
+      type: INV_33_TYPE

@@ -1,0 +1,7 @@
+---
+system:
+  license: PRD-5000-PRMR,PRD-5000-MACSEC
+  cloud-server: g2r1.qa.xcloudiq.com
+  slots:
+    - num: 1
+      type: 5420M-16MW-32P-4YE

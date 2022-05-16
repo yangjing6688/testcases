@@ -1,0 +1,5 @@
+# Unsupported card type
+system:
+  slots:
+    - num: 1
+      type: X465i-48W

@@ -1,0 +1,8 @@
+# Valid VIM type for card type that does use VIMs, but not this one
+system:
+  slots:
+    - num: 1
+      type: 5720-48MXW
+      vims:
+        - slot: A
+          type: 5520-VIM-4X

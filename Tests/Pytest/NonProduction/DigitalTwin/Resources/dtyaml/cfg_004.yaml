@@ -1,0 +1,47 @@
+system:
+  stacking: true
+  license: PRD-5000-PRMR,PRD-5000-MACSEC
+  slots:
+    - num: 1
+      type: 5520-24X
+      serial-number: 5492-8560
+      vims:
+        - slot: A
+          type: 5520-VIM-4XE
+    - num: 2
+      type: 5520-48W
+      serial-number: 1648-4079
+      primary: true
+      vims:
+        - slot: A
+          type: 5520-VIM-4YE
+    - num: 3
+      type: 5520-48T
+      serial-number: 5004-9223
+      vims:
+        - slot: A
+          type: 5520-VIM-4YE
+    - num: 4
+      type: 5520-48SE
+      serial-number: 4519-6017
+      vims:
+        - slot: A
+          type: 5520-VIM-4XE
+    - num: 5
+      type: 5520-24W
+      serial-number: 6207-7297
+    - num: 6
+      type: 5520-48T
+      serial-number: 2935-2124
+      vims:
+        - slot: A
+          type: 5520-VIM-4YE
+    - num: 7
+      type: 5520-12MW-36W
+      serial-number: 9324-7066
+    - num: 8
+      type: 5520-48W
+      serial-number: 3859-2231
+      vims:
+        - slot: A
+          type: 5520-VIM-4X

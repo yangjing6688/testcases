@@ -1,0 +1,7 @@
+# Stacking not enabled, but primary is set to true for slot 1
+system:
+  license:
+  slots:
+    - num: 1
+      type: 5320-16P-4XE-DC
+      primary: true

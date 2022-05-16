@@ -1,0 +1,17 @@
+---
+lab:                        "local"
+
+netelem1:
+  name:                     "gns3_container"
+  os:                       "exos"
+  platform:                 "VM"
+  image_family:             "vm"
+  ip:                       "localhost"
+## TODO: Need DTEC changes to map the telnet port of the DT
+# port:                     "33001"
+  port:                     "5000"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  console_ip:               "localhost"
+  console_port:             "5000"

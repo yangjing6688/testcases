@@ -1,0 +1,55 @@
+---
+platforms:
+  - family: "5320"
+    cards:
+      - {type: 5320-16P-4XE, ram: 1024}
+      - {type: 5320-16P-4XE-DC, ram: 1024}
+      - {type: 5320-24P-8XE, ram: 1024}
+      - {type: 5320-24T-8XE, ram: 1024}
+      - {type: 5320-48P-8XE, ram: 1024}
+      - {type: 5320-48T-8XE, ram: 1024}
+  - family: "5420"
+    cards:
+      - {type: 5420F-16MW-32P-4XE, ram: 1024}
+      - {type: 5420F-16W-32P-4XE, ram: 1024}
+      - {type: 5420F-24P-4XE, ram: 1024}
+      - {type: 5420F-24S-4XE, ram: 1024}
+      - {type: 5420F-24T-4XE, ram: 1024}
+      - {type: 5420F-48P-4XE, ram: 1024}
+      - {type: 5420F-48P-4XL, ram: 1024}
+      - {type: 5420F-48T-4XE, ram: 1024}
+      - {type: 5420F-8W-16P-4XE, ram: 1024}
+      - {type: 5420M-16MW-32P-4YE, ram: 1024}
+      - {type: 5420M-24T-4YE, ram: 1024}
+      - {type: 5420M-24W-4YE, ram: 1024}
+      - {type: 5420M-48T-4YE, ram: 1024}
+      - {type: 5420M-48W-4YE, ram: 1024}
+  - family: "5520"
+    cards:
+      - {type: 5520-12MW-36W, ram: 2048}
+      - {type: 5520-24T, ram: 2048}
+      - {type: 5520-24W, ram: 2048}
+      - {type: 5520-24X, ram: 2048}
+      - {type: 5520-48SE, ram: 2048}
+      - {type: 5520-48T, ram: 2048}
+      - {type: 5520-48W, ram: 2048}
+    vims:
+      - {type: 5520-VIM-4X}
+      - {type: 5520-VIM-4XE}
+      - {type: 5520-VIM-4YE}
+  - family: "5720"
+    cards:
+      - {type: 5720-24MW, ram: 2048}
+      - {type: 5720-24MXW, ram: 8192}
+      - {type: 5720-48MW, ram: 2048}
+      - {type: 5720-48MXW, ram: 8192}
+    vims:
+      - {type: 5720-VIM-2CE}
+      - {type: 5720-VIM-6YE}
+  - family: "7520"
+    cards:
+      - {type: 7520-48XT-6C, ram: 16384}
+      - {type: 7520-48Y-8C, ram: 16384}
+  - family: "7720"
+    cards:
+      - {type: 7720-32C, ram: 16384}

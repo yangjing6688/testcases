@@ -1,0 +1,7 @@
+# Serial Number is too long
+system:
+  license:
+  slots:
+    - num: 1
+      type: 5420F-24T-4XE
+      serial-number: 1234567890123

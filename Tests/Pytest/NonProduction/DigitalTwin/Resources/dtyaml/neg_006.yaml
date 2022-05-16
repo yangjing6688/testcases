@@ -1,0 +1,8 @@
+# Invalid VIM type for card type that uses VIMs
+system:
+  slots:
+    - num: 1
+      type: 5720-48MXW
+      vims:
+        - slot: A
+          type: INV_VIM_TYPE

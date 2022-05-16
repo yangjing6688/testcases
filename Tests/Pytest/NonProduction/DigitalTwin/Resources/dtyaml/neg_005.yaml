@@ -1,0 +1,9 @@
+# Slot num out-of-range
+system:
+  license:
+  stacking: true
+  slots:
+    - num: 1
+      type: 5320-16P-4XE-DC
+    - num: 9
+      type: 5320-16P-4XE-DC

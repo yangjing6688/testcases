@@ -1,0 +1,7 @@
+---
+system:
+  license: PRD-5000-PRMR,PRD-5000-MACSEC,PRD-5320-10G-4P,PRD-5320-10G-8P
+  cloud-server:
+  slots:
+    - num: 1
+      type: 5320-24T-8XE

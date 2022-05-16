@@ -1,0 +1,16 @@
+system:
+  stacking: true
+  slots:
+    - num: 1
+      type: 5520-24X
+    - num: 2
+      type: 5520-48W
+      primary: true
+    - num: 3
+      type: 5520-48T
+    - num: 6
+      type: 5520-48T
+    - num: 7
+      type: 5520-12MW-36W
+    - num: 8
+      type: 5520-48W

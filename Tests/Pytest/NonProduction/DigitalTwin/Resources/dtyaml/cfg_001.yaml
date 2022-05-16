@@ -1,0 +1,10 @@
+---
+system:
+  license: PRD-5000-PRMR,PRD-5000-MACSEC
+  slots:
+    - num: 1
+      type: 5520-24T
+      serial-number: 6594-4239
+      vims:
+        - slot: A
+          type: 5520-VIM-4X

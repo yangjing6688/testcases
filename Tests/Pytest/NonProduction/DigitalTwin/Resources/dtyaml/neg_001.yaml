@@ -1,0 +1,9 @@
+# Slot 1 must be used for single node
+system:
+  license:
+  slots:
+    - num: 2
+      type: 5520-48T
+      vims:
+        - slot: A
+          type: 5520-VIM-4XE

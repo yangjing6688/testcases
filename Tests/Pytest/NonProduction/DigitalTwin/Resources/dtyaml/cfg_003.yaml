@@ -1,0 +1,11 @@
+system:
+  stacking: true
+  license:
+  slots:
+    - num: 1
+      type: 5520-48T
+      serial-number: 3895-2224
+      primary: true
+      vims:
+        - slot: A
+          type: 5520-VIM-4XE

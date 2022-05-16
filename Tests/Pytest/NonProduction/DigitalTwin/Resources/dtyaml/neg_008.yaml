@@ -1,0 +1,8 @@
+# Valid VIM type for card type that does not use VIMs
+system:
+  slots:
+    - num: 1
+      type: 5420F-16W-32P-4XE
+      vims:
+        - slot: A
+          type: 5720-VIM-6YE
