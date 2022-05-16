@@ -37,7 +37,7 @@ ${XIQSE_PASSWORD}    n7830466
 ${XIQSE_SERIAL}      XIQSE-50AE2DB5BAF644A487FB9E718C17D22A
 ${XIQSE_MAC}         000C29CE7BFE
 ${XIQSE_IP}          10.54.142.121
-${XIQSE_NAME}        auto-xiqse-st
+${XIQSE_NAME}        auto-xiqse-st.extremenetworks.com
 ${XIQSE_MAKE}        XIQSE
 ${XIQSE_MODEL}       XIQSE
 ${XIQSE_PRODUCT}     XIQ_SE

@@ -21,6 +21,7 @@ netelem1:
   model:                    "X460G2-48t-10G4"
   product:                  "X460_G2_48t_10_G4"
   function:                 "Switch"
+  license:                  "PILOT"
 
 netelem2:
   name:                     "SAPro-x440-235-200"
@@ -40,6 +41,7 @@ netelem2:
   model:                    "X440G2-24t-G4"
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
+  license:                  "PILOT"
 
 netelem3:
   name:                     "SAPro-x440-235-201"
@@ -59,6 +61,7 @@ netelem3:
   model:                    "X440G2-24t-G4"
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
+  license:                  "PILOT"
 
 netelem4:
   name:                     "SAPro-x440-235-202"
@@ -78,6 +81,7 @@ netelem4:
   model:                    "X440G2-24t-G4"
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
+  license:                  "PILOT"
 
 netelem5:
   name:                     "SAPro-x440-235-203"
@@ -97,6 +101,7 @@ netelem5:
   model:                    "X440G2-24t-G4"
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
+  license:                  "PILOT"
 
 netelem6:
   name:                     "SAPro-x440-235-204"
@@ -116,6 +121,7 @@ netelem6:
   model:                    "X440G2-24t-G4"
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
+  license:                  "PILOT"
 
 ap1:
   name:                     "bui-flo-0071"

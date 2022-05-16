@@ -24,6 +24,7 @@ netelem1:
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
+  license:                  "PILOT"
 
 netelem2:
   name:                     "10.69.10.66"
@@ -48,6 +49,7 @@ netelem2:
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
+  license:                  "PILOT"
 
 netelem3:
   name:                     "XA1480"
@@ -72,6 +74,7 @@ netelem3:
   ccg:                      "Model_VOSSSWITCH"
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
+  license:                  "PILOT"
   test_port:                "1/3"
   test_port_num:            "3"
   nos:
@@ -108,6 +111,7 @@ netelem4:
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
+  license:                  "PILOT"
 
 netelem5:
   name:                     "10.69.10.63"
@@ -132,6 +136,7 @@ netelem5:
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
+  license:                  "PILOT"
 
 netelem6:
   name:                     "SAPro-x440-235-191"
@@ -154,6 +159,7 @@ netelem6:
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
+  license:                  "PILOT"
 
 sw1:
   name:                     "AH-Switch"

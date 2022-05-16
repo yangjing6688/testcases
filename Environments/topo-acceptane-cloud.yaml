@@ -1,0 +1,70 @@
+xiqse:
+  ip:                      "10.54.142.181"
+  url:                     "https://10.54.142.181:8443"
+  license_suffix:          "/xiqLicenseSetup.jsp?setupMode=xiq"
+  user:                    "root"
+  password:                "n7830466"
+  version:                 "22.6"
+  name:                    "extauto-xmc.extremenetworks.com"
+  serial:                  "XIQSE-CA8F69F99330407489F085EB8F3243FE"
+  mac:                     "000C298CB41A"
+  profile:                 "snmp_v3_profile"
+  platform:                "xiqse"
+  make:                    "XIQSE"
+  model:                   "XIQSE"
+  product:                 "XIQ_SE"
+  function:                "XIQSE"
+  os:                      "XIQSE"
+  os_version:              "22.6"
+  log_dir:                 "/usr/local/Extreme_Networks/NetSight/appdata/logs"
+  server_log:              "server.log"
+
+appliance:
+  user:                    "root"
+  password:                "n7830466"
+  profile:                 "AnalyticsEngine_v3_Profile"
+
+purview:
+  ip:                      "10.54.142.183"
+  name:                    "extauto-purview-2"
+
+nextgen:
+  ip:                      "10.54.142.182"
+  name:                    "extauto-nextgen-2"
+
+nac:
+  ip:                      "10.54.142.184"
+  name:                    "extauto-nac-2"
+
+xiq:
+  test_url:                "https://g2r1.qa.xcloudiq.com"
+  capwap_url:              "g2r1-cwpm-01.qa.xcloudiq.com"
+  sw_connection_host:      "g2r1.qa.xcloudiq.com"
+  tenant_username:         "xiqse1+automationA@gmail.com"
+  tenant_password:         "Aerohive123"
+  pilot_entitlements:      "10"
+  navigator_entitlements:  "2"
+
+
+# SSH into ESX and issue the following commands to identify the VM ID and Snapshot ID
+# List all VMs to find your vmId
+#     vim-cmd vmsvc/getall
+# List all snapshots of a VM
+#     vim-cmd vmsvc/get.snapshotinfo <vmid>
+upgrades:
+  install_mode:                "CONNECTED"
+  nsrelease_version:           "21.11.10.57"
+  esx:
+    esx_ip:                    "10.54.142.160"
+    esx_user:                  "root"
+    esx_password:              "n7830466"
+  xiqse:
+    version:                   "21.11.10.57"
+    xiqse_vm_id:               "20"
+    xiqse_snapshot_id:         "8"
+    nac_vm_id:                 "23"
+    nac_snapshot_id:           "3"
+    purview_vm_id:             "22"
+    purview_snapshot_id:       "3"
+    ng_analytics_vm_id:        "34"
+    ng_analytics_snapshot_id:  "2"
