@@ -1,5 +1,6 @@
 import pytest
 import re
+import time
 from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary
 
 #----------------------------------------------------------------------------------------------------------
@@ -120,3 +121,20 @@ class SuiteUdks():
             self.devCmd.send_cmd_verify_output(dut_name, 'show process iqagent', 'Ready', max_wait=30,interval=10)
         else:
             self.devCmd.send_cmd_verify_output(dut_name, 'show application iqagent', ' True',max_wait=30, interval=10)
+
+    def get_value_specific_column(self, xiq, dut_serial, column):
+        """
+        This will get a value in a specific colunm for a specific device, from the devices page
+        :param xiq: The XIQ instance to use
+        :param dut_serial: The serial number of the device
+        :param colunm: The colunm to get the value from
+        :return: The value of the colunm
+        """
+        value_of_column = ''
+        while value_of_column == '':
+            time.sleep(5)
+            xiq.xflowsmanageDevices.refresh_devices_page()
+            value_of_column = xiq.xflowsmanageDevices.get_device_details(dut_serial,column)
+            print('{} column did not update yet, will refresh the page then try again'.format(str))
+        print('current value of column {} is : {}'.format(column,value_of_column))
+        return value_of_column

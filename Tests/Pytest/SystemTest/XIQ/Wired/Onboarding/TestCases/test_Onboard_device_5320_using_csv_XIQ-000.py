@@ -16,10 +16,16 @@ from ExtremeAutomation.Imports.XiqLibraryHelper import XiqLibraryHelper
 from Tests.Pytest.SystemTest.XIQ.Wired.Resources.SuiteUdks import SuiteUdks
 
 
-
-location_device = "San Jose,building_01,floor_01"
+city ='San Jose'
+building ='building_01'
+floor = 'floor_01'
+floor2 = 'floor_02'
+location_device = city + "," + building + "," + floor
 csv_file_location = "/automation/tests/extreme_automation_tests/TestBeds/SALEM/SystemTest/1_node/slm_5320.csv"
+csv_file_location2 = "/automation/tests/extreme_automation_tests/TestBeds/SALEM/SystemTest/1_node/slm_5320_location.csv"
 needToDeleteDevice = False
+
+
 
 @mark.testbed_1_node
 class onboardDevice5320UsingCsvTests():
@@ -89,6 +95,16 @@ class onboardDevice5320UsingCsvTests():
         else:
             print('Status for device with serial number: {} is equal to Green'.format(self.tb.dut1_serial))
 
+        device_location = self.suiteUdks.get_value_specific_column(self.xiq, self.tb.dut1_serial, "LOCATION")
+
+        location_to_verify = "Assign Location"
+        if device_location != location_to_verify:
+            pytest.fail('Current location {} did not match the expected location {} assigned to device {} having serial {}'.format(
+                    device_location, location_to_verify, self.tb.dut1_platform, self.tb.dut1_serial))
+        else:
+            print('Current location {} matched the expected location {} assigned to device {} having serial {}'.format(
+                device_location, location_to_verify, self.tb.dut1_platform, self.tb.dut1_serial))
+
         self.xiq.xflowscommonDevices.delete_device(device_serial=self.tb.dut1_serial)
         needToDeleteDevice = False
 
@@ -113,6 +129,51 @@ class onboardDevice5320UsingCsvTests():
         else:
             print('Status for device with serial number: {} is equal to Green'.format(self.tb.dut1_serial))
 
+        location_to_verify = city + " >> " + building + " >> " + floor
+
+        device_location = self.suiteUdks.get_value_specific_column(self.xiq, self.tb.dut1_serial, "LOCATION")
+
+        if location_to_verify not in device_location:
+            pytest.fail('Current location {} did not match the expected location {} assigned to device {}'.format(
+                device_location, location_to_verify, self.tb.dut1_serial))
+        else:
+            print('Current location {} matched the expected location {} assigned to device {}'.format(
+                device_location, location_to_verify, self.tb.dut1_serial))
+
+        self.xiq.xflowscommonDevices.delete_device(device_serial=self.tb.dut1_serial)
+        needToDeleteDevice = False
+
+    @mark.development
+    @mark.tccs_7651
+    def test_onboard_device_using_csv_with_location_in_csv(self, test_case_skip_check, test_case_started_ended_print):
+
+        global needToDeleteDevice
+        res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.os,
+                                                                      csv_location=csv_file_location2)
+        if res != 1:
+            pytest.fail('Could not onboard. Please check the csv file')
+        else:
+            print('Device has been onboarded')
+            needToDeleteDevice = True
+
+        self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial)
+
+        res = self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1_serial)
+        if res != 'green':
+            pytest.fail('Status for serial {} not equal to Green: {}'.format(self.tb.dut1_serial, res))
+        else:
+            print('Status for device with serial number: {} is equal to Green'.format(self.tb.dut1_serial))
+
+        location_to_verify = city + " >> " + building + " >> " + floor2
+
+        device_location = self.suiteUdks.get_value_specific_column(self.xiq, self.tb.dut1_serial, "LOCATION")
+
+        if location_to_verify not in device_location:
+            pytest.fail('Current location {} did not match the expected location {} assigned to device {}'.format(
+                device_location, location_to_verify, self.tb.dut1_serial))
+        else:
+            print('Current location {} matched the expected location {} assigned to device {}'.format(
+                device_location, location_to_verify, self.tb.dut1_serial))
 
         self.xiq.xflowscommonDevices.delete_device(device_serial=self.tb.dut1_serial)
         needToDeleteDevice = False
