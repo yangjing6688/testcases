@@ -1,7 +1,7 @@
 test_url:                 "https://g2r1.qa.xcloudiq.com"
 capwap_url:               "g2r1-cwpm-01.qa.xcloudiq.com"
 sw_capwap_url:            "g2r1.qa.xcloudiq.com"
-tenant_username:          "g2r1-wiredIT-Apr22@gmail.com"
+tenant_username:          "wiredit+g2r1may22@gmail.com"
 tenant_password:          "Aerohive123"
 sw_connection_host:            "g2r1.qa.xcloudiq.com"
 wing_capwap_url:          "g2r1-wing.qa.xcloudiq.com"
