@@ -5,6 +5,7 @@ xiqse:
   user:                    "root"
   password:                "n7830466"
   version:                 "22.3.10"
+  os_version:              "22.3.10"
   name:                    "xiqse-22-3-10-staging.extremenetworks.com"
   serial:                  "XIQSE-40B02B20853E4D749D398C3B4C797B4C"
   mac:                     "005056BA3BA1"
