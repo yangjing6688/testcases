@@ -164,7 +164,7 @@ TCCS-7571: Configure Switch Auto Provision Profile
 Clean-up
     [Documentation]         Cleanup script
 
-    [Tags]                  production      cleanup
+    [Tags]                  productions      cleanup
     Login User                     ${tenant_username}          ${tenant_password}
     Delete All Auto Provision Policies
     Navigate To Devices

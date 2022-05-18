@@ -1,0 +1,8 @@
+test_url:             "https://xca-sj2.qa.xcloudiq.com"
+capwap_url:           "qa-redirector.extremecloudiq.com"
+sw_capwap_url:        "xca-sj2.qa.xcloudiq.com"
+wing_capwap_url:      "xca-sj2-wing.qa.extremecloudiq.com"
+tenant_username:      "yqi+xca-sj2-01@extremenetworks.com"
+tenant_password:      "Aerohive123"
+base_url:             "https://api.extremecloudiq.com"
+CLOUD_GDC_URL:        "https://cloud.aerohive.com"

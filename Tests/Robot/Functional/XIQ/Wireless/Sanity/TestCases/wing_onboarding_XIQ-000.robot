@@ -146,7 +146,7 @@ TCCS-7279_Step4: Check for SSH CLI Reachability
 Cleanup
     [Documentation]     Cleanup
 
-    [Tags]              production		cleanup
+    [Tags]              productions		cleanup
     Login User          ${tenant_username}  ${tenant_password}
 
     ${DELETE_STATUS}=   Delete Device       device_serial=${wing1.serial}

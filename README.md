@@ -70,7 +70,6 @@ The currently supported skips are: `Testbed`, `Dir`, `File`, `Reserved Tags`, `T
 `Func`
     - Skips the entire "Test functionality validation" section of the CI
 
-
 # Advanced Framework Features
 
 ## Special Low Level API Keyword args

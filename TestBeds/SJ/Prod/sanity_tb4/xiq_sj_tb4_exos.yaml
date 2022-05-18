@@ -1,0 +1,15 @@
+netelem1:
+  platform:                 EXOS
+  name:                     X465-48W
+  model:                    X465-48W
+  serial:                   '1924F-10133'
+  mac:                      000496BA9334
+  username:                 admin
+  password:                 Aerohive123
+  ip:                       10.16.152.141
+  console_ip:               10.16.148.22
+  console_port:             7041
+  network_policy:           Test_np
+  device_template:          X465-48W-default-template
+  os:                       31.1.1.3
+  make:                     EXOS

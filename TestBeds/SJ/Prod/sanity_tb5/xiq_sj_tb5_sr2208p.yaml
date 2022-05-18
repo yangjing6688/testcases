@@ -1,0 +1,16 @@
+aerohive_sw1:
+  name:               bui-flo-0026
+  model:              SR2208P
+  device_template:    SR2208P-default-template
+  serial:             '22081605120539'
+  os:                 Linux 3.6.5
+  mac:                B87CF20131F8
+  ip:                 10.16.152.229
+  network_policy:
+  username:           admin
+  password:           Aerohive123
+  platform:           aerohive-fastpath
+  console_ip:         10.16.128.23
+  console_port:       7026
+  test_port:
+  make:               Extreme - Aerohive

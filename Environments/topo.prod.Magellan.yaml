@@ -1,0 +1,8 @@
+test_url:             "https://magellan.extremecloudiq.com"
+capwap_url:           "redirector.aerohive.com"
+sw_capwap_url:        "magellan.extremecloudiq.com"
+wing_capwap_url:      "magellan-wing.extremecloudiq.com"
+tenant_username:      "ahqa002+magellan-1@gmail.com"
+tenant_password:      "Aerohive123"
+base_url:             "https://api.extremecloudiq.com"
+CLOUD_GDC_URL:        "https://cloud.aerohive.com"

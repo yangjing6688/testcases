@@ -41,13 +41,23 @@ TCCS-11616: Generate And Validate Fake Alarms
     ${LOGIN_STATUS}=                 Login User              ${tenant_username}     ${tenant_password}
     should be equal as strings      '${LOGIN_STATUS}'        '1'
 
-    ${AP_STATUS}=                   Get AP Status           ap_mac=${ap1.mac}
-    Should Be Equal As Strings     '${AP_STATUS}'          'green'
+
+    FOR  ${i}  IN RANGE  10
+         Log To Console  Attempt(s): ${i}
+         ${AP_STATUS}       Get AP Status       ap_mac=${ap1.mac}
+         Log To Console     The current router status is ${AP_STATUS}
+         Exit For Loop If   '${AP_STATUS}' == 'green'
+         Sleep  30s
+    END
+
+    #${AP_STATUS}=                   Get AP Status           ap_mac=${ap1.mac}
+    #Should Be Equal As Strings     '${AP_STATUS}'          'green'
+
 
     Clear Alarm                       CRITICAL
 
     Send Cmd On Device Advanced Cli    device_serial=${ap1.serial}    cmd=_test trap-case alert failure
-    sleep                             30
+    sleep                             60s
     ${ALARM_DETAILS}=                 Get Alarm Details                  CRITICAL
     should be equal as strings       '${ALARM_DETAILS}[severity]'       'CRITICAL'
     should be equal as strings       '${ALARM_DETAILS}[category]'       'System'
@@ -59,7 +69,7 @@ TCCS-11616: Generate And Validate Fake Alarms
 Clean-up
     [Documentation]         Cleanup script
 
-    [Tags]                  cleanup     production
+    [Tags]                  cleanup     productions
     Login User                     ${tenant_username}          ${tenant_password}
     Delete Device                  device_serial=${ap1.serial}
 

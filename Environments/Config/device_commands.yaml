@@ -3,7 +3,8 @@ cmd_capwap_hm_primary_name:       show capwap client | include "HiveManager Prim
 cmd_capwap_server_ip:             show capwap client | include "CAPWAP server IP"
 cmd_capwap_primary_name:          show capwap client | include "HiveManager Primary Name"
 cmd_show_process_eciq:            show process | include eciq
-output_capwap_status:             Connected securely to the CAPWAP server
+#output_capwap_status:             Connected securely to the CAPWAP server
+output_capwap_status:             Enabled
 output_process_eciq:              Ready
 cmd_clear_client_mac:             clear auth station mac  MU1_WIFI_MAC
 cmd_show_station:                 show station

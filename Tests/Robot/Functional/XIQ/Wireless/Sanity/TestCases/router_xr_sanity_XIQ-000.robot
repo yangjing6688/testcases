@@ -111,7 +111,7 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
 TCCS-7766_Step2: Onboard Aerohive XR Router Using Advance Onboarding Method
     [Documentation]         Onboard Aerohive XR Router Using Advance Onboarding Method
 
-    [Tags]                  production      tccs_7766_step2
+    [Tags]                  productions      tccs_7766_step2
 
     ${LOGIN_XIQ}=           Login User          ${tenant_username}      ${tenant_password}
     Should Be Equal As Integers             ${LOGIN_XIQ}            1
@@ -135,10 +135,10 @@ TCCS-7766_Step2: Onboard Aerohive XR Router Using Advance Onboarding Method
 
     Wait Until Device Online    ${router1.serial}
 
-    ${DEVICE_UPDATE_CONFIG}=    Update Network Policy To Router    policy_name=default_network_policy    router_serial=${router1.serial}
-    Should Be Equal As Strings                      '${DEVICE_UPDATE_CONFIG}'       '1'
-    Log to Console          Sleep for ${config_push_wait}
-    sleep                   ${config_push_wait}
+#    ${DEVICE_UPDATE_CONFIG}=    Update Network Policy To Router    policy_name=default_network_policy    router_serial=${router1.serial}
+#    Should Be Equal As Strings                      '${DEVICE_UPDATE_CONFIG}'       '1'
+#    Log to Console          Sleep for ${config_push_wait}
+#    sleep                   ${config_push_wait}
 
     ${ROUTER_STATUS}=       Get Device Status       device_serial=${router1.serial}
 
@@ -214,7 +214,7 @@ TCCS-7351: Upgrade Latest IQ Engine Router Firmware
 Test Suite Clean Up
     [Documentation]             delete created network policies, SSID, Device etc
 
-    [Tags]                      production      cleanup
+    [Tags]                      productions      cleanup
     Login User              ${tenant_username}      ${tenant_password}
     Run Keyword If   '${CLEANUP_TAG}'=='production'  run keywords  Delete Device  device_serial=${router1.serial}
     ...     AND       Delete Network Policy  ${NW_POLICY_NAME}
