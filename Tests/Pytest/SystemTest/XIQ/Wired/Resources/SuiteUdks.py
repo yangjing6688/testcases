@@ -138,3 +138,15 @@ class SuiteUdks():
             print('{} column did not update yet, will refresh the page then try again'.format(str))
         print('current value of column {} is : {}'.format(column,value_of_column))
         return value_of_column
+
+    def expected_location_in_gui (self, location_from_yaml):
+        location_gui=''
+        res = re.split(',', location_from_yaml)
+        for index,el in enumerate(res):
+            if index < len(res) - 1:
+                location_gui+= el + " >> "
+            elif index == len(res) - 1:
+                location_gui+= el
+        return location_gui
+
+
