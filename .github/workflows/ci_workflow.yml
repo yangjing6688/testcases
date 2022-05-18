@@ -274,7 +274,12 @@ jobs:
 
         EOL
 
+    - name: Handle Skip Requests
+      run: |
+        python .github/workflows/skip_handler.py --actor "${{ github.actor }}" --title '${{ github.event.pull_request.title }}' --check file | tee -a ${{ env.testcase_files_report_path }}
+
     - name: Process Pytest Production file(s)
+      if: ${{env.SKIP_CHECK == 'false'}}
       run: |
         IFS=','
         rc=0
@@ -322,7 +327,7 @@ jobs:
         exit $rc
 
     - name: Process Pytest Non-Production file(s)
-      if: ${{ always() }}
+      if: ${{env.SKIP_CHECK == 'false'}}
       run: |
         IFS=','
         rc=0
@@ -358,7 +363,7 @@ jobs:
         exit $rc
 
     - name: Process Pytest Library file(s)
-      if: ${{ always() }}
+      if: ${{env.SKIP_CHECK == 'false'}}
       run: |
         IFS=','
         rc=0
@@ -381,7 +386,7 @@ jobs:
         exit $rc
 
     - name: Process Robot Production file(s)
-      if: ${{ always() }}
+      if: ${{env.SKIP_CHECK == 'false'}}
       run: |
         IFS=','
         rc=0
@@ -420,7 +425,7 @@ jobs:
         exit $rc
 
     - name: Process Robot Non-Production file(s)
-      if: ${{ always() }}
+      if: ${{env.SKIP_CHECK == 'false'}}
       run: |
         IFS=','
         rc=0
@@ -443,7 +448,7 @@ jobs:
         exit $rc
 
     - name: Process Robot Library file(s)
-      if: ${{ always() }}
+      if: ${{env.SKIP_CHECK == 'false'}}
       run: |
         IFS=','
         rc=0
@@ -683,7 +688,6 @@ jobs:
       if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
       uses: actions/checkout@v2
 
-    # TODO: Created AIQ-1728: add special case handling in skip_handler for skip_reserved_tags.
     - name: Handle Skip Requests
       if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
       run: |

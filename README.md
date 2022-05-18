@@ -48,13 +48,16 @@ Skipping CI checks requires authorization. You are unable to perform a skip unle
 3. The skip only applies to your GitHub username. So, if you are working with multiple people on a PR or are performing a skip for someone else you will need to be the last person to have commited a change to the PR. This can be a real change or a dummy change that is just for the purposes of skipping the CI check.
 
 ### More info on the supported skips
-The currently supported skips are: `Testbed`, `Dir`, `Reserved Tags`, `Tags`, `Func`
+The currently supported skips are: `Testbed`, `Dir`, `File`, `Reserved Tags`, `Tags`, `Func`
 
 `Testbed`
     - Skips the entire "Testbed file validation" section of the CI
 
 `Dir`
     - Skips the entire "Directory structure validation" section of the CI
+
+`File`
+    - Skips the entire "File name and location validation" section of the CI
 
 `Reserved Tags`
     - Removes the restriction that disallowes adding certain reserved tags/markers to a testcase. ( production, regression, nightly, sanity, p1, p2, p3, p4 )
@@ -66,7 +69,7 @@ The currently supported skips are: `Testbed`, `Dir`, `Reserved Tags`, `Tags`, `F
 
 `Func`
     - Skips the entire "Test functionality validation" section of the CI
-    
+
 
 # Advanced Framework Features
 
