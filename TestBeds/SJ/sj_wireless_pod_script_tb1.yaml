@@ -1,0 +1,147 @@
+ap1:
+  name:                     bui-flo-0006
+  connection_method:        "telnet"
+  ip:                       10.16.166.250
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "64002103260006"
+  console_ip:               10.254.160.173
+  console_port:             10004
+  mac:                      F064267258C0
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP4000U
+  template:                 AP_4000U-default-template
+  make:                     Dual Boot
+  mgmt_vlan:                10
+  country:                  United States
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United States
+      network_policy:           AP1-policy
+      ssid:                     Pranav-Enh-Open1
+      version:
+      neighbour_serial:
+      neighbour_mac:
+
+ap5010:
+  name:                     Sui-Flo-0550
+  connection_method:        "telnet"
+  ip:                       10.16.175.210
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "WM052209W-30550"
+  console_ip:               10.16.175.2
+  console_port:             2010
+  mac:                      B027CF805B40
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP5010
+  template:                 AP_5010-default-template
+  make:                     Dual Boot
+  mgmt_vlan:                10
+  country:                  United States
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United States
+      network_policy:           AP5010-Connect-1
+      ssid:                     AP5010-Connect-1
+      version:
+      neighbour_serial:
+      neighbour_mac:
+
+
+# AP302W
+ap302w:
+  name:                     Sui-Flo-0161
+  connection_method:        "telnet"
+  ip:
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "03022012080161"
+  console_ip:
+  console_port:
+  mac:                      40882F57DBC0
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP302W
+  template:                 AP_302W-default-template
+  make:                     Dual Boot
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 Extreme Networks Canada, Toronto, Suite 300, Floor 1
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           Test_np
+      ssid:                     AP150W_01
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            7C95B1005700
+
+
+
+
+# AP302W2
+ap302w2:
+  name:                     Sui-Flo-0190
+  connection_method:        "telnet"
+  ip:
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "03022012080191"
+  console_ip:
+  console_port:
+  mac:                      40882F57DBC0
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP302W
+  template:                 AP_302W-default-template
+  make:                     Dual Boot
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 Extreme Networks Canada, Toronto, Suite 300, Floor 1
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           Test_np
+      ssid:                     AP150W_01
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            7C95B1005700
