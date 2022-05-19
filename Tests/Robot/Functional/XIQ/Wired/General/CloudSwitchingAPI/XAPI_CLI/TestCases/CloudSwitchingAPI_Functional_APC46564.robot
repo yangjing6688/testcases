@@ -1,31 +1,31 @@
 # Author        : Senthil Karuppasamy
 # Description   : Test Suite for Cloud Switching API - Functional testing
 #   EXOS Standalone :
-#     Execute CLI for lldp port status on EXOS device TC-14768
-#     Execute CLI for port Description on EXOS device  TC-14769
-#     Execute CLI for port Speed Negotiation on EXOS device  TC-14771
-#     Execute CLI for Storm Control Negotiation on EXOS device  TC-14775
-#     Execute CLI for ELRP on EXOS device  TC-14748
-#     Execute CLI for vlans on EXOS device  TC-14755
-#     Execute CLI for STP on EXOS device   TC-14759
-#     Execute CLI for PoE on EXOS device  TC-14763
+#     Execute CLI for lldp port status on EXOS device TCXM-14768
+#     Execute CLI for port Description on EXOS device  TCXM-14769
+#     Execute CLI for port Speed Negotiation on EXOS device  TCXM-14771
+#     Execute CLI for Storm Control Negotiation on EXOS device  TCXM-14775
+#     Execute CLI for ELRP on EXOS device  TCXM-14748
+#     Execute CLI for vlans on EXOS device  TCXM-14755
+#     Execute CLI for STP on EXOS device   TCXM-14759
+#     Execute CLI for PoE on EXOS device  TCXM-14763
 #   EXOS Stack :
-#     Execute CLI for port status on EXOS device  TC-14774
-#     Execute CLI for port Description on EXOS device   TC-14780
-#     Execute CLI for port Speed Negotiation on EXOS device  TC-14783
-#     Execute CLI for Storm Control Negotiation on EXOS device  TC-14784
-#     Execute CLI for ELRP on EXOS device  TC-14785
-#     Execute CLI for vlans on EXOS device  TC-14786
-#     Execute CLI for STP on EXOS device   TC-14787
-#     Execute CLI for PoE on EXOS device  TC-14788
+#     Execute CLI for port status on EXOS device  TCXM-14774
+#     Execute CLI for port Description on EXOS device   TCXM-14780
+#     Execute CLI for port Speed Negotiation on EXOS device  TCXM-14783
+#     Execute CLI for Storm Control Negotiation on EXOS device  TCXM-14784
+#     Execute CLI for ELRP on EXOS device  TCXM-14785
+#     Execute CLI for vlans on EXOS device  TCXM-14786
+#     Execute CLI for STP on EXOS device   TCXM-14787
+#     Execute CLI for PoE on EXOS device  TCXM-14788
 #   VOSS:
-#     Execute CLI for LLDP port status on VOSS device  TC-14789
-#     Execute CLI for port Description on VOSS device  TC-14790
-#     Execute CLI for port Speed Negotiation on VOSS device  TC-14776
-#     Execute CLI for Storm Control Negotiation on VOSS device  TC-14781
-#     Execute CLI for vlans on VOSS device  TC-14777
-#     Execute CLI for STP on VOSS device  TC-14782
-#     Execute CLI for PoE on VOSS device  TC-14778
+#     Execute CLI for LLDP port status on VOSS device  TCXM-14789
+#     Execute CLI for port Description on VOSS device  TCXM-14790
+#     Execute CLI for port Speed Negotiation on VOSS device  TCXM-14776
+#     Execute CLI for Storm Control Negotiation on VOSS device  TCXM-14781
+#     Execute CLI for vlans on VOSS device  TCXM-14777
+#     Execute CLI for STP on VOSS device  TCXM-14782
+#     Execute CLI for PoE on VOSS device  TCXM-14778
 
 *** Settings ***
 
@@ -46,9 +46,9 @@ ${VOSSDevice}             -1
 ${EXOSDevice}             -1
 
 *** Test Cases ***
-TC-14733: Login to a VIQ via XAPI
+TCXM-14733: Login to a VIQ via XAPI
     [Documentation]     Generates the access token for logging into XIQ
-    [Tags]              xim_tc_14733   development   p1     test
+    [Tags]              tcxm_14733     p1
     Delete Device       ${netelem1.serial}
     @{result} =    Split String    ${netelem1.serial}    ,
     FOR		${serialnumber}     IN    @{result}
@@ -83,9 +83,9 @@ TC-14733: Login to a VIQ via XAPI
     log to console          ${ACCESS_TOKEN}
 	
 	
-TC-14738 : Get List of Devices
+TCXM-14738 : Get List of Devices
     [Documentation]     Gets the list of devices
-    [Tags]              xim_tc_14738   development      p1    test 
+    [Tags]              tcxm_14738   p1
 
 
     skip if   ${onboard_flag} == -1   msg="onboarding failed"
@@ -113,9 +113,9 @@ TC-14738 : Get List of Devices
     END  
 
 
-TC-14768 : Execute CLI for lldp port status on EXOS device
+TCXM-14768 : Execute CLI for lldp port status on EXOS device
     [Documentation]     Execute LLDP CLI on an EXOS standalone switch
-    [Tags]              xim_tc_14768   development      p3
+    [Tags]              tcxm_14768   p3
 	
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
     skip if  ${EXOSDevice} == -1   msg="Skipping as device is not EXOS Standalone"
@@ -124,9 +124,9 @@ TC-14768 : Execute CLI for lldp port status on EXOS device
 
     should be equal as integers  ${status}  1
 
-TC-14774 : Execute CLI for lldp port status on EXOS Stack
+TCXM-14774 : Execute CLI for lldp port status on EXOS Stack
     [Documentation]     Execute LLDP CLI  on an EXOS stack
-    [Tags]              xim_tc_14774   development      p3
+    [Tags]              tcxm_14774    p3
  
     skip if   ${onboard_flag} == -1   msg="onboarding failed" 
     skip if  ${EXOSStack} == -1  msg="Skipping as device is not EXOS Stack"
@@ -134,9 +134,9 @@ TC-14774 : Execute CLI for lldp port status on EXOS Stack
     ${status}=  sendcli module device endpoint    ${EXOSStack}   LLDP  Stack
     should be equal as integers  ${status}  1
 
-TC-14789 : Execute CLI for lldp port status on VOSS device
+TCXM-14789 : Execute CLI for lldp port status on VOSS device
     [Documentation]     Execute LLDP CLI on a VOSS 5520 switch
-    [Tags]              xim_tc_14789   development      p3
+    [Tags]              tcxm_14789         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${VOSSDevice} == -1  msg="Skipping as device is not VOSS"
@@ -144,9 +144,9 @@ TC-14789 : Execute CLI for lldp port status on VOSS device
     ${status}=  sendcli module device endpoint    ${VOSSDevice}   LLDP  VOSS
     should be equal as integers  ${status}  1
 
-TC-14769 : Execute CLI for port Description on EXOS device
+TCXM-14769 : Execute CLI for port Description on EXOS device
     [Documentation]     Execute CLI for port Description on an EXOS standalone switch
-    [Tags]              xim_tc_14769   development      p3
+    [Tags]              tcxm_14769         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${EXOSDevice} == -1   msg="Skipping as device is not EXOS Standalone"
@@ -154,9 +154,9 @@ TC-14769 : Execute CLI for port Description on EXOS device
     ${status}=  sendcli module device endpoint  ${EXOSDevice}  PORTDESC  EXOS
     should be equal as integers  ${status}  1
 
-TC-14780 : Execute CLI for port Description on EXOS Stack
+TCXM-14780 : Execute CLI for port Description on EXOS Stack
     [Documentation]     Execute CLI for port Description  on an EXOS stack
-    [Tags]              xim_tc_14780   development      p3
+    [Tags]              tcxm_14780         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${EXOSStack} == -1  msg="Skipping as device is not EXOS Stack"
@@ -164,9 +164,9 @@ TC-14780 : Execute CLI for port Description on EXOS Stack
     ${status}=  sendcli module device endpoint    ${EXOSStack}   PORTDESC  Stack
     should be equal as integers  ${status}  1
 
-TC-14790 : Execute CLI for port Description on VOSS device
+TCXM-14790 : Execute CLI for port Description on VOSS device
     [Documentation]     Execute CLI for port Description on a VOSS 5520 switch
-    [Tags]              xim_tc_14790   development      p3
+    [Tags]              tcxm_14790         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${VOSSDevice} == -1  msg="Skipping as device is not VOSS"
@@ -174,9 +174,9 @@ TC-14790 : Execute CLI for port Description on VOSS device
     ${status}=  sendcli module device endpoint    ${VOSSDevice}   PORTDESC  VOSS
     should be equal as integers  ${status}  1
 
-TC-14771 : Execute CLI for port Speed Negotiation on EXOS device
+TCXM-14771 : Execute CLI for port Speed Negotiation on EXOS device
     [Documentation]     Execute CLI for port Speed Negotiation on an EXOS standalone switch
-    [Tags]              xim_tc_14771   development      p3
+    [Tags]              tcxm_14771         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${EXOSDevice} == -1   msg="Skipping as device is not EXOS Standalone"
@@ -185,9 +185,9 @@ TC-14771 : Execute CLI for port Speed Negotiation on EXOS device
     should be equal as integers  ${status}  1
 
 
-TC-14783 : Execute CLI for port Speed Negotiation on EXOS Stack
+TCXM-14783 : Execute CLI for port Speed Negotiation on EXOS Stack
     [Documentation]     Execute CLI for port Speed Negotiation  on an EXOS stack
-    [Tags]              xim_tc_14783   development      p3
+    [Tags]              tcxm_14783         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${EXOSStack} == -1  msg="Skipping as device is not EXOS Stack"
@@ -195,9 +195,9 @@ TC-14783 : Execute CLI for port Speed Negotiation on EXOS Stack
     ${status}=  sendcli module device endpoint    ${EXOSStack}   PORTSPEED  Stack
     should be equal as integers  ${status}  1
 
-TC-14776 : Execute CLI for port Speed Negotiation on VOSS device
+TCXM-14776 : Execute CLI for port Speed Negotiation on VOSS device
     [Documentation]     Execute CLI for port Speed Negotiation on a VOSS 5520 switch
-    [Tags]              xim_tc_14776   development      p3
+    [Tags]              tcxm_14776         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${VOSSDevice} == -1  msg="Skipping as device is not VOSS"
@@ -205,9 +205,9 @@ TC-14776 : Execute CLI for port Speed Negotiation on VOSS device
     ${status}=  sendcli module device endpoint    ${VOSSDevice}   PORTSPEED  VOSS
     should be equal as integers  ${status}  1
 
-TC-14775 : Execute CLI for Storm Control Negotiation on EXOS device
+TCXM-14775 : Execute CLI for Storm Control Negotiation on EXOS device
     [Documentation]     Execute CLI for Storm Control Negotiation on an EXOS standalone switch
-    [Tags]              xim_tc_14775   development      p3
+    [Tags]              tcxm_14775         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${EXOSDevice} == -1   msg="Skipping as device is not EXOS Standalone"
@@ -216,9 +216,9 @@ TC-14775 : Execute CLI for Storm Control Negotiation on EXOS device
 
     should be equal as integers  ${status}  1
 
-TC-14784 : Execute CLI for Storm Control Negotiation on EXOS Stack
+TCXM-14784 : Execute CLI for Storm Control Negotiation on EXOS Stack
     [Documentation]     Execute CLI for Storm Control Negotiation  on an EXOS stack
-    [Tags]              xim_tc_14784   development      p3
+    [Tags]              tcxm_14784         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${EXOSStack} == -1  msg="Skipping as device is not EXOS Stack"
@@ -226,9 +226,9 @@ TC-14784 : Execute CLI for Storm Control Negotiation on EXOS Stack
     ${status}=  sendcli module device endpoint    ${EXOSStack}   STORMCTRL  Stack
     should be equal as integers  ${status}  1
 
-TC-14781 : Execute CLI for Storm Control Negotiation on VOSS device
+TCXM-14781 : Execute CLI for Storm Control Negotiation on VOSS device
     [Documentation]     Execute CLI for Storm Control Negotiation on a VOSS 5520 switch
-    [Tags]              xim_tc_14781   development      p3
+    [Tags]              tcxm_14781         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${VOSSDevice} == -1  msg="Skipping as device is not VOSS"
@@ -236,9 +236,9 @@ TC-14781 : Execute CLI for Storm Control Negotiation on VOSS device
     ${status}=  sendcli module device endpoint    ${VOSSDevice}   STORMCTRL  VOSS
     should be equal as integers  ${status}  1
 
-TC-14748 : Execute CLI for ELRP on EXOS device
+TCXM-14748 : Execute CLI for ELRP on EXOS device
     [Documentation]     Execute CLI for ELRP on an EXOS standalone switch
-    [Tags]              xim_tc_14748   development      p3
+    [Tags]              tcxm_14748         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${EXOSDevice} == -1   msg="Skipping as device is not EXOS Standalone"
@@ -247,9 +247,9 @@ TC-14748 : Execute CLI for ELRP on EXOS device
 
     should be equal as integers  ${status}  1
 
-TC-14785 : Execute CLI for ELRP on EXOS Stack
+TCXM-14785 : Execute CLI for ELRP on EXOS Stack
     [Documentation]     Execute CLI for ELRP  on an EXOS stack
-    [Tags]              xim_tc_14785   development      p3
+    [Tags]              tcxm_14785         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${EXOSStack} == -1  msg="Skipping as device is not EXOS Stack"
@@ -257,9 +257,9 @@ TC-14785 : Execute CLI for ELRP on EXOS Stack
     ${status}=  sendcli module device endpoint    ${EXOSStack}   ELRP  Stack
     should be equal as integers  ${status}  1
 
-TC-14755 : Execute CLI for vlans on EXOS device
+TCXM-14755 : Execute CLI for vlans on EXOS device
     [Documentation]     Execute CLI for vlans on an EXOS standalone switch
-    [Tags]              xim_tc_14755   development      p3
+    [Tags]              tcxm_14755         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${EXOSDevice} == -1   msg="Skipping as device is not EXOS Standalone"
@@ -268,9 +268,9 @@ TC-14755 : Execute CLI for vlans on EXOS device
 
     should be equal as integers  ${status}  1
 
-TC-14786 : Execute CLI for vlans on EXOS Stack
+TCXM-14786 : Execute CLI for vlans on EXOS Stack
     [Documentation]     Execute CLI for vlans  on an EXOS stack
-    [Tags]              xim_tc_14786   development      p3
+    [Tags]              tcxm_14786         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${EXOSStack} == -1  msg="Skipping as device is not EXOS Stack"
@@ -278,9 +278,9 @@ TC-14786 : Execute CLI for vlans on EXOS Stack
     ${status}=  sendcli module device endpoint    ${EXOSStack}   VLAN  Stack
     should be equal as integers  ${status}  1
 
-TC-14777 : Execute CLI for vlans on VOSS device
+TCXM-14777 : Execute CLI for vlans on VOSS device
     [Documentation]     Execute CLI for vlans on a VOSS 5520 switch
-    [Tags]              xim_tc_14777   development      p3
+    [Tags]              tcxm_14777         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${VOSSDevice} == -1  msg="Skipping as device is not VOSS"
@@ -288,9 +288,9 @@ TC-14777 : Execute CLI for vlans on VOSS device
     ${status}=  sendcli module device endpoint    ${VOSSDevice}   VLAN  VOSS
     should be equal as integers  ${status}  1
 
-TC-14759 : Execute CLI for STP on EXOS device
+TCXM-14759 : Execute CLI for STP on EXOS device
     [Documentation]     Execute CLI for STP on an EXOS standalone switch
-    [Tags]              xim_tc_14759   development      p3
+    [Tags]              tcxm_14759         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${EXOSDevice} == -1   msg="Skipping as device is not EXOS Standalone"
@@ -298,9 +298,9 @@ TC-14759 : Execute CLI for STP on EXOS device
     ${status}=  sendcli module device endpoint  ${EXOSDevice}  STP  EXOS
     should be equal as integers  ${status}  1
 
-TC-14787 : Execute CLI for STP on EXOS Stack
+TCXM-14787 : Execute CLI for STP on EXOS Stack
     [Documentation]     Execute CLI for STP  on an EXOS stack
-    [Tags]              xim_tc_14787   development      p3
+    [Tags]              tcxm_14787         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${EXOSStack} == -1  msg="Skipping as device is not EXOS Stack"
@@ -309,9 +309,9 @@ TC-14787 : Execute CLI for STP on EXOS Stack
     should be equal as integers  ${status}  1
 
 
-TC-14782 : Execute CLI for STP on VOSS device
+TCXM-14782 : Execute CLI for STP on VOSS device
     [Documentation]     Execute CLI for STP on a VOSS 5520 switch
-    [Tags]              xim_tc_14782   development      p3
+    [Tags]              tcxm_14782         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${VOSSDevice} == -1  msg="Skipping as device is not VOSS"
@@ -319,9 +319,9 @@ TC-14782 : Execute CLI for STP on VOSS device
     ${status}=  sendcli module device endpoint    ${VOSSDevice}   STP  VOSS
     should be equal as integers  ${status}  1
 
-TC-14763 : Execute CLI for PoE on EXOS device
+TCXM-14763 : Execute CLI for PoE on EXOS device
     [Documentation]     Execute CLI for PoE on an EXOS standalone switch
-    [Tags]              xim_tc_14763   development      p3
+    [Tags]              tcxm_14763         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${EXOSDevice} == -1   msg="Skipping as device is not EXOS Standalone"
@@ -329,9 +329,9 @@ TC-14763 : Execute CLI for PoE on EXOS device
     ${status}=  sendcli module device endpoint  ${EXOSDevice}  PoE  EXOS
     should be equal as integers  ${status}  1
 
-TC-14788 : Execute CLI for PoE on EXOS Stack
+TCXM-14788 : Execute CLI for PoE on EXOS Stack
     [Documentation]     Execute CLI for PoE  on an EXOS stack
-    [Tags]              xim_tc_14788   development      p3
+    [Tags]              tcxm_14788         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${EXOSStack} == -1  msg="Skipping as device is not EXOS Stack"
@@ -339,9 +339,9 @@ TC-14788 : Execute CLI for PoE on EXOS Stack
     ${status}=  sendcli module device endpoint    ${EXOSStack}   PoE  Stack
     should be equal as integers  ${status}  1
 
-TC-14778 : Execute CLI for PoE on VOSS device
+TCXM-14778 : Execute CLI for PoE on VOSS device
     [Documentation]     Execute CLI for PoE on a VOSS 5520 switch
-    [Tags]              xim_tc_14778   development      p3
+    [Tags]              tcxm_14778         p3
     
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
 	skip if  ${VOSSDevice} == -1  msg="Skipping as device is not VOSS"
