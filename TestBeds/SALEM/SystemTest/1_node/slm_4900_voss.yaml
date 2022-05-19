@@ -12,7 +12,8 @@ netelem1:
   connection_method:        "telnet"
   os:                       "voss"
   platform:                 "4900"
-  location:                 "San Jose,building_01,floor_01"
   model:                    "VSP4900_24S"
   make:                     "voss"
-
+  location:
+    location1:              "San Jose,building_01,floor_01"
+    location2:              "San Jose,building_01,floor_02"

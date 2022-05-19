@@ -12,10 +12,11 @@ netelem1:
   connection_method:        "telnet"
   os:                       "voss"
   platform:                 "5520"
-  location:                 "San Jose,building_01,floor_01"
   model:                    "FabricEngine5520_12MW_36W"
   make:                     "voss"
-
+  location:
+    location1:              "San Jose,building_01,floor_01"
+    location2:              "San Jose,building_01,floor_02"
 
 
 

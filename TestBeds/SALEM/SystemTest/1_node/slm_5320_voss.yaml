@@ -12,8 +12,9 @@ netelem1:
   connection_method:        "telnet"
   os:                       "voss"
   platform:                 "5320"
-  location:                 "San Jose,building_01,floor_01"
   model:                    "FabricEngine5520_48T_8XE"
   make:                     "voss"
-
+  location:
+    location1:              "San Jose,building_01,floor_01"
+    location2:              "San Jose,building_01,floor_02"
 
