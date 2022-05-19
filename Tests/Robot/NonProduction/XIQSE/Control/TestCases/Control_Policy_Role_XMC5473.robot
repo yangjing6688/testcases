@@ -37,6 +37,7 @@ ${XIQ_URL}                  ${xiq.test_url}
 ${XIQ_EMAIL}                ${xiq.tenant_username}
 ${XIQ_PASSWORD}             ${xiq.tenant_password}
 
+${WORLD_SITE}               World
 
 *** Test Cases ***
 Test 1: Test Create And Delete Policy Role:
@@ -55,6 +56,9 @@ Log In and Set Up Test
     Log Into XIQSE and Confirm Success                 ${XIQSE_USERNAME}    ${XIQSE_PASSWORD}    url=${XIQSE_URL}
     Handle License Agreement If Displayed              ${XIQ_EMAIL}  ${XIQ_PASSWORD}
     Close Panels on Login If Displayed
+    Set Option Web Server Session Timeout and Confirm Success  7  day(s)
+    Set Option Device Tree Name Format and Confirm Success   IP Address
+    Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
     Onboard XIQSE To XIQ If In Connected Mode    ${INSTALL_MODE}  ${XIQSE_IP_ADDRESS}  ${XIQ_EMAIL}  ${XIQ_PASSWORD}
     XIQSE Navigate To Control Policy Tab
 
