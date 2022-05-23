@@ -33,7 +33,7 @@ ap1:
       neighbour_serial:         06301908310556
       neighbour_mac:            3485843A5CC0
 
-sw1:
+aerohive_sw1:
   name:               AH-Switch
   model:              SR2348P
   device_template:    SR2348P-default-template

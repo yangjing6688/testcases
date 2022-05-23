@@ -24,13 +24,17 @@ list_of_testbed_files = list_of_testbed_files.split(",") if list_of_testbed_file
 # list_of_testbed_files = ["TestBeds\RDU\Dev\\rdu_x590_pod5_3node.yam", "TestBeds\BANGALORE\Prod\\testbed2.yaml"]
 
 rc=0
+DEVICES_WITH_MAKE = [r"ap[0-9]{1,2}", r"aerohive_sw[0-9]{1,2}", r"netelem[0-9]{1,2}", r"router[0-9]{1,2}", r"wing[0-9]{1,2}"]
+VALID_TOP_LEVEL_KEYS = [
+    r"endsys[0-9]{1,2}", r"lab", r"mails",
+    r"mu[0-9]{1,2}", r"tgen[0-9]{1,2}", r"tgen_ports",
+    r"(a3|inband|kali|radius|tftp)_server[0-9]{1,2}"]
 # VALID_MAKES = ["Controllers", "Extreme - Aerohive", "VOSS", "EXOS", "Dell", "Universal Appliance", "XMC"]
 # XMC MAKES = [A10, APC, Advantage, Albis, Allied Telesyn, Apple, Avaya, Broadcom, Brocade, Cannon, Cisco, Clickarray, D-Link, Dell, Extreme, HP, IBM, Intel, Juniper, KCP, Konica, Lantronix, Microsoft, NetSNMP, Nokia, Oracle, Packeteer, Palo Alto, Panasonic, RuggedCom, SNMP Research, Siemens, Sigma, Sonus, UCD, UNIX, VMware, Xerox]
+
 VALID_MAKES_REGEX = compile(r"Controllers|Extreme - Aerohive|VOSS|EXOS|Dell|Universal Appliance|XMC|A10|APC|Advantage|Albis|Allied Telesyn|Apple|Avaya|Broadcom|Brocade|Cannon|Cisco|Clickarray|D-Link|Dell|Extreme|HP|IBM|Intel|Juniper|KCP|Konica|Lantronix|Microsoft|NetSNMP|Nokia|Oracle|Packeteer|Palo Alto|Panasonic|RuggedCom|SNMP Research|Siemens|Sigma|Sonus|UCD|UNIX|VMware|Xerox", IGNORECASE)
-VALID_TOP_LEVEL_KEYS = [r"ap[0-9]+", r"netelem[0-9]+", r"mu[0-9]+", r"mails", r"lab", r"tgen[0-9]+", r"tgen_ports", r"a3server[0-9]+", r"endsys[0-9]+", r"kali[0-9]+", r"nettools_fpp[0-9]+", r"radius[0-9]*", r"sw[0-9]+", r"router[0-9]+"]
-VALID_TOP_LEVEL_KEYS_REGEX = compile( "|".join(VALID_TOP_LEVEL_KEYS) )
-# DEVICES_WITH_MAKE = ["ap", "netelem"]
-APS_NETELEMS = compile(r"ap[0-9]+|netelem[0-9]+")
+VALID_TOP_LEVEL_KEYS_REGEX = compile( "|".join(VALID_TOP_LEVEL_KEYS + DEVICES_WITH_MAKE) )
+DEVICES_WITH_MAKE_REGEX = compile( "|".join( DEVICES_WITH_MAKE ) )
 VALID_LOCATIONS = compile(r"""
                             auto_location_01,San Jose,building_01,floor_01
                             |auto_location_01,San Jose,building_01,floor_02
@@ -95,7 +99,7 @@ if list_of_testbed_files:
 
             # Make, Model, and Location checks
             #
-            if fullmatch(APS_NETELEMS, top_level_key):
+            if fullmatch(DEVICES_WITH_MAKE_REGEX, top_level_key):
                 if not isinstance(testbed_file[top_level_key].get("model", None), str):
                     keys_missing_model.append(top_level_key)
 
@@ -122,7 +126,7 @@ if list_of_testbed_files:
         if keys_invalid_name:
             print(f"{print_prefix}{file_path} failed! One or more invalid top-level keys found.")
             print(f"[**] Offending keys: {keys_invalid_name}")
-            print(f"[**] Valid top-level keys: {VALID_TOP_LEVEL_KEYS}.", end='\n\n')
+            print(f"[**] Valid top-level keys: {VALID_TOP_LEVEL_KEYS + DEVICES_WITH_MAKE}.", end='\n\n')
 
         if keys_bad or keys_missing_model or keys_bad_make or keys_invalid_name:
             file_passed = False

@@ -242,7 +242,7 @@ wing1:
   country:                  United Kingdom
   make:                     Controllers
 
-voss1:
+netelem1:
   name:                     bui-flo-0140
   model:                    "VSP4900"
   device_template:          VSP4900-default-template
@@ -259,7 +259,7 @@ voss1:
   country:                  United Kingdom
   make:                     VOSS
 
-exos1:
+netelem1:
   platform:                 EXOS
   name:                     bui-flo-0139
   model:                    "EXOSSWITCH"

@@ -36,7 +36,7 @@ ap1:
       neighbour_mac:            3485843A5CC0
 
 
-sw1:
+aerohive_sw1:
   name:               AH-Switch
   model:              SR2324P
   device_template:    SR2324P-default-template

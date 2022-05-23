@@ -13,7 +13,7 @@ router1:
   console_port:             7026
   make:                     Extreme - Aerohive
 
-exos1:
+netelem1:
   platform:                 EXOS
   name:                     bui-flo-2267
   model:                    X440G2_48p_10_G4

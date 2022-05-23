@@ -41,14 +41,14 @@ ${AP_USERNAME}        ${ap1.username}
 ${AP_PASSWORD}        ${ap1.password}
 ${AP_PLATFORM}        ${ap1.platform}
 
-${SW_SERIAL}          ${sw1.serial}
-${SW_MAKE}            ${sw1.make}
-${SW_LOCATION}        ${sw1.location}
-${SW_CONSOLE_IP}      ${sw1.console_ip}
-${SW_CONSOLE_PORT}    ${sw1.console_port}
-${SW_USERNAME}        ${sw1.username}
-${SW_PASSWORD}        ${sw1.password}
-${SW_PLATFORM}        ${sw1.platform}
+${SW_SERIAL}          ${aerohive_sw1.serial}
+${SW_MAKE}            ${aerohive_sw1.make}
+${SW_LOCATION}        ${aerohive_sw1.location}
+${SW_CONSOLE_IP}      ${aerohive_sw1.console_ip}
+${SW_CONSOLE_PORT}    ${aerohive_sw1.console_port}
+${SW_USERNAME}        ${aerohive_sw1.username}
+${SW_PASSWORD}        ${aerohive_sw1.password}
+${SW_PLATFORM}        ${aerohive_sw1.platform}
 
 ${RT_SERIAL}          ${router1.serial}
 ${RT_MAKE}            ${router1.make}
@@ -63,7 +63,7 @@ ${RT_PLATFORM}        ${router1.platform}
 *** Test Cases ***
 TCXM-16933: Confirm Client Information Tool Is Available Only For A Single AP or Router
     [Documentation]     Confirms the Client Information menu item is available for only a single selected AP or Router and opens/closes the correct dialog
-    [Tags]              xim_tc_16933   development
+    [Tags]              tcxm_16933   development
 
     # Client Information Tool is available for a single AP
     Select Device       ${AP_SERIAL}
@@ -99,7 +99,7 @@ TCXM-16933: Confirm Client Information Tool Is Available Only For A Single AP or
 
 TCXM-16934: Confirm Get Tech Data Tool Is Available For Any Number Of Devices
     [Documentation]     Confirms the Get Tech Data menu item is available for any number of selected devices and opens/closes the correct dialog
-    [Tags]              xim_tc_16934   development
+    [Tags]              tcxm_16934   development
 
     Refresh Devices Page
 
@@ -136,7 +136,7 @@ TCXM-16934: Confirm Get Tech Data Tool Is Available For Any Number Of Devices
 
 TCXM-16935: Confirm Locate Device Tool Is Available Only For A Single AP or Router
     [Documentation]     Confirms the Locate Device menu item is available for only a single selected AP or Router and opens/closes the correct dialog
-    [Tags]              xim_tc_16935   development
+    [Tags]              tcxm_16935   development
 
     Refresh Devices Page
 
@@ -178,7 +178,7 @@ TCXM-16935: Confirm Locate Device Tool Is Available Only For A Single AP or Rout
 
 TCXM-16936: Confirm L2 Neighbor Info Tool Is Available Only For A Single AP or Router
     [Documentation]     Confirms the L2 Neighbor Info menu item is available for only a single selected AP or Router and opens/closes the correct dialog
-    [Tags]              xim_tc_16936   development
+    [Tags]              tcxm_16936   development
 
     Refresh Devices Page
 
@@ -216,7 +216,7 @@ TCXM-16936: Confirm L2 Neighbor Info Tool Is Available Only For A Single AP or R
 
 TCXM-16938: Confirm VLAN Probe Tool Is Available For Any Number Of Devices
     [Documentation]     Confirms the VLAN Probe menu item is available for any number of selected devices and opens/closes the correct dialog
-    [Tags]              xim_tc_16938   development
+    [Tags]              tcxm_16938   development
 
     Refresh Devices Page
 
@@ -247,7 +247,7 @@ TCXM-16938: Confirm VLAN Probe Tool Is Available For Any Number Of Devices
 
 TCXM-16937: Confirm Packet Capture Tool Is Available Only For A Single AP
     [Documentation]     Confirms the Packet Capture menu item is available for only a single selected AP and opens/closes the correct dialog
-    [Tags]              xim_tc_16937   development
+    [Tags]              tcxm_16937   development
 
     Refresh Devices Page
 
@@ -283,7 +283,7 @@ TCXM-16937: Confirm Packet Capture Tool Is Available Only For A Single AP
 
 TCXM-16931: Confirm Ping Tool Is Available Only For A Single Device
     [Documentation]     Confirms the Diagnostics Ping menu item is available for only one device and opens/closes the correct dialog
-    [Tags]              xim_tc_16931   development
+    [Tags]              tcxm_16931   development
 
     Refresh Devices Page
 
@@ -325,7 +325,7 @@ TCXM-16931: Confirm Ping Tool Is Available Only For A Single Device
 
 TCXM-16932: Confirm Show Roaming Cache Tool Is Available For A Single AP
     [Documentation]     Confirms the Diagnostic Show Roaming Cache menu item is available for only a single selected AP and opens/closes the correct dialog
-    [Tags]              xim_tc_16932   development
+    [Tags]              tcxm_16932   development
 
     Refresh Devices Page
 
@@ -394,7 +394,7 @@ Onboard Test Devices
     Confirm Device Serial Present  ${AP_SERIAL}
     Confirm Device Serial Present  ${SW_SERIAL}
     Confirm Device Serial Present  ${RT_SERIAL}
-    
+
     Wait Until Device Online  ${AP_SERIAL}
     Wait Until Device Online  ${RT_SERIAL}
     Wait Until Device Online  ${SW_SERIAL}

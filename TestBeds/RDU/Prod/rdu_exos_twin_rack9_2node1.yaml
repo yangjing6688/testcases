@@ -161,7 +161,7 @@ netelem2:
       ifname:
       intnet:
 
- 
+
 tgen1:
   name:                     &tgen1_name "JETS"
   vendor:                   "jets"
@@ -213,7 +213,7 @@ tgen_ports:
       ifname:             "eth8"
       intnet:             "link16"
 
-nettools_fpp1:
+inband_server1:
   name:                 "inband_server1"
   ip:                   "172.16.250.1"
   username:             "autotest"
@@ -230,8 +230,8 @@ nettools_fpp1:
     mask:         "24"
     source_mac:   ""
     intnet:       ""
-    
-nettools_fpp2:
+
+inband_server2:
   name:                 "inband_server2"
   ip:                   "172.16.251.1"
   username:             "autotest"
@@ -249,7 +249,7 @@ nettools_fpp2:
     source_mac:   ""
     intnet:       ""
 
-radius:
+radius_server1:
   name:                 "outofband_server"
   ip:                   "10.69.1.152"
   username:             "autotest"

@@ -59,7 +59,7 @@ ap2:
     type:
 
 
-kali1:
+kali_server1:
   ip:                 "10.234.201.101"
   username:           "root"
   password:           "symbol"

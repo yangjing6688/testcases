@@ -823,36 +823,44 @@ jobs:
             echo "[*] Results for file: $key" | tee -a ${{ env.tag_marker_report_path }}
             func=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' <<< $value )
             while IFS='|' read -r key value; do
-                echo "[**] Results for test: $key" | tee -a ${{ env.tag_marker_report_path }}
+                printf '\n%s\n' "[**] Results for test: $key" | tee -a ${{ env.tag_marker_report_path }}
+                errors=0
+
                 # All lowercase check
                 result=$(jq -r '.all_tags_lower_case' <<< $value )
                 if [[ $result == 'false' ]]; then
                     echo "[***] FAIL: One or more markers contain uppercase characters" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1
+                    rc=1; let "errors += 1"
                 fi
                 # doesn't contain reserved tag check
                 result=$(jq -r '.contains_reserved_tag' <<< $value)
                 if [[ $result == 'true' && $SKIP_RESERVED_TAGS == 'false' ]]; then
                     echo "[***] FAIL: One or more reserved markers were found. Reserved markers: [production, regression, nightly, sanity, p1, p2, p3, p4]" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1
+                    rc=1; let "errors += 1"
                 fi
                 # contains development tag check
                 result=$(jq -r '.contains_development' <<< $value )
                 if [[ $result == 'false' && $SKIP_RESERVED_TAGS == 'false' ]]; then
                     echo "[***] FAIL: 'development' marker not found" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1
+                    rc=1; let "errors += 1"
                 fi
                 # contains testbed tag check
                 result=$(jq -r '.contains_testbed_tag' <<< $value )
                 if [[ $result == 'false' ]]; then
                     echo "[***] FAIL: Testbed type marker not found" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1
+                    rc=1; let "errors += 1"
                 fi
                 # contains qtest tag check
                 result=$(jq -r '.valid_qtest_tag' <<< $value )
                 if [[ $result == 'false' ]]; then
                     echo "[***] FAIL: qtest marker invalid or not found" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1
+                    rc=1; let "errors += 1"
+                fi
+
+                if (( errors == 0 )); then
+                    echo "[**] PASS!" | tee -a ${{ env.tag_marker_report_path }}
+                else
+                    echo '[**] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.tag_marker_report_path }}
                 fi
             done <<< $func
             echo "" | tee -a ${{ env.tag_marker_report_path }}
@@ -871,36 +879,44 @@ jobs:
             echo "[*] Results for file: $key" | tee -a ${{ env.tag_marker_report_path }}
             func=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' <<< $value )
             while IFS='|' read -r key value; do
-                echo "[**] Results for test: $key"
+                printf '\n%s\n' "[**] Results for test: $key" | tee -a ${{ env.tag_marker_report_path }}
+                errors=0
+
                 # All lowercase check
                 result=$(jq -r '.all_tags_lower_case' <<< $value )
                 if [[ $result == 'false' ]]; then
                     echo "[***] FAIL: One or more tags contain uppercase characters" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1
+                    rc=1; let "errors += 1"
                 fi
                 # doesn't contain reserved tag check
                 result=$(jq -r '.contains_reserved_tag' <<< $value)
                 if [[ $result == 'true' && $SKIP_RESERVED_TAGS == 'false' ]]; then
                     echo "[***] FAIL: One or more reserved tags were found. Reserved tags: [production, regression, nightly, sanity, p1, p2, p3, p4]" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1
+                    rc=1; let "errors += 1"
                 fi
                 # contains development tag check
                 result=$(jq -r '.contains_development' <<< $value )
                 if [[ $result == 'false' && $SKIP_RESERVED_TAGS == 'false' ]]; then
                     echo "[***] FAIL: 'development' tag not found" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1
+                    rc=1; let "errors += 1"
                 fi
                 # contains testbed tag check
                 result=$(jq -r '.contains_testbed_tag' <<< $value )
                 if [[ $result == 'false' ]]; then
                     echo "[***] FAIL: Testbed type tag not found" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1
+                    rc=1; let "errors += 1"
                 fi
                 # contains qtest tag check
                 result=$(jq -r '.valid_qtest_tag' <<< $value )
                 if [[ $result == 'false' ]]; then
                     echo "[***] FAIL: qtest tag invalid or not found" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1
+                    rc=1; let "errors += 1"
+                fi
+
+                if (( errors == 0 )); then
+                    echo "[**] PASS!" | tee -a ${{ env.tag_marker_report_path }}
+                else
+                    echo '[**] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.tag_marker_report_path }}
                 fi
             done <<< $func
             echo "" | tee -a ${{ env.tag_marker_report_path }}
@@ -1099,41 +1115,43 @@ jobs:
 
         printf 'Pytest tests to run: %s\nRobot tests to run: %s\n' "$pytest_tests" "$robot_tests"
 
-        if [[ "${{ env.RUN_ROBOT }}" == "true" ]]; then
+    # Commented out on 5/19 by petersadej
+    # Will be uncommented when the system to set PR check status based on the outcome of the test is reworked.
+    # if [[ "${{ env.RUN_ROBOT }}" == "true" ]]; then
 
-            # Generate robot JSON body
-            CURL_BODY=$(jq --null-input \
-                      --argjson tests "$robot_tests" \
-                      --arg harness_uuid "$robot_harness_uuid" \
-                      "$job_template")
+    #     # Generate robot JSON body
+    #     CURL_BODY=$(jq --null-input \
+    #               --argjson tests "$robot_tests" \
+    #               --arg harness_uuid "$robot_harness_uuid" \
+    #               "$job_template")
 
-            printf '%s\n\n' "[*] Robot Job Submit JSON: $CURL_BODY" | tee -a ${{ env.testcase_func_report_path }}
+    #     printf '%s\n\n' "[*] Robot Job Submit JSON: $CURL_BODY" | tee -a ${{ env.testcase_func_report_path }}
 
-            curl -X POST --no-progress-meter \
-            "https://autoiq.extremenetworks.com/tbedmgr/jobmgr/createJob" \
-            -H "accept: application/json" \
-            -H "Content-Type: application/json" \
-            -H "authorization: Bearer ${SESSION_TOKEN}" \
-            -d "${CURL_BODY}"
-        fi
+    #     curl -X POST --no-progress-meter \
+    #     "https://autoiq.extremenetworks.com/tbedmgr/jobmgr/createJob" \
+    #     -H "accept: application/json" \
+    #     -H "Content-Type: application/json" \
+    #     -H "authorization: Bearer ${SESSION_TOKEN}" \
+    #     -d "${CURL_BODY}"
+    # fi
 
-        if [[ "${{ env.RUN_PYTEST }}" == "true" ]]; then
+    # if [[ "${{ env.RUN_PYTEST }}" == "true" ]]; then
 
-            # Generate pytest JSON body
-            CURL_BODY=$(jq --null-input \
-                      --argjson tests "$pytest_tests" \
-                      --arg harness_uuid "$pytest_harness_uuid" \
-                      "$job_template")
+    #     # Generate pytest JSON body
+    #     CURL_BODY=$(jq --null-input \
+    #               --argjson tests "$pytest_tests" \
+    #               --arg harness_uuid "$pytest_harness_uuid" \
+    #               "$job_template")
 
-            printf '%s\n\n' "[*] Pytest Job Submit JSON: $CURL_BODY" | tee -a ${{ env.testcase_func_report_path }}
+    #     printf '%s\n\n' "[*] Pytest Job Submit JSON: $CURL_BODY" | tee -a ${{ env.testcase_func_report_path }}
 
-            curl -X POST --no-progress-meter \
-            "https://autoiq.extremenetworks.com/tbedmgr/jobmgr/createJob" \
-            -H "accept: application/json" \
-            -H "Content-Type: application/json" \
-            -H "authorization: Bearer ${SESSION_TOKEN}" \
-            -d "${CURL_BODY}"
-        fi
+    #     curl -X POST --no-progress-meter \
+    #     "https://autoiq.extremenetworks.com/tbedmgr/jobmgr/createJob" \
+    #     -H "accept: application/json" \
+    #     -H "Content-Type: application/json" \
+    #     -H "authorization: Bearer ${SESSION_TOKEN}" \
+    #     -d "${CURL_BODY}"
+    # fi
 
 
     # Commented out on 4/21/22 by petersadej.

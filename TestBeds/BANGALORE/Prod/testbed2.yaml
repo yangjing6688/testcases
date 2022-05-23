@@ -196,7 +196,7 @@ mu2:
   wifi_network:   10.234.105
   wifi_network_vlan10:    10.234.105
 
-kali1:
+kali_server1:
   ip:              10.234.178.151
   port:            22
   username:                root

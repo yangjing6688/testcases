@@ -213,7 +213,7 @@ router2:
   make:                     Extreme - Aerohive
 
 
-sw1:
+aerohive_sw1:
   name:               bui-flo-0026
   model:              SR2348P
   device_template:    SR2348P-default-template
@@ -251,7 +251,7 @@ mu2:
 
 
 
-exos1:
+netelem1:
   platform:                 EXOS
   name:                     5520-24W-EXOS
   model:                    "SwitchEngine5520_24W"

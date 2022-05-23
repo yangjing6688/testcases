@@ -166,7 +166,7 @@ mu5:
   wifi_mac:       F0189888A3FF
 
 
-exos1:
+netelem1:
   platform:                 EXOS
   name:                     5520-24W-EXOS
   model:                    "SwitchEngine5520_24W"
@@ -183,7 +183,7 @@ exos1:
   make:                     EXOS
 
 
-exos2:
+netelem2:
   platform:                 EXOS
   name:                     5520-48W-EXOS
   model:                    "SwitchEngine5520_48W"
@@ -201,7 +201,7 @@ exos2:
 
 
 
-sw1:
+aerohive_sw1:
   name:               AH-Switch
   model:              SR2324P
   device_template:    SR2324P-default-template

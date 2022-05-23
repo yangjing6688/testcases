@@ -161,7 +161,7 @@ netelem6:
   location:                 "Salem NH Automation Lab"
   license:                  "PILOT"
 
-sw1:
+aerohive_sw1:
   name:                     "AH-Switch"
   serial:                   '23481812230043'
   mac:                      "B87CF20269A8"

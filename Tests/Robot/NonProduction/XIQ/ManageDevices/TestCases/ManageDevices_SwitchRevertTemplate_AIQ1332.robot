@@ -26,16 +26,16 @@ ${XIQ_USER}             ${xiq.tenant_username}
 ${XIQ_PASSWORD}         ${xiq.tenant_password}
 ${IQAGENT}              ${xiq.sw_connection_host}
 
-${DUT_SERIAL}           ${sw1.serial}
-${DUT_MAC}              ${sw1.mac}
-${DUT_CONSOLE_IP}       ${sw1.console_ip}
-${DUT_CONSOLE_PORT}     ${sw1.console_port}
-${DUT_USERNAME}         ${sw1.username}
-${DUT_PASSWORD}         ${sw1.password}
-${DUT_PLATFORM}         ${sw1.platform}
-${DUT_MAKE}             ${sw1.make}
-${DUT_TEST_TEMPLATE}    ${sw1.device_template}
-${DUT_TEST_PORT}        ${sw1.test_port}
+${DUT_SERIAL}           ${aerohive_sw1.serial}
+${DUT_MAC}              ${aerohive_sw1.mac}
+${DUT_CONSOLE_IP}       ${aerohive_sw1.console_ip}
+${DUT_CONSOLE_PORT}     ${aerohive_sw1.console_port}
+${DUT_USERNAME}         ${aerohive_sw1.username}
+${DUT_PASSWORD}         ${aerohive_sw1.password}
+${DUT_PLATFORM}         ${aerohive_sw1.platform}
+${DUT_MAKE}             ${aerohive_sw1.make}
+${DUT_TEST_TEMPLATE}    ${aerohive_sw1.device_template}
+${DUT_TEST_PORT}        ${aerohive_sw1.test_port}
 
 ${POLICY_NAME}          Automation_Policy
 ${SSID_NAME}            Auto_SSID

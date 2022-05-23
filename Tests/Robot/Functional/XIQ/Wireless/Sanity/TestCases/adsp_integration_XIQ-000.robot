@@ -200,7 +200,7 @@ Test5: Generate DoS Deauthentication Alarm on Kali Linux
     Depends On              Test2  Test3   Test4
 
     FOR    ${i}    IN RANGE   20
-          ${KALI_SPAWN}=               Open PxSSH Spawn         ${kali1.ip}   ${kali1.username}       ${kali1.password}
+          ${KALI_SPAWN}=               Open PxSSH Spawn         ${kali_server1.ip}   ${kali_server1.username}       ${kali_server1.password}
           ${DOS_ALARM_CMD}=            Send                ${KALI_SPAWN}        aireplay-ng -D wlan1 --deauth 0 -a ${mu1.wifi_mac}
           Should Contain               ${DOS_ALARM_CMD}   Sending DeAuth
           close spawn   ${KALI_SPAWN}
