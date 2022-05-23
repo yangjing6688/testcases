@@ -16,15 +16,9 @@ from ExtremeAutomation.Imports.XiqLibraryHelper import XiqLibraryHelper
 from Tests.Pytest.SystemTest.XIQ.Wired.Resources.SuiteUdks import SuiteUdks
 
 
-city ='San Jose'
-building ='building_01'
-floor = 'floor_01'
-floor2 = 'floor_02'
-location_device2 = city + "," + building + "," + floor2
-csv_file_location = "/automation/tests/extreme_automation_tests/TestBeds/SALEM/SystemTest/1_node/slm_1440.csv"
-csv_file_location2 = "/automation/tests/extreme_automation_tests/TestBeds/SALEM/SystemTest/1_node/slm_1440_location.csv"
 needToDeleteDevice = False
-
+current_directory = os.path.dirname(os.path.abspath(__file__))
+print(current_directory)
 
 
 @mark.testbed_1_node
@@ -55,7 +49,15 @@ class onboardDeviceXA1440UsingCsvTests():
                                      url=cls.tb.config.test_url,
                                      IRV=True)
 
-
+            global csv_file_location
+            csv_file_location = cls.suiteUdks.create_csv_file(work_dir=current_directory,
+                                                               dut_serial=cls.tb.dut1_serial,
+                                                               platform=cls.tb.dut1_platform)
+            global csv_file_location2
+            csv_file_location2 = cls.suiteUdks.create_csv_file(work_dir=current_directory,
+                                                                dut_serial=cls.tb.dut1_serial,
+                                                                platform=cls.tb.dut1_platform,
+                                                                location=cls.tb.dut1_location2)
 
             cls.udks.setupTeardownUdks.networkElementConnectionManager.connect_to_all_network_elements()
 
@@ -69,17 +71,19 @@ class onboardDeviceXA1440UsingCsvTests():
 
         if needToDeleteDevice:
             cls.xiq.xflowscommonDevices.delete_device(device_serial=cls.tb.dut1_serial)
-
+        cls.suiteUdks.delete_csv(csv_file_location)
+        cls.suiteUdks.delete_csv(csv_file_location2)
         cls.xiq.login.logout_user()
         cls.xiq.login.quit_browser()
         cls.defaultLibrary.apiUdks.setupTeardownUdks.Base_Test_Suite_Cleanup()
 
-    """ Test Cases """
+    #""" Test Cases """
     @mark.development
     @mark.tccs_7651
     def test_onboard_device_using_csv_without_location(self,test_case_skip_check,test_case_started_ended_print):
         '''[Documentation]  Test_Objective: Verify a XA1440 device can be onboared using a csv file'''
         global needToDeleteDevice
+
         res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.os, csv_location=csv_file_location)
 
         if res != 1:
@@ -114,8 +118,9 @@ class onboardDeviceXA1440UsingCsvTests():
     def test_onboard_device_using_csv_with_location(self,test_case_skip_check,test_case_started_ended_print):
         '''[Documentation]  Test_Objective: Verify a XA1440 device can be onboared using a csv file and selecting the location field'''
         global needToDeleteDevice
+
         res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.os,
-                                                                      location=self.tb.dut1_location, csv_location=csv_file_location)
+                                                                      location=self.tb.dut1_location1, csv_location=csv_file_location)
         if res != 1:
             pytest.fail('Could not onboard. Please check the csv file')
         else:
@@ -130,7 +135,7 @@ class onboardDeviceXA1440UsingCsvTests():
         else:
             print('Status for device with serial number: {} is equal to Green'.format(self.tb.dut1_serial))
 
-        location_to_verify = self.suiteUdks.expected_location_in_gui(self.tb.dut1_location)
+        location_to_verify = self.suiteUdks.expected_location_in_gui(self.tb.dut1_location1)
 
         device_location = self.suiteUdks.get_value_specific_column(self.xiq, self.tb.dut1_serial, "LOCATION")
 
@@ -149,6 +154,7 @@ class onboardDeviceXA1440UsingCsvTests():
     def test_onboard_device_using_csv_with_location_in_csv(self, test_case_skip_check, test_case_started_ended_print):
 
         global needToDeleteDevice
+
         res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.os,
                                                                       csv_location=csv_file_location2)
         if res != 1:
@@ -165,7 +171,7 @@ class onboardDeviceXA1440UsingCsvTests():
         else:
             print('Status for device with serial number: {} is equal to Green'.format(self.tb.dut1_serial))
 
-        location_to_verify = self.suiteUdks.expected_location_in_gui(location_device2)
+        location_to_verify = self.suiteUdks.expected_location_in_gui(self.tb.dut1_location2)
 
         device_location = self.suiteUdks.get_value_specific_column(self.xiq, self.tb.dut1_serial, "LOCATION")
 
