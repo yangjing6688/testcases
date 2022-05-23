@@ -1,0 +1,8 @@
+test_url:             "https://kt.extremecloudiq.com"
+capwap_url:           "redirector.aerohive.com"
+sw_capwap_url:        "kt.extremecloudiq.com"
+wing_capwap_url:      "kt-wing.extremecloudiq.com"
+tenant_username:      "ah.devops.test.kt@gmail.com"
+tenant_password:      "Extreme@123"
+base_url:             "https://api.extremecloudiq.com"
+CLOUD_GDC_URL:        "https://cloud.aerohive.com"

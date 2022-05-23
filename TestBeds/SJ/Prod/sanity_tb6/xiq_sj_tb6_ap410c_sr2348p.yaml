@@ -43,7 +43,7 @@ aerohive_sw1:
   ip:                 10.16.171.34
   network_policy:
   username:           admin
-  password:           aerohive
+  password:           Aerohive123
   platform:           aerohive-fastpath
   console_ip:         10.16.128.23
   console_port:       7027

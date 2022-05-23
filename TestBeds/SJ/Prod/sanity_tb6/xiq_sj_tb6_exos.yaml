@@ -6,7 +6,7 @@ netelem1:
   mac:                      000496BAA78C
   username:                 admin
   password:                 Aerohive123
-  ip:                       10.16.152.141
+  ip:                       10.16.152.137
   console_ip:               10.16.148.22
   console_port:             7043
   network_policy:           Test_np
