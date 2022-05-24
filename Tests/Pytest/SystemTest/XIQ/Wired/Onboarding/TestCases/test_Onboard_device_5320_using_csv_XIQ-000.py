@@ -86,9 +86,9 @@ class onboardDevice5320UsingCsvTests():
         res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.os, csv_location=csv_file_location)
 
         if res != 1:
-            pytest.fail('Could not onboard. Please check the csv file')
+            pytest.fail(f'Could not onboard device {self.tb.dut1_platform} with serial {self.tb.dut1_serial}')
         else:
-            print('Device has been onboarded')
+            print(f'Device {self.tb.dut1_platform} with serial {self.tb.dut1_serial} has been onboarded')
             needToDeleteDevice = True
 
         self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial)
@@ -121,9 +121,9 @@ class onboardDevice5320UsingCsvTests():
         res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.os,
                                                                       location=self.tb.dut1_location1, csv_location=csv_file_location)
         if res != 1:
-            pytest.fail('Could not onboard. Please check the csv file')
+            pytest.fail(f'Could not onboard device {self.tb.dut1_platform} with serial {self.tb.dut1_serial}')
         else:
-            print('Device has been onboarded')
+            print(f'Device {self.tb.dut1_platform} with serial {self.tb.dut1_serial} has been onboarded')
             needToDeleteDevice = True
 
         self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial)
@@ -157,9 +157,9 @@ class onboardDevice5320UsingCsvTests():
         res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.os,
                                                                       csv_location=csv_file_location2)
         if res != 1:
-            pytest.fail('Could not onboard. Please check the csv file')
+            pytest.fail(f'Could not onboard device {self.tb.dut1_platform} with serial {self.tb.dut1_serial}')
         else:
-            print('Device has been onboarded')
+            print(f'Device {self.tb.dut1_platform} with serial {self.tb.dut1_serial} has been onboarded')
             needToDeleteDevice = True
 
         self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial)
