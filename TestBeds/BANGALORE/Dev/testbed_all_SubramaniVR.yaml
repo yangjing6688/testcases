@@ -1,0 +1,67 @@
+ap1:
+  name:                     AP305C
+  connection_method:        "ssh"
+  username:                 admin
+  password:                 aerohive
+  serial:                   '03051907020094'
+  ip:                       10.234.152.99
+  port:                     22
+  mac:                      bcf3100048c0
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP305C
+  template:                 AP_305C-default-template
+  make:                     Extreme - Aerohive
+  location:                 Bangalore, EcoSpace-Bellandur, Floor-1
+  nw_policy:                test_nw_01
+  location_name:            BLR1
+  building_name:            EcoSpace1
+  building_address:         ORR
+  floor_name:               floor2
+  console_ip:               10.234.221.5
+  console_port:             7016
+  command_list:             no capwap client enable,   no capwap client server,   no capwap client server name,  no capwap client server backup name,   no capwap client default-server-name,  capwap client server name ${capwap_url},    capwap client server backup name ${capwap_url},     capwap client default-server-name ${capwap_url},    capwap client enable
+
+ap2:
+  name:                     AP410C
+  connection_method:        "ssh"
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '04102005201734'
+  ip:                       10.234.152.99
+  console_ip:               10.234.221.5
+  port:                     22
+  console_port:             7013
+  mac:                      bcf3105e46c0
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP410C
+  template:                 AP_410C-default-template
+  make:                     Extreme - Aerohive
+  location:                 BLR, EcoSpace, Floor-1
+  nw_policy:                test_nw_01
+  location_name:            BLR1
+  building_name:            EcoSpace1
+  building_address:         ORR
+  floor_name:               floor2
+  country_code:             AUSTRALIA_36
+  command_list:             no capwap client enable,   no capwap client server,   no capwap client server name,  no capwap client server backup name,   no capwap client default-server-name,  capwap client server name qa-redirector.extremecloudiq.com,    capwap client server backup name qa-redirector.extremecloudiq.com,     capwap client default-server-name qa-redirector.extremecloudiq.com,    capwap client enable
+
+
+sw1:
+  name:                     AH-SR-2348P
+  connection_method:        "telnet"
+  username:                 admin
+  password:                 aerohive
+  serial:                   '23481812230045'
+  ip:                       10.234.152.94
+  port:                     22
+  mac:                      B87CF20269E0
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AH-SR-2348P
+  make:                     Extreme - Aerohive
+  location:                 BLR, EcoSpace, Floor-1
+  console_ip:               10.234.221.5
+  console_port:             7011
+  command_list:             application stop hiveagent,   hivemanager address ${switch_connection_host_url},   application start hiveagent
