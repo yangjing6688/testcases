@@ -1,2 +1,3 @@
-/TestBeds @extremenetworks/autoiq-framework
-/doc @extremenetworks/autoiq-framework
+/TestBeds                                       @extremenetworks/autoiq-framework
+/doc                                            @extremenetworks/autoiq-framework
+/Tests/Robot/Functional/XIQ/Wireless/Sanity     @extremenetworks/autoiq-framework

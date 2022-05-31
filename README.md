@@ -33,19 +33,16 @@ Now that your development IDE is installed you can start to explore the Automati
 
 # How to bypass CI checks
 
-First, some notes.
-Skipping CI checks requires authorization. You are unable to perform a skip unless your username is on the list of authorized users.
-- If this is a special circumstance and you only need to bypass the CI checks once you can send an email request to one of the repository admins. We are happy to take care of that for you.
-- If you need the ongoing ability to skip CI checks please email the repository admins with a request for authorization. Please include the specific reasons why you need to be able to skip CI checks.
-
 ### Instructions
-1. Request access (see notes above)
-2. Add `[Skip Checks: <check to skip>, <check to skip>]` to the *beginning* of the title for your pull request.
+1. Request access. Skipping CI checks requires authorization. You are unable to perform a skip unless your username is on the list of authorized users.
+    - If you need the ongoing ability to skip CI checks please email the repository admins with a request for authorization. Please include the specific reasons why you need to be able to skip CI checks.
+    - If this is a special circumstance and you only need to bypass the CI checks once you can send an email request to one of the repository admins. We are happy to take care of that for you.
+1. Add `[Skip Checks: <check to skip>, <check to skip>]` to the *beginning* of the title for your pull request.
     - If you have already created a pull request, you can edit the title by going to your pull request page and clicking edit in the top right corner of the page. The title will then become editable.
     - This string is not case sensitive, but the spacing does matter.
     - Example title: `[Skip Checks: Tags] XIQ-1000: do something`
     - Example multi-skip title: `[Skip Checks: Tags, Testbed] XIQ-1000: do something`
-3. The skip only applies to your GitHub username. So, if you are working with multiple people on a PR or are performing a skip for someone else you will need to be the last person to have commited a change to the PR. This can be a real change or a dummy change that is just for the purposes of skipping the CI check.
+1. The skip only applies to your GitHub username. So, if you are working with multiple people on a PR or are performing a skip for someone else you will need to be the last person to have commited a change to the PR. This can be a real change or a dummy change that is just for the purposes of skipping the CI check.
 
 ### More info on the supported skips
 The currently supported skips are: `Testbed`, `Dir`, `File`, `Reserved Tags`, `Tags`, `Func`
