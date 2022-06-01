@@ -15,7 +15,7 @@
 
 # Execution Command:
 # ------------------
-# robot -v TOPO:topo.xapi-g2.yaml -v TESTBED:BANGALORE/testbed_common_Subramanivr.yaml -L DEBUG XAPI-Production-Sanity.robot
+# robot -v TOPO:topo.xapi-g2.yaml -v TESTBED:BANGALORE/testbed_all_SubramaniVR.yaml -L DEBUG XAPI-Production-Sanity.robot
 #
 #
 
@@ -25,7 +25,6 @@
 ${AP_DEVICE_ID}=   0
 ${SWITCH_DEVICE_ID}=   0
 ${ERROR_CODE}=  error_code
-${NETWORK_POLICY_URI}=          /network-policies
 ${API_RESPONSE}                 200 OK
 ${NETWORK_POLICY_ID}=           -1
 

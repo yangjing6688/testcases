@@ -1,3 +1,7 @@
+*** Variables ***
+
+${NETWORK_POLICY_URI}=          /network-policies
+
 *** Settings ***
 
 
