@@ -53,7 +53,7 @@ Get Sample ID From Devices
 Get Device Description
     [Documentation]  get device description
     [Arguments]  ${ID}
-    ${RESP}=  rest api get  /devices/${ID}
+    ${RESP}=  rest api get  /devices/${ID}?views=full
     ${DESCRIPTION}=  get json values  ${RESP}  key=description
     log  ${DESCRIPTION}
     [Return]  ${DESCRIPTION}
@@ -72,7 +72,8 @@ Change Device Description
 *** Test Cases ***
 Pre Condition-User-Login
     [Documentation]  XAPI User login successful
-    [Tags]                  xim_tc_16480     development
+    
+    [Tags]                  tcxm_16480     development
 
     ${ACCESS_TOKEN}=        generate_access_token    ${tenant_username}      ${tenant_password}      login
     log  ${ACCESS_TOKEN}
@@ -80,7 +81,8 @@ Pre Condition-User-Login
 
 Pre Condition-Get-Sample-Device-ID
     [Documentation]         Get a sample device ID from device list
-    [Tags]                  xim_tc_18262     development
+    
+    [Tags]                  tcxm_18262     development
 
     ${SAMPLE_DEVICE_ID}=   Get Sample ID From Devices
     skip if   ${SAMPLE_DEVICE_ID}==0
@@ -88,7 +90,8 @@ Pre Condition-Get-Sample-Device-ID
 
 Pre Condition-Get-Sample-Device-Description
     [Documentation]         Get a sample device description from given device ID
-    [Tags]                  xim_tc_18262     development
+    
+    [Tags]                  tcxm_18262     development
 
     skip if   ${SAMPLE_DEVICE_ID}==0
     ${PRE_DESCRIPTION}=   Get Device Description   ${SAMPLE_DEVICE_ID}
@@ -96,7 +99,8 @@ Pre Condition-Get-Sample-Device-Description
 
 Pre Condition-Get-Random-Device-Description
     [Documentation]         Generate random description for update
-    [Tags]                  xim_tc_18262     development
+    
+    [Tags]                  tcxm_18262     development
 
     skip if   ${SAMPLE_DEVICE_ID}==0
     ${DESCRIPTION_FOR_UPDATE}=   Get Random String
@@ -104,7 +108,8 @@ Pre Condition-Get-Random-Device-Description
 
 TC-18262: Update-Device-Description
     [Documentation]         Change device description
-    [Tags]                  xim_tc_18262     development
+    
+    [Tags]                  tcxm_18262     development
 
     skip if   ${SAMPLE_DEVICE_ID}==0
     ${RESP_CODE}=  Change Device Description    ${SAMPLE_DEVICE_ID}    ${DESCRIPTION_FOR_UPDATE}
@@ -112,7 +117,8 @@ TC-18262: Update-Device-Description
 
 TC-18277: Check-Device-Description
     [Documentation]         Check device description
-    [Tags]                  xim_tc_18277     development
+    
+    [Tags]                  tcxm_18277     development
 
     skip if   ${SAMPLE_DEVICE_ID}==0
     ${UPDATED_DESCRIPTION}=  Get Device Description   ${SAMPLE_DEVICE_ID}
