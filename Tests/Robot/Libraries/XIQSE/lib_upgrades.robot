@@ -15,13 +15,14 @@ Library     OperatingSystem
 
 *** Keywords ***
 Upgrade Site Engine
-    [Documentation]     deletes existing file and downloads the upgrade binary to site engine
+    [Documentation]     deletes existing file, downloads the upgrade binary to site engine and perform upgrade
 
     Delete SE Existing Files  ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}
     Download File   ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}  ${XIQSE_FOLDER}  ${NSRELEASE_XIQSE_FILE}
     Install SE Software  ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}  ${NSRELEASE_XIQSE_FILE}
     Check Server Exit Code  ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}  ${NSRELEASE_XIQSE_FILE}
-    Check Server Is Up
+    Sleep  120s
+    NBI Check Server Is Up    ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}  ${NBI_FILE}
     Run Keyword If
     ...   "${INSTALL_MODE}" == "AIO"
     ...    Inject XIQ AIO property into NSJBoss Properties File and Restart  ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}
@@ -33,7 +34,7 @@ Upgrade Site Engine
     ...    Log To Console    >> THIS IS FUTURE TEST SECTION WHEN AIRGAP IS SUPPORTED
     ...    ELSE
     ...    Log To Console    >> Invalid value for INSTALL_MODE: ‘${INSTALL_MODE}’. Please specify AIO, CONNECTED, or AIRGAP
-    Check Server Is Up
+    NBI Check Server Is Up    ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}  ${NBI_FILE}
 
 Upgrade NAC Engine
     [Documentation]     deletes existing file and downloads the upgrade binary to the access control appliance
@@ -127,7 +128,7 @@ Inject XIQ AIO property into NSJBoss Properties File and Restart
     ${output} =  Send Paramiko CMD        ${sshSession}  echo extreme.xiq.baseUrl=${XIQ_BASE_URL} >> /usr/local/Extreme_Networks/NetSight/appdata/NSJBoss.properties
     ${output} =  Send Paramiko CMD        ${sshSession}  echo DeveloperOptions.airGapSerialNumber=${XIQSE_SERIAL} >> ~/NetSight/DeveloperOptions.properties
     ${output} =  Send Paramiko CMD        ${sshSession}  ${XIQSE_RESTART_SERVER}
-    Check Server Is Up
+    NBI Check Server Is Up                ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}  ${NBI_FILE}
 
 Inject XIQ CLOUD properties into NSJBoss Properties File and Restart
     [Documentation]     Injects Base and Redirector XIQ Urls into NSJBoss.properties file and restarts XIQSE service
@@ -139,7 +140,7 @@ Inject XIQ CLOUD properties into NSJBoss Properties File and Restart
     # DO NOT DELETE - Specifically setting the Serial Number here so the VM will retain the expected serial number
     ${output} =  Send Paramiko CMD        ${sshSession}  echo DeveloperOptions.airGapSerialNumber=${XIQSE_SERIAL} >> ~/NetSight/DeveloperOptions.properties
     ${output} =  Send Paramiko CMD        ${sshSession}  ${XIQSE_RESTART_SERVER}
-    Check Server Is Up
+    NBI Check Server Is Up                ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}  ${NBI_FILE}
 
 
 #### Keywords for checking success of installations
@@ -175,24 +176,25 @@ Check NGAnalytics Exit Code
     ${output} =  Send Paramiko CMD        ${sshSession}  cat ${NSRELEASE_NGANALYTICS_LOG_FILE} | grep "upgrade to ${NSRELEASE_VERSION} was completed"
     Should Contain  ${output}  upgrade to ${NSRELEASE_VERSION} was completed
 
-Check Server Is Up
-    [Documentation]    Checks the server is up and running.
-    [Arguments]
+NBI Check Server Is Up
+    [Documentation]    Checks the server is up and running via an NBI call
+    [Arguments]        ${ip}  ${user}  ${password}  ${nbi_file}
 
-    # We expect failures here so ignore errors.
     FOR    ${index}    IN RANGE    45
-        ${passed}  ${value}   Run Keyword And Ignore Error  XIQSE Load Page    url=${XIQSE_URL}
-        Log  result is ${passed}
-        XIQSE Quit Browser
-        Exit For Loop If  "${passed}"=="PASS"
-        Log  Waiting for Server
+        ${sshSession} =    open_paramiko_ssh_spawn  ${ip}  ${user}  ${password}  ${SSH_PORT}
+        ${output} =  Send Paramiko CMD        ${sshSession}  rm ${nbi_file}
+        ${output} =  Send Paramiko CMD        ${sshSession}  curl -k -u ${user}:${password} https://${ip}:8443/Clients/nbi/graphql/index.html?query=query%7Bnetwork%20%7Bsites%20%7BsiteName%7D%7D%7D > ${nbi_file}
+        ${result} =  Send Paramiko CMD        ${sshSession}  cat ${nbi_file} | grep "World"
+
+        Exit For Loop If  'World' in '''${result}'''
         Sleep  60s
+        IF  "${index}"=="44"
+            Log To Console          Server is not yet up. Please check the server for any errors
+            Should Be True          'World' in '''${result}'''
+        ELSE
+            Log To Console  Waiting for Server
+        END
     END
-    # Run one more login, this will be the offical results, a failure here
-    # means something is not right and should be recorded.
-    ${result}=    XIQSE Load Page    url=${XIQSE_URL}
-    XIQSE Quit Browser
-    Log  Final result is ${passed}
 
 Check NAC Is Up
     [Documentation]    Checks the server is up and running.
@@ -238,8 +240,9 @@ Site Engine Upgrade
     ${esxPw} =  Get From Dictionary  ${upgradeParams}  esxPw
     Log   Upgrading XIQ-SE from version ${version} to ${NSRELEASE_VERSION}
     Reset VM   ${esxIp}  ${esxUser}  ${esxPw}  ${vmid}  ${snapshot}
-    Check Server Is Up
+    NBI Check Server Is Up    ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}  ${NBI_FILE}
     Upgrade Site Engine
+    NBI Check Server Is Up    ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}  ${NBI_FILE}
 
 Nac Engine Upgrade
     [Documentation]  Handles the upgrade of NAC appliances

@@ -68,6 +68,8 @@ ${DOWNLOAD_TIMEOUT_SEC}             300
 ${INSTALL_DOWNLOAD_TIMEOUT_SEC}     7200
 ${ESX_VM_CMD_TIMEOUT_SEC}           300
 
+${NBI_FILE}                         nbi.out
+
 @{ALL_APPLIANCES}                   ${XIQSE_IP_ADDRESS}  ${NAC_IP}  ${PURVIEW_IP}  ${NEXTGEN_IP}
 
 &{UPGRADE_TEST_XIQSE}               version=${upgrades.nsrelease_version}  esxIp=${upgrades.esx.esx_ip}
