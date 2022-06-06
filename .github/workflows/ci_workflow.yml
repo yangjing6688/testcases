@@ -130,6 +130,7 @@ jobs:
           Tests/(Pytest|Robot)/Demos/
           __init__.py
           .pylintrc
+          [rR][eE][aA][dD][mM][eE]\.md
         separator: ','
 
     # Outputs a list of files breaking directory rules that we don't care about
@@ -519,6 +520,9 @@ jobs:
         trimmed_files=$(cat ${{ env.other_files_path }} | tr -d [:space:])
         if [[ $trimmed_files ]]; then
           echo "[*] FAIL: New directories and files not allowed in protected areas." | tee -a ${{ env.directory_struct_report_path }}
+          echo "[*] Common reasons for seeing this error:" | tee -a ${{ env.directory_struct_report_path }}
+          echo "[*]   - Adding files outside of TestCases or Resource directories. (Except: __init__.py, .pylintrc, readme.md)" | tee -a ${{ env.directory_struct_report_path }}
+          echo "[*]   - Adding directories outisde of /Tests/<framework>/<test type>/ " | tee -a ${{ env.directory_struct_report_path }}
           echo '[*] For more information see the Test Suite Location section of ${{ env.documentation_url }}' | tee -a ${{ env.directory_struct_report_path }}
           echo "[*] Offending files/directories:" | tee -a ${{ env.directory_struct_report_path }}
 
