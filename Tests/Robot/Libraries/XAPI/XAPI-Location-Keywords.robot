@@ -100,8 +100,7 @@ xapi assign location to device
 
     ${RESPONSE}=            rest api put v3        /devices/${DEVICE_ID}/location         '{ "location_id": ${FLOOR_ID}, "x": 0, "y": 0, "latitude": 0, "longitude": 0 }'
     Log                     ${RESPONSE}
-    should be equal as integers             ${RESPONSE}         1	
-	
+	[Return]         ${RESPONSE}
 
 xapi get locations tree string
     [Documentation]  Used to Get the Locations Tree as String
