@@ -11,7 +11,7 @@ robotframework-pabot==2.1.0
 sauceclient==1.0.0
 selenium==3.141.0
 sauceclient==1.0.0
-opencv-python==4.5.5.65
+opencv-python==4.5.5.64
 bs4==0.0.1
 typing-extensions==4.1.1
 # ----------------- From Wireless End ---------------------
