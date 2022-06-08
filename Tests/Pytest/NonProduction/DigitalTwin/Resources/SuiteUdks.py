@@ -33,6 +33,15 @@ class SuiteUdk():
         txt = kw_results[0].cmd_obj.return_text
 
         if is_active:
+            return re.search(r"^ +EXOS_DT_ACTIVE: 1", txt, re.M) is not None
+        return re.search(r"^ +EXOS_DT_ACTIVE: \(null\)", txt, re.M) is not None
+
+    def verify_dt_mgmt(self, dut_name, in_use=True):
+        kw_results = self.defaultLibrary.deviceNetworkElement.networkElementCliSend.\
+                     send_cmd(dut_name, "debug hal run platform config-dump")
+        txt = kw_results[0].cmd_obj.return_text
+
+        if in_use:
             return re.search(r"^ +EXOS_DT_MGMT_VRID: 2000", txt, re.M) is not None
         return re.search(r"^ +EXOS_DT_MGMT_VRID: \(null\)", txt, re.M) is not None
 

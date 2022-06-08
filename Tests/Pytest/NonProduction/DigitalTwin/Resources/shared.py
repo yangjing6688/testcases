@@ -111,6 +111,25 @@ class DtTestEnv:
     def uses_stacking(self):
         return self.yaml["system"].get("stacking", False)
 
+    def get_slot(self, slot_num):
+        for slot in self.yaml["system"]["slots"]:
+            if str(slot["num"]) == slot_num:
+                return slot
+        return None
+
+    def get_first_slot_num(self):
+        slot_nums = [slot["num"] for slot in self.yaml["system"]["slots"]]
+        return str(min(slot_nums)) if slot_nums else None
+
+    def get_prim_slot_num(self):
+        if self.yaml["system"].get("stacking", False):
+            for slot in self.yaml["system"]["slots"]:
+                if slot.get("primary", False):
+                    return str(slot["num"])
+
+            return self.get_first_slot_num()
+        return None
+
     def get_boot_wait_time(self):
         if self.uses_stacking():
             return SYS_BOOT_SLEEP_STACK
@@ -164,6 +183,7 @@ STD_CFG = [
     DtTestEnv("cfg_005.yaml"),
     DtTestEnv("cfg_006.yaml"),
     DtTestEnv("cfg_007.yaml", "0a:49:26:16:99:02"),
+    DtTestEnv("cfg_008.yaml"),
     ]
 
 
@@ -227,7 +247,8 @@ def get_my_ip_address():
 class Gns3:
     """Provide GNS3 functions and runtime info"""
 
-    def __init__(self, nos_image, name, docker_image=GNS3_DFLT_DOCKER_IMG, base_url=GNS3_API_URL):
+    def __init__(self, nos_image, name, docker_image=GNS3_DFLT_DOCKER_IMG, base_url=GNS3_API_URL,
+                 use_dt_mgmt=True):
         self.base_url = base_url
         self.name = name
         self.nos_image = nos_image
@@ -235,6 +256,7 @@ class Gns3:
         self.xiq_template = None
         self.switch_template = None
         self.project = None
+        self.use_dt_mgmt = use_dt_mgmt
 
     @staticmethod
     def _run_sys_cmd(cmd):
@@ -243,12 +265,14 @@ class Gns3:
 
     @staticmethod
     def _send_post(url, json=None):
+        logging.debug("Post Request: %s", json)
         req = requests.post(url, json=json if json else {})
         logging.debug("Status Code: %s (%d)", req.reason, req.status_code)
         return req.json()
 
     @staticmethod
     def _send_put(url, json):
+        logging.debug("Put Request: %s", json)
         req = requests.put(url, json=json)
         logging.debug("Status Code: %s (%d)", req.reason, req.status_code)
         return req.json()
@@ -257,6 +281,7 @@ class Gns3:
     def _send_get(url):
         req = requests.get(url)
         logging.debug("Status Code: %s (%d)", req.reason, req.status_code)
+        logging.debug("Get Request: %s", req.json())
         return req.json()
 
     @staticmethod
@@ -363,7 +388,7 @@ class Gns3:
         # Copy the qcow2 file before assigning the hda_disk_image
         self.copy_nos_image()
 
-        bios_opts = f"-extreme-dt 'version=22.4;dt_mgmt=enabled;"\
+        bios_opts = f"-extreme-dt 'version=22.4;{'dt_mgmt=enabled;' if self.use_dt_mgmt else ''}"\
                     f"cfg_name={cfg_name};cfg_urls={cfg_urls}'"
         json = {"x": 125, "y": -100, "first_port_name": "Mgmt", "port_name_format": "Port{port1}",
                 "symbol": ":/symbols/multilayer_switch.svg",

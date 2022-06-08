@@ -14,12 +14,7 @@ import yaml
 import pytest
 from ..Resources import shared
 
-# Instance of Gns3 from shared.py
-GNS3_INST = None
-CFG_URLS = None
-HTTP_IP = None
-HTTP_PORT = "8181"
-
+DFLT_HTTP_PORT = "8181"
 
 CONFIGS_HELP = """Comma-separated list of configurations to test:
                all         - Run all the different test configurations
@@ -49,10 +44,11 @@ def pytest_addoption(parser):
                      help="Downloadable DTEC GNS3 Docker container")
     parser.addoption("--http-ip", action="store",
                      help="Define the HTTP server IP address to access DT YAML files")
-    parser.addoption("--http-port", action="store", default=HTTP_PORT,
+    parser.addoption("--http-port", action="store", default=DFLT_HTTP_PORT,
                      help="Define the HTTP server port to access DT YAML files")
     parser.addoption("--max-instances", action="store",
                      help="Limit the number of DT instances per test")
+    parser.addoption("--no-dt-mgmt", action="store_true", help="Don't use DT Mgmt Interface")
     parser.addoption("--nos-image", action="store", required=True,
                      help="Full path of NOS QCOW2 image file (mandatory)")
     parser.addoption("--stacking", action="store", default="include", help=STACKING_HELP)
@@ -60,23 +56,25 @@ def pytest_addoption(parser):
 
 def handle_misc_cli_options(config):
     """Parse any miscellaneous CLI options.  Note that logging doesn't work in here"""
-    global GNS3_INST # pylint: disable=global-statement
-    global CFG_URLS # pylint: disable=global-statement
-    global HTTP_IP # pylint: disable=global-statement
-    global HTTP_PORT # pylint: disable=global-statement
 
     nos_image = config.getoption("nos_image")
     docker_image = config.getoption("docker_image")
 
+    pytest.USE_DT_MGMT = not config.getoption("no_dt_mgmt")
+
     # Generate a random UUID for the instance name
     inst_name = str(uuid.uuid4())
-    GNS3_INST = shared.Gns3(nos_image, inst_name, docker_image)
+    pytest.gns3_inst = shared.Gns3(nos_image, inst_name, docker_image,
+                                   use_dt_mgmt=pytest.use_dt_mgmt)
 
-    # If HTTP_IP is None, server will auto-bind to all addresses
-    HTTP_IP = config.getoption("http_ip")
-    HTTP_PORT = config.getoption("http_port") or HTTP_PORT
-    http_ip = HTTP_IP or shared.get_my_ip_address()
-    CFG_URLS = f"http://{http_ip}:{HTTP_PORT}/"
+    # If http_ip is None, server will auto-bind to all addresses, so we need
+    # to preserve that in the "global" configuration...
+    pytest.http_ip = config.getoption("http_ip")
+    pytest.http_port = config.getoption("http_port") or pytest.http_port
+
+    # ...but here, where we define the HTTP server URL, we need a real value
+    http_ip = pytest.http_ip or shared.get_my_ip_address()
+    pytest.cfg_urls = f"http://{http_ip}:{pytest.http_port}/"
 
 
 def handle_generic_tests_cli_options(config): # pylint: disable=too-many-branches
@@ -158,6 +156,15 @@ def handle_generic_tests_cli_options(config): # pylint: disable=too-many-branche
 def pytest_configure(config):
     """Note that logging doesn't work in here"""
 
+    # Init these "globals" here to better define which data is available
+
+    # Instance of Gns3 from shared.py
+    pytest.gns3_inst = None
+    pytest.cfg_urls = None
+    pytest.use_dt_mgmt = True
+    pytest.http_ip = None
+    pytest.http_port = DFLT_HTTP_PORT
+
     # Parse custom CLI options
     handle_misc_cli_options(config)
     handle_generic_tests_cli_options(config)
@@ -195,16 +202,17 @@ class EnvSetupStage1():
 class EnvSetupStage2():
     @staticmethod
     def setup(dt_env):
-        GNS3_INST.create_dt_node(dt_env.ram, dt_env.sys_mac, dt_env.yaml_file, CFG_URLS)
+        pytest.gns3_inst.create_dt_node(dt_env.ram, dt_env.sys_mac, dt_env.yaml_file,
+                                        pytest.cfg_urls)
 
     @staticmethod
     def teardown():
-        GNS3_INST.delete_dt_node()
+        pytest.gns3_inst.delete_dt_node()
 
 class EnvSetupStage3():
     @staticmethod
     def setup():
-        GNS3_INST.setup_dt_node()
+        pytest.gns3_inst.setup_dt_node()
 
     @staticmethod
     def teardown():
@@ -309,10 +317,10 @@ def dt_cl_test_env(request, _dte_cl_stage4):
 @pytest.fixture(scope="session")
 def _sst_stage1():
     try:
-        GNS3_INST.start_instance()
+        pytest.gns3_inst.start_instance()
     except Exception:
         try:
-            GNS3_INST.stop_instance()
+            pytest.gns3_inst.stop_instance()
         except Exception:
             pass # Best effort to stop any running container
         err_msg = "Exception starting GNS3 instance"
@@ -320,28 +328,28 @@ def _sst_stage1():
         pytest.exit(err_msg)
     except BaseException as exc:
         try:
-            GNS3_INST.stop_instance()
+            pytest.gns3_inst.stop_instance()
         except Exception:
             pass # Best effort to stop any running container
         raise exc
     yield
-    GNS3_INST.stop_instance()
+    pytest.gns3_inst.stop_instance()
 
 @pytest.fixture(scope="session")
 def _sst_stage2(_sst_stage1):
     try:
-        GNS3_INST.create_common_infrastructure()
+        pytest.gns3_inst.create_common_infrastructure()
     except Exception:
         err_msg = "Exception creating common GNS3 infrastructure"
         logging.exception(err_msg)
         pytest.exit(err_msg)
     yield
-    GNS3_INST.delete_common_infrastructure()
+    pytest.gns3_inst.delete_common_infrastructure()
 
 @pytest.fixture(scope="session", autouse=True)
 def session_setup_and_teardown(_sst_stage2):
     try:
-        GNS3_INST.copy_nos_image()
+        pytest.gns3_inst.copy_nos_image()
     except Exception:
         err_msg = "Exception copying NOS image to GNS3 container"
         logging.exception(err_msg)
@@ -355,8 +363,8 @@ def session_setup_and_teardown(_sst_stage2):
 @pytest.fixture(scope="session", autouse=True)
 def start_http_server(request):
     """Start an http server to server the YAML files to DTs when they boot"""
-    cmd = [sys.executable, "-m", "http.server", HTTP_PORT, "--directory", shared.DT_YAML_DIR]
-    if HTTP_IP:
-        cmd += ["--bind", HTTP_IP]
+    cmd = [sys.executable, "-m", "http.server", pytest.http_port, "--directory", shared.DT_YAML_DIR]
+    if pytest.http_ip:
+        cmd += ["--bind", pytest.http_ip]
     proc = subprocess.Popen(cmd) # pylint: disable=consider-using-with
     request.addfinalizer(proc.kill)

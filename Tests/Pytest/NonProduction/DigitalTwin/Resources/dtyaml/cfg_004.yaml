@@ -1,3 +1,4 @@
+# Stacking: Slot 1 not primary
 system:
   stacking: true
   license: PRD-5000-PRMR,PRD-5000-MACSEC
@@ -10,7 +11,7 @@ system:
           type: 5520-VIM-4XE
     - num: 2
       type: 5520-48W
-      serial-number: 1648-4079
+      serial-number: 1648-40J9
       primary: true
       vims:
         - slot: A
@@ -32,16 +33,16 @@ system:
       serial-number: 6207-7297
     - num: 6
       type: 5520-48T
-      serial-number: 2935-2124
+      serial-number: 2935-2abc
       vims:
         - slot: A
           type: 5520-VIM-4YE
     - num: 7
       type: 5520-12MW-36W
-      serial-number: 9324-7066
+      serial-number: 9324-70D6
     - num: 8
       type: 5520-48W
-      serial-number: 3859-2231
+      serial-number: 38w9-2231
       vims:
         - slot: A
           type: 5520-VIM-4X

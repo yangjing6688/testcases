@@ -1,0 +1,25 @@
+# Stacking: No primary slot specified
+system:
+  stacking: true
+  slots:
+    - num: 5
+      type: 5520-24W
+      serial-number: 6207-7297
+    - num: 6
+      type: 5520-48T
+      serial-number: 2935-2124
+      vims:
+        - slot: A
+          type: 5520-VIM-4YE
+    - num: 7
+      type: 5520-24W
+    - num: 8
+      type: 5420F-48P-4XL
+    - num: 3
+      type: 5720-24MXW
+      serial-number: 5004-9223
+    - num: 4
+      type: 5720-48MXW
+      vims:
+        - slot: A
+          type: 5720-VIM-2CE
