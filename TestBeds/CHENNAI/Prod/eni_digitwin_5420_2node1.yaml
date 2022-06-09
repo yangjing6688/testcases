@@ -1,0 +1,176 @@
+---
+lab:                      "ENI"
+#
+
+netelem1:
+  name:                     "digiTwin_DUT1"
+  ip:                       "10.127.22.109"
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  make:                     "exos"
+  os:                       "exos"
+  hostname:                 "10.127.22.109"
+  serial:                   "SIMAFAF-3001"
+  console_ip:               "10.127.22.3"
+  console_port:             "2009"
+  default_template:         "SwitchEngine_5420M_24T_4YE-default-template"
+  model:                    "SwitchEngine5420M_24T_4YE"
+  mac:                      "0004AFAF3001"
+  family:                   "summit_arm"
+  platform:                 "5420M-24T-4YE-SwitchEngine"
+  host_mac:                 "00-04-AF-AF-30-01"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  extra:
+    vm_info:
+      vmhost:               "10.127.22.3"
+      vmuser:               "extreme"
+      vmpass:               "extreme"
+      vmname:               "RBT3_VM1"
+  
+  isl:
+    port_a:
+      ifname: &netelem1_isl_port_a_ifname "1"
+      intnet: "r1tr121"
+    port_b:
+      ifname: &netelem1_isl_port_b_ifname "2"
+      intnet: "r1tr122"
+    port_c:
+      ifname: &netelem1_isl_port_c_ifname "3"
+      intnet: "r1tr123"
+    port_d:
+      ifname: &netelem1_isl_port_d_ifname "4"
+      intnet: "r1tr124"
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "13"
+      intnet: "link1"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "14"
+      intnet: "link2"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "15"
+      intnet: "link3"
+    port_d:
+      ifname: &netelem1_tgen_port_d_ifname "16"
+      intnet: "link4"
+
+netelem2:
+  name:                     "digiTwin_DUT2"
+  ip:                       "10.127.22.110"
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  make:                     "exos"
+  os:                       "exos"
+  hostname:                 "10.127.22.110"
+  serial:                   "SIMAFAF-3002"
+  console_ip:               "10.127.22.3"
+  console_port:             "2010"
+  default_template:         "SwitchEngine_5420M_24T_4YE-default-template"
+  model:                    "SwitchEngine5420M_24T_4YE"
+  mac:                      "0004AFAF3002"
+  family:                   "summit_arm"
+  platform:                 "5420M-24T-4YE-SwitchEngine"
+  host_mac:                 "00-04-AF-AF-30-02"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  extra:
+    vm_info:
+      vmhost:               "10.127.22.3"
+      vmuser:               "extreme"
+      vmpass:               "extreme"
+      vmname:               "RBT3_VM2"
+  
+  isl:
+    port_a:
+      ifname: &netelem2_isl_port_a_ifname "1"
+      intnet: "r1tr121"
+    port_b:
+      ifname: &netelem2_isl_port_b_ifname "2"
+      intnet: "r1tr122"
+    port_c:
+      ifname: &netelem2_isl_port_c_ifname "3"
+      intnet: "r1tr123"
+    port_d:
+      ifname: &netelem2_isl_port_d_ifname "4"
+      intnet: "r1tr124"
+  tgen:
+    port_a:
+      ifname: &netelem2_tgen_port_a_ifname "13"
+      intnet: "link5"
+    port_b:
+      ifname: &netelem2_tgen_port_b_ifname "14"
+      intnet: "link6"
+    port_c:
+      ifname: &netelem2_tgen_port_c_ifname "15"
+      intnet: "link7"
+    port_d:
+      ifname: &netelem2_tgen_port_d_ifname "16"
+      intnet: "link8"
+      
+tgen1:
+  name:                     &tgen1_name "JETS"
+  vendor:                   "jets"
+  chassis_type:             "jets"
+  software:                 "N/A"
+  ip:                       "10.127.22.11"
+  vm_ip:                    "N/A"
+  username:                 "root"
+  password:                 "PASprt86"
+  ssh_port:                 "22"
+  vm_port:                  "22"
+  os:                       "linux"
+  dynamic_deployment:       "False"
+  vm_location:
+
+tgen_ports:
+  netelem1:
+    port_a: &tgen_ports_netelem1_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth1"
+      intnet:             "link1"
+    port_b: &tgen_ports_netelem1_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth2"
+      intnet:             "link2"
+    port_c: &tgen_ports_netelem1_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth3"
+      intnet:             "link3"
+    port_d: &tgen_ports_netelem1_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth4"
+      intnet:             "link4"
+  netelem2:
+    port_a: &tgen_ports_netelem2_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth5"
+      intnet:             "link5"
+    port_b: &tgen_ports_netelem2_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth6"
+      intnet:             "link6"
+    port_c: &tgen_ports_netelem2_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth7"
+      intnet:             "link7"
+    port_d: &tgen_ports_netelem2_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth8"
+      intnet:             "link8"
+
+

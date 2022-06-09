@@ -1,0 +1,527 @@
+---
+lab:                      "ENI"
+#
+
+netelem1:
+  name:                     "digiTwin_DUT1"
+  ip:                       "10.127.22.133"
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  make:                     "exos"
+  os:                       "exos"
+  hostname:                 "10.127.22.133"
+  serial:                   "SIMBFBF-4001-1,SIMBFBF-4001-2,SIMBFBF-4001-3,SIMBFBF-4001-4,Empty,Empty,Empty,Empty"
+  console_ip:               "10.127.22.4"
+  console_port:             "2013"
+  default_template:         "SwitchEngine_5720_24MW-default-template"
+  model:                    "SwitchEngine5720_24MW"
+  mac:                      "0004BFBF4001"
+  family:                   "onie_x86"
+  platform:                 "Stack"
+  host_mac:                 "00-04-BF-BF-40-01"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  extra:
+    vm_info:
+      vmhost:               "10.127.22.4"
+      vmuser:               "extreme"
+      vmpass:               "extreme"
+      vmname:               "RBT4_VM1"
+  stack:
+    slot1:
+      serial: SIMBFBF-4001-1
+      model: SwitchEngine5720_24MW
+    slot2:
+      serial: SIMBFBF-4001-2
+      model: SwitchEngine5720_24MW
+    slot3:
+      serial: SIMBFBF-4001-3
+      model: SwitchEngine5720_24MW
+    slot4:
+      serial: SIMBFBF-4001-4
+      model: SwitchEngine5720_24MW
+    slot5:
+      serial: Empty
+      model: SwitchEngineEmpty
+    slot6:
+      serial: Empty
+      model: SwitchEngineEmpty
+    slot7:
+      serial: Empty
+      model: SwitchEngineEmpty
+    slot8:
+      serial: Empty
+      model: SwitchEngineEmpty
+
+  isl:
+    port_a:
+      ifname: &netelem1_isl_port_a_ifname "1:1"
+      intnet: "r1tr121"
+    port_b:
+      ifname: &netelem1_isl_port_b_ifname "1:2"
+      intnet: "r1tr122"
+    port_c:
+      ifname: &netelem1_isl_port_c_ifname "1:3"
+      intnet: "r1tr123"
+    port_d:
+      ifname: &netelem1_isl_port_d_ifname "1:4"
+      intnet: "r1tr124"
+    port_e:
+      ifname: &netelem1_isl_port_e_ifname "1:5"
+      intnet: "r1tr131"
+    port_f:
+      ifname: &netelem1_isl_port_f_ifname "1:6"
+      intnet: "r1tr132"
+    port_g:
+      ifname: &netelem1_isl_port_g_ifname "1:7"
+      intnet: "r1tr133"
+    port_h:
+      ifname: &netelem1_isl_port_h_ifname "1:8"
+      intnet: "r1tr134"
+    port_i:
+      ifname: &netelem1_isl_port_i_ifname "1:9"
+      intnet: "r1tr141"
+    port_j:
+      ifname: &netelem1_isl_port_j_ifname "1:10"
+      intnet: "r1tr142"
+    port_k:
+      ifname: &netelem1_isl_port_k_ifname "1:11"
+      intnet: "r1tr143"
+    port_l:
+      ifname: &netelem1_isl_port_l_ifname "1:12"
+      intnet: "r1tr144"
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "1:13"
+      intnet: "link1"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "1:14"
+      intnet: "link2"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "1:15"
+      intnet: "link3"
+    port_d:
+      ifname: &netelem1_tgen_port_d_ifname "1:16"
+      intnet: "link4"
+
+netelem2:
+  name:                     "digiTwin_DUT2"
+  ip:                       "10.127.22.134"
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  make:                     "exos"
+  os:                       "exos"
+  hostname:                 "10.127.22.134"
+  serial:                   "SIMBFBF-4002-1,SIMBFBF-4002-2,SIMBFBF-4002-3,SIMBFBF-4002-4,Empty,Empty,Empty,Empty"
+  console_ip:               "10.127.22.4"
+  console_port:             "2014"
+  default_template:         "SwitchEngine_5720_24MW-default-template"
+  model:                    "SwitchEngine5720_24MW"
+  mac:                      "0004BFBF4002"
+  family:                   "onie_x86"
+  platform:                 "5720-24MW"
+  host_mac:                 "00-04-BF-BF-40-02"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  extra:
+    vm_info:
+      vmhost:               "10.127.22.4"
+      vmuser:               "extreme"
+      vmpass:               "extreme"
+      vmname:               "RBT4_VM2"
+  stack:
+    slot1:
+      serial: SIMBFBF-4002-1
+      model: SwitchEngine5720_24MW
+    slot2:
+      serial: SIMBFBF-4002-2
+      model: SwitchEngine5720_24MW
+    slot3:
+      serial: SIMBFBF-4002-3
+      model: SwitchEngine5720_24MW
+    slot4:
+      serial: SIMBFBF-4002-4
+      model: SwitchEngine5720_24MW
+    slot5:
+      serial: Empty
+      model: SwitchEngineEmpty
+    slot6:
+      serial: Empty
+      model: SwitchEngineEmpty
+    slot7:
+      serial: Empty
+      model: SwitchEngineEmpty
+    slot8:
+      serial: Empty
+      model: SwitchEngineEmpty
+
+  isl:
+    port_a:
+      ifname: &netelem2_isl_port_a_ifname "1:1"
+      intnet: "r1tr121"
+    port_b:
+      ifname: &netelem2_isl_port_b_ifname "1:2"
+      intnet: "r1tr122"
+    port_c:
+      ifname: &netelem2_isl_port_c_ifname "1:3"
+      intnet: "r1tr123"
+    port_d:
+      ifname: &netelem2_isl_port_d_ifname "1:4"
+      intnet: "r1tr124"
+    port_e:
+      ifname: &netelem2_isl_port_e_ifname "1:5"
+      intnet: "r1tr231"
+    port_f:
+      ifname: &netelem2_isl_port_f_ifname "1:6"
+      intnet: "r1tr232"
+    port_g:
+      ifname: &netelem2_isl_port_g_ifname "1:7"
+      intnet: "r1tr233"
+    port_h:
+      ifname: &netelem2_isl_port_h_ifname "1:8"
+      intnet: "r1tr234"
+    port_i:
+      ifname: &netelem2_isl_port_i_ifname "1:9"
+      intnet: "r1tr241"
+    port_j:
+      ifname: &netelem2_isl_port_j_ifname "1:10"
+      intnet: "r1tr242"
+    port_k:
+      ifname: &netelem2_isl_port_k_ifname "1:11"
+      intnet: "r1tr243"
+    port_l:
+      ifname: &netelem2_isl_port_l_ifname "1:12"
+      intnet: "r1tr244"
+  tgen:
+    port_a:
+      ifname: &netelem2_tgen_port_a_ifname "1:13"
+      intnet: "link5"
+    port_b:
+      ifname: &netelem2_tgen_port_b_ifname "1:14"
+      intnet: "link6"
+    port_c:
+      ifname: &netelem2_tgen_port_c_ifname "1:15"
+      intnet: "link7"
+    port_d:
+      ifname: &netelem2_tgen_port_d_ifname "1:16"
+      intnet: "link8"
+      
+netelem3:
+  name:                     "digiTwin_DUT3"
+  ip:                       "10.127.22.135"
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  make:                     "exos"
+  os:                       "exos"
+  hostname:                 "10.127.22.135"
+  serial:                   "SIMBFBF-4003-1,SIMBFBF-4003-2,SIMBFBF-4003-3,SIMBFBF-4003-4,Empty,Empty,Empty,Empty"
+  console_ip:               "10.127.22.4"
+  console_port:             "2015"
+  default_template:         "SwitchEngine_5720_24MW-default-template"
+  model:                    "SwitchEngine5720_24MW"
+  mac:                      "0004BFBF4003"
+  family:                   "onie_x86"
+  platform:                 "5720-24MW"
+  host_mac:                 "00-04-BF-BF-40-03"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  extra:
+    vm_info:
+      vmhost:               "10.127.22.4"
+      vmuser:               "extreme"
+      vmpass:               "extreme"
+      vmname:               "RBT4_VM3"
+  stack:
+    slot1:
+      serial: SIMBFBF-4003-1
+      model: SwitchEngine5720_24MW
+    slot2:
+      serial: SIMBFBF-4003-2
+      model: SwitchEngine5720_24MW
+    slot3:
+      serial: SIMBFBF-4003-3
+      model: SwitchEngine5720_24MW
+    slot4:
+      serial: SIMBFBF-4003-4
+      model: SwitchEngine5720_24MW
+    slot5:
+      serial: Empty
+      model: SwitchEngineEmpty
+    slot6:
+      serial: Empty
+      model: SwitchEngineEmpty
+    slot7:
+      serial: Empty
+      model: SwitchEngineEmpty
+    slot8:
+      serial: Empty
+      model: SwitchEngineEmpty
+
+  isl:
+    port_a:
+      ifname: &netelem3_isl_port_a_ifname "1:1"
+      intnet: "r1tr131"
+    port_b:
+      ifname: &netelem3_isl_port_b_ifname "1:2"
+      intnet: "r1tr132"
+    port_c:
+      ifname: &netelem3_isl_port_c_ifname "1:3"
+      intnet: "r1tr133"
+    port_d:
+      ifname: &netelem3_isl_port_d_ifname "1:4"
+      intnet: "r1tr134"
+    port_e:
+      ifname: &netelem3_isl_port_e_ifname "1:5"
+      intnet: "r1tr231"
+    port_f:
+      ifname: &netelem3_isl_port_f_ifname "1:6"
+      intnet: "r1tr232"
+    port_g:
+      ifname: &netelem3_isl_port_g_ifname "1:7"
+      intnet: "r1tr233"
+    port_h:
+      ifname: &netelem3_isl_port_h_ifname "1:8"
+      intnet: "r1tr234"
+    port_i:
+      ifname: &netelem3_isl_port_i_ifname "1:9"
+      intnet: "r1tr341"
+    port_j:
+      ifname: &netelem3_isl_port_j_ifname "1:10"
+      intnet: "r1tr342"
+    port_k:
+      ifname: &netelem3_isl_port_k_ifname "1:11"
+      intnet: "r1tr343"
+    port_l:
+      ifname: &netelem3_isl_port_l_ifname "1:12"
+      intnet: "r1tr344"
+  tgen:
+    port_a:
+      ifname: &netelem3_tgen_port_a_ifname "1:13"
+      intnet: "link9"
+    port_b:
+      ifname: &netelem3_tgen_port_b_ifname "1:14"
+      intnet: "link10"
+    port_c:
+      ifname: &netelem3_tgen_port_c_ifname "1:15"
+      intnet: "link11"
+    port_d:
+      ifname: &netelem3_tgen_port_d_ifname "1:16"
+      intnet: "link12"
+
+netelem4:
+  name:                     "digiTwin_DUT4"
+  ip:                       "10.127.22.136"
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  make:                     "exos"
+  os:                       "exos"
+  hostname:                 "10.127.22.136"
+  serial:                   "SIMBFBF-4004-1,SIMBFBF-4004-2,SIMBFBF-4004-3,SIMBFBF-4004-4,Empty,Empty,Empty,Empty"
+  console_ip:               "10.127.22.4"
+  console_port:             "2016"
+  default_template:         "SwitchEngine_5720_24MW-default-template"
+  model:                    "SwitchEngine5720_24MW"
+  mac:                      "0004BFBF4004"
+  family:                   "onie_x86"
+  platform:                 "5720-24MW"
+  host_mac:                 "00-04-BF-BF-40-04"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  extra:
+    vm_info:
+      vmhost:               "10.127.22.4"
+      vmuser:               "extreme"
+      vmpass:               "extreme"
+      vmname:               "RBT4_VM4"
+  stack:
+    slot1:
+      serial: SIMBFBF-4004-1
+      model: SwitchEngine5720_24MW
+    slot2:
+      serial: SIMBFBF-4004-2
+      model: SwitchEngine5720_24MW
+    slot3:
+      serial: SIMBFBF-4004-3
+      model: SwitchEngine5720_24MW
+    slot4:
+      serial: SIMBFBF-4004-4
+      model: SwitchEngine5720_24MW
+    slot5:
+      serial: Empty
+      model: SwitchEngineEmpty
+    slot6:
+      serial: Empty
+      model: SwitchEngineEmpty
+    slot7:
+      serial: Empty
+      model: SwitchEngineEmpty
+    slot8:
+      serial: Empty
+      model: SwitchEngineEmpty
+
+  isl:
+    port_a:
+      ifname: &netelem4_isl_port_a_ifname "1:1"
+      intnet: "r1tr141"
+    port_b:
+      ifname: &netelem4_isl_port_b_ifname "1:2"
+      intnet: "r1tr142"
+    port_c:
+      ifname: &netelem4_isl_port_c_ifname "1:3"
+      intnet: "r1tr143"
+    port_d:
+      ifname: &netelem4_isl_port_d_ifname "1:4"
+      intnet: "r1tr144"
+    port_e:
+      ifname: &netelem4_isl_port_e_ifname "1:5"
+      intnet: "r1tr241"
+    port_f:
+      ifname: &netelem4_isl_port_f_ifname "1:6"
+      intnet: "r1tr242"
+    port_g:
+      ifname: &netelem4_isl_port_g_ifname "1:7"
+      intnet: "r1tr243"
+    port_h:
+      ifname: &netelem4_isl_port_h_ifname "1:8"
+      intnet: "r1tr244"
+    port_i:
+      ifname: &netelem4_isl_port_i_ifname "1:9"
+      intnet: "r1tr341"
+    port_j:
+      ifname: &netelem4_isl_port_j_ifname "1:10"
+      intnet: "r1tr342"
+    port_k:
+      ifname: &netelem4_isl_port_k_ifname "1:11"
+      intnet: "r1tr343"
+    port_l:
+      ifname: &netelem4_isl_port_l_ifname "1:12"
+      intnet: "r1tr344"
+  tgen:
+    port_a:
+      ifname: &netelem4_tgen_port_a_ifname "1:13"
+      intnet: "link13"
+    port_b:
+      ifname: &netelem4_tgen_port_b_ifname "1:14"
+      intnet: "link14"
+    port_c:
+      ifname: &netelem4_tgen_port_c_ifname "1:15"
+      intnet: "link15"
+    port_d:
+      ifname: &netelem4_tgen_port_d_ifname "1:16"
+      intnet: "link16"
+ 
+ 
+tgen1:
+  name:                     &tgen1_name "JETS"
+  vendor:                   "jets"
+  chassis_type:             "jets"
+  software:                 "N/A"
+  ip:                       "10.127.22.13"
+  vm_ip:                    "N/A"
+  username:                 "root"
+  password:                 "PASprt86"
+  ssh_port:                 "22"
+  vm_port:                  "22"
+  os:                       "linux"
+  dynamic_deployment:       "False"
+  vm_location:
+
+tgen_ports:
+  netelem1:
+    port_a: &tgen_ports_netelem1_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth17"
+      intnet:             "link1"
+    port_b: &tgen_ports_netelem1_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth18"
+      intnet:             "link2"
+    port_c: &tgen_ports_netelem1_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth19"
+      intnet:             "link3"
+    port_d: &tgen_ports_netelem1_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth20"
+      intnet:             "link4"
+  netelem2:
+    port_a: &tgen_ports_netelem2_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth21"
+      intnet:             "link5"
+    port_b: &tgen_ports_netelem2_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth22"
+      intnet:             "link6"
+    port_c: &tgen_ports_netelem2_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth23"
+      intnet:             "link7"
+    port_d: &tgen_ports_netelem2_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth24"
+      intnet:             "link8"
+  netelem3:
+    port_a: &tgen_ports_netelem3_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth25"
+      intnet:             "link9"
+    port_b: &tgen_ports_netelem3_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth26"
+      intnet:             "link10"
+    port_c: &tgen_ports_netelem3_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth27"
+      intnet:             "link11"
+    port_d: &tgen_ports_netelem3_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth28"
+      intnet:             "link12"
+  netelem4:
+    port_a: &tgen_ports_netelem4_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth29"
+      intnet:             "link13"
+    port_b: &tgen_ports_netelem4_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth30"
+      intnet:             "link14"
+    port_c: &tgen_ports_netelem4_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth31"
+      intnet:             "link15"
+    port_d: &tgen_ports_netelem4_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth32"
+      intnet:             "link16"
+
+

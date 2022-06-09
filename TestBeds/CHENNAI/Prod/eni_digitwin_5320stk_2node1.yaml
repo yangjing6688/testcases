@@ -1,0 +1,226 @@
+---
+lab:                      "ENI"
+#
+
+netelem1:
+  name:                     "digiTwin_DUT1"
+  ip:                       "10.127.22.105"
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  make:                     "exos"
+  os:                       "exos"
+  hostname:                 "10.127.22.105"
+  serial:                   "SIMAFAF-2001-1,SIMAFAF-2001-2,SIMAFAF-2001-3,SIMAFAF-2001-4,SIMAFAF-2001-5,SIMAFAF-2001-6,SIMAFAF-2001-7,SIMAFAF-2001-8"
+  console_ip:               "10.127.22.3"
+  console_port:             "2005"
+  default_template:         "SwitchEngine_5320_24P_8XE-default-template"
+  model:                    "SwitchEngine5320_24P_8XE"
+  mac:                      "0004AFAF2001"
+  family:                   "summit_arm"
+  platform:                 "Stack"
+  host_mac:                 "00-04-AF-AF-20-01"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  extra:
+    vm_info:
+      vmhost:               "10.127.22.3"
+      vmuser:               "extreme"
+      vmpass:               "extreme"
+      vmname:               "RBT2_VM1"
+  stack:
+    slot1:
+      serial: SIMAFAF-2001-1
+      model: SwitchEngine5320_24P_8XE
+    slot2:
+      serial: SIMAFAF-2001-2
+      model: SwitchEngine5320_24P_8XE
+    slot3:
+      serial: SIMAFAF-2001-3
+      model: SwitchEngine5320_24P_8XE
+    slot4:
+      serial: SIMAFAF-2001-4
+      model: SwitchEngine5320_24P_8XE
+    slot5:
+      serial: SIMAFAF-2001-5
+      model: SwitchEngine5320_24P_8XE
+    slot6:
+      serial: SIMAFAF-2001-6
+      model: SwitchEngine5320_24P_8XE
+    slot7:
+      serial: SIMAFAF-2001-7
+      model: SwitchEngine5320_24P_8XE
+    slot8:
+      serial: SIMAFAF-2001-8
+      model: SwitchEngine5320_24P_8XE
+
+  isl:
+    port_a:
+      ifname: &netelem1_isl_port_a_ifname "1:2"
+      intnet: "r1tr121"
+    port_b:
+      ifname: &netelem1_isl_port_b_ifname "1:3"
+      intnet: "r1tr122"
+    port_c:
+      ifname: &netelem1_isl_port_c_ifname "1:4"
+      intnet: "r1tr123"
+    port_d:
+      ifname: &netelem1_isl_port_d_ifname "1:5"
+      intnet: "r1tr124"
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "1:14"
+      intnet: "link1"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "1:15"
+      intnet: "link2"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "1:16"
+      intnet: "link3"
+    port_d:
+      ifname: &netelem1_tgen_port_d_ifname "1:17"
+      intnet: "link4"
+
+netelem2:
+  name:                     "digiTwin_DUT2"
+  ip:                       "10.127.22.106"
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  make:                     "exos"
+  os:                       "exos"
+  hostname:                 "10.127.22.106"
+  serial:                   "SIMAFAF-2002-1,SIMAFAF-2002-2,SIMAFAF-2002-3,SIMAFAF-2002-4,SIMAFAF-2002-5,SIMAFAF-2002-6,SIMAFAF-2002-7,SIMAFAF-2002-8"
+  console_ip:               "10.127.22.3"
+  console_port:             "2006"
+  default_template:         "SwitchEngine_5320_24P_8XE-default-template"
+  model:                    "SwitchEngine5320_24P_8XE"
+  mac:                      "0004AFAF2002"
+  family:                   "summit_arm"
+  platform:                 "5320-24P-8XE"
+  host_mac:                 "00-04-AF-AF-20-02"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  extra:
+    vm_info:
+      vmhost:               "10.127.22.3"
+      vmuser:               "extreme"
+      vmpass:               "extreme"
+      vmname:               "RBT2_VM2"
+  stack:
+    slot1:
+      serial: SIMAFAF-2002-1
+      model: SwitchEngine5320_24P_8XE
+    slot2:
+      serial: SIMAFAF-2002-2
+      model: SwitchEngine5320_24P_8XE
+    slot3:
+      serial: SIMAFAF-2002-3
+      model: SwitchEngine5320_24P_8XE
+    slot4:
+      serial: SIMAFAF-2002-4
+      model: SwitchEngine5320_24P_8XE
+    slot5:
+      serial: SIMAFAF-2002-5
+      model: SwitchEngine5320_24P_8XE
+    slot6:
+      serial: SIMAFAF-2002-6
+      model: SwitchEngine5320_24P_8XE
+    slot7:
+      serial: SIMAFAF-2002-7
+      model: SwitchEngine5320_24P_8XE
+    slot8:
+      serial: SIMAFAF-2002-8
+      model: SwitchEngine5320_24P_8XE
+
+  isl:
+    port_a:
+      ifname: &netelem2_isl_port_a_ifname "1:2"
+      intnet: "r1tr121"
+    port_b:
+      ifname: &netelem2_isl_port_b_ifname "1:3"
+      intnet: "r1tr122"
+    port_c:
+      ifname: &netelem2_isl_port_c_ifname "1:4"
+      intnet: "r1tr123"
+    port_d:
+      ifname: &netelem2_isl_port_d_ifname "1:5"
+      intnet: "r1tr124"
+  tgen:
+    port_a:
+      ifname: &netelem2_tgen_port_a_ifname "1:14"
+      intnet: "link5"
+    port_b:
+      ifname: &netelem2_tgen_port_b_ifname "1:15"
+      intnet: "link6"
+    port_c:
+      ifname: &netelem2_tgen_port_c_ifname "1:16"
+      intnet: "link7"
+    port_d:
+      ifname: &netelem2_tgen_port_d_ifname "1:17"
+      intnet: "link8"
+      
+tgen1:
+  name:                     &tgen1_name "JETS"
+  vendor:                   "jets"
+  chassis_type:             "jets"
+  software:                 "N/A"
+  ip:                       "10.127.22.10"
+  vm_ip:                    "N/A"
+  username:                 "root"
+  password:                 "PASprt86"
+  ssh_port:                 "22"
+  vm_port:                  "22"
+  os:                       "linux"
+  dynamic_deployment:       "False"
+  vm_location:
+
+tgen_ports:
+  netelem1:
+    port_a: &tgen_ports_netelem1_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth17"
+      intnet:             "link1"
+    port_b: &tgen_ports_netelem1_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth18"
+      intnet:             "link2"
+    port_c: &tgen_ports_netelem1_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth19"
+      intnet:             "link3"
+    port_d: &tgen_ports_netelem1_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth20"
+      intnet:             "link4"
+  netelem2:
+    port_a: &tgen_ports_netelem2_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth21"
+      intnet:             "link5"
+    port_b: &tgen_ports_netelem2_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth22"
+      intnet:             "link6"
+    port_c: &tgen_ports_netelem2_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth23"
+      intnet:             "link7"
+    port_d: &tgen_ports_netelem2_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth24"
+      intnet:             "link8"
+
+
