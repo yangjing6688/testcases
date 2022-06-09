@@ -79,7 +79,7 @@ ${PILOT_SITE}             AutoSitePilots
 *** Test Cases ***
 Test 1: TC-11461 - Delete Navigator Devices from XIQSE
     [Documentation]     Confirms Navigator licenses are returned when devices are deleted.
-    [Tags]              nightly1    release_testing    license_testing    known_issue    csit_tc_11461    apc_46353    development    xiqse    xiq_integration    delete    test1
+    [Tags]              staging_testing    release_testing    license_testing    known_issue    csit_tc_11461    apc_46353    development    xiqse    xiq_integration    delete    test1
 
     Log To Console  KNOWN ISSUE: XMC-5262 (banner says no licenses available even though there are)
 
@@ -94,7 +94,7 @@ Test 1: TC-11461 - Delete Navigator Devices from XIQSE
 
 Test 2: TC-11458 - Delete Pilot Devices form XIQSE
     [Documentation]     Confirms Pilot licenses are returned when devices are deleted
-    [Tags]              nightly1    release_testing    license_testing    csit_tc_11458    apc_46353    development    xiqse    xiq_integration    delete    test2
+    [Tags]              staging_testing    release_testing    license_testing    csit_tc_11458    apc_46353    development    xiqse    xiq_integration    delete    test2
 
     # Create devices to consume all Pilot licenses and confirm the entitlements are used up
     Consume All Pilot Licenses and Confirm Success
@@ -107,7 +107,7 @@ Test 2: TC-11458 - Delete Pilot Devices form XIQSE
 
 Test 3: TC-11476 - Delete Navigator Device Taking Pilot License from XIQSE
     [Documentation]     Confirms the correct license is returned when a Navigator device consuming a Pilot is deleted.
-    [Tags]              nightly1    release_testing    license_testing    known_issue    csit_tc_11476    apc_46353    development    xiqse    xiq_integration    delete    test3
+    [Tags]              staging_testing    release_testing    license_testing    known_issue    csit_tc_11476    apc_46353    development    xiqse    xiq_integration    delete    test3
 
     [Setup]  Consume All Navigator Licenses and Confirm Success
 
@@ -133,7 +133,7 @@ Test 3: TC-11476 - Delete Navigator Device Taking Pilot License from XIQSE
 
 Test 4: TC-11474 - Delete Device Not Using a License from XIQSE
     [Documentation]     Confirms deleting devices not consuming a license does not affect the license counts.
-    [Tags]              nightly1    release_testing    license_testing    csit_tc_11474    apc_46353    development    xiqse    xiq_integration    delete    test4
+    [Tags]              staging_testing    release_testing    license_testing    csit_tc_11474    apc_46353    development    xiqse    xiq_integration    delete    test4
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 
@@ -183,7 +183,7 @@ Test 4: TC-11474 - Delete Device Not Using a License from XIQSE
 
 Test 5: TC-11475 - Delete XIQSE with Navigator and Pilot Devices from XIQ
     [Documentation]     Confirms deleting XIQSE from XIQ will return all used licenses, including the license used by XIQSE.
-    [Tags]              nightly1    release_testing    license_testing    known_issue    csit_tc_11475    apc_46353    development    xiqse    xiq_integration    delete    test5
+    [Tags]              staging_testing    release_testing    license_testing    known_issue    csit_tc_11475    apc_46353    development    xiqse    xiq_integration    delete    test5
 
     Log To Console  KNOWN ISSUE: XMC-5262 (banner says no licenses available even though there are)
 

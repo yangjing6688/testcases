@@ -49,7 +49,7 @@ ${XIQ_PASSWORD}         ${xiq.tenant_password}
 *** Test Cases ***
 Test 1: Confirm Basic Device360 Values
     [Documentation]     Confirms basic Device360 values for an XIQ Site Engine which is SNMP-managed
-    [Tags]              nightly1    release_testing    csit_tc_9009   xmc_3196    development    known_issue    xiqse    xiq_integration    d360    managed    test1
+    [Tags]              nightly2    release_testing    staging_testing    csit_tc_9009   xmc_3196    development    known_issue    xiqse    xiq_integration    d360    managed    test1
 
     Log To Console  KNOWN ISSUE: APC-45291 (Active Since Time is not always matching)
 
@@ -76,7 +76,7 @@ Test 1: Confirm Basic Device360 Values
 
 Test 2: Confirm Alarm and Event Device360 Values
     [Documentation]     Confirms Device360 Alarm and Event values for an XIQ Site Engine which is SNMP-managed
-    [Tags]              nightly1    release_testing    csit_tc_9009   xmc_3196    development    known_issue    xiqse    xiq_integration    d360    managed    test2
+    [Tags]              nightly2    release_testing    staging_testing    csit_tc_9009   xmc_3196    development    known_issue    xiqse    xiq_integration    d360    managed    test2
 
     Log To Console  UNDER INVESTIGATION: Active Alarms panel is not updating until next sync on some systems
 

@@ -35,7 +35,7 @@ ${LICENSE_SUFFIX}       /xiqLicenseSetup.jsp?setupMode=xiq
 *** Test Cases ***
 TC-9525: Confirm XIQ-SE Can Be Onboarded via License Agreement Workflow
     [Documentation]     Confirms the XIQ Site Engine can be onboarded using the license agreement workflow
-    [Tags]              nightly1    release_testing    csit_tc_9525    xmc_3196    development    xiqse    xiq_integration    onboarding    license
+    [Tags]              nightly2    release_testing    staging_testing    csit_tc_9525    xmc_3196    development    xiqse    xiq_integration    onboarding    license
 
     [Setup]  Log In and Set Up Test for License Agreement Workflow
 
@@ -45,7 +45,7 @@ TC-9525: Confirm XIQ-SE Can Be Onboarded via License Agreement Workflow
 
 TC-9528: Confirm Site Engine Onboarded via Auto Onboard Workflow
     [Documentation]     Confirms the XIQ Site Engine can be onboarded successfully using the Auto Onboard button
-    [Tags]              nightly1    release_testing    csit_tc_9528    xmc_3196    development    xiqse    xiq_integration    onboarding     auto
+    [Tags]              nightly2    release_testing    staging_testing    csit_tc_9528    xmc_3196    development    xiqse    xiq_integration    onboarding     auto
 
     [Setup]  Log In and Set Up Test for Button Workflow
 
