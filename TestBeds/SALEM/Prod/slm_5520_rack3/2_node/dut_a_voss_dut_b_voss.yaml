@@ -52,7 +52,7 @@ netelem2:
   ip:                       "10.148.35.127"
   port:                     "23"
   console_ip:               "10.148.35.5"
-  console_port:             "5042"
+  console_port:             "5046"
   mgmt_vlan:                "VLAN_4000"
   username:                 "admin"
   password:                 ""
