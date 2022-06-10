@@ -1,6 +1,7 @@
 ---
 system:
   cloud-server: 10.16.231.147
+  cloud-server-type: aio
   slots:
     - num: 1
       type: 5720-48MW

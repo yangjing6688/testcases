@@ -110,6 +110,11 @@ class GenericTests:
             server = ""
         assert self.suiteUdks.verify_cloudserver(self.tb.dut1.name, server)
 
+        server_type = dt_cl_test_env.yaml["system"].get("cloud-server-type")
+        if not server_type:
+            server_type = "redirector"
+        assert self.suiteUdks.verify_cloudserver_type(self.tb.dut1.name, server_type)
+
     @pytest.mark.p1
     def test_10_oper_states(self, dt_cl_test_env):
         slot_nums = [str(slot["num"]) for slot in dt_cl_test_env.yaml["system"]["slots"]]

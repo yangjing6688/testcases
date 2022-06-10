@@ -1,6 +1,8 @@
 # Stacking: No primary slot specified
 system:
   stacking: true
+  cloud-server: g2-hac.qa.xcloudiq.com
+  cloud-server-type: redirector
   slots:
     - num: 5
       type: 5520-24W
