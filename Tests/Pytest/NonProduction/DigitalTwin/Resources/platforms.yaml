@@ -46,10 +46,10 @@ platforms:
     vims:
       - {type: 5720-VIM-2CE}
       - {type: 5720-VIM-6YE}
-  - family: "7520"
-    cards:
-      - {type: 7520-48XT-6C, ram: 16384}
-      - {type: 7520-48Y-8C, ram: 16384}
-  - family: "7720"
-    cards:
-      - {type: 7720-32C, ram: 16384}
+# - family: "7520"
+#   cards:
+#     - {type: 7520-48XT-6C, ram: 16384}
+#     - {type: 7520-48Y-8C, ram: 16384}
+# - family: "7720"
+#   cards:
+#     - {type: 7720-32C, ram: 16384}
