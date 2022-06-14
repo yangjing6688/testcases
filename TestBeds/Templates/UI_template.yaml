@@ -14,6 +14,8 @@ netelem1:
                             #                                     XIQ models: Valid models can be found in XIQ under the "Configure" tab on the left side of the page, then under "COMMON OBJECTS" -> "Policy" -> ("AP Template" or "Switch Template") depending on the device you are using.
                             #                                     XMC models: Valid models can be found in XMC under the "Administration" tab on the left side of the page, then under the "Vendor Profiles" tab at the top of the page
   os:                       #(REQUIRED)                         exos/eos/linux
+  cli_type:                 #(REQUIRED)                         The style of CLI used to configure the device.
+                            #                                     Available types: VOSS, EXOS, WING-AP, AH-FASTPATH, AH-AP, MU-WINDOWS, MU-MAC, MU-LINUX, A3
   platform:                 #(REQUIRED)                         x460G2
   image_family:             #(REQUIRED)                         Image family for download firmware (summitx)
   ip:                       #(REQUIRED)                         1.1.1.3
@@ -121,6 +123,7 @@ ap1:
   console_port:             7046
   mac:                      BCF3105E1C40
   os:                       Cloud IQ Engine
+  cli_type:                 AH-AP
   platform:                 aerohive
   make:                     Controllers
   model:                    AP410C
@@ -147,11 +150,11 @@ ap1:
 
 # A3_server plus the number # at the end
 a3_server1:
-  version:          3.1
-  ip:               10.234.188.104
-  node1_ip:         10.234.188.101
-  node2_ip:         10.234.188.102
-  node3_ip:         10.234.188.103
+  version:               3.1
+  ip:                    10.234.188.104
+  node1_ip:              10.234.188.101
+  node2_ip:              10.234.188.102
+  node3_ip:              10.234.188.103
   node1_hostname:        A3-312-N1-101
   node2_hostname:        A3-312-N2-102
   node3_hostname:        A3-312-N3-103
@@ -160,16 +163,18 @@ a3_server1:
   console_username:      root
   console_password:      Extr_123
   console_port:          22
+  cli_type:              A3
 
 # MU plus the number # at the end
 mu2:
-  ip:             10.234.105.227
-  port:           8270
-  username:       admin
-  password:       symbol
-  platform:       windows
-  interface:      wlan0
-  wifi_mac:       40B89A6C364B
-  ethernet_mac:   2C600CE10B68
-  wifi_network:   10.234.105
+  ip:                     10.234.105.227
+  port:                   8270
+  username:               admin
+  password:               symbol
+  platform:               windows
+  interface:              wlan0
+  wifi_mac:               40B89A6C364B
+  ethernet_mac:           2C600CE10B68
+  wifi_network:           10.234.105
   wifi_network_vlan10:    10.234.105
+  cli_type:               MU-WINDOWS
