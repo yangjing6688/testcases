@@ -8,7 +8,7 @@ ap1:
   serial:                   '04101912120116'
   console_ip:               10.16.169.38
   console_port:             4000
-  mac:                      F09CE9C71D00
+  mac:                      BCF3101EB980
   os:                       Cloud IQ Engine
   platform:                 aerohive
   model:                    AP410C
@@ -43,18 +43,17 @@ mu1:
   wifi_mac:       F018988C2173
 
 aerohive_sw1:
-  name:               bui-flo-0026
-  model:              SR2348P
-  device_template:    SR2348P-default-template
-  serial:             '23241804150206'
+  name:               AH-Switch
+  model:              SR2224P
+  device_template:    SR2224P-default-template
+  serial:             '22241607300955'
   os:                 Linux 3.6.5
-  mac:                B87CF2026E1C
-  ip:                 10.16.169.34
+  mac:                B87CF2018848
+  ip:                 10.16.152.118
+  port:               22
   network_policy:
   username:           admin
-  password:           aerohive
+  password:           Aerohive123
   platform:           aerohive-fastpath
-  console_ip:         10.16.128.23
-  console_port:       7025
   test_port:
   make:               Extreme - Aerohive

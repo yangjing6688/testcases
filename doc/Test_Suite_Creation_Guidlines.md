@@ -22,7 +22,7 @@ The `Test Cases` directory will contain the test case files. The file format sho
 	Example:
 		test_01_Vlan.py
 
-Pytest will only understand files with a `test_` prefix.  
+Pytest will only understand files with a `test_` prefix.
 
 The class name inside the test file must have `Tests` at the end of the name. For example:
 
@@ -40,53 +40,47 @@ The name of the class must have the `Tests` postfix. Also, the name of the test 
 
 	# The name of the class defined inside the class file
 	class Vlan01Tests():
-		
+
 
 ## Understanding The Files Within the Test Suite
 The core parts of a pytest test suite are as follows:
 
+```
+└── Tests
+    └── Robot
+        └── Functional
+ 	 	 	└── Example_Test_Suite
+ 	 	 		├── Resources
+ 	 	 		└── TestCases
+```
 
 The Resources Directory:
 
-*	`SuiteUdks.py`: Location where all suite specific user defined keywords can be created.
+- `SuiteUdks.py` - Location where all suite specific user defined keywords can be created.
 
 The TestCases Directory:
-*	`test_FunctionalTemplate.py`: A pytest test case file.
 
+- `test_FunctionalTemplate.py` - A pytest test case file.
+
+## Understanding the Environment Yaml File
+The Environment file contains browser configuration information for tests that require the use of an internet browser. Things like browser type, location where the browser runs, underlying OS, port configuration exsist here.
+
+There are two main types of environment files: local and remote. When using a local environment file, the browser on the local machine running the test is used. When using a remote environment file, a browser is used on a device somewhere else (a physical machine elsewhere, a virtual machine, a Docker container, etc.). Seleniumhub environment files are remote based, but specifically use Seleniumhub for the remote connection.
+
+## Understanding the Topology Yaml File
+The Topology file contains information required to interface with the different XIQ RDCs.
+
+Please refer to the [Topology Templates](https://github.com/extremenetworks/extreme_automation_tests/tree/main/Environments\Templates) for details on the required and optional parameters.
 
 ## Understanding the Test Bed Yaml File
-The test bed file consists of elements  (NetworkElements, Traffic Generators, End Systems ) and port configurations. The main types for elements are:
+The test bed file consists of devices(physical or virtual) and supporting information. Every device keyword requires a number at the end in order to have unique identifiers.
 
-* netelem<number> - This is the network element (switch). The number after it is a unique identifier.
-* tgen<number> - The Traffic Generator element (Ixia, Sprient, Jets). The number after it is a unique identifier.
-* endsystem<number> - The end system (Linux box, or other system). The number after it is a unique identifier.
-
-All element types have common attributes such as name, ip, port. Please refer to the [Templates Directory](https://github.com/extremenetworks/extreme_automation_tests/tree/main/TestBeds/Templates) file for details on the required and optional parameters for all element types.
+All device types have common attributes such as name, ip, port. Please refer to the [Test Bed Templates](https://github.com/extremenetworks/extreme_automation_tests/tree/main/TestBeds/Templates) for details on the required and optional parameters for all device types.
 
 
 ## Test Bed Standard Configurations
-We have standard test bed configurations that include setups for 1-5 node DUTs, traffic generators and a primary and secondary net-tools system. The user will need to choose from the topology diagrams below in order to ensure that all tests will run on a standard test setup. 
-
-### 1-Node Topology
-
-![Import project](img/OneNodeTopo.png)
-
-### 2-Node Topology
-
-![Import project](img/TwoNodeTopo.png)
-
-### 3-Node Topology
-
-![Import project](img/ThreeNodeTopo.png)
-
-### 4-Node Topology
-
-![Import project](img/FourNodeTopo.png)
-
-### 5-Node Topology (Legacy TCL only)
-
-![Import project](img/FiveNodeTopo.png)
-
+Infomation on Test Bed configurations can be found [here](..\TestBeds\README.md)
+We have standard test bed configurations that include setups for 1-5 node DUTs, traffic generators and a primary and secondary net-tools system. The user will need to choose from the topology diagrams below in order to ensure that all tests will run on a standard test setup.
 
 ## Variables in the YAML file in Pytest
 Any variables that you define in the test bed yaml can be accessed in the test case file via this syntax below. The config object is a dictionary of all of the yaml file parameters allowing access to anything defined in the Yaml files. A PytestConfigHelper class exists to help with configuration and is explained below.
@@ -116,7 +110,7 @@ The nested values in the yaml file are aceesed in Pytest by the dot notation whe
 			# Create an instance of the helper class that will read in the test bed yaml file and provide basic methods and variable access.
 			# The user can also get to the test bed yaml by using the config dictionary
 			self.tb = PytestConfigHelper(config)
-	
+
 
 	To Use:
 
@@ -166,9 +160,9 @@ Note: all test cases should be created in the [Tests](https://github.com/extreme
 	 self.defaultLibrary
 
      ![Import project](img/Pycharm_self_default_lib.png)
-     
-     Here you will notice some library options below. Using the dot notiation, you are able dig into these libraries to get to the function calls. 
-     
+
+     Here you will notice some library options below. Using the dot notiation, you are able dig into these libraries to get to the function calls.
+
      * apiUDK - All of the UserDefinedKeywords should be loaded from the [framework](https://github.com/extremenetworks/econ-automation-framework/blob/main/ExtremeAutomation/Imports/Udks.py)
      * apiLowLevelApis - All of the low level APIs for NOS, loaded from [framework](https://github.com/extremenetworks/econ-automation-framework/blob/main/ExtremeAutomation/Imports/LowLevelApis.py)
      * apiLowLevelTrafficApi - All of the low level APIs for traffic Generators, loaded from [framework](https://github.com/extremenetworks/econ-automation-framework/blob/main/ExtremeAutomation/Imports/LowLevelTrafficApis.py)
@@ -183,7 +177,7 @@ Note: all test cases should be created in the [Tests](https://github.com/extreme
 	self.defaultLibrary.deviceNetworkElement.networkElementCliSend.send_cmd_verify_output_regex()
 	self.defaultLibrary.deviceNetworkElement.networkElementCliSend.send_cmd_verify_output_table()
 
-1.	[Setup] Pytest using the following function name for the setup of the class: 
+1.	[Setup] Pytest using the following function name for the setup of the class:
 
 		def setup_class(self):
 
@@ -209,8 +203,8 @@ Connect to a single Network Element:
 Connect to a single Traffic Generator:
 
 	self.defaultLibrary.apiUdks.setupTeardownUdks.trafficGeneratorConnectionManager.connect_to_traffic_generator(self.tb.tgen1.name, self.tb.tgen1.vendor, self.tb.tgen1.chassis_ip, vm_ip, self.tb.tgen1.username, self.tb.tgen1.connection_port, 30, self.tb.tgen1.password)
-	
-	
+
+
 ## Finding Lower Level APIs
 
 Low Level API are functions that can be called that will configure or show information for the NOS. When the UDK (User Defined Keywords) don't have the function that is required, the user can use the Low Level APIs to issue commands to the NOS.

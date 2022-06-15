@@ -72,9 +72,13 @@ class rebootTests():
 
         global needToDeleteDevice
 
-        res = self.xiq.xflowscommonDevices.onboard_device(device_serial=self.tb.dut1_serial,
-                                                          device_make=self.tb.dut1.os,
-                                                          location=self.tb.dut1_location1)
+        # Left this here once AUTO-IQ JIRA 1896 gets fixed we will use this method
+        #res = self.xiq.xflowscommonDevices.onboard_device(device_serial=self.tb.dut1_serial,
+        #                                                  device_make=self.tb.dut1.os,
+        #                                                  location=self.tb.dut1_location1)
+
+        res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_manual(self.tb.dut1_serial,
+                                                          self.tb.dut1.os,self.tb.dut1_location1)
         if res != 1:
             pytest.fail(f'Could not onboard device {self.tb.dut1_platform} with serial {self.tb.dut1_serial}')
         else:
@@ -83,18 +87,31 @@ class rebootTests():
 
         self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial)
 
+        managed_res = self.xiq.xflowscommonDevices.wait_until_device_managed(self.tb.dut1_serial)
+
+        if managed_res == 1:
+            print('Status for device with serial number: {} is equal to managed'.format(self.tb.dut1_serial))
+        else:
+            pytest.fail('Status for serial {} not equal to managed: {}'.format(self.tb.dut1_serial, managed_res))
+
         res = self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1_serial)
         if res != 'green':
             pytest.fail('Status for serial {} not equal to Green: {}'.format(self.tb.dut1_serial, res))
         else:
             print('Status for device with serial number: {} is equal to Green'.format(self.tb.dut1_serial))
-        self.xiq.xflowscommonDevices.device_reboot(device_serial=self.tb.dut1_serial)
-        self.xiq.xflowscommonDevices.wait_until_device_offline(self.tb.dut1_serial, retry_duration=5,
-                                                               retry_count=60)
-        self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial, retry_duration=5,
-                                                              retry_count=60)
 
-        self.xiq.xflowsmanageDevices.column_picker_select('UPDATED ON')
+        self.xiq.xflowscommonDevices.device_reboot(device_serial=self.tb.dut1_serial)
+        self.xiq.xflowscommonDevices.wait_until_device_offline(self.tb.dut1_serial, retry_duration=15,
+                                                               retry_count=12)
+        bootWaitTime = self.suiteUdks.get_boot_wait_time(self.tb.dut1_model,self.tb.dut1_os)
+        print("Sleeping for {} seconds to allow device to come back on line".format(bootWaitTime))
+        time.sleep(bootWaitTime)
+        self.xiq.xflowscommonDevices.wait_until_device_reboots(self.tb.dut1_serial, retry_duration=15, retry_count=12)
+        self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial, retry_duration=15, retry_count=12)
+
+
+        self.xiq.xflowsmanageDevices.column_picker_select('Updated On')
+
         reboot_message = self.suiteUdks.get_value_specific_column(self.xiq, self.tb.dut1_serial, column='UPDATED')
         regex = "(\d{4})-((0[1-9])|(1[0-2]))-(0[1-9]|[12][0-9]|3[01]) ([0-2]*[0-9]\:[0-6][0-9]\:[0-6][0-9])"
         if re.match(regex, reboot_message):
@@ -102,6 +119,13 @@ class rebootTests():
         else:
             pytest.fail('Failed to get a timestamp of last reboot. Instead got the following message: {}'.format(
                 reboot_message))
+
+        managed_res = self.xiq.xflowscommonDevices.wait_until_device_managed(self.tb.dut1_serial)
+
+        if managed_res == 1:
+            print('Status for device with serial number: {} is equal to managed'.format(self.tb.dut1_serial))
+        else:
+            pytest.fail('Status for serial {} not equal to managed: {}'.format(self.tb.dut1_serial, managed_res))
 
         res = self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1_serial)
         if res != 'green':

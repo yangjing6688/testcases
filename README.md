@@ -31,6 +31,9 @@ To use Docker containers with all of the tools for AutoIQ and extAuto installed,
 
 Now that your development IDE is installed you can start to explore the Automation Framework. [Here (in GitHub)](doc/Test_Suite_Creation_Guidlines.md) is a guide that will help you understand the layout and design for your tests.
 
+# Test Bed Information
+An explaination of test bed files can be found [here](Testbeds/README.md). Details on the required and optional parameters for creating test bed files can be found in the [Test Bed Templates Directory](Testbeds/Templates/).
+
 # How to bypass CI checks
 
 ### Instructions

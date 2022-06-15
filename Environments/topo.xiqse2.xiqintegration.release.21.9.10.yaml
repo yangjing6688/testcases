@@ -1,0 +1,55 @@
+xiqse:
+  ip:                      "10.69.70.27"
+  url:                     "https://10.69.70.27:8443"
+  license_suffix:          "/xiqLicenseSetup.jsp?setupMode=xiq"
+  user:                    "root"
+  password:                "n7830466"
+  version:                 "21.9.10"
+  os_version:              "21.9.10"
+  name:                    "xiqse-21-9-10.extremenetworks.com"
+  serial:                  "XIQSE-ED277842C3A44AA4A776D95B989D8919"
+  mac:                     "005056BAC02B"
+  profile:                 "snmp_v3_profile"
+  platform:                "xiqse"
+  make:                    "XIQSE"
+  model:                   "XIQSE"
+  product:                 "XIQ_SE"
+  function:                "XIQSE"
+  os:                      "XIQSE"
+  log_dir:                 "/usr/local/Extreme_Networks/NetSight/appdata/logs"
+  server_log:              "server.log"
+
+xiq:
+  test_url:                "https://g2r1.qa.xcloudiq.com"
+  capwap_url:              "g2r1-cwpm-01.qa.xcloudiq.com"
+  sw_connection_host:      "g2r1.qa.xcloudiq.com"
+  tenant_username:         "xiqse2+release@gmail.com"
+  tenant_password:         "Aerohive123"
+  pilot_entitlements:      "10"
+  navigator_entitlements:  "2"
+
+xiq2:
+  test_url:                "https://g2r1.qa.xcloudiq.com"
+  capwap_url:              "g2r1-cwpm-01.qa.xcloudiq.com"
+  sw_connection_host:      "g2r1.qa.xcloudiq.com"
+  tenant_username:         "xiqse1+release@gmail.com"
+  tenant_password:         "Aerohive123"
+  pilot_entitlements:      "10"
+  navigator_entitlements:  "2"
+
+# SSH into ESX and issue the following commands to identify the VM ID and Snapshot ID
+# List all VMs to find your vmId
+#     vim-cmd vmsvc/getall
+# List all snapshots of a VM
+#     vim-cmd vmsvc/get.snapshotinfo <vmid>
+upgrades:
+  install_mode:                "CONNECTED"
+  nsrelease_version:           "21.9.10.90"
+  esx:
+    esx_ip:                    "10.69.60.11"
+    esx_user:                  "root"
+    esx_password:              "extrvmware"
+  xiqse:
+    version:                   "21.9.10.90"
+    xiqse_vm_id:               "10"
+    xiqse_snapshot_id:         "2"

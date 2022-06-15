@@ -4,7 +4,7 @@ system:
   slots:
     - num: 1
       type: 5520-24T
-      serial-number: 6594-4239
+      serial-number: 659Q-42k9
       vims:
         - slot: A
           type: 5520-VIM-4X

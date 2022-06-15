@@ -2,7 +2,7 @@ wing1:
   name:                     ap7532-861180
   model:                    AP7532I
   device_template:          AP7532I-default-template
-  serial:                   "16085522201086"
+  serial:                   "15061522201462"
   os_version:               7.6.0.1-004R
   mac:                      84248D861180
   bssid:
@@ -12,7 +12,5 @@ wing1:
   platform:                 wing
   ip:                       10.16.166.232
   port:                     22
-  console_ip:               10.16.166.228
-  console_port:             4002
   country:                  United Kingdom
   make:                     Controllers

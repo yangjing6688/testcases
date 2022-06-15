@@ -3,7 +3,7 @@ lab:                        "CHENNAI"
 netelem1:
   name:                     "EXOS"
   hostname:                 ""
-  serial:                   "JA142143G-00116, JA072041G-01724"
+  serial:                   "JA142143G-00116,JA072041G-01724"
   mac:                      "E644E58CC000"
   ip:                       "10.127.26.34"
   port:                     "23"

@@ -4,7 +4,8 @@ xiqse:
   license_suffix:          "/xiqLicenseSetup.jsp?setupMode=xiq"
   user:                    "root"
   password:                "n7830466"
-  version:                 "21.11"
+  version:                 "22"
+  os_version:              "22"
   name:                    "auto-xiqse-1.extremenetworks.com"
   serial:                  "XIQSE-7FCB83CF88DF4C239CC8444D7A0AB106"
   mac:                     "000C2941316B"
@@ -60,7 +61,7 @@ xiq2:
 #     vim-cmd vmsvc/get.snapshotinfo <vmid>
 upgrades:
   install_mode:                "CONNECTED"
-  nsrelease_version:           "21.11.10.57"
+  nsrelease_version:           "21.11.10.58"
   esx:
     esx_ip:                    "10.69.60.10"
     esx_user:                  "root"
@@ -75,9 +76,9 @@ upgrades:
     purview_snapshot_id:       "5"
     ng_analytics_vm_id:        "11"
   xiqse:
-    version:                   "21.11.10.57"
+    version:                   "21.11.10.58"
     xiqse_vm_id:               "3"
-    xiqse_snapshot_id:         "14"
+    xiqse_snapshot_id:         "15"
     nac_vm_id:                 "10"
     nac_snapshot_id:           "7"
     purview_vm_id:             "9"

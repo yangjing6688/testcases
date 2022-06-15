@@ -12,10 +12,10 @@ netelem1:
   username:                 "rwa"
   password:                 "rwa"
   connection_method:        "telnet"
-  os:                       "voss"
+  os:                       "exos"
   platform:                 "5520"
   model:                    "FabricEngine5520_24W"
-  make:                     "voss"
+  make:                     "exos"
   auth_mode:                "basic"
   tgen:
     port_a:

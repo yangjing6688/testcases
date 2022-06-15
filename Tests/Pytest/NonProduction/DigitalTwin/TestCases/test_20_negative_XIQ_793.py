@@ -72,3 +72,9 @@ class NegativeTests:
     def test_05_primary_true_no_stacking(self):
         warn_str = r"Ignoring primary definition for slot \d+ \(stacking is not enabled\)"
         assert self.suiteUdks.verify_dt_log_warning(self.tb.dut1.name, warn_str)
+
+    @mark.p3
+    @mark.parametrize("dte_fn_envs", [DtTestEnv('neg_010.yaml')], ids=str)
+    def test_06_invalid_cloudserver_type(self):
+        warn_str = r"Ignoring invalid \"cloud-server-type\""
+        assert self.suiteUdks.verify_dt_log_warning(self.tb.dut1.name, warn_str)

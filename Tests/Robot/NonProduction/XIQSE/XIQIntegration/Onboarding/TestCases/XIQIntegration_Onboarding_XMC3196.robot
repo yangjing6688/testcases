@@ -35,7 +35,7 @@ ${LICENSE_SUFFIX}       /xiqLicenseSetup.jsp?setupMode=xiq
 *** Test Cases ***
 TC-9525: Confirm XIQ-SE Can Be Onboarded via License Agreement Workflow
     [Documentation]     Confirms the XIQ Site Engine can be onboarded using the license agreement workflow
-    [Tags]              nightly1    release_testing    csit_tc_9525    xmc_3196    development    xiqse    xiq_integration    onboarding    license
+    [Tags]              nightly2    release_testing    staging_testing    csit_tc_9525    xmc_3196    development    xiqse    xiq_integration    onboarding    license
 
     [Setup]  Log In and Set Up Test for License Agreement Workflow
 
@@ -45,7 +45,7 @@ TC-9525: Confirm XIQ-SE Can Be Onboarded via License Agreement Workflow
 
 TC-9528: Confirm Site Engine Onboarded via Auto Onboard Workflow
     [Documentation]     Confirms the XIQ Site Engine can be onboarded successfully using the Auto Onboard button
-    [Tags]              nightly1    release_testing    csit_tc_9528    xmc_3196    development    xiqse    xiq_integration    onboarding     auto
+    [Tags]              nightly2    release_testing    staging_testing    csit_tc_9528    xmc_3196    development    xiqse    xiq_integration    onboarding     auto
 
     [Setup]  Log In and Set Up Test for Button Workflow
 
@@ -147,12 +147,7 @@ Perform License Agreement Workflow
 
     Log To Console  Need to Log Into XIQSE and then load the license URL to do this test flow
 
-    Log Into XIQSE and Close Panels       ${XIQSE_USER}  ${XIQSE_PASSWORD}  url=${XIQSE_URL}
-
-    # Get the window index
-    ${xiqse_win}=  XIQSE Get Window Index
-    Log To Console  Setting XIQ-SE Window Index to ${xiqse_win}
-    Set Suite Variable  ${XIQSE_WINDOW_INDEX}  ${xiqse_win}
+    XIQSE Log In and Set Window Index
 
     XIQ Log In and Set Window Index
     Set Up XIQ Components
@@ -160,9 +155,6 @@ Perform License Agreement Workflow
     Remove Existing Site Engine from XIQ
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
-    Log To Console  >>> Need to Load in the URL for the License Agreement Page
-#    Handle License Agreement If Displayed    ${XIQ_USER}  ${XIQ_PASSWORD}
-#    Close Panels on Login If Displayed
 
 Remove Existing Site Engine from XIQ
     [Documentation]     Removes the XIQ Site Engine from XIQ if it exists

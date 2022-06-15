@@ -43,7 +43,7 @@ ${DUT2_PROFILE}         ${netelem2.profile}
 *** Test Cases ***
 Configure Test Requirements
     [Documentation]     Sets up the components needed for the test
-    [Tags]              nightly1    release_testing    csit_tc_10316    apc_42459    development    xiqse    xiq_integration    device_status    xiqse_disconnect    test0
+    [Tags]              nightly2    release_testing    csit_tc_10316    apc_42459    development    xiqse    xiq_integration    device_status    xiqse_disconnect    test0
 
     [Setup]    Log Into XIQSE and XIQ and Confirm Success
 
@@ -66,7 +66,7 @@ Configure Test Requirements
 
 Test 1: Confirm Connected Devices Have Correct Status in XIQSE and XIQ
     [Documentation]     Confirms devices with connected status in XIQ-SE show as connected in XIQ
-    [Tags]              nightly1    release_testing    csit_tc_10316    apc_42459    development    xiqse    xiq_integration    device_status    xiqse_disconnect    test1
+    [Tags]              nightly2    release_testing    csit_tc_10316    apc_42459    development    xiqse    xiq_integration    device_status    xiqse_disconnect    test1
 
     [Setup]    Log Into XIQSE and XIQ and Confirm Success
 
@@ -85,7 +85,7 @@ Test 1: Confirm Connected Devices Have Correct Status in XIQSE and XIQ
 
 Test 2: Confirm Disconnected Device Has Correct Status in XIQSE and XIQ
     [Documentation]     Confirms a device with disconnected status in XIQ-SE shows as disconnected in XIQ
-    [Tags]              nightly1    release_testing    csit_tc_10316    apc_42459    development    xiqse    xiq_integration    device_status    xiqse_disconnect    test2
+    [Tags]              nightly2    release_testing    csit_tc_10316    apc_42459    development    xiqse    xiq_integration    device_status    xiqse_disconnect    test2
 
     [Setup]    Log Into XIQSE and XIQ and Confirm Success
 
@@ -100,7 +100,7 @@ Test 2: Confirm Disconnected Device Has Correct Status in XIQSE and XIQ
 
 Test 3: Confirm Disconnected XIQ-SE Results in Correct Status in XIQ
     [Documentation]     Confirms when XIQ-SE is disconnected, XIQSE-managed devices will have Unknown status in XIQ.
-    [Tags]              nightly1    release_testing    csit_tc_10316    apc_42459    development    xiqse    xiq_integration    device_status    xiqse_disconnect    test3
+    [Tags]              nightly2    release_testing    csit_tc_10316    apc_42459    development    xiqse    xiq_integration    device_status    xiqse_disconnect    test3
 
     [Setup]  XIQ Log In and Set Window Index
 
@@ -116,7 +116,7 @@ Test 3: Confirm Disconnected XIQ-SE Results in Correct Status in XIQ
 
 Test 4: Confirm Reconnected XIQ-SE Results in Correct Status in XIQ
     [Documentation]     Confirms when XIQ-SE is reconnected, XIQSE-managed devices will have correct status in XIQ.
-    [Tags]              nightly1    release_testing    csit_tc_10316    apc_42459    development    xiqse    xiq_integration    device_status    xiqse_disconnect    test4
+    [Tags]              nightly2    release_testing    csit_tc_10316    apc_42459    development    xiqse    xiq_integration    device_status    xiqse_disconnect    test4
 
     [Setup]  XIQ Log In and Set Window Index
 
@@ -132,7 +132,7 @@ Test 4: Confirm Reconnected XIQ-SE Results in Correct Status in XIQ
 
 Test 5: Confirm Re-connected Device Has Correct Status in XIQ
     [Documentation]     Confirms a device which re-establishes connection in XIQ-SE shows as connected in XIQ
-    [Tags]              nightly1    release_testing    csit_tc_10316    apc_42459    development    xiqse    xiq_integration    device_status    xiqse_disconnect    test5
+    [Tags]              nightly2    release_testing    csit_tc_10316    apc_42459    development    xiqse    xiq_integration    device_status    xiqse_disconnect    test5
 
     [Setup]    Log Into XIQSE and XIQ and Confirm Success
 
@@ -147,7 +147,7 @@ Test 5: Confirm Re-connected Device Has Correct Status in XIQ
 
 Tear Down Test and Close Session
     [Documentation]     Cleans up XIQ and XIQ-SE test components
-    [Tags]              nightly1    release_testing    csit_tc_10316    apc_42459    development    xiqse    xiq_integration    device_status    xiqse_disconnect    test6
+    [Tags]              nightly2    release_testing    csit_tc_10316    apc_42459    development    xiqse    xiq_integration    device_status    xiqse_disconnect    test6
 
     [Setup]    Log Into XIQSE and XIQ and Confirm Success
 

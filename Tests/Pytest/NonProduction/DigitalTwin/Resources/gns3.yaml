@@ -8,6 +8,9 @@ netelem1:
   image_family:             "vm"
   ip:                       "localhost"
 ## TODO: Need DTEC changes to map the telnet port of the DT
+## Also, we access the DTs with the serial console.  If we switch to using the
+## mgmt port, the "no-dt-mgmt" cases will need some special treatment for systems
+## that don't have OOB Mgmt
 # port:                     "33001"
   port:                     "5000"
   username:                 "admin"

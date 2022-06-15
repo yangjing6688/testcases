@@ -1,19 +1,29 @@
-import pytest
+# Built-in imports
 import inspect
-from pytest import fixture
-from pytest_testconfig import config
-import threading
-import queue
 import logging
+import queue
 import sys
-import requests.adapters
+import threading
 from datetime import datetime
+from pprint import pformat
+
+# Our imports
 from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
-from ExtremeAutomation.Utilities.Firmware.pytestLoadFirmware import PlatformLoadFirmware
 from ExtremeAutomation.Utilities.EconClient.econ_request_api import econAPI
-from ExtremeAutomation.Utilities.Framework.test_case_inventory import PytestItems
-from ExtremeAutomation.Utilities.Framework.test_case_inventory import PathTools
+from ExtremeAutomation.Utilities.Firmware.pytestLoadFirmware import PlatformLoadFirmware
+from ExtremeAutomation.Utilities.Framework.test_case_inventory import (
+    PathTools,
+    PytestItems)
 from ExtremeAutomation.Utilities.Framework.test_selection import CheckExecution
+
+# 3rd party imports
+import pytest
+from pytest import (
+    fixture,
+    hookimpl)
+from pytest_testconfig import config
+from yaml import safe_load as yaml_safe_load
+
 
 @fixture()
 # used to skip test cases
@@ -73,37 +83,30 @@ def test_case_started_ended_print(request):
     # # teardown
     # drvr.quit()
 
-custom_report_title = None
-
 def pytest_addoption(parser):
     parser.addoption("--testbed", action="store", default=None, help="yaml testbed file Auto search")
     parser.addoption("--cfg", action="store", default=None, help="dup arg same as --testbed")
     parser.addoption("--env", action="store", default=None, help="yaml env file. Auto path search used")
     parser.addoption("--topo", action="store", default=None, help="yaml topo file. Auto path search used")
-    parser.addoption("--tftpserver", action="store", default=None)
-    parser.addoption("--imageFamilies", action="store", default=None)
-    parser.addoption("--images", action="store", default=None)
-    parser.addoption("--imageTarget", action="store", default=None)
-    parser.addoption("--loadImage", action="store", default=None)
-    parser.addoption("--build", action="store", default=None)
-    parser.addoption("--testModule_uuid", action="store", default=None)
-    parser.addoption("--tftp", action="store", default=None)
-    parser.addoption("--if", action="store", default=None, help="pipe seperated image family names")
-    parser.addoption("--i", action="store", default=None, help="pipe seperated image names")
-    parser.addoption("--p", action="store", default=None, help="install partition")
-    parser.addoption("--l", action="store", default=None, help="load image method")
-    parser.addoption("--b", action="store", default=None, help="build string for verification")
-    parser.addoption("--u", action="store", default=None, help="job platform test module UUID")
+    parser.addoption("--tftp", "--tftpserver", dest="tftpServer", action="store", default=None)
+    parser.addoption("--if", "--imageFamilies", dest="imageFamilies", action="store", default=None, help="pipe seperated image family names")
+    parser.addoption("--i", "--images", dest="images", action="store", default=None, help="pipe seperated image names")
+    parser.addoption("--p", "--imageTarget", dest="imageTarget", action="store", default=None, help="install partition")
+    parser.addoption("--l", "--loadImage", dest="loadImage", action="store", default=None, help="load image method")
+    parser.addoption("--b", "--build", dest="build", action="store", default=None, help="build string for verification")
+    parser.addoption("--u", "--testModule_uuid", dest="testModule_uuid", action="store", default=None, help="job platform test module UUID")
     parser.addoption("--get_test_info", action="store", default=None, help="Dump checkdb or insert mod info")
     parser.addoption("--customReportDate", action="store_true", default=False, help="Adds a report date to the report_<date>.html file")
     parser.addoption("--customReportTitle", action="store", default=None, help="Adds a Custom title to the report htmls file")
 
 def pytest_html_report_title(report):
+    # Update title on web page
     global custom_report_title
     if custom_report_title:
         report.title = custom_report_title
 
 def pytest_sessionfinish(session):
+    # Update title in browser tab
     global custom_report_title
     if custom_report_title:
         htmlfile = session.config.getoption('htmlpath')
@@ -112,7 +115,7 @@ def pytest_sessionfinish(session):
         with open(htmlfile, "w") as writeFile:
             writeFile.write(text)
 
-@pytest.hookimpl(trylast=True)
+@hookimpl(trylast=True)
 def pytest_configure(config):
     terminal_reporter = config.pluginmanager.getplugin('terminalreporter')
     config.pluginmanager.register(TestDescriptionPlugin(terminal_reporter), 'testdescription')
@@ -126,15 +129,42 @@ def pytest_configure(config):
     patch_http_connection_pool(maxsize=100)
 
     if config.option.customReportDate:
-        config._metadata = None
         # set the timestamp
         report_date = datetime.now().strftime("%m-%d-%Y_%H.%M.%S")
         # update the pytest-html path
         config.option.htmlpath = config.option.htmlpath.replace('.html', "_" + report_date + ".html")
         print("Custom HTML Report: " + config.option.htmlpath)
 
-    if config.option.customReportTitle:
-        custom_report_title = config.option.customReportTitle
+    custom_report_title = config.option.customReportTitle
+
+    # Grab testbed/topo info if ran with --tc-file option
+    #
+    if config.option.testconfig:
+        # testconfig is a list of test config files
+        for item in config.option.testconfig:
+            try:
+                if "TestBeds" in item:
+                    header = "Testbed"
+                elif "Environments" in item and "topo" in item:
+                    header = "Topology"
+                else:
+                    continue
+
+                # Grab info for HTML report
+                with open(item, 'r', encoding='utf-8') as f:
+                    cfg_file = yaml_safe_load(f.read())
+
+                config._metadata[f"{header} - File Path"] = item
+                for keyword, value in cfg_file.items():
+                    # Trim tgen & e-mail info from testbeds
+                    if header == "Testbed":
+                        if not keyword.startswith("tgen") and keyword != "mails":
+                            config._metadata[f"{header} - {keyword}"] = pformat(value, depth=1)
+                    else:
+                        config._metadata[f"{header} - {keyword}"] = value
+            except Exception as e:
+                # Quietly bypass errors
+                print(e)
 
     if config.option.testbed is not None or config.option.cfg is not None or config.option.env is not None or \
             config.option.topo is not None:
@@ -150,30 +180,53 @@ def pytest_configure(config):
             load_yaml(fCfg, encoding='utf-8')
         else:
             sys.exit()
+
     if config.option.testbed is not None:
         cfg = config.getoption("--testbed")
         print(f"TRYING TO LOAD TESTBED YAML: {cfg}")
         fCfg = pt.locateCfg(cfg)
         print(f"FOUND YAML: {fCfg}")
         if fCfg:
+            # Grab info for HTML report
+            with open(fCfg, 'r', encoding='utf-8') as f:
+                testbed = yaml_safe_load(f.read())
+
+            config._metadata["Testbed - File Path"] = fCfg
+            for keyword, value in testbed.items():
+                if not keyword.startswith("tgen") and keyword != "mails":
+                    config._metadata[f"Testbed - {keyword}"] = pformat(value, depth=1)
+
+            # Load testbed into pytest
             load_yaml(fCfg, encoding='utf-8')
         else:
             sys.exit()
+
     if config.option.env is not None:
         env = config.getoption("--env")
         print(f"TRYING TO LOAD ENV YAML: {env}")
         fEnv = pt.locateEnv(env)
         print(f"FOUND ENV YAML: {fEnv}")
         if fEnv:
+            # Load environment into pytest
             load_yaml(fEnv, encoding='utf-8')
         else:
             sys.exit()
+
     if config.option.topo is not None:
         topo = config.getoption("--topo")
         print(f"TRYING TO LOAD TOPO YAML: {topo}")
         fTopo = pt.locateTopo(topo)
         print(f"FOUND TOPO YAML: {fTopo}")
         if fTopo:
+            # Grab info for HTML report
+            with open(fTopo, 'r', encoding='utf-8') as f:
+                topology = yaml_safe_load(f.read())
+
+            config._metadata["Topology - File Path"] = fTopo
+            for keyword, value in topology.items():
+                config._metadata[f"Topology - {keyword}"] = value
+
+            # Load topology into pytest
             load_yaml(fTopo, encoding='utf-8')
         else:
             sys.exit()
@@ -184,7 +237,7 @@ def pytest_collection_finish(session):
         PI.get_inventory_info()
         pytest.exit('Done!')
 
-@pytest.fixture(autouse=True)
+@fixture(autouse=True)
 def skip_check(request):
     # @mark.required_platform('Stack')
     # @mark.skip_platform('Stack', 'VPEX')
@@ -200,16 +253,12 @@ def skip_check(request):
     if request.node.get_closest_marker('required_platform'):
         chkExec = CheckExecution(request, config)
         out = chkExec.requiredPlatform()
-        if out[0]:
-            pass
-        else:
+        if not out[0]:
             pytest.skip(f"Skipped {request.node.name}. {out[1][0]} platform is required on DUT1")
     if request.node.get_closest_marker('required_capability'):
         chkExec = CheckExecution(request, config)
         out = chkExec.requiredCapability()
-        if out[0]:
-            pass
-        else:
+        if not out[0]:
             pytest.skip(f"skipped {request.node.name} on this platform: No support for {out[1]}")
     if request.node.get_closest_marker('start_version'):
         chkExec = CheckExecution(request, config)
@@ -235,28 +284,13 @@ def skip_check(request):
 @fixture(scope='session', autouse=True)
 def loadTestBedFirmware(request):
     status    = 'skipped'
-    tftp      = request.config.getoption("--tftpserver")
-    families  = request.config.getoption("--imageFamilies")
-    ifiles    = request.config.getoption("--images")
-    target    = request.config.getoption("--imageTarget")
-    load      = request.config.getoption("--loadImage")
-    build     = request.config.getoption("--build")
-    uuid      = request.config.getoption("--testModule_uuid")
-
-    if not tftp:
-        tftp = request.config.getoption("--tftp")
-    if not families:
-        families = request.config.getoption("--if")
-    if not ifiles:
-        ifiles = request.config.getoption("--i")
-    if not target:
-        target = request.config.getoption("--p")
-    if not load:
-        load   = request.config.getoption("--l")
-    if not build:
-        build  = request.config.getoption("--b")
-    if not uuid:
-        uuid   = request.config.getoption("--u")
+    tftp      = request.config.option.tftpServer
+    families  = request.config.option.imageFamilies
+    ifiles    = request.config.option.images
+    target    = request.config.option.imageTarget
+    load      = request.config.option.loadImage
+    build     = request.config.option.build
+    uuid      = request.config.option.testModule_uuid
 
     # silently bypass download if no variables submitted
     if not families or not ifiles:
@@ -379,8 +413,7 @@ def loadTestBedFirmware(request):
                     }
                     res = ec.econRequest('tbedmgr/jobmgr/jobConfig/getTableField',
                                                    rtype='post', payload=getData)
-                    if 'jobPlatforms_uuid' in res:
-                        jobPlatforms_uuid = res['jobPlatforms_uuid']
+
                     if 'jobPlatforms_uuid' in res:
                         jobPlat_uuid = res['jobPlatforms_uuid']
                     if jobPlat_uuid and testbed_uuid:
@@ -430,7 +463,7 @@ class TestDescriptionPlugin:
     def pytest_runtest_protocol(self, item):
         self.desc = inspect.getdoc(item.obj)
 
-    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
+    @hookimpl(hookwrapper=True, tryfirst=True)
     def pytest_runtest_setup(self, item):
         if self.terminal_reporter.verbosity == 0:
             yield
@@ -441,7 +474,7 @@ class TestDescriptionPlugin:
             self.logger.info(self.BLUE + self.BOLD + f'**********************************************************************************************\n'+ self.END)
             yield
 
-    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
+    @hookimpl(hookwrapper=True, tryfirst=True)
     def pytest_runtest_teardown(self, item, nextitem):
         if self.terminal_reporter.verbosity == 0:
             yield
@@ -452,7 +485,7 @@ class TestDescriptionPlugin:
             self.logger.info(self.BLUE + self.BOLD + f'**********************************************************************************************\n'+ self.END)
             yield
 
-    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
+    @hookimpl(hookwrapper=True, tryfirst=True)
     def pytest_runtest_logstart(self, nodeid, location):
         if self.terminal_reporter.verbosity == 0:
             yield
@@ -465,7 +498,7 @@ class TestDescriptionPlugin:
             self.logger.info(self.BLUE + self.BOLD + f'**********************************************************************************************\n'+ self.END)
             yield
 
-    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
+    @hookimpl(hookwrapper=True, tryfirst=True)
     def pytest_runtest_logfinish(self, nodeid, location):
         if self.terminal_reporter.verbosity == 0:
             yield

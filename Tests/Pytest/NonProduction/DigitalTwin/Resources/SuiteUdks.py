@@ -33,6 +33,15 @@ class SuiteUdk():
         txt = kw_results[0].cmd_obj.return_text
 
         if is_active:
+            return re.search(r"^ +EXOS_DT_ACTIVE: 1", txt, re.M) is not None
+        return re.search(r"^ +EXOS_DT_ACTIVE: \(null\)", txt, re.M) is not None
+
+    def verify_dt_mgmt(self, dut_name, in_use=True):
+        kw_results = self.defaultLibrary.deviceNetworkElement.networkElementCliSend.\
+                     send_cmd(dut_name, "debug hal run platform config-dump")
+        txt = kw_results[0].cmd_obj.return_text
+
+        if in_use:
             return re.search(r"^ +EXOS_DT_MGMT_VRID: 2000", txt, re.M) is not None
         return re.search(r"^ +EXOS_DT_MGMT_VRID: \(null\)", txt, re.M) is not None
 
@@ -48,7 +57,7 @@ class SuiteUdk():
                      send_cmd(dut_name, "show switch")
         txt = kw_results[0].cmd_obj.return_text
 
-        return re.search(r"System MAC:\s+{}".format(re.escape(mac)), txt, re.IGNORECASE) is not None
+        return re.search(r"System MAC:\s+{}".format(re.escape(mac)), txt, re.I) is not None
 
     def verify_serial_number(self, dut_name, slot_num, serial_number):
         kw_results = self.defaultLibrary.deviceNetworkElement.networkElementCliSend.\
@@ -138,28 +147,34 @@ class SuiteUdk():
 
         return re.search(r"warnings/errors:\s+None", txt) is not None
 
-    def verify_dt_log_error(self, dut_name, log_str=None):
+    def verify_dt_log_error(self, dut_name, log_regex=None):
+        """Verify that an error log was generated.  If log_regex is specified,
+        it should be a regex expression, already escaped if necessary."""
         kw_results = self.defaultLibrary.deviceNetworkElement.networkElementCliSend.\
                      send_cmd(dut_name, "debug hal run platform config-dump",
                               ignore_cli_feedback=True)
         txt = kw_results[0].cmd_obj.return_text
 
         unable_to_load_str = "Unable to load configuration from file:"
-        if log_str:
-            return re.search(r"warnings/errors:\s+^{}.*{}".format(unable_to_load_str, log_str),
-                             txt, re.M|re.S) is not None
-        return re.search(r"warnings/errors:\s+^{}".format(unable_to_load_str),
-                         txt, re.M) is not None
+        if log_regex:
+            s_str = fr"warnings/errors:\s+^{unable_to_load_str}.*{log_regex}"
+            return re.search(s_str, txt, re.M|re.S) is not None
 
-    def verify_dt_log_warning(self, dut_name, log_str=None):
+        s_str = fr"warnings/errors:\s+^{unable_to_load_str}"
+        return re.search(s_str, txt, re.M) is not None
+
+    def verify_dt_log_warning(self, dut_name, log_regex=None):
+        """Verify that a warning log was generated.  If log_regex is specified,
+        it should be a regex expression, already escaped if necessary."""
         kw_results = self.defaultLibrary.deviceNetworkElement.networkElementCliSend.\
                      send_cmd(dut_name, "debug hal run platform config-dump",
                               ignore_cli_feedback=True)
         txt = kw_results[0].cmd_obj.return_text
 
-        if log_str:
-            return re.search(r"warnings/errors:\s+^Warning:.*{}".format(log_str),
-                             txt, re.M|re.S) is not None
+        if log_regex:
+            s_str = fr"warnings/errors:\s+^Warning:.*{log_regex}"
+            return re.search(s_str, txt, re.M|re.S) is not None
+
         return re.search(r"warnings/errors:\s+^Warning:", txt, re.M) is not None
 
     def verify_cloudserver(self, dut_name, server):
@@ -168,18 +183,18 @@ class SuiteUdk():
         txt = kw_results[0].cmd_obj.return_text
 
         if not server:
-            # cloud-server was not specified...ensure it isn't shown in the debug output
+            # cloud-server was not specified...ensure a value isn't shown in the debug output
             return re.search(r"^\s+cloud-server:\s*$", txt, re.M) is not None
 
+        return re.search(r"^\s+cloud-server: {}".format(re.escape(server)), txt, re.M) is not None
+
+    def verify_cloudserver_type(self, dut_name, server_type):
         kw_results = self.defaultLibrary.deviceNetworkElement.networkElementCliSend.\
-                     send_cmd(dut_name, "show iqagent")
+                     send_cmd(dut_name, "debug hal run platform config-dump")
         txt = kw_results[0].cmd_obj.return_text
 
-        # If iqagent is showing an XIQ address, it should be the one from the YAML file
-        if re.search(r"^XIQ Address:", txt, re.M) is not None:
-            return re.search(r"^XIQ Address:\s+{}".format(server), txt, re.M) is not None
-
-        return True
+        return re.search(r"^\s+cloud-server-type: {}"
+                         .format(re.escape(server_type)), txt, re.M) is not None
 
     def verify_card_states(self, dut_name, slot_nums, state):
         kw_results = self.defaultLibrary.deviceNetworkElement.networkElementCliSend.\

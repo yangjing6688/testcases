@@ -1,0 +1,7 @@
+# Invalid cloud-server-type (should default to redirector)
+system:
+  cloud-server: g2-hac.qa.xcloudiq.com
+  cloud-server-type: redirectorabc
+  slots:
+    - num: 1
+      type: 5520-24W

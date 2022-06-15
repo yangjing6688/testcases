@@ -51,7 +51,7 @@ ${TEST_ARCHIVE}         Automation_Archive
 *** Test Cases ***
 Test 1: Delete Device - XIQSE Deleted and Re-Added
     [Documentation]  Confirms a device deleted from XIQSE is removed from XIQ after sharing has been disabled and re-enabled
-    [Tags]           nightly1    release_testing    csit_tc_10312    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    delete_xiqse    test1
+    [Tags]           nightly2    release_testing    csit_tc_10312    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    delete_xiqse    test1
 
     XIQSE Add Device and Confirm Success        ${DUT_IP}  ${DUT_PROFILE}
     XIQSE Confirm Device Onboarded to XIQ       ${DUT_IP}
@@ -75,7 +75,7 @@ Test 1: Delete Device - XIQSE Deleted and Re-Added
 
 Test 2: Delete Device With Note - XIQSE Deleted and Re-Added
     [Documentation]  Confirms a device deleted from XIQSE which has a note is removed from XIQ after disconnected via sharing
-    [Tags]           nightly1    release_testing    csit_tc_10312    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    delete_xiqse    test2
+    [Tags]           nightly2    release_testing    csit_tc_10312    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    delete_xiqse    test2
 
     XIQSE Add Device and Confirm Success                    ${DUT_IP}  ${DUT_PROFILE}
     XIQSE Confirm Device Onboarded to XIQ                   ${DUT_IP}
@@ -103,7 +103,7 @@ Test 2: Delete Device With Note - XIQSE Deleted and Re-Added
 
 Test 3: Delete Archived Device - XIQSE deleted and re-added
     [Documentation]  Confirms an archived device deleted from XIQSE is removed from XIQ after disconnected via sharing
-    [Tags]           nightly1    release_testing    csit_tc_10312    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    delete_xiqse    test3
+    [Tags]           nightly2    release_testing    csit_tc_10312    apc_47884    development    xiqse    xiq_integration    delete_device    disconnect    delete_xiqse    test3
 
     XIQSE Add Device and Confirm Success                        ${DUT_IP}  ${DUT_PROFILE}
     XIQSE Confirm Device Onboarded to XIQ                       ${DUT_IP}

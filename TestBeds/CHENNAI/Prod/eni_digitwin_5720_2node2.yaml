@@ -1,0 +1,177 @@
+---
+lab:                      "ENI"
+#
+
+netelem1:
+  name:                     "digiTwin_DUT3"
+  ip:                       "10.127.22.131"
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  make:                     "exos"
+  os:                       "exos"
+  hostname:                 "10.127.22.131"
+  serial:                   "SIMBFBF-3003"
+  console_ip:               "10.127.22.4"
+  console_port:             "2011"
+  default_template:         "SwitchEngine_5720_48MXW-default-template"
+  model:                    "SwitchEngine5720_48MXW"
+  mac:                      "0004BFBF3003"
+  family:                   "onie_x86"
+  platform:                 "5720-48MXW-SwitchEngine"
+  host_mac:                 "00-04-BF-BF-30-03"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  extra:
+    vm_info:
+      vmhost:               "10.127.22.4"
+      vmuser:               "extreme"
+      vmpass:               "extreme"
+      vmname:               "RBT3_VM3"
+  
+  isl:
+    port_a:
+      ifname: &netelem1_isl_port_a_ifname "9"
+      intnet: "r1tr341"
+    port_b:
+      ifname: &netelem1_isl_port_b_ifname "10"
+      intnet: "r1tr342"
+    port_c:
+      ifname: &netelem1_isl_port_c_ifname "11"
+      intnet: "r1tr343"
+    port_d:
+      ifname: &netelem1_isl_port_d_ifname "12"
+      intnet: "r1tr344"
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "13"
+      intnet: "link9"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "14"
+      intnet: "link10"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "15"
+      intnet: "link11"
+    port_d:
+      ifname: &netelem1_tgen_port_d_ifname "16"
+      intnet: "link12"
+
+netelem2:
+  name:                     "digiTwin_DUT4"
+  ip:                       "10.127.22.132"
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  make:                     "exos"
+  os:                       "exos"
+  hostname:                 "10.127.22.132"
+  serial:                   "SIMBFBF-3004"
+  console_ip:               "10.127.22.4"
+  console_port:             "2012"
+  default_template:         "SwitchEngine_5720_48MXW-default-template"
+  model:                    "SwitchEngine5720_48MXW"
+  mac:                      "0004BFBF3004"
+  family:                   "onie_x86"
+  platform:                 "5720-48MXW-SwitchEngine"
+  host_mac:                 "00-04-BF-BF-30-04"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  extra:
+    vm_info:
+      vmhost:               "10.127.22.4"
+      vmuser:               "extreme"
+      vmpass:               "extreme"
+      vmname:               "RBT3_VM4"
+  
+  isl:
+    port_a:
+      ifname: &netelem2_isl_port_a_ifname "9"
+      intnet: "r1tr341"
+    port_b:
+      ifname: &netelem2_isl_port_b_ifname "10"
+      intnet: "r1tr342"
+    port_c:
+      ifname: &netelem2_isl_port_c_ifname "11"
+      intnet: "r1tr343"
+    port_d:
+      ifname: &netelem2_isl_port_d_ifname "12"
+      intnet: "r1tr344"
+  tgen:
+    port_a:
+      ifname: &netelem2_tgen_port_a_ifname "13"
+      intnet: "link13"
+    port_b:
+      ifname: &netelem2_tgen_port_b_ifname "14"
+      intnet: "link14"
+    port_c:
+      ifname: &netelem2_tgen_port_c_ifname "15"
+      intnet: "link15"
+    port_d:
+      ifname: &netelem2_tgen_port_d_ifname "16"
+      intnet: "link16"
+ 
+ 
+tgen1:
+  name:                     &tgen1_name "JETS"
+  vendor:                   "jets"
+  chassis_type:             "jets"
+  software:                 "N/A"
+  ip:                       "10.127.22.13"
+  vm_ip:                    "N/A"
+  username:                 "root"
+  password:                 "PASprt86"
+  ssh_port:                 "22"
+  vm_port:                  "22"
+  os:                       "linux"
+  dynamic_deployment:       "False"
+  vm_location:
+
+tgen_ports:
+  netelem1:
+    port_a: &tgen_ports_netelem1_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth9"
+      intnet:             "link9"
+    port_b: &tgen_ports_netelem1_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth10"
+      intnet:             "link10"
+    port_c: &tgen_ports_netelem1_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth11"
+      intnet:             "link11"
+    port_d: &tgen_ports_netelem1_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth12"
+      intnet:             "link12"
+  netelem2:
+    port_a: &tgen_ports_netelem2_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth13"
+      intnet:             "link13"
+    port_b: &tgen_ports_netelem2_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth14"
+      intnet:             "link14"
+    port_c: &tgen_ports_netelem2_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth15"
+      intnet:             "link15"
+    port_d: &tgen_ports_netelem2_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth16"
+      intnet:             "link16"
+
+

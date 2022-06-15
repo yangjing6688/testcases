@@ -6,8 +6,6 @@ ap1:
   username:                 admin
   password:                 Aerohive123
   serial:                   "24602001170120"
-  console_ip:               10.16.171.70
-  console_port:             22
   mac:                      BCF3102AAC00
   os:                       Cloud IQ Engine
   platform:                 aerohive

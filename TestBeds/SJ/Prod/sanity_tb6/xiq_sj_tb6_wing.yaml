@@ -1,0 +1,16 @@
+wing1:
+  name:                     ap7532-861180
+  model:                    AP7532I
+  device_template:          AP7532I-default-template
+  serial:                   "14137522203443"
+  os_version:               7.6.0.1-004R
+  mac:                      84248D1777E0
+  bssid:
+  network_policy:           Test_np
+  username:                 admin
+  password:                 symbol
+  platform:                 wing
+  ip:                       10.16.171.38
+  port:                     22
+  country:                  United Kingdom
+  make:                     Controllers

@@ -65,7 +65,7 @@ ${COLUMN_LABELS}    SERIAL,MANAGED BY,MAC,MAKE,MODEL,MGT IP ADDRESS,OS,OS VERSIO
 *** Test Cases ***
 Test 1: Confirm Site Engine Onboarded
     [Documentation]     Confirms the XIQ Site Engine can be onboarded successfully
-    [Tags]              nightly1    release_testing    csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test1
+    [Tags]              nightly2    release_testing    staging_testing    csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test1
 
     # Onboard XIQSE to XIQ
     Switch To Window  ${XIQSE_WINDOW_INDEX}
@@ -79,7 +79,7 @@ Test 1: Confirm Site Engine Onboarded
 
 Test 2: Confirm Devices Managed by XIQSE are Automatically Onboarded and Connected
     [Documentation]     Confirms the test device managed by XIQSE is automatically onboarded into XIQ
-    [Tags]              nightly1    release_testing    csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test2
+    [Tags]              nightly2    release_testing    staging_testing    csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test2
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -88,7 +88,7 @@ Test 2: Confirm Devices Managed by XIQSE are Automatically Onboarded and Connect
 
 Test 3: Confirm XIQ Site Engine Values After Onboard
     [Documentation]     Confirms the XIQ Site Engine has the expected values in the Devices table after onboard
-    [Tags]              nightly1    release_testing    csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test3
+    [Tags]              nightly2    release_testing    staging_testing    csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test3
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -120,7 +120,7 @@ Test 3: Confirm XIQ Site Engine Values After Onboard
 
 Test 4: Confirm XIQSE-Managed Device Values After Onboard
     [Documentation]     Confirms the test device managed by XIQSE has the expected values in the Devices table after onboard
-    [Tags]              nightly1    release_testing    csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test4
+    [Tags]              nightly2    release_testing    staging_testing    csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test4
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -149,7 +149,7 @@ Test 4: Confirm XIQSE-Managed Device Values After Onboard
 
 Test 5: Confirm Device360 View Values for XIQ Site Engine
     [Documentation]     Confirms the Device360 view contains correct values for the XIQ Site Engine
-    [Tags]              nightly1    release_testing    csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test5
+    [Tags]              nightly2    release_testing    staging_testing    csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test5
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -177,7 +177,7 @@ Test 5: Confirm Device360 View Values for XIQ Site Engine
 
 Test 6: Confirm Device360 View Values for XIQSE-Managed Device
     [Documentation]     Confirms the Device360 view contains correct values for the XIQSE-managed test device
-    [Tags]              nightly1    release_testing    csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test6
+    [Tags]              nightly2    release_testing    staging_testing    csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test6
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -204,7 +204,7 @@ Test 6: Confirm Device360 View Values for XIQSE-Managed Device
 
 Test 7: Confirm Deleting XIQ Site Engine Removes XIQSE-Managed Devices
     [Documentation]     Confirms the test device managed by XIQSE is removed when the XIQ Site Engine is deleted from XIQ
-    [Tags]              nightly1    release_testing    csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test7
+    [Tags]              nightly2    release_testing    staging_testing    csit_tc_10796    xmc_3196    development    xiqse    xiq_integration    test7
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 

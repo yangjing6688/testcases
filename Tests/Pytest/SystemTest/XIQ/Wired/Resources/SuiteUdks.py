@@ -136,7 +136,7 @@ class SuiteUdks():
             time.sleep(5)
             xiq.xflowsmanageDevices.refresh_devices_page()
             value_of_column = xiq.xflowsmanageDevices.get_device_details(dut_serial, column)
-            print('{} column did not update yet, will refresh the page then try again'.format(str))
+            print('{} column did not update yet, will refresh the page then try again'.format(column))
         print('current value of column {} is : {}'.format(column, value_of_column))
         return value_of_column
 
@@ -226,3 +226,19 @@ class SuiteUdks():
         if res != 'Managed':
             pytest.fail('FAILED Status not equal to Managed for serial {}. '
                         'Instead got status : {}'.format(dut_serial, res))
+
+    def get_boot_wait_time(self, model, device_os):
+        bootWaitTime = 0
+
+        print("Model is {}".format(model))
+        if device_os == "voss":
+            if model == "VSP7432CQ":
+                bootWaitTime = 145
+            else:
+                bootWaitTime = 190
+
+        else:
+            pytest.fail('FAILED I have not implmeted a wait time for device_os {} '.format(device_os))
+
+        print("Boot wait time is {} for model {} ".format(bootWaitTime,model))
+        return bootWaitTime

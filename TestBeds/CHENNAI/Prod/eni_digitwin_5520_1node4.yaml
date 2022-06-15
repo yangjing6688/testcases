@@ -1,0 +1,88 @@
+---
+lab:                      "ENI"
+#
+
+netelem1:
+  name:                     "digiTwin_DUT4"
+  ip:                       "10.127.22.124"
+  mgmt_vlan:                "mgmt"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "telnet"
+  make:                     "exos"
+  os:                       "exos"
+  hostname:                 "10.127.22.124"
+  serial:                   "SIMBFBF-1004"
+  console_ip:               "10.127.22.4"
+  console_port:             "2004"
+  default_template:         "SwitchEngine_5520_24X-default-template"
+  model:                    "SwitchEngine5520_24X"
+  mac:                      "0004BFBF1004"
+  family:                   "summit_arm"
+  platform:                 "5520-24X-SwitchEngine"
+  host_mac:                 "00-04-BF-BF-10-04"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  extra:
+    vm_info:
+      vmhost:               "10.127.22.4"
+      vmuser:               "extreme"
+      vmpass:               "extreme"
+      vmname:               "RBT1_VM4"
+  
+  tgen:
+    port_a:
+      ifname: &netelem1_tgen_port_a_ifname "13"
+      intnet: "link13"
+    port_b:
+      ifname: &netelem1_tgen_port_b_ifname "14"
+      intnet: "link14"
+    port_c:
+      ifname: &netelem1_tgen_port_c_ifname "15"
+      intnet: "link15"
+    port_d:
+      ifname: &netelem1_tgen_port_d_ifname "16"
+      intnet: "link16"
+ 
+ 
+tgen1:
+  name:                     &tgen1_name "JETS"
+  vendor:                   "jets"
+  chassis_type:             "jets"
+  software:                 "N/A"
+  ip:                       "10.127.22.12"
+  vm_ip:                    "N/A"
+  username:                 "root"
+  password:                 "PASprt86"
+  ssh_port:                 "22"
+  vm_port:                  "22"
+  make:                     "exos"
+  os:                       "linux"
+  dynamic_deployment:       "False"
+  vm_location:
+
+tgen_ports:
+  netelem1:
+    port_a: &tgen_ports_netelem1_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth13"
+      intnet:             "link13"
+    port_b: &tgen_ports_netelem1_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth14"
+      intnet:             "link14"
+    port_c: &tgen_ports_netelem1_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth15"
+      intnet:             "link15"
+    port_d: &tgen_ports_netelem1_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth16"
+      intnet:             "link16"
+
+

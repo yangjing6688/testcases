@@ -49,21 +49,36 @@ Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/router_xr_sani
 Force Tags   testbed_1_node
 
 Suite Setup     Cleanup-Delete Router   ${router1.serial}
+Suite Teardown  Test Suite Clean Up
 
 *** Keywords ***
 Cleanup-Delete Router
     [Arguments]             ${SERIAL}
     Login User              ${tenant_username}      ${tenant_password}
-    Run Keyword If   '${CLEANUP_TAG}'=='production'  run keywords   Create Network Policy    default_network_policy     &{CONFIG_PUSH_OPEN_NW_01}
-    ...     AND       Navigate To Devices
-    ...     AND       Refresh Devices Page
-    ...     AND       Delete Device  device_serial=${router1.serial}
-    ...     AND       Delete Network Policy  ${NW_POLICY_NAME}
-    ...     AND       Delete SSID  ${SSID_NAME}
-    ...     AND       Delete Router Template  default_network_policy  ${router1.device_template}
-    ...     AND       Delete Sub Network Profile  ${SUB_NETWORK_NAME}
-    ...     AND       Delete Port Type Profile    ${PORT_TYPE_NAME}
-    ...     AND       Delete Vlan Profile   ${VLAN_NAME}
+    Create Network Policy    default_network_policy     &{CONFIG_PUSH_OPEN_NW_01}
+    Navigate To Devices
+    Refresh Devices Page
+    Delete Device  device_serial=${router1.serial}
+    Delete Network Policy  ${NW_POLICY_NAME}
+    Delete SSID  ${SSID_NAME}
+    Delete Router Template  default_network_policy  ${router1.device_template}
+    Delete Sub Network Profile  ${SUB_NETWORK_NAME}
+    Delete Port Type Profile    ${PORT_TYPE_NAME}
+    Delete Vlan Profile   ${VLAN_NAME}
+    [Teardown]   run keywords       logout user
+    ...                             quit browser
+
+Test Suite Clean Up
+    [Documentation]             delete created network policies, SSID, Device etc
+
+    Login User              ${tenant_username}      ${tenant_password}
+    Delete Device  device_serial=${router1.serial}
+    Delete Network Policy  ${NW_POLICY_NAME}
+    Delete SSID  ${SSID_NAME}
+    Delete Router Template  default_network_policy  ${router1.device_template}
+    Delete Sub Network Profile  ${SUB_NETWORK_NAME}
+    Delete Port Type Profile    ${PORT_TYPE_NAME}
+    Delete Vlan Profile   ${VLAN_NAME}
     [Teardown]   run keywords       logout user
     ...                             quit browser
 
@@ -96,8 +111,11 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     ${CAPWAP_SERVER}=       Send                ${ROUTER_SPAWN}         ${cmd_capwap_server_ip}
 
 
-    Wait Until Device Online    ${router1.serial}
+    ${IS_ONLINE}=           Wait Until Device Online        ${router1.serial}
+    Should Be Equal as Integers             ${IS_ONLINE}         1
+
     ${ROUTER_STATUS}=       Get Device Status       device_serial=${router1.serial}
+    Should Be Equal As Strings             '${ROUTER_STATUS}'       'green'
 
 
     ${CAPWAP_STATUS}=       Send            ${ROUTER_SPAWN}         ${cmd_capwap_client_state}
@@ -210,18 +228,3 @@ TCCS-7351: Upgrade Latest IQ Engine Router Firmware
     [Teardown]   run keywords       logout user
     ...          AND                quit browser
     ...          AND                Close Spawn        ${ROUTER_SPAWN}
-
-Test Suite Clean Up
-    [Documentation]             delete created network policies, SSID, Device etc
-
-    [Tags]                      productions      cleanup
-    Login User              ${tenant_username}      ${tenant_password}
-    Run Keyword If   '${CLEANUP_TAG}'=='production'  run keywords  Delete Device  device_serial=${router1.serial}
-    ...     AND       Delete Network Policy  ${NW_POLICY_NAME}
-    ...     AND       Delete SSID  ${SSID_NAME}
-    ...     AND       Delete Router Template  default_network_policy  ${router1.device_template}
-    ...     AND       Delete Sub Network Profile  ${SUB_NETWORK_NAME}
-    ...     AND       Delete Port Type Profile    ${PORT_TYPE_NAME}
-    ...     AND       Delete Vlan Profile   ${VLAN_NAME}
-    [Teardown]   run keywords       logout user
-    ...                             quit browser
