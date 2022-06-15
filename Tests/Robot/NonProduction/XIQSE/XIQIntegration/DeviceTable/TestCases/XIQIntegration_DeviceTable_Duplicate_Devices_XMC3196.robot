@@ -39,11 +39,11 @@ ${XIQ_URL}              ${xiq.test_url}
 ${XIQ_USER}             ${xiq.tenant_username}
 ${XIQ_PASSWORD}         ${xiq.tenant_password}
 
-${DUT_SERIAL}           ${netelem1.serial}
-${DUT_IP}               ${netelem1.ip}
-${DUT_PROFILE}          ${netelem1.profile}
-${DUT_MODEL}            ${netelem1.model}
-${DUT_MAKE}             ${netelem1.make}
+${DUT_SERIAL}           ${netelem2.serial}
+${DUT_IP}               ${netelem2.ip}
+${DUT_PROFILE}          ${netelem2.profile}
+${DUT_MODEL}            ${netelem2.model}
+${DUT_MAKE}             ${netelem2.make}
 
 ${LOCATION}             San Jose, building_01, floor_02
 
