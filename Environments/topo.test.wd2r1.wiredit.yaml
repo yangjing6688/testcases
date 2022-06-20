@@ -1,0 +1,10 @@
+test_url: "https://wd2r1.qa.xcloudiq.com"
+capwap_url: "wd2r1-cwpm-01.qa.xcloudiq.com"
+sw_connection_host: "wd2r1.qa.xcloudiq.com"
+tenant_username: "wiredit+wd2r1@gmail.com"
+tenant_password: "Aerohive123"
+base_url: "https://wd2-api.qa.xcloudiq.com"
+aio_xiq: 0
+iapi_base_url: "https://wd2.qa.xcloudiq.com"
+sw_capwap_url: "wd2r1.qa.xcloudiq.com"
+wing_capwap_url: "wd2r1-wing.qa.xcloudiq.com"
