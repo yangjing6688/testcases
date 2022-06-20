@@ -60,6 +60,7 @@ ${DUT_OS}               ${netelem1.os}
 
 @{COLUMNS}          Serial #  Managed By  MAC Address  Make  Model  MGT IP Address  OS  OS Version  Cloud Config Groups
 ${COLUMN_LABELS}    SERIAL,MANAGED BY,MAC,MAKE,MODEL,MGT IP ADDRESS,OS,OS VERSION,CLOUD CONFIG GROUPS
+${WORLD_SITE}       World
 
 
 *** Test Cases ***
@@ -260,6 +261,8 @@ Set Up XIQSE Components
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 
+    Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
+
     # Confirm the serial number is correct and set the common options needed for automation
     Confirm Serial Number and Set Common Options     ${XIQSE_SERIAL}
 
@@ -324,6 +327,8 @@ Clean Up XIQSE Components
     [Documentation]     Cleans up components used in XIQSE during the test and logs out
 
     Switch To Window                        ${XIQSE_WINDOW_INDEX}
+
+    Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     Navigate and Delete Device              ${DUT_IP}
     Log Out of XIQSE and Confirm Success

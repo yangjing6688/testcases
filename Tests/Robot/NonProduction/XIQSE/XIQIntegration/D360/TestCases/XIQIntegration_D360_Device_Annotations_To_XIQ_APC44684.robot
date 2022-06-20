@@ -57,7 +57,7 @@ ${TEST_USER_DATA_2}     AUTO DATA 2
 ${TEST_USER_DATA_3}     AUTO DATA 3
 ${TEST_USER_DATA_4}     AUTO DATA 4
 ${TEST_NOTE}            AUTO NOTE
-
+${WORLD_SITE}           World
 
 *** Test Cases ***
 Test 1: Confirm Initial Device Annotation Values in XIQSE are Reflected in XIQ
@@ -171,6 +171,8 @@ Log Out of XIQ and Confirm Success
 
 Set Up XIQSE Components
     [Documentation]     Sets up the XIQSE components for the test
+
+    Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     # Confirm the serial number is correct and set the common options needed for automation
     Confirm Serial Number and Set Common Options     ${XIQSE_SERIAL}
@@ -349,6 +351,7 @@ Clean Up XIQSE Components
     [Documentation]     Cleans up components used in XIQSE during the test and logs out
 
     Switch To Window                                ${XIQSE_WINDOW_INDEX}
+    Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
     XIQSE Navigate to Devices and Confirm Success
 
     # Reset the device annotations - doing this again during tear down in case the test case failed
