@@ -1,0 +1,53 @@
+{
+    "Tests/Robot/Functional/XIQ/Wireless/Sanity/TestCases/09_auto_provisioning_XIQ-000.robot": {
+        "TCCS-7632: Configure AP Auto Provision Profile": {
+            "all_tags_lower_case": true,
+            "contains_development": false,
+            "valid_qtest_tag": true,
+            "qtest_tags": [
+                "tccs_7632"
+            ],
+            "valid_test_name": false,
+            "contains_testbed_tag": true,
+            "contains_reserved_tag": true,
+            "marker_list": [
+                "production",
+                "tccs_7632",
+                "testbed_1_node"
+            ],
+            "testcase_name": "TCCS-7632: Configure AP Auto Provision Profile"
+        },
+        "TCCS-7571: Configure Switch Auto Provision Profile": {
+            "all_tags_lower_case": true,
+            "contains_development": false,
+            "valid_qtest_tag": true,
+            "qtest_tags": [
+                "tccs_7571"
+            ],
+            "valid_test_name": false,
+            "contains_testbed_tag": true,
+            "contains_reserved_tag": true,
+            "marker_list": [
+                "production",
+                "tccs_7571",
+                "testbed_1_node"
+            ],
+            "testcase_name": "TCCS-7571: Configure Switch Auto Provision Profile"
+        },
+        "Clean-up": {
+            "all_tags_lower_case": true,
+            "contains_development": false,
+            "valid_qtest_tag": true,
+            "qtest_tags": ["tccs_7471_step1"],
+            "valid_test_name": false,
+            "contains_testbed_tag": true,
+            "contains_reserved_tag": false,
+            "marker_list": [
+                "productions",
+                "cleanup",
+                "testbed_1_node"
+            ],
+            "testcase_name": "Clean-up"
+        }
+    }
+}

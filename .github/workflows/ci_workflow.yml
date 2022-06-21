@@ -713,15 +713,6 @@ jobs:
         path: extreme_automation_framework
         ref: main
 
-    - name: Checkout qtest tools
-      if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
-      uses: actions/checkout@v2
-      with:
-        repository: extremenetworks/econ-qtest-client
-        token: ${{ secrets.REGISTRY_PAT }}
-        path: econ-qtest-client
-        ref: main
-
     - uses: actions/download-artifact@v2
       if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
       with:
@@ -818,115 +809,18 @@ jobs:
     - name: Check pytest markers
       if: ${{env.SKIP_CHECK == 'false' && env.RUN_PYTEST == 'true'}}
       run: |
-        rc=0
-        testcase_files=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' ${{ env.pytest_result_file }} )
-        # printf '%s\n' "DEBUG: testcase_files: $testcase_files"
-        while IFS='|' read -r key value; do
-            # printf '%s\n%s\n' "DEBUG: key: $key" "DEBUG: value: $value"
-            echo "================================================================================" | tee -a ${{ env.tag_marker_report_path }}
-            echo "[*] Results for file: $key" | tee -a ${{ env.tag_marker_report_path }}
-            func=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' <<< $value )
-            while IFS='|' read -r key value; do
-                printf '\n%s\n' "[**] Results for test: $key" | tee -a ${{ env.tag_marker_report_path }}
-                errors=0
-
-                # All lowercase check
-                result=$(jq -r '.all_tags_lower_case' <<< $value )
-                if [[ $result == 'false' ]]; then
-                    echo "[***] FAIL: One or more markers contain uppercase characters" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1; let "errors += 1"
-                fi
-                # doesn't contain reserved tag check
-                result=$(jq -r '.contains_reserved_tag' <<< $value)
-                if [[ $result == 'true' && $SKIP_RESERVED_TAGS == 'false' ]]; then
-                    echo "[***] FAIL: One or more reserved markers were found. Reserved markers: [production, regression, nightly, sanity, p1, p2, p3, p4]" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1; let "errors += 1"
-                fi
-                # contains development tag check
-                result=$(jq -r '.contains_development' <<< $value )
-                if [[ $result == 'false' && $SKIP_RESERVED_TAGS == 'false' ]]; then
-                    echo "[***] FAIL: 'development' marker not found" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1; let "errors += 1"
-                fi
-                # contains testbed tag check
-                result=$(jq -r '.contains_testbed_tag' <<< $value )
-                if [[ $result == 'false' ]]; then
-                    echo "[***] FAIL: Testbed type marker not found" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1; let "errors += 1"
-                fi
-                # contains qtest tag check
-                result=$(jq -r '.valid_qtest_tag' <<< $value )
-                if [[ $result == 'false' ]]; then
-                    echo "[***] FAIL: qtest marker invalid or not found" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1; let "errors += 1"
-                fi
-
-                if (( errors == 0 )); then
-                    echo "[**] PASS!" | tee -a ${{ env.tag_marker_report_path }}
-                else
-                    echo '[**] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.tag_marker_report_path }}
-                fi
-            done <<< $func
-            echo "" | tee -a ${{ env.tag_marker_report_path }}
-        done <<< $testcase_files
-        exit $rc
+        set -o pipefail # Preserves the return code from the python script in pipeline below
+        python .github/workflows/testcase_tags_parser.py ${{ env.pytest_result_file }} --mode validate_tags \
+          --framework pytest --skip_reserved_tags ${SKIP_RESERVED_TAGS} --auth_token ${{ secrets.AUTOIQ_PAT }} \
+          | tee -a ${{ env.tag_marker_report_path }}
 
     - name: Check robot tags
       if: ${{env.SKIP_CHECK == 'false' && env.RUN_ROBOT == 'true'}}
       run: |
-        rc=0
-        testcase_files=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' ${{ env.robot_result_file }} )
-        # printf '%s\n' "DEBUG: testcase_files: $testcase_files"
-        while IFS='|' read -r key value; do
-            # printf '%s\n%s\n' "DEBUG: key: $key" "DEBUG: value: $value"
-            echo "================================================================================" | tee -a ${{ env.tag_marker_report_path }}
-            echo "[*] Results for file: $key" | tee -a ${{ env.tag_marker_report_path }}
-            func=$( jq -r 'to_entries | map(.key + "|" + (.value | tostring)) | .[]' <<< $value )
-            while IFS='|' read -r key value; do
-                printf '\n%s\n' "[**] Results for test: $key" | tee -a ${{ env.tag_marker_report_path }}
-                errors=0
-
-                # All lowercase check
-                result=$(jq -r '.all_tags_lower_case' <<< $value )
-                if [[ $result == 'false' ]]; then
-                    echo "[***] FAIL: One or more tags contain uppercase characters" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1; let "errors += 1"
-                fi
-                # doesn't contain reserved tag check
-                result=$(jq -r '.contains_reserved_tag' <<< $value)
-                if [[ $result == 'true' && $SKIP_RESERVED_TAGS == 'false' ]]; then
-                    echo "[***] FAIL: One or more reserved tags were found. Reserved tags: [production, regression, nightly, sanity, p1, p2, p3, p4]" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1; let "errors += 1"
-                fi
-                # contains development tag check
-                result=$(jq -r '.contains_development' <<< $value )
-                if [[ $result == 'false' && $SKIP_RESERVED_TAGS == 'false' ]]; then
-                    echo "[***] FAIL: 'development' tag not found" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1; let "errors += 1"
-                fi
-                # contains testbed tag check
-                result=$(jq -r '.contains_testbed_tag' <<< $value )
-                if [[ $result == 'false' ]]; then
-                    echo "[***] FAIL: Testbed type tag not found" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1; let "errors += 1"
-                fi
-                # contains qtest tag check
-                result=$(jq -r '.valid_qtest_tag' <<< $value )
-                if [[ $result == 'false' ]]; then
-                    echo "[***] FAIL: qtest tag invalid or not found" | tee -a ${{ env.tag_marker_report_path }}
-                    rc=1; let "errors += 1"
-                fi
-
-                if (( errors == 0 )); then
-                    echo "[**] PASS!" | tee -a ${{ env.tag_marker_report_path }}
-                else
-                    echo '[**] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.tag_marker_report_path }}
-                fi
-            done <<< $func
-            echo "" | tee -a ${{ env.tag_marker_report_path }}
-        done <<< $testcase_files
-        exit $rc
-
+        set -o pipefail # Preserves the return code from the python script in pipeline below
+        python .github/workflows/testcase_tags_parser.py ${{ env.robot_result_file }} --mode validate_tags \
+          --framework robot --skip_reserved_tags ${SKIP_RESERVED_TAGS} --auth_token ${{ secrets.AUTOIQ_PAT }} \
+          | tee -a ${{ env.tag_marker_report_path }}
 
     - name: Upload test results to GH artifacts
       uses: actions/upload-artifact@v2
