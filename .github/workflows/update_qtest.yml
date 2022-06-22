@@ -1,25 +1,20 @@
-name: Update Test Infomation in S3 for the UI
+name: Update qTest
 on:
   workflow_dispatch:
-  # push trigger is used for updating the Testbed yaml files and private branch test case infomation
   push:
+    branches:
+      - 'main'
 
 env:
   WORK_DIR:                   workflow_output
   tag_marker_report_path:     tag_and_marker_report.txt
 
 jobs:
-  update_testbed_files:
-    name: Update Test Bed Info
+  update_qtest:
+    name: Update qTest Testcases
     runs-on: ubuntu-latest
     # workflow_dispatch is a manual trigger. It would only get used for testing or other extenuating circumstances
     # This job's normal trigger is every push to main.
-    # Tiggering in this fashion ensures the testbed YAML files in S3 are always up to date with production files in main
-    if: ${{ github.event_name == 'workflow_dispatch' || ( github.event_name == 'push' && github.ref_name == 'main' ) }}
-
-    outputs:
-      run-pytest: ${{ steps.pytest-func.outputs.any_changed }}
-      run-robot: ${{ steps.robot-func.outputs.any_changed }}
 
     steps:
     - name: Checkout extreme_automation_tests
@@ -54,7 +49,7 @@ jobs:
         path: extreme_automation_framework
         ref: main
 
-     - name: Install python requirements
+    - name: Install python requirements
       if: ${{ steps.pytest-func.outputs.any_changed == 'true' || steps.robot-func.outputs.any_changed == 'true' }}
       run: |
         pip install -r requirements.txt
@@ -96,14 +91,14 @@ jobs:
         fi
 
     - name: Check pytest markers
-      if: ${{env.SKIP_CHECK == 'false' && env.RUN_PYTEST == 'true'}}
+      if: ${{ steps.pytest-func.outputs.any_changed == 'true' }}
       run: |
         set -o pipefail # Preserves the return code from the python script in pipeline below
         python .github/workflows/testcase_tags_parser.py ${{ env.pytest_result_file }} --mode validate_tags \
           --auth_token ${{ secrets.AUTOIQ_PAT }} | tee -a ${{ env.tag_marker_report_path }}
 
     - name: Check robot tags
-      if: ${{env.SKIP_CHECK == 'false' && env.RUN_ROBOT == 'true'}}
+      if: ${{ steps.robot-func.outputs.any_changed == 'true' }}
       run: |
         set -o pipefail # Preserves the return code from the python script in pipeline below
         python .github/workflows/testcase_tags_parser.py ${{ env.robot_result_file }} --mode validate_tags \
