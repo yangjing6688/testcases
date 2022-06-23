@@ -1,5 +1,5 @@
 From this directory:
-    
+
     extreme_automation_tests\Tests\Pytest\Demos\DefaultTemplate
 
 Activate the Python virtual environment:
@@ -9,8 +9,8 @@ Activate the Python virtual environment:
 
     Linux:
     ../../../venv/bin/activate
-    
+
 Run the script in the Dev VM:
 
-    pytest --tc-file=../../../../TestBeds/SALEM/Demo/demo_salem_1_node_exos.yaml  TestCases
+    pytest --tc-file=../../../../TestBeds/SALEM/Demo/wired/demo_salem_1_node_exos.yaml  TestCases
     pytest --testbed=demo_salem_1_node_exos.yaml TestCases

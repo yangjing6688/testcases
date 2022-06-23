@@ -39,6 +39,8 @@ ${DUT2_SERIAL}          ${netelem2.serial}
 ${DUT2_IP}              ${netelem2.ip}
 ${DUT2_PROFILE}         ${netelem2.profile}
 
+${WORLD_SITE}           World
+
 
 *** Test Cases ***
 Configure Test Requirements
@@ -192,6 +194,7 @@ Set Up XIQSE Components
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 
+    Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
     Confirm Serial Number and Set Common Options  ${XIQSE_SERIAL}
 
     # Create an invalid profile for causing a device disconnect
@@ -364,6 +367,8 @@ Clean Up XIQSE Components
     [Documentation]     Cleans up components used in XIQ-SE during the test, logs out, and closes the browser
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
+
+    Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     # Delete the test devices
     Delete XIQSE Test Device and Confirm Success          ${DUT1_IP}

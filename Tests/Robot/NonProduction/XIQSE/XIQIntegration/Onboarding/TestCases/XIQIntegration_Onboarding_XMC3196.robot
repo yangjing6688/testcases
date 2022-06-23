@@ -30,7 +30,7 @@ ${XIQ_PASSWORD}         ${xiq.tenant_password}
 
 @{COLUMNS}              Serial #  Managed By  MAC Address  Make  Model  MGT IP Address  OS  OS Version
 ${LICENSE_SUFFIX}       /xiqLicenseSetup.jsp?setupMode=xiq
-
+${WORLD_SITE}           World
 
 *** Test Cases ***
 TC-9525: Confirm XIQ-SE Can Be Onboarded via License Agreement Workflow
@@ -107,6 +107,8 @@ Set Up XIQSE Components
     [Documentation]     Sets up the XIQSE components for the test
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
+
+    Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     # Confirm the serial number is correct and set the common options needed for automation
     Confirm Serial Number and Set Common Options     ${XIQSE_SERIAL}
@@ -202,4 +204,7 @@ Clean Up XIQSE Components
     [Documentation]     Cleans up components used in XIQ-SE during the test and logs out
 
     Switch To Window                        ${XIQSE_WINDOW_INDEX}
+
+    Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
+
     Log Out of XIQSE and Confirm Success

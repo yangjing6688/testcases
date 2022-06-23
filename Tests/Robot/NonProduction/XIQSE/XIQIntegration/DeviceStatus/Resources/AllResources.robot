@@ -10,6 +10,7 @@ Resource    ../../../../../Libraries/XIQSE/lib_login.robot
 Resource    ../../../../../Libraries/XIQSE/lib_options.robot
 Resource    ../../../../../Libraries/XIQSE/lib_profiles.robot
 Resource    ../../../../../Libraries/XIQSE/lib_server.robot
+Resource    ../../../../../Libraries/XIQSE/lib_sites.robot
 Resource    ../../../../../Libraries/XIQSE/lib_snmp_creds.robot
 Resource    ../../../../../Libraries/XIQSE/lib_xiq.robot
 

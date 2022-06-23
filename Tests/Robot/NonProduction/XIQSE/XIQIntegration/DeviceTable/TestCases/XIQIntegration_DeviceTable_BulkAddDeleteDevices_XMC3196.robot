@@ -49,6 +49,7 @@ ${DISCOVER_SUBNET}        ${pilot_ip_range.start_ip}/24
 
 ${TEST_SITE}              AutomationSite
 ${DISCOVERY_TYPE}         RANGE
+${WORLD_SITE}             World
 
 
 *** Test Cases ***
@@ -170,6 +171,8 @@ XIQ Log In and Set Window Index
 
 Set Up XIQSE Components
     [Documentation]     Sets up the XIQSE components for the test
+
+    Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     # Confirm the serial number is correct and set the common options needed for automation
     Confirm Serial Number and Set Common Options     ${XIQSE_SERIAL}
@@ -409,6 +412,8 @@ Clean Up XIQSE Components
     [Documentation]     Cleans up components used in XIQ-SE during the test, logs out, and closes the browser
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
+
+    Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     # Clean up the Discover tab
     XIQSE Navigate to Site and Confirm Success    ${TEST_SITE}

@@ -1,0 +1,135 @@
+name: Update qTest
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+
+env:
+  WORK_DIR:                   workflow_output
+  tag_marker_report_path:     tag_and_marker_report.txt
+
+jobs:
+  update_qtest:
+    name: Update qTest Testcases
+    runs-on: ubuntu-latest
+    # workflow_dispatch is a manual trigger. It would only get used for testing or other extenuating circumstances
+    # This job's normal trigger is every push to main.
+
+    steps:
+    - name: Checkout extreme_automation_tests
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        ref: main
+
+    # https://github.com/tj-actions/changed-files
+    - name: Get changed pytest functional tests
+      id: pytest-func
+      uses: tj-actions/changed-files@v12.2
+      with:
+        files: |
+          Tests/Pytest/(SystemTest|Functional)/([^/]+/)+TestCases/
+        separator: ','
+
+    - name: Get changed robot functional tests
+      id: robot-func
+      uses: tj-actions/changed-files@v12.2
+      with:
+        files: |
+          Tests/Robot/(SystemTest|Functional)/([^/]+/)+TestCases/
+        separator: ','
+
+    - name: Checkout framework
+      if: ${{ steps.pytest-func.outputs.any_changed == 'true' || steps.robot-func.outputs.any_changed == 'true' }}
+      uses: actions/checkout@v2
+      with:
+        repository: extremenetworks/extreme_automation_framework
+        token: ${{ secrets.REGISTRY_PAT }}
+        path: extreme_automation_framework
+        ref: main
+
+    - name: Install python requirements
+      if: ${{ steps.pytest-func.outputs.any_changed == 'true' || steps.robot-func.outputs.any_changed == 'true' }}
+      run: |
+        pip install -r requirements.txt
+
+    # TODO: Figure out how to get pytest to only operate on input files. If that isn't viable
+    #       run for all files and only grab the ones we want(would take SIGNIFICANTLY more time)
+    # potential workaround: copy modified tests to another directory and run pytest there
+    # this would require either making a whole mimiced dir tree or using a different method of identifying the tests
+    - name: Run pytest inventory tool
+      if: ${{ steps.pytest-func.outputs.any_changed == 'true' }}
+      run: |
+        # Add framework to PYTHONPATH
+        export PYTHONPATH="${PYTHONPATH}:${PWD}/extreme_automation_framework"
+
+        # Run pytest
+        pytest --get_test_info cicd ${{ env.PYTEST_FILES }} || true
+
+        # Check if inventory tool had problems
+        if [[ ! -f "${{ env.pytest_result_file }}" ]]; then
+            echo "Error: output file not found. Check above exception."
+            exit 1
+        fi
+
+    - name: Run robot inventory tool
+      if: ${{ steps.robot-func.outputs.any_changed == 'true' }}
+      env:
+        ROBOT_TOOL_PATH: Tests/Robot/get_test_info.py
+      run: |
+        # Add framework to PYTHONPATH
+        export PYTHONPATH="${PYTHONPATH}:${PWD}/extreme_automation_framework"
+
+        # Run robot
+        python $ROBOT_TOOL_PATH ${{ env.ROBOT_FILES }}
+
+        # Check if inventory tool had problems
+        if [[ ! -f "${{ env.robot_result_file }}" ]]; then
+            echo "Error: output file not found. Check above exception."
+            exit 1
+        fi
+
+    - name: Check pytest markers
+      if: ${{ steps.pytest-func.outputs.any_changed == 'true' }}
+      run: |
+        set -o pipefail # Preserves the return code from the python script in pipeline below
+        python .github/workflows/testcase_tags_parser.py ${{ env.pytest_result_file }} --mode validate_tags \
+          --auth_token ${{ secrets.AUTOIQ_PAT }} | tee -a ${{ env.tag_marker_report_path }}
+
+    - name: Check robot tags
+      if: ${{ steps.robot-func.outputs.any_changed == 'true' }}
+      run: |
+        set -o pipefail # Preserves the return code from the python script in pipeline below
+        python .github/workflows/testcase_tags_parser.py ${{ env.robot_result_file }} --mode validate_tags \
+          --auth_token ${{ secrets.AUTOIQ_PAT }} | tee -a ${{ env.tag_marker_report_path }}
+
+    - name: Email results
+      uses: dawidd6/action-send-mail@v3
+      if: ${{ failure() }}
+      with:
+        # Required mail server address:
+        server_address: smtp.office365.com
+        # Required mail server port:
+        server_port: 587
+        # Mail server username:
+        username: srv-econ-notify@extremenetworks.com
+        # Mail server password:
+        password: "[kkwm{Y-36{k"
+        # Required mail subject:
+        subject: Error updating qTest - ${{ github.repository }}
+        # Required recipients' addresses:
+        to: psadej@extremenetworks.com
+        # to: ${{ env.ACTOR_EMAIL }}
+        # Required sender full name (address can be skipped):
+        from: srv-econ-notify@extremenetworks.com
+        # Optional whether this connection use TLS (default is true if server_port is 465)
+        secure: false
+        # Optional plain body:
+        body: "See error in attached report or on GitHub: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        # Optional unsigned/invalid certificates allowance:
+        ignore_cert: true
+        # Optional converting Markdown to HTML (set content_type to text/html too):
+        convert_markdown: true
+        attachments: ./${{ env.tag_marker_report_path }}
+

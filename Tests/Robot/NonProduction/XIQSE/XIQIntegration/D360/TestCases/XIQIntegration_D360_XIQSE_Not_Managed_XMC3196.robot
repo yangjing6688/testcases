@@ -44,6 +44,7 @@ ${XIQ_URL}              ${xiq.test_url}
 ${XIQ_USER}             ${xiq.tenant_username}
 ${XIQ_PASSWORD}         ${xiq.tenant_password}
 
+${WORLD_SITE}           World
 
 *** Test Cases ***
 Test 1: Confirm Basic Device360 Values
@@ -149,6 +150,8 @@ XIQ Log In and Set Window Index
 Set Up XIQSE Components
     [Documentation]     Sets up the XIQSE components for the test
 
+    Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
+
     # Confirm the serial number is correct and set the common options needed for automation
     Confirm Serial Number and Set Common Options     ${XIQSE_SERIAL}
 
@@ -237,6 +240,8 @@ Clean Up XIQSE Components
     [Documentation]     Cleans up components used in XIQSE during the test, logs out, and closes the browser
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
+
+    Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     # Make sure XIQ sharing is enabled
     XIQSE Enable XIQ Connection Sharing and Save

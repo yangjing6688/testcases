@@ -80,6 +80,7 @@ ${NAVIGATOR_LICENSE}      PRD-XIQ-NAV-S-C
 
 ${MAIN_SITE}              AutoMainSite
 ${TEST_SITE}              AutoTestSite
+${WORLD_SITE}             World
 
 
 *** Test Cases ***
@@ -258,6 +259,8 @@ XIQ Log In and Set Window Index
 
 Set Up XIQSE Components
     [Documentation]     Sets up the XIQSE components for the test
+
+    Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     # Make sure the correct Serial Number is being used
     Confirm XIQSE Serial Number     ${XIQSE_SERIAL}
@@ -591,6 +594,8 @@ Clean Up XIQSE Components
     [Documentation]     Cleans up components used in XIQSE during the test and logs out
 
     Switch To Window    ${XIQSE_WINDOW_INDEX}
+
+    Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     # Delete all the discovered devices from the site
     XIQSE Delete All Site Devices and Confirm Success   ${MAIN_SITE}

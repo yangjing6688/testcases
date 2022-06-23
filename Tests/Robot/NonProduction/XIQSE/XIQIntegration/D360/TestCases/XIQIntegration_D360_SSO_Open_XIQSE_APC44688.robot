@@ -47,6 +47,8 @@ ${XIQ_WINDOW_INDEX}             0
 ${XIQSE_WINDOW_INDEX}           0
 @{XIQSE_OSE_WINDOW_INDEXES}     []
 
+${WORLD_SITE}           World
+
 *** Test Cases ***
 Test 1: Open Site Engine Link: XIQ-SE Managed Device
     [Documentation]     Confirms that the D360 "Open Site Engine" link works for a device managed by XIQ Site Engine
@@ -114,6 +116,8 @@ XIQSE Log In and Set Window Index
 Set Up XIQSE Components
     [Documentation]     Sets up the XIQ Site Engine components for the test
 
+    Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
+
     # Confirm the serial number is correct and set the common options needed for automation
     Confirm Serial Number and Set Common Options    ${XIQSE_SERIAL}
 
@@ -174,6 +178,8 @@ Clean Up XIQSE Components
 
     Switch To Window                                ${XIQSE_WINDOW_INDEX}
     XIQSE Login User                                ${XIQSE_USER}    ${XIQSE_PASSWORD}
+
+    Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
     Navigate to Devices and Confirm Success
 
     # Delete the test device

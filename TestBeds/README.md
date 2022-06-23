@@ -1,5 +1,4 @@
 # Test Bed Standard Configurations
-We have standard test bed configurations that include setups for 1-5 node DUTs, traffic generators and a primary and secondary net-tools system. The user will need to choose from the topology diagrams below in order to ensure that all tests will run on a standard test setup.
 
 Every automated test must specify a testbed type.  The CI (Continous Integration) will check to ensure that one of the following testbed types is listed as a Marker (pyTest) or Tag (robot) before the test can be merged into any protected branches. 
 
@@ -35,7 +34,15 @@ We have standard wired test bed configurations that include setups for 1-5 node 
 
 ![5-Node Topology](../doc/img/FiveNodeTopo.png)
 
-## 2-Node "Universal" Topology
+## Wireless Topologies
+
+Wireless testbeds will contain at least one AP or Controller and no Wired devices.
+
+## Wired/Wireless Topologies
+
+Wired/Wireless Topologies contain at least one AP and one Wired (Router/Switch) device.
+
+### Wired/Wireless 2-Node "Universal" Topology
 
 ![2-Node Universal Topology](../doc/img/universalTwoNodeTopo.png)
 
@@ -60,6 +67,7 @@ The available supporting keywords are:
 - `mails` - Used for email accounts associated with the test bed.
 - `tgen_ports` - Used to map out the connections between traffic generators and other devices within the test bed.
 
+The test bed yaml files have been standardized to ensure that they work with the extAuto and Econ Frameworks. All devices that are used in a test bed will be defined using the options below in a yaml file. There are example test bed files located [here](https://github.com/extremenetworks/extreme_automation_tests/tree/priv_elatour_config_files_update/TestBeds/Templates). In this directory you will see the template files for the type.
 
 ### Test Bed Yaml Machine Types
 All machine types are defined by the name and a number. For example the 1st and 2nd netelem should be defined as the following:

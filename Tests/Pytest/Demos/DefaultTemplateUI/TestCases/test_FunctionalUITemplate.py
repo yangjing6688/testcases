@@ -33,7 +33,7 @@ def test_case_one_setup_teardown_print(request):
     yield
     print("TEST END")
 # To run this demo you will need to supply the following yaml files:
-# A Test Bed yaml (--tc-file=TestBeds/SALEM/Demo/demo_salem_1_node_exos.yaml)
+# A Test Bed yaml (--tc-file=TestBeds/SALEM/Demo/wired/demo_salem_1_node_exos.yaml)
 # An XIQ Environment yaml (--tc-file=Environments/environment.local.chrome.yaml
 # An XIQ Main Topology yaml --tc-file=Environments/topo.test.g2r1.yaml
 
@@ -42,7 +42,7 @@ class xiqTests():
 
     @classmethod
     def setup_class(cls):
-        try: 
+        try:
             cls.executionHelper = PytestExecutionHelper()
             # Create an instance of the helper class that will read in the test bed yaml file and provide basic methods and variable access.
             # The user can also get to the test bed yaml by using the config dictionary
@@ -63,7 +63,7 @@ class xiqTests():
 
             # Call the setup
             cls.defaultLibrary.apiUdks.setupTeardownUdks.Base_Test_Suite_Setup()
-            
+
         except Exception as e:
             cls.executionHelper.setSetupFailure(True)
 
@@ -72,19 +72,19 @@ class xiqTests():
         cls.defaultLibrary.apiUdks.setupTeardownUdks.Base_Test_Suite_Cleanup()
         cls.xiq.login.logout_user()
         cls.xiq.login.quit_browser()
-        
+
     # """ Test Cases """
     @mark.p1
     def test_logout_user(self, test_case_one_setup_teardown_skip_test, test_case_one_setup_teardown_print):
         """ This is the test case description for test one """
         self.xiq.login.logout_user()
-        
+
     @mark.p2
     def test_expect_login_fail(self, test_case_one_setup_teardown_skip_test):
         """ This is the test case description for test two """
         # IRV = Internal Results Verification
         self.xiq.login.login_user("bob", "bob", url=self.tb.config['test_url'], IRV=True, expect_error=True)
-        
-   
-  
+
+
+
 

@@ -144,5 +144,5 @@ ap1:
   model:                    "AP460S6C"
   product:                  "AP"
   function:                 "AP"
-  ccg:                      "Model_AP_410C"
+  ccg:                      "Model_AP_460S6C"
   location:                 auto_location_01, Santa Clara, building_02, floor_04

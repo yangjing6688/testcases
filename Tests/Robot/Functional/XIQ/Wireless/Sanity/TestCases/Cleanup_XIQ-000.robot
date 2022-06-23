@@ -1,4 +1,5 @@
 # Author        : Rmeswar
+#                 modified by pdo
 # Date          : July 2020
 # Description   : Remove all APs, Network Policies & Common Objects
 
@@ -8,49 +9,80 @@
 *** Variables ***
 
 *** Settings ***
-Library     xiq/flows/common/Login.py
-Library     xiq/flows/common/Navigator.py
-Library     xiq/flows/manage/Devices.py
-Library     xiq/flows/configure/CommonObjects.py
-Library     xiq/flows/configure/NetworkPolicy.py
-Library     xiq/flows/configure/AutoProvisioning.py
-Library     common/Cli.py
+Library      xiq/flows/common/Login.py
+Library      common/TestFlow.py
+Library      xiq/flows/common/Navigator.py
+Library      xiq/flows/manage/Devices.py
+Library      xiq/flows/configure/UserGroups.py
+Library      xiq/flows/configure/CommonObjects.py
+Library      xiq/flows/configure/NetworkPolicy.py
+Library      xiq/flows/configure/AutoProvisioning.py
+Library      common/Cli.py
+Library      common/CommonValidation.py
 
-Variables   Environments/Config/device_commands.yaml
+Variables    Environments/Config/device_commands.yaml
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 
-*** Keywords ***
+
+Suite Setup        run keyword        pre condition
+Suite Teardown     run keyword        quit browser
 
 Force Tags   testbed_1_node
 
+*** Keywords ***
+pre condition
+    [Documentation]   Waits until the devices finish updating
+
+    ${STATUS}=      Login User        ${TENANT_USERNAME}     ${TENANT_PASSWORD}
+    Should Be Equal As Integers       ${STATUS}     1        Unable to login
+
+    ${STATUS}     navigate to devices
+    Should Be Equal As Integers       ${STATUS}     1        Unable to navigate to devices page
+
+    wait until all devices update done              15
+
 *** Test Cases ***
-TCCS-7436_Step1: Remove all APs, Network-Policies, SSIDs & Auto-Provision-Policies
-    [Documentation]    Remove All APs
+tccs-7436_step1: Remove all Devices
+    [Documentation]    Remove all devices
 
     [Tags]             production       tccs_7436_step1
-    ${LOGIN_STATUS}=                 Login User              ${TENANT_USERNAME}     ${TENANT_PASSWORD}
 
-    Navigate To Network Policies List View Page
+    ${STATUS}    delete all devices
+    Should Be Equal As Integers       ${STATUS}     1        Unable to delete all the all devices
 
-    ${NP}=              Delete All Network Policies
-    ${SSID}=            Delete All SSIDs                    exclude_list=ssid0
-    ${APP}=             Delete All Auto Provision Policies
 
-    run keyword and ignore error      Should Be Equal As Integers       ${NP}     1           Unable to delete all the Network Policies
-    run keyword and ignore error      Should Be Equal As Integers       ${SSID}   1           Unable to delete all the SSIDs
-    run keyword and ignore error      Should Be Equal As Integers       ${APP}    1           Unable to delete all the Auto Provision Policies
-    run keywords                      quit browser
+tccs-7436_step2: Remove all Auto-Provision-Policies
+    [Documentation]    Remove all auto provision Policies
+    [Tags]             production      tccs-7436_step2
 
-TCCS-7436_Step2: Clear capwap config
-   [Documentation]     Clear capwap config
+    ${STATUS}          Navigate To Network Policies List View Page
+    Should Be Equal As Integers       ${STATUS}     1        Unable to navigate to network policies list view page
 
-    [Tags]              production  tccs_7436_step2
 
-    ${AP_SPAWN}=        Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
-    ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         no capwap client server name, no capwap client default-server-name, no capwap client server backup name , no capwap client enable, capwap client enable, save config
-    ${OUTPUT0}=         Send                ${AP_SPAWN}         console page 0
-    ${OUTPUT0}=         Send                ${AP_SPAWN}         show version detail
-    ${OUTPUT0}=         Send                ${AP_SPAWN}         show capwap client
+    ${STATUS}=      Delete All Auto Provision Policies
+    Should Be Equal As Integers       ${STATUS}     1        Unable to remove all auto provision policies
 
+
+tccs-7436_step3: Remove all network policies
+    [Documentation]    Remove all network policies
+    [Tags]             production       tccs-7436_step3
+
+    ${STATUS}=         Delete All Network Policies
+    Should Be Equal As Integers       ${STATUS}     1        Unable to remove all network policies
+
+
+tccs-7436_step4: Remove all SSIDs
+    [Documentation]    Remove all SSIDs
+    [Tags]             production       tccs-7436_step4
+
+    ${STATUS}=         Delete All SSIDs
+    Should Be Equal As Integers       ${STATUS}     1        Unable to remove all SSIDs
+
+
+tccs-7436_step5: Remove all user groups
+    [Documentation]    Remove all user groups
+    [Tags]             production       tccs-7436_step5
+
+    delete all user groups 

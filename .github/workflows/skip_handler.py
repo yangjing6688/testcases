@@ -32,7 +32,7 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
 
-    pr_title = args.title.lower()
+    pr_title = args.title.lower().strip()
     skip_check = "false" # Note: this is how false is represented in bash
 
     # Basic check to see if we're trying to skip anything at all

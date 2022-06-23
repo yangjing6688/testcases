@@ -10,6 +10,7 @@ Resource    ../../../../../Libraries/XIQSE/lib_license.robot
 Resource    ../../../../../Libraries/XIQSE/lib_login.robot
 Resource    ../../../../../Libraries/XIQSE/lib_operations.robot
 Resource    ../../../../../Libraries/XIQSE/lib_options.robot
+Resource    ../../../../../Libraries/XIQSE/lib_sites.robot
 Resource    ../../../../../Libraries/XIQSE/lib_xiq.robot
 
 Variables   TestBeds/${TESTBED}
