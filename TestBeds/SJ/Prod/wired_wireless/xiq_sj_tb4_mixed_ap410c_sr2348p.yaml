@@ -9,7 +9,7 @@ ap1:
   console_ip:               10.16.169.38
   console_port:             4000
   mac:                      BCF3101EB980
-  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP410C
   template:                 AP410C-default-template
@@ -47,7 +47,7 @@ aerohive_sw1:
   model:              SR2224P
   device_template:    SR2224P-default-template
   serial:             '22241607300955'
-  os:                 Linux 3.6.5
+  cli_type:           "AH-FASTPATH"
   mac:                B87CF2018848
   ip:                 10.16.152.118
   port:               22

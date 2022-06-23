@@ -10,7 +10,7 @@ netelem1:
   username:                 "rwa"
   password:                 "rwa"
   connection_method:        "ssh"
-  os:                       "voss"
+  cli_type:                 "voss"
   platform:                 "7400"
   model:                    "VSP7432CQ"
   make:                     "voss"

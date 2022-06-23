@@ -12,7 +12,7 @@ netelem1:
   username:                 "admin"
   password:                 ""
   connection_method:        "telnet"
-  os:                       "exos"
+  cli_type:                       "exos"
   platform:                 "Stack"
   model:                    "SwitchEngine5420F_16W_32P_4XE"
   make:                     "exos"
@@ -54,7 +54,7 @@ tgen1:
   username:     "root"
   password:     "PASprt86"
   port:         "22"
-  os:           "linux"
+  cli_type:           "MU-LINUX"
 
 tgen_ports:
   netelem1:

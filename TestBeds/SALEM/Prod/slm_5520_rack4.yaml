@@ -12,7 +12,7 @@ netelem1:
   username:                 "rwa"
   password:                 "rwa"
   connection_method:        "telnet"
-  os:                       "exos"
+  cli_type:                       "exos"
   platform:                 "5520"
   model:                    "FabricEngine5520_24W"
   make:                     "exos"
@@ -57,7 +57,7 @@ netelem2:
   username:                 "admin"
   password:                 ""
   connection_method:        "telnet"
-  os:                       "exos"
+  cli_type:                       "exos"
   platform:                 "5520"
   model:                    "SwitchEngine5520_24W"
   make:                     "exos"
@@ -101,7 +101,7 @@ tgen1:
   username:     "root"
   password:     "PASprt86"
   port:         "22"
-  os:           "linux"
+  cli_type:           "MU-LINUX"
 
 tgen_ports:
   netelem1:

@@ -9,7 +9,7 @@ ap1:
   console_ip:               10.16.170.37
   console_port:             4002
   mac:                      B87CF2001580
-  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP550
   template:                 AP550-default-template

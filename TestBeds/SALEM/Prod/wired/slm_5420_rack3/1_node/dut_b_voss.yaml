@@ -12,7 +12,7 @@ netelem1:
   username:                 "admin"
   password:                 ""
   connection_method:        "telnet"
-  os:                       "voss"
+  cli_type:                       "voss"
   platform:                 "5420"
   model:                    "FabricEngine5420F_16W_32P_4XE"
   make:                     "voss"
@@ -43,7 +43,7 @@ tgen1:
   username:     "root"
   password:     "PASprt86"
   port:         "22"
-  os:           "linux"
+  cli_type:           "MU-LINUX"
 
 tgen_ports:
   netelem1:

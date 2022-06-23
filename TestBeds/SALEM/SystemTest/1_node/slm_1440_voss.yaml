@@ -10,7 +10,7 @@ netelem1:
   username:                 "rwa"
   password:                 "rwa"
   connection_method:        "ssh"
-  os:                       "voss"
+  cli_type:                 "voss"
   platform:                 "1400"
   model:                    "VSPXA_1440"
   make:                     "voss"

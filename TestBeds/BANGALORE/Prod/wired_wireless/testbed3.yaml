@@ -9,7 +9,7 @@ ap1:
   console_ip:               10.234.137.231
   console_port:             7001
   mac:                      BCF3105D2640
-  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP410C
   template:                 AP_410C-default-template
@@ -38,7 +38,7 @@ aerohive_sw1:
   model:              SR2348P
   device_template:    SR2348P-default-template
   serial:             '23481904220034'
-  os:                 Linux 3.6.5
+  cli_type:           "AH-FASTPATH"
   mac:                B87CF202AC6C
   network_policy:
   username:           admin
@@ -86,7 +86,7 @@ router1:
   model:                    XR200P
   device_template:          XR200P_test_automation
   serial:                   '20318123100137'
-  os:                       HiveOS 6.9r1 build-184948
+  cli_type:                       "AH-FASTPATH"
   mac:                      F09CE9CB77C0
   network_policy:           Test_np
   username:                 admin

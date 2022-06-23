@@ -7,7 +7,7 @@ ap1:
   password:                 Aerohive123
   serial:                   "02301511180096"
   mac:                      D854A26FF640
-  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP230
   template:                 AP230-default-template

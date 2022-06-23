@@ -12,7 +12,7 @@ netelem1:
   username:                 "admin"
   password:                 ""
   connection_method:        "telnet"
-  os:                       "exos"
+  cli_type:                       "exos"
   platform:                 "5320"
   model:                    "SwitchEngine5320_48P_8XE"
   make:                     "exos"

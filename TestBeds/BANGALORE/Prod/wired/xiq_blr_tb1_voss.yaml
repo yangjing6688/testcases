@@ -8,7 +8,7 @@ netelem1:
   make:                  VOSS
   model:                 VSP 4900-48P
   product:               VSP 4900-48P
-  os:                    VOSS
+  cli_type:              "VOSS"
   default_template:      VSP-4900-48P-default-template
   ccg:                   Model_VSP_SWITCH
   console_ip:            10.234.137.231

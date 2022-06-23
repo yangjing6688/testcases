@@ -3,7 +3,7 @@ router1:
   model:                    XR200P
   device_template:          XR200P_test_automation
   serial:                   '20318040900234'
-  os:                       HiveOS 6.9r1 build-184948
+  cli_type:                       "AH-FASTPATH"
   mac:                      F09CE9CA4100
   network_policy:           Test_np
   username:                 admin

@@ -11,5 +11,5 @@ netelem1:
   console_port:             7031
   network_policy:           Test_np
   device_template:          X440G2-default-template
-  os:                       31.5.1.6
+  cli_type:                 "EXOS"
   make:                     EXOS
