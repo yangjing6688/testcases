@@ -1,7 +1,7 @@
 lab:                        "SALEM"
 
 netelem1:
-  name:                     "VOSS"
+  name:                     "dut1"
   hostname:                 ""
   serial:                   "JA052131G-00032"
   mac:                      "F4CE48BAD000"

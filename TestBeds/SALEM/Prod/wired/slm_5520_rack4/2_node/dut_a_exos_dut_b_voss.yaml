@@ -1,7 +1,7 @@
 lab:                        "SALEM"
 
 netelem1:
-  name:                     "EXOS"
+  name:                     "dut1"
   hostname:                 ""
   serial:                   "SB032048G-00015"
   mac:                      "F06426905400"
@@ -46,7 +46,7 @@ netelem1:
 
 
 netelem2:
-  name:                     "VOSS"
+  name:                     "dut2"
   hostname:                 ""
   serial:                   "SB032048G-00090"
   mac:                      "F06426918000"
