@@ -37,6 +37,8 @@ ${DUT_PROFILE}          ${netelem1.profile}
 ${DUT_MODEL}            ${netelem1.model}
 ${DUT_MAKE}             ${netelem1.make}
 
+${WORLD_SITE}           World
+
 
 *** Test Cases ***
 Test 1: Confirm Connected Device Has Correct Status In XIQSE and XIQ
@@ -204,6 +206,8 @@ XIQ Log In and Set Window Index
 Set Up XIQSE Components
     [Documentation]     Sets up the XIQSE components for the test
 
+    Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
+
     # Confirm the serial number is correct and set the common options needed for automation
     Confirm Serial Number and Set Common Options     ${XIQSE_SERIAL}
 
@@ -320,6 +324,8 @@ Clean Up XIQSE Components
     [Documentation]     Cleans up components used in XIQSE during the test, logs out, and closes the browser
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
+
+    Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     # Make sure sharing with XIQ is enabled
     Enable XIQ Connection Sharing and Confirm Success

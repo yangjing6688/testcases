@@ -62,6 +62,8 @@ ${DUT1_OS}              ${netelem1.os}
 @{COLUMNS}          Host Name  Managed By  Uptime  MGT IP Address  MAC Address  Cloud Config Groups  Serial #  Make  OS  OS Version  Model
 ${COLUMN_LABELS}    HOST NAME,MANAGED BY,UPTIME,MGT IP ADDRESS,MAC,CLOUD CONFIG GROUPS,SERIAL,MAKE,OS,OS VERSION,MODEL
 
+${WORLD_SITE}           World
+
 
 *** Test Cases ***
 TC-53136: Add XIQ Site Engine Using Auto Onboard Button
@@ -217,6 +219,8 @@ XIQ Log In and Set Window Index
 
 Set Up XIQSE Components
     [Documentation]     Sets up the XIQ-SE components for the test
+
+    Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     # Confirm the serial number is correct and set the common options needed for automation
     Confirm Serial Number and Set Common Options     ${XIQSE_SERIAL}
@@ -479,6 +483,8 @@ Clean Up XIQSE Components
     [Documentation]     Cleans up components used in XIQ-SE during the test, logs out, and closes the browser
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
+
+    Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     # Reset the options
     ${options_result}=  XIQSE Restore Default XIQ Connection Options and Save

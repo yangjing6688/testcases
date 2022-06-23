@@ -45,6 +45,7 @@ ${DUT_PROFILE}          ${netelem1.profile}
 
 ${TEST_NOTE}            Automation Test Note
 ${TEST_ARCHIVE}         Automation_Archive
+${WORLD_SITE}           World
 
 
 *** Test Cases ***
@@ -130,6 +131,7 @@ Test Cleanup: Tear Down Test and Close Session
     [Setup]    Log Into XIQSE and XIQ and Confirm Success
 
     Clean Up XIQ Components
+    Clean Up XIQSE Components
 
     [Teardown]  Log Out Of XIQ and XIQSE and Close Browser
 
@@ -192,6 +194,8 @@ Set Up XIQSE Components
     [Documentation]     Sets up the XIQSE components for the test
 
     Switch To Window    ${XIQSE_WINDOW_INDEX}
+
+    Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     # Confirm the serial number is correct and set the common options needed for automation
     Confirm Serial Number and Set Common Options     ${XIQSE_SERIAL}
@@ -461,3 +465,10 @@ Clean Up XIQ Components
     Switch To Window    ${XIQ_WINDOW_INDEX}
 
     Remove Existing Site Engine from XIQ
+
+Clean Up XIQSE Components
+    [Documentation]     Cleans up components used in XIQSE during the test and logs out
+
+    Switch To Window    ${XIQSE_WINDOW_INDEX}
+
+    Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}

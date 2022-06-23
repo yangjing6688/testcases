@@ -50,6 +50,7 @@ ${NAVIGATOR_ENTITLEMENT}  ${xiq.navigator_entitlements}
 
 ${PILOT_LICENSE}          PRD-XIQ-PIL-S-C
 ${NAVIGATOR_LICENSE}      PRD-XIQ-NAV-S-C
+${WORLD_SITE}             World
 
 
 *** Test Cases ***
@@ -206,6 +207,8 @@ XIQ Log In and Set Window Index
 Set Up XIQSE Components
     [Documentation]     Sets up the XIQ-SE components for the test
 
+    Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
+
     Confirm Serial Number and Set Common Options  ${XIQSE_SERIAL}
 
 Set Up XIQ Components
@@ -231,6 +234,8 @@ Clean Up XIQSE Components
     [Documentation]     Cleans up components used in XIQ-SE during the test and logs out
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
+
+    Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     Log Out of XIQSE and Confirm Success
 

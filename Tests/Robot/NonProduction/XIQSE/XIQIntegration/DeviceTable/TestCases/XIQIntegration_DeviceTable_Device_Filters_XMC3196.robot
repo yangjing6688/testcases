@@ -64,6 +64,7 @@ ${XIQSE_DUT_MAC}            ${netelem1.mac}
 ${XIQSE_DUT_PRODUCT}        ${netelem1.product}
 ${XIQSE_DUT_FUNCTION}       ${netelem1.function}
 
+${WORLD_SITE}               World
 
 
 *** Test Cases ***
@@ -382,6 +383,8 @@ XIQ Log In and Set Window Index
 Set Up XIQSE Components
     [Documentation]     Sets up the XIQSE components for the test
 
+    Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
+
     Confirm Serial Number and Set Common Options    ${XIQSE_SERIAL}
 
     # Create an invalid profile for causing a device disconnect
@@ -680,6 +683,8 @@ Clean Up XIQSE Components
     [Documentation]     Cleans up components used in XIQ-SE during the test, logs out, and closes the browser
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
+
+    Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
     # Handle Connection Lost
     XIQSE Handle Connection Lost Error    ${XIQSE_USER}    ${XIQSE_PASSWORD}
