@@ -95,6 +95,13 @@ class onboardDevice5420UsingCsvTests():
 
         self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial)
 
+        managed_res = self.xiq.xflowscommonDevices.wait_until_device_managed(self.tb.dut1_serial)
+
+        if managed_res == 1:
+            print('Status for device with serial number: {} is equal to managed'.format(self.tb.dut1_serial))
+        else:
+            pytest.fail('Status for serial {} not equal to managed: {}'.format(self.tb.dut1_serial, managed_res))
+
         res = self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1_serial)
         if res != 'green':
             pytest.fail('Status for serial {} not equal to Green: {}'.format(self.tb.dut1_serial, res))
@@ -129,6 +136,13 @@ class onboardDevice5420UsingCsvTests():
             needToDeleteDevice = True
 
         self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial)
+
+        managed_res = self.xiq.xflowscommonDevices.wait_until_device_managed(self.tb.dut1_serial)
+
+        if managed_res == 1:
+            print('Status for device with serial number: {} is equal to managed'.format(self.tb.dut1_serial))
+        else:
+            pytest.fail('Status for serial {} not equal to managed: {}'.format(self.tb.dut1_serial, managed_res))
 
         res = self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1_serial)
         if res != 'green':
@@ -165,6 +179,13 @@ class onboardDevice5420UsingCsvTests():
             needToDeleteDevice = True
 
         self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial)
+
+        managed_res = self.xiq.xflowscommonDevices.wait_until_device_managed(self.tb.dut1_serial)
+
+        if managed_res == 1:
+            print('Status for device with serial number: {} is equal to managed'.format(self.tb.dut1_serial))
+        else:
+            pytest.fail('Status for serial {} not equal to managed: {}'.format(self.tb.dut1_serial, managed_res))
 
         res = self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1_serial)
         if res != 'green':

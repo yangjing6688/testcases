@@ -1,7 +1,7 @@
 lab:                        "SALEM"
 
 netelem1:
-  name:                     "EXOS"
+  name:                     "dut1"
   hostname:                 ""
   serial:                   "TB032140K-H0010"
   mac:                      "F4CE48A27400"
@@ -12,7 +12,7 @@ netelem1:
   username:                 "admin"
   password:                 ""
   connection_method:        "telnet"
-  os:                       "exos"
+  cli_type:                       "exos"
   platform:                 "5320"
   model:                    "SwitchEngine5320_48P_8XE"
   make:                     "exos"

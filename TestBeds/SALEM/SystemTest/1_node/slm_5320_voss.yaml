@@ -10,7 +10,7 @@ netelem1:
   username:                 "rwa"
   password:                 "rwa"
   connection_method:        "ssh"
-  os:                       "voss"
+  cli_type:                 "voss"
   platform:                 "5320"
   model:                    "FabricEngine5520_48T_8XE"
   make:                     "voss"

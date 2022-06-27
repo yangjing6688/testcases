@@ -10,7 +10,7 @@ netelem1:
   password:                 ""
   connection_method:        "telnet"
   make:                     "exos"
-  os:                       "exos"
+  cli_type:                       "exos"
   hostname:                 "10.127.22.128"
   serial:                   "SIMBFBF-2004-1,SIMBFBF-2004-2,SIMBFBF-2004-3,SIMBFBF-2004-4,SIMBFBF-2004-5,Empty,Empty,Empty"
   console_ip:               "10.127.22.4"
@@ -87,7 +87,7 @@ tgen1:
   ssh_port:                 "22"
   vm_port:                  "22"
   make:                     "exos"
-  os:                       "linux"
+  cli_type:                       "MU-LINUX"
   dynamic_deployment:       "False"
   vm_location:
 

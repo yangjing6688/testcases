@@ -9,7 +9,7 @@ ap1:
   console_ip:               10.234.201.225
   console_port:             7029
   mac:                      BCF3105E2F40
-  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP410C
   template:                 AP_410C-default-template
@@ -40,7 +40,7 @@ ap2:
   console_ip:               10.234.201.225
   console_port:             7030
   mac:                      BCF3102A99C0
-  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP460C
   template:                 AP_460C-default-template

@@ -94,6 +94,14 @@ class onboardDeviceXA1440UsingCsvTests():
 
         self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial)
 
+        managed_res = self.xiq.xflowscommonDevices.wait_until_device_managed(self.tb.dut1_serial)
+
+        if managed_res == 1:
+            print('Status for device with serial number: {} is equal to managed'.format(self.tb.dut1_serial))
+        else:
+            pytest.fail('Status for serial {} not equal to managed: {}'.format(self.tb.dut1_serial, managed_res))
+
+
         res = self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1_serial)
         if res != 'green':
             pytest.fail('Status for serial {} not equal to Green: {}'.format(self.tb.dut1_serial, res))
@@ -121,6 +129,10 @@ class onboardDeviceXA1440UsingCsvTests():
 
         res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.os,
                                                                       location=self.tb.dut1_location1, csv_location=csv_file_location)
+
+
+
+
         if res != 1:
             pytest.fail(f'Could not onboard device {self.tb.dut1_platform} with serial {self.tb.dut1_serial}')
         else:
@@ -128,6 +140,13 @@ class onboardDeviceXA1440UsingCsvTests():
             needToDeleteDevice = True
 
         self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial)
+
+        managed_res = self.xiq.xflowscommonDevices.wait_until_device_managed(self.tb.dut1_serial)
+
+        if managed_res == 1:
+            print('Status for device with serial number: {} is equal to managed'.format(self.tb.dut1_serial))
+        else:
+            pytest.fail('Status for serial {} not equal to managed: {}'.format(self.tb.dut1_serial, managed_res))
 
         res = self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1_serial)
         if res != 'green':
@@ -164,6 +183,13 @@ class onboardDeviceXA1440UsingCsvTests():
             needToDeleteDevice = True
 
         self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial)
+
+        managed_res = self.xiq.xflowscommonDevices.wait_until_device_managed(self.tb.dut1_serial)
+
+        if managed_res == 1:
+            print('Status for device with serial number: {} is equal to managed'.format(self.tb.dut1_serial))
+        else:
+            pytest.fail('Status for serial {} not equal to managed: {}'.format(self.tb.dut1_serial, managed_res))
 
         res = self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1_serial)
         if res != 'green':

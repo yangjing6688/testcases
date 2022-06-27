@@ -1,7 +1,7 @@
 lab:                        "SALEM"
 
 netelem1:
-  name:                     "EXOS"
+  name:                     "dut1"
   hostname:                 ""
   serial:                   "SB032048G-00039"
   mac:                      "F0642690B400"
@@ -12,7 +12,7 @@ netelem1:
   username:                 "rwa"
   password:                 "rwa"
   connection_method:        "telnet"
-  os:                       "exos"
+  cli_type:                       "exos"
   platform:                 "5520"
   model:                    "SwitchEngine5520_24W"
   make:                     "exos"
@@ -45,7 +45,7 @@ netelem1:
       intnet: "intnet20"
 
 netelem2:
-  name:                     "EXOS"
+  name:                     "dut2"
   hostname:                 ""
   serial:                   "SB032048G-00098"
   mac:                      "F0642691A000"
@@ -57,7 +57,7 @@ netelem2:
   username:                 "admin"
   password:                 ""
   connection_method:        "telnet"
-  os:                       "exos"
+  cli_type:                       "exos"
   platform:                 "5520"
   model:                    "SwitchEngine5520_24W"
   make:                     "exos"
@@ -99,7 +99,7 @@ tgen1:
   username:     "root"
   password:     "PASprt86"
   port:         "22"
-  os:           "linux"
+  cli_type:           "MU-LINUX"
 
 tgen_ports:
   netelem1:

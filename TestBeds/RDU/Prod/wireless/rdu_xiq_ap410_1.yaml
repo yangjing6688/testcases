@@ -8,7 +8,7 @@ wing1:
   console_ip:               10.69.1.112
   console_port:             2002
   mac:                      489bd5fdc3ae
-  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
   os_version:               7.6.3.0-012R
   platform:                 wing
   model:                    AP410

@@ -78,6 +78,7 @@ Clean Up IP Range Discovery Settings and Confirm Success
     [Documentation]     Cleans up the Site IP Range Discovery settings
     [Arguments]         ${ip_start}  ${ip_end}  ${profile}
 
+    XIQSE Site Select Discover Tab
     ${profile_result}=  XIQSE Discover Set Accept Profile               ${profile}  false
     ${range_result}=    XIQSE Discover Addresses Delete Address Range   ${ip_start}  ${ip_end}
     ${save_result}=     XIQSE Site Save Changes
@@ -90,6 +91,7 @@ Clean Up Subnet Discovery Settings and Confirm Success
     [Documentation]     Cleans up the Site Subnet Discovery settings
     [Arguments]         ${subnet}  ${profile}
 
+    XIQSE Site Select Discover Tab
     ${profile_result}=  XIQSE Discover Set Accept Profile       ${profile}  false
     ${subnet_result}=   XIQSE Discover Addresses Delete Subnet  ${subnet}
     ${save_result}=     XIQSE Site Save Changes
@@ -102,6 +104,7 @@ Clean Up Seed Discovery Settings and Confirm Success
     [Documentation]     Cleans up the Site Seed Discovery settings
     [Arguments]         ${seed_address}  ${profile}
 
+    XIQSE Site Select Discover Tab
     ${profile_result}=  XIQSE Discover Set Accept Profile               ${profile}  false
     ${seed_result}=     XIQSE Discover Addresses Delete Seed Address    ${seed_address}
     ${save_result}=     XIQSE Site Save Changes

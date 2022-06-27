@@ -1,7 +1,7 @@
 lab:                        "SALEM"
 
 netelem1:
-  name:                     "VOSS"
+  name:                     "dut1"
   hostname:                 ""
   serial:                   "TB042128K-H0007"
   mac:                      "F0642671F800"
@@ -12,7 +12,7 @@ netelem1:
   username:                 "rwa"
   password:                 "rwa"
   connection_method:        "telnet"
-  os:                       "voss"
+  cli_type:                       "voss"
   platform:                 "5320"
   model:                    "FabricEngine5320_48T_8XE"
   make:                     "voss"
