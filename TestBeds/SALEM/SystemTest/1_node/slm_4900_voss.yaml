@@ -10,7 +10,7 @@ netelem1:
   username:                 "rwa"
   password:                 "rwa"
   connection_method:        "ssh"
-  os:                       "voss"
+  cli_type:                 "voss"
   platform:                 "4900"
   model:                    "VSP4900_24S"
   make:                     "voss"

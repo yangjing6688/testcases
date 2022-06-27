@@ -9,7 +9,7 @@ ap3:
   console_ip:               10.16.168.200
   console_port:             22
   mac:                      BCF3102AA000
-  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP460C
   template:                 AP460C-default-template
@@ -38,7 +38,7 @@ aerohive_sw1:
   model:              SR2348P
   device_template:    SR2348P-default-template
   serial:             '23481812230026'
-  os:                 Linux 3.6.5
+  cli_type:           "AH-FASTPATH"
   mac:                B87CF2026E1C
   network_policy:
   username:           admin

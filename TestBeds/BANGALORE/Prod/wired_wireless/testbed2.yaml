@@ -9,7 +9,7 @@ ap1:
   console_ip:               10.234.105.230
   console_port:             7046
   mac:                      BCF3105E1C40
-  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP410C
   template:                 AP_410C-default-template
@@ -45,7 +45,7 @@ ap2:
   console_ip:               10.234.105.230
   console_port:             7045
   mac:                      BCF310658AC0
-  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP460C
   template:                 AP_460C-default-template
@@ -82,7 +82,7 @@ ap3:
   console_ip:               10.234.105.230
   console_port:             7043
   mac:                      BCF3107276C0
-  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP305C
   template:                 AP_305C-default-template
@@ -117,7 +117,7 @@ ap4:
   console_ip:               10.234.105.230
   console_port:             7044
   mac:                      40882F57E840
-  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP302W
   template:                 AP_302W-default-template
@@ -146,7 +146,7 @@ netelem1:
   model:              SR2348P
   device_template:    SR2348P-default-template
   serial:             '23481904220034'
-  os:                 Linux 3.6.5
+  cli_type:           "AH-FASTPATH"
   mac:                B87CF202AC6C
   network_policy:
   username:           admin
@@ -208,7 +208,7 @@ router1:
   model:                    XR600P
   device_template:          XR600P_test_automation
   serial:                   '60018082400461'
-  os:                       HiveOS 6.9r1 build-184948
+  cli_type:                       "AH-FASTPATH"
   mac:                      F4EAB52DDF00
   network_policy:           Test_np
   username:                 admin
@@ -231,7 +231,7 @@ netelem2:
   console_port:             7031
   network_policy:           Test_np
   device_template:          X440G2-default-template
-  os:                       31.5.1.6
+  cli_type:                 "EXOS"
   make:                     EXOS
 
 wing1:
@@ -257,7 +257,7 @@ netelem3:
   model:                    SR2348P
   device_template:          SR2348P-default-template
   serial:                   '23481902030084'
-  os:                       Linux 3.6.5
+  cli_type:                 "AH-FASTPATH"
   mac:                      B87CF2027E38
   network_policy:
   username:                 admin
@@ -277,7 +277,7 @@ netelem4:
   make:                  VOSS
   model:                 VSP 7400-48Y
   product:               VSP_7400-48Y
-  os:                    VOSS
+  cli_type:              "VOSS"
   default_template:      VSP_7400_48Y_8C-default-template
   ccg:                   Model_VSP_SWITCH
   console_ip:            10.234.137.231

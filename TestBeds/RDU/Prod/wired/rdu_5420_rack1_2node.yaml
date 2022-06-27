@@ -8,7 +8,7 @@ netelem1:
   username:                 "admin"
   password:                 ""
   connection_method:        "telnet"
-  os:                       "exos"
+  cli_type:                       "exos"
   make:                     "EXOS"
   hostname:                 "RDU-5420-2NODE-DUT1"
   serial:                   "ZZZZ2039G-00609"
@@ -61,7 +61,7 @@ netelem2:
   username:                 "admin"
   password:                 ""
   connection_method:        "telnet"
-  os:                       "exos"
+  cli_type:                       "exos"
   make:                     "EXOS"
   hostname:                 "RDU-5420-2NODE-DUT2"
   serial:                   "2041G-01073"
@@ -118,7 +118,7 @@ tgen1:
   password:                 "PASprt86"
   ssh_port:                 "22"
   vm_port:                  "22"
-  os:                       "linux"
+  cli_type:                       "MU-LINUX"
   dynamic_deployment:       "False"
   vm_location:
 

@@ -5,7 +5,7 @@ router1:
   serial:                   "60018082400365"
   ip:                       10.16.170.66
   port:                     22
-  os:                       HiveOS 10.0r10b build-254127
+  cli_type:                       "AH-FASTPATH"
   mac:                      F4EAB52DC700
   network_policy:           Test_np
   username:                 admin

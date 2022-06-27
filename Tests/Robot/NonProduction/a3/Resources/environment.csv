@@ -1,0 +1,9 @@
+web_driver_location,remote
+target_environment,remote
+os_platform,windows10
+browser,chrome
+sauce_os,"macOS 10.12"
+sauce_browser,chrome
+sauce_browser_version,68
+sauce_resolution,2360x1770
+sauce_session_name,UI-Sanity
