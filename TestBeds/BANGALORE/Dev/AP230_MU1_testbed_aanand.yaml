@@ -1,0 +1,26 @@
+ap1:
+  name:                     AP230
+  connection_method:        "telnet"
+  ip:                       10.234.219.101
+  port:                     7035
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '02301911250025'
+  mac:                      F4EAB58E47C0
+  cli_type:                 AH-AP
+  platform:                 aerohive
+  model:                    AP230
+  template:                 AP_230-default-template
+  make:                     aerohive
+  mgmt_vlan:                1
+  country:                  India
+
+mu1:
+  ip:                       10.234.141.30
+  port:                     8270
+  username:                 extreme
+  password:                 Extreme@123
+  platform:                 windows
+  interface:                wlan0
+  wifi_mac:                 C4D98749D2A7
+  ethernet_mac:             A01D48F3C015
