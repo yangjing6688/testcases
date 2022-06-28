@@ -35,7 +35,7 @@ TCCS-7651_Step1: Onboard Aerohive AP
     ${result}=              Login User          ${tenant_username}      ${tenant_password}
     Delete AP               ap_serial=${ap1.serial}
     Change Device Password                      Aerohive123
-    ${ONBOARD_RESULT}=      Onboard Device      ${ap1.serial}           ${ap1.make}       location=${LOCATION}      device_os=${ap1.os}
+    ${ONBOARD_RESULT}=      Onboard Device      ${ap1.serial}           ${ap1.make}       location=${LOCATION}      
     ${search_result}=       Search AP Serial    ${ap1.serial}
     should be equal as integers             ${result}               1
     should be equal as integers             ${ONBOARD_RESULT}       1

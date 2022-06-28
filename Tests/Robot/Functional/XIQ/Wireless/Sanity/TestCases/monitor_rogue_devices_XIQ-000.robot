@@ -76,7 +76,7 @@ Test0: Pre-config
     [Documentation]         Pre-config
     [Tags]                  sanity  add   Rougueap  wips_ssid   aerohive  P3  P4   regression
     ${result}=           Login User          ${tenant_username}     ${tenant_password}
-    Onboard Device       ${ap2.serial}           ${ap2.make}       location=${LOCATION}      device_os=${ap2.os}
+    Onboard Device       ${ap2.serial}           ${ap2.make}       location=${LOCATION}
     ${AP_SPAWN}=         Open Spawn        ${ap2.console_ip}   ${ap2.console_port}      ${ap2.username}       ${ap2.password}        ${ap2.platform}
     Set Suite Variable   ${AP_SPAWN}
 

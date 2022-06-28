@@ -80,7 +80,7 @@ Test1: Advance Onboard AP1 and AP2 - TCXM-15120
     ${LOGIN_STATUS}=                Login User               ${tenant_username}     ${tenant_password}
     should be equal as strings     '${LOGIN_STATUS}'      '1'
     FOR     ${ap}   IN    @{aps}
-        ${ONBOARD_STATUS}=               Onboard Device      ${ap}[serial]    ${ap}[make]    location=${LOCATION}    device_os=${ap}[os]
+        ${ONBOARD_STATUS}=               Onboard Device      ${ap}[serial]    ${ap}[make]    location=${LOCATION}
         should be equal as integers      ${ONBOARD_STATUS}       1
     END
     [Teardown]      run keywords     Logout User

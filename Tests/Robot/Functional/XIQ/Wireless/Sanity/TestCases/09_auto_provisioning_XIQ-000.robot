@@ -111,7 +111,7 @@ TCCS-7632: Configure AP Auto Provision Profile
     Auto Provision Capwap Configurations            &{CAPWAP_CONFIGURATION_01}
     Save and Enable Auto Provision Policy           ${APP_POLICY_NAME_AP_01}
 
-    ${ONBOARD_RESULT}=      Onboard Device          ${ap1.serial}           ${ap1.make}       location=${LOCATION}      device_os=${ap1.os}
+    ${ONBOARD_RESULT}=      Onboard Device          ${ap1.serial}           ${ap1.make}       location=${LOCATION}
 
     ${AP_SPAWN}=        Open Spawn                  ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     ${OUTPUT0}=         Send Commands               ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, no capwap client enable, capwap client enable, save config
