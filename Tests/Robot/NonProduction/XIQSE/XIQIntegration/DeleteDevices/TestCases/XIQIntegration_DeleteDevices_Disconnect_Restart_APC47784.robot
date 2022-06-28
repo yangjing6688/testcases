@@ -471,4 +471,5 @@ Clean Up XIQSE Components
 
     Switch To Window    ${XIQSE_WINDOW_INDEX}
 
+    XIQSE Navigate to Devices and Confirm Success
     Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
