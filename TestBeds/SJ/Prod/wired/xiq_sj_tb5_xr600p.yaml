@@ -5,7 +5,7 @@ router1:
   serial:                   "60018082400365"
   ip:                       10.16.170.66
   port:                     22
-  cli_type:                       "AH-FASTPATH"
+  cli_type:                 "AH_XR"
   mac:                      F4EAB52DC700
   network_policy:           Test_np
   username:                 admin

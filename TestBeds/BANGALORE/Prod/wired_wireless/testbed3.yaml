@@ -86,7 +86,7 @@ router1:
   model:                    XR200P
   device_template:          XR200P_test_automation
   serial:                   '20318123100137'
-  cli_type:                       "AH-FASTPATH"
+  cli_type:                 "AH_XR"
   mac:                      F09CE9CB77C0
   network_policy:           Test_np
   username:                 admin
