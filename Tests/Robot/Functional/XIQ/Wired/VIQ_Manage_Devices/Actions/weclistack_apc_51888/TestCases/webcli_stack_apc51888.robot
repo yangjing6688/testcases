@@ -35,13 +35,13 @@ TCXM-15265: Verify that WEB CLI is available for EXOS Stack
 
     delete_location_building_floor              Salem      North_mdqsi     wsxmg_floor
     create_location_building_floor              Salem      North_mdqsi     wsxmg_floor
-    log to console          os  ${netelem1.os}      platform ${netelem1.platform}
-    run keyword if  """${netelem1.os}"""== "exos" and """${netelem1.platform}""" != "Stack"
+    log to console          os  ${netelem1.cli_type}      platform ${netelem1.platform}
+    run keyword if  """${netelem1.cli_type}"""== "exos" and """${netelem1.platform}""" != "Stack"
     ...  quick_onboarding_cloud_manual     ${netelem1.serial}    exos      ${DUT_LOCATION}
     #Configure IQAgent
 
-    ${onboard_result}=          run keyword if  """${netelem1.os}"""== "exos" and """${netelem1.platform}""" == "Stack"
-    ...    onboard switch     ${netelem1.serial}  device_os=${netelem1.os}   entry_type=Manual  location=${DUT_LOCATION}
+    ${onboard_result}=          run keyword if  """${netelem1.cli_type}"""== "exos" and """${netelem1.platform}""" == "Stack"
+    ...    onboard switch     ${netelem1.serial}  device_os=${netelem1.cli_type}   entry_type=Manual  location=${DUT_LOCATION}
     #Configure IQAgent
     Should Be Equal As Integers                 ${onboard_result}       1
     Configure IQAgent for EXOS Switch
@@ -177,7 +177,7 @@ Log Out of XIQ and Confirm Success
 Configure IQAgent for EXOS Switch
     [Documentation]     Configures the iqagent for the VOSS switch
 
-    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.os}  ${netelem1.console_port}
+    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}  ${netelem1.console_port}
     send cmd  dut1_telnet   disable iqagent
     send cmd  dut1_telnet   configure iqagent server ipaddress none
     send cmd  dut1_telnet   configure iqagent server vr VR-Mgmt
@@ -201,7 +201,7 @@ Check Device Online
 clear vlans
     [Documentation]     This keyword will delete vlan 3
 
-    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.os}  ${netelem1.console_port}
+    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}  ${netelem1.console_port}
     send cmd   dut1_telnet      delete vlan 3
 
     [Teardown]  close connection to network element  dut1_telnet
