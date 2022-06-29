@@ -30,9 +30,9 @@ Pre Condition
 
 TCXM-17532 : Relocate Supplemental CLI under Switch Template
 
-	[Documentation]         Verify that Supplemental CLI is relocated to Switch Template under advanced settings
+    [Documentation]         Verify that Supplemental CLI is relocated to Switch Template under advanced settings
 
-    [Tags]       xim_tcxm_17532         development
+    [Tags]       tcxm_17532         development
 
     ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
     should be equal as strings       '${result}'                   '1'
@@ -53,9 +53,9 @@ TCXM-17532 : Relocate Supplemental CLI under Switch Template
 
 TCXM-17534 : Relocate Supplemental CLI under AP Template
 
-	[Documentation]         Verify that Supplemental CLI is relocated to AP Template under advanced settings
+    [Documentation]         Verify that Supplemental CLI is relocated to AP Template under advanced settings
 
-    [Tags]       xim_tcxm_17534         development
+    [Tags]       tcxm_17534         development
 
     ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
     should be equal as strings       '${result}'                   '1'
@@ -76,9 +76,9 @@ TCXM-17534 : Relocate Supplemental CLI under AP Template
 
 TCXM-17544 : Point client hyperlink to Client 360 page
 
-	[Documentation]         Verify that clicking on clients hyperlink points to ML Insights Client 360 page
+    [Documentation]         Verify that clicking on clients hyperlink points to ML Insights Client 360 page
 
-    [Tags]       xim_tcxm_17544         development
+    [Tags]       tcxm_17544         development
 
     ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
     should be equal as strings       '${result}'                   '1'
@@ -95,32 +95,11 @@ TCXM-17544 : Point client hyperlink to Client 360 page
 
 
 
-TCXM-19713 : Verify Navigate to VPN Services Page
-
-	[Documentation]         Verify that user is able to navigate to 'VPN Services' page under Manage
-
-    [Tags]       xim_tcxm_19713         development
-
-    ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
-    should be equal as strings       '${result}'                    '1'
-
-    ${vpn_services_tab}        Navigate To VPN Services Tab
-
-    should be equal as strings       '${vpn_services_tab}'          '1'
-
-    Log                               ${vpn_services_tab}
-
-    [Teardown]
-    Logout User
-    Quit Browser
-
-
-
 TCXM-20275 : Enable PING for Installer user for Aerohive AP
 
-	[Documentation]         Verify that PING is enabled for Installer role for Aerohive AP
+    [Documentation]         Verify that PING is enabled for Installer role for Aerohive AP
 
-    [Tags]       xim_tcxm_20275         development
+    [Tags]       tcxm_20275         development
 
     ${result}=                 Login User             ${xiq.tenant_username_installer}  ${xiq.tenant_password}  url=${xiq.test_url}
     should be equal as strings       '${result}'                   '1'
