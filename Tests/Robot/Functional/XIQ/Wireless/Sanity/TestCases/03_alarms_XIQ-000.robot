@@ -32,46 +32,46 @@ Variables    Environments/${ENV}
 
 Force Tags   testbed_1_node
 
-*** Test Cases ***
-TCCS-11616: Generate And Validate Fake Alarms
-    [Documentation]    Chek the generation of alarms
+Suite Teardown  Clean-up
 
-    [Tags]             production     tccs_11616
-
-    ${LOGIN_STATUS}=                 Login User              ${tenant_username}     ${tenant_password}
-    should be equal as strings      '${LOGIN_STATUS}'        '1'
-
-
-    FOR  ${i}  IN RANGE  10
-         Log To Console  Attempt(s): ${i}
-         ${AP_STATUS}       Get AP Status       ap_mac=${ap1.mac}
-         Log To Console     The current router status is ${AP_STATUS}
-         Exit For Loop If   '${AP_STATUS}' == 'green'
-         Sleep  30s
-    END
-
-    #${AP_STATUS}=                   Get AP Status           ap_mac=${ap1.mac}
-    #Should Be Equal As Strings     '${AP_STATUS}'          'green'
-
-
-    Clear Alarm                       CRITICAL
-
-    Send Cmd On Device Advanced Cli    device_serial=${ap1.serial}    cmd=_test trap-case alert failure
-    sleep                             60s
-    ${ALARM_DETAILS}=                 Get Alarm Details                  CRITICAL
-    should be equal as strings       '${ALARM_DETAILS}[severity]'       'CRITICAL'
-    should be equal as strings       '${ALARM_DETAILS}[category]'       'System'
-    should be equal as strings       '${ALARM_DETAILS}[description]'    'fan failure.'
-    should be equal as strings       '${ALARM_DETAILS}[deviceMac]'      '${ap1.mac}'
-    [Teardown]   run keywords        Logout User
-    ...                              quit browser
+*** Keywords ***
 
 Clean-up
     [Documentation]         Cleanup script
 
-    [Tags]                  cleanup     productions
-    Login User                     ${tenant_username}          ${tenant_password}
-    Delete Device                  device_serial=${ap1.serial}
+    [Tags]                  cleanup     production
+
+    ${LOGIN_STATUS}=                Login User              ${tenant_username}     ${tenant_password}
+    should be equal as integers     ${LOGIN_STATUS}               1
+
+    ${DELETE_DEVICE_STATUS}=            Delete Device                  device_serial=${ap1.serial}
+    should be equal as integers     ${DELETE_DEVICE_STATUS}               1
+
+    [Teardown]   run keywords        Logout User
+    ...                              quit browser
+
+*** Test Cases ***
+TCCS-11616_Step1: Generate And Validate Fake Alarms
+    [Documentation]    Chek the generation of alarms
+
+    [Tags]             production     tccs_11616    tccs_11616_step1
+
+    ${LOGIN_STATUS}=                    Login User      ${tenant_username}      ${tenant_password}      check_warning_msg=True
+    should be equal as integers         ${LOGIN_STATUS}               1
+
+    ${DEVICE_STATUS}=                   Get Device Status       device_mac=${ap1.mac}
+    Should contain any                  ${DEVICE_STATUS}    green     config audit mismatch
+
+    ${CLEAR_ALARM_STATUS}=              Clear Alarm                       CRITICAL
+
+    ${SEND_CMD_STATUS}=                 Send Cmd On Device Advanced Cli    device_serial=${ap1.serial}    cmd=_test trap-case alert failure
+    Should Not Be Equal As Strings      ${SEND_CMD_STATUS}          '-1'
+    sleep                               60s
+    ${ALARM_DETAILS}=                   Get Alarm Details                  CRITICAL
+    should be equal as strings          '${ALARM_DETAILS}[severity]'       'CRITICAL'
+    should be equal as strings          '${ALARM_DETAILS}[category]'       'System'
+    should be equal as strings          '${ALARM_DETAILS}[description]'    'fan failure.'
+    should be equal as strings          '${ALARM_DETAILS}[deviceMac]'      '${ap1.mac}'
 
     [Teardown]   run keywords        Logout User
     ...                              quit browser
