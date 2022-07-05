@@ -56,7 +56,7 @@ TCCS-7292_Step1: Onboard EXOS Switch on XIQ
     ${SWITCH_CONNECTION_HOST}=      Capture XIQ Switch Connection Host
     Should Not Be Equal As Strings             ${SWITCH_CONNECTION_HOST}       ${EMPTY}
 
-    ${SW_SPAWN}=            Open Spawn          ${netelem1.ip}   ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.platform}
+    ${SW_SPAWN}=            Open Spawn          ${netelem1.ip}   ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
     ${CONF_SWITCH_HOST}=    Send                ${SW_SPAWN}         configure iqagent server ipaddress ${SWITCH_CONNECTION_HOST}
     ${CONF_VR}=             Send                ${SW_SPAWN}         configure iqagent server vr VR-Default
     ${CONF_VR}=             Send                ${SW_SPAWN}         save config

@@ -92,7 +92,8 @@ TCCS-7709_Step2: Config AP to Report AIO
     [Tags]              production          tccs_7709       tccs_7709_step2
 
     Depends On          TCCS-7709_Step1
-    ${AP_SPAWN}=        Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
+
     Should not be equal as Strings          '${AP_SPAWN}'        '-1'
 
     Set Suite Variable  ${AP_SPAWN}

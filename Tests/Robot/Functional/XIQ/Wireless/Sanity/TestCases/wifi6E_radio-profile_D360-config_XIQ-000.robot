@@ -223,7 +223,7 @@ TCXM-17715: APC-45525: wifi2: Override excluded channels, include/exclude channe
     ${DEPLOY_STATUS}=       Deploy Network Policy with Delta Update     ${POLICY_01}          ${ap1.serial}
     Wait Until Device Online    ${ap1.serial}
 
-    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}   ${ap1.username}   ${ap1.password}    ${ap1.platform}
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}   ${ap1.username}   ${ap1.password}    ${ap1.cli_type}
     ${OUTPUT}=          Send Commands       ${AP_SPAWN}         console page 0, show running-config | include exclude
 
     Log To Console      ** Validate 1 - displays corresponding 20 MHz channels displayed in AP CLI **
@@ -269,7 +269,7 @@ TCXM-17716: APC-45525: wifi1: Override excluded channels, include/exclude channe
     ${DEPLOY_STATUS}=       Deploy Network Policy with Delta Update     ${POLICY_01}          ${ap1.serial}
     Wait Until Device Online    ${ap1.serial}
 
-    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}   ${ap1.username}   ${ap1.password}    ${ap1.platform}
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}   ${ap1.username}   ${ap1.password}    ${ap1.cli_type}
     ${OUTPUT}=          Send Commands       ${AP_SPAWN}         console page 0, show running-config | include exclude
 
     Log To Console      ** Validate 1  **
@@ -297,7 +297,7 @@ TCXM-17717: APC-45525: wifi0: Override excluded channels, include/exclude channe
     ${DEPLOY_STATUS}=       Deploy Network Policy with Delta Update     ${POLICY_01}          ${ap1.serial}
     Wait Until Device Online    ${ap1.serial}
 
-    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}   ${ap1.username}   ${ap1.password}    ${ap1.platform}
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}   ${ap1.username}   ${ap1.password}    ${ap1.cli_type}
     ${OUTPUT}=          Send Commands       ${AP_SPAWN}         console page 0, show running-config | include exclude
 
     Log To Console      ** Validate 1  **
@@ -356,7 +356,7 @@ TCXM-17718: APC-44617: wifi2: Create new radio profile and verify settings - Tes
     update_override_configuration_to_device  device_serial=${ap1.serial}
     sleep  60s
 
-    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}   ${ap1.username}   ${ap1.password}    ${ap1.platform}
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}   ${ap1.username}   ${ap1.password}    ${ap1.cli_type}
     ${OUTPUT}=          Send Commands       ${AP_SPAWN}         console page 0, show running-config | include radio
     sleep  20s
 
@@ -430,7 +430,7 @@ TCXM-18403: APC-44617: wifi1: Create new radio profile and verify settings - Tes
     update_override_configuration_to_device  device_serial=${ap1.serial}
     sleep  60s
 
-    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}   ${ap1.username}   ${ap1.password}    ${ap1.platform}
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}   ${ap1.username}   ${ap1.password}    ${ap1.cli_type}
     ${OUTPUT}=          Send Commands       ${AP_SPAWN}         console page 0, show running-config | include radio
 
     Log To Console      ** Validate 1 **

@@ -34,13 +34,14 @@ ap1:
       neighbour_mac:            3485843A5CC0
 
 mu1:
-  ip:             10.234.105.228
-  port:           8270
-  username:       admin
-  password:       symbol
-  platform:       windows
-  interface:      wlan0
-  wifi_mac:       A02BB82C271A
-  ethernet_mac:   AC7BA17B0AD4
-  wifi_network:   10.234.105
-  wifi_network_vlan10:    10.234.105
+  ip:                   10.234.105.228
+  port:                 8270
+  connection_method:    "console"
+  username:             admin
+  password:             symbol
+  platform:             windows
+  interface:            wlan0
+  wifi_mac:             A02BB82C271A
+  ethernet_mac:         AC7BA17B0AD4
+  wifi_network:         10.234.105
+  wifi_network_vlan10:  10.234.105

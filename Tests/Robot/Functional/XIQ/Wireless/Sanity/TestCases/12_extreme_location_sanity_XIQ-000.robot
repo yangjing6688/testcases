@@ -110,7 +110,8 @@ Test1: Check Extreme Location Subscription Flow For Existing Customer
     Log to Console      Sleep for ${config_push_wait}
     sleep                         ${config_push_wait}
 
-    ${AP_SPAWN}=               Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=               Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
+
     ${SENSOR_WIFI_CONFIG}=     Send                ${AP_SPAWN}         show running-config | include "interface wifi2"
     Should Contain             ${SENSOR_WIFI_CONFIG}      interface wifi2 mode adsp-sensor
 
@@ -136,7 +137,7 @@ Test2: Presence TC-Validate Client Presence after Connecting Client For Existing
     Sleep    5 minutes
 
     ${CLIENT_MAC_FORMAT}=          Convert To Client MAC  ${mu5.wifi_mac}
-    ${MU5_SPAWN}=                  Open Spawn                  ${mu5.ip}               ${mu5.port}             ${mu5.username}      ${mu5.password}      ${mu5.platform}
+    ${MU5_SPAWN}=                  Open Spawn                  ${mu5.ip}               ${mu5.port}             ${mu5.username}      ${mu5.password}      ${mu5.cli_type}
     Set Suite Variable             ${MU5_SPAWN}
     Connect MU5 To Open Network    ${SSID_NAME}
 
@@ -197,7 +198,7 @@ Test4: Switch off Client WiFi Interface
     Depends On          Test1
     ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
 
-    ${MU5_SPAWN}=                  Open Spawn                  ${mu5.ip}               ${mu5.port}             ${mu5.username}      ${mu5.password}      ${mu5.platform}
+    ${MU5_SPAWN}=                  Open Spawn                  ${mu5.ip}               ${mu5.port}             ${mu5.username}      ${mu5.password}      ${mu5.cli_type}
     Set Suite Variable             ${MU5_SPAWN}
     MU Interface Down              ${MU5_SPAWN}    ${MU5_INTERFACE}
 
@@ -261,7 +262,8 @@ Test7: Onboard AP on New customer Account
 
     Onboard AP                  ${ap1.serial}       aerohive
 
-    ${AP_SPAWN}=               Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=               Open Spawn          ${ap1.p}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
+
     Set Suite Variable          ${AP_SPAWN}
     ${OUTPUT0}=                 Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
@@ -306,7 +308,8 @@ Test8: Check Extreme Location Subscription Flow For New Customer
     Log to Console      Sleep for ${config_push_wait}
     sleep                         ${config_push_wait}
 
-    ${AP_SPAWN}=               Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=               Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
+
     ${SENSOR_WIFI_CONFIG}=     Send                ${AP_SPAWN}         show running-config | include "interface wifi2"
     Should Contain             ${SENSOR_WIFI_CONFIG}      interface wifi2 mode adsp-sensor
 
@@ -329,7 +332,7 @@ Test9: Presence TC-Validate Client Presence after Connecting Client for New Cust
     Depends On          Test8
     ${LOGIN_XIQ}=                  Login User          ${TENANT_USERNAME2}     ${TENANT_PASSWORD2}
     ${CLIENT_MAC_FORMAT}=          Convert To Client MAC  ${mu5.wifi_mac}
-    ${MU5_SPAWN}=                  Open Spawn                  ${mu5.ip}               ${mu5.port}             ${mu5.username}      ${mu5.password}      ${mu5.platform}
+    ${MU5_SPAWN}=                  Open Spawn                  ${mu5.ip}               ${mu5.port}             ${mu5.username}      ${mu5.password}      ${mu5.cli_type}
     Set Suite Variable             ${MU5_SPAWN}
     Connect MU5 To Open Network    ${SSID_NAME}
 

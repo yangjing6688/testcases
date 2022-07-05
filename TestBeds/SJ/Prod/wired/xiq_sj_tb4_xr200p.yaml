@@ -5,8 +5,8 @@ router1:
   serial:                   "20316031100565"
   ip:                       10.16.169.40
   port:                     22
-  cli_type:                 "AH_XR"
-  connection_method:        "ssh"
+  cli_type:                 "AH-XR"
+  connection_method:        "console"
   mac:                      F09CE9C71D00
   network_policy:           Test_np
   username:                 admin

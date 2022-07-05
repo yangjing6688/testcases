@@ -111,9 +111,9 @@ TCCS-7632: Configure AP Auto Provision Profile
     Auto Provision Capwap Configurations            &{CAPWAP_CONFIGURATION_01}
     Save and Enable Auto Provision Policy           ${APP_POLICY_NAME_AP_01}
 
-    ${ONBOARD_RESULT}=      Onboard Device          ${ap1.serial}           ${ap1.make}       location=${LOCATION}
+    ${ONBOARD_RESULT}=      Onboard Device          ${ap1.serial}           ${ap1.make}       location=${LOCATION}      device_os=${ap1.cli_type}
 
-    ${AP_SPAWN}=        Open Spawn                  ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=        Open Spawn                  ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}      connetion_method=${ap1.connetion_method}
     ${OUTPUT0}=         Send Commands               ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
     Log to Console      Waiting until the AP is online
@@ -143,7 +143,8 @@ TCCS-7571: Configure Switch Auto Provision Profile
 
     Should Be Equal As Integers                     ${ONBOARD_RESULT}          1
 
-    ${SW_SPAWN}=        Open Spawn                  ${aerohive_sw1.ip}   ${aerohive_sw1.port}      ${aerohive_sw1.username}       ${aerohive_sw1.password}        ${aerohive_sw1.platform}
+
+    ${SW_SPAWN}=        Open Spawn                  ${aerohive_sw1.ip}   ${aerohive_sw1.port}      ${aerohive_sw1.username}       ${aerohive_sw1.password}        ${aerohive_sw1.cli_type}   connection_method=${aerohive_sw1.connection_method}
 
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-fastpath'   Configure XIQ on Fastpath Switch        ${SW_SPAWN}     ${sw_capwap_url}
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-switch'     Configure XIQ on Aerohive Switch        ${SW_SPAWN}     ${capwap_url}

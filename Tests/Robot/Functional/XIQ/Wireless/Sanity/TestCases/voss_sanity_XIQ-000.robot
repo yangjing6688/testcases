@@ -53,6 +53,7 @@ ${DUT_USERNAME}             ${netelem1.username}
 ${DUT_PASSWORD}             ${netelem1.password}
 ${DUT_PLATFORM}             ${netelem1.platform}
 ${DUT_TYPE}                 ${netelem1.make}
+${DUT_CONNECTION_METHOD}    ${netelem1.connection_method}
 
 ${STATUS_BEFORE_UPDATE}     config audit mismatch
 ${STATUS_AFTER_UPDATE}      green
@@ -70,8 +71,8 @@ TCCS-7299_Step1: Configure VOSS Switch
 
     [Tags]              production      tccs_7299       tccs_7299_step1
 
-    Reset VOSS Switch to Factory Defaults       ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
-    Configure iqagent for VOSS Switch           ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${sw_capwap_url}
+    Reset VOSS Switch to Factory Defaults       ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CONNECTION_METHOD}
+    Configure iqagent for VOSS Switch           ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${sw_capwap_url}   ${DUT_CONNECTION_METHOD}
 
 TCCS-7299_Step2: Onboard VOSS Device With Policy and Location Set Using Quick Add
     [Documentation]     Confirms a VOSS switch can be onboarded with policy and location set via the Quick Add workflow
@@ -112,7 +113,7 @@ TCCS-7299_Step4: Confirm iqagent for VOSS Switch is Connected to XIQ After Onboa
     Depends On          TCCS-7299_Step3
 
     Confirm iqagent for VOSS Switch is Connected to XIQ     ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}
-    ...                                                     ${DUT_USERNAME}  ${DUT_PASSWORD}  ${sw_capwap_url}
+    ...                                                     ${DUT_USERNAME}  ${DUT_PASSWORD}  ${sw_capwap_url}  ${DUT_CONNECTION_METHOD}
 
 TCCS-7299_Step5: Perform Device Update on VOSS Switch
     [Documentation]     Performs a device update on the VOSS switch
@@ -297,25 +298,15 @@ Clean Up Test Device and Confirm Success
 Reset VOSS Switch to Factory Defaults
     [Documentation]     Resets the VOSS switch to the factory defaults by remcoving the config.cfg file and resetting the device
     [Tags]              voss
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${connection_method}
 
-    ${spawn}=                           Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss
-    Should Not Be Equal As Strings      '${spawn}'        '-1'
+    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss   ${connection_method}
 
-    ${enable_results}=                  Send  ${spawn}  enable
-    Log To Console                      Command results are ${enable_results}
-
-    ${remove_results}=                  Send  ${spawn}  remove config.cfg     expect_match=Are you sure (y/n) ?
+    ${remove_results}=                  Send  ${spawn}  remove config.cfg     confirmation_phrases=Are you sure (y/n) ?    confirmation_arg=y
     Log To Console                      Command results are ${remove_results}
 
-    ${confirm_remove}=                  Send  ${spawn}  y
-    Log To Console                      Command results are ${confirm_remove}
-
-    ${reset_results}=                   Send  ${spawn}  reset     expect_match=Are you sure you want to reset the switch (y/n) ?
+    ${reset_results}=                   Send  ${spawn}  reset     confirmation_phrases=Are you sure you want to reset the switch (y/n) ?   confirmation_arg=y
     Log To Console                      Command results are ${remove_results}
-
-    ${confirm_reset}=                   Send  ${spawn}  y
-    Log To Console                      Command results are ${confirm_reset}
 
     sleep                   ${switch_reboot_wait}
 
@@ -324,10 +315,10 @@ Reset VOSS Switch to Factory Defaults
 Configure iqagent for VOSS Switch
     [Documentation]     Configures the iqagent for the VOSS switch
     [Tags]              voss
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${iqagent}
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${iqagent}  ${connection_method}
 
-    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss
-    Should Not Be Equal As Strings      '${spawn}'        '-1'
+
+    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss  ${connection_method}
 
     ${reset_iq_agent}=      Send Commands  ${spawn}  enable, configure terminal, show application iqagent, application, no iqagent enable, software iqagent reinstall , iqagent enable, show application iqagent , end
     Log To Console          Command results are ${reset_iq_agent}
@@ -347,10 +338,9 @@ Configure iqagent for VOSS Switch
 Confirm iqagent for VOSS Switch is Connected to XIQ
     [Documentation]     Confirms the iqagent for the VOSS switch is connected to XIQ
     [Tags]              voss
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${iqagent}
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${iqagent}  ${connection_method}
 
-    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss
-    Should Not Be Equal As Strings      '${spawn}'        '-1'
+    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss  ${connection_method}
 
     ${iqagent_results}=     Send                ${spawn}         show application iqagent
     Log To Console          Command results are ${iqagent_results}

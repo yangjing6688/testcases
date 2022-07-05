@@ -29,12 +29,11 @@ Force Tags   testbed_1_node
 *** Test Cases ***
 TCCS-7651_Step1: Onboard Aerohive AP
     [Documentation]         Checks for ap onboarding is success in case of valid scenario
-
     [Tags]                  production      tccs_7651       tccs_7651_step_1
-
     ${LOGIN_STATUS}=                Login User          ${tenant_username}      ${tenant_password}     check_warning_msg=True
     should be equal as integers     ${LOGIN_STATUS}               1
 
+    # Clean up the device if something happened
     ${DELETE_DEVICE_STATUS}=            Delete Device       device_serial=${ap1.serial}
     should be equal as integers     ${DELETE_DEVICE_STATUS}               1
 
@@ -52,11 +51,9 @@ TCCS-7651_Step1: Onboard Aerohive AP
 
 TCCS-7651_Step2: Config AP to Report AIO
     [Documentation]     Configure Capwap client server
-
     [Tags]              production      tccs_7651       tccs_7651_step_2
-
     Depends On          TCCS-7651_Step1
-    ${AP_SPAWN}=        Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
     Should not be equal as Strings      '${AP_SPAWN}'        '-1'
 
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
@@ -75,9 +72,7 @@ TCCS-7651_Step2: Config AP to Report AIO
 
 TCCS-7651_Step3: Check AP Status On UI
     [Documentation]     Checks for ap status
-
     [Tags]              production      tccs_7651       tccs_7651_step_3 
-
     Depends On          TCCS-7651_Step2
 
     ${LOGIN_STATUS}=          Login User          ${tenant_username}     ${tenant_password}
@@ -93,9 +88,7 @@ TCCS-7651_Step3: Check AP Status On UI
 
 TCCS-7651_Step4: Quick Onboard Simulated Device
     [Documentation]         Quick Onboarding - Add Simulated Devices
-
     [Tags]                  production      tccs_7651       tccs_7651_step_4
-
     ${LOGIN_STATUS}=                Login User          ${tenant_username}          ${tenant_password}
     should be equal as integers     ${LOGIN_STATUS}               1
 
@@ -106,3 +99,4 @@ TCCS-7651_Step4: Quick Onboard Simulated Device
     should be equal as integers     ${DELETE_AP}               1
 
     [Teardown]  Run Keywords    Logout User   Quit Browser
+

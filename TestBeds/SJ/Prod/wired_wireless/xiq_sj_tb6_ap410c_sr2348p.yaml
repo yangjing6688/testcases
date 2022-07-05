@@ -38,9 +38,11 @@ aerohive_sw1:
   serial:             '22081811231256'
   cli_type:           "AH-FASTPATH"
   mac:                B87cF20242A0
-  ip:                 10.16.152.228
-  port:               "22"
-  connection_method:  "telnet"
+  # Left the IP in just in case we need it in the future
+  # ip:               10.16.152.228
+  ip:                 10.16.128.23
+  port:               7027
+  connection_method: "console"
   network_policy:
   username:           admin
   password:           Aerohive123

@@ -69,7 +69,7 @@ TCCS-7748_Step2: Config Aerohive/Fastpath Switch to Report AIO
     [Documentation]     Config Aerohive Switch to Report AIO
 
     [Tags]              production         tccs_7748_step2
-    ${SW_SPAWN}=        Open Spawn          ${aerohive_sw1.console_ip}   ${aerohive_sw1.console_port}      ${aerohive_sw1.username}       ${aerohive_sw1.password}        ${aerohive_sw1.platform}
+    ${SW_SPAWN}=        Open Spawn          ${aerohive_sw1.ip}   ${aerohive_sw1.port}      ${aerohive_sw1.username}       ${aerohive_sw1.password}        ${aerohive_sw1.cli_type}
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-fastpath'   Configure XIQ on Fastpath Switch        ${SW_SPAWN}         ${sw_capwap_url}
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-switch'     Configure XIQ on Aerohive Switch        ${SW_SPAWN}         ${capwap_url}
 
@@ -97,7 +97,7 @@ TCCS-7748_Step4: Onboard Aerohive Switch via advanced Onboarding
     ${onboard_result}=      Advance Onboard Device          ${aerohive_sw1.serial}          device_make=${aerohive_sw1.make}   dev_location=${LOCATION}
     Sleep                   ${device_onboarding_wait}
     ${search_result}=       Search Device Serial    ${aerohive_sw1.serial}
-    ${SW_SPAWN}=        Open Spawn          ${aerohive_sw1.console_ip}   ${aerohive_sw1.console_port}      ${aerohive_sw1.username}       ${aerohive_sw1.password}        ${aerohive_sw1.platform}
+    ${SW_SPAWN}=        Open Spawn          ${aerohive_sw1.ip}   ${aerohive_sw1.port}      ${aerohive_sw1.username}       ${aerohive_sw1.password}        ${aerohive_sw1.cli_type}
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-fastpath'   Configure XIQ on Fastpath Switch        ${SW_SPAWN}         ${sw_capwap_url}
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-switch'     Configure XIQ on Aerohive Switch        ${SW_SPAWN}         ${capwap_url}
     wait until device online                        device_serial=${aerohive_sw1.serial}
