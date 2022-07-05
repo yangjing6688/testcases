@@ -675,15 +675,8 @@ jobs:
 
         EOL
 
-        # pytest_files=$(cat ${{ env.pytest_func_path }} ${{ env.pytest_non_prod_path }} | tr ',\n' ' ')
-        pytest_files=$(cat ${{ env.pytest_func_path }} | tr ',\n' ' ')
-
-        # robot_files=$(cat ${{ env.robot_func_path }} ${{ env.robot_non_prod_path }} | tr ',\n' ' ')
-        robot_files=$(cat ${{ env.robot_func_path }} | tr ',\n' ' ')
 
         # Set env vars
-        echo "PYTEST_FILES=${pytest_files}" >> $GITHUB_ENV
-        echo "ROBOT_FILES=${robot_files}" >> $GITHUB_ENV
         echo "RUN_PYTEST=${{ needs.check_changes.outputs.run-pytest }}" >> $GITHUB_ENV
         echo "RUN_ROBOT=${{ needs.check_changes.outputs.run-robot }}" >> $GITHUB_ENV
 
@@ -733,8 +726,10 @@ jobs:
         # Add framework to PYTHONPATH
         export PYTHONPATH="${PYTHONPATH}:${PWD}/extreme_automation_framework"
 
+        pytest_files=$(cat ${{ env.pytest_func_path }} | tr ',\n' ' ')
+
         # Run pytest
-        pytest --get_test_info cicd ${{ env.PYTEST_FILES }} || true
+        pytest --get_test_info cicd ${pytest_files} || true
 
         # Check if inventory tool had problems
         if [[ ! -f "${{ env.pytest_result_file }}" ]]; then
@@ -750,8 +745,10 @@ jobs:
         # Add framework to PYTHONPATH
         export PYTHONPATH="${PYTHONPATH}:${PWD}/extreme_automation_framework"
 
+        robot_files=$(cat ${{ env.robot_func_path }} | tr ',\n' ' ')
+
         # Run robot
-        python $ROBOT_TOOL_PATH ${{ env.ROBOT_FILES }}
+        python $ROBOT_TOOL_PATH ${robot_files}
 
         # Check if inventory tool had problems
         if [[ ! -f "${{ env.robot_result_file }}" ]]; then

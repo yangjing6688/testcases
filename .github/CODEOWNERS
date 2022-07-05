@@ -7,8 +7,8 @@
 # AutoIQ Team directories
 /TestBeds                                       @extremenetworks/autoiq-framework
 /doc                                            @extremenetworks/autoiq-framework
+/.github                                        @extremenetworks/autoiq-framework @mgoddard27
 /Tests/Robot/Functional/XIQ/Wireless/Sanity     @extremenetworks/autoiq-framework
-/.github                                        @extremenetworks/autoiq-framework
 
 # XIQ wired team directories
 /Tests/Robot/Functional/XIQ/Wired/      @extremenetworks/xiq-wired-it
