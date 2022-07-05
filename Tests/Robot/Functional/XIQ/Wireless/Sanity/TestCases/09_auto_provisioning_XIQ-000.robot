@@ -37,6 +37,7 @@ Library     common/Cli.py
 Library     xiq/flows/common/Login.py
 Library     xiq/flows/common/Navigator.py
 Library     xiq/flows/manage/Devices.py
+Library     extauto/app/common/TestFlow.py
 
 Library     xiq/flows/configure/AutoProvisioning.py
 Library     xiq/flows/configure/NetworkPolicy.py
@@ -54,7 +55,7 @@ Force Tags   testbed_1_node
 
 
 Suite Setup     Cleanup-Delete AP   ${ap1.serial}       ${aerohive_sw1.serial}
-
+Suite Teardown    Clean-up          ${ap1.serial}       ${aerohive_sw1.serial}
 *** Keywords ***
 Cleanup-Delete AP
     [Arguments]                             ${SERIAL1}                  ${SERIAL2}
@@ -67,6 +68,17 @@ Cleanup-Delete AP
     Delete Device                           device_serial=${SERIAL2}
     Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}
     Delete SSIDs                            ${SSID_NAME_01}             ${SSID_NAME_02}
+
+Clean-up
+    [Arguments]                             ${SERIAL1}                  ${SERIAL2}
+
+    Delete All Auto Provision Policies
+    Navigate To Devices
+    Delete Device                           device_serial=${SERIAL1}
+    Delete Device                           device_serial=${SERIAL2}
+    Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}
+    Delete SSIDs                            ${SSID_NAME_01}             ${SSID_NAME_02}
+
     [Teardown]   run keywords               logout user
     ...                                     quit browser
 
@@ -76,14 +88,6 @@ Configure XIQ on Fastpath Switch
     ${OUTPUT0}=         Send                ${SPAWN}         Application stop hiveagent
     ${OUTPUT0}=         Send                ${SPAWN}         Application start hiveagent
 
-Get XIQ Status on Fastpath Switch
-    [Arguments]         ${SPAWN}            ${sw_capwap_url}
-    ${SW_VERSION}=      Send                ${SW_SPAWN}         show version
-    ${HM_FULL_STATUS}=  Send                ${SW_SPAWN}         show hivemanager status
-    ${HM_STATUS}=       Send                ${SW_SPAWN}         show hivemanager status | include Status
-    ${HM_ADDRESS}=      Send                ${SW_SPAWN}         show hivemanager address
-    Should Contain      ${HM_ADDRESS}       ${sw_capwap_url}
-    Should Contain      ${HM_STATUS}        CONNECTED TO HIVEMANAGER
 
 Configure XIQ on Aerohive Switch
     [Arguments]         ${SPAWN}            ${capwap_url}
@@ -93,18 +97,12 @@ Configure XIQ on Aerohive Switch
     ${OUTPUT0}=         Send                ${SPAWN}            capwap client enable
     ${OUTPUT0}=         Send                ${SPAWN}            save config
 
-Get XIQ Status on Aerohive Switch
-    [Arguments]         ${SPAWN}            ${sw_capwap_url}
-    ${SW_VERSION}=      Send                ${SW_SPAWN}         show version
-    ${HM_ADDRESS}=      Send                ${SW_SPAWN}         show hivemanager
-    Should Contain      ${HM_ADDRESS}       ${sw_capwap_url}
-
 *** Test Cases ***
 TCCS-7632: Configure AP Auto Provision Profile
     [Documentation]         Configure AP Autoporvision Profile
 
     [Tags]                  production      tccs_7632
-    ${result}=              Login User              ${tenant_username}     ${tenant_password}
+
     ${POLICY_STATUS}=       Create Open Auth Express Network Policy     ${POLICY_NAME_01}      ${SSID_NAME_01}
 
     Auto Provision Basic Settings                   ${APP_POLICY_NAME_AP_01}        ${ap1.country}          &{APP_AP_01}
@@ -113,9 +111,9 @@ TCCS-7632: Configure AP Auto Provision Profile
     Auto Provision Capwap Configurations            &{CAPWAP_CONFIGURATION_01}
     Save and Enable Auto Provision Policy           ${APP_POLICY_NAME_AP_01}
 
-    ${ONBOARD_RESULT}=      Onboard Device          ${ap1.serial}           ${ap1.make}       location=${LOCATION}      device_os=${ap1.os}
+    ${ONBOARD_RESULT}=      Onboard Device          ${ap1.serial}           ${ap1.make}       location=${LOCATION}
 
-    ${AP_SPAWN}=        Open Spawn                  ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=        Open Spawn                  ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     ${OUTPUT0}=         Send Commands               ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
     Log to Console      Waiting until the AP is online
@@ -124,14 +122,13 @@ TCCS-7632: Configure AP Auto Provision Profile
     ${verify_result}=   Verify Auto Provision Policy Update     ${ap1.serial}     ${ap1.country}     &{APP_AP_01}
     Should Be Equal As Integers                     ${verify_result}        1
 
-    [Teardown]   run keywords      logout user
-    ...                            quit browser
-
 TCCS-7571: Configure Switch Auto Provision Profile
     [Documentation]         Configure Switch  Autoporvision Profile
 
     [Tags]                  production      tccs_7571
-    ${result}=              Login User              ${tenant_username}      ${tenant_password}
+
+    Depends On              TCCS-7632
+
     ${POLICY_STATUS}=       Create Open Auth Express Network Policy         ${POLICY_NAME_02}      ${SSID_NAME_02}
 
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-fastpath'               Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR22_SR23_01}
@@ -146,7 +143,7 @@ TCCS-7571: Configure Switch Auto Provision Profile
 
     Should Be Equal As Integers                     ${ONBOARD_RESULT}          1
 
-    ${SW_SPAWN}=        Open Spawn                  ${aerohive_sw1.console_ip}   ${aerohive_sw1.console_port}      ${aerohive_sw1.username}       ${aerohive_sw1.password}        ${aerohive_sw1.platform}
+    ${SW_SPAWN}=        Open Spawn                  ${aerohive_sw1.ip}   ${aerohive_sw1.port}      ${aerohive_sw1.username}       ${aerohive_sw1.password}        ${aerohive_sw1.platform}
 
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-fastpath'   Configure XIQ on Fastpath Switch        ${SW_SPAWN}     ${sw_capwap_url}
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-switch'     Configure XIQ on Aerohive Switch        ${SW_SPAWN}     ${capwap_url}
@@ -158,20 +155,3 @@ TCCS-7571: Configure Switch Auto Provision Profile
     ${verify_result}=   Verify Auto Provision Policy Update     serial=${aerohive_sw1.serial}       country_code=NA    &{SW_SR22_SR23_01}
     Should Be Equal As Integers                     ${verify_result}        1
 
-    [Teardown]   run keywords      logout user
-    ...                            quit browser
-
-Clean-up
-    [Documentation]         Cleanup script
-
-    [Tags]                  productions      cleanup
-    Login User                     ${tenant_username}          ${tenant_password}
-    Delete All Auto Provision Policies
-    Navigate To Devices
-    Delete Device                  device_serial=${ap1.serial}
-    Delete Device                  device_serial=${aerohive_sw1.serial}
-    Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}
-    Delete SSIDs                            ${SSID_NAME_01}             ${SSID_NAME_02}
-
-    [Teardown]   run keywords               logout user
-    ...                                     quit browser

@@ -32,8 +32,8 @@ ${AP_SERIAL}          ${ap1.serial}
 ${AP_MAKE}            ${ap1.make}
 ${AP_LOCATION}        ${ap1.location}
 ${AP_MAC}             ${ap1.mac}
-${AP_CONSOLE_IP}      ${ap1.console_ip}
-${AP_CONSOLE_PORT}    ${ap1.console_port}
+${AP_CONSOLE_IP}      ${ap1.ip}
+${AP_CONSOLE_PORT}    ${ap1.port}
 ${AP_USERNAME}        ${ap1.username}
 ${AP_PASSWORD}        ${ap1.password}
 ${AP_PLATFORM}        ${ap1.platform}

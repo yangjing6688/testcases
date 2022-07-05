@@ -7,6 +7,8 @@ netelem1:
   username:                 admin
   password:                 Aerohive123
   ip:                       10.16.172.162
+  port:                     "22"
+  connection_method:        "ssh"
   console_ip:               10.16.167.37
   console_port:             10008
   network_policy:           Test_np

@@ -11,7 +11,6 @@ Library     xiq/flows/common/Login.py
 01 do_something
     [Documentation]     Check the login and logout functionality
     [Tags]      sanity      login
-
     ${result1}=      Login User      ${tenant_username}     ${tenant_password}   url=${test_url}
     Should Be Equal As Strings      '${result1}'     '1'
     ${result2}=      Logout User

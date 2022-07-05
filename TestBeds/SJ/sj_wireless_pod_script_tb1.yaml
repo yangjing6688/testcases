@@ -1,6 +1,6 @@
 ap1:
   name:                     bui-flo-0006
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.166.250
   port:                     22
   username:                 admin
@@ -35,7 +35,7 @@ ap1:
 
 ap5010:
   name:                     Sui-Flo-0550
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.175.210
   port:                     22
   username:                 admin
@@ -72,14 +72,12 @@ ap5010:
 # AP302W
 ap302w:
   name:                     Sui-Flo-0161
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   "03022012080161"
-  console_ip:
-  console_port:
   mac:                      40882F57DBC0
   os:                       Cloud IQ Engine
   platform:                 aerohive
@@ -112,14 +110,12 @@ ap302w:
 # AP302W2
 ap302w2:
   name:                     Sui-Flo-0190
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   "03022012080191"
-  console_ip:
-  console_port:
   mac:                      40882F57DBC0
   os:                       Cloud IQ Engine
   platform:                 aerohive

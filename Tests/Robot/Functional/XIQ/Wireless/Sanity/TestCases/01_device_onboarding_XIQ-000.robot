@@ -32,16 +32,22 @@ TCCS-7651_Step1: Onboard Aerohive AP
 
     [Tags]                  production      tccs_7651       tccs_7651_step_1
 
-    ${result}=              Login User          ${tenant_username}      ${tenant_password}
-    Delete AP               ap_serial=${ap1.serial}
-    Change Device Password                      Aerohive123
-    ${ONBOARD_RESULT}=      Onboard Device      ${ap1.serial}           ${ap1.make}       location=${LOCATION}      device_os=${ap1.os}
-    ${search_result}=       Search AP Serial    ${ap1.serial}
-    should be equal as integers             ${result}               1
-    should be equal as integers             ${ONBOARD_RESULT}       1
-    should be equal as integers             ${search_result}        1
-    [Teardown]  Run Keywords   Logout User   Quit Browser
+    ${LOGIN_STATUS}=                Login User          ${tenant_username}      ${tenant_password}     check_warning_msg=True
+    should be equal as integers     ${LOGIN_STATUS}               1
 
+    ${DELETE_DEVICE_STATUS}=            Delete Device       device_serial=${ap1.serial}
+    should be equal as integers     ${DELETE_DEVICE_STATUS}               1
+
+    ${CHANGE_PASSWORD_STATUS}=      Change Device Password                  Aerohive123
+    should be equal as integers     ${CHANGE_PASSWORD_STATUS}               1
+
+    ${ONBOARD_RESULT}=              Onboard Device      ${ap1.serial}           ${ap1.make}       location=${LOCATION}
+    should be equal as integers     ${ONBOARD_RESULT}       1
+
+    ${search_result}=               Search AP Serial    ${ap1.serial}
+    should be equal as integers     ${search_result}        1
+
+    [Teardown]  Run Keywords   Logout User   Quit Browser
 
 
 TCCS-7651_Step2: Config AP to Report AIO
@@ -49,8 +55,10 @@ TCCS-7651_Step2: Config AP to Report AIO
 
     [Tags]              production      tccs_7651       tccs_7651_step_2
 
-    Depends On          tccs_7651_step_1
+    Depends On          TCCS-7651_Step1
     ${AP_SPAWN}=        Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    Should not be equal as Strings      '${AP_SPAWN}'        '-1'
+
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
     ${OUTPUT0}=         Send                ${AP_SPAWN}         console page 0
@@ -68,14 +76,19 @@ TCCS-7651_Step2: Config AP to Report AIO
 TCCS-7651_Step3: Check AP Status On UI
     [Documentation]     Checks for ap status
 
-    [Tags]              production      tccs_7651       tccs_7651_step_3
+    [Tags]              production      tccs_7651       tccs_7651_step_3 
 
-    Depends On          tccs_7651_step_2
+    Depends On          TCCS-7651_Step2
 
-    ${result}=          Login User          ${tenant_username}     ${tenant_password}
-    Wait Until Device Online                ${ap1.serial}
-    ${AP_STATUS}=       Get AP Status       ap_serial=${ap1.serial}
-    Should Be Equal As Strings  '${AP_STATUS}'     'green'
+    ${LOGIN_STATUS}=          Login User          ${tenant_username}     ${tenant_password}
+    should be equal as integers             ${LOGIN_STATUS}               1
+
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${ap1.serial}
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
+
+    ${DEVICE_STATUS}=       Get Device Status       device_mac=${ap1.mac}
+    Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
+
     [Teardown]    Run Keywords    Logout User   Quit Browser
 
 TCCS-7651_Step4: Quick Onboard Simulated Device
@@ -83,9 +96,13 @@ TCCS-7651_Step4: Quick Onboard Simulated Device
 
     [Tags]                  production      tccs_7651       tccs_7651_step_4
 
-    ${result}=              Login User          ${tenant_username}          ${tenant_password}
-    ${SIM_SERIAL}=          Onboard Simulated Device                AP460C             location=${LOCATION}
+    ${LOGIN_STATUS}=                Login User          ${tenant_username}          ${tenant_password}
+    should be equal as integers     ${LOGIN_STATUS}               1
 
-    [Teardown]  Run Keywords   Delete APs              ${SIM_SERIAL}
-    ...         AND            Quit Browser
+    ${SIM_SERIAL}=                  Onboard Simulated Device                AP460C             location=${LOCATION}
+    Should not be Empty             ${SIM_SERIAL}
 
+    ${DELETE_AP}=                   Delete APs              ${SIM_SERIAL}
+    should be equal as integers     ${DELETE_AP}               1
+
+    [Teardown]  Run Keywords    Logout User   Quit Browser

@@ -12,7 +12,7 @@ netelem1:
   username:                 "rwa"
   password:                 "rwa"
   connection_method:        "telnet"
-  os:                       "voss"
+  cli_type:                 "VOSS"
   make:                     "VOSS"
   host_mac:                 "00:04:96:f1:75:00"
   platform:                 "vsp8000"
@@ -49,7 +49,7 @@ netelem2:
   password:                 ""
   host_mac:                 "00:04:96:ed:f8:00"
   connection_method:        "telnet"
-  os:                       "exos"
+  cli_type:                 "EXOS"
   platform:                 "x460G2"
   image_family:             ""
   tgen:

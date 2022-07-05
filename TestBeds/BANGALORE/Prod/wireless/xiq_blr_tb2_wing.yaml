@@ -10,7 +10,9 @@ wing1:
   username:                 admin
   password:                 symbol
   platform:                 wing
-  ip:
+  ip:                       "10.234.105.72"
+  port:                     "22"
+  connection_method:        "ssh"
   console_ip:               10.234.105.230
   console_port:             7015
   country:                  United Kingdom

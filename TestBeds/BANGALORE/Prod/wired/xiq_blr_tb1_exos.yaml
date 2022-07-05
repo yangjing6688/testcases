@@ -7,6 +7,8 @@ netelem1:
   username:                 test
   password:                 test1234
   ip:                       10.234.135.120
+  port:                     "22"
+  connection_method:        "ssh"
   console_ip:               10.234.135.150
   console_port:             7007
   network_policy:           Test_np

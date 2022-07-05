@@ -2,6 +2,8 @@ netelem1:
   name:                  VSP-4900-48P
   serial:                1935F-10077
   ip:                    10.234.137.105
+  port:                  "22"
+  connection_method:     "ssh"
   profile:               VOSS_v2_Profile
   mac:                   489BD59EB400
   platform:              voss

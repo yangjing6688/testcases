@@ -1,6 +1,6 @@
 ap1:
   name:
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.170.67
   port:                     22
   username:                 admin
@@ -36,14 +36,12 @@ ap1:
 
 ap2:
   name:                     bui-flo-0019
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.170.68
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   "01501707240019"
-  console_ip:               10.16.170.68
-  console_port:             22
   mac:                      7C95B1004DC0
   os:                       Cloud IQ Engine
   platform:                 aerohive
@@ -73,14 +71,12 @@ ap2:
 
 ap3:
   name:                     bui-flo-0008
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.170.69
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   "04102001100008"
-  console_ip:               10.16.170.69
-  console_port:             22
   mac:                      BCF310267600
   os:                       Cloud IQ Engine
   platform:                 aerohive
@@ -116,6 +112,7 @@ router1:
   serial:                   "60018082400393"
   ip:                       10.16.170.66
   port:                     22
+  connection_method:        "ssh"
   os:                       HiveOS 10.0r10b build-254127
   mac:                      F4EAB52DCE00
   network_policy:           Test_np

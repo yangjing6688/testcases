@@ -66,10 +66,10 @@ TC-10862: Onboard AP on New customer Account
     Should Be Equal As Strings    ${IMPORT_MAP}       1
 
     #Onboard AP                  ${ap1.serial}       aerohive
-    ${ONBOARD_RESULT}=      Onboard Device      ${ap1.serial}           ${ap1.make}       location=${LOCATION}      device_os=${ap1.os}
+    ${ONBOARD_RESULT}=      Onboard Device      ${ap1.serial}           ${ap1.make}       location=${LOCATION}
     Should be equal as integers                 ${ONBOARD_RESULT}       1
 
-    ${AP_SPAWN}=                Open Spawn          ${ap1.console_ip}       ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     Set Suite Variable          ${AP_SPAWN}
     ${OUTPUT0}=                 Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
 

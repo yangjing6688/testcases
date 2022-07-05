@@ -110,7 +110,7 @@ Test1: Check Extreme Location Subscription Flow For Existing Customer
     Log to Console      Sleep for ${config_push_wait}
     sleep                         ${config_push_wait}
 
-    ${AP_SPAWN}=               Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=               Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     ${SENSOR_WIFI_CONFIG}=     Send                ${AP_SPAWN}         show running-config | include "interface wifi2"
     Should Contain             ${SENSOR_WIFI_CONFIG}      interface wifi2 mode adsp-sensor
 
@@ -261,7 +261,7 @@ Test7: Onboard AP on New customer Account
 
     Onboard AP                  ${ap1.serial}       aerohive
 
-    ${AP_SPAWN}=               Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=               Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     Set Suite Variable          ${AP_SPAWN}
     ${OUTPUT0}=                 Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
@@ -306,7 +306,7 @@ Test8: Check Extreme Location Subscription Flow For New Customer
     Log to Console      Sleep for ${config_push_wait}
     sleep                         ${config_push_wait}
 
-    ${AP_SPAWN}=               Open Spawn          ${ap1.console_ip}       ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=               Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     ${SENSOR_WIFI_CONFIG}=     Send                ${AP_SPAWN}         show running-config | include "interface wifi2"
     Should Contain             ${SENSOR_WIFI_CONFIG}      interface wifi2 mode adsp-sensor
 

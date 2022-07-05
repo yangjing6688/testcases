@@ -6,6 +6,8 @@ aerohive_sw1:
   cli_type:           "AH-FASTPATH"
   mac:                B87CF20131F8
   ip:                 10.16.152.229
+  port:               "22"
+  connection_method:  "ssh"
   network_policy:
   username:           admin
   password:           Aerohive123

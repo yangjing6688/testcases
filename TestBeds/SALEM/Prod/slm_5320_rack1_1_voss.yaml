@@ -14,7 +14,7 @@ netelem1:
   connection_method:        "telnet"
   cli_type:                       "voss"
   platform:                 "5320"
-  model:                    "FabricEngine5320_48P_8XE"
+  model:                    "FABRIC ENGINE 5320-48P-8XE"
   make:                     "voss"
   auth_mode:                "basic"
 

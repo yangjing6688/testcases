@@ -90,7 +90,7 @@ Test1: Onboard Sensor AP
     [Tags]                  tccs_12494      adsp        development
     ${LOGIN_XIQ}=               Login User          ${tenant_username}     ${tenant_password}
 
-    ${ONBOARD_RESULT}=          Onboard Device      ${ap1.serial}           ${ap1.make}       location=${ap1.location}      device_os=${ap1.os}
+    ${ONBOARD_RESULT}=          Onboard Device      ${ap1.serial}           ${ap1.make}       location=${ap1.location}
 
     ${AP_SPAWN}=                open pxssh spawn     ${ap1.ip}       ${ap1.username}     ${ap1.password}     ${ap1.port}
 
@@ -116,7 +116,7 @@ Test2: Onboard AP to Generate DoS Deauthentication
     Depends On              Test1
     ${LOGIN_XIQ}=               Login User          ${tenant_username}     ${tenant_password}
 
-    ${ONBOARD_RESULT}=          Onboard Device      ${ap2.serial}           ${ap2.make}       location=${ap2.location}      device_os=${ap2.os}
+    ${ONBOARD_RESULT}=          Onboard Device      ${ap2.serial}           ${ap2.make}       location=${ap2.location}
 
     ${AP2_SPAWN}=               Open PXSSH Spawn          ${ap2.ip}        ${ap2.username}       ${ap2.password}        ${ap2.port}
     Set Suite Variable          ${AP2_SPAWN}

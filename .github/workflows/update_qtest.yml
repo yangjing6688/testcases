@@ -5,16 +5,17 @@ on:
     branches:
       - 'main'
 
-env:
-  WORK_DIR:                   workflow_output
-  tag_marker_report_path:     tag_and_marker_report.txt
-
 jobs:
   update_qtest:
     name: Update qTest Testcases
     runs-on: ubuntu-latest
     # workflow_dispatch is a manual trigger. It would only get used for testing or other extenuating circumstances
     # This job's normal trigger is every push to main.
+
+    env:
+      pytest_result_file: pytest_data.json
+      robot_result_file: robot_data.json
+      tag_marker_report_path:     tag_and_marker_report.txt
 
     steps:
     - name: Checkout extreme_automation_tests
@@ -64,8 +65,10 @@ jobs:
         # Add framework to PYTHONPATH
         export PYTHONPATH="${PYTHONPATH}:${PWD}/extreme_automation_framework"
 
+        pytest_files=$(echo '${{ steps.pytest-func.outputs.all_changed_files }}' | tr ',\n' ' ')
+
         # Run pytest
-        pytest --get_test_info cicd ${{ env.PYTEST_FILES }} || true
+        pytest --get_test_info cicd ${pytest_files} || true
 
         # Check if inventory tool had problems
         if [[ ! -f "${{ env.pytest_result_file }}" ]]; then
@@ -81,8 +84,10 @@ jobs:
         # Add framework to PYTHONPATH
         export PYTHONPATH="${PYTHONPATH}:${PWD}/extreme_automation_framework"
 
+        robot_files=$(echo '${{ steps.robot-func.outputs.all_changed_files }}' | tr ',\n' ' ')
+
         # Run robot
-        python $ROBOT_TOOL_PATH ${{ env.ROBOT_FILES }}
+        python $ROBOT_TOOL_PATH ${robot_files}
 
         # Check if inventory tool had problems
         if [[ ! -f "${{ env.robot_result_file }}" ]]; then
@@ -94,14 +99,14 @@ jobs:
       if: ${{ steps.pytest-func.outputs.any_changed == 'true' }}
       run: |
         set -o pipefail # Preserves the return code from the python script in pipeline below
-        python .github/workflows/testcase_tags_parser.py ${{ env.pytest_result_file }} --mode validate_tags \
+        python .github/workflows/testcase_tags_parser.py ${{ env.pytest_result_file }} --mode update_qtest \
           --auth_token ${{ secrets.AUTOIQ_PAT }} | tee -a ${{ env.tag_marker_report_path }}
 
     - name: Check robot tags
       if: ${{ steps.robot-func.outputs.any_changed == 'true' }}
       run: |
         set -o pipefail # Preserves the return code from the python script in pipeline below
-        python .github/workflows/testcase_tags_parser.py ${{ env.robot_result_file }} --mode validate_tags \
+        python .github/workflows/testcase_tags_parser.py ${{ env.robot_result_file }} --mode update_qtest \
           --auth_token ${{ secrets.AUTOIQ_PAT }} | tee -a ${{ env.tag_marker_report_path }}
 
     - name: Email results

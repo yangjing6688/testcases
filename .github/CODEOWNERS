@@ -1,3 +1,17 @@
+# Each line is a file pattern followed by one or more owners.
+#
+# These owners will be the default owners for everything in
+# the repo. Unless a later match takes precedence, and
+# will be requested for review when someone opens a pull request.
+
+# AutoIQ Team directories
 /TestBeds                                       @extremenetworks/autoiq-framework
 /doc                                            @extremenetworks/autoiq-framework
+/.github                                        @extremenetworks/autoiq-framework @mgoddard27
 /Tests/Robot/Functional/XIQ/Wireless/Sanity     @extremenetworks/autoiq-framework
+
+# XIQ wired team directories
+/Tests/Robot/Functional/XIQ/Wired/      @extremenetworks/xiq-wired-it
+/Tests/Robot/NonProduction/XIQ/Wired/   @extremenetworks/xiq-wired-it
+/Tests/Pytest/NonProduction/XIQ/Wired/  @extremenetworks/xiq-wired-it
+/Tests/Pytest/Functional/XIQ/Wired/     @extremenetworks/xiq-wired-it

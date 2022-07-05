@@ -29,23 +29,41 @@ Variables    Environments/Config/device_commands.yaml
 
 Force Tags   testbed_1_node
 
+Suite Teardown  Test Suite Clean Up
+
 *** Keywords ***
+
+Test Suite Clean Up
+    [Documentation]     Cleanup
+
+    [Tags]              production		cleanup
+
+    ${LOGIN_STATUS}=                Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers     ${LOGIN_STATUS}               1
+
+    ${DELETE_STATUS}=               Delete Device       device_serial=${wing1.serial}
+    Should be Equal As Integers     ${DELETE_STATUS}      1
+
+    [Teardown]   run keywords       logout user
+    ...                             quit browser
 
 *** Test Cases ***
 TCCS-7279_Step1: Onboard WiNG AP
     [Documentation]         Checks for ap onboarding is success in case of valid scenario
 
-    [Tags]                  production      tccs_7279_step1
+    [Tags]                  production      tccs_7279   tccs_7279_step1
 
-    ${result}=              Login User          ${tenant_username}      ${tenant_password}
-    ${DELETE_RESULT}=       Delete Device           device_serial=${wing1.serial}
-    Log                     ${DELETE_RESULT}
+    ${LOGIN_STATUS}=                Login User          ${tenant_username}      ${tenant_password}     check_warning_msg=True
+    should be equal as integers     ${LOGIN_STATUS}               1
 
-    ${ONBOARD_RESULT}=      Onboard WiNG AP         ${wing1.serial}         ${wing1.mac}   ${wing1.make}
-    Should Be Equal As Integers                     ${ONBOARD_RESULT}           1
-    ${search_result}=       Search AP Serial    ${wing1.serial}
-    should be equal as integers             ${result}               1
-    should be equal as integers             ${search_result}        1
+    ${DELETE_STATUS}=               Delete Device           device_serial=${wing1.serial}
+    Should be Equal As Integers     ${DELETE_STATUS}      1
+
+    ${ONBOARD_RESULT}=              Onboard WiNG AP         ${wing1.serial}         ${wing1.mac}   ${wing1.make}
+    Should Be Equal As Integers     ${ONBOARD_RESULT}           1
+
+    ${search_result}=               Search AP Serial    ${wing1.serial}
+    should be equal as integers     ${search_result}        1
 
     [Teardown]      run keywords    logout user
      ...                            quit browser
@@ -53,10 +71,11 @@ TCCS-7279_Step1: Onboard WiNG AP
 TCCS-7279_Step2: Config AP to Report XIQ
     [Documentation]     Configure Capwap client server
 
-    [Tags]              production      tccs_7279_step2
+    [Tags]              production      tccs_7279   tccs_7279_step2
 
-    Depends On          tccs_7279_step1
+    Depends On          TCCS-7279_Step1
     ${AP_SPAWN}=        Open Spawn          ${wing1.console_ip}   ${wing1.console_port}      ${wing1.username}       ${wing1.password}        ${wing1.platform}
+    Should Not Be Equal As Strings         '${AP_SPAWN}'        '-1'
 
     Set Suite Variable  ${AP_SPAWN}
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         en, end, en, configure, no nsight-policy xiq, commit write memory, commit write memory
@@ -72,19 +91,17 @@ TCCS-7279_Step2: Config AP to Report XIQ
 TCCS-7279_Step3: Check AP Status On UI
     [Documentation]     Checks for ap status
 
-    [Tags]              production      tccs_7279_step3
+    [Tags]              production      tccs_7279   tccs_7279_step3
 
-    Depends On          tccs_7279_step1               tccs_7279_step2
-    ${result}=          Login User          ${tenant_username}     ${tenant_password}
+    Depends On          TCCS-7279_Step2
+    ${LOGIN_STATUS}=                Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers     ${LOGIN_STATUS}               1
 
-    Wait Until Device Online                ${wing1.serial}
+    ${CONNECTED_STATUS}=            Wait Until Device Online                ${wing1.serial}
+    Should Be Equal as Integers     ${CONNECTED_STATUS}          1
 
-    ${AP_STATUS}=       Get AP Status       ap_mac=${wing1.mac}
-
-    ${MGT_IP_ADDRESS}=  Get Device Details  ${wing1.mac}          MGT IP ADDRESS
-    Log To Console      ${MGT_IP_ADDRESS}
-
-    Should Be Equal As Strings  '${AP_STATUS}'     'green'
+    ${DEVICE_STATUS}=               Get Device Status       device_mac=${wing1.mac}
+    Should contain any              ${DEVICE_STATUS}    green     config audit mismatch
 
     [Teardown]      run keywords    logout user
      ...                            quit browser
@@ -92,29 +109,38 @@ TCCS-7279_Step3: Check AP Status On UI
 TCCS-7279_Step4: Check for SSH CLI Reachability
     [Documentation]     Check for SSH CLI Reachability
 
-    [Tags]              production      tccs_7279_step4
+    [Tags]              production      tccs_7279   tccs_7279_step4
 
-    Depends On          tccs_7279_step1               tccs_7279_step2               tccs_7279_step3
-    ${result}=          Login User          ${tenant_username}     ${tenant_password}
-    Enable SSH Availability
+    Depends On          TCCS-7279_Step3
+
+    ${LOGIN_STATUS}=                Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers     ${LOGIN_STATUS}               1
+
+    ${ENABLE_SSH}=                  Enable SSH Availability
+    should be equal as integers     ${ENABLE_SSH}               1
+
     Navigate To Devices
 
-	&{ip_port_info}=       Device360 Enable SSH CLI Connectivity     device_mac=${wing1.mac}    run_time=5
+	&{ip_port_info}=                Device360 Enable SSH CLI Connectivity     device_mac=${wing1.mac}    run_time=5
 
-    ${IP ADDR}=            Get From Dictionary  ${ip_port_info}  ip
-    ${PORT NUM}=           Get From Dictionary  ${ip_port_info}  port
+    ${IP_ADDR}=                     Get From Dictionary  ${ip_port_info}  ip
+    ${PORT_NUM}=                    Get From Dictionary  ${ip_port_info}  port
 
-    ${SPAWN1}=          Open PXSSH Spawn    ${IP_ADDR}      ${wing1.username}    ${wing1.password}      ${PORT_NUM}
-    ${OUTPUT1}=         Send Commands       ${SPAWN1}       en, show version
-    Should Contain      ${OUTPUT1}          Extreme Networks, Inc.
-    should not be equal as strings          ${SPAWN1}       -1
-    close spawn         ${SPAWN1}
+    Should not be Empty     ${IP_ADDR}
+    Should not be Empty     ${PORT_NUM}
+
+    ${SPAWN1}=                      Open PXSSH Spawn    ${IP_ADDR}      ${wing1.username}    ${wing1.password}      ${PORT_NUM}
+    Should Not be Equal As Strings  '${SPAWN1}'       '-1'
+
+    ${OUTPUT1}=                     Send Commands       ${SPAWN1}       en, show version
+    Should Contain                  ${OUTPUT1}          Extreme Networks, Inc.
+
+    Close spawn         ${SPAWN1}
 
     Sleep               5min
-    ${SPAWN2}=          Open PXSSH Spawn    ${IP_ADDR}      ${wing1.username}    ${wing1.password}      ${PORT_NUM}
-    Should be Equal As Integers             ${SPAWN2}       -1
 
-    Sleep				3min
+    ${SPAWN2}=                      Open PXSSH Spawn    ${IP_ADDR}      ${wing1.username}    ${wing1.password}      ${PORT_NUM}
+    Should be Equal As Strings      '${SPAWN2}'       '-1'
 
     [Teardown]   run keywords       logout user
     ...                             quit browser
@@ -142,15 +168,3 @@ TCCS-7279_Step4: Check for SSH CLI Reachability
 #
 #    [Teardown]   run keywords       logout user
 #    ...                             quit browser
-
-Cleanup
-    [Documentation]     Cleanup
-
-    [Tags]              productions		cleanup
-    Login User          ${tenant_username}  ${tenant_password}
-
-    ${DELETE_STATUS}=   Delete Device       device_serial=${wing1.serial}
-    Should be Equal As Integers             ${DELETE_STATUS}      1
-
-    [Teardown]   run keywords       logout user
-    ...                             quit browser

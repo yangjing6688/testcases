@@ -1,13 +1,11 @@
 ap3:
   name:                     bui-flo-0072
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.168.200
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '24602001170072'
-  console_ip:               10.16.168.200
-  console_port:             22
   mac:                      BCF3102AA000
   cli_type:                 "AH-AP"
   platform:                 aerohive
@@ -42,8 +40,11 @@ aerohive_sw1:
   mac:                B87CF2026E1C
   network_policy:
   username:           admin
-  password:           aerohive
+  password:           Aerohive123
   platform:           aerohive-fastpath
+  ip:                 "10.16.168.203"
+  port:               "22"
+  connection_method:  "ssh"
   console_ip:         10.16.168.37
   console_port:       4001
   test_port:

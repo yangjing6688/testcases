@@ -176,7 +176,7 @@ Log Out of XIQ and Confirm Success
 Configure IQAgent for EXOS Switch
     [Documentation]     Configures the iqagent for the VOSS switch
 
-    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.os}  ${netelem1.console_port}
+    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.os}  ${netelem1.port}
     send cmd  dut1_telnet   disable iqagent
     send cmd  dut1_telnet   configure iqagent server ipaddress none
     send cmd  dut1_telnet   configure iqagent server vr VR-Mgmt
@@ -200,7 +200,7 @@ Check Device Online
 clear vlans
     [Documentation]     This keyword will delete vlan 3
 
-    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.os}  ${netelem1.console_port}
+    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.os}  ${netelem1.port}
     send cmd   dut1_telnet      delete vlan 3
 
     [Teardown]  close connection to network element  dut1_telnet

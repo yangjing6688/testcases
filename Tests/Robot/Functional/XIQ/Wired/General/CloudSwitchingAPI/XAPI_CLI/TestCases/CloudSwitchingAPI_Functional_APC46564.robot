@@ -60,10 +60,10 @@ TCXM-14733: Login to a VIQ via XAPI
 
     set global variable   ${onboard_flag}  1
 
-    ${onboard_result}=  onboard switch     ${netelem1.serial}  device_os=${netelem1.os}   entry_type=Manual  location=${LOCATION}
+    ${onboard_result}=  onboard switch     ${netelem1.serial}  device_os=${netelem1.cli_type}   entry_type=Manual  location=${LOCATION}
 
-    RUN KEYWORD IF  '${netelem1.os}' == 'exos'  Configure IQagent EXOS
-    RUN KEYWORD IF  '${netelem1.os}' == 'voss'  Configure IQagent VOSS
+    RUN KEYWORD IF  '${netelem1.cli_type}' == 'exos'  Configure IQagent EXOS
+    RUN KEYWORD IF  '${netelem1.cli_type}' == 'voss'  Configure IQagent VOSS
 
     IF   '${netelem1.platform}' == 'Stack'
           ${onboard_result} =   Wait Until Device Online   device_mac=${netelem1.mac}
@@ -102,7 +102,7 @@ TCXM-14738 : Get List of Devices
     END
 
 
-    IF   '${netelem1.os}' == 'exos' or '${netelem1.os}' == 'EXOS'
+    IF   '${netelem1.cli_type}' == 'exos' or '${netelem1.cli_type}' == 'EXOS'
          IF   '${netelem1.platform}' == 'Stack' or '${netelem1.platform}' == 'stack'
               set global variable   ${EXOSStack}   ${deviceID} 
          ELSE

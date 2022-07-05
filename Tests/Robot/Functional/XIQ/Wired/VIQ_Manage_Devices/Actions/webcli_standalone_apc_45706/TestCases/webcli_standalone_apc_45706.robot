@@ -134,8 +134,8 @@ TCXM-13374 Commands are prefixed with disabled cli paging and cli refresh
 *** Keywords ***
 Pre Condition
     [Documentation]     Pre condition to check if the OS is voss the test should skip
-    run keyword if  """${netelem1.os}""" == "exos" and """${netelem1.platform}""" != "Stack"    Log Into XIQ and Set Up Test
-    ...  ELSE   run keywords  log to console  The testbed runs on OS ${netelem1.os} and platform ${netelem1.platform}, where the Story not supported on VOSS and Stack. Hence skipping all testcases
+    run keyword if  """${netelem1.cli_type}""" == "exos" and """${netelem1.platform}""" != "Stack"    Log Into XIQ and Set Up Test
+    ...  ELSE   run keywords  log to console  The testbed runs on OS ${netelem1.cli_type} and platform ${netelem1.platform}, where the Story not supported on VOSS and Stack. Hence skipping all testcases
     ...  AND    skip
     ${randomstring}     Generate Random String
 
@@ -184,8 +184,8 @@ Log Into XIQ and Confirm Success
 
 Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, closes the browser, and resets the NOS version
-    run keyword if  """${netelem1.os}""" == "exos" and """${netelem1.platform}""" != "Stack"       Delete Device       ${netelem1.serial}
-    ...  ELSE   run keywords  log to console  The testbed runs on OS ${netelem1.os} and platform ${netelem1.platform}, where this story not supported on VOSS or Stack. Hence skipping all testcases
+    run keyword if  """${netelem1.cli_type}""" == "exos" and """${netelem1.platform}""" != "Stack"       Delete Device       ${netelem1.serial}
+    ...  ELSE   run keywords  log to console  The testbed runs on OS ${netelem1.cli_type} and platform ${netelem1.platform}, where this story not supported on VOSS or Stack. Hence skipping all testcases
     ...  AND    skip
 
     delete_location_building_floor              ${location}         ${building}     ${floor}
@@ -203,7 +203,7 @@ Log Out of XIQ and Confirm Success
 Configure IQAgent for EXOS Switch
     [Documentation]     Configures the iqagent for the VOSS switch
 
-    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.os}
+    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}
     send cmd   dut1_telnet      configure iqagent server ipaddress none
     send cmd   dut1_telnet     configure iqagent server vr VR-Mgmt
     send cmd   dut1_telnet      configure iqagent server ipaddress ${sw_connection_host}
@@ -224,7 +224,7 @@ Check Device Online
 clear vlans
     [Documentation]     This keyword will delete vlan 3
 
-    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.os}  
+    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}  
     send cmd   dut1_telnet      delete vlan 3
 
     [Teardown]  close connection to network element  dut1_telnet

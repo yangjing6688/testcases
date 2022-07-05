@@ -28,8 +28,8 @@ ${IQAGENT}              ${xiq.sw_connection_host}
 
 ${DUT_SERIAL}           ${aerohive_sw1.serial}
 ${DUT_MAC}              ${aerohive_sw1.mac}
-${DUT_CONSOLE_IP}       ${aerohive_sw1.console_ip}
-${DUT_CONSOLE_PORT}     ${aerohive_sw1.console_port}
+${DUT_CONSOLE_IP}       ${aerohive_sw1.ip}
+${DUT_CONSOLE_PORT}     ${aerohive_sw1.port}
 ${DUT_USERNAME}         ${aerohive_sw1.username}
 ${DUT_PASSWORD}         ${aerohive_sw1.password}
 ${DUT_PLATFORM}         ${aerohive_sw1.platform}

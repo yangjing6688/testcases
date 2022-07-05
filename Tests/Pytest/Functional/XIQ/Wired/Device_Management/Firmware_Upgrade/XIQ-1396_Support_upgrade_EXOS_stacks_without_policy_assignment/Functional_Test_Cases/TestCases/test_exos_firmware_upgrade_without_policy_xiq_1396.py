@@ -51,20 +51,6 @@ pytest --tc-file /automation/tests/extreme_automation_tests/Environments/environ
 @mark.testbed_1_node    # Marked all test cases as 1 node
 class xiqTests():
 
-    # A method to login into the XIQ instance
-    def init_xiq_libaries_and_login(self, username, password, capture_version=False, code="default", url="default", incognito_mode="False"):
-        self.xiq = XiqLibrary()
-        time.sleep(5)
-        res = self.xiq.init_xiq_libaries_and_login(username, password, capture_version=capture_version, code=code, url=url, incognito_mode=incognito_mode)
-        if res != 1:
-            pytest.fail('Could not Login')
-
-    # A method to logout of the XIQ instance
-    def deactivate_xiq_libaries_and_logout(self):
-        self.xiq.login.logout_user()
-        self.xiq.login.quit_browser()
-        self.xiq = None
-
     # [Setup] Test class setup
     @classmethod
     def setup_class(cls):
@@ -87,8 +73,8 @@ class xiqTests():
             cls.cfg['${TEST_NAME}'] = 'SETUP'
 
             # Skipping the setup and test case execution in case the platform is not an exos-stack
-            if cls.tb.dut1_platform.lower() != 'stack':
-                pytest.skip("This platform {} is not supported for this feature!".format(cls.tb.dut1.os))
+            if cls.tb.config.netelem1.platform.lower() != 'stack':
+                pytest.skip("This platform {} is not supported for this feature!".format(cls.tb.dut1.cli_type))
                 
             # Getting the list of Stack nodes serial numbers from the testbed file
             device_serial_list = cls.tb.dut1.serial.split(",")
