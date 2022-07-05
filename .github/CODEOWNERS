@@ -11,7 +11,7 @@
 /.github                                        @extremenetworks/autoiq-framework
 
 # XIQ wired team directories
-/Tests/Robot/Functional/XIQ/Wired       @extremenetworks/xiq-wired-it
+/Tests/Robot/Functional/XIQ/Wired/      @extremenetworks/xiq-wired-it
 /Tests/Robot/NonProduction/XIQ/Wired/   @extremenetworks/xiq-wired-it
 /Tests/Pytest/NonProduction/XIQ/Wired/  @extremenetworks/xiq-wired-it
 /Tests/Pytest/Functional/XIQ/Wired/     @extremenetworks/xiq-wired-it
