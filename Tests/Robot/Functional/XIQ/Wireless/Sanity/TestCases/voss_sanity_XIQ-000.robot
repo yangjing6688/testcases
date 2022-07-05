@@ -263,8 +263,16 @@ Onboard New Test Device
     ${search_result}=  Search Device Serial   ${serial}
 
     # Onboard the device
-    Run Keyword If  '${search_result}' != '1'    Onboard VOSS Device  device_serial=${serial}  entry_type=${ENTRY_TYPE}   policy_name=${policy}  loc_name=${location}
-    Run Keyword If  '${search_result}' != '1'    Sleep   ${voss_device_connect_wait}
+    ${ONBOARD_RESULT}=      Onboard Device          ${serial}         device_make=${DUT_TYPE}       location=${location}
+    Should Be Equal As Integers                     ${ONBOARD_RESULT}           1
+
+    ${voss_result}=  Wait Until Device Online        ${serial}
+    Should Be Equal As Integers                     ${voss_result}       1
+
+    ${device_managed_result}=    WAIT UNTIL DEVICE MANAGED       ${serial}           MANAGED
+    Should Be Equal As Integers                 ${device_managed_result}       1
+
+    Confirm Device Status   ${serial}  ${STATUS_AFTER_UPDATE}
 
     # Confirm the device was added successfully
     ${search_result}=  Search Device Serial  ${serial}
