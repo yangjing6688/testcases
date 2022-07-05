@@ -139,7 +139,6 @@ def update_qtest():
                             print(f"{SUCCESS_PREFIX} Test Case [{tag}] is already marked automated in qTest")
                         elif json_response['result']['status'] == 'fail':
                             print(f"{PRINT_PREFIX} Test Case [{tag}] does not exist in qTest")
-                            rc=1
                         else:
                             print(f"{PRINT_PREFIX} {json_response}")
                             rc=1
