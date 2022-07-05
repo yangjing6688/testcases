@@ -12,6 +12,7 @@ wing1:
   platform:                 wing
   ip:                       10.16.166.232
   port:                     22
+  connection_method:        "ssh"
   console_ip:               10.16.166.228
   console_port:             4002
   country:                  United Kingdom

@@ -99,7 +99,7 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     ${SEARCH_ROUTER}=       Search Device Serial    ${router1.serial}
     Should Be Equal As Integers             ${SEARCH_ROUTER}        1
 
-    ${ROUTER_SPAWN}=        Open Spawn          ${router1.console_ip}   ${router1.console_port}      ${router1.username}       ${router1.password}        ${router1.platform}
+    ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.platform}
     Set Suite Variable      ${ROUTER_SPAWN}
     ${CONFIG_CAPWAP}=       Send Commands           ${ROUTER_SPAWN}         capwap client server name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
@@ -139,7 +139,7 @@ TCCS-7766_Step2: Onboard Aerohive XR Router Using Advance Onboarding Method
     ${ONBOARD_ROUTER}=          Advance Onboard Device         ${router1.serial}    device_make=${router1.make}   dev_location=${LOCATION}
     Should Be Equal As Integers             ${ONBOARD_ROUTER}           1
 
-    ${ROUTER_SPAWN}=        Open Spawn          ${router1.console_ip}   ${router1.console_port}      ${router1.username}       ${router1.password}        ${router1.platform}
+    ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.platform}
     Set Suite Variable      ${ROUTER_SPAWN}
     ${CONFIG_CAPWAP}=       Send Commands       ${ROUTER_SPAWN}         capwap client server name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
@@ -189,7 +189,7 @@ TCCS-12330: Create Router XR Template
     Log to Console          Sleep for ${config_push_wait}
     sleep                   ${config_push_wait}
 
-    ${ROUTER_SPAWN}=        Open Spawn          ${router1.console_ip}   ${router1.console_port}      ${router1.username}       ${router1.password}        ${router1.platform}
+    ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.platform}
     Set Suite Variable      ${ROUTER_SPAWN}
     ${SHOW_TRUNK_VLANS}=    Send                    ${ROUTER_SPAWN}         ${CMD_SHOW_TRUNK_VLANS}
     Should Contain          ${SHOW_TRUNK_VLANS}     ${EXPECTED_TRUNK_VLANS}
@@ -216,7 +216,7 @@ TCCS-7351: Upgrade Latest IQ Engine Router Firmware
     Sleep                   ${router_reboot_wait}
     Sleep                   ${router_reboot_wait}
 
-    ${ROUTER_SPAWN}=        Open Spawn          ${router1.console_ip}   ${router1.console_port}      ${router1.username}       ${router1.password}        ${router1.platform}
+    ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.platform}
     ${ROUTER_FM_VER}=       Send          ${ROUTER_SPAWN}           show version | include Version
     ${SHOW_RUN_CONFIG}=     Send          ${ROUTER_SPAWN}           ${CMD_SHOW_CONFIG}
 

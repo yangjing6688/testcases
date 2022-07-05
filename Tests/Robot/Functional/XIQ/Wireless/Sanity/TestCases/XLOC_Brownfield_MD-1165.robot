@@ -72,7 +72,7 @@ Pre Condition
     ${ONBOARD_RESULT}=      Onboard Device      ${ap1.serial}           ${ap1.make}       location=${LOCATION}
     Should be equal as integers                 ${ONBOARD_RESULT}       1
 
-    ${AP_SPAWN}=                Open Spawn          ${ap1.console_ip}       ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     Set Suite Variable          ${AP_SPAWN}
     ${OUTPUT0}=                 Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
@@ -104,7 +104,7 @@ TC-7297: Validate XLOC Config in already subscribed account
     Log to Console      Sleep for ${config_push_wait}
     sleep                         ${config_push_wait}
 
-    ${AP_SPAWN}=                Open Spawn          ${ap1.console_ip}       ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     ${SENSOR_WIFI_CONFIG}=     Send                ${AP_SPAWN}         show running-config | include "interface wifi2"
     Should Contain             ${SENSOR_WIFI_CONFIG}      interface wifi2 mode adsp-sensor
 

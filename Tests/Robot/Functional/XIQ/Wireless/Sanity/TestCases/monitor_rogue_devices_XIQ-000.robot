@@ -77,7 +77,7 @@ Test0: Pre-config
     [Tags]                  sanity  add   Rougueap  wips_ssid   aerohive  P3  P4   regression
     ${result}=           Login User          ${tenant_username}     ${tenant_password}
     Onboard Device       ${ap2.serial}           ${ap2.make}       location=${LOCATION}
-    ${AP_SPAWN}=         Open Spawn        ${ap2.console_ip}   ${ap2.console_port}      ${ap2.username}       ${ap2.password}        ${ap2.platform}
+    ${AP_SPAWN}=         Open Spawn        ${ap2.ip}   ${ap2.port}      ${ap2.username}       ${ap2.password}        ${ap2.platform}
     Set Suite Variable   ${AP_SPAWN}
 
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
@@ -106,7 +106,7 @@ Test1: TC-49871 - Configure WIPS Policy on AP
     Log to Console      Sleep for ${config_push_wait}
     sleep                         ${config_push_wait}
 
-    ${AP_SPAWN}=        Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     ${SENSOR_WIFI_CONFIG}=     Send                ${AP_SPAWN}         show running-config | include "interface wifi"
     Should Contain      ${SENSOR_WIFI_CONFIG}      interface wifi0 mode sensor
     Should Contain      ${SENSOR_WIFI_CONFIG}      interface wifi1 mode sensor
@@ -251,7 +251,7 @@ Test7: Delete Wips Policy
     ${AP1_UPDATE_CONFIG}=      Update Network Policy To AP   ${NW_POLICY_NAME}     ap_serial=${ap1.serial}
     Should Be Equal As Strings              '${AP1_UPDATE_CONFIG}'       '1'
 
-    ${AP_SPAWN}=        Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     ${WIPS_CONFIG}=     Send                ${AP_SPAWN}         show running-config | include "security wlan-idp"
     Should Not Contain      ${WIPS_CONFIG}      security wlan-idp profile ${SSID_NAME}
     Should Not Contain      ${WIPS_CONFIG}      security wlan-idp profile ${SSID_NAME} ap-policy

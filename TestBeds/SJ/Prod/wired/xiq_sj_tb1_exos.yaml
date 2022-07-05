@@ -7,6 +7,8 @@ netelem1:
   username:                 admin
   password:                 Aerohive123
   ip:                       10.16.152.98
+  port:                     "22"
+  connection_method:        "telnet"
   console_ip:               10.16.128.23
   console_port:             7036
   network_policy:           Test_np

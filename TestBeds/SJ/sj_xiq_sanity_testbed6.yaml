@@ -1,6 +1,6 @@
 ap1:
   name:                     bui-flo-1996
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.171.71
   port:                     22
   username:                 admin
@@ -36,7 +36,7 @@ ap1:
 
 ap2:
   name:                     bui-flo-0005
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.171.74
   port:                     22
   username:                 admin
@@ -73,7 +73,7 @@ ap2:
 
 ap3:
   name:                     bui-flo-0096
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.170.69
   port:                     22
   username:                 admin
@@ -109,7 +109,7 @@ ap3:
 
 ap4:
   name:                     bui-flo-0090
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.170.69
   port:                     22
   username:                 admin
@@ -145,9 +145,10 @@ ap4:
 
 ap5:
   name:                     bui-flo-0090
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.171.75
   port:                     22
+  connection_method:        "ssh"
   username:                 admin
   password:                 Aerohive123
   serial:                   "04101912120090"
@@ -187,6 +188,7 @@ router1:
   serial:                   "60018082400393"
   ip:                       192.168.14.129
   port:                     22
+  connection_method:        "ssh"
   os:                       HiveOS 10.0r10b build-254127
   mac:                      F4EAB52DCE00
   network_policy:           Test_np

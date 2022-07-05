@@ -3,6 +3,9 @@ router1:
   model:                    XR600P
   device_template:          XR600P_test_automation
   serial:                   '60018082400461'
+  ip:                       "10.234.105.75"
+  port:                     "22"
+  connection_method:        "ssh"
   cli_type:                 "AH_XR"
   mac:                      F4EAB52DDF00
   network_policy:           Test_np

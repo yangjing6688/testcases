@@ -35,8 +35,8 @@ ${IQAGENT}            ${xiq.sw_connection_host}
 ${AP_SERIAL}          ${ap1.serial}
 ${AP_MAKE}            ${ap1.make}
 ${AP_LOCATION}        ${ap1.location}
-${AP_CONSOLE_IP}      ${ap1.console_ip}
-${AP_CONSOLE_PORT}    ${ap1.console_port}
+${AP_CONSOLE_IP}      ${ap1.ip}
+${AP_CONSOLE_PORT}    ${ap1.port}
 ${AP_USERNAME}        ${ap1.username}
 ${AP_PASSWORD}        ${ap1.password}
 ${AP_PLATFORM}        ${ap1.platform}
@@ -44,8 +44,8 @@ ${AP_PLATFORM}        ${ap1.platform}
 ${SW_SERIAL}          ${aerohive_sw1.serial}
 ${SW_MAKE}            ${aerohive_sw1.make}
 ${SW_LOCATION}        ${aerohive_sw1.location}
-${SW_CONSOLE_IP}      ${aerohive_sw1.console_ip}
-${SW_CONSOLE_PORT}    ${aerohive_sw1.console_port}
+${SW_CONSOLE_IP}      ${aerohive_sw1.ip}
+${SW_CONSOLE_PORT}    ${aerohive_sw1.port}
 ${SW_USERNAME}        ${aerohive_sw1.username}
 ${SW_PASSWORD}        ${aerohive_sw1.password}
 ${SW_PLATFORM}        ${aerohive_sw1.platform}
@@ -53,8 +53,8 @@ ${SW_PLATFORM}        ${aerohive_sw1.platform}
 ${RT_SERIAL}          ${router1.serial}
 ${RT_MAKE}            ${router1.make}
 ${RT_LOCATION}        ${router1.location}
-${RT_CONSOLE_IP}      ${router1.console_ip}
-${RT_CONSOLE_PORT}    ${router1.console_port}
+${RT_CONSOLE_IP}      ${router1.ip}
+${RT_CONSOLE_PORT}    ${router1.port}
 ${RT_USERNAME}        ${router1.username}
 ${RT_PASSWORD}        ${router1.password}
 ${RT_PLATFORM}        ${router1.platform}

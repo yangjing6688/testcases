@@ -92,7 +92,7 @@ Test2: Config AP1 and AP2 Capwap to Report AIO - TCXM-16059
     Depends On          Test1
     ${aps}=      Create List        ${ap1}        ${ap2}
     FOR    ${ap}    IN    @{aps}
-        ${AP_SPAWN}=        Open Spawn          ${ap}[console_ip]   ${ap}[console_port]      ${ap}[username]       ${ap}[password]        ${ap}[platform]
+        ${AP_SPAWN}=        Open Spawn          ${ap}[ip]   ${ap}[port]      ${ap}[username]       ${ap}[password]        ${ap}[platform]
         Set Suite Variable  ${AP_SPAWN}
         ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
         ${OUTPUT0}=         Send                ${AP_SPAWN}         console page 0
@@ -193,7 +193,7 @@ Test6: Verify Connection - TCXM-16059
 *** Keywords ***
 Setup AP in Client Mode
     [Arguments]     ${ap}
-    ${spawn}	        Open Spawn         ${ap}[console_ip]    ${ap}[console_port]    ${ap}[username]	 ${ap}[password]  ${ap}[platform]
+    ${spawn}	        Open Spawn         ${ap}[ip]    ${ap}[port]    ${ap}[username]	 ${ap}[password]  ${ap}[platform]
     Send                ${spawn}           console page 0
     Send                ${spawn}           interface eth0 shutdown
     ${out}     Send     ${spawn}           show interface
@@ -249,7 +249,7 @@ Cleanup
 
 Verify client mode ap
     [Arguments]    ${ap}
-    ${spawn}	        Open Spawn         ${ap}[console_ip]    ${ap}[console_port]    ${ap}[username]	 ${ap}[password]  ${ap}[platform]
+    ${spawn}	        Open Spawn         ${ap}[ip]    ${ap}[port]    ${ap}[username]	 ${ap}[password]  ${ap}[platform]
     ${out}     Send     ${spawn}           show interface
     log        ${out}
     ${out}     Send     ${spawn}           show l3 interface

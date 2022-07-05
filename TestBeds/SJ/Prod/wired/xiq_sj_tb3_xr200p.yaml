@@ -6,6 +6,7 @@ router1:
   ip:                       10.16.168.112
   port:                     22
   cli_type:                 "AH_XR"
+  connection_method:        "ssh"
   mac:                      08EA4440F040
   network_policy:           Test_np
   username:                 admin

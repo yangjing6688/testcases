@@ -6,14 +6,14 @@ netelem1:
   serial:                   "SB032048G-00098"
   mac:                      "F0642691A000"
   ip:                       "10.148.35.127"
-  port:                     "23"
+  port:                     "22"
   console_ip:               "10.148.35.5"
   console_port:             "5046"
   mgmt_vlan:                "VLAN_4000"
   username:                 "admin"
   password:                 ""
-  connection_method:        "telnet"
-  cli_type:                       "exos"
+  connection_method:        "ssh"
+  cli_type:                 "exos"
   platform:                 "5520"
   model:                    "SwitchEngine5520_24W"
   make:                     "exos"
@@ -42,7 +42,7 @@ tgen1:
   username:     "root"
   password:     "PASprt86"
   port:         "22"
-  cli_type:           "MU-LINUX"
+  cli_type:     "MU-LINUX"
 
 tgen_ports:
   netelem1:

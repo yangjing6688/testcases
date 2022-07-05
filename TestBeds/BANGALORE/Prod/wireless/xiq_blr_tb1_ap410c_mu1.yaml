@@ -1,13 +1,11 @@
 ap1:
   name:                     bui-flo-0183
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.234.207.75
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '04102005200183'
-  console_ip:               10.234.207.75
-  console_port:             '22'
   mac:                      BCF3105CC300
   cli_type:                 "AH-AP"
   platform:                 aerohive

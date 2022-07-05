@@ -76,7 +76,7 @@ Pre Condition
     Should Be Equal As Strings          '${DEVICE_ONBOARD}'       '1'
     sleep    ${device_onboarding_wait}
 
-    ${AP_SPAWN}=                Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     Set Suite Variable          ${AP_SPAWN}
     Send Commands               ${AP_SPAWN}         no capwap client enable, no capwap client server, no capwap client server name, no capwap client server backup name, no capwap client default-server-name, capwap client server name ${capwap_url}, capwap client server backup name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client enable, save config
     sleep    ${device_onboarding_wait}

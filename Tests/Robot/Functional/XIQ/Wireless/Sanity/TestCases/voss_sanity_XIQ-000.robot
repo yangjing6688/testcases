@@ -47,8 +47,8 @@ ${DUT_SERIAL}               ${netelem1.serial}
 ${DUT_NAME}                 ${netelem1.name}
 ${DUT_MODEL}                ${netelem1.model}
 ${DUT_MAC}                  ${netelem1.mac}
-${DUT_CONSOLE_IP}           ${netelem1.console_ip}
-${DUT_CONSOLE_PORT}         ${netelem1.console_port}
+${DUT_CONSOLE_IP}           ${netelem1.ip}
+${DUT_CONSOLE_PORT}         ${netelem1.port}
 ${DUT_USERNAME}             ${netelem1.username}
 ${DUT_PASSWORD}             ${netelem1.password}
 ${DUT_PLATFORM}             ${netelem1.platform}

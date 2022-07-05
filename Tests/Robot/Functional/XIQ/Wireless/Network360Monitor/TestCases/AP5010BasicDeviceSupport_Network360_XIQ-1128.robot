@@ -85,7 +85,7 @@ Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
     ${search_result}=       Search AP Serial    ${ap1.serial}
     should be equal as integers                 ${onboard_result}     1
     should be equal as integers                 ${search_result}      1
-    ${AP_SPAWN}=            Open Spawn          ${ap1.console_ip}     ${ap1.console_port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
+    ${AP_SPAWN}=            Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
     ${OUTPUT0}=             Send Commands       ${AP_SPAWN}           capwap client server name ${CAPWAP_URL}, capwap client default-server-name ${CAPWAP_URL}, capwap client server backup name ${CAPWAP_URL}, no capwap client enable, capwap client enable, save config
     ${OUTPUT0}=             Send                ${AP_SPAWN}           ${CMD_CONSOLE_PAGE_0}
     ${OUTPUT0}=             Send                ${AP_SPAWN}           ${CMD_SHOW_VERSION_DETAIL}
@@ -154,7 +154,7 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
     Wait Until Device Online  ${ap1.serial}  None  30  20
 
     Sleep                     ${browser_load_wait}
-    ${AP_SPAWN1}=             Open Spawn        ${ap1.console_ip}   ${ap1.console_port}   ${ap1.username}   ${ap1.password}   ${ap1.platform}
+    ${AP_SPAWN1}=             Open Spawn        ${ap1.ip}   ${ap1.port}   ${ap1.username}   ${ap1.password}   ${ap1.platform}
     ${OUTPUT_SSID}=           Send              ${AP_SPAWN1}        show ssid
     ${AP_BUILD_VERSION}=      Get AP Version    ${AP_SPAWN1}
     Close Spawn               ${AP_SPAWN1}
