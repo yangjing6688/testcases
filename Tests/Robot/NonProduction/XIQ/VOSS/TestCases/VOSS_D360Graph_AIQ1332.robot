@@ -28,8 +28,8 @@ ${IQAGENT}                  ${xiq.sw_connection_host}
 ${DUT_SERIAL}               ${netelem3.serial}
 ${DUT_MAC}                  ${netelem3.mac}
 ${DUT_NAME}                 ${netelem3.name}
-${DUT_CONSOLE_IP}           ${netelem3.console_ip}
-${DUT_CONSOLE_PORT}         ${netelem3.console_port}
+${DUT_CONSOLE_IP}           ${netelem3.ip}
+${DUT_CONSOLE_PORT}         ${netelem3.port}
 ${DUT_USERNAME}             ${netelem3.username}
 ${DUT_PASSWORD}             ${netelem3.password}
 ${DUT_PLATFORM}             ${netelem3.platform}

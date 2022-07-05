@@ -39,7 +39,7 @@ TCXM-19753 - XIQ-4593 - QuickAdd: Onboard AP5010/AP5010U cloud managed - step1
     ${result}=              Login User          ${tenant_username}      ${tenant_password}
     Delete AP               ap_serial=${ap5010.serial}
     Change Device Password                      Aerohive123
-    ${ONBOARD_RESULT}=      Onboard Device      ${ap5010.serial}           ${ap5010.make}       location=${LOCATION}      device_os=${ap5010.os}
+    ${ONBOARD_RESULT}=      Onboard Device      ${ap5010.serial}           ${ap5010.make}       location=${LOCATION}
     ${search_result}=       Search AP Serial    ${ap5010.serial}
     should be equal as integers             ${result}               1
     should be equal as integers             ${ONBOARD_RESULT}       1
@@ -53,7 +53,7 @@ TCXM-19753 - XIQ-4593 - QuickAdd: Onboard AP5010/AP5010U cloud managed - step2
     [Documentation]     Configure Capwap client server on AP
     [Tags]              xim_tc_19753    development     ap5010      step2     tcxm-19753      quickadd
     Depends On          step1
-    ${AP_SPAWN}=        Open Spawn          ${ap5010.console_ip}   ${ap5010.console_port}      ${ap5010.username}       ${ap5010.password}        ${ap5010.platform}
+    ${AP_SPAWN}=        Open Spawn          ${ap5010.ip}   ${ap5010.port}      ${ap5010.username}       ${ap5010.password}        ${ap5010.platform}
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
     ${OUTPUT0}=         Send                ${AP_SPAWN}         console page 0

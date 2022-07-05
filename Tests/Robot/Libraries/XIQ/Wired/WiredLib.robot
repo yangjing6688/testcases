@@ -15,7 +15,7 @@ Configure IQagent EXOS
     [Documentation]     Configures the EXOS Iqagent
 
     log to console          "Executed the exos IQAgent configuration"
-    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.os}  ${netelem1.console_port}
+    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}  ${netelem1.console_port}
     send cmd  dut1_telnet   disable iqagent
     send cmd  dut1_telnet   disable cli prompting
     send cmd  dut1_telnet   configure iqagent server vr VR-Mgmt
@@ -33,7 +33,7 @@ Configure IQagent VOSS
     [Documentation]     Configures the VOSS IQAgent
 
     log to console          "Executed the voss Iqagent configuration"
-    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.os} 
+    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type} 
     send cmd  dut1_telnet   enable
     send cmd  dut1_telnet   configure terminal
     send cmd  dut1_telnet   application
@@ -117,8 +117,8 @@ Tear Down Test and Close Session
 
     delete_location_building_floor              ${location}         ${building}     ${floor}
 
-    RUN KEYWORD IF  '${netelem1.os}' == 'exos'  Cleanup IQagent EXOS
-    RUN KEYWORD IF  '${netelem1.os}' == 'voss'  Cleanup IQagent VOSS
+    RUN KEYWORD IF  '${netelem1.cli_type}' == 'exos'  Cleanup IQagent EXOS
+    RUN KEYWORD IF  '${netelem1.cli_type}' == 'voss'  Cleanup IQagent VOSS
 
 
     Log Out of XIQ and Confirm Success
@@ -129,7 +129,7 @@ Cleanup IQagent EXOS
     [Documentation]     Unconfigures the EXOS Iqagent
 
     log to console          "Executing the exos IQAgent Cleanup"
-    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.os}  ${netelem1.console_port}
+    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}  ${netelem1.console_port}
     send cmd  dut1_telnet   disable cli prompting
     send cmd  dut1_telnet   configure iqagent server ipaddress none
     ${check_results}=  send cmd  dut1_telnet   show iqagent
@@ -141,7 +141,7 @@ Cleanup IQagent VOSS
     [Documentation]     Unconfigures the VOSS IQAgent
 
     log to console          "Executing  the voss Iqagent Cleanup"
-    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.os}
+    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}
     send cmd  dut1_telnet   enable
     send cmd  dut1_telnet   configure terminal
     send cmd  dut1_telnet   application

@@ -31,8 +31,8 @@ ${XIQ_CAPWAP_URL}           ${xiq.capwap_url}
 ${IQAGENT}                  ${xiq.sw_connection_host}
 
 ${DUT_SERIAL}               ${ap1.serial}
-${DUT_CONSOLE_IP}           ${ap1.console_ip}
-${DUT_CONSOLE_PORT}         ${ap1.console_port}
+${DUT_CONSOLE_IP}           ${ap1.ip}
+${DUT_CONSOLE_PORT}         ${ap1.port}
 ${DUT_USERNAME}             ${ap1.username}
 ${DUT_PASSWORD}             ${ap1.password}
 ${DUT_PLATFORM}             ${ap1.platform}

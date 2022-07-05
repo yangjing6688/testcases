@@ -1,6 +1,6 @@
 ap1:
   name:                     bui-flo-2816
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.166.250
   port:                     22
   username:                 admin
@@ -36,7 +36,7 @@ ap1:
 
 ap2:
   name:                     bui-flo-0067
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.166.249
   port:                     22
   username:                 admin
@@ -73,7 +73,7 @@ ap2:
 
 ap3:
   name:                     bui-flo-0015
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.166.251
   port:                     22
   username:                 admin
@@ -111,7 +111,7 @@ ap3:
 
 ap4:
   name:                     bui-flo-0046
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.16.166.243
   port:                     22
   username:                 admin
@@ -145,7 +145,7 @@ ap4:
       neighbour_mac:            3485843A5CC0
 
 
-a3_1server1:
+a3_server1:
   version:          3.1
   ip:               10.16.137.10
   node1_ip:         10.16.137.157
@@ -213,6 +213,7 @@ router1:
   serial:                   "60018071200247"
   ip:                       10.16.166.230
   port:                     22
+  connection_method:        "ssh"
   os:                       HiveOS 10.0r10b build-254127
   mac:                      F4EAB52C4A80
   network_policy:           Test_np
@@ -237,6 +238,7 @@ wing1:
   platform:                 wing
   ip:                       10.16.166.232
   port:                     22
+  connection_method:        "ssh"
   console_ip:               10.16.166.228
   console_port:             4002
   country:                  United Kingdom
@@ -268,6 +270,8 @@ netelem1:
   username:                 admin
   password:
   ip:                       10.16.152.98
+  port:                     "22"
+  connection_method:        "ssh"
   console_ip:               10.16.128.23
   console_port:             7036
   network_policy:           Test_np

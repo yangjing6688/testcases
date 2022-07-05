@@ -2,6 +2,7 @@ lab:                        "SALEM"
 
 netelem1:
   name:                     "EXOS"
+  cli_type:                 "EXOS"
   model:                    "X460G2_24p_10_G4"
   hostname:                 ""
   serial:                   "2010G-00015"
@@ -14,7 +15,6 @@ netelem1:
   username:                 "admin"
   password:                 ""
   connection_method:        "telnet"
-  os:                       "exos"
   make:                     "EXOS"
   platform:                 "x460G2"
   auth_mode:                "basic"

@@ -6,13 +6,13 @@ netelem1:
   serial:                   "JA052131G-00011"
   mac:                      "F4CE48BA7C00"
   ip:                       "10.148.35.136"
-  port:                     "23"
+  port:                     "22"
   console_ip:               "10.148.35.5"
   console_port:             "5021"
   username:                 "rwa"
   password:                 "rwa"
-  connection_method:        "telnet"
-  cli_type:                       "voss"
+  connection_method:        "ssh"
+  cli_type:                 "voss"
   platform:                 "5420"
   model:                    "FabricEngine5420F_16W_32P_4XE"
   make:                     "voss"
@@ -41,7 +41,7 @@ tgen1:
   username:     "root"
   password:     "PASprt86"
   port:         "22"
-  cli_type:           "MU-LINUX"
+  cli_type:     "MU-LINUX"
 
 tgen_ports:
   netelem1:

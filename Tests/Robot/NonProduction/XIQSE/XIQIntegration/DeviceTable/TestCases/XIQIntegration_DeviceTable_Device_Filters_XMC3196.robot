@@ -51,8 +51,8 @@ ${XIQ_DUT_NAME}             ${ap1.name}
 ${XIQ_DUT_MODEL}            ${ap1.model}
 ${XIQ_DUT_MAKE}             ${ap1.make}
 ${XIQ_DUT_CCG}              ${ap1.ccg}
-${XIQ_DUT_CONSOLE_IP}       ${ap1.console_ip}
-${XIQ_DUT_CONSOLE_PORT}     ${ap1.console_port}
+${XIQ_DUT_CONSOLE_IP}       ${ap1.ip}
+${XIQ_DUT_CONSOLE_PORT}     ${ap1.port}
 ${XIQ_DUT_USERNAME}         ${ap1.username}
 ${XIQ_DUT_PASSWORD}         ${ap1.password}
 ${XIQ_DUT_PLATFORM}         ${ap1.platform}

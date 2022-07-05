@@ -151,7 +151,7 @@ TCCS-11614: Social login with facebook
     Log to Console      Sleep for ${client_disconnect_wait}
     sleep  ${client_disconnect_wait}
 
-    ${AP_SPAWN}=        Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
     ${CLEAR_CLIENT}=        Send            ${AP_SPAWN}         ${cmd_clear_client_mac}
     Log to Console      Sleep for ${ap_clear_mac_wait}
     sleep  ${ap_clear_mac_wait}

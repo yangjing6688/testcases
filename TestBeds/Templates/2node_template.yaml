@@ -13,7 +13,7 @@ netelem1:
                               #                                     XMC models: Valid models can be found in XMC under the "Administration" tab on the left side of the page, then under the "Vendor Profiles" tab at the top of the page
     os:                       #(REQUIRED)                         exos/eos/linux
     cli_type:                 #(REQUIRED)                         The style of CLI used to configure the device.
-                              #                                     Available types: VOSS, EXOS, WING-AP, AH-FASTPATH, AH-AP, MU-WINDOWS, MU-MAC, MU-LINUX, A3
+                              #                                     Available types: VOSS, EXOS, WING-AP, AH-FASTPATH, AH-AP, MU-WINDOWS, MU-MAC, MU-LINUX, A3, AH_XR
     platform:                 #(REQUIRED)                         x460G2
     image_family:             #(REQUIRED)                         Image family for download firmware (summitx)
     ip:                       #(REQUIRED)                         1.1.1.3

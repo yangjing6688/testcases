@@ -11,7 +11,7 @@ wing1:
   password:                 symbol
   platform:                 wing
   ip:                       10.234.137.23
-  console_ip:               10.234.137.23
-  console_port:             '22'
+  port:                     "22"
+  connection_method:        "ssh"
   country:                  United Kingdom
   make:                     Controllers

@@ -1,6 +1,6 @@
 ap1:
   name:                     bui-flo-0094
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   ip:                       10.234.105.65
   port:                     22
   username:                 admin

@@ -1,0 +1,53 @@
+ap1:
+  name:                     AP460C
+  connection_method:        "SSH"
+  ip:                       10.234.62.12
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '24602005230495'
+  mac:                      BCF3106581C0
+  cli_type:                 AH-AP
+  platform:                 aerohive
+  model:                    AP460C
+  template:                 AP_460C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                1
+  country:                  India
+
+ap2:
+  name:                     AP305CX
+  connection_method:        "SSH"
+  ip:                       10.234.62.11
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '13051911130038'
+  mac:                      BCF31015B000
+  cli_type:                 AH-AP
+  platform:                 aerohive
+  model:                    AP305CX
+  template:                 AP_305CX-default-template
+  make:                     aerohive
+  mgmt_vlan:                1
+  country:                  India
+
+mu1:
+  ip:                       10.234.62.102
+  port:                     8270
+  username:                 extreme
+  password:                 Extreme@123
+  platform:                 windows
+  interface:                wlan0
+  wifi_mac:                 6480998B40A2
+  ethernet_mac:             FC3FDB44E01A
+
+mu2:
+  ip:                       10.234.62.101
+  port:                     8270
+  username:                 extreme
+  password:                 Extreme@123
+  platform:                 windows
+  interface:                wlan0
+  wifi_mac:                 104A7DC3DF39
+  ethernet_mac:             003091811145

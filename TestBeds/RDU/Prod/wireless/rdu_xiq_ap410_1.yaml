@@ -2,6 +2,7 @@ wing1:
   name:                     ap410-fdc3ae
   ip:                       10.69.61.138
   port:                     22
+  connection_method:        "ssh"
   username:                 admin
   password:                 Aerohive123
   serial:                   "1951y-10496"

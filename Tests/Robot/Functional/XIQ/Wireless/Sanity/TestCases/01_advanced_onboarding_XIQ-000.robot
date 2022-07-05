@@ -31,15 +31,45 @@ Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/advanced_onboa
 Force Tags   testbed_1_node
 
 Suite Setup     Cleanup-Delete AP   ${ap1.serial}
+Suite Teardown  Test Suite Clean Up
 
 *** Keywords ***
 Cleanup-Delete AP
     [Arguments]     ${SERIAL}
-    Login User      ${tenant_username}      ${tenant_password}
-    Delete AP       ap_serial=${SERIAL}
-    Change Device Password                  Aerohive123
+    ${LOGIN_STATUS}=                    Login User      ${tenant_username}      ${tenant_password}      check_warning_msg=True
+    should be equal as integers         ${LOGIN_STATUS}               1
+
+    ${DELETE_DEVICE_STATUS}=                Delete Device       device_serial=${SERIAL}
+    should be equal as integers         ${DELETE_DEVICE_STATUS}               1
+
+    ${CHANGE_PASSWORD_STATUS}=          Change Device Password                  Aerohive123
+    should be equal as integers         ${CHANGE_PASSWORD_STATUS}               1
+
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
+
+Test Suite Clean Up
+    [Documentation]    Test suite clean up
+
+    [Tags]             production   cleanup
+
+    ${LOGIN_STATUS}=                        Login User       ${tenant_username}        ${tenant_password}
+    should be equal as integers             ${LOGIN_STATUS}               1
+
+    ${CREATE_NW_POLICY_STATUS}=             Create Network Policy          OPEN_AUTO                 &{CONFIG_PUSH_OPEN_NW_01}
+    should be equal as integers             ${CREATE_NW_POLICY_STATUS}               1
+
+    ${UPDATE_NW_POLICY_STATUS}=             Update Network Policy To Ap    policy_name=OPEN_AUTO     ap_serial=${ap1.serial}
+    should be equal as integers             ${UPDATE_NW_POLICY_STATUS}               1
+
+    ${DELETE_NW_POLICY_STATUS}=             Delete network policy      ${ADVANCE_NW_POLICY1}
+    should be equal as integers             ${DELETE_NW_POLICY_STATUS}               1
+
+    ${DELETE_SSID_STATUS}=                  Delete ssids     ${INTERNAL_SSID_NAME1}     ${GUEST_SSID_NAME1}
+    should be equal as integers             ${DELETE_SSID_STATUS}               1
+
+    [Teardown]         run keywords    logout user
+     ...                               quit browser
 
 *** Test Cases ***
 TCCS-7709_Step1: Advance Onboard Extreme-Aerohive Access Point
@@ -47,11 +77,11 @@ TCCS-7709_Step1: Advance Onboard Extreme-Aerohive Access Point
 
     [Tags]             production   tccs_7709       tccs_7709_step1
 
-    ${LOGIN_STATUS}=                  Login User                     ${tenant_username}     ${tenant_password}
-    should be equal as strings       '${LOGIN_STATUS}'     '1'
+    ${LOGIN_STATUS}=                    Login User                     ${tenant_username}     ${tenant_password}
+    should be equal as integers         ${LOGIN_STATUS}               1
 
-    ${ONBOARD_STATUS}=               Advance Onboard Device         ${ap1.serial}    device_make=${DEVICE_MAKE_AEROHIVE}   dev_location=${LOCATION}
-    should be equal as integers      ${ONBOARD_STATUS}       1
+    ${ONBOARD_STATUS}=                  Advance Onboard Device         ${ap1.serial}    device_make=${DEVICE_MAKE_AEROHIVE}   dev_location=${LOCATION}
+    should be equal as integers         ${ONBOARD_STATUS}       1
 
     [Teardown]         run keywords    logout user
      ...                               quit browser
@@ -61,9 +91,12 @@ TCCS-7709_Step2: Config AP to Report AIO
 
     [Tags]              production          tccs_7709       tccs_7709_step2
 
-    Depends On          tccs_7709_step1
+    Depends On          TCCS-7709_Step1
     ${AP_SPAWN}=        Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    Should not be equal as Strings          '${AP_SPAWN}'        '-1'
+
     Set Suite Variable  ${AP_SPAWN}
+
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
     ${OUTPUT0}=         Send                ${AP_SPAWN}         console page 0
@@ -82,30 +115,16 @@ TCCS-7709_Step3: Check AP Status On UI
 
     [Tags]              production      tccs_7709       tccs_7709_step3
 
-    Depends On          tccs_7709_step2
-    ${result}=          Login User          ${tenant_username}     ${tenant_password}
-    Wait Until Device Online                ${ap1.serial}
+    Depends On          TCCS-7709_Step2
+    ${LOGIN_STATUS}=          Login User          ${tenant_username}     ${tenant_password}
+    should be equal as integers             ${LOGIN_STATUS}               1
 
-    Wait Until Device Reboots               ${ap1.serial}
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${ap1.serial}
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
 
-    Wait Until Device Online                ${ap1.serial}
-    ${AP_STATUS}=                           Get AP Status       ap_mac=${ap1.mac}
-    Should Be Equal As Strings             '${AP_STATUS}'       'green'
-
-    [Teardown]         run keywords    logout user
-     ...                               quit browser
-
-Test Suite Clean Up
-    [Documentation]    Test suite clean up
-
-    [Tags]             production   cleanup
-
-    ${result}=    Login User       ${tenant_username}        ${tenant_password}
-    Create Network Policy          OPEN_AUTO                 &{CONFIG_PUSH_OPEN_NW_01}
-    Update Network Policy To Ap    policy_name=OPEN_AUTO     ap_serial=${ap1.serial}
-
-    delete network policy      ${ADVANCE_NW_POLICY1}
-    delete ssids     ${INTERNAL_SSID_NAME1}     ${GUEST_SSID_NAME1}
+    ${DEVICE_STATUS}=       Get Device Status       device_mac=${ap1.mac}
+    Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
 
     [Teardown]         run keywords    logout user
      ...                               quit browser
+

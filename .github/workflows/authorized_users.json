@@ -4,24 +4,25 @@
         "ghundertmark",
         "elatour2000",
         "jeffrwsd",
-        "jsubler93"
+        "jsubler93",
+        "mgoddard27"
     ],
     "testbed_check": [
-        "jstokes1967",
-        "mgoddard27"
+        "jstokes1967"
     ],
     "filename_and_location_check": [],
     "directory_check": [],
     "testcase_name_check": [],
-    "tags_check": [],
+    "tags_check": [
+        "cserbu",
+        "vldstoica",
+        "coionita"
+    ],
     "reserved_tags": [
         "raganapathi",
         "rktavva",
         "lan612",
         "shreenbanu",
-        "cserbu",
-        "vldstoica",
-        "coionita",
         "pdungdo"
     ],
     "functionality_check": []

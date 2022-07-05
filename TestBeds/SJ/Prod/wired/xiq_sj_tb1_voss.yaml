@@ -10,6 +10,8 @@ netelem1:
   password:                 rwa
   platform:                 voss
   ip:                       10.16.148.9
+  port:                     "22"
+  connection_method:        "ssh"
   console_ip:               10.16.128.22
   console_port:             7046
   country:                  United Kingdom

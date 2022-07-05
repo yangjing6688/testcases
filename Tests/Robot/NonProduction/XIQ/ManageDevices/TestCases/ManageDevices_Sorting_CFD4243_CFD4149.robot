@@ -33,8 +33,8 @@ ${XIQ_CAPWAP_URL}       ${xiq.capwap_url}
 
 ${DUT1_SERIAL}          ${ap1.serial}
 ${DUT1_MAC}             ${ap1.mac}
-${DUT1_CONSOLE_IP}      ${ap1.console_ip}
-${DUT1_CONSOLE_PORT}    ${ap1.console_port}
+${DUT1_CONSOLE_IP}      ${ap1.ip}
+${DUT1_CONSOLE_PORT}    ${ap1.port}
 ${DUT1_USERNAME}        ${ap1.username}
 ${DUT1_PASSWORD}        ${ap1.password}
 ${DUT1_PLATFORM}        ${ap1.platform}
@@ -42,8 +42,8 @@ ${DUT1_MAKE}            ${ap1.make}
 
 ${DUT2_SERIAL}          ${ap2.serial}
 ${DUT2_MAC}             ${ap2.mac}
-${DUT2_CONSOLE_IP}      ${ap2.console_ip}
-${DUT2_CONSOLE_PORT}    ${ap2.console_port}
+${DUT2_CONSOLE_IP}      ${ap2.ip}
+${DUT2_CONSOLE_PORT}    ${ap2.port}
 ${DUT2_USERNAME}        ${ap2.username}
 ${DUT2_PASSWORD}        ${ap2.password}
 ${DUT2_PLATFORM}        ${ap2.platform}
@@ -51,8 +51,8 @@ ${DUT2_MAKE}            ${ap2.make}
 
 ${DUT3_SERIAL}          ${ap3.serial}
 ${DUT3_MAC}             ${ap3.mac}
-${DUT3_CONSOLE_IP}      ${ap3.console_ip}
-${DUT3_CONSOLE_PORT}    ${ap3.console_port}
+${DUT3_CONSOLE_IP}      ${ap3.ip}
+${DUT3_CONSOLE_PORT}    ${ap3.port}
 ${DUT3_USERNAME}        ${ap3.username}
 ${DUT3_PASSWORD}        ${ap3.password}
 ${DUT3_PLATFORM}        ${ap3.platform}
@@ -60,8 +60,8 @@ ${DUT3_MAKE}            ${ap3.make}
 
 ${DUT4_SERIAL}          ${ap4.serial}
 ${DUT4_MAC}             ${ap4.mac}
-${DUT4_CONSOLE_IP}      ${ap4.console_ip}
-${DUT4_CONSOLE_PORT}    ${ap4.console_port}
+${DUT4_CONSOLE_IP}      ${ap4.ip}
+${DUT4_CONSOLE_PORT}    ${ap4.port}
 ${DUT4_USERNAME}        ${ap4.username}
 ${DUT4_PASSWORD}        ${ap4.password}
 ${DUT4_PLATFORM}        ${ap4.platform}

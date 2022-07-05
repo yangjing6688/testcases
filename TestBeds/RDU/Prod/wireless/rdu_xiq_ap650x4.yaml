@@ -3,6 +3,7 @@ ap1:
   connection_method:        "telnet"
   ip:                       10.69.61.137
   port:                     22
+  connection_method:        "ssh"
   username:                 admin
   password:                 Aerohive123
   serial:                   "16501811280027"

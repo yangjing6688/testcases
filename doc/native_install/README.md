@@ -1,14 +1,13 @@
 # How to Install the AutoIQ framework and tools
 
 ## Step 1: Install python 3.x
-Install [Python 3](https://www.python.org/downloads/) on your developement system. This is required to run these tests.
+Install [Python 3](https://www.python.org/downloads/) on your development system. This is required to run these tests.
 
 ## Step 2: Install the Extreme Automation Framework Repository
 You will need pull the GIT repository for the AutoIQ Framework [here](https://github.com/extremenetworks/extreme_automation_framework). For Example, choose a directory on your local system and use the following commands to pull down the AutoIQ and  repositories. From a command window:
 
     git clone git@github.com:extremenetworks/extreme_automation_framework.git
     git clone git@github.com:extremenetworks/extreme_automation_tests.git
-    git clone git@github.extremenetworks.com:Engineering/cw_automation.git
 
 Next you will need to set your system PYTHONPATH environment variable for the OS to the base directory of these repositories.
 
@@ -30,6 +29,8 @@ Issue the following commands in a command prompt at the base root for the projec
 
         python -m venv venv
         venv\\Scripts\\activate.bat
+  
+Note: Depending on your python3 installation you may need to use the python3 command instead of python.
 
 ### Creating a Virtual Environment on Linux
 Install python 3 on your system https://www.python.org/downloads/ and
@@ -40,9 +41,11 @@ Issue the following commands in a command prompt at the base root for the projec
         python -m venv venv
         source venv/bin/activate
 
+Note: Depending on your python3 installation you may need to use the python3 command instead of python.
+
 ## Step 4: Install the Framework Requirements in the Virtual Environment
 
-You will need to install the requirements.txt file in your virtual enviroment so that all of the required python packages will be installed. To do this start your virtual environment located in the `extreme_automation_tests` directory. Cd to the `extreme_automation_tests` repository and run the following command in your virutal environment:
+You will need to install the requirements.txt file in your virtual environment so that all of the required python packages will be installed. To do this start your virtual environment located in the `extreme_automation_tests` directory. Cd to the `extreme_automation_tests` repository and run the following command in your virtual environment:
 
         pip install -r requirements.txt
 
