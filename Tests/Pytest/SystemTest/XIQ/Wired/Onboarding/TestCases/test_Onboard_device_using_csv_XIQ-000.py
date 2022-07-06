@@ -16,14 +16,13 @@ from ExtremeAutomation.Imports.XiqLibraryHelper import XiqLibraryHelper
 from Tests.Pytest.SystemTest.XIQ.Wired.Resources.SuiteUdks import SuiteUdks
 
 
-
 needToDeleteDevice = False
 current_directory = os.path.dirname(os.path.abspath(__file__))
 print(current_directory)
 
 
 @mark.testbed_1_node
-class onboardDevice5520UsingCsvTests():
+class onboardDeviceVSP4900UsingCsvTests():
 
     @classmethod
     def setup_class(cls):
@@ -81,10 +80,10 @@ class onboardDevice5520UsingCsvTests():
     @mark.development
     @mark.tccs_7651
     def test_onboard_device_using_csv_without_location(self,test_case_skip_check,test_case_started_ended_print):
-        '''[Documentation]  Test_Objective: Verify a 5520 device can be onboared using a csv file'''
+        '''[Documentation]  Test_Objective: Verify a device can be onboared using a csv file'''
         global needToDeleteDevice
 
-        res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.os, csv_location=csv_file_location)
+        res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.cli_type, csv_location=csv_file_location)
 
         if res != 1:
             pytest.fail(f'Could not onboard device {self.tb.dut1_platform} with serial {self.tb.dut1_serial}')
@@ -122,12 +121,11 @@ class onboardDevice5520UsingCsvTests():
 
     @mark.development
     @mark.tccs_7651
-
     def test_onboard_device_using_csv_with_location(self,test_case_skip_check,test_case_started_ended_print):
-        '''[Documentation]  Test_Objective: Verify a 5520 device can be onboared using a csv file and selecting the location field'''
+        '''[Documentation]  Test_Objective: Verify a device can be onboared using a csv file and selecting the location field'''
         global needToDeleteDevice
 
-        res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.os,
+        res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.cli_type,
                                                                       location=self.tb.dut1_location1, csv_location=csv_file_location)
         if res != 1:
             pytest.fail(f'Could not onboard device {self.tb.dut1_platform} with serial {self.tb.dut1_serial}')
@@ -166,11 +164,13 @@ class onboardDevice5520UsingCsvTests():
 
     @mark.development
     @mark.tccs_7651
-    def test_onboard_device_using_csv_with_location_in_csv(self, test_case_skip_check, test_case_started_ended_print):
-
+    def test_onboard_device_using_csv_with_location_in_csv(self, test_case_skip_check,test_case_started_ended_print):
+        '''[Documentation]  Test_Objective: Verify a device can be onboared using a csv file with location in csv file
+        Starting in 22R5 version of XIQ the location in the csv file will be ignore, updated test case to check that the
+        location is equal to Assign Location'''
         global needToDeleteDevice
 
-        res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.os,
+        res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.cli_type,
                                                                       csv_location=csv_file_location2)
         if res != 1:
             pytest.fail(f'Could not onboard device {self.tb.dut1_platform} with serial {self.tb.dut1_serial}')
@@ -193,7 +193,7 @@ class onboardDevice5520UsingCsvTests():
         else:
             print('Status for device with serial number: {} is equal to Green'.format(self.tb.dut1_serial))
 
-        location_to_verify = self.suiteUdks.expected_location_in_gui(self.tb.dut1_location2)
+        location_to_verify = "Assign Location"
 
         device_location = self.suiteUdks.get_value_specific_column(self.xiq, self.tb.dut1_serial, "LOCATION")
 
