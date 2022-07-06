@@ -121,115 +121,118 @@ def pytest_configure(config):
     config.pluginmanager.register(TestDescriptionPlugin(terminal_reporter), 'testdescription')
 
 def pytest_configure(config):
-    global custom_report_title
-    # Set log levels for 3rd party packages
-    # Disable all child loggers of urllib3, e.g. urllib3.connectionpool
-    # logging.getLogger("urllib3").propagate = False
-    patch_https_connection_pool(maxsize=100)
-    patch_http_connection_pool(maxsize=100)
+    try:
+        global custom_report_title
+        # Set log levels for 3rd party packages
+        # Disable all child loggers of urllib3, e.g. urllib3.connectionpool
+        # logging.getLogger("urllib3").propagate = False
+        patch_https_connection_pool(maxsize=100)
+        patch_http_connection_pool(maxsize=100)
 
-    if config.option.customReportDate:
-        # set the timestamp
-        report_date = datetime.now().strftime("%m-%d-%Y_%H.%M.%S")
-        # update the pytest-html path
-        config.option.htmlpath = config.option.htmlpath.replace('.html', "_" + report_date + ".html")
-        print("Custom HTML Report: " + config.option.htmlpath)
+        if config.option.customReportDate:
+            # set the timestamp
+            report_date = datetime.now().strftime("%m-%d-%Y_%H.%M.%S")
+            # update the pytest-html path
+            config.option.htmlpath = config.option.htmlpath.replace('.html', "_" + report_date + ".html")
+            print("Custom HTML Report: " + config.option.htmlpath)
 
-    custom_report_title = config.option.customReportTitle
+        custom_report_title = config.option.customReportTitle
 
-    # Grab testbed/topo info if ran with --tc-file option
-    #
-    if config.option.testconfig:
-        # testconfig is a list of test config files
-        for item in config.option.testconfig:
-            try:
-                if "TestBeds" in item:
-                    header = "Testbed"
-                elif "Environments" in item and "topo" in item:
-                    header = "Topology"
-                else:
-                    continue
-
-                # Grab info for HTML report
-                with open(item, 'r', encoding='utf-8') as f:
-                    cfg_file = yaml_safe_load(f.read())
-
-                config._metadata[f"{header} - File Path"] = item
-                for keyword, value in cfg_file.items():
-                    # Trim tgen & e-mail info from testbeds
-                    if header == "Testbed":
-                        if not keyword.startswith("tgen") and keyword != "mails":
-                            config._metadata[f"{header} - {keyword}"] = pformat(value, depth=1)
+        # Grab testbed/topo info if ran with --tc-file option
+        #
+        if config.option.testconfig:
+            # testconfig is a list of test config files
+            for item in config.option.testconfig:
+                try:
+                    if "TestBeds" in item:
+                        header = "Testbed"
+                    elif "Environments" in item and "topo" in item:
+                        header = "Topology"
                     else:
-                        config._metadata[f"{header} - {keyword}"] = value
-            except Exception as e:
-                # Quietly bypass errors
-                print(e)
+                        continue
 
-    if config.option.testbed is not None or config.option.cfg is not None or config.option.env is not None or \
-            config.option.topo is not None:
-        from pytest_testconfig import load_yaml
-        pt = PathTools()
+                    # Grab info for HTML report
+                    with open(item, 'r', encoding='utf-8') as f:
+                        cfg_file = yaml_safe_load(f.read())
 
-    if config.option.cfg is not None:
-        cfg = config.getoption("--cfg")
-        print(f"TRYING TO LOAD CFG YAML: {cfg}")
-        fCfg = pt.locateCfg(cfg)
-        print(f"FOUND YAML: {fCfg}")
-        if fCfg:
-            load_yaml(fCfg, encoding='utf-8')
-        else:
-            sys.exit()
+                    config._metadata[f"{header} - File Path"] = item
+                    for keyword, value in cfg_file.items():
+                        # Trim tgen & e-mail info from testbeds
+                        if header == "Testbed":
+                            if not keyword.startswith("tgen") and keyword != "mails":
+                                config._metadata[f"{header} - {keyword}"] = pformat(value, depth=1)
+                        else:
+                            config._metadata[f"{header} - {keyword}"] = value
+                except Exception as e:
+                    # Quietly bypass errors
+                    print(e)
 
-    if config.option.testbed is not None:
-        cfg = config.getoption("--testbed")
-        print(f"TRYING TO LOAD TESTBED YAML: {cfg}")
-        fCfg = pt.locateCfg(cfg)
-        print(f"FOUND YAML: {fCfg}")
-        if fCfg:
-            # Grab info for HTML report
-            with open(fCfg, 'r', encoding='utf-8') as f:
-                testbed = yaml_safe_load(f.read())
+        if config.option.testbed is not None or config.option.cfg is not None or config.option.env is not None or \
+                config.option.topo is not None:
+            from pytest_testconfig import load_yaml
+            pt = PathTools()
 
-            config._metadata["Testbed - File Path"] = fCfg
-            for keyword, value in testbed.items():
-                if not keyword.startswith("tgen") and keyword != "mails":
-                    config._metadata[f"Testbed - {keyword}"] = pformat(value, depth=1)
+        if config.option.cfg is not None:
+            cfg = config.getoption("--cfg")
+            print(f"TRYING TO LOAD CFG YAML: {cfg}")
+            fCfg = pt.locateCfg(cfg)
+            print(f"FOUND YAML: {fCfg}")
+            if fCfg:
+                load_yaml(fCfg, encoding='utf-8')
+            else:
+                sys.exit()
 
-            # Load testbed into pytest
-            load_yaml(fCfg, encoding='utf-8')
-        else:
-            sys.exit()
+        if config.option.testbed is not None:
+            cfg = config.getoption("--testbed")
+            print(f"TRYING TO LOAD TESTBED YAML: {cfg}")
+            fCfg = pt.locateCfg(cfg)
+            print(f"FOUND YAML: {fCfg}")
+            if fCfg:
+                # Grab info for HTML report
+                with open(fCfg, 'r', encoding='utf-8') as f:
+                    testbed = yaml_safe_load(f.read())
 
-    if config.option.env is not None:
-        env = config.getoption("--env")
-        print(f"TRYING TO LOAD ENV YAML: {env}")
-        fEnv = pt.locateEnv(env)
-        print(f"FOUND ENV YAML: {fEnv}")
-        if fEnv:
-            # Load environment into pytest
-            load_yaml(fEnv, encoding='utf-8')
-        else:
-            sys.exit()
+                config._metadata["Testbed - File Path"] = fCfg
+                for keyword, value in testbed.items():
+                    if not keyword.startswith("tgen") and keyword != "mails":
+                        config._metadata[f"Testbed - {keyword}"] = pformat(value, depth=1)
 
-    if config.option.topo is not None:
-        topo = config.getoption("--topo")
-        print(f"TRYING TO LOAD TOPO YAML: {topo}")
-        fTopo = pt.locateTopo(topo)
-        print(f"FOUND TOPO YAML: {fTopo}")
-        if fTopo:
-            # Grab info for HTML report
-            with open(fTopo, 'r', encoding='utf-8') as f:
-                topology = yaml_safe_load(f.read())
+                # Load testbed into pytest
+                load_yaml(fCfg, encoding='utf-8')
+            else:
+                sys.exit()
 
-            config._metadata["Topology - File Path"] = fTopo
-            for keyword, value in topology.items():
-                config._metadata[f"Topology - {keyword}"] = value
+        if config.option.env is not None:
+            env = config.getoption("--env")
+            print(f"TRYING TO LOAD ENV YAML: {env}")
+            fEnv = pt.locateEnv(env)
+            print(f"FOUND ENV YAML: {fEnv}")
+            if fEnv:
+                # Load environment into pytest
+                load_yaml(fEnv, encoding='utf-8')
+            else:
+                sys.exit()
 
-            # Load topology into pytest
-            load_yaml(fTopo, encoding='utf-8')
-        else:
-            sys.exit()
+        if config.option.topo is not None:
+            topo = config.getoption("--topo")
+            print(f"TRYING TO LOAD TOPO YAML: {topo}")
+            fTopo = pt.locateTopo(topo)
+            print(f"FOUND TOPO YAML: {fTopo}")
+            if fTopo:
+                # Grab info for HTML report
+                with open(fTopo, 'r', encoding='utf-8') as f:
+                    topology = yaml_safe_load(f.read())
+
+                config._metadata["Topology - File Path"] = fTopo
+                for keyword, value in topology.items():
+                    config._metadata[f"Topology - {keyword}"] = value
+
+                # Load topology into pytest
+                load_yaml(fTopo, encoding='utf-8')
+            else:
+                sys.exit()
+    except Exception as e:
+        print('Warning pytest_configure: ' +str(e))
 
 def pytest_collection_finish(session):
     if session.config.option.get_test_info is not None:
@@ -239,215 +242,221 @@ def pytest_collection_finish(session):
 
 @fixture(autouse=True)
 def skip_check(request):
-    # @mark.required_platform('Stack')
-    # @mark.skip_platform('Stack', 'VPEX')
-    # @mark.required_capability('Fabric')
-    # @mark.required_capability_dutlist('Fabric', '1,2,3')   TO BE DEVELOPED
-    # @mark.start_version('EXOS 31.1')    TO BE DEVELOPED
-    # @mark.end_version('EXOS 40.1')     TO BE DEVELOPED
-    if request.node.get_closest_marker('skip_platform'):
-        chkExec = CheckExecution(request, config)
-        out = chkExec.skipPlatform()
-        if out:
-            pytest.skip(f"skipped {request.node.name} on this platform: {out}")
-    if request.node.get_closest_marker('required_platform'):
-        chkExec = CheckExecution(request, config)
-        out = chkExec.requiredPlatform()
-        if not out[0]:
-            pytest.skip(f"Skipped {request.node.name}. {out[1][0]} platform is required on DUT1")
-    if request.node.get_closest_marker('required_capability'):
-        chkExec = CheckExecution(request, config)
-        out = chkExec.requiredCapability()
-        if not out[0]:
-            pytest.skip(f"skipped {request.node.name} on this platform: No support for {out[1]}")
-    if request.node.get_closest_marker('start_version'):
-        chkExec = CheckExecution(request, config)
-        out = chkExec.startVersion()
-        if out:
-            pytest.skip(f"skipped {request.node.name} on this verions: {out}")
-    if request.node.get_closest_marker('end_version'):
-        chkExec = CheckExecution(request, config)
-        out = chkExec.endVersion()
-        if out:
-            pytest.skip(f"skipped {request.node.name} on this version: {out}")
-    if request.node.get_closest_marker('required_nos'):
-        chkExec = CheckExecution(request, config)
-        out = chkExec.requiredNos()
-        if not out[0]:
-            pytest.skip(f"skipped {request.node.name} DUT1 must be NOS: {out[1]}")
-    if request.node.get_closest_marker('skip_nos'):
-        chkExec = CheckExecution(request, config)
-        out = chkExec.skipNos()
-        if out[0]:
-            pytest.skip(f"skipped {request.node.name} NOS is not supported: {out[1]}")
+    try:
+        # @mark.required_platform('Stack')
+        # @mark.skip_platform('Stack', 'VPEX')
+        # @mark.required_capability('Fabric')
+        # @mark.required_capability_dutlist('Fabric', '1,2,3')   TO BE DEVELOPED
+        # @mark.start_version('EXOS 31.1')    TO BE DEVELOPED
+        # @mark.end_version('EXOS 40.1')     TO BE DEVELOPED
+        if request.node.get_closest_marker('skip_platform'):
+            chkExec = CheckExecution(request, config)
+            out = chkExec.skipPlatform()
+            if out:
+                pytest.skip(f"skipped {request.node.name} on this platform: {out}")
+        if request.node.get_closest_marker('required_platform'):
+            chkExec = CheckExecution(request, config)
+            out = chkExec.requiredPlatform()
+            if not out[0]:
+                pytest.skip(f"Skipped {request.node.name}. {out[1][0]} platform is required on DUT1")
+        if request.node.get_closest_marker('required_capability'):
+            chkExec = CheckExecution(request, config)
+            out = chkExec.requiredCapability()
+            if not out[0]:
+                pytest.skip(f"skipped {request.node.name} on this platform: No support for {out[1]}")
+        if request.node.get_closest_marker('start_version'):
+            chkExec = CheckExecution(request, config)
+            out = chkExec.startVersion()
+            if out:
+                pytest.skip(f"skipped {request.node.name} on this verions: {out}")
+        if request.node.get_closest_marker('end_version'):
+            chkExec = CheckExecution(request, config)
+            out = chkExec.endVersion()
+            if out:
+                pytest.skip(f"skipped {request.node.name} on this version: {out}")
+        if request.node.get_closest_marker('required_nos'):
+            chkExec = CheckExecution(request, config)
+            out = chkExec.requiredNos()
+            if not out[0]:
+                pytest.skip(f"skipped {request.node.name} DUT1 must be NOS: {out[1]}")
+        if request.node.get_closest_marker('skip_nos'):
+            chkExec = CheckExecution(request, config)
+            out = chkExec.skipNos()
+            if out[0]:
+                pytest.skip(f"skipped {request.node.name} NOS is not supported: {out[1]}")
+    except Exception as e:
+        print("Warning skip_check: " +str(e))
 
 @fixture(scope='session', autouse=True)
 def loadTestBedFirmware(request):
-    status    = 'skipped'
-    tftp      = request.config.option.tftpServer
-    families  = request.config.option.imageFamilies
-    ifiles    = request.config.option.images
-    target    = request.config.option.imageTarget
-    load      = request.config.option.loadImage
-    build     = request.config.option.build
-    uuid      = request.config.option.testModule_uuid
+    try:
+        status    = 'skipped'
+        tftp      = request.config.option.tftpServer
+        families  = request.config.option.imageFamilies
+        ifiles    = request.config.option.images
+        target    = request.config.option.imageTarget
+        load      = request.config.option.loadImage
+        build     = request.config.option.build
+        uuid      = request.config.option.testModule_uuid
 
-    # silently bypass download if no variables submitted
-    if not families or not ifiles:
-        print("[+] Load Firmware Skipped. CLI Variables not submitted")
-        return
+        # silently bypass download if no variables submitted
+        if not families or not ifiles:
+            print("[+] Load Firmware Skipped. CLI Variables not submitted")
+            return
 
-    tb = PytestConfigHelper(config)
-    if not tftp and tb.lab:
-        # if the lab_config.yaml file matches a 'lab' from the tb yaml, use the lab tftpserver if non-passed in.
-        tb.loadAdditionalConfig(config, 'lab_config.yaml', 'econ')
-        try:
-            tftp = config[tb.lab]['tftpserver']
-        except:
-            print("[+] Load Firmware Skipped. tftp server variable not set correctly from lab_config.yaml")
+        tb = PytestConfigHelper(config)
+        if not tftp and tb.lab:
+            # if the lab_config.yaml file matches a 'lab' from the tb yaml, use the lab tftpserver if non-passed in.
+            tb.loadAdditionalConfig(config, 'lab_config.yaml', 'econ')
+            try:
+                tftp = config[tb.lab]['tftpserver']
+            except:
+                print("[+] Load Firmware Skipped. tftp server variable not set correctly from lab_config.yaml")
+                return status
+
+        if not target:
+            target = "secondary"
+
+        if families and ifiles:
+            fam_list = families.split("|")
+            i_list = ifiles.split("|")
+            print("\nloadFirmware has variables set to run")
+            print("tftpserver: {}".format(tftp))
+            print("imageFamily list: {}".format(fam_list))
+            print("image list: {}".format(i_list))
+            print("imageTarget: {}".format(target))
+            print("loadImage: {}".format(load))
+            print("build: {}".format(build))
+            print("uuid: {}".format(uuid))
+        else:
+            print("[+] Load Firmware Skipped. CLI Variables not submitted")
             return status
 
-    if not target:
-        target = "secondary"
+        print("Test Bed - node count: {} dutlist: {} tftp: {}".format(tb.node_count, tb.dut_list, tftp))
 
-    if families and ifiles:
-        fam_list = families.split("|")
-        i_list = ifiles.split("|")
-        print("\nloadFirmware has variables set to run")
-        print("tftpserver: {}".format(tftp))
-        print("imageFamily list: {}".format(fam_list))
-        print("image list: {}".format(i_list))
-        print("imageTarget: {}".format(target))
-        print("loadImage: {}".format(load))
-        print("build: {}".format(build))
-        print("uuid: {}".format(uuid))
-    else:
-        print("[+] Load Firmware Skipped. CLI Variables not submitted")
-        return status
-
-    print("Test Bed - node count: {} dutlist: {} tftp: {}".format(tb.node_count, tb.dut_list, tftp))
-
-    goDl = 1
-    dl = {}
-    threads = []
-    q = queue.Queue()
-    result = []
-    xx = 0
-    try:
-        for dut in tb.dut_list:
-            d = getattr(tb, dut)
-            n = d['name']
-            ip = d['ip']
-            mv = d['mgmt_vlan']
-            ipath = None
-            try:
-                tbfam = d['image_family']
-                i = 0
-                print("tbfam {}".format(tbfam))
-                for arg_family in fam_list:
-                    if tbfam == arg_family:
-                        ipath = i_list[i]
-                        break
+        goDl = 1
+        dl = {}
+        threads = []
+        q = queue.Queue()
+        result = []
+        xx = 0
+        try:
+            for dut in tb.dut_list:
+                d = getattr(tb, dut)
+                n = d['name']
+                ip = d['ip']
+                mv = d['mgmt_vlan']
+                ipath = None
+                try:
+                    tbfam = d['image_family']
+                    i = 0
+                    print("tbfam {}".format(tbfam))
+                    for arg_family in fam_list:
+                        if tbfam == arg_family:
+                            ipath = i_list[i]
+                            break
+                        else:
+                            i += 1
+                except:
+                    if len(i_list) == 1:
+                        ipath = i_list[0]
                     else:
-                        i += 1
-            except:
-                if len(i_list) == 1:
-                    ipath = i_list[0]
-                else:
-                    print("multiple image families passed in and no 'family' variable in yaml file")
-            if not ipath:
-                goDl = 0
+                        print("multiple image families passed in and no 'family' variable in yaml file")
+                if not ipath:
+                    goDl = 0
 
+                if goDl:
+                    print("download n:{} tftp:{} buildpath:{} build:{} mgmtvlan:{} ip:{} tgt: {}".\
+                                    format(n,tftp,ipath,build,mv,ip,target))
+                    dl[xx] = PlatformLoadFirmware()
+                    t = threading.Thread(target=dl[xx].Upgrade_Netelem_Firmware, args=(str(n), str(tftp), str(ipath), \
+                                                                     str(mv), str(ip), str(target), str(build), q))
+                    threads.append(t)
+                    t.start()
+                    xx += 1
             if goDl:
-                print("download n:{} tftp:{} buildpath:{} build:{} mgmtvlan:{} ip:{} tgt: {}".\
-                                format(n,tftp,ipath,build,mv,ip,target))
-                dl[xx] = PlatformLoadFirmware()
-                t = threading.Thread(target=dl[xx].Upgrade_Netelem_Firmware, args=(str(n), str(tftp), str(ipath), \
-                                                                 str(mv), str(ip), str(target), str(build), q))
-                threads.append(t)
-                t.start()
-                xx += 1
-        if goDl:
-            for dt in threads:
-                dt.join(600)
-            for dt in threads:
-                result.append(q.get_nowait())
-        else:
-            result = {"status": "failed"}
+                for dt in threads:
+                    dt.join(600)
+                for dt in threads:
+                    result.append(q.get_nowait())
+            else:
+                result = {"status": "failed"}
+        except Exception as e:
+            pytest.skip("Download Firmware Failed. {} res {}".format(e, result))
+        if "failed" in result:
+            print("[+] download result Queue contains failed")
+            if uuid:
+                ec = econAPI()
+                getData = {
+                    "fieldname": "jobPlatforms_id",
+                    "fieldname2": "testbed_id",
+                    "table": "jobPlatformTestModules",
+                    "name": "jobPlatformTestModules_uuid",
+                    "value": uuid
+                }
+                res = ec.econRequest('tbedmgr/jobmgr/jobConfig/getTableField',
+                                               rtype='post', payload=getData)
+                if 'jobPlatforms_id' in res:
+                    jobPlat_uuid = None
+                    testbed_uuid = None
+                    jobPlat_id = res['jobPlatforms_id']
+                    tbed_id    = res['testbed_id']
+                    if jobPlat_id and jobPlat_id != "null" and jobPlat_id != "" and jobPlat_id > 0 and tbed_id > 0:
+                        getData = {
+                            "fieldname": "testbed_uuid",
+                            "table": "testbeds",
+                            "name": "testbed_id",
+                            "value": tbed_id
+                        }
+                        res = ec.econRequest('tbedmgr/jobmgr/jobConfig/getTableField',
+                                                       rtype='post', payload=getData)
+                        if 'testbed_uuid' in res:
+                            testbed_uuid = res['testbed_uuid']
+                        getData = {
+                            "fieldname": "jobPlatforms_uuid",
+                            "table": "jobPlatforms",
+                            "name": "jobPlatforms_id",
+                            "value": jobPlat_id
+                        }
+                        res = ec.econRequest('tbedmgr/jobmgr/jobConfig/getTableField',
+                                                       rtype='post', payload=getData)
+
+                        if 'jobPlatforms_uuid' in res:
+                            jobPlat_uuid = res['jobPlatforms_uuid']
+                        if jobPlat_uuid and testbed_uuid:
+                            tbldata = {
+                                "testbed_uuid": testbed_uuid,
+                                "logStatus": "downloadlocked",
+                                "logStatusText": "failed download",
+                                "logSource": "agent",
+                                "jobPlatforms_uuid": jobPlat_uuid,
+                                "jobPlatformTestModules_uuid": uuid
+                            }
+                            logres = ec.econRequest('tbedmgr/testbed/log', rtype='post',
+                                                    payload=tbldata)
+                            upData = {
+                                'table': 'jobPlatformTestModules',
+                                'uuid': uuid,
+                                'testStatus': 'downloadFailed',
+                                'testbed_id': None,
+                                'initialStartTimestamp': '0000-00-00 00:00:00',
+                                'lastUpdatedBy': 'executor'
+                            }
+                            res = ec.econRequest('tbedmgr/jobmgr/jobPlatformTestModules',
+                                                 rtype='put', payload=upData)
+
+                            upData = {
+                                'table': 'jobPlatforms',
+                                'uuid': jobPlat_uuid,
+                                'status': 'downloadFailed',
+                                'lastUpdatedBy': 'executor'
+                            }
+                            res = ec.econRequest('tbedmgr/jobmgr/jobPlatforms',
+                                                 rtype='put', payload=upData)
+
+            pytest.skip("Download Firmware Failed.")
     except Exception as e:
-        pytest.skip("Download Firmware Failed. {} res {}".format(e, result))
-    if "failed" in result:
-        print("[+] download result Queue contains failed")
-        if uuid:
-            ec = econAPI()
-            getData = {
-                "fieldname": "jobPlatforms_id",
-                "fieldname2": "testbed_id",
-                "table": "jobPlatformTestModules",
-                "name": "jobPlatformTestModules_uuid",
-                "value": uuid
-            }
-            res = ec.econRequest('tbedmgr/jobmgr/jobConfig/getTableField',
-                                           rtype='post', payload=getData)
-            if 'jobPlatforms_id' in res:
-                jobPlat_uuid = None
-                testbed_uuid = None
-                jobPlat_id = res['jobPlatforms_id']
-                tbed_id    = res['testbed_id']
-                if jobPlat_id and jobPlat_id != "null" and jobPlat_id != "" and jobPlat_id > 0 and tbed_id > 0:
-                    getData = {
-                        "fieldname": "testbed_uuid",
-                        "table": "testbeds",
-                        "name": "testbed_id",
-                        "value": tbed_id
-                    }
-                    res = ec.econRequest('tbedmgr/jobmgr/jobConfig/getTableField',
-                                                   rtype='post', payload=getData)
-                    if 'testbed_uuid' in res:
-                        testbed_uuid = res['testbed_uuid']
-                    getData = {
-                        "fieldname": "jobPlatforms_uuid",
-                        "table": "jobPlatforms",
-                        "name": "jobPlatforms_id",
-                        "value": jobPlat_id
-                    }
-                    res = ec.econRequest('tbedmgr/jobmgr/jobConfig/getTableField',
-                                                   rtype='post', payload=getData)
-
-                    if 'jobPlatforms_uuid' in res:
-                        jobPlat_uuid = res['jobPlatforms_uuid']
-                    if jobPlat_uuid and testbed_uuid:
-                        tbldata = {
-                            "testbed_uuid": testbed_uuid,
-                            "logStatus": "downloadlocked",
-                            "logStatusText": "failed download",
-                            "logSource": "agent",
-                            "jobPlatforms_uuid": jobPlat_uuid,
-                            "jobPlatformTestModules_uuid": uuid
-                        }
-                        logres = ec.econRequest('tbedmgr/testbed/log', rtype='post',
-                                                payload=tbldata)
-                        upData = {
-                            'table': 'jobPlatformTestModules',
-                            'uuid': uuid,
-                            'testStatus': 'downloadFailed',
-                            'testbed_id': None,
-                            'initialStartTimestamp': '0000-00-00 00:00:00',
-                            'lastUpdatedBy': 'executor'
-                        }
-                        res = ec.econRequest('tbedmgr/jobmgr/jobPlatformTestModules',
-                                             rtype='put', payload=upData)
-
-                        upData = {
-                            'table': 'jobPlatforms',
-                            'uuid': jobPlat_uuid,
-                            'status': 'downloadFailed',
-                            'lastUpdatedBy': 'executor'
-                        }
-                        res = ec.econRequest('tbedmgr/jobmgr/jobPlatforms',
-                                             rtype='put', payload=upData)
-
-        pytest.skip("Download Firmware Failed.")
+        print("Warning loadTestBedFirmware: " + str(e))
 
 class TestDescriptionPlugin:
 
