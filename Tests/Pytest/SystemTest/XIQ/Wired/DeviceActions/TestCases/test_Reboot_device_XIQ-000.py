@@ -78,7 +78,7 @@ class rebootTests():
         #                                                  location=self.tb.dut1_location1)
 
         res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_manual(self.tb.dut1_serial,
-                                                          self.tb.dut1.os,self.tb.dut1_location1)
+                                                          self.tb.dut1.cli_type,self.tb.dut1_location1)
         if res != 1:
             pytest.fail(f'Could not onboard device {self.tb.dut1_platform} with serial {self.tb.dut1_serial}')
         else:
@@ -101,9 +101,17 @@ class rebootTests():
             print('Status for device with serial number: {} is equal to Green'.format(self.tb.dut1_serial))
 
         self.xiq.xflowscommonDevices.device_reboot(device_serial=self.tb.dut1_serial)
-        self.xiq.xflowscommonDevices.wait_until_device_offline(self.tb.dut1_serial, retry_duration=15,
+
+        device_offline_result = self.xiq.xflowscommonDevices.wait_until_device_offline(self.tb.dut1_serial, retry_duration=15,
                                                                retry_count=12)
-        bootWaitTime = self.suiteUdks.get_boot_wait_time(self.tb.dut1_model,self.tb.dut1_os)
+
+        if device_offline_result == 1:
+            print('Status for device with serial number: {} is offline'.format(self.tb.dut1_serial))
+        else:
+            pytest.fail('Status for serial {} is not offline: {}'.format(self.tb.dut1_serial, managed_res))
+
+
+        bootWaitTime = self.suiteUdks.get_boot_wait_time(self.tb.dut1_model,self.tb.dut1_cli_type)
         print("Sleeping for {} seconds to allow device to come back on line".format(bootWaitTime))
         time.sleep(bootWaitTime)
         self.xiq.xflowscommonDevices.wait_until_device_reboots(self.tb.dut1_serial, retry_duration=15, retry_count=12)

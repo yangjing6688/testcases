@@ -73,9 +73,8 @@ TCCS-7279_Step2: Config AP to Report XIQ
 
     [Tags]              production      tccs_7279   tccs_7279_step2
 
-    Depends On          TCCS-7279_Step1
-    ${AP_SPAWN}=        Open Spawn          ${wing1.console_ip}   ${wing1.console_port}      ${wing1.username}       ${wing1.password}        ${wing1.platform}
-    Should Not Be Equal As Strings         '${AP_SPAWN}'        '-1'
+    Depends On          TCCS_7279_Step1
+    ${AP_SPAWN}=        Open Spawn          ${wing1.ip}   ${wing1.port}      ${wing1.username}       ${wing1.password}        ${wing1.cli_type}
 
     Set Suite Variable  ${AP_SPAWN}
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         en, end, en, configure, no nsight-policy xiq, commit write memory, commit write memory
@@ -84,7 +83,7 @@ TCCS-7279_Step2: Config AP to Report XIQ
 
     ${OUTPUT1}=         Send                ${AP_SPAWN}         show running-config nsight-policy xiq
     ${OUTPUT2}=         Send                ${AP_SPAWN}         show running-config rf-domain default
-    ${OUTPUT3}=         Send                ${AP_SPAWN}         self, show context, end
+    ${OUTPUT3}=         Send       ${AP_SPAWN}         self, show context, end
 
     [Teardown]          Close Spawn         ${AP_SPAWN}
 

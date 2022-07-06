@@ -5,13 +5,16 @@ wing1:
   serial:                   100A405DFA4702C0
   os_version:               7.6.3.0-012R
   mac:                      000C29C95C19
+  cli_type:                 "WING-AP"
   bssid:
   network_policy:           Test_np
   username:                 admin
   password:                 symbol
   platform:                 wing
   ip:                       10.234.137.23
-  port:                     "22"
+  port:                     22
   connection_method:        "ssh"
+  console_ip:               10.234.137.23
+  console_port:             '22'
   country:                  United Kingdom
   make:                     Controllers
