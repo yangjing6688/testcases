@@ -120,7 +120,7 @@ TC-6759_Step1: Create User Group and Network for PPSK Upgrade Test
     should be equal as strings       '${DELTA_UPDATE}'   '1'
     sleep                             ${config_push_wait}
 
-    ${AP_SPAWN}=            Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=            Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
     ${SHOW_CONFIG1}=        Send                ${AP_SPAWN}             show ssid
     Should Contain          ${SHOW_CONFIG1}     ${PPSK_UPGRADE_TEST_SSID}
     close spawn  ${AP_SPAWN}

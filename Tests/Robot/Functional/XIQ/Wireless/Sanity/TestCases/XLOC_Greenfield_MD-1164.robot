@@ -67,9 +67,10 @@ TC-10862: Onboard AP on New customer Account
 
     #Onboard AP                  ${ap1.serial}       aerohive
     ${ONBOARD_RESULT}=      Onboard Device      ${ap1.serial}           ${ap1.make}       location=${LOCATION}
+
     Should be equal as integers                 ${ONBOARD_RESULT}       1
 
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
     Set Suite Variable          ${AP_SPAWN}
     ${OUTPUT0}=                 Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
@@ -112,7 +113,7 @@ TC-10847: Validate Presence TC after connecting client in new customer account
     Depends On          TC-7281
     ${LOGIN_XIQ}=                  Login User          ${tenant_username}     ${tenant_password}
     ${CLIENT_MAC_FORMAT}=          Convert To Client MAC  ${mu5.wifi_mac}
-    ${MU5_SPAWN}=                  Open Spawn                  ${mu5.ip}               ${mu5.port}             ${mu5.username}      ${mu5.password}      ${mu5.platform}
+    ${MU5_SPAWN}=                  Open Spawn                  ${mu5.ip}               ${mu5.port}             ${mu5.username}      ${mu5.password}      ${mu5.cli_type}
     Set Suite Variable             ${MU5_SPAWN}
     Connect MU5 To Open Network    ${SSID_NAME}
 

@@ -61,7 +61,7 @@ TCCS-11310: Verification of config push complete config update
 
     Wait Until Device Online    ${ap1.serial}  None   30   20
 
-    ${SPAWN}=               Open Spawn      ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${SPAWN}=               Open Spawn      ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
     ${OUTPUT1}=             Send            ${SPAWN}                show ssid
 
     should be equal as integers             ${POLICY_STATUS}            1
@@ -86,7 +86,7 @@ TCCS-11309: Verification of config push delta update
     ${DEPLOY_STATUS}=       Deploy Network Policy with Delta Update     ${POLICY_01}          ${ap1.serial}
     Wait Until Device Online    ${ap1.serial}
 
-    ${SPAWN}=               Open Spawn      ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${SPAWN}=               Open Spawn      ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
     ${OUTPUT1}=             Send            ${SPAWN}                show ssid
 
     should be equal as integers             ${EDIT_STATUS}              1
@@ -102,7 +102,7 @@ TCCS-7373: IQ engine upgrade to lastest version
 
     [Tags]			        production      tccs_7373
 
-    ${SPAWN1}=              Open Spawn      ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${SPAWN1}=              Open Spawn      ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
     ${CLOCK_OUPUT1}=        Send            ${SPAWN1}         show clock
     ${REBOOT_OUPUT1}=       Send            ${SPAWN1}         show reboot schedule
     ${VERSION_DETAIL1}=     Send            ${SPAWN1}         show version detail
@@ -120,7 +120,7 @@ TCCS-7373: IQ engine upgrade to lastest version
     Wait Until Device Reboots               ${ap1.serial}
     Close Spawn             ${SPAWN1}
 
-    ${SPAWN2}=              Open Spawn      ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.platform}
+    ${SPAWN2}=              Open Spawn      ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
     ${CLOCK_OUPUT2}=        Send            ${SPAWN2}         show clock
     ${REBOOT_OUPUT2}=       Send            ${SPAWN2}         show reboot schedule
     ${VERSION_DETAIL2}=     Send            ${SPAWN2}         show version detail

@@ -37,6 +37,7 @@ ap1:
 mu1:
   ip:             10.234.105.221
   port:           8270
+  connection_method:    "console"
   username:       admin
   password:       symbol
   platform:       windows

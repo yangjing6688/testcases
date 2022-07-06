@@ -3,15 +3,18 @@ router1:
   model:                    XR600P
   device_template:          XR600P_test_automation
   serial:                   '60018082400461'
-  ip:                       "10.234.105.75"
-  port:                     "22"
-  connection_method:        "ssh"
-  cli_type:                 "AH_XR"
+  cli_type:                 "AH-XR"
+  connection_method:        "console"
+  # Left the IP in just in case we need it in the future
+  # ip:                       "10.234.105.75"
   mac:                      F4EAB52DDF00
   network_policy:           Test_np
   username:                 admin
   password:                 Aerohive123
   platform:                 aerohive
+  connection_method:        console
   console_ip:               10.234.105.230
   console_port:             7026
+  ip:                       10.234.105.230
+  port:                      7026
   make:                     Extreme - Aerohive
