@@ -77,7 +77,8 @@ Library	        Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
 
 Force Tags   testbed_1_node
 
-Suite Setup      Pre Condition
+Suite Setup     Pre Condition
+Suite Teardown  Test Suite Clean Up
 
 *** Keywords ***
 Pre Condition
@@ -92,6 +93,18 @@ Pre Condition
     Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}  ${CWP_NAME_GOOGLE}   ${CWP_NAME_LINKEDIN}   ${CWP_NAME_FACEBOOK1}
     [Teardown]   run keywords       logout user
     ...                             quit browser
+
+Test Suite Clean Up
+    [Documentation]    delete created network policies, captive web portals,ssid
+
+    [Tags]      production      cleanup
+    ${result}=    Login User       ${tenant_username}     ${tenant_password}
+    Update Network Policy To AP    policy_name=default_network_policy    ap_serial=${ap1.serial}
+    Delete Network Polices         ${NW_POLICY_NAME1}    ${NW_POLICY_NAME2}    ${NW_POLICY_NAME3}     ${NW_POLICY_NAME4}  ${NW_POLICY_NAME5}   ${NW_POLICY_NAME6}
+    Delete ssids                   ${NW_POLICY_SSID1}    ${NW_POLICY_SSID2}     ${NW_POLICY_SSID4}    ${NW_POLICY_SSID3}   ${NP_AUTHLOG_SSID}  ${NW_POLICY_SSID5}
+    Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}  ${CWP_NAME_GOOGLE}   ${CWP_NAME_LINKEDIN}   ${CWP_NAME_FACEBOOK1}
+    Logout User
+    Quit Browser
 
 Positive Internet connectivity check
     ${FLAG}=   Remote_Server.Connectivity Check
@@ -137,7 +150,9 @@ TCCS-11614: Social login with facebook
     Log to Console      Sleep for ${auth_logs_duration_wait}
     sleep  ${auth_logs_duration_wait}
 
-    ${AUTH_LOGS}=                Get Authentication Logs Details       ${CURRENT_DATE_TIME}     ${MAIL_ID3} 
+    ${AUTH_LOGS}=                Get Authentication Logs Details       ${CURRENT_DATE_TIME}     ${MAIL_ID3}
+    ${TIME_STAMP}=               Get From Dictionary     ${AUTH_LOGS}    authdate
+    should contain               ${TIME_STAMP}       ${CURRENT_DATE_TIME[:-2:]}
     LOG TO CONSOLE               ${AUTH_LOGS}
     # Logs Verification
     ${AUTH_STATUS}=        Get From Dictionary     ${AUTH_LOGS}    reply
@@ -174,15 +189,3 @@ TCCS-11614: Social login with facebook
 
     [Teardown]   run keywords    Test Case Level Cleanup
     ...                          Close CP Browser
-
-Test Suite Clean Up
-    [Documentation]    delete created network policies, captive web portals,ssid
-
-    [Tags]      production      cleanup
-    ${result}=    Login User       ${tenant_username}     ${tenant_password}
-    Update Network Policy To AP    policy_name=default_network_policy    ap_serial=${ap1.serial}
-    Delete Network Polices         ${NW_POLICY_NAME1}    ${NW_POLICY_NAME2}    ${NW_POLICY_NAME3}     ${NW_POLICY_NAME4}  ${NW_POLICY_NAME5}   ${NW_POLICY_NAME6}
-    Delete ssids                   ${NW_POLICY_SSID1}    ${NW_POLICY_SSID2}     ${NW_POLICY_SSID4}    ${NW_POLICY_SSID3}   ${NP_AUTHLOG_SSID}  ${NW_POLICY_SSID5}
-    Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}  ${CWP_NAME_GOOGLE}   ${CWP_NAME_LINKEDIN}   ${CWP_NAME_FACEBOOK1}
-    Logout User
-    Quit Browser
