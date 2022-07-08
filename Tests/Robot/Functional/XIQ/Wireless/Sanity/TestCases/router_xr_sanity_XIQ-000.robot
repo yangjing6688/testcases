@@ -96,10 +96,10 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     ${ONBOARD_RESULT}=      Onboard Device          ${router1.serial}         ${router1.make}       location=${LOCATION}
     Should Be Equal As Integers                     ${ONBOARD_RESULT}           1
 
-    ${SEARCH_ROUTER}=       Search Device Serial    ${router1.serial}
+    ${SEARCH_ROUTER}=       Search Device           device_serial=${router1.serial}
     Should Be Equal As Integers             ${SEARCH_ROUTER}        1
 
-    ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}     connection_method=console
+    ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}       ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}     connection_method=console
     Set Suite Variable      ${ROUTER_SPAWN}
     ${CONFIG_CAPWAP}=       Send Commands           ${ROUTER_SPAWN}         capwap client server name ${capwap_url}, no capwap client enable, capwap client enable, save config
 

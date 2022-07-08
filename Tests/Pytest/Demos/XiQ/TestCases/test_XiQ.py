@@ -54,7 +54,7 @@ class xiqTests():
 
             # Clear out the device information
             self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1.serial)
-            self.xiq.xflowscommonDevices.search_device_serial(self.tb.dut1.serial)
+            self.xiq.xflowscommonDevices.search_device(device_serial=self.tb.dut1.serial)
             self.xiq.xflowscommonDevices.delete_device(device_serial=self.tb.dut1.serial)
             self.udks.setupTeardownUdks.networkElementConnectionManager.connect_to_all_network_elements()
             # self.devCmd.send_cmd(self.tb.dut1_name, 'configure iqagent server ipaddress {}'.format(self.cfg['SWITCH_CONNECTION_HOST']))
@@ -70,7 +70,7 @@ class xiqTests():
         #                                  url=self.cfg['TEST_URL'])
         self.devCmd.send_cmd(self.tb.dut1_name, 'configure dns-client delete name-server 8.8.8.8 vr vr-mgmt')
         self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1.serial)
-        self.xiq.xflowscommonDevices.search_device_serial(self.tb.dut1.serial)
+        self.xiq.xflowscommonDevices.search_device(device_serial=self.tb.dut1.serial)
         self.xiq.xflowscommonDevices.delete_device(device_serial=self.tb.dut1.serial)
         self.xiq.login.logout_user(IRV=True)
         self.xiq.login.quit_browser()
@@ -86,7 +86,7 @@ class xiqTests():
         if res != 1:
             pytest.fail('Could not onboard {}'.format(self.tb.dut1.serial))
 
-        res = self.xiq.xflowscommonDevices.search_device_serial(self.tb.dut1.serial)
+        res = self.xiq.xflowscommonDevices.search_device(device_serial=self.tb.dut1.serial)
         if res != 1:
             pytest.fail('Could not locate serial {}'.format(self.tb.dut1.serial))
 
@@ -113,7 +113,7 @@ class xiqTests():
         if res != 1:
             pytest.fail('Could not onboard {}'.format(self.tb.dut1.serial))
 
-        res = self.xiq.xflowscommonDevices.search_device_serial(self.tb.dut1.serial)
+        res = self.xiq.xflowscommonDevices.search_device(device_serial=self.tb.dut1.serial)
         if res != 1:
             pytest.fail('Could not locate serial {}'.format(self.tb.dut1.serial))
 

@@ -51,12 +51,12 @@ TCCS-7292_Step1: Onboard EXOS Switch on XIQ
     ${ONBOARD_RESULT}=      Onboard Switch      ${netelem1.serial}       ${netelem1.make}    location=${LOCATION}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
-    ${SEARCH_SWITCH}=       Search Device Serial    ${netelem1.serial}
+    ${SEARCH_SWITCH}=       Search Device       device_serial=${netelem1.serial}
     Should Be Equal As Strings             ${SEARCH_SWITCH}       1
     ${SWITCH_CONNECTION_HOST}=      Capture XIQ Switch Connection Host
     Should Not Be Equal As Strings             ${SWITCH_CONNECTION_HOST}       ${EMPTY}
 
-    ${SW_SPAWN}=            Open Spawn          ${netelem1.ip}   ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
+    ${SW_SPAWN}=            Open Spawn          ${netelem1.ip}       ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
     ${CONF_SWITCH_HOST}=    Send                ${SW_SPAWN}         configure iqagent server ipaddress ${SWITCH_CONNECTION_HOST}
     ${CONF_VR}=             Send                ${SW_SPAWN}         configure iqagent server vr VR-Default
     ${CONF_VR}=             Send                ${SW_SPAWN}         save config
