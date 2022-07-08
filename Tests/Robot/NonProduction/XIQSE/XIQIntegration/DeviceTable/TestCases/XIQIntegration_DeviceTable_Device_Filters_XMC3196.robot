@@ -444,7 +444,7 @@ Onboard New XIQ Device
     XIQ Navigate to Devices and Confirm Success
 
     # If the device has already been onboarded, delete it first
-    ${search_result}=  Search Device Serial   ${serial}
+    ${search_result}=  Search Device   ${serial}
 
     # Onboard the device
     Run Keyword If  '${search_result}' != '1'    Onboard Device  ${serial}  ${type}  location=${loc}
@@ -545,7 +545,7 @@ Confirm Device Serial Present in XIQ
 
     Refresh Devices Page
 
-    ${search_result}=  Search Device Serial     ${serial}
+    ${search_result}=  Search Device     ${serial}
     Should Be Equal As Integers                 ${search_result}    1
 
 Confirm Device Serial Not Present in XIQ
@@ -556,7 +556,7 @@ Confirm Device Serial Not Present in XIQ
 
     Refresh Devices Page
 
-    ${search_result}=  Search Device Serial     ${serial}
+    ${search_result}=  Search Device     ${serial}
     Should Not Be Equal As Strings              '${search_result}'    '1'
 
 Confirm Device MAC Present in XIQ
@@ -567,7 +567,7 @@ Confirm Device MAC Present in XIQ
 
     Refresh Devices Page
 
-    ${search_result}=  Search Device MAC     ${mac}
+    ${search_result}=  Search Device     ${mac}
     Should Be Equal As Integers              ${search_result}    1
 
 Confirm Device MAC Not Present in XIQ
@@ -578,7 +578,7 @@ Confirm Device MAC Not Present in XIQ
 
     Refresh Devices Page
 
-    ${search_result}=  Search Device MAC      ${mac}
+    ${search_result}=  Search Device      ${mac}
     Should Be Equal As Integers               ${search_result}    -1
 
 Disconnect XIQSE Test Device and Confirm Success
