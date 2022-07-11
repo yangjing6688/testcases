@@ -32,27 +32,50 @@ Variables    Environments/Config/device_commands.yaml
 Force Tags   testbed_1_node
 
 Suite Setup     Cleanup-Delete Switch   ${netelem1.serial}
+Suite Teardown  Test Suite Clean Up
 
 *** Keywords ***
 Cleanup-Delete Switch
     [Arguments]     ${SERIAL}
-    Login User      ${tenant_username}      ${tenant_password}
-    Delete Device        device_serial=${netelem1.serial}
-    [Teardown]   run keywords       Logout User
-    ...                             Quit Browser
+
+    ${LOGIN_STATUS}=                    Login User          ${tenant_username}      ${tenant_password}     check_warning_msg=True
+    should be equal as integers         ${LOGIN_STATUS}               1
+
+    ${DELETE_DEVICE_STATUS}=            Delete Device                  device_serial=${SERIAL}
+    should be equal as integers        ${DELETE_DEVICE_STATUS}               1
+
+    [Teardown]   run keywords           Logout User
+    ...                                 Quit Browser
+
+Test Suite Clean Up
+    [Documentation]    delete Exos Switch
+
+    [Tags]              production   cleanup
+
+    ${LOGIN_STATUS}=                    Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers         ${LOGIN_STATUS}               1
+
+    ${DELETE_DEVICE_STATUS}=            Delete Device       device_serial=${netelem1.serial}
+    Should Be Equal As Integers         ${DELETE_DEVICE_STATUS}     1
+
+    [Teardown]   run keywords           Logout User
+    ...                                 Quit Browser
 
 *** Test Cases ***
 TCCS-7292_Step1: Onboard EXOS Switch on XIQ
     [Documentation]         Checks for Exos switch onboarding on XIQ
 
-    [Tags]                  production      tccs_7292_step1
+    [Tags]                  production      tccs_7292       tccs_7292_step1
 
-    ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
-    ${ONBOARD_RESULT}=      Onboard Switch      ${netelem1.serial}       ${netelem1.make}    location=${LOCATION}
-    Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
+    ${LOGIN_STATUS}=                    Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers         ${LOGIN_STATUS}               1
+
+    ${ONBOARD_RESULT}=                  Onboard Switch      ${netelem1.serial}       ${netelem1.make}    location=${LOCATION}
+    Should Be Equal As Strings          ${ONBOARD_RESULT}       1
 
     ${SEARCH_SWITCH}=       Search Device       device_serial=${netelem1.serial}
     Should Be Equal As Strings             ${SEARCH_SWITCH}       1
+    
     ${SWITCH_CONNECTION_HOST}=      Capture XIQ Switch Connection Host
     Should Not Be Equal As Strings             ${SWITCH_CONNECTION_HOST}       ${EMPTY}
 
@@ -65,8 +88,11 @@ TCCS-7292_Step1: Onboard EXOS Switch on XIQ
 
     Close Spawn             ${SW_SPAWN}
 
-    Wait Until Device Online    ${netelem1.serial}
-    ${SWITCH_STATUS}=       Get Device Status       device_serial=${netelem1.serial}
+    ${CONNECTED_STATUS}=                Wait Until Device Online                ${netelem1.serial}
+    Should Be Equal as Integers         ${CONNECTED_STATUS}          1
+
+    ${DEVICE_STATUS}=                   Get Device Status       device_mac=${netelem1.mac}
+    Should contain any                  ${DEVICE_STATUS}    green     config audit mismatch
 
     [Teardown]         run keywords    logout user
      ...                               quit browser
@@ -74,10 +100,13 @@ TCCS-7292_Step1: Onboard EXOS Switch on XIQ
 TCCS-7292_Step2: Verify EXOS Switch Information on Device 360 page
     [Documentation]         Verify EXOS Switch Information on Device 360 page
 
-    [Tags]                  production      tccs_7292_step2
+    [Tags]                  production      tccs_7292       tccs_7292_step2
 
-    Depends On              tccs_7292_step1
-    ${LOGIN_XIQ} =                 Login User               ${tenant_username}      ${tenant_password}
+    Depends On              TCCS-7292_Step1
+
+    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers             ${LOGIN_STATUS}               1
+
     ${SYS_INFO_360_PAGE}=          Get ExOS Switch 360 Information  device_mac=${netelem1.mac}
     ${HOST_NAME}=                  Get From Dictionary      ${SYS_INFO_360_PAGE}    host_name
     Should Be Equal As Strings    '${HOST_NAME}'            '${netelem1.name}'
@@ -96,39 +125,38 @@ TCCS-7292_Step2: Verify EXOS Switch Information on Device 360 page
 TCCS-7292_Step3: Verify ExOS SSH connectivity
   [Documentation]       Verify ExOS SSH connectivity
 
-    [Tags]              production      tccs_7292_step3
+    [Tags]              production      tccs_7292       tccs_7292_step3
 
-    Depends On          tccs_7292_step2
-    ${LOGIN_XIQ}=         Login User          ${tenant_username}      ${tenant_password}
-    ${ENABLE_SSH}=         Enable SSH Availability
+    Depends On          TCCS-7292_Step2
 
-    &{ip_port_info}=       Device360 Enable SSH CLI Connectivity     device_mac=${netelem1.mac}    run_time=${SSH_TIMEOUT}
-    ${IP ADDR}=            Get From Dictionary  ${ip_port_info}  ip
-    ${PORT NUM}=           Get From Dictionary  ${ip_port_info}  port
+    ${LOGIN_STATUS}=                    Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers         ${LOGIN_STATUS}               1
 
-    ${SPAWN1}=          Open Paramiko SSH Spawn    ${IP ADDR}   ${netelem1.username}    ${netelem1.password}  ${PORT NUM}
+    ${ENABLE_SSH}=                      Enable SSH Availability
+    should be equal as integers         ${ENABLE_SSH}               1
+
+    &{ip_port_info}=                    Device360 Enable SSH CLI Connectivity     device_mac=${netelem1.mac}    run_time=${SSH_TIMEOUT}
+
+    ${IP_ADDR}=            Get From Dictionary  ${ip_port_info}  ip
+    ${PORT_NUM}=           Get From Dictionary  ${ip_port_info}  port
+
+    Should not be Empty     ${IP_ADDR}
+    Should not be Empty     ${PORT_NUM}
+
+    ${SPAWN1}=          Open Paramiko SSH Spawn    ${IP_ADDR}   ${netelem1.username}    ${netelem1.password}  ${PORT_NUM}
+    should not be equal as strings          ${SPAWN1}       -1
+
     ${OUTPUT1}=         Send Paramiko CMD           ${SPAWN1}           show version
     Should Contain      ${OUTPUT1}          ExtremeXOS version
     Should Contain      ${OUTPUT1}          ${netelem1.serial}
-    should not be equal as strings          ${SPAWN1}       -1
 
     ${SSH STATUS}=     UI SSH Status Check
     should be equal as strings              ${SSH STATUS}   ${SSH_ACTIVE}
 
     Sleep    5 minutes
 
-    ${SPAWN2}=          Open Paramiko SSH Spawn    ${IP ADDR}   ${netelem1.username}    ${netelem1.password}  ${PORT NUM}
+    ${SPAWN2}=          Open Paramiko SSH Spawn    ${IP_ADDR}   ${netelem1.username}    ${netelem1.password}  ${PORT_NUM}
     should be equal as strings          ${SPAWN2}     -1
 
     [Teardown]         run keywords    logout user
      ...                               quit browser
-
-Test Suite Clean Up
-    [Documentation]    delete Exos Switch
-
-    [Tags]              production   cleanup
-     ${result}=    Login User        ${tenant_username}     ${tenant_password}
-     ${DELETE_RESULT}=      Delete Device       device_serial=${netelem1.serial}
-     Should Be Equal As Integers                ${DELETE_RESULT}     1
-     [Teardown]   run keywords       Logout User
-    ...                             Quit Browser
