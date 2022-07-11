@@ -11,12 +11,13 @@ ${DEVICE_MAKE_AEROHIVE}     Extreme - Aerohive
 
 *** Settings ***
 Library     common/Utils.py
-Library     common/Cli.py
+Library     extauto/common/Cli.py
 Library     xiq/flows/common/Login.py
 Library     xiq/flows/manage/Devices.py
 Library     xiq/flows/manage/Switch.py
 Library     xiq/flows/manage/AdvOnboard.py
 Library     xiq/flows/manage/AdvanceOnboarding.py
+Library     extauto/common/TestFlow.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -33,43 +34,39 @@ Configure XIQ on Fastpath Switch
     ${OUTPUT0}=         Send                ${SPAWN}         Application stop hiveagent
     ${OUTPUT0}=         Send                ${SPAWN}         Application start hiveagent
 
-Get XIQ Status on Fastpath Switch
-    [Arguments]         ${SPAWN}            ${capwap_url}
-    ${SW_VERSION}=      Send                ${SPAWN}         show version
-    ${HM_FULL_STATUS}=  Send                ${SPAWN}         show hivemanager status
-    ${HM_STATUS}=       Send                ${SPAWN}         show hivemanager status | include Status
-    ${HM_ADDRESS}=      Send                ${SPAWN}         show hivemanager address
-    Should Contain      ${HM_ADDRESS}       ${capwap_url}
-    Should Contain      ${HM_STATUS}        CONNECTED TO HIVEMANAGER
-
 Configure XIQ on Aerohive Switch
     [Arguments]         ${SPAWN}            ${capwap_url}
     ${OUTPUT0}=         Send                ${SPAWN}         capwap client default-server-name ${capwap_url}
     ${OUTPUT0}=         Send                ${SPAWN}         save config
 
-Get XIQ Status on Aerohive Switch
-    [Arguments]         ${SPAWN}            ${capwap_url}
-    ${SW_VERSION}=      Send                ${SPAWN}         show version
-    ${HM_ADDRESS}=      Send                ${SPAWN}         show hivemanager
-    Should Contain      ${HM_ADDRESS}       ${capwap_url}
-
 *** Test Cases ***
 TCCS-7748_Step1: Onboard Aerohive Switch
     [Documentation]         Checks for Aerohive switch onboarding is success in case of valid scenario
 
-    [Tags]                  production      tccs_7748_step1
-    ${result}=              Login User          ${tenant_username}      ${tenant_password}
-    Delete Device           device_serial=${aerohive_sw1.serial}
+    [Tags]                  production      tccs_7748   tccs_7748_step1
+
+    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}     check_warning_msg=True
+    should be equal as integers             ${LOGIN_STATUS}               1
+
+    ${DELETE_DEVICE_STATUS}=            Delete Device                  device_serial=${aerohive_sw1.serial}
+    should be equal as integers     ${DELETE_DEVICE_STATUS}               1
+
     ${ONBOARD_RESULT}=      Onboard Device      ${aerohive_sw1.serial}           ${aerohive_sw1.make}       location=${LOCATION}
     should be equal as integers                 ${ONBOARD_RESULT}       1
+
     [Teardown]         run keywords    logout user
      ...                               quit browser
 
 TCCS-7748_Step2: Config Aerohive/Fastpath Switch to Report AIO
     [Documentation]     Config Aerohive Switch to Report AIO
 
-    [Tags]              production         tccs_7748_step2
+    [Tags]              production         tccs_7748    tccs_7748_step2
+
+    Depends On          TCCS-7748_Step1
+
     ${SW_SPAWN}=        Open Spawn          ${aerohive_sw1.ip}   ${aerohive_sw1.port}      ${aerohive_sw1.username}       ${aerohive_sw1.password}        ${aerohive_sw1.cli_type}
+    Should not be equal as Strings          '${SW_SPAWN}'        '-1'
+    
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-fastpath'   Configure XIQ on Fastpath Switch        ${SW_SPAWN}         ${sw_capwap_url}
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-switch'     Configure XIQ on Aerohive Switch        ${SW_SPAWN}         ${capwap_url}
 
@@ -78,37 +75,53 @@ TCCS-7748_Step2: Config Aerohive/Fastpath Switch to Report AIO
 TCCS-7748_Step3: Check Aerohive Switch Status On UI
     [Documentation]     Checks for switch status
 
-    [Tags]              production          tccs_7748_step3
-    ${result}=          Login User          ${tenant_username}     ${tenant_password}
-    wait until device online                device_serial=${aerohive_sw1.serial}
-    ${SW_STATUS}=       Get Device Status           device_serial=${aerohive_sw1.serial}
+    [Tags]              production          tccs_7748   tccs_7748_step3
 
-    Delete Device		${aerohive_sw1.serial}
+    Depends On          TCCS-7748_Step2
+
+    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers             ${LOGIN_STATUS}               1
+
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${aerohive_sw1.serial}
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
+
+    ${DEVICE_STATUS}=       Get Device Status       device_mac=${aerohive_sw1.mac}
+    Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
 
     [Teardown]   run keywords       logout user
     ...                             quit browser
-
 
 TCCS-7748_Step4: Onboard Aerohive Switch via advanced Onboarding
     [Documentation]         Checks for Aerohive switch(SR23XX) onboarding via advanced onboard
 
-    [Tags]                  production  tccs_7748_step4
-    ${result}=              Login User          ${tenant_username}      ${tenant_password}
-    ${onboard_result}=      Advance Onboard Device          ${aerohive_sw1.serial}          device_make=${aerohive_sw1.make}   dev_location=${LOCATION}
-    Sleep                   ${device_onboarding_wait}
+    [Tags]                  production      tccs_7748   tccs_7748_step4
 
-    ${search_result}=       Search Device       device_serial=${aerohive_sw1.serial}
-    ${SW_SPAWN}=        Open Spawn          ${aerohive_sw1.ip}       ${aerohive_sw1.port}      ${aerohive_sw1.username}       ${aerohive_sw1.password}        ${aerohive_sw1.cli_type}
+    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers             ${LOGIN_STATUS}               1
+
+    ${DELETE_DEVICE_STATUS}=            Delete Device                  device_serial=${aerohive_sw1.serial}
+    should be equal as integers     ${DELETE_DEVICE_STATUS}               1
+
+    ${ONBOARD_RESULT}=      Advance Onboard Device          ${aerohive_sw1.serial}          device_make=${aerohive_sw1.make}   dev_location=${LOCATION}
+    should be equal as integers             ${ONBOARD_RESULT}       1
+
+    Sleep                   ${device_onboarding_wait}
+    
+    ${SW_SPAWN}=        Open Spawn          ${aerohive_sw1.ip}   ${aerohive_sw1.port}      ${aerohive_sw1.username}       ${aerohive_sw1.password}        ${aerohive_sw1.cli_type}
+    Should not be equal as Strings          '${SW_SPAWN}'        '-1'
 
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-fastpath'   Configure XIQ on Fastpath Switch        ${SW_SPAWN}         ${sw_capwap_url}
     Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-switch'     Configure XIQ on Aerohive Switch        ${SW_SPAWN}         ${capwap_url}
-    wait until device online                        device_serial=${aerohive_sw1.serial}
-    ${SW_STATUS}=           Get Device Status       device_serial=${aerohive_sw1.serial}
-    should be equal as integers             ${result}               1
-    should be equal as integers             ${onboard_result}       1
-    should be equal as integers             ${search_result}        1
-    Should Be Equal As Strings              '${SW_STATUS}'     'green'
-    Delete Device           				device_serial=${aerohive_sw1.serial}
+
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${aerohive_sw1.serial}
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
+
+    ${DEVICE_STATUS}=       Get Device Status       device_mac=${aerohive_sw1.mac}
+    Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
+
+    ${DELETE_DEVICE_STATUS}=            Delete Device                  device_serial=${aerohive_sw1.serial}
+    should be equal as integers     ${DELETE_DEVICE_STATUS}               1
 
     [Teardown]   run keywords       logout user
-    ...                             quit browser
+    ...          AND                quit browser
+    ...          AND                Close Spawn        ${SW_SPAWN}
