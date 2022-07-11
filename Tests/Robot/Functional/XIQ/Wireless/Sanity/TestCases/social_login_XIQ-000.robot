@@ -77,103 +77,35 @@ Library	        Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
 
 Force Tags   testbed_1_node
 
-Suite Setup      Pre Condition
+Suite Setup     Pre Condition
+Suite Teardown  Test Suite Clean Up
 
 *** Keywords ***
 Pre Condition
     [Documentation]   AP Should be onboarded  and it is online
-    ${result}=          Login User          ${tenant_username}     ${tenant_password}
-    ${AP_STATUS}=       Get AP Status       ap_mac=${ap1.mac}
-    Should Be Equal As Strings  '${AP_STATUS}'     'green'
-    create network policy    default_network_policy     &{CONFIG_PUSH_OPEN_NW_01}
-    Update Network Policy To AP    policy_name=default_network_policy    ap_serial=${ap1.serial}
-    Delete Network Polices         ${NW_POLICY_NAME1}    ${NW_POLICY_NAME2}    ${NW_POLICY_NAME3}     ${NW_POLICY_NAME4}  ${NW_POLICY_NAME5}  ${NW_POLICY_NAME6}
-    Delete ssids                   ${NW_POLICY_SSID1}    ${NW_POLICY_SSID2}     ${NW_POLICY_SSID4}    ${NW_POLICY_SSID3}   ${NP_AUTHLOG_SSID}   ${NW_POLICY_SSID5}
-    Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}  ${CWP_NAME_GOOGLE}   ${CWP_NAME_LINKEDIN}   ${CWP_NAME_FACEBOOK1}
+    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}    check_warning_msg=True
+    should be equal as integers             ${LOGIN_STATUS}               1
+
+    ${DEVICE_STATUS}=       Get Device Status       device_mac=${ap1.mac}
+    Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
+
+    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          default_network_policy                 &{CONFIG_PUSH_OPEN_NW_01}
+    should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
+
+    ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap    policy_name=default_network_policy     ap_serial=${ap1.serial}
+    should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
+
+    ${DELETE_STATUS}=               Delete Network Policy           ${NW_POLICY_NAME1}
+    should be equal as integers     ${DELETE_STATUS}                1
+
+    ${SSID_DLT_STATUS}=             Delete ssid                     ${NW_POLICY_SSID1}
+    should be equal as integers     ${SSID_DLT_STATUS}              1
+
+    ${DELETE_CWP_STATUS}=           Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}
+    should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
+
     [Teardown]   run keywords       logout user
     ...                             quit browser
-
-Positive Internet connectivity check
-    ${FLAG}=   Remote_Server.Connectivity Check
-    should be equal as strings   '${FLAG}'   '1'
-
-
-Negative Internet connectivity check
-    ${FLAG}=   Remote_Server.Connectivity Check
-    should be equal as strings   '${FLAG}'   '-1'
-
-Test Case Level Cleanup
-     Update Network Policy To AP    policy_name=default_network_policy    ap_serial=${ap1.serial}
-     Delete Network Polices         ${NW_POLICY_NAME1}    ${NW_POLICY_NAME2}    ${NW_POLICY_NAME3}     ${NW_POLICY_NAME4}  ${NW_POLICY_NAME5}  ${NW_POLICY_NAME6}
-     Delete ssids                   ${NW_POLICY_SSID1}    ${NW_POLICY_SSID2}     ${NW_POLICY_SSID4}    ${NW_POLICY_SSID3}   ${NP_AUTHLOG_SSID}   ${NW_POLICY_SSID5}
-     Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}  ${CWP_NAME_GOOGLE}   ${CWP_NAME_LINKEDIN}   ${CWP_NAME_FACEBOOK1}
-    [Teardown]   run keywords       logout user
-    ...                             quit browser
-     Remote_Server.Disconnect WiFi
-
-*** Test Cases ***
-TCCS-11614: Social login with facebook
-    [Documentation]   CWP Social login with facebook
-    ...               https://jira.aerohive.com/browse/APC-36506
-
-    [Tags]            production    tccs_11614
-
-    ${LOGIN_XIQ}=                     Login User          ${tenant_username}      ${tenant_password}    capture_version=True
-    ${NW_POLICY_CREATION}=            Create Network Policy     ${NW_POLICY_NAME1}    &{OPEN_NW_1}
-    ${AP_UPDATE_CONFIG}=              Update Network Policy To AP   ${NW_POLICY_NAME1}     ap_serial=${ap1.serial}
-    Log to Console      Sleep for ${config_push_wait}
-    sleep                         ${config_push_wait}
-
-    Remote_Server.Connect Open Network    ${NW_POLICY_SSID1}
-    Log to Console      Sleep for ${client_connect_wait}
-    sleep                         ${client_connect_wait}
-    open cp browser    ${mu1.ip}
-    Log to Console      Sleep for ${cp_page_open_wait}
-    sleep  ${cp_page_open_wait}
-
-    ${SOCIAL_AUTH_STATUS}=                  Validate CWP Social Login With Facebook     ${MAIL_ID3}      ${MAIL_ID3_PASS}
-    ${CURRENT_DATE_TIME}=                   Get Current Date Time
-
-    Log to Console      Sleep for ${auth_logs_duration_wait}
-    sleep  ${auth_logs_duration_wait}
-
-    ${AUTH_LOGS}=                Get Authentication Logs Details       ${CURRENT_DATE_TIME}     ${MAIL_ID3} 
-    LOG TO CONSOLE               ${AUTH_LOGS}
-    # Logs Verification
-    ${AUTH_STATUS}=        Get From Dictionary     ${AUTH_LOGS}    reply
-    ${USER_NAME}=          Get From Dictionary     ${AUTH_LOGS}    userName
-    ${SSID}=               Get From Dictionary     ${AUTH_LOGS}    ssid
-    ${AUTH_TYPE}=          Get From Dictionary     ${AUTH_LOGS}    authType
-    ${CLIENT_MAC}=         Get From Dictionary     ${AUTH_LOGS}    callingStationId
-    ${REJ_CODE}=           Get From Dictionary     ${AUTH_LOGS}    rejectReason
-    ${TIME_STAMP}=         Get From Dictionary     ${AUTH_LOGS}    authdate
-    Remote_Server.Disconnect WiFi
-    Log to Console      Sleep for ${client_disconnect_wait}
-    sleep  ${client_disconnect_wait}
-
-    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
-    ${CLEAR_CLIENT}=        Send            ${AP_SPAWN}         ${cmd_clear_client_mac}
-    Log to Console      Sleep for ${ap_clear_mac_wait}
-    sleep  ${ap_clear_mac_wait}
-    ${SHOW_STATION}=        Send            ${AP_SPAWN}         ${cmd_show_station}
-    Close Spawn  ${AP_SPAWN}
-
-    Should Be Equal As Strings     '${LOGIN_XIQ}'           '1'
-    Should Be Equal As Strings     '${NW_POLICY_CREATION}'  '1'
-    Should Be Equal As Strings     '${AP_UPDATE_CONFIG}'    '1'
-    Should Be Equal As Strings     '${SOCIAL_AUTH_STATUS}'  '1'
-    Should Not Contain              ${SHOW_STATION}          ${mu1.wifi_mac}
-
-    Should Be Equal As Strings    '${AUTH_STATUS}'     '${AUTH_STATUS_ACCEPT}'
-    Should Be Equal As Strings    '${USER_NAME}'       '${MAIL_ID3}'
-    Should Be Equal As Strings    '${SSID}'            '${NW_POLICY_SSID1}'
-    Should Be Equal As Strings    '${AUTH_TYPE}'       '${AUTH_TYPE_FACEBOOK}'
-    Should Be Equal As Strings    '${CLIENT_MAC}'      '${mu1.wifi_mac}'
-    Should Be Equal As Strings    '${REJ_CODE}'        ''
-    should contain                 ${TIME_STAMP}        ${CURRENT_DATE_TIME}
-
-    [Teardown]   run keywords    Test Case Level Cleanup
-    ...                          Close CP Browser
 
 Test Suite Clean Up
     [Documentation]    delete created network policies, captive web portals,ssid
@@ -186,3 +118,112 @@ Test Suite Clean Up
     Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}  ${CWP_NAME_GOOGLE}   ${CWP_NAME_LINKEDIN}   ${CWP_NAME_FACEBOOK1}
     Logout User
     Quit Browser
+
+Positive Internet connectivity check
+    ${FLAG}=   Remote_Server.Connectivity Check
+    should be equal as strings   '${FLAG}'   '1'
+
+
+Negative Internet connectivity check
+    ${FLAG}=   Remote_Server.Connectivity Check
+    should be equal as strings   '${FLAG}'   '-1'
+
+Test Case Level Cleanup
+    ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap    policy_name=default_network_policy     ap_serial=${ap1.serial}
+    should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
+
+    ${DELETE_STATUS}=               Delete Network Policy           ${NW_POLICY_NAME1}
+    should be equal as integers     ${DELETE_STATUS}                1
+
+    ${SSID_DLT_STATUS}=             Delete ssid                     ${NW_POLICY_SSID1}
+    should be equal as integers     ${SSID_DLT_STATUS}              1
+
+    ${DELETE_CWP_STATUS}=           Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}
+    should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
+
+    [Teardown]   run keywords       logout user
+    ...                             quit browser
+     Remote_Server.Disconnect WiFi
+
+*** Test Cases ***
+TCCS-11614: Social login with facebook
+    [Documentation]   CWP Social login with facebook
+    ...               https://jira.aerohive.com/browse/APC-36506
+
+    [Tags]            production    tccs_11614
+
+    ${LOGIN_STATUS}=                        Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers             ${LOGIN_STATUS}               1
+
+    ${CREATE_NW_POLICY_STATUS}=             Create Network Policy     ${NW_POLICY_NAME1}    &{OPEN_NW_1}
+    should be equal as integers             ${CREATE_NW_POLICY_STATUS}               1
+
+    ${UPDATE_NW_POLICY_STATUS}=             Update Network Policy To AP   ${NW_POLICY_NAME1}     ap_serial=${ap1.serial}
+    should be equal as integers             ${UPDATE_NW_POLICY_STATUS}               1
+
+    Log to Console      Sleep for ${config_push_wait}
+    sleep                         ${config_push_wait}
+
+    Remote_Server.Connect Open Network    ${NW_POLICY_SSID1}
+
+    Log to Console      Sleep for ${client_connect_wait}
+    sleep                         ${client_connect_wait}
+
+    open cp browser    ${mu1.ip}
+    Log to Console      Sleep for ${cp_page_open_wait}
+    sleep  ${cp_page_open_wait}
+
+    ${SOCIAL_AUTH_STATUS}=                  Validate CWP Social Login With Facebook     ${MAIL_ID3}      ${MAIL_ID3_PASS}
+    Should Be Equal As Strings              '${SOCIAL_AUTH_STATUS}'  '1'
+
+    ${CURRENT_DATE_TIME}=                   Get Current Date Time
+
+    Log to Console      Sleep for ${auth_logs_duration_wait}
+    sleep  ${auth_logs_duration_wait}
+
+    ${AUTH_LOGS}=                Get Authentication Logs Details       ${CURRENT_DATE_TIME}     ${MAIL_ID3}
+    ${TIME_STAMP}=               Get From Dictionary     ${AUTH_LOGS}    authdate
+    should contain               ${TIME_STAMP}       ${CURRENT_DATE_TIME[:-2:]}
+    LOG TO CONSOLE               ${AUTH_LOGS}
+
+    # Logs Verification
+    ${AUTH_STATUS}=                 Get From Dictionary     ${AUTH_LOGS}    reply
+    Should Be Equal As Strings      '${AUTH_STATUS}'     '${AUTH_STATUS_ACCEPT}'
+
+    ${USER_NAME}=                   Get From Dictionary     ${AUTH_LOGS}    userName
+    Should Be Equal As Strings      '${USER_NAME}'       '${MAIL_ID3}'
+
+    ${SSID}=                        Get From Dictionary     ${AUTH_LOGS}    ssid
+    Should Be Equal As Strings      '${SSID}'            '${NW_POLICY_SSID1}'
+
+    ${AUTH_TYPE}=                   Get From Dictionary     ${AUTH_LOGS}    authType
+    Should Be Equal As Strings      '${AUTH_TYPE}'       '${AUTH_TYPE_FACEBOOK}'
+
+    ${CLIENT_MAC}=                  Get From Dictionary     ${AUTH_LOGS}    callingStationId
+    Should Be Equal As Strings      '${CLIENT_MAC}'      '${mu1.wifi_mac}'
+
+    ${REJ_CODE}=                    Get From Dictionary     ${AUTH_LOGS}    rejectReason
+    Should Be Equal As Strings      '${REJ_CODE}'        ''
+
+    ${TIME_STAMP}=                  Get From Dictionary     ${AUTH_LOGS}    authdate
+    should contain                 ${TIME_STAMP}        ${CURRENT_DATE_TIME}
+
+    Remote_Server.Disconnect WiFi
+    Log to Console      Sleep for ${client_disconnect_wait}
+    sleep  ${client_disconnect_wait}
+
+
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
+    Should Not Be Equal As Strings      '${AP_SPAWN}'        '-1'
+    
+    ${CLEAR_CLIENT}=        Send            ${AP_SPAWN}         ${cmd_clear_client_mac}
+    Log to Console      Sleep for ${ap_clear_mac_wait}
+    sleep  ${ap_clear_mac_wait}
+
+    ${SHOW_STATION}=        Send            ${AP_SPAWN}         ${cmd_show_station}
+    Close Spawn  ${AP_SPAWN}
+
+    Should Not Contain              ${SHOW_STATION}          ${mu1.wifi_mac}
+
+    [Teardown]   run keywords    Test Case Level Cleanup
+    ...                          Close CP Browser

@@ -23,7 +23,7 @@ Force Tags      testbed_1_node
 TCXM-15265: Verify that WEB CLI is available for EXOS Stack
     #Onboarding:
     [Documentation]	This testcase Onboard and checks the Web CLI is available for stack
-    [Tags]              xim_tcxm_15265   production              p1
+    [Tags]              tcxm_15265   production              p1
 
     Delete Device     device_mac=${netelem1.mac}
     @{result} =    Split String    ${netelem1.serial}    ,
@@ -47,7 +47,7 @@ TCXM-15265: Verify that WEB CLI is available for EXOS Stack
     Configure IQAgent for EXOS Switch
 
     #Check Status:
-    sleep   90s
+    sleep   120s
     check device online
 
     #Check Managed status:
@@ -65,7 +65,7 @@ TCXM-15265: Verify that WEB CLI is available for EXOS Stack
 
 TCXM-15266: Ping command can be executed to a specific destination
     [Documentation]	Verify that the user can iniate a ping command from EXOS Stack through WEB CLI
-    [Tags]              xim_tcxm_15266   production              p1
+    [Tags]              tcxm_15266   production              p1
 
     Navigate to Devices and Confirm Success
     refresh devices page
@@ -76,7 +76,7 @@ TCXM-15266: Ping command can be executed to a specific destination
 
 TCXM-15267: Traceroute command can be executed to a specific destination
     [Documentation]	Verify that the user can iniate a traceroute command from EXOS Stack through WEB CLI
-    [Tags]              xim_tcxm_15267   production              p1
+    [Tags]              tcxm_15267   production              p1
     Navigate to Devices and Confirm Success
     refresh devices page
     ${output}=              test device cli    traceroute www.google.com   device_mac=${netelem1.mac}      delay=60
@@ -88,7 +88,7 @@ TCXM-15267: Traceroute command can be executed to a specific destination
 
 TCXM-15268: Verify that the user can iniate show commands for interface, protocols through WEB CLI
     [Documentation]	Verify that the user can iniate show commands for interface, protocols through WEB CLI
-    [Tags]              xim_tcxm_15268   production              p1
+    [Tags]              tcxm_15268   production              p1
     Navigate to Devices and Confirm Success
     refresh devices page
     ${output}=              test device cli     show ports no-refresh       device_mac=${netelem1.mac}
@@ -104,7 +104,7 @@ TCXM-15268: Verify that the user can iniate show commands for interface, protoco
 
 TCXM-15269 Verify that the user can iniate bogus commands through WEB CLI
     [Documentation]	Verify that the user can iniate bogus commands through WEB CLI
-    [Tags]              xim_tcxm_15269   production              p1
+    [Tags]              tcxm_15269   production              p1
 
     Navigate to Devices and Confirm Success
     refresh devices page
@@ -116,7 +116,7 @@ TCXM-15269 Verify that the user can iniate bogus commands through WEB CLI
 
 TCXM-15270: Verify that the user has the ability for configuring items are supported in XIQ, through WEB CLI
     [Documentation]	Verify that the user has the ability for configuring items not supported in XIQ, through WEB CLI
-    [Tags]              xim_tcxm_15270   production              p1
+    [Tags]              tcxm_15270   production              p1
     Navigate to Devices and Confirm Success
     refresh devices page
     ${output}=              test device cli
@@ -175,13 +175,16 @@ Log Out of XIQ and Confirm Success
     Should Be Equal As Integers     ${result}     1
 
 Configure IQAgent for EXOS Switch
-    [Documentation]     Configures the iqagent for the VOSS switch
+    [Documentation]     Configures the iqagent for the EXOS switch
 
-    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}  ${netelem1.console_port}
-    send cmd  dut1_telnet   disable iqagent
+
+    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}
+    send cmd  dut1_telnet   disable iqagent    max_wait=10    interval=2    confirmation_phrases="Do you want to continue?"    confirmation_args="y"
+
     send cmd  dut1_telnet   configure iqagent server ipaddress none
     send cmd  dut1_telnet   configure iqagent server vr VR-Mgmt
     send cmd  dut1_telnet   configure iqagent server ipaddress ${sw_connection_host}
+    send cmd  dut1_telnet   enable iqagent
     ${check_results}=  send cmd  dut1_telnet   show iqagent
     log   ${check_results[0].cmd_obj._return_text}
     log to console      ${check_results[0].cmd_obj._return_text}

@@ -9,7 +9,7 @@ netelem1:
   username:                 rwa
   password:                 rwa
   platform:                 voss
-  ip:                       10.16.148.9
+  ip:                       10.16.148.82
   port:                     "22"
   connection_method:        "ssh"
   console_ip:               10.16.128.22

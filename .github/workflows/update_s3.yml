@@ -97,10 +97,10 @@ jobs:
           git checkout origin/${branch}
 
           # Get sorted Topologies for branch
-          find ./Environments/ -type f -name "*topo.*" -printf "%f\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/topo.json
+          find ./Environments/ -type f -name "*topo.*" -printf "%P\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/topo.json
 
           # Get sorted Environments for branch
-          find ./Environments/ -type f -name "environment.*" -printf "%f\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/env.json
+          find ./Environments/ -type f -name "environment.*" -printf "%P\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/env.json
 
           # Get sorted list of Pytest files and dirs
           pytest_dirs=$( find -type d -path './Tests/Pytest/*' -name "TestCases" )
@@ -185,10 +185,10 @@ jobs:
         mkdir ${branch_work_dir}
 
         # Get sorted Topologies for branch
-        find ./Environments/ -type f -name "*topo.*" -printf "%f\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/topo.json
+        find ./Environments/ -type f -name "*topo.*" -printf "%P\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/topo.json
 
         # Get sorted Environments for branch
-        find ./Environments/ -type f -name "environment.*" -printf "%f\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/env.json
+        find ./Environments/ -type f -name "environment.*" -printf "%P\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/env.json
 
         # Get sorted list of Pytest files and dirs
           pytest_dirs=$( find -type d -path './Tests/Pytest/*' -name "TestCases" )

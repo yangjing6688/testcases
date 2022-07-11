@@ -196,7 +196,7 @@ Remove Existing Site Engine from XIQ
     XIQ Navigate to Devices and Confirm Success
 
     # If the XIQ Site Engine has already been onboarded, delete it
-    ${search_result}=  Search Device Mac   ${XIQSE_MAC}
+    ${search_result}=  Search Device   ${XIQSE_MAC}
     Run Keyword If  '${search_result}' == '1'    Delete Device  device_mac=${XIQSE_MAC}
 
 Auto Onboard XIQ Site Engine
