@@ -210,7 +210,7 @@ Log Into XIQ and Set Up Test
     # If the test device has already been onboarded, delete it
     Navigate to Devices and Confirm Success
 
-    ${search_result}=  Search Device Serial   ${DUT_SERIAL}
+    ${search_result}=  Search Device   device_serial=${DUT_SERIAL}
     Run Keyword If  '${search_result}' == '1'    Delete Device  ${DUT_SERIAL}
 
     # Create the policy for the test
@@ -258,10 +258,10 @@ Onboard New Test Device
     Navigate to Devices and Confirm Success
 
     # If the device has already been onboarded, delete it first
-    ${search_result}=  Search Device Serial   ${serial}
+    ${search_result}=  Search Device    device_serial=${serial}
     Run Keyword If  '${search_result}' == '1'    Delete Device  ${serial}
 
-    ${search_result}=  Search Device Serial   ${serial}
+    ${search_result}=  Search Device    device_serial=${serial}
 
     # Onboard the device
     ${ONBOARD_RESULT}=      Onboard Device          ${serial}         device_make=${DUT_TYPE}       location=${location}
@@ -276,7 +276,7 @@ Onboard New Test Device
     Confirm Device Status   ${serial}  ${STATUS_AFTER_UPDATE}
 
     # Confirm the device was added successfully
-    ${search_result}=  Search Device Serial  ${serial}
+    ${search_result}=   Search Device        device_serial=${serial}
     Should Be Equal As Integers  ${search_result}  1
 
 Confirm Device Status
