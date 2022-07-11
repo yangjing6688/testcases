@@ -54,31 +54,56 @@ Suite Teardown  Test Suite Clean Up
 *** Keywords ***
 Cleanup-Delete Router
     [Arguments]             ${SERIAL}
-    Login User              ${tenant_username}      ${tenant_password}
-    Create Network Policy    default_network_policy     &{CONFIG_PUSH_OPEN_NW_01}
+    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}     check_warning_msg=True
+    should be equal as integers             ${LOGIN_STATUS}               1
+
+    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          default_network_policy     &{CONFIG_PUSH_OPEN_NW_01}
+    should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
+
     Navigate To Devices
     Refresh Devices Page
-    Delete Device  device_serial=${router1.serial}
-    Delete Network Policy  ${NW_POLICY_NAME}
-    Delete SSID  ${SSID_NAME}
+
+    ${DELETE_DEVICE}=               Delete Device                  device_serial=${router1.serial}
+    should be equal as integers     ${DELETE_DEVICE}    1
+
+    ${DLT_NW_POLICY}=               Delete Network Policy                  ${NW_POLICY_NAME}
+    should be equal as integers     ${DLT_NW_POLICY}          1
+
+    ${DELETE_SSID}=                 Delete SSID                            ${SSID_NAME}
+    should be equal as integers     ${DELETE_SSID}             1
+
     Delete Router Template  default_network_policy  ${router1.device_template}
-    Delete Sub Network Profile  ${SUB_NETWORK_NAME}
-    Delete Port Type Profile    ${PORT_TYPE_NAME}
-    Delete Vlan Profile   ${VLAN_NAME}
-    [Teardown]   run keywords       logout user
+
+    ${DELETE_SUBNW_SPACE}=          Delete Sub Network Profile  ${SUB_NETWORK_NAME}
+    should be equal as integers     ${DELETE_SUBNW_SPACE}             1
+
+    ${DELETE_PORT_TYPE}=            Delete Port Type Profile    ${PORT_TYPE_NAME}
+    ${DELETE_VLAN_PROFILE}=         Delete Vlan Profile   ${VLAN_NAME}
+
+   [Teardown]   run keywords       logout user
     ...                             quit browser
 
 Test Suite Clean Up
     [Documentation]             delete created network policies, SSID, Device etc
 
-    Login User              ${tenant_username}      ${tenant_password}
-    Delete Device  device_serial=${router1.serial}
-    Delete Network Policy  ${NW_POLICY_NAME}
-    Delete SSID  ${SSID_NAME}
+    [Tags]                      production      cleanup
+    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers             ${LOGIN_STATUS}               1
+
+    ${DELETE_DEVICE}=               Delete Device                  device_serial=${router1.serial}
+    should be equal as integers     ${DELETE_DEVICE}    1
+
+    ${DLT_NW_POLICY}=               Delete Network Policy                  ${NW_POLICY_NAME}
+    #should be equal as integers     ${DLT_NW_POLICY}          1
+
+    ${DELETE_SSID}=                 Delete SSID                            ${SSID_NAME}
+    #should be equal as integers     ${DELETE_SSID}             1
+
     Delete Router Template  default_network_policy  ${router1.device_template}
     Delete Sub Network Profile  ${SUB_NETWORK_NAME}
     Delete Port Type Profile    ${PORT_TYPE_NAME}
     Delete Vlan Profile   ${VLAN_NAME}
+
     [Teardown]   run keywords       logout user
     ...                             quit browser
 
@@ -86,12 +111,13 @@ Test Suite Clean Up
 TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     [Documentation]         Onboard Aerohive XR Router Using Quick Add Method
 
-    [Tags]                  production      tccs_7766_step1
+    [Tags]                  production      tccs_7766       tccs_7766_step1
 
-    ${LOGIN_XIQ}=           Login User              ${tenant_username}      ${tenant_password}   capture_version=True
-    Should Be Equal As Integers             ${LOGIN_XIQ}            1
+    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers             ${LOGIN_STATUS}               1
 
-    Delete Device  device_serial=${router1.serial}
+    ${DELETE_DEVICE}=               Delete Device                  device_serial=${router1.serial}
+    should be equal as integers     ${DELETE_DEVICE}    1
 
     ${ONBOARD_RESULT}=      Onboard Device          ${router1.serial}         ${router1.make}       location=${LOCATION}
     Should Be Equal As Integers                     ${ONBOARD_RESULT}           1
@@ -99,7 +125,9 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     ${SEARCH_ROUTER}=       Search Device           device_serial=${router1.serial}
     Should Be Equal As Integers             ${SEARCH_ROUTER}        1
 
-    ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}       ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}     connection_method=console
+    ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}
+    Should Not Be Equal As Strings      '${ROUTER_SPAWN}'        '-1'
+
     Set Suite Variable      ${ROUTER_SPAWN}
     ${CONFIG_CAPWAP}=       Send Commands           ${ROUTER_SPAWN}         capwap client server name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
@@ -110,17 +138,14 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     Should Contain                              ${CHECK_CAPWAP}         HiveManager Primary Name:
     ${CAPWAP_SERVER}=       Send                ${ROUTER_SPAWN}         ${cmd_capwap_server_ip}
 
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${router1.serial}
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
 
-    ${IS_ONLINE}=           Wait Until Device Online        ${router1.serial}
-    Should Be Equal as Integers             ${IS_ONLINE}         1
-
-    ${ROUTER_STATUS}=       Get Device Status       device_serial=${router1.serial}
-    Should Be Equal As Strings             '${ROUTER_STATUS}'       'green'
-
+    ${DEVICE_STATUS}=       Get Device Status       device_mac=${router1.mac}
+    Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
 
     ${CAPWAP_STATUS}=       Send            ${ROUTER_SPAWN}         ${cmd_capwap_client_state}
     Should Contain                          ${CAPWAP_STATUS}        ${output_capwap_status}
-
 
     [Teardown]   run keywords       logout user
     ...          AND                quit browser
@@ -129,18 +154,20 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
 TCCS-7766_Step2: Onboard Aerohive XR Router Using Advance Onboarding Method
     [Documentation]         Onboard Aerohive XR Router Using Advance Onboarding Method
 
-    [Tags]                  productions      tccs_7766_step2
+    [Tags]                  production      tccs_7766       tccs_7766_step2
 
-    ${LOGIN_XIQ}=           Login User          ${tenant_username}      ${tenant_password}
-    Should Be Equal As Integers             ${LOGIN_XIQ}            1
+    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers             ${LOGIN_STATUS}               1
 
-    Delete Device  device_serial=${router1.serial}
+    ${DELETE_DEVICE}=               Delete Device                  device_serial=${router1.serial}
+    should be equal as integers     ${DELETE_DEVICE}    1
 
     ${ONBOARD_ROUTER}=          Advance Onboard Device         ${router1.serial}    device_make=${router1.make}   dev_location=${LOCATION}
     Should Be Equal As Integers             ${ONBOARD_ROUTER}           1
 
     ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}      connection_method=console
-
+    Should Not Be Equal As Strings      '${ROUTER_SPAWN}'        '-1'
+    
     Set Suite Variable      ${ROUTER_SPAWN}
     ${CONFIG_CAPWAP}=       Send Commands       ${ROUTER_SPAWN}         capwap client server name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
@@ -151,20 +178,14 @@ TCCS-7766_Step2: Onboard Aerohive XR Router Using Advance Onboarding Method
     Should Contain                              ${CHECK_CAPWAP}         HiveManager Primary Name:
     ${CAPWAP_SERVER}=       Send                ${ROUTER_SPAWN}         ${cmd_capwap_server_ip}
 
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${router1.serial}
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
 
-    Wait Until Device Online    ${router1.serial}
-
-#    ${DEVICE_UPDATE_CONFIG}=    Update Network Policy To Router    policy_name=default_network_policy    router_serial=${router1.serial}
-#    Should Be Equal As Strings                      '${DEVICE_UPDATE_CONFIG}'       '1'
-#    Log to Console          Sleep for ${config_push_wait}
-#    sleep                   ${config_push_wait}
-
-    ${ROUTER_STATUS}=       Get Device Status       device_serial=${router1.serial}
-
+    ${DEVICE_STATUS}=       Get Device Status       device_serial=${router1.serial}
+    Should contain any      ${DEVICE_STATUS}    green     config audit mismatch
 
     ${CAPWAP_STATUS}=       Send            ${ROUTER_SPAWN}         ${cmd_capwap_client_state}
     Should Contain                          ${CAPWAP_STATUS}        ${output_capwap_status}
-
 
     [Teardown]   run keywords       logout user
     ...          AND                quit browser
@@ -175,9 +196,10 @@ TCCS-12330: Create Router XR Template
 
     [Tags]                  production      tccs_12330
 
-    Depends On              tccs_7766_step1
+    Depends On              TCCS-7766_Step1
 
-    ${LOGIN_XIQ}=           Login User              ${tenant_username}      ${tenant_password}
+    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers             ${LOGIN_STATUS}               1
 
     ${CREATE_NW_POLICY}=    Create Network Policy   ${NW_POLICY_NAME}       &{XR_ROUTER_NW_01}
     Should Be Equal As Strings                      '${CREATE_NW_POLICY}'   '1'
@@ -187,10 +209,12 @@ TCCS-12330: Create Router XR Template
 
     ${DEVICE_UPDATE_CONFIG}=    Update Network Policy To Router    policy_name=${NW_POLICY_NAME}    router_serial=${router1.serial}
     Should Be Equal As Strings                      '${DEVICE_UPDATE_CONFIG}'       '1'
+
     Log to Console          Sleep for ${config_push_wait}
     sleep                   ${config_push_wait}
 
     ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}     connection_method=console
+    Should Not Be Equal As Strings      '${ROUTER_SPAWN}'        '-1'
 
     Set Suite Variable      ${ROUTER_SPAWN}
     ${SHOW_TRUNK_VLANS}=    Send                    ${ROUTER_SPAWN}         ${CMD_SHOW_TRUNK_VLANS}
@@ -199,7 +223,6 @@ TCCS-12330: Create Router XR Template
     ${SHOW_RUN_CONFIG}=     Send                    ${ROUTER_SPAWN}         ${CMD_SHOW_CONFIG}
     Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  mode bridge-802.1q
     Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  allowed-vlan ${EXPECTED_TRUNK_VLANS}
-
 
     [Teardown]   run keywords       logout user
     ...          AND                quit browser
@@ -210,24 +233,29 @@ TCCS-7351: Upgrade Latest IQ Engine Router Firmware
 
     [Tags]              production      tccs_7351
 
-    Depends On              tccs_7766_step1
-    ${LOGIN_XIQ}=           Login User              ${tenant_username}      ${tenant_password}
+    Depends On              TCCS-7766_Step1
+
+    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers             ${LOGIN_STATUS}               1
+
     ${LATEST_VERSION}=      Upgrade Device To Latest Version         ${router1.serial}
 
     Sleep                   ${config_push_wait}
     Sleep                   ${router_reboot_wait}
     Sleep                   ${router_reboot_wait}
 
+
     ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}     connection_method=${router1.connection_method}
+    Should Not Be Equal As Strings      '${ROUTER_SPAWN}'        '-1'
 
     ${ROUTER_FM_VER}=       Send          ${ROUTER_SPAWN}           show version | include Version
-    ${SHOW_RUN_CONFIG}=     Send          ${ROUTER_SPAWN}           ${CMD_SHOW_CONFIG}
-
-
     should contain          ${ROUTER_FM_VER}        ${LATEST_VERSION}
+
+    ${SHOW_RUN_CONFIG}=     Send          ${ROUTER_SPAWN}           ${CMD_SHOW_CONFIG}
     Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  mode bridge-802.1q
     Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  allowed-vlan ${EXPECTED_TRUNK_VLANS}
 
     [Teardown]   run keywords       logout user
     ...          AND                quit browser
     ...          AND                Close Spawn        ${ROUTER_SPAWN}
+
