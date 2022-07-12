@@ -9,27 +9,27 @@ netelem1:
   port:                     "22"
   console_ip:               "10.148.35.5"
   console_port:             "5026"
-  mgmt_vlan:                "VLAN_4000"
-  username:                 "admin"
-  password:                 ""
+  mgmt_vlan:                ""
+  username:                 "rwa"
+  password:                 "rwa"
   connection_method:        "ssh"
-  cli_type:                 "exos"
+  cli_type:                 "voss"
   platform:                 "5520"
-  model:                    "SwitchEngine5520_24T"
-  make:                     "exos"
+  model:                    "FabricEngine5520_24T"
+  make:                     "voss"
   auth_mode:                "basic"
   tgen:
     port_a:
-      ifname: &netelem1_tgen_port_a_ifname "1"
+      ifname: &netelem1_tgen_port_a_ifname "1/1"
       intnet: "intnet1"
     port_b:
-      ifname: &netelem1_tgen_port_b_ifname "12"
+      ifname: &netelem1_tgen_port_b_ifname "1/12"
       intnet: "intnet2"
     port_c:
-      ifname: &netelem1_tgen_port_c_ifname "13"
+      ifname: &netelem1_tgen_port_c_ifname "1/13"
       intnet: "intnet3"
     port_d:
-      ifname: &netelem1_tgen_port_d_ifname "24"
+      ifname: &netelem1_tgen_port_d_ifname "1/24"
       intnet: "intnet4"
 
 tgen1:

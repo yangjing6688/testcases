@@ -12,7 +12,7 @@ netelem1:
   username:                 "rwa"
   password:                 "rwa"
   connection_method:        "telnet"
-  cli_type:                       "voss"
+  cli_type:                 "voss"
   platform:                 "5520"
   model:                    "FabricEngine5520_24T"
   make:                     "voss"
@@ -54,39 +54,39 @@ netelem2:
   console_ip:               "10.148.35.5"
   console_port:             "5026"
   mgmt_vlan:                "VLAN_4000"
-  username:                 "admin"
-  password:                 ""
+  username:                 "rwa"
+  password:                 "rwa"
   connection_method:        "telnet"
-  cli_type:                       "exos"
+  cli_type:                 "voss"
   platform:                 "5520"
-  model:                    "SwitchEngine5520_24T"
-  make:                     "exos"
+  model:                    "FabricEngine5520_24T"
+  make:                     "voss"
   auth_mode:                "basic"
   tgen:
     port_a:
-      ifname: &netelem2_tgen_port_a_ifname "1"
+      ifname: &netelem2_tgen_port_a_ifname "1/1"
       intnet: "intnet1"
     port_b:
-      ifname: &netelem2_tgen_port_b_ifname "12"
+      ifname: &netelem2_tgen_port_b_ifname "1/12"
       intnet: "intnet2"
     port_c:
-      ifname: &netelem2_tgen_port_c_ifname "13"
+      ifname: &netelem2_tgen_port_c_ifname "1/13"
       intnet: "intnet3"
     port_d:
-      ifname: &netelem2_tgen_port_d_ifname "24"
+      ifname: &netelem2_tgen_port_d_ifname "1/24"
       intnet: "intnet4"
   isl:
     port_a:
-      ifname: &netelem2_isl_port_a_ifname "17"
+      ifname: &netelem2_isl_port_a_ifname "1/17"
       intnet: "intnet17"
     port_b:
-      ifname: &netelem2_isl_port_b_ifname "18"
+      ifname: &netelem2_isl_port_b_ifname "1/18"
       intnet: "intnet18"
     port_c:
-      ifname: &netelem2_isl_port_c_ifname "19"
+      ifname: &netelem2_isl_port_c_ifname "1/19"
       intnet: "intnet19"
     port_d:
-      ifname: &netelem2_isl_port_d_ifname "20"
+      ifname: &netelem2_isl_port_d_ifname "1/20"
       intnet: "intnet20"
 
 tgen1:
@@ -99,7 +99,7 @@ tgen1:
   username:     "root"
   password:     "PASprt86"
   port:         "22"
-  cli_type:           "MU-LINUX"
+  cli_type:     "MU-LINUX"
 
 tgen_ports:
   netelem1:
