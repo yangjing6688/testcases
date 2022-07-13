@@ -1,11 +1,9 @@
 netelem1:
   name:                  VSP-7400-48Y-8C
   serial:                1934Q-30117
-  connection_method:     console
-  ip:                    10.234.137.231
-  port:                  7020
-  # Left the IP in just in case we need it in the future
-  # ip:                    10.234.137.119
+  connection_method:     ssh
+  ip:                    10.234.137.119
+  port:                  22
   profile:               VOSS_v2_Profile
   mac:                   489BD5934800
   platform:              voss
