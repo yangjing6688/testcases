@@ -41,7 +41,7 @@ tgen1:
   username:     "root"
   password:     "PASprt86"
   port:         "22"
-  cli_type:           "MU-LINUX"
+  cli_type:     "MU-LINUX"
 
 tgen_ports:
   netelem1:
