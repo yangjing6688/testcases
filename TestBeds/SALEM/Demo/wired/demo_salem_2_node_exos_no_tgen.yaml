@@ -2,16 +2,16 @@ lab:                        "SALEM"
 
 netelem1:
   name:                     "VOSS"
-  model:                    "vsp8000"
   ip:                       "10.148.35.201"
-  port:                     "23"
+  port:                     "22"
   username:                 "rwa"
   password:                 "rwa"
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   cli_type:                 "VOSS"
-  make:                     "VOSS"
+  model:                    "FabricEngine5520_48T"
+  platform:                 "5520-48T"
+  make:                     "voss"
   host_mac:                 "00:04:96:f1:75:00"
-  platform:                 "vsp8000"
   image_family:             ""
   isl:
     port_a:
@@ -20,17 +20,17 @@ netelem1:
 
 netelem2:
   name:                     "EXOS"
-  model:                    "X460G2_24p_10_G4"
   ip:                       "10.148.35.202"
-  port:                     "23"
+  port:                     "22"
   mgmt_vlan:                "VLAN_4000"
   username:                 "admin"
   password:                 ""
   host_mac:                 "00:04:96:ed:f8:00"
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   cli_type:                 "EXOS"
-  make:                     "EXOS"
-  platform:                 "x460G2"
+  model:                    "SwitchEngine5520_24T"
+  platform:                 "5520-24T"
+  make:                     "exos"
   image_family:             ""
   isl:
     port_a:
