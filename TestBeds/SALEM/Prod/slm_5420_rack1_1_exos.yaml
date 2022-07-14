@@ -6,29 +6,29 @@ netelem1:
   serial:                   "JA052131G-00036"
   mac:                      "F4CE48BAE000"
   ip:                       "10.148.35.116"
-  port:                     "23"
+  port:                     "22"
   console_ip:               "10.148.35.5"
   console_port:             "5039"
-  username:                 "rwa"
-  password:                 "rwa"
-  connection_method:        "telnet"
-  cli_type:                       "voss"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "ssh"
+  cli_type:                 "exos"
   platform:                 "5420"
-  model:                    "FabricEngine5420F_16W_32P_4XE"
-  make:                     "voss"
+  model:                    "SwitchEngine5420F_16W_32P_4XE"
+  make:                     "exos"
   auth_mode:                "basic"
   tgen:
     port_a:
-      ifname: &netelem1_tgen_port_a_ifname "1/1"
+      ifname: &netelem1_tgen_port_a_ifname "1"
       intnet: "intnet1"
     port_b:
-      ifname: &netelem1_tgen_port_b_ifname "1/24"
+      ifname: &netelem1_tgen_port_b_ifname "24"
       intnet: "intnet2"
     port_c:
-      ifname: &netelem1_tgen_port_c_ifname "1/25"
+      ifname: &netelem1_tgen_port_c_ifname "25"
       intnet: "intnet3"
     port_d:
-      ifname: &netelem1_tgen_port_d_ifname "1/48"
+      ifname: &netelem1_tgen_port_d_ifname "48"
       intnet: "intnet4"
 
 tgen1:
@@ -41,7 +41,7 @@ tgen1:
   username:     "root"
   password:     "PASprt86"
   port:         "22"
-  cli_type:           "MU-LINUX"
+  cli_type:     "MU-LINUX"
 
 tgen_ports:
   netelem1:

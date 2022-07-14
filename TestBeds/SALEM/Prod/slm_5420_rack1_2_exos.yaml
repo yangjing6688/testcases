@@ -3,32 +3,44 @@ lab:                        "SALEM"
 netelem1:
   name:                     "dut1"
   hostname:                 ""
-  serial:                   "JA052131G-00064"
+  serial:                   "JA052131G-00064,JA052131G-00068"
   mac:                      "F4CE48BB5000"
   ip:                       "10.148.35.117"
-  port:                     "23"
+  port:                     "22"
   console_ip:               "10.148.35.5"
   console_port:             "5040"
   username:                 "admin"
   password:                 ""
-  connection_method:        "telnet"
-  cli_type:                       "exos"
+  connection_method:        "ssh"
+  cli_type:                 "exos"
   platform:                 "5420"
   model:                    "SwitchEngine5420F_16W_32P_4XE"
   make:                     "exos"
   auth_mode:                "basic"
+  stack:
+    slot1:
+      console_ip: "10.148.35.5"
+      console_port: "5040"
+      serial: "JA052131G-00064"
+      model: "SwitchEngine5420F_16W_32P_4XE"
+    slot2:
+      console_ip: "10.148.35.5"
+      console_port: "5041"
+      serial: "JA052131G-00068"
+      model: "SwitchEngine5420F_16W_32P_4XE"
+
   tgen:
     port_a:
       ifname: &netelem1_tgen_port_a_ifname "1"
       intnet: "intnet1"
     port_b:
-      ifname: &netelem1_tgen_port_b_ifname "24"
+      ifname: &netelem1_tgen_port_b_ifname "2:24"
       intnet: "intnet2"
     port_c:
       ifname: &netelem1_tgen_port_c_ifname "25"
       intnet: "intnet3"
     port_d:
-      ifname: &netelem1_tgen_port_d_ifname "48"
+      ifname: &netelem1_tgen_port_d_ifname "2:48"
       intnet: "intnet4"
 
 tgen1:
