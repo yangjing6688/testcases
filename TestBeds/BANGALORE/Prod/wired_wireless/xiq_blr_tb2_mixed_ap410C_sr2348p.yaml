@@ -40,7 +40,7 @@ aerohive_sw1:
   device_template:    SR2348P-default-template
   serial:             '23481902030084'
   cli_type:           "AH-FASTPATH"
-  ip:                 10.234.105.73
+  ip:                 10.234.105.88
   port:               22
   connection_method:  "ssh"
   mac:                B87CF2027E38
