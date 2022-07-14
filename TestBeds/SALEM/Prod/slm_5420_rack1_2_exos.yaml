@@ -4,7 +4,7 @@ netelem1:
   name:                     "dut1"
   hostname:                 ""
   serial:                   "JA052131G-00064,JA052131G-00068"
-  mac:                      "F4CE48BB5000"
+  mac:                      "F6CE48BB5000"
   ip:                       "10.148.35.117"
   port:                     "22"
   console_ip:               "10.148.35.5"

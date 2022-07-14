@@ -48,7 +48,7 @@ netelem2:
   name:                     "dut2"
   hostname:                 ""
   serial:                   "SB062116G-00051,SB062116G-00052"
-  mac:                      "00DCB2DD9800"
+  mac:                      "02DCB2DD9800"
   ip:                       "10.148.35.112"
   port:                     "22"
   console_ip:               "10.148.35.5"
