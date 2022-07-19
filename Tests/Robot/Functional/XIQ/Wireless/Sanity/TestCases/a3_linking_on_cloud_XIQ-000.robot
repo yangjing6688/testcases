@@ -23,7 +23,7 @@ ${a3_server}                a3_server1
 *** Settings ***
 Library     Collections
 Library     common/Utils.py
-Library     common/Cli.py
+Library     extauto/common/Cli.py
 Library     common/TestFlow.py
 
 Library     xiq/flows/common/Login.py
@@ -58,24 +58,29 @@ Pre Condition
 TCCS-11572_Step1: Link A3 Cluster To XIQ
     [Documentation]    Link A3 Cluster To XIQ Using A3 Virtual IP
 
-    [Tags]             production       tccs_11572_step1
+    [Tags]             production       tccs_11572  tccs_11572_step1
     log to console              ${a3_server}
     log to console              ${${a3_server}.ip}
-    ${A3_NODE_SPAWN}=          Open Paramiko SSH Spawn    ${${a3_server}.node1_ip}   ${${a3_server}.console_username}    ${${a3_server}.console_password}  ${${a3_server}.console_port}
+    ${A3_NODE_SPAWN}=           Open Paramiko SSH Spawn    ${${a3_server}.node1_ip}   ${${a3_server}.console_username}    ${${a3_server}.console_password}  ${${a3_server}.console_port}
+    should not be equal as strings             '${A3_NODE_SPAWN}'              '-1'
+
     Log to Console      ${tenant_username}
     Log to Console      ${tenant_password}
-    ${LINK_A3}=                 Link A3 Nodes To XIQ    ${A3_NODE_SPAWN}   ${tenant_username}   ${tenant_password}  url=${CLOUD_GDC_URL}
-    should be equal as strings    '${LINK_A3}'   '${CURL_CODE_SUCCESS}'
+    ${LINK_A3}=                     Link A3 Nodes To XIQ    ${A3_NODE_SPAWN}   ${tenant_username}   ${tenant_password}  url=${CLOUD_GDC_URL}
+    should be equal as strings      '${LINK_A3}'   '${CURL_CODE_SUCCESS}'
 
 TCCS-11572_Step2: Verify A3 Cluster Node and Virtual IP Status
     [Documentation]    Verify A3 Cluster Node and Virtual IP Status
 
-    [Tags]              production      tccs_11572_step2
+    [Tags]              production      tccs_11572  tccs_11572_step2
 
-    Depends On          tccs_11572_step1
-    ${LOGIN_XIQ}=                  Login User          ${tenant_username}      ${tenant_password}
-    ${A3_SERVER_STATUS}=           Get A3 Server Status   ${${a3_server}.ip}
-    should be equal as strings    '${A3_SERVER_STATUS}'   'green'
+    Depends On          TCCS-11572_Step1
+
+    ${LOGIN_STATUS}=                Login User          ${tenant_username}      ${tenant_password}     check_warning_msg=True
+    should be equal as integers     ${LOGIN_STATUS}         1
+
+    ${A3_SERVER_STATUS}=            Get A3 Server Status   ${${a3_server}.ip}
+    should be equal as strings      '${A3_SERVER_STATUS}'   'green'
 
     ${A3_NODE1_STATUS}=             Get A3 Node Status   ${${a3_server}.ip}  ${${a3_server}.node1_hostname}
     should be equal as strings    '${A3_NODE1_STATUS}'   'green'
@@ -90,12 +95,15 @@ TCCS-11572_Step2: Verify A3 Cluster Node and Virtual IP Status
 TCCS-11572_Step3: Verify A3 Virtual IP Access From XIQ
     [Documentation]    Verify A3 Virtual IP Access From XIQ
 
-    [Tags]              production      tccs_11572_step3
+    [Tags]              production      tccs_11572  tccs_11572_step3
 
-    Depends On          tccs_11572_step2
-    ${LOGIN_XIQ}=                  Login User          ${tenant_username}      ${tenant_password}
-    ${A3_SERVER_STATUS}=           Verify A3 Server Login On XIQ   ${${a3_server}.ip}   ${${a3_server}.ui_username}  ${${a3_server}.ui_password}
-    should be equal as strings    '${A3_SERVER_STATUS}'   '${A3_PAGE_TITLE}'
+    Depends On          TCCS-11572_Step2
+
+    ${LOGIN_STATUS}=                Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers     ${LOGIN_STATUS}         1
+
+    ${A3_SERVER_STATUS}=            Verify A3 Server Login On XIQ   ${${a3_server}.ip}   ${${a3_server}.ui_username}  ${${a3_server}.ui_password}
+    should be equal as strings      '${A3_SERVER_STATUS}'   '${A3_PAGE_TITLE}'
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
@@ -103,24 +111,31 @@ TCCS-11572_Step3: Verify A3 Virtual IP Access From XIQ
 TCCS-11572_Step4: UnLink A3 Cluster To XIQ
     [Documentation]    UnLink A3 Cluster To XIQ
 
-    [Tags]              production      tccs_11572_step4
+    [Tags]              production      tccs_11572  tccs_11572_step4
 
-    ${ENABLE_SSH_ON_A3NODE}=      Enable SSH Access On A3 Node     ${${a3_server}.node1_ip}  ${${a3_server}.ui_username}   ${${a3_server}.ui_password}    ${${a3_server}.console_password}    7
-    should be equal as strings    '${ENABLE_SSH_ON_A3NODE}'   '1'
+    Depends On          TCCS-11572_Step1
 
-    ${A3_NODE_SPAWN}=          Open Paramiko SSH Spawn    ${${a3_server}.node1_ip}   ${${a3_server}.console_username}    ${${a3_server}.console_password}  ${${a3_server}.console_port}
-    ${UNLINK_A3}=              UnLink A3 Nodes From XIQ    ${A3_NODE_SPAWN}
-    should be equal as strings    '${UNLINK_A3}'   '${CURL_CODE_SUCCESS}'
+    ${ENABLE_SSH_ON_A3NODE}=        Enable SSH Access On A3 Node     ${${a3_server}.node1_ip}  ${${a3_server}.ui_username}   ${${a3_server}.ui_password}    ${${a3_server}.console_password}    7
+    should be equal as strings      '${ENABLE_SSH_ON_A3NODE}'   '1'
+
+    ${A3_NODE_SPAWN}=               Open Paramiko SSH Spawn    ${${a3_server}.node1_ip}   ${${a3_server}.console_username}    ${${a3_server}.console_password}  ${${a3_server}.console_port}
+    should not be equal as strings             '${A3_NODE_SPAWN}'              '-1'
+
+    ${UNLINK_A3}=                   UnLink A3 Nodes From XIQ    ${A3_NODE_SPAWN}
+    should be equal as strings      '${UNLINK_A3}'   '${CURL_CODE_SUCCESS}'
 
 TCCS-11572_Step5: Verify A3 Page after UnLink A3 Cluster To XIQ
     [Documentation]    Verify A3 Page after UnLink A3 Cluster To XIQ
 
-    [Tags]              production      tccs_11572_step5
+    [Tags]              production      tccs_11572  tccs_11572_step5
 
-    Depends On          tccs_11572_step1
-    ${LOGIN_XIQ}=                  Login User          ${tenant_username}      ${tenant_password}
-    ${A3_SERVER_STATUS}=           Validate A3 Page After Unlink    ${${a3_server}.ip}
-    should contain any   '${A3_SERVER_STATUS}'    '${UNLINK_A3_PAGE_TEXT}'  '1'
+    Depends On          TCCS-11572_Step2
+
+    ${LOGIN_STATUS}=                Login User          ${tenant_username}      ${tenant_password}
+    should be equal as integers     ${LOGIN_STATUS}         1
+
+    ${A3_SERVER_STATUS}=            Validate A3 Page After Unlink    ${${a3_server}.ip}
+    should contain any              '${A3_SERVER_STATUS}'    '${UNLINK_A3_PAGE_TEXT}'  '1'
 
     [Teardown]   run keywords       Logout User
-    ...                             Quit Browser
+    ...                             Quit Browser    
