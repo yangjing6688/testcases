@@ -204,7 +204,7 @@ Check Device Online
 clear vlans
     [Documentation]     This keyword will delete vlan 3
 
-    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}  ${netelem1.console_port}
+    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}
     send cmd   dut1_telnet      delete vlan 3
 
     [Teardown]  close connection to network element  dut1_telnet
