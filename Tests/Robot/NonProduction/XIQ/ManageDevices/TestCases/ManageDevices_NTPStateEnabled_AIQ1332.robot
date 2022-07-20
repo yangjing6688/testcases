@@ -21,13 +21,14 @@ ${XIQ_USER}                 ${xiq.tenant_username}
 ${XIQ_PASSWORD}             ${xiq.tenant_password}
 ${XIQ_CAPWAP_URL}           ${xiq.capwap_url}
 
-${DUT_SERIAL}               ${ap1.serial}
-${DUT_CONSOLE_IP}           ${ap1.ip}
-${DUT_CONSOLE_PORT}         ${ap1.port}
-${DUT_USERNAME}             ${ap1.username}
-${DUT_PASSWORD}             ${ap1.password}
-${DUT_PLATFORM}             ${ap1.platform}
-${DUT_MAKE}                 ${ap1.make}
+${DUT_SERIAL}               ${ap4.serial}
+${DUT_CONSOLE_IP}           ${ap4.ip}
+${DUT_CONSOLE_PORT}         ${ap4.port}
+${DUT_USERNAME}             ${ap4.username}
+${DUT_PASSWORD}             ${ap4.password}
+${DUT_CLI_TYPE}             ${ap4.cli_type}
+${DUT_PLATFORM}             ${ap4.platform}
+${DUT_MAKE}                 ${ap4.make}
 
 ${LOCATION}                 San Jose, building_01, floor_02
 
@@ -43,10 +44,10 @@ Confirm NTP State Immediately After Onboarding
 
     Onboard New Test Device       ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}
 
-    Configure CAPWAP              ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
-    ...                           ${DUT_PLATFORM}  ${XIQ_CAPWAP_URL}
-    Confirm Device Serial Online  ${DUT_SERIAL}  retry_count=20
+    Configure CAPWAP Device To Connect To Cloud     ${DUT_CLI_TYPE}  ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}
+    ...                                             ${DUT_PASSWORD}  ${XIQ_CAPWAP_URL}
 
+    Confirm Device Serial Online  ${DUT_SERIAL}  retry_count=20
     Refresh Devices Page
     Confirm Device Details        ${DUT_SERIAL}  NTP STATE  N/A
 
@@ -105,20 +106,12 @@ Onboard New Test Device
     # Confirm the device was added successfully
     Confirm Device Serial Present  ${serial}
 
-Configure CAPWAP
-    [Documentation]     Configures the CAPWAP client
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${platform}  ${capwap_server}
+Configure CAPWAP Device To Connect To Cloud
+    [Documentation]     Configure the CAPWAP client with the necessary configuration on the Device to Connect to Cloud
+    [Arguments]         ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${capwap_url}
 
-    ${spawn}=    Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${platform}
-
-    Send         ${spawn}   capwap client server name ${capwap_server}
-    Send         ${spawn}   capwap client default-server-name ${capwap_server}
-    Send         ${spawn}   capwap client server backup name ${capwap_server}
-    Send         ${spawn}   no capwap client enable
-    Send         ${spawn}   capwap client enable
-    Send         ${spawn}   save config
-
-    Close Spawn  ${spawn}
+    ${CONFIG_RESULT}=   Configure Device To Connect To Cloud    ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${capwap_url}
+    Should Be Equal as Integers         ${CONFIG_RESULT}        1
 
 Confirm Device Details
     [Documentation]     Checks the specified value of the specified device and confirms it matches the expected value

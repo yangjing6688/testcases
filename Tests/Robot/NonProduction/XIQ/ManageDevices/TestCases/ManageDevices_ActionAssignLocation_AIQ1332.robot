@@ -35,6 +35,7 @@ ${DUT_CONSOLE_IP}           ${ap1.ip}
 ${DUT_CONSOLE_PORT}         ${ap1.port}
 ${DUT_USERNAME}             ${ap1.username}
 ${DUT_PASSWORD}             ${ap1.password}
+${DUT_CLI_TYPE}             ${ap1.cli_type}
 ${DUT_PLATFORM}             ${ap1.platform}
 ${DUT_MAKE}                 ${ap1.make}
 
@@ -87,7 +88,7 @@ Log In and Set Up Test
 
     # Check if the device is already present - if not, configure and onboard it
     Navigate to Devices and Confirm Success
-    ${search_result}=  Search Device Serial   ${DUT_SERIAL}
+    ${search_result}=  Search Device   ${DUT_SERIAL}
     Run Keyword If  '${search_result}' != '1' and '${DUT_PLATFORM}' == 'aerohive'         Set Up Aerohive AP Test
     Run Keyword If  '${search_result}' != '1' and '${DUT_PLATFORM}' == 'aerohive-switch'  Set Up Aerohive Switch Test
     Run Keyword If  '${search_result}' != '1' and '${DUT_PLATFORM}' == 'voss'             Set Up VOSS Test
@@ -119,10 +120,10 @@ Set Up Aerohive Switch Test
 Set Up Aerohive AP Test
     [Documentation]     Configures and onboards the Aerohive AP test device
 
-    Onboard Device                 ${DUT_SERIAL}  ${DUT_MAKE}  location=${LOCATION}
-    Configure CAPWAP               ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}
-    ...                            ${DUT_PASSWORD}  ${DUT_PLATFORM}  ${XIQ_CAPWAP_URL}
-    Confirm Device Serial Present  ${DUT_SERIAL}
+    Onboard Device                                  ${DUT_SERIAL}  ${DUT_MAKE}  location=${LOCATION}
+    Configure CAPWAP Device To Connect To Cloud     ${DUT_CLI_TYPE}  ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}
+    ...                                             ${DUT_PASSWORD}  ${XIQ_CAPWAP_URL}
+    Confirm Device Serial Present                   ${DUT_SERIAL}
 
 Set Up VOSS Test
     [Documentation]     Configures and onboards the VOSS test device
@@ -132,20 +133,12 @@ Set Up VOSS Test
     Configure iqagent for VOSS Switch      ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${IQAGENT}
     Confirm Device Serial Present          ${DUT_SERIAL}
 
-Configure CAPWAP
-    [Documentation]     Configures the CAPWAP client
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${platform}  ${capwap_server}
+Configure CAPWAP Device To Connect To Cloud
+    [Documentation]     Configure the CAPWAP client with the necessary configuration on the Device to Connect to Cloud
+    [Arguments]         ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${capwap_url}
 
-    ${spawn}=           Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${platform}
-
-    Send                ${spawn}   capwap client server name ${capwap_server}
-    Send                ${spawn}   capwap client default-server-name ${capwap_server}
-    Send                ${spawn}   capwap client server backup name ${capwap_server}
-    Send                ${spawn}   no capwap client enable
-    Send                ${spawn}   capwap client enable
-    Send                ${spawn}   save config
-
-    Close Spawn         ${spawn}
+    ${CONFIG_RESULT}=   Configure Device To Connect To Cloud    ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${capwap_url}
+    Should Be Equal as Integers         ${CONFIG_RESULT}        1
 
 Configure iqagent for Aerohive Switch
     [Documentation]     Configures the iqagent for the Aerohive switch
