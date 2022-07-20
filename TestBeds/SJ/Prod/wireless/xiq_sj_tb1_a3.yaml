@@ -9,6 +9,6 @@ a3_server1:
   node3_hostname:        N3-159
   ui_username:           demo@demo.com
   ui_password:           Extr_123
-  console_username:      root
-  console_password:      aerohive
-  console_port:          1443
+  username:              sshuser
+  password:              aerohive
+  port:                  22

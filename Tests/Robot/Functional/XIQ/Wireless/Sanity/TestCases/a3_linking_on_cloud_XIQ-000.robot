@@ -51,7 +51,7 @@ Suite Setup      Pre Condition
 *** Keywords ***
 Pre Condition
     [Documentation]   Enable the SSH Access on A3 Node
-    ${ENABLE_SSH_ON_A3NODE}=      Enable SSH Access On A3 Node     ${${a3_server}.node1_ip}  ${${a3_server}.ui_username}   ${${a3_server}.ui_password}    ${${a3_server}.console_password}    7
+    ${ENABLE_SSH_ON_A3NODE}=      Enable SSH Access On A3 Node     ${${a3_server}.node1_ip}  ${${a3_server}.ui_username}   ${${a3_server}.ui_password}    ${${a3_server}.password}    7
     should be equal as strings    '${ENABLE_SSH_ON_A3NODE}'   '1'
 
 *** Test Cases ***
@@ -61,7 +61,9 @@ TCCS-11572_Step1: Link A3 Cluster To XIQ
     [Tags]             production       tccs_11572  tccs_11572_step1
     log to console              ${a3_server}
     log to console              ${${a3_server}.ip}
-    ${A3_NODE_SPAWN}=           Open Paramiko SSH Spawn    ${${a3_server}.node1_ip}   ${${a3_server}.console_username}    ${${a3_server}.console_password}  ${${a3_server}.console_port}
+
+
+    ${A3_NODE_SPAWN}=          Open Paramiko SSH Spawn    ${${a3_server}.node1_ip}   ${${a3_server}.username}    ${${a3_server}.password}  ${${a3_server}.port}
     should not be equal as strings             '${A3_NODE_SPAWN}'              '-1'
 
     Log to Console      ${tenant_username}
@@ -115,10 +117,10 @@ TCCS-11572_Step4: UnLink A3 Cluster To XIQ
 
     Depends On          TCCS-11572_Step1
 
-    ${ENABLE_SSH_ON_A3NODE}=        Enable SSH Access On A3 Node     ${${a3_server}.node1_ip}  ${${a3_server}.ui_username}   ${${a3_server}.ui_password}    ${${a3_server}.console_password}    7
+    ${ENABLE_SSH_ON_A3NODE}=        Enable SSH Access On A3 Node     ${${a3_server}.node1_ip}  ${${a3_server}.ui_username}   ${${a3_server}.ui_password}    ${${a3_server}.password}    7
     should be equal as strings      '${ENABLE_SSH_ON_A3NODE}'   '1'
 
-    ${A3_NODE_SPAWN}=               Open Paramiko SSH Spawn    ${${a3_server}.node1_ip}   ${${a3_server}.console_username}    ${${a3_server}.console_password}  ${${a3_server}.console_port}
+    ${A3_NODE_SPAWN}=               Open Paramiko SSH Spawn    ${${a3_server}.node1_ip}   ${${a3_server}.username}    ${${a3_server}.password}  ${${a3_server}.port}
     should not be equal as strings             '${A3_NODE_SPAWN}'              '-1'
 
     ${UNLINK_A3}=                   UnLink A3 Nodes From XIQ    ${A3_NODE_SPAWN}
