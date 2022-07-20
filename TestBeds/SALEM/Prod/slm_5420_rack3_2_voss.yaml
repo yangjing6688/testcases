@@ -47,17 +47,17 @@ tgen_ports:
   netelem1:
     port_a: &tgen_ports_netelem1_port_a
       tgen_name: *tgen1_name
-      ifname:    "eth1"
+      ifname:    "eth5"
       #source_mac:
     port_b: &tgen_ports_netelem1_port_b
       tgen_name:  *tgen1_name
-      ifname:     "eth2"
+      ifname:     "eth6"
       #source_mac:
     port_c: &tgen_ports_netelem1_port_c
       tgen_name: *tgen1_name
-      ifname:    "eth3"
+      ifname:    "eth7"
       #source_mac:
     port_d: &tgen_ports_netelem1_port_d
       tgen_name: *tgen1_name
-      ifname:    "eth4"
+      ifname:    "eth8"
       #source_mac:
