@@ -4,14 +4,15 @@ netelem1:
   device_template:          VSP4900-default-template
   serial:                   "2002F-20140"
   mac:                      000496E00C81
+  connection_method:        "ssh"
+  cli_type:                 "VOSS"
   bssid:
   network_policy:           Test_np
   username:                 rwa
   password:                 rwa
   platform:                 voss
-  ip:                       10.16.148.82
+  ip:                       10.16.145.232
   port:                     "22"
-  connection_method:        "ssh"
   console_ip:               10.16.128.22
   console_port:             7046
   country:                  United Kingdom
