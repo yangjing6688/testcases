@@ -7,24 +7,10 @@ ${NETWORK_POLICY_URI}=          /network-policies
 
 Library     common/Xapi.py
 Library     common/Cli.py
-Library     xiq/flows/common/Login.py
-Library     xiq/flows/configure/CommonObjects.py
-Library     xiq/flows/configure/NetworkPolicy.py
-Library     xiq/flows/common/Navigator.py
-Library     xiq/flows/extreme_location/ExtremeLocation.py
-Library     xiq/flows/globalsettings/GlobalSetting.py
-Library     xiq/flows/configure/AdditionalSettings.py
-
-Library     common/TestFlow.py
 Library     common/Utils.py
 
-Library     xiq/flows/manage/Devices.py
-Library     Collections
-
-
 Variables   Environments/Config/waits.yaml
-Variables   TestBeds/${TESTBED}
-Variables   Environments/${TOPO}
+
 
 
 
