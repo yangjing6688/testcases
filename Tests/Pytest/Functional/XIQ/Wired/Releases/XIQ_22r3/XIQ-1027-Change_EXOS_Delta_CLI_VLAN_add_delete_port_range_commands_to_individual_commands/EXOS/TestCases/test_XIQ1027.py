@@ -453,13 +453,13 @@ class XiqTests():
             setup_flag_connect_fail = 1
             if '5320' in cls.tb.dut1.model:
                 cls.xiq.Cli.configure_device_to_connect_to_cloud(cls.tb.dut1.cli_type, cls.tb.dut1.ip,
-                                                                 '22', cls.tb.dut1.username,
+                                                                 cls.tb.dut1.port, cls.tb.dut1.username,
                                                                  cls.tb.dut1.password, cls.cfg['sw_connection_host'],
                                                                  vr='VR-Default', retry_count=30)
                 setup_flag_connect_fail = 0
             else:
                 cls.xiq.Cli.configure_device_to_connect_to_cloud(cls.tb.dut1.cli_type, cls.tb.dut1.ip,
-                                                                 '22', cls.tb.dut1.username,
+                                                                 cls.tb.dut1.port, cls.tb.dut1.username,
                                                                  cls.tb.dut1.password, cls.cfg['sw_connection_host'],
                                                                  vr='VR-Mgmt', retry_count=30)
                 setup_flag_connect_fail = 0
@@ -614,8 +614,7 @@ class XiqTests():
         cls.xiq.xflowsmanageLocation.delete_location_building_floor(location, building, floor)
         cls.deactivate_xiq_libaries_and_logout(cls)
 
-    @mark.xim_tcxm_18709
-    @mark.development
+    @mark.tcxm_18709
     @mark.p1
     @mark.testbed_1_node
     def test_check_delta_cli_add_port_range_commands_to_individual_from_template_tcxm_18709(self):
@@ -682,8 +681,7 @@ class XiqTests():
         else:
             pytest.fail("Failed to find the individual add port commands!")
 
-    @mark.xim_tcxm_18710
-    @mark.development
+    @mark.tcxm_18710
     @mark.p1
     @mark.testbed_1_node
     def test_check_delta_cli_delete_port_range_commands_to_individual_from_template_tcxm_18710(self):
@@ -741,8 +739,7 @@ class XiqTests():
         else:
             pytest.fail("Failed to find the individual delete port commands!")
 
-    @mark.xim_tcxm_18712
-    @mark.development
+    @mark.tcxm_18712
     @mark.p2
     @mark.testbed_1_node
     def test_verify_that_changes_are_present_in_delta_cLI_after_overwr_template_vlan_config_in_d360_tcxm_18712(
@@ -789,9 +786,8 @@ class XiqTests():
         else:
             pytest.fail("Did not find the deletion command for the previous range!")
 
-    @mark.xim_tcxm_18696
-    @mark.xim_tcxm_18716
-    @mark.development
+    @mark.tcxm_18696
+    @mark.tcxm_18716
     @mark.p1
     @mark.testbed_1_node
     def test_check_delta_cli_add_port_range_commands_to_individual_tcxm_18696_tcxm_18716(self):
@@ -829,8 +825,7 @@ class XiqTests():
         else:
             pytest.fail("Failed to find the individual add port commands!")
 
-    @mark.xim_tcxm_18697
-    @mark.development
+    @mark.tcxm_18697
     @mark.p2
     @mark.testbed_1_node
     def test_check_device_config_after_add_port_individual_commands_update_tcxm_18697(self):
@@ -842,9 +837,8 @@ class XiqTests():
         else:
             pytest.fail("The commands that have been pushed, are not present!")
 
-    @mark.xim_tcxm_18698
-    @mark.xim_tcxm_18717
-    @mark.development
+    @mark.tcxm_18698
+    @mark.tcxm_18717
     @mark.p1
     @mark.testbed_1_node
     def test_check_delta_cli_delete_port_range_commands_to_individual_tcxm_18698_tcxm_18717(self):
@@ -907,8 +901,7 @@ class XiqTests():
         else:
             pytest.fail("Failed to find the individual delete port commands.")
 
-    @mark.xim_tcxm_18699
-    @mark.development
+    @mark.tcxm_18699
     @mark.p2
     @mark.testbed_1_node
     def test_check_device_config_after_delete_port_individual_commands_update_tcxm_18699(self):
