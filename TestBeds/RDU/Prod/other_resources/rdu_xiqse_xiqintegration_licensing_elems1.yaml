@@ -47,8 +47,8 @@ nav1:
   ip:                       "10.69.61.10"
   profile:                  "public_v2_Profile"
   serial:                   "FTX0945W0MY"
-  mac:                      "d0012369000"
-  model:                    "Cisco"
+  mac:                      "c401a1790000"
+  model:                    "Cisco 3640"
   platform:                 "cisco"
 
 nav2:
@@ -65,6 +65,6 @@ nav3:
   ip:                       "10.69.61.13"
   profile:                  "public_v2_Profile"
   serial:                   "FTX0945W0MY"
-  mac:                      "c401f0cf0000"
+  mac:                      "c402ae550000"
   model:                    "Cisco 3640"
   platform:                 "cisco"
