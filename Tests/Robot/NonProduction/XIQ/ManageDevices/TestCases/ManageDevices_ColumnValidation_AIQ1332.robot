@@ -31,6 +31,7 @@ ${DUT_CONSOLE_IP}       ${ap1.ip}
 ${DUT_CONSOLE_PORT}     ${ap1.port}
 ${DUT_USERNAME}         ${ap1.username}
 ${DUT_PASSWORD}         ${ap1.password}
+${DUT_CLI_TYPE}         ${ap1.cli_type}
 ${DUT_PLATFORM}         ${ap1.platform}
 ${DUT_MAKE}             ${ap1.make}
 
@@ -77,8 +78,8 @@ Log In and Set Up Test
     Onboard Device                 ${DUT_SERIAL}  ${DUT_MAKE}  location=${LOCATION}
     Confirm Device Serial Present  ${DUT_SERIAL}
 
-    Configure CAPWAP               ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}
-    ...                            ${DUT_PASSWORD}  ${DUT_PLATFORM}  ${XIQ_CAPWAP_URL}
+    Configure CAPWAP Device To Connect To Cloud     ${DUT_CLI_TYPE}  ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}
+    ...                                             ${DUT_PASSWORD}  ${XIQ_CAPWAP_URL}
 
     Confirm Device Serial Online   ${DUT_SERIAL}  retry_count=20
 
@@ -89,18 +90,9 @@ Tear Down Test and Close Session
     Delete Device and Confirm Success  ${DUT_SERIAL}
     Log Out of XIQ and Quit Browser
 
-Configure CAPWAP
-    [Documentation]     Configures the CAPWAP client
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${platform}  ${capwap_server}
+Configure CAPWAP Device To Connect To Cloud
+    [Documentation]     Configure the CAPWAP client with the necessary configuration on the Device to Connect to Cloud
+    [Arguments]         ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${capwap_url}
 
-    ${spawn}=           Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${platform}
-
-    Send                ${spawn}   capwap client server name ${capwap_server}
-    Send                ${spawn}   capwap client default-server-name ${capwap_server}
-    Send                ${spawn}   capwap client server backup name ${capwap_server}
-    Send                ${spawn}   no capwap client enable
-    Send                ${spawn}   capwap client enable
-    Send                ${spawn}   save config
-
-    ${close_result}=    Close Spawn  ${spawn}
-    Should Not Be Equal As Integers  ${close_result}  -1
+    ${CONFIG_RESULT}=   Configure Device To Connect To Cloud     ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${capwap_url}
+    Should Be Equal as Integers         ${CONFIG_RESULT}         1

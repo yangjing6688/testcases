@@ -1,0 +1,14 @@
+a3_server1:
+  version:          4.0
+  ip:               10.16.137.43
+  node1_ip:         10.16.137.163
+  node2_ip:         10.16.137.164
+  node3_ip:         10.16.137.165
+  node1_hostname:        A3-N1-163
+  node2_hostname:        A3-N2-164
+  node3_hostname:        A3-N3-165
+  ui_username:           demo@demo.com
+  ui_password:           Extr_123
+  username:              sshuser
+  password:              Extr_123
+  port:                  22

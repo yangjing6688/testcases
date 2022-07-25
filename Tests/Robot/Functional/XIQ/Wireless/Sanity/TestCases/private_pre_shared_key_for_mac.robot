@@ -55,8 +55,6 @@ ${PAGE_TITLE}                       End-to-End Cloud Driven Networking Solutions
 *** Settings ***
 Library     Collections
 
-Library     Collections
-
 Library     common/GmailHandler.py
 Library     common/Utils.py
 Library     common/LoadBrowser.py
@@ -65,12 +63,12 @@ Library     common/TestFlow.py
 
 Library     xiq/flows/common/Login.py
 Library     xiq/flows/common/MuCaptivePortal.py
+Library     xiq/flows/common/Navigator.py
 
 Library     xiq/flows/manage/Devices.py
 Library     xiq/flows/manage/DeviceCliAccess.py
 Library     xiq/flows/manage/ClientMonitor.py
 Library     xiq/flows/manage/Client.py
-Library     xiq/flows/common/Navigator.py
 
 Library     xiq/flows/configure/UserGroups.py
 Library     xiq/flows/configure/NetworkPolicy.py
@@ -90,7 +88,8 @@ Variables    Environments/Config/device_commands.yaml
 
 Force Tags   testbed_1_node
 
-Suite Setup      Pre Condition
+Suite Setup     Pre Condition
+Suite Teardown  Test Suite Clean Up
 
 *** Keywords ***
 Pre Condition
@@ -118,11 +117,29 @@ Pre Condition
     ...                            ${SINGLE_LOCAL_USER_GROUP}  ${CLOUD_CWP_USER_GROUP}    ${SINGLE_CLOUD_USER_GROUP1}
     ...                            ${CLIENT_PER_PPSK_GRP}      ${LOCAL_DB_PPSK_GROUP}
 
+Test Suite Clean Up
+    [Documentation]    delete created network policies, usergroups, radius server
+    [Tags]             regression   ppsk   cwp-passing   cloud-db  local-db  bulk-user  single-user  p1
+    ...                cleanup   production
+    ${result}=    Login User       ${TENANT_USERNAME}         ${TENANT_PASSWORD}
+    Update Network Policy To Ap     policy_name=OPEN_AUTO      ap_serial=${ap1.serial}
+
+    ${DELETE_STATUS}=              delete network polices      ${CLOUD_CWP_NW_POLICY}
+    should be equal as strings    '${DELETE_STATUS}'           '1'     ppsk network policy assigned to other AP,disassociate it or issue with deleting policy
+
+
+    #delete captive web portal      ${SELF_REG_RETURN_PPSK_CWP}
+    delete ssid                    ${CLOUD_CWP_NW_SSID}
+    delete user groups             ${SINGLE_CLOUD_USER_GROUP}
+
+    [Teardown]   run keywords      logout user
+    ...                            quit browser
+
 
 *** Test Cases ***
 Test1: Cloud DB PPSK Network Client Connectivity With Single Users Group
     [Documentation]    Check ppsk network client connectivity with group user and cloud passwd db location
-    [Tags]             regression   ppsk    cloud-db    bulk-user    P1  Test1   Test2   Test3   Test4  production
+    [Tags]             regression   ppsk    cloud-db    bulk-user    p1  test1   test2   test3   test4  production
     [teardown]         Quit Browser
 
     ${LOGIN_STATUS}=                Login User           ${TENANT_USERNAME}     ${TENANT_PASSWORD}
@@ -148,40 +165,21 @@ test2: Make Client Connection
    Should Be Equal    ${status}     1    ${err}
 
 
-test3: Get Client Status
-   [Documentation]     Get the Client Details
-   [Tags]              production     test3
-   [teardown]         Quit Browser
-
-
-   ${LOGIN_STATUS}=                Login User              ${TENANT_USERNAME}     ${TENANT_PASSWORD}
-   should be equal as strings     '${LOGIN_STATUS}'        '1'
-
-   FOR  ${i}  IN RANGE  4
-        Log To Console  Attempt(s): ${i}
-        navigate_configure_network_policies
-        ${CLIENT_STATUS}=    get_client_status   client_mac=${mu1.wifi_mac}
-        Exit For Loop If    '${CLIENT_STATUS}' == '1'
-        Sleep  45
-   END
-
-   Should Be Equal As Strings              '${CLIENT_STATUS}'      '1'
-
-
-Test Suite Clean Up
-    [Documentation]    delete created network policies, usergroups, radius server
-    [Tags]             regression   ppsk   cwp-passing   cloud-db  local-db  bulk-user  single-user  P1
-    ...                cleanup   production
-    ${result}=    Login User       ${TENANT_USERNAME}         ${TENANT_PASSWORD}
-    Update Network Policy To Ap     policy_name=OPEN_AUTO      ap_serial=${ap1.serial}
-
-    ${DELETE_STATUS}=              delete network polices      ${CLOUD_CWP_NW_POLICY}
-    should be equal as strings    '${DELETE_STATUS}'           '1'     ppsk network policy assigned to other AP,disassociate it or issue with deleting policy
-
-
-    #delete captive web portal      ${SELF_REG_RETURN_PPSK_CWP}
-    delete ssid                    ${CLOUD_CWP_NW_SSID}
-    delete user groups             ${SINGLE_CLOUD_USER_GROUP}
-
-    [Teardown]   run keywords      logout user
-    ...                            quit browser
+#test3: Get Client Status
+#   [Documentation]     Get the Client Details
+#   [Tags]              production     test3
+#   [teardown]         Quit Browser
+#
+#
+#   ${LOGIN_STATUS}=                Login User              ${TENANT_USERNAME}     ${TENANT_PASSWORD}
+#   should be equal as strings     '${LOGIN_STATUS}'        '1'
+#
+#   FOR  ${i}  IN RANGE  4
+#        Log To Console  Attempt(s): ${i}
+#        navigate_configure_network_policies
+#        ${CLIENT_STATUS}=    get_client_status   client_mac=${mu1.wifi_mac}
+#        Exit For Loop If    '${CLIENT_STATUS}' == '1'
+#        Sleep  45
+#   END
+#
+#   Should Be Equal As Strings              '${CLIENT_STATUS}'      '1'

@@ -13,7 +13,7 @@
 
 *** Settings ***
 Library     Collections
-Library     common/Cli.py
+Library     extauto/common/Cli.py
 Library     xiq/flows/common/Login.py
 Library     xiq/flows/common/Navigator.py
 Library     xiq/flows/configure/CommonObjects.py
@@ -54,6 +54,7 @@ ${DUT_PASSWORD}             ${netelem1.password}
 ${DUT_PLATFORM}             ${netelem1.platform}
 ${DUT_TYPE}                 ${netelem1.make}
 ${DUT_CONNECTION_METHOD}    ${netelem1.connection_method}
+${DUT_cli_type}             ${netelem1.cli_type}
 
 ${STATUS_BEFORE_UPDATE}     config audit mismatch
 ${STATUS_AFTER_UPDATE}      green
@@ -92,9 +93,7 @@ TCCS-7299_Step3: Confirm VOSS Device Values After Onboard
 
     Depends On          TCCS-7299_Step2
 
-    &{device_info}=     Get Device Row Values  ${DUT_SERIAL}  POLICY,LOCATION,SERIAL,MODEL
-    ${policy_result}=   Get From Dictionary     ${device_info}  POLICY
-    Should Be Equal     ${policy_result}        ${POLICY_NAME}
+    &{device_info}=     Get Device Row Values  ${DUT_SERIAL}    LOCATION,SERIAL,MODEL
 
     ${loc_result}=      Get From Dictionary     ${device_info}  LOCATION
     Should Be Equal     ${loc_result}           ${LOCATION_DISPLAY}
@@ -121,8 +120,13 @@ TCCS-7299_Step5: Perform Device Update on VOSS Switch
 
     Depends On          TCCS-7299_Step4
 
+    ${assign_policy_result}=        Assign network policy to switch  policy_name=${POLICY_NAME}  serial=${DUT_SERIAL}
+    Should Be Equal As Integers     ${assign_policy_result}  1
+
     ${result}=  Update Switch Policy and Configuration    ${DUT_SERIAL}
     Should Be Equal As Integers     ${result}     1
+
+
 
 TCCS-7299_Step6: Confirm VOSS Device Values After Update
     [Documentation]     Confirms the device table contains expected values for the VOSS switch after an update
@@ -187,6 +191,9 @@ TCCS-7299_Step8: Enable SSH on VOSS Switch and Confirm SSH Session Can Be Establ
 
     ${ip}=                              Get From Dictionary  ${ip_port_info}  ip
     ${port}=                            Get From Dictionary  ${ip_port_info}  port
+
+    Should not be Empty     ${ip}
+    Should not be Empty     ${port}
 
     ${ssh_spawn}=                       Open pxssh Spawn    ${ip}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${port}
     Should Not Be Equal As strings      '${ssh_spawn}'      '-1'
@@ -270,8 +277,9 @@ Onboard New Test Device
     ${voss_result}=  Wait Until Device Online        ${serial}
     Should Be Equal As Integers                     ${voss_result}       1
 
-    ${device_managed_result}=    WAIT UNTIL DEVICE MANAGED       ${serial}           MANAGED
-    Should Be Equal As Integers                 ${device_managed_result}       1
+    #Commented for AIQ-2118
+    #${device_managed_result}=    WAIT UNTIL DEVICE MANAGED       ${serial}           MANAGED
+    #Should Be Equal As Integers                 ${device_managed_result}       1
 
     Confirm Device Status   ${serial}  ${STATUS_AFTER_UPDATE}
 
@@ -300,7 +308,7 @@ Reset VOSS Switch to Factory Defaults
     [Tags]              voss
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${connection_method}
 
-    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss   ${connection_method}
+    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${DUT_cli_type}   ${connection_method}
 
     ${remove_results}=                  Send  ${spawn}  remove config.cfg     confirmation_phrases=Are you sure (y/n) ?    confirmation_arg=y
     Log To Console                      Command results are ${remove_results}
@@ -318,12 +326,12 @@ Configure iqagent for VOSS Switch
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${iqagent}  ${connection_method}
 
 
-    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss  ${connection_method}
+    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${DUT_cli_type}  ${connection_method}
 
     ${reset_iq_agent}=      Send Commands  ${spawn}  enable, configure terminal, show application iqagent, application, no iqagent enable, software iqagent reinstall , iqagent enable, show application iqagent , end
     Log To Console          Command results are ${reset_iq_agent}
 
-    ${conf_results}=        Send Commands  ${spawn}  enable, configure terminal, application, no iqagent enable, iqagent server ${iqagent}, iqagent enable
+    ${conf_results}=        Send Commands  ${spawn}  enable, configure terminal, application, no iqagent enable, iqagent server ${iqagent}, iqagent enable, show application iqagent
         Log To Console          Command results are ${conf_results}
 
     Should Contain          ${conf_results}  ${iqagent}
@@ -340,7 +348,7 @@ Confirm iqagent for VOSS Switch is Connected to XIQ
     [Tags]              voss
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${iqagent}  ${connection_method}
 
-    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss  ${connection_method}
+    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${DUT_cli_type}  ${connection_method}
 
     ${iqagent_results}=     Send                ${spawn}         show application iqagent
     Log To Console          Command results are ${iqagent_results}
@@ -370,7 +378,7 @@ Clean Up Open Policy For Switch
     ${DLT_NW_POLICY}=               Delete Network Policy                   ${policy}
     should be equal as integers     ${DLT_NW_POLICY}            1
 
-    ${DELETE_SSID}=                 Delete SSID                             ${ssid}
+    ${DELETE_SSID}=                 Delete SSIDs                             ${ssid}
     should be equal as integers     ${DELETE_SSID}              1
 
     ${DELETE_SWITCH_TEMPLATE}=      Delete Switch Template                  ${switch_template}

@@ -6,14 +6,17 @@
 # Host ----- Cloud
 
 *** Variables ***
+${SSH_TIMEOUT}              5min
+${SSH_ACTIVE}               SSH Active
 
 *** Settings ***
 Library     Collections
 Library     common/Utils.py
-Library     common/Cli.py
+Library     extauto/common/Cli.py
 Library     common/Rest.py
 Library     common/Screen.py
 Library     common/TestFlow.py
+Library     xiq/flows/manage/Tools.py
 
 Library     xiq/flows/common/Login.py
 Library     xiq/flows/common/Navigator.py
@@ -128,7 +131,7 @@ TCCS-7279_Step4: Check for SSH CLI Reachability
     Should not be Empty     ${IP_ADDR}
     Should not be Empty     ${PORT_NUM}
 
-    ${SPAWN1}=                      Open PXSSH Spawn    ${IP_ADDR}      ${wing1.username}    ${wing1.password}      ${PORT_NUM}
+    ${SPAWN1}=                      Open Spawn      ${IP_ADDR}    ${PORT_NUM}     ${wing1.username}   ${wing1.password}   ${wing1.cli_type}
     Should Not be Equal As Strings  '${SPAWN1}'       '-1'
 
     ${OUTPUT1}=                     Send Commands       ${SPAWN1}       en, show version
@@ -136,10 +139,13 @@ TCCS-7279_Step4: Check for SSH CLI Reachability
 
     Close spawn         ${SPAWN1}
 
-    Sleep               5min
+    ${SSH STATUS}=                  UI SSH Status Check
+    should be equal as strings              ${SSH STATUS}   ${SSH_ACTIVE}
 
-    ${SPAWN2}=                      Open PXSSH Spawn    ${IP_ADDR}      ${wing1.username}    ${wing1.password}      ${PORT_NUM}
-    Should be Equal As Strings      '${SPAWN2}'       '-1'
+    Sleep               ${SSH_TIMEOUT}
+
+    ${SPAWN1}=                      Open Paramiko Ssh Spawn     ${IP_ADDR}    ${wing1.username}   ${wing1.password}     ${PORT_NUM}
+    Should be Equal As Strings      '${SPAWN1}'       '-1'
 
     [Teardown]   run keywords       logout user
     ...                             quit browser

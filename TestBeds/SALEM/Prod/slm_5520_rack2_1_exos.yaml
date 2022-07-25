@@ -3,32 +3,32 @@ lab:                        "SALEM"
 netelem1:
   name:                     "dut1"
   hostname:                 ""
-  serial:                   "JA052131G-00032"
-  mac:                      "F4CE48BAD000"
-  ip:                       "10.148.35.121"
-  port:                     "23"
+  serial:                   "SB062116G-00059"
+  mac:                      "00DCB2DDB800"
+  ip:                       "10.148.35.111"
+  port:                     "22"
   console_ip:               "10.148.35.5"
-  console_port:             "5019"
-  username:                 "rwa"
-  password:                 "rwa"
-  connection_method:        "telnet"
-  cli_type:                       "voss"
-  platform:                 "5420"
-  model:                    "FabricEngine5420F_16W_32P_4XE"
-  make:                     "voss"
+  console_port:             "5037"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "ssh"
+  cli_type:                 "exos"
+  platform:                 "5520"
+  model:                    "SwitchEngine5520_48SE"
+  make:                     "exos"
   auth_mode:                "basic"
   tgen:
     port_a:
-      ifname: &netelem1_tgen_port_a_ifname "1/1"
+      ifname: &netelem1_tgen_port_a_ifname "1"
       intnet: "intnet1"
     port_b:
-      ifname: &netelem1_tgen_port_b_ifname "1/24"
+      ifname: &netelem1_tgen_port_b_ifname "24"
       intnet: "intnet2"
     port_c:
-      ifname: &netelem1_tgen_port_c_ifname "1/25"
+      ifname: &netelem1_tgen_port_c_ifname "25"
       intnet: "intnet3"
     port_d:
-      ifname: &netelem1_tgen_port_d_ifname "1/48"
+      ifname: &netelem1_tgen_port_d_ifname "48"
       intnet: "intnet4"
 
 tgen1:
@@ -36,12 +36,12 @@ tgen1:
   vendor:       "jets"
   chassis_type: "jets"
   software:     "N/A"
-  ip:           "10.148.35.120"
+  ip:           "10.148.35.110"
   vm_ip:        "N/A"
   username:     "root"
   password:     "PASprt86"
   port:         "22"
-  cli_type:           "MU-LINUX"
+  cli_type:     "MU-LINUX"
 
 tgen_ports:
   netelem1:

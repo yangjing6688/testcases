@@ -3,6 +3,8 @@ wing1:
   model:                    AP7532I
   device_template:          AP7532I-default-template
   serial:                   "14107522201492"
+  cli_type:                 "WING-AP"
+  connection_method:        "ssh"
   os_version:               7.6.0.1-004R
   mac:                      84248D16016C
   bssid:
