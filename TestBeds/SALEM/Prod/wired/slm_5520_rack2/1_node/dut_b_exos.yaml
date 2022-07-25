@@ -14,7 +14,7 @@ netelem1:
   password:                 ""
   connection_method:        "ssh"
   cli_type:                 "exos"
-  platform:                 "5520"
+  platform:                 "Stack"
   model:                    "SwitchEngine5520_48SE"
   make:                     "exos"
   auth_mode:                "basic"

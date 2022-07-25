@@ -1,12 +1,12 @@
 netelem1:
   platform:                 EXOS
-  name:                     bui-flo-0139
-  model:                    EXOSSWITCH
+  name:                     X465-48W
+  model:                    X465-48W
   serial:                   '1924F-10139'
   mac:                      000496BA7F0C
   username:                 admin
   password:                 Aerohive123
-  ip:                       10.16.152.98
+  ip:                       10.16.148.24
   port:                     "22"
   connection_method:        "telnet"
   console_ip:               10.16.128.23
@@ -15,6 +15,3 @@ netelem1:
   device_template:          5520-default-template
   cli_type:                 "EXOS"
   make:                     EXOS
-
-
-

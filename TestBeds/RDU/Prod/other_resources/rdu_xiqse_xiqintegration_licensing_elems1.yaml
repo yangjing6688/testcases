@@ -19,27 +19,27 @@ pilot1:
   name:                     "Gns3-5520-61-14"
   ip:                       "10.69.61.14"
   profile:                  "public_v1_Profile"
-  serial:                   "SIM3333Z-99901"
-  mac:                      "0cfd64a30000"
-  model:                    "5520-24T"
+  serial:                   "SIM611Q-A101"
+  mac:                      "0cfd64a30100"
+  model:                    "5520-24T-SwitchEngine"
   platform:                 "exos"
 
 pilot2:
   name:                     "Gns3-5420-61-15"
   ip:                       "10.69.61.15"
   profile:                  "public_v1_Profile"
-  serial:                   "SIM3333Z-99902"
-  mac:                      "0c0d41e00000"
-  model:                    "5420F-24T-4XE"
+  serial:                   "SIM611Q-A102"
+  mac:                      "0cfd64a30200"
+  model:                    "5420F-24T-4XE-SwitchEngine"
   platform:                 "exos"
 
 pilot3:
   name:                     "Gns3-5520-61-16"
   ip:                       "10.69.61.16"
   profile:                  "public_v1_Profile"
-  serial:                   "SIM3333Z-99903"
-  mac:                      "0cae53eb0000"
-  model:                    "5520-24T"
+  serial:                   "SIM611Q-A103"
+  mac:                      "0cfd64a30300"
+  model:                    "5320-16P-4XE-SwitchEngine"
   platform:                 "exos"
 
 nav1:
@@ -47,8 +47,8 @@ nav1:
   ip:                       "10.69.61.10"
   profile:                  "public_v2_Profile"
   serial:                   "FTX0945W0MY"
-  mac:                      "c4012e360000"
-  model:                    "Cisco 3745"
+  mac:                      "c401a1790000"
+  model:                    "Cisco 3640"
   platform:                 "cisco"
 
 nav2:
@@ -57,14 +57,14 @@ nav2:
   profile:                  "public_v2_Profile"
   serial:                   "4279256517"
   mac:                      "ca033ea40006"
-  model:                    "Cisco 7206VXR"
+  model:                    "Cisco"
   platform:                 "cisco"
 
 nav3:
-  name:                     "GNS3-c1720-61-13"
+  name:                     "GNS3-c3745-61-13"
   ip:                       "10.69.61.13"
   profile:                  "public_v2_Profile"
-  serial:                   "2342056275"
-  mac:                      "d002140c0000"
-  model:                    "Cisco 1720"
+  serial:                   "FTX0945W0MY"
+  mac:                      "c402ae550000"
+  model:                    "Cisco 3640"
   platform:                 "cisco"

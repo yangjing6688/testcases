@@ -13,7 +13,7 @@ netelem1:
   password:                 "rwa"
   connection_method:        "ssh"
   cli_type:                 "voss"
-  platform:                 "5520"
+  platform:                 "Stack"
   model:                    "FabricEngine5520_48SE"
   make:                     "voss"
   auth_mode:                "basic"

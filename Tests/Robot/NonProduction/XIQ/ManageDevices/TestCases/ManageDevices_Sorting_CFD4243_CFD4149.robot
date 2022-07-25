@@ -37,7 +37,7 @@ ${DUT1_CONSOLE_IP}      ${ap1.ip}
 ${DUT1_CONSOLE_PORT}    ${ap1.port}
 ${DUT1_USERNAME}        ${ap1.username}
 ${DUT1_PASSWORD}        ${ap1.password}
-${DUT1_PLATFORM}        ${ap1.platform}
+${DUT1_CLI_TYPE}        ${ap1.cli_type}
 ${DUT1_MAKE}            ${ap1.make}
 
 ${DUT2_SERIAL}          ${ap2.serial}
@@ -46,7 +46,7 @@ ${DUT2_CONSOLE_IP}      ${ap2.ip}
 ${DUT2_CONSOLE_PORT}    ${ap2.port}
 ${DUT2_USERNAME}        ${ap2.username}
 ${DUT2_PASSWORD}        ${ap2.password}
-${DUT2_PLATFORM}        ${ap2.platform}
+${DUT2_CLI_TYPE}        ${ap2.cli_type}
 ${DUT2_MAKE}            ${ap2.make}
 
 ${DUT3_SERIAL}          ${ap3.serial}
@@ -55,7 +55,7 @@ ${DUT3_CONSOLE_IP}      ${ap3.ip}
 ${DUT3_CONSOLE_PORT}    ${ap3.port}
 ${DUT3_USERNAME}        ${ap3.username}
 ${DUT3_PASSWORD}        ${ap3.password}
-${DUT3_PLATFORM}        ${ap3.platform}
+${DUT3_CLI_TYPE}        ${ap3.cli_type}
 ${DUT3_MAKE}            ${ap3.make}
 
 ${DUT4_SERIAL}          ${ap4.serial}
@@ -64,7 +64,7 @@ ${DUT4_CONSOLE_IP}      ${ap4.ip}
 ${DUT4_CONSOLE_PORT}    ${ap4.port}
 ${DUT4_USERNAME}        ${ap4.username}
 ${DUT4_PASSWORD}        ${ap4.password}
-${DUT4_PLATFORM}        ${ap4.platform}
+${DUT4_CLI_TYPE}        ${ap4.cli_type}
 ${DUT4_MAKE}            ${ap4.make}
 
 ${DEFAULT_DEVICE_PWD}   Aerohive123
@@ -126,7 +126,7 @@ Test 3: Confirm Sorting on Updated Column - One Device Disconnected After Update
 
     # Disconnect one of the devices
     Disconnect Device               ${DUT3_CONSOLE_IP}  ${DUT3_CONSOLE_PORT}  ${DUT3_USERNAME}
-    ...                             ${DUT3_PASSWORD}  ${DUT3_PLATFORM}
+    ...                             ${DUT3_PASSWORD}  ${DUT3_CLI_TYPE}
     Confirm Device Serial Offline   ${DUT3_SERIAL}
     Confirm Device Serial Has Expected Status  ${DUT3_SERIAL}  disconnected
 
@@ -146,7 +146,7 @@ Test 4: Confirm Sorting on Updated Column - One Device Disconnected Before Updat
     Run Keyword If   '${device_status}' != 'disconnected'  Log To Console  >>> DEVICE NOT DISCONNECTED <<<
     Run Keyword If   '${device_status}' != 'disconnected'
     ...               Disconnect Device  ${DUT3_CONSOLE_IP}  ${DUT3_CONSOLE_PORT}  ${DUT3_USERNAME}
-    ...                                  ${DUT3_PASSWORD}  ${DUT3_PLATFORM}
+    ...                                  ${DUT3_PASSWORD}  ${DUT3_CLI_TYPE}
     Run Keyword If   '${device_status}' != 'disconnected'  Confirm Device Serial Offline   ${DUT3_SERIAL}
     Confirm Device Serial Has Expected Status  ${DUT3_SERIAL}  disconnected
 
@@ -189,10 +189,10 @@ Onboard and Configure Test Devices
     Navigate to Devices and Confirm Success
 
     # Onboard the devices for the test
-    ${dut1_result}=     Search Device Serial   ${DUT1_SERIAL}
-    ${dut2_result}=     Search Device Serial   ${DUT2_SERIAL}
-    ${dut3_result}=     Search Device Serial   ${DUT3_SERIAL}
-    ${dut4_result}=     Search Device Serial   ${DUT4_SERIAL}
+    ${dut1_result}=     Search Device   ${DUT1_SERIAL}
+    ${dut2_result}=     Search Device   ${DUT2_SERIAL}
+    ${dut3_result}=     Search Device   ${DUT3_SERIAL}
+    ${dut4_result}=     Search Device   ${DUT4_SERIAL}
     Run Keyword If      '${dut1_result}' != '1'  Onboard Device   ${DUT1_SERIAL}  ${DUT1_MAKE}  location=${LOCATION}
     Run Keyword If      '${dut2_result}' != '1'  Onboard Device   ${DUT2_SERIAL}  ${DUT2_MAKE}  location=${LOCATION}
     Run Keyword If      '${dut3_result}' != '1'  Onboard Device   ${DUT3_SERIAL}  ${DUT3_MAKE}  location=${LOCATION}
@@ -210,17 +210,17 @@ Onboard and Configure Test Devices
     ${dut3_status}=       Get Device Status       device_serial=${DUT3_SERIAL}
     ${dut4_status}=       Get Device Status       device_serial=${DUT4_SERIAL}
     Run Keyword If      '${dut1_status}' != 'green'
-    ...  Configure CAPWAP    ${DUT1_CONSOLE_IP}  ${DUT1_CONSOLE_PORT}  ${DUT1_USERNAME}
-    ...                      ${DUT1_PASSWORD}  ${DUT1_PLATFORM}
+    ...      Configure CAPWAP Device To Connect To Cloud    ${DUT1_CLI_TYPE}  ${DUT1_CONSOLE_IP}  ${DUT1_CONSOLE_PORT}  ${DUT1_USERNAME}
+    ...                                                     ${DUT1_PASSWORD}  ${XIQ_CAPWAP_URL}
     Run Keyword If      '${dut2_status}' != 'green'
-    ...  Configure CAPWAP    ${DUT2_CONSOLE_IP}  ${DUT2_CONSOLE_PORT}  ${DUT2_USERNAME}
-    ...                      ${DUT2_PASSWORD}  ${DUT2_PLATFORM}
+    ...      Configure CAPWAP Device To Connect To Cloud    ${DUT2_CLI_TYPE}  ${DUT2_CONSOLE_IP}  ${DUT2_CONSOLE_PORT}  ${DUT2_USERNAME}
+    ...                                                     ${DUT2_PASSWORD}  ${XIQ_CAPWAP_URL}
     Run Keyword If      '${dut3_status}' != 'green'
-    ...  Configure CAPWAP    ${DUT3_CONSOLE_IP}  ${DUT3_CONSOLE_PORT}  ${DUT3_USERNAME}
-    ...                      ${DUT3_PASSWORD}  ${DUT3_PLATFORM}
+    ...      Configure CAPWAP Device To Connect To Cloud    ${DUT3_CLI_TYPE}  ${DUT3_CONSOLE_IP}  ${DUT3_CONSOLE_PORT}  ${DUT3_USERNAME}
+    ...                                                     ${DUT3_PASSWORD}  ${XIQ_CAPWAP_URL}
     Run Keyword If      '${dut4_status}' != 'green'
-    ...  Configure CAPWAP    ${DUT4_CONSOLE_IP}  ${DUT4_CONSOLE_PORT}  ${DUT4_USERNAME}
-    ...                      ${DUT4_PASSWORD}  ${DUT4_PLATFORM}
+    ...      Configure CAPWAP Device To Connect To Cloud    ${DUT4_CLI_TYPE}  ${DUT4_CONSOLE_IP}  ${DUT4_CONSOLE_PORT}  ${DUT4_USERNAME}
+    ...                                                     ${DUT4_PASSWORD}  ${XIQ_CAPWAP_URL}
 
 Wait Until Test Devices Online
     [Documentation]     Waits until all test devices have a connected status
@@ -230,25 +230,18 @@ Wait Until Test Devices Online
     Confirm Device Serial Online  ${DUT3_SERIAL}
     Confirm Device Serial Online  ${DUT4_SERIAL}
 
-Configure CAPWAP
-    [Documentation]     Configures the CAPWAP client
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${platform}
+Configure CAPWAP Device To Connect To Cloud
+    [Documentation]     Configure the CAPWAP client with the necessary configuration on the Device to Connect to Cloud
+    [Arguments]         ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${capwap_url}
 
-    ${spawn}=           Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${platform}
-
-    Send                ${spawn}   capwap client server name ${XIQ_CAPWAP_URL}
-    Send                ${spawn}   capwap client default-server-name ${XIQ_CAPWAP_URL}
-    Send                ${spawn}   capwap client server backup name ${XIQ_CAPWAP_URL}
-    Send                ${spawn}   no capwap client enable
-    Send                ${spawn}   capwap client enable
-    Send                ${spawn}   save config
-    Close Spawn         ${spawn}
+    ${CONFIG_RESULT}=   Configure Device To Connect To Cloud     ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${capwap_url}
+    Should Be Equal as Integers         ${CONFIG_RESULT}         1
 
 Disconnect Device
     [Documentation]     Disconnects the device
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${platform}
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
 
-    ${spawn}=           Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${platform}
+    ${spawn}=           Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
 
     Send                ${spawn}   no capwap client enable
     Send                ${spawn}   save config

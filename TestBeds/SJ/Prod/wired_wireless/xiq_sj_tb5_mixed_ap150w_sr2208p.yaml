@@ -1,0 +1,55 @@
+ap1:
+  name:                     bui-flo-0019
+  connection_method:        "ssh"
+  ip:                       10.16.170.68
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "01501707240019"
+  console_ip:               10.16.170.37
+  console_port:             4003
+  mac:                      7C95B1004DC0
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP150W
+  template:                 AP150W-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           Test_np
+      ssid:                     AP150W_01
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            3485843A5CC0
+
+aerohive_sw1:
+  name:               22081605120539
+  model:              SR2208P
+  device_template:    SR2208P-default-template
+  serial:             '22081605120539'
+  cli_type:           "AH-FASTPATH"
+  mac:                B87CF20131F8
+  ip:                 10.16.152.229
+  port:               22
+  connection_method:  "console"
+  network_policy:
+  username:           admin
+  password:           Aerohive123
+  platform:           aerohive-fastpath
+  test_port:
+  make:               Extreme - Aerohive
+  console_ip:         10.16.128.23
+  console_port:       7026

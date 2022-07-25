@@ -4,52 +4,39 @@ ${index_value}=    0
 
 *** Settings ***
 
-
 Library     common/Xapi.py
 Library     common/Cli.py
-Library     xiq/flows/common/Login.py
-Library     xiq/flows/configure/CommonObjects.py
-Library     xiq/flows/configure/NetworkPolicy.py
-Library     xiq/flows/common/Navigator.py
-Library     xiq/flows/extreme_location/ExtremeLocation.py
-Library     xiq/flows/globalsettings/GlobalSetting.py
-Library     xiq/flows/configure/AdditionalSettings.py
-
-Library     common/TestFlow.py
 Library     common/Utils.py
 
-Library     xiq/flows/manage/Devices.py
-Library     Collections
-
-
-
-
-#Resource    ../../XAPI_PHASE_5A/Resources/AllResources.robot
-#Resource    Tests/Robot/Libraries/XIQ/Wireless/XAPI/XAPI-Production-Sanity-Keywords.robot
 
 Variables   Environments/Config/waits.yaml
-Variables   TestBeds/${TESTBED}
-Variables   Environments/${TOPO}
 
 
 *** Keywords ***
 
-xapi device onboard
-    [Documentation]  Onboard Single device
+xapi ap device onboard
+    [Documentation]  Onboard Single AH-AP Device
     [Arguments]  ${AP_SERIAL_NUMBER}
 
     ${RESP}=  rest api post      /devices/:onboard      post_data='{"extreme": {"sns": ["${AP_SERIAL_NUMBER}"]}}'        result_code=202
     log                             ${RESP}
     [Return]                        ${RESP}
 
-xapi onboard multiple devices
-    [Documentation]  Onboard Multiple devices
-    [Arguments]  ${AP1_SERIAL_NUMBER}    ${AP2_SERIAL_NUMBER}
+xapi extreme switch onboard
+    [Documentation]  Onboard Single Extreme SR Switch Device
+    [Arguments]  ${SW_SERIAL_NUMBER}
 
-    ${RESP}=  rest api post      /devices/:onboard      post_data='{"extreme": {"sns": ["${AP1_SERIAL_NUMBER}, ${AP2_SERIAL_NUMBER}"]}}'        result_code=202
+    ${RESP}=  rest api post      /devices/:onboard      post_data='{"extreme": {"sns": ["${SW_SERIAL_NUMBER}"]}}'        result_code=202
     log                             ${RESP}
     [Return]                        ${RESP}
 
+xapi onboard multiple extreme devices
+    [Documentation]  Onboard Multiple devices
+    [Arguments]  ${SERIAL_NUMBER_1}    ${SERIAL_NUMBER_2}
+
+    ${RESP}=  rest api post      /devices/:onboard      post_data='{"extreme": {"sns": ["${SERIAL_NUMBER_1}, ${SERIAL_NUMBER_2}"]}}'        result_code=202
+    log                             ${RESP}
+    [Return]                        ${RESP}
 
 xapi list and get device id
     [Documentation]  List Devices and Get Device ID
@@ -62,7 +49,6 @@ xapi list and get device id
     ${DEVICE_ID}=   get index id from list json   ${DATA_ARRAY}     ${index_value}
     log  ${DEVICE_ID}
     [Return]    ${DEVICE_ID}
-
 
 xapi list device connected status
     [Documentation]  Get Device Connected Status
@@ -90,7 +76,6 @@ xapi list device admin state
     Log     ${DEVICE_ADMIN_STATE}
     [Return]    ${DEVICE_ADMIN_STATE}
 
-
 xapi reset device
     [Documentation]  Reset a device to factory default settings
     [Arguments]  ${DEVICE_ID}
@@ -113,7 +98,6 @@ xapi delete multiple devices
     log  ${RESP}
     [Return]  ${RESP}
 
-
 xapi list device network policy name
     [Documentation]  Get Network Policy Name for a device
     [Arguments]  ${SERIAL_NUMBER}
@@ -125,3 +109,20 @@ xapi list device network policy name
     ${DEVICE_NW_POLICY_NAME}=  get index nw policy name from list json      ${DATA_ARRAY}     ${index_value}
     Log     ${DEVICE_NW_POLICY_NAME}
     [Return]    ${DEVICE_NW_POLICY_NAME}
+
+
+xapi wait until device online
+    [Documentation]  Wait till the device is connected
+    [Arguments]  ${SERIAL_NUMBER}   ${RETRY_COUNT}      ${RETRY_DURATION}
+
+    FOR    ${i}    IN RANGE    ${RETRY_COUNT}
+        ${DEVICE_CONNECTED_STATE}=                  xapi list device connected status         ${SERIAL_NUMBER}
+        Log      ${DEVICE_CONNECTED_STATE}
+        Exit For Loop If   '${DEVICE_CONNECTED_STATE}'=='True'
+        Log      ${i}
+        sleep    ${RETRY_DURATION}
+
+    END
+    Log     ${DEVICE_CONNECTED_STATE}
+    Log    Exiting as Device is Conneceted
+    [Return]    ${DEVICE_CONNECTED_STATE}

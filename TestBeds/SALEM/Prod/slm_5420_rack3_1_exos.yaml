@@ -3,33 +3,34 @@ lab:                        "SALEM"
 netelem1:
   name:                     "dut1"
   hostname:                 ""
-  serial:                   "SB022108G-00096"
-  mac:                      "00DCB2976C00"
-  ip:                       "10.148.35.102"
+  serial:                   "JA052131G-00011"
+  mac:                      "F4CE48BA7C00"
+  ip:                       "10.148.35.136"
   port:                     "22"
   console_ip:               "10.148.35.5"
-  console_port:             "5026"
-  mgmt_vlan:                "VLAN_4000"
+  console_port:             "5021"
   username:                 "admin"
   password:                 ""
   connection_method:        "ssh"
   cli_type:                 "exos"
-  platform:                 "5520"
-  model:                    "SwitchEngine5520_24T"
+  platform:                 "5420"
+  model:                    "SwitchEngine5420F_16W_32P_4XE"
   make:                     "exos"
   auth_mode:                "basic"
+
+
   tgen:
     port_a:
       ifname: &netelem1_tgen_port_a_ifname "1"
       intnet: "intnet1"
     port_b:
-      ifname: &netelem1_tgen_port_b_ifname "12"
+      ifname: &netelem1_tgen_port_b_ifname "24"
       intnet: "intnet2"
     port_c:
-      ifname: &netelem1_tgen_port_c_ifname "13"
+      ifname: &netelem1_tgen_port_c_ifname "25"
       intnet: "intnet3"
     port_d:
-      ifname: &netelem1_tgen_port_d_ifname "24"
+      ifname: &netelem1_tgen_port_d_ifname "48"
       intnet: "intnet4"
 
 tgen1:
@@ -37,28 +38,28 @@ tgen1:
   vendor:       "jets"
   chassis_type: "jets"
   software:     "N/A"
-  ip:           "10.148.35.100"
+  ip:           "10.148.35.135"
   vm_ip:        "N/A"
   username:     "root"
   password:     "PASprt86"
   port:         "22"
-  cli_type:     "MU-LINUX"
+  cli_type:           "MU-LINUX"
 
 tgen_ports:
   netelem1:
     port_a: &tgen_ports_netelem1_port_a
       tgen_name: *tgen1_name
-      ifname:    "eth5"
+      ifname:    "eth1"
       #source_mac:
     port_b: &tgen_ports_netelem1_port_b
       tgen_name:  *tgen1_name
-      ifname:     "eth6"
+      ifname:     "eth2"
       #source_mac:
     port_c: &tgen_ports_netelem1_port_c
       tgen_name: *tgen1_name
-      ifname:    "eth7"
+      ifname:    "eth3"
       #source_mac:
     port_d: &tgen_ports_netelem1_port_d
       tgen_name: *tgen1_name
-      ifname:    "eth8"
+      ifname:    "eth4"
       #source_mac:
