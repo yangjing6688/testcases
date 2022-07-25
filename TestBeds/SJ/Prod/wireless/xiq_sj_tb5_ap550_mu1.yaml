@@ -36,10 +36,9 @@ ap1:
 
 mu1:
   ip:             10.16.170.36
-  port:           22
+  port:           8270
   username:       root
   password:       aerohive
   platform:       mac
   mac_wifi_port:  en1
   wifi_mac:       F018988AED0D
-

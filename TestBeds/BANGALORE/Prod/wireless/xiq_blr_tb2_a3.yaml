@@ -9,6 +9,6 @@ a3_server1:
   node3_hostname:        A3-A4N3-107
   ui_username:           demo@demo.com
   ui_password:           Extr_123
-  console_username:      sshuser
-  console_password:      Extr_123
-  console_port:          22
+  username:              sshuser
+  password:              Extr_123
+  port:                  22

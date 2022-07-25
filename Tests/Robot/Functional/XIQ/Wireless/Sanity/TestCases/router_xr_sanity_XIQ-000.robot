@@ -125,7 +125,7 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     ${SEARCH_ROUTER}=       Search Device           device_serial=${router1.serial}
     Should Be Equal As Integers             ${SEARCH_ROUTER}        1
 
-    ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}
+    ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}   connection_method=${router1.connection_method}
     Should Not Be Equal As Strings      '${ROUTER_SPAWN}'        '-1'
 
     Set Suite Variable      ${ROUTER_SPAWN}
@@ -165,7 +165,7 @@ TCCS-7766_Step2: Onboard Aerohive XR Router Using Advance Onboarding Method
     ${ONBOARD_ROUTER}=          Advance Onboard Device         ${router1.serial}    device_make=${router1.make}   dev_location=${LOCATION}
     Should Be Equal As Integers             ${ONBOARD_ROUTER}           1
 
-    ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}      connection_method=console
+    ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}      connection_method=${router1.connection_method}
     Should Not Be Equal As Strings      '${ROUTER_SPAWN}'        '-1'
     
     Set Suite Variable      ${ROUTER_SPAWN}

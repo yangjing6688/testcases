@@ -95,32 +95,63 @@ Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   mu1
 Force Tags   testbed_1_node
 
 Suite Setup      Pre Condition
+Suite Teardown   Test Suite Clean Up
 
 *** Keywords ***
 Pre Condition
     [Documentation]   AP Should be onboarded  and it is online
 
-    ${result}=                      Login User                 ${tenant_username}     ${tenant_password}
-    ${AP_STATUS}=                   Get AP Status              ap_mac=${ap1.mac}
-    Should Be Equal As Strings     '${AP_STATUS}'             'green'
-    Create Network Policy           OPEN_AUTO                  &{CONFIG_PUSH_OPEN_NW_01}
-    Update Network Policy To Ap     policy_name=OPEN_AUTO      ap_serial=${ap1.serial}
+    ${LOGIN_STATUS}=                Login User                 ${tenant_username}     ${tenant_password}    check_warning_msg=True
+    should be equal as integers     ${LOGIN_STATUS}               1
 
-    ${DELETE_STATUS}=              delete network polices      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}    ${SINGLE_CLOUD_NW_POLICY}
-    ...                            ${SINGLE_LOCAL_NW_POLICY}   ${CLOUD_CWP_NW_POLICY}     ${SINGLE_CLOUD_NW_POLICY1}
-    ...                            ${CLIENT_PER_PPSK_POLICY}   ${LOCAL_DB_PPSK_NW1}
+    ${DEVICE_STATUS}=               Get Device Status       device_mac=${ap1.mac}
+    Should contain any              ${DEVICE_STATUS}        green     config audit mismatch
+
+    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          OPEN_AUTO                 &{CONFIG_PUSH_OPEN_NW_01}
+    should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
+
+    ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap    policy_name=OPEN_AUTO     ap_serial=${ap1.serial}
+    should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
+
+    ${DELETE_STATUS}=               Delete network polices      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
+    should be equal as strings     '${DELETE_STATUS}'           '1'     ppsk network policy assigned to other AP,disassociate it or issue with deleting policy
+
+    ${SSID_DLT_STATUS}=             Delete ssids                ${BULK_CLOUD_NW_SSID}       ${BULK_LOCAL_NW_SSID}
+    should be equal as strings      '1'                        '${SSID_DLT_STATUS}'       Issue with deleting the SSID's
+
+    ${DELETE_CWP_STATUS}=           Delete captive web portal      ${SELF_REG_RETURN_PPSK_CWP}
+    should be equal as integers     ${DELETE_CWP_STATUS}               1
+
+    ${DELETE_UGS}=                  Delete user groups              ${BULK_CLOUD_USER_GROUP}    ${BULK_LOCAL_USER_GROUP}
+    should be equal as integers     ${DELETE_UGS}               1
+
+    [Teardown]   run keywords      logout user
+    ...                            quit browser
+
+Test Suite Clean Up
+    [Documentation]    delete created network policies, usergroups, radius server
+
+    [Tags]             production       cleanup
+
+    ${LOGIN_STATUS}=    Login User       ${tenant_username}        ${tenant_password}
+    should be equal as integers             ${LOGIN_STATUS}               1
+
+    Navigate To Devices
+
+    ${DELETE_DEVICE_STATUS}=        Delete Device       device_serial=${ap1.serial}
+    should be equal as integers         ${DELETE_DEVICE_STATUS}               1
+
+    ${DELETE_STATUS}=              delete network polices      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
     should be equal as strings    '${DELETE_STATUS}'           '1'     ppsk network policy assigned to other AP,disassociate it or issue with deleting policy
 
-    ${SSID_DLT_STATUS}=            delete ssids                ${BULK_CLOUD_NW_SSID}       ${BULK_LOCAL_NW_SSID}      ${SINGLE_CLOUD_NW_SSID}
-    ...                            ${SINGLE_LOCAL_NW_SSID}     ${CLOUD_CWP_OPEN_NW_SSID}  ${SINGLE_CLOUD_NW_SSID1}
-    ...                            ${CLIENT_PER_PPSK_SSID}     ${LOCAL_DB_PPSK_SSID1}
-    should be equal as strings     '1'                        '${SSID_DLT_STATUS}'       Issue with deleting the SSID's
+    ${SSID_DLT_STATUS}=            Delete ssids                 ${BULK_CLOUD_NW_SSID}       ${BULK_LOCAL_NW_SSID}
+    should be equal as strings      '1'                        '${SSID_DLT_STATUS}'       Issue with deleting the SSID's
 
-    delete captive web portal      ${SELF_REG_RETURN_PPSK_CWP}
-    delete ssid                    ${CLOUD_CWP_NW_SSID}
-    delete user groups             ${BULK_CLOUD_USER_GROUP}    ${BULK_LOCAL_USER_GROUP}   ${SINGLE_CLOUD_USER_GROUP}
-    ...                            ${SINGLE_LOCAL_USER_GROUP}  ${CLOUD_CWP_USER_GROUP}    ${SINGLE_CLOUD_USER_GROUP1}
-    ...                            ${CLIENT_PER_PPSK_GRP}      ${LOCAL_DB_PPSK_GROUP}
+    ${DELETE_CWP_STATUS}=           Delete captive web portal      ${SELF_REG_RETURN_PPSK_CWP}
+    should be equal as integers     ${DELETE_CWP_STATUS}               1
+
+    ${DELETE_UGS}=                  Delete user groups              ${BULK_CLOUD_USER_GROUP}    ${BULK_LOCAL_USER_GROUP}
+    should be equal as integers     ${DELETE_UGS}               1
 
     [Teardown]   run keywords      logout user
     ...                            quit browser
@@ -164,7 +195,7 @@ TCCS-7678: Cloud DB PPSK Network Client Connectivity With Bulk Users Group
     [Tags]             production       tccs_7678
 
     ${LOGIN_STATUS}=                Login User           ${tenant_username}     ${tenant_password}
-    should be equal as strings     '${LOGIN_STATUS}'     '1'
+     should be equal as integers             ${LOGIN_STATUS}               1
 
     ${USER_GROUP_CREATE}=           Create User Group   ${BULK_CLOUD_USER_GROUP}   user_group_profile=&{USER_GROUP_PROFILE_CLOUD_BULK}
     should be equal as strings     '${USER_GROUP_CREATE}'     '1'
@@ -203,7 +234,7 @@ TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
     [Tags]             production       tccs_7691
 
     ${LOGIN_STATUS}=                Login User              ${tenant_username}     ${tenant_password}
-    should be equal as strings     '${LOGIN_STATUS}'        '1'
+     should be equal as integers             ${LOGIN_STATUS}               1
 
     ${USER_GROUP_CREATE}=           Create User Group        ${BULK_LOCAL_USER_GROUP}  user_group_profile=&{USER_GROUP_PROFILE_LOCAL_BULK}
     should be equal as strings     '${USER_GROUP_CREATE}'    '1'
@@ -231,30 +262,4 @@ TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
     [Teardown]   run keywords       Test Case Level Cleanup
     ...          AND                mu1.delete_wlan_profile   ${BULK_LOCAL_NW_SSID}
 
-Test Suite Clean Up
-    [Documentation]    delete created network policies, usergroups, radius server
 
-    [Tags]             production       cleanup
-
-    ${result}=    Login User       ${tenant_username}        ${tenant_password}
-    Update Network Policy To Ap     policy_name=OPEN_AUTO      ap_serial=${ap1.serial}
-
-    ${DELETE_STATUS}=              delete network polices      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}    ${SINGLE_CLOUD_NW_POLICY}
-    ...                            ${SINGLE_LOCAL_NW_POLICY}   ${CLOUD_CWP_NW_POLICY}     ${SINGLE_CLOUD_NW_POLICY1}
-    ...                            ${CLIENT_PER_PPSK_POLICY}   ${LOCAL_DB_PPSK_NW1}
-    should be equal as strings    '${DELETE_STATUS}'           '1'     ppsk network policy assigned to other AP,disassociate it or issue with deleting policy
-
-    delete ssids                   ${BULK_CLOUD_NW_SSID}       ${BULK_LOCAL_NW_SSID}      ${SINGLE_CLOUD_NW_SSID}
-    ...                            ${SINGLE_LOCAL_NW_SSID}     ${CLOUD_CWP_OPEN_NW_SSID}  ${SINGLE_CLOUD_NW_SSID1}
-    ...                            ${CLIENT_PER_PPSK_SSID}     ${LOCAL_DB_PPSK_SSID1}
-
-    delete captive web portal      ${SELF_REG_RETURN_PPSK_CWP}
-    delete ssid                    ${CLOUD_CWP_NW_SSID}
-    delete user groups             ${BULK_CLOUD_USER_GROUP}    ${BULK_LOCAL_USER_GROUP}   ${SINGLE_CLOUD_USER_GROUP}
-    ...                            ${SINGLE_LOCAL_USER_GROUP}  ${CLOUD_CWP_USER_GROUP}    ${SINGLE_CLOUD_USER_GROUP1}
-    ...                            ${CLIENT_PER_PPSK_GRP}      ${LOCAL_DB_PPSK_GROUP}
-     Navigate To Devices
-     Delete Device                 device_serial=${ap1.serial}
-
-    [Teardown]   run keywords      logout user
-    ...                            quit browser

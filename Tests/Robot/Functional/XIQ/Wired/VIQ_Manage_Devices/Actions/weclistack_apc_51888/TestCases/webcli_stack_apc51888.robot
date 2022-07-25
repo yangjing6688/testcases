@@ -41,7 +41,7 @@ TCXM-15265: Verify that WEB CLI is available for EXOS Stack
     #Configure IQAgent
 
     ${onboard_result}=          run keyword if  """${netelem1.cli_type}"""== "exos" and """${netelem1.platform}""" == "Stack"
-    ...    onboard switch     ${netelem1.serial}  device_os=${netelem1.cli_type}   entry_type=Manual  location=${DUT_LOCATION}
+    ...    quick_onboarding_cloud_manual     ${netelem1.serial}    exos      ${DUT_LOCATION}
     #Configure IQAgent
     Should Be Equal As Integers                 ${onboard_result}       1
     Configure IQAgent for EXOS Switch
@@ -204,7 +204,7 @@ Check Device Online
 clear vlans
     [Documentation]     This keyword will delete vlan 3
 
-    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}  ${netelem1.console_port}
+    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}
     send cmd   dut1_telnet      delete vlan 3
 
     [Teardown]  close connection to network element  dut1_telnet

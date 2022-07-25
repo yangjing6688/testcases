@@ -1,0 +1,8 @@
+test_url:                 "https://g2r1.qa.xcloudiq.com"
+capwap_url:               "g2r1-cwpm-01.qa.xcloudiq.com"
+sw_capwap_url:            "g2r1.qa.xcloudiq.com"
+tenant_username:          "ahqatest+license@gmail.com"
+tenant_password:          "Aerohive123"
+sw_connection_host:            "g2r1.qa.xcloudiq.com"
+wing_capwap_url:          "g2r1-wing.qa.xcloudiq.com"
+base_url:                 "https://g2r1.qa.xcloudiq.com"

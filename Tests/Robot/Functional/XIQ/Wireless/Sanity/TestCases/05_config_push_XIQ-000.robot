@@ -39,14 +39,32 @@ Variables    Environments/Config/device_commands.yaml
 Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/wireless_networks_config.robot
 
 Force Tags   testbed_1_node
+
+Suite Teardown  Test Suite Clean Up
+
 *** Keywords ***
+
+Test Suite Clean Up
+    [Tags]			        cleanup         test7	production
+    ${LOGIN_STATUS}=                Login User              ${tenant_username}      ${tenant_password}
+    should be equal as integers     ${LOGIN_STATUS}               1
+
+    ${DELETE_DEVICE_STATUS}=        Delete Device                  device_serial=${ap1.serial}
+    should be equal as integers     ${DELETE_DEVICE_STATUS}               1
+
+    ${DELETE_NW_POLICY_STATUS}=     Delete network policy      ${POLICY_01}
+    should be equal as integers     ${DELETE_NW_POLICY_STATUS}               1
+
+    ${SSID_DLT_STATUS}=             Delete SSIDs        ${SSID_01}      ${NEW_SSID_NAME_1}
+    should be equal as strings      '1'                 '${SSID_DLT_STATUS}'
+
+    [Teardown]   run keywords               logout user
+    ...                                     quit browser
 
 *** Test Cases ***
 TCCS-11310: Verification of config push complete config update
     [Documentation]             Verification of config push complete config update
-
     [Tags]                      production      tccs_11310
-
     ${POLICY_01}=               Get Random String
     ${SSID_01}=                 Get Random String
 
@@ -55,17 +73,21 @@ TCCS-11310: Verification of config push complete config update
     Set To Dictionary           ${CONFIG_PUSH_OPEN_NW_01}    ssid_name=${SSID_01}
     Log to Console              ${CONFIG_PUSH_OPEN_NW_01}
 
-    ${result}=                  Login User              ${tenant_username}      ${tenant_password}
-    ${POLICY_STATUS}=           Create Network Policy   policy=${POLICY_01}      &{CONFIG_PUSH_OPEN_NW_01}
-    ${DEPLOY_STATUS}=           Deploy Network Policy with Complete Update      ${POLICY_01}          ${ap1.serial}
+    ${LOGIN_STATUS}=                Login User              ${tenant_username}      ${tenant_password}
+    should be equal as integers     ${LOGIN_STATUS}               1
 
-    Wait Until Device Online    ${ap1.serial}  None   30   20
+    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy   policy=${POLICY_01}      &{CONFIG_PUSH_OPEN_NW_01}
+    should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
+
+    ${DEPLOY_STATUS}=               Deploy Network Policy with Complete Update      ${POLICY_01}          ${ap1.serial}
+    should be equal as integers     ${DEPLOY_STATUS}               1
+
+    ${CONNECTED_STATUS}=            Wait Until Device Online                ${ap1.serial}   None   30   20
+    Should Be Equal as Integers     ${CONNECTED_STATUS}          1
 
     ${SPAWN}=               Open Spawn      ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
     ${OUTPUT1}=             Send            ${SPAWN}                show ssid
 
-    should be equal as integers             ${POLICY_STATUS}            1
-    should be equal as integers             ${DEPLOY_STATUS}            1
     Should Contain                          ${OUTPUT1}                  ${SSID_01}
 
     [Teardown]   run keywords       logout user
@@ -74,23 +96,26 @@ TCCS-11310: Verification of config push complete config update
 
 TCCS-11309: Verification of config push delta update
     [Documentation]         Verification of config push delta update
-
     [Tags]                  production      tccs_11309
+    Depends On              TCCS-11310
+    ${LOGIN_STATUS}=                Login User              ${tenant_username}      ${tenant_password}
+    should be equal as integers     ${LOGIN_STATUS}               1
 
-    Depends On              tccs_11310
-    ${result}=              Login User      ${tenant_username}          ${tenant_password}
-    ${NEW_SSID_NAME_1}=     Get Random String
-    Set Global Variable    ${NEW_SSID_NAME_1}
+    ${NEW_SSID_NAME_1}=             Get Random String
+    Set Global Variable             ${NEW_SSID_NAME_1}
 
-    ${EDIT_STATUS}=         Edit Network Policy SSID                    ${POLICY_01}          ${SSID_01}     ${NEW_SSID_NAME_1}
+    ${EDIT_STATUS}=                 Edit Network Policy SSID                    ${POLICY_01}          ${SSID_01}     ${NEW_SSID_NAME_1}
+    should be equal as integers             ${EDIT_STATUS}              1
+
     ${DEPLOY_STATUS}=       Deploy Network Policy with Delta Update     ${POLICY_01}          ${ap1.serial}
-    Wait Until Device Online    ${ap1.serial}
+    should be equal as integers             ${DEPLOY_STATUS}            1
+
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${ap1.serial}
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
 
     ${SPAWN}=               Open Spawn      ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
     ${OUTPUT1}=             Send            ${SPAWN}                show ssid
 
-    should be equal as integers             ${EDIT_STATUS}              1
-    should be equal as integers             ${DEPLOY_STATUS}            1
     Should Contain                          ${OUTPUT1}                  ${NEW_SSID_NAME_1}
 
     [Teardown]   run keywords               logout user
@@ -99,50 +124,57 @@ TCCS-11309: Verification of config push delta update
 
 TCCS-7373: IQ engine upgrade to lastest version
     [Documentation]         Verify IQ engine upgrade to lastest version
-
     [Tags]			        production      tccs_7373
-
     ${SPAWN1}=              Open Spawn      ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
+    Should not be equal as Strings          '${SPAWN1}'        '-1'
+
     ${CLOCK_OUPUT1}=        Send            ${SPAWN1}         show clock
     ${REBOOT_OUPUT1}=       Send            ${SPAWN1}         show reboot schedule
-    ${VERSION_DETAIL1}=     Send            ${SPAWN1}         show version detail
-    ${AP_BUILD_VERSION1}=   Get AP Version              ${SPAWN1}
-
     Should Not Contain      ${REBOOT_OUPUT1}     Next reboot Scheduled
+
+    ${VERSION_DETAIL1}=     Send            ${SPAWN1}         show version detail
+
     Should Contain          ${VERSION_DETAIL1}   Running image:      Current version
     Should Contain          ${VERSION_DETAIL1}   Backup version:     HiveOS 10.0r3
     Should Contain          ${VERSION_DETAIL1}   Load after reboot:  Current version
 
-    ${LOGIN_STATUS}=        Login User      ${tenant_username}      ${tenant_password}
-    ${LATEST_VERSION}=      Upgrade Device To Latest Version            ${ap1.serial}
-    Sleep                   30                          Sleep 30 Seconds
+    ${AP_BUILD_VERSION1}=   Get AP Version              ${SPAWN1}
 
-    Wait Until Device Reboots               ${ap1.serial}
+    ${LOGIN_STATUS}=        Login User      ${tenant_username}      ${tenant_password}
+    should be equal as integers     ${LOGIN_STATUS}               1
+
+    ${LATEST_VERSION}=      Upgrade Device To Latest Version            ${ap1.serial}
+    Should Not be Empty     ${LATEST_VERSION}
+
+    Sleep                   ${ap_reboot_wait}
+
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${ap1.serial}       retry_count=15
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
+
+    ${REBOOT_STATUS}=    Wait Until Device Reboots               ${ap1.serial}
+    Should Be Equal as Integers             ${REBOOT_STATUS}          1
+
     Close Spawn             ${SPAWN1}
 
     ${SPAWN2}=              Open Spawn      ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
-    ${CLOCK_OUPUT2}=        Send            ${SPAWN2}         show clock
-    ${REBOOT_OUPUT2}=       Send            ${SPAWN2}         show reboot schedule
-    ${VERSION_DETAIL2}=     Send            ${SPAWN2}         show version detail
-    ${AP_BUILD_VERSION2}=   Get AP Version              ${SPAWN2}
+    Should not be equal as Strings          '${SPAWN2}'        '-1'
 
+    ${CLOCK_OUPUT2}=        Send            ${SPAWN2}         show clock
+
+    ${REBOOT_OUPUT2}=       Send            ${SPAWN2}         show reboot schedule
     Should Not Contain      ${REBOOT_OUPUT2}     Next reboot Scheduled
+
+    ${VERSION_DETAIL2}=     Send            ${SPAWN2}         show version detail
+
     Should Contain          ${VERSION_DETAIL2}   Running image:      Current version
     Should Contain          ${VERSION_DETAIL2}   Backup version:     HiveOS 10.0r3
     Should Contain          ${VERSION_DETAIL2}   Load after reboot:  Current version
     Should Contain          ${VERSION_DETAIL2}   Uptime:             0 weeks, 0 days, 0 hours
 
+    ${AP_BUILD_VERSION2}=   Get AP Version              ${SPAWN2}
     Should Be Equal As Strings  ${LATEST_VERSION}           ${AP_BUILD_VERSION2}
+
+    Close Spawn        ${SPAWN2}
 
     [Teardown]   run keywords               logout user
     ...             AND                     quit browser
-    ...             AND                     Close Spawn        ${SPAWN2}
-
-Tes7: Cleanup
-    [Tags]			        cleanup         test7	production
-    ${LOGIN_STATUS}=        Login User          ${tenant_username}      ${tenant_password}
-    Delete Device           device_serial=${ap1.serial}
-    Delete Network Policy   ${POLICY_01}
-    Delete SSIDs            ${SSID_01}      ${NEW_SSID_NAME_1}
-    [Teardown]   run keywords               logout user
-    ...                                     quit browser

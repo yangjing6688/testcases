@@ -37,6 +37,7 @@ ${DUT1_CONSOLE_IP}      ${ap1.ip}
 ${DUT1_CONSOLE_PORT}    ${ap1.port}
 ${DUT1_USERNAME}        ${ap1.username}
 ${DUT1_PASSWORD}        ${ap1.password}
+${DUT1_CLI_TYPE}        ${ap1.cli_type}
 ${DUT1_PLATFORM}        ${ap1.platform}
 ${DUT1_MAKE}            ${ap1.make}
 
@@ -46,6 +47,7 @@ ${DUT2_CONSOLE_IP}      ${ap2.ip}
 ${DUT2_CONSOLE_PORT}    ${ap2.port}
 ${DUT2_USERNAME}        ${ap2.username}
 ${DUT2_PASSWORD}        ${ap2.password}
+${DUT2_CLI_TYPE}        ${ap2.cli_type}
 ${DUT2_PLATFORM}        ${ap2.platform}
 ${DUT2_MAKE}            ${ap2.make}
 
@@ -55,6 +57,7 @@ ${DUT3_CONSOLE_IP}      ${ap3.ip}
 ${DUT3_CONSOLE_PORT}    ${ap3.port}
 ${DUT3_USERNAME}        ${ap3.username}
 ${DUT3_PASSWORD}        ${ap3.password}
+${DUT3_CLI_TYPE}        ${ap3.cli_type}
 ${DUT3_PLATFORM}        ${ap3.platform}
 ${DUT3_MAKE}            ${ap3.make}
 
@@ -64,6 +67,7 @@ ${DUT4_CONSOLE_IP}      ${ap4.ip}
 ${DUT4_CONSOLE_PORT}    ${ap4.port}
 ${DUT4_USERNAME}        ${ap4.username}
 ${DUT4_PASSWORD}        ${ap4.password}
+${DUT4_CLI_TYPE}        ${ap4.cli_type}
 ${DUT4_PLATFORM}        ${ap4.platform}
 ${DUT4_MAKE}            ${ap4.make}
 
@@ -167,19 +171,12 @@ Tear Down Test and Close Session
 
     Log Out of XIQ and Quit Browser
 
-Configure CAPWAP
-    [Documentation]     Configures the CAPWAP client
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${platform}
+Configure CAPWAP Device To Connect To Cloud
+    [Documentation]     Configure the CAPWAP client with the necessary configuration on the Device to Connect to Cloud
+    [Arguments]         ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${capwap_url}
 
-    ${spawn}=           Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${platform}
-
-    Send                ${spawn}   capwap client server name ${XIQ_CAPWAP_URL}
-    Send                ${spawn}   capwap client default-server-name ${XIQ_CAPWAP_URL}
-    Send                ${spawn}   capwap client server backup name ${XIQ_CAPWAP_URL}
-    Send                ${spawn}   no capwap client enable
-    Send                ${spawn}   capwap client enable
-    Send                ${spawn}   save config
-    Close Spawn         ${spawn}
+    ${CONFIG_RESULT}=   Configure Device To Connect To Cloud     ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${capwap_url}
+    Should Be Equal as Integers         ${CONFIG_RESULT}         1
 
 Onboard and Configure Test Devices
     [Documentation]     Onboards the test devices
@@ -199,14 +196,14 @@ Onboard and Configure Test Devices
     Confirm Device Serial Present  ${DUT4_SERIAL}
 
     # Configure the devices
-    Configure CAPWAP    ${DUT1_CONSOLE_IP}  ${DUT1_CONSOLE_PORT}  ${DUT1_USERNAME}
-    ...                 ${DUT1_PASSWORD}  ${DUT1_PLATFORM}
-    Configure CAPWAP    ${DUT2_CONSOLE_IP}  ${DUT2_CONSOLE_PORT}  ${DUT2_USERNAME}
-    ...                 ${DUT2_PASSWORD}  ${DUT2_PLATFORM}
-    Configure CAPWAP    ${DUT3_CONSOLE_IP}  ${DUT3_CONSOLE_PORT}  ${DUT3_USERNAME}
-    ...                 ${DUT3_PASSWORD}  ${DUT3_PLATFORM}
-    Configure CAPWAP    ${DUT4_CONSOLE_IP}  ${DUT4_CONSOLE_PORT}  ${DUT4_USERNAME}
-    ...                 ${DUT4_PASSWORD}  ${DUT4_PLATFORM}
+    Configure CAPWAP Device To Connect To Cloud     ${DUT1_CLI_TYPE}  ${DUT1_CONSOLE_IP}  ${DUT1_CONSOLE_PORT}  ${DUT1_USERNAME}
+    ...                                             ${DUT1_PASSWORD}  ${XIQ_CAPWAP_URL}
+    Configure CAPWAP Device To Connect To Cloud     ${DUT2_CLI_TYPE}  ${DUT2_CONSOLE_IP}  ${DUT2_CONSOLE_PORT}  ${DUT2_USERNAME}
+    ...                                             ${DUT2_PASSWORD}  ${XIQ_CAPWAP_URL}
+    Configure CAPWAP Device To Connect To Cloud     ${DUT3_CLI_TYPE}  ${DUT3_CONSOLE_IP}  ${DUT3_CONSOLE_PORT}  ${DUT3_USERNAME}
+    ...                                             ${DUT3_PASSWORD}  ${XIQ_CAPWAP_URL}
+    Configure CAPWAP Device To Connect To Cloud     ${DUT4_CLI_TYPE}  ${DUT4_CONSOLE_IP}  ${DUT4_CONSOLE_PORT}  ${DUT4_USERNAME}
+    ...                                             ${DUT4_PASSWORD}  ${XIQ_CAPWAP_URL}
 
 Wait Until Test Devices Online
     [Documentation]     Waits until all test devices have a connected status

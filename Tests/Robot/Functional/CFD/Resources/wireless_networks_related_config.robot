@@ -23,14 +23,134 @@ ${NW_POLICY_NAME4}          Auto_NW_POLICY_4
 
 
 ################# Private Pre-shared Key #################
-&{WIRELESS_PESRONAL_WPA2CCMP_1}            ssid_name=automation_psk_wpa2_ccmp_1     network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}    auth_profile=&{PERSONAL_AUTH_PROFILE_WPA2CCMP}
-&{WIRELESS_PESRONAL_WPA2CCMP_2}            ssid_name=automation_psk_wpa2_ccmp_2     network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}    auth_profile=&{PERSONAL_AUTH_PROFILE_WPA2CCMP}
+&{WIRELESS_PPSK_WPA2CCMP_1}            ssid_name=automation_ppsk_wpa2_ccmp_1     network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}    auth_profile=&{PPSK_AUTH_PROFILE_CLOUD_BULK}
+&{WIRELESS_PPSK_WPA2CCMP_2}            ssid_name=automation_ppsk_wpa2_ccmp_2     network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}    auth_profile=&{PPSK_AUTH_PROFILE_CLOUD_BULK}
 # Auth profile
-&{PERSONAL_AUTH_PROFILE_WPA2CCMP}           auth_type=PSK   key_encryption=&{PSK_KEY_ENCRYPTION_WPA2CCMP}   cwp_config=&{PSK_CWP_DEFAULT}
-# Key profile
-&{PSK_KEY_ENCRYPTION_WPA2CCMP}              key_management=WPA2-(WPA2 Personal)-PSK    encryption_method=CCMP (AES)   key_type=ASCII Key  key_value=Extreme@123
-# CWP option
-&{PSK_CWP_DEFAULT}                  enable_cwp=Disable
+&{PPSK_AUTH_PROFILE_CLOUD_BULK}       auth_type=PPSK   key_encryption=&{PPSK_KEY_ENCRYPTION_WPA2CCMP}   ppsk_config=&{PPSK_SETTING_DEFAULT}   cwp_config=&{PPSK_CWP_DEFAULT}   user_group_config=&{USER_GROUP_CLOUD_BULK_PROFILE}     user_access_settings_config=None   additional_settings_config=None
+&{PPSK_AUTH_PROFILE_CLOUD_SINGLE}     auth_type=PPSK   key_encryption=&{PPSK_KEY_ENCRYPTION_WPA2CCMP}   ppsk_config=&{PPSK_SETTING_DEFAULT}   cwp_config=&{PPSK_CWP_DEFAULT}   user_group_config=&{USER_GROUP_CLOUD_SIGNLE_NONE_PROFILE}   user_access_settings_config=None   additional_settings_config=None
+&{PPSK_AUTH_PROFILE_CLOUD_SINGLE1}    auth_type=PPSK   key_encryption=&{PPSK_KEY_ENCRYPTION_WPA2CCMP}   ppsk_config=&{PPSK_SETTING_DEFAULT}   cwp_config=&{PPSK_CWP_DEFAULT}   user_group_config=&{USER_GROUP_CLOUD_SIGNLE_NONE_PROFILE}  user_access_settings_config=None   additional_settings_config=None
+&{PPSK_AUTH_PROFILE_LOCAL_BULK}       auth_type=PPSK   key_encryption=&{PPSK_KEY_ENCRYPTION_WPA2CCMP}   ppsk_config=&{PPSK_SETTING_DEFAULT}   cwp_config=&{PPSK_CWP_DEFAULT}   user_group_config=&{USER_GROUP_LOCAL_BULK_PROFILE}     user_access_settings_config=None   additional_settings_config=None
+&{PPSK_AUTH_PROFILE_LOCAL_SINGLE}     auth_type=PPSK   key_encryption=&{PPSK_KEY_ENCRYPTION_WPA2CCMP}   ppsk_config=&{PPSK_SETTING_DEFAULT}   cwp_config=&{PPSK_CWP_DEFAULT}   user_group_config=&{USER_GROUP_LOCAL_SINGLE_NONE_PROFILE}   user_access_settings_config=None   additional_settings_config=None
+&{PPSK_AUTH_PROFILE_CWP_USER_GROUP}   auth_type=PPSK   key_encryption=&{PPSK_KEY_ENCRYPTION_WPA2CCMP}   ppsk_config=&{PPSK_SETTING_DEFAULT}   cwp_config=&{PPSK_CWP_DEFAULT}   user_group_config=&{USER_GROUP_CLOUD_CWP_NONE_PROFILE}      user_access_settings_config=None   additional_settings_config=None
+&{CLIENT_PER_PPSK_PROFILE}            auth_type=PPSK   key_encryption=&{PPSK_KEY_ENCRYPTION_WPA2CCMP}   ppsk_config=&{PPSK_SETTING1}          cwp_config=&{PPSK_CWP_DEFAULT}   user_group_config=&{USER_GROUP_CLOUD_BULK1_WITH_PROFILE}    user_access_settings_config=None   additional_settings_config=None
+
+&{PPSK_AUTH_PROFILE1}                 auth_type=PPSK   key_encryption=&{PPSK_KEY_ENCRYPTION_WPA2CCMP}   ppsk_config=&{PPSK_SETTING_DEFAULT}   cwp_config=&{PPSK_CWP_DEFAULT}   user_group_config=&{USER_GROUP_LOCAL1_NONE_PROFILE}         user_access_settings_config=None   additional_settings_config=None
+
+### Key and encryption method for ppsk network
+&{PPSK_KEY_ENCRYPTION_WPA2CCMP}     key_management=WPA2-(WPA2 Personal)-PSK    encryption_method=CCMP (AES)
+
+#######  PPSK AUTH SETTINGS ##
+&{PPSK_SETTING_DEFAULT}    client_per_ppsk=Disable    mac_binding_num_per_ppsk=Disable   pcg_use=Disable   ppsk_classification=Disable
+&{PPSK_SETTING1}           client_per_ppsk=Enable     num_clients=1   mac_binding_num_per_ppsk=Disable   pcg_use=Disable   ppsk_classification=Disable
+
+### cwp
+&{PPSK_CWP_DEFAULT}   enable_cwp=Disable
+
+### User Group Settings
+${BULK_CLOUD_USER_GROUP}        auto_cloud_ppsk_bulk_user_group
+${SINGLE_CLOUD_USER_GROUP}      auto_cloud_ppsk_single_user_group
+${BULK_LOCAL_USER_GROUP}        auto_local_ppsk_bulk_user_group
+${SINGLE_LOCAL_USER_GROUP}      auto_local_ppsk_single_user_group
+${CLOUD_CWP_USER_GROUP}         auto_cloud_ppsk_cwp_user_group
+${CLIENT_PER_PPSK_GRP}          auto_cloud_ppsk_bulk_user_group
+
+&{USER_GROUP_CLOUD_BULK_PROFILE}      group_name=${BULK_CLOUD_USER_GROUP}     user_group_profile=&{USER_GROUP_PROFILE_CLOUD_BULK}     db_loc=Cloud
+&{USER_GROUP_CLOUD_SIGNLE_NONE_PROFILE}    group_name=${SINGLE_CLOUD_USER_GROUP}   user_group_profile=None     db_loc=Cloud
+&{USER_GROUP_LOCAL_BULK_PROFILE}      group_name=${BULK_LOCAL_USER_GROUP}     user_group_profile=&{USER_GROUP_PROFILE_LOCAL_BULK}
+&{USER_GROUP_LOCAL_SINGLE_NONE_PROFILE}    group_name=${SINGLE_LOCAL_USER_GROUP}   user_group_profile=None     db_loc=Local
+&{USER_GROUP_CLOUD_CWP_NONE_PROFILE}       group_name=${CLOUD_CWP_USER_GROUP}      user_group_profile=None     db_loc=Cloud
+&{USER_GROUP_CLOUD_BULK1_WITH_PROFILE}     group_name=${CLIENT_PER_PPSK_GRP}       user_group_profile=&{USER_GROUP_PROFILE_CLOUD_BULK1}
+&{USER_GROUP_LOCAL1_NONE_PROFILE}         group_name=${BULK_LOCAL_USER_GROUP}       user_group_profile=None     db_loc=Local
+
+
+&{USER_GROUP_CLOUD_BULK_WITH_PROFILE}      group_name=${BULK_CLOUD_USER_GROUP}     user_group_profile=&{USER_GROUP_PROFILE_CLOUD_BULK}
+&{USER_GROUP_CLOUD_SIGNLE1_WITH_PROFILE}    group_name=${SINGLE_LOCAL_USER_GROUP}   user_group_profile=&{USER_GROUP_PROFILE_CLOUD_SINGLE1}
+#&{USER_GROUP_LOCAL_BULK_WITH_PROFILE}      group_name=${BULK_LOCAL_USER_GROUP}     user_group_profile=&{USER_GROUP_PROFILE_LOCAL_BULK}
+#&{USER_GROUP_LOCAL_SINGLE_WITH_PROFILE}    group_name=${SINGLE_LOCAL_USER_GROUP}   user_group_profile=&{USER_GROUP_PROFILE_LOCAL_SINGLE}
+#&{USER_GROUP_CLOUD_CWP_WITH_PROFILE}       group_name=${CLOUD_CWP_USER_GROUP}      user_group_profile=&{USER_GROUP_PROFILE_CWP}
+
+## User Access Settings Config
+&{USER_ACCESS_SETTING_CONFIG1}
+
+### Additional Setting Config
+&{ADDITIONAL_SETTING_CONFIG}
+
+####################### USER GROUP PROFILES ##################################################
+# DB Location and Password type:
+&{DB_LOC_CLOUD_PPSK_DEFAULT}      pass_db_loc=CLOUD    pass_type=ppsk      cwp_register=Disable      pcg_use=Disable
+&{DB_LOC_CLOUD_PPSK_1}            pass_db_loc=CLOUD    pass_type=ppsk      cwp_register=Enable       pcg_use=Disable
+&{DB_LOC_LOCAL_PPSK_DEFAULT}      pass_db_loc=LOCAL    pass_type=ppsk      client_per_ppsk=Disable   pcg_use=Disable  ppsk_classification=Disable
+
+
+&{USER_GROUP_PROFILE_CLOUD_BULK}      user_group_config=&{DB_LOC_CLOUD_PPSK_DEFAULT}        users_config=&{bulk_users_info1}
+...                                   passwd_settings=None                                  expiration_settings=None               delivery_settings=None
+
+&{USER_GROUP_PROFILE_CLOUD_SINGLE}    user_group_config=&{DB_LOC_CLOUD_PPSK_DEFAULT}        users_config=&{single_user1_info}
+...                                   passwd_settings=None                                  expiration_settings=None               delivery_settings=None
+
+&{USER_GROUP_PROFILE_LOCAL_BULK}      user_group_config=&{DB_LOC_LOCAL_PPSK_DEFAULT}        users_config=&{bulk_users_info2}
+...                                   passwd_settings=None                                  expiration_settings=None               delivery_settings=None
+
+&{USER_GROUP_PROFILE_LOCAL_SINGLE}    user_group_config=&{DB_LOC_LOCAL_PPSK_DEFAULT}        users_config=&{single_user2_info}
+...                                   passwd_settings=None                                  expiration_settings=None               delivery_settings=None
+
+&{USER_GROUP_PROFILE_CWP}             user_group_config=&{DB_LOC_CLOUD_PPSK_1}              users_config=None
+...                                   passwd_settings=None                                  expiration_settings=None               delivery_settings=None
+
+&{USER_GROUP_PROFILE_CLOUD_SINGLE1}    user_group_config=&{DB_LOC_CLOUD_PPSK_DEFAULT}        users_config=&{single_user3_info}
+...                                   passwd_settings=None                                  expiration_settings=None               delivery_settings=None
+
+&{USER_GROUP_PROFILE_CLOUD_BULK1}     user_group_config=&{DB_LOC_CLOUD_PPSK_DEFAULT}        users_config=&{bulk_users_info3}
+...                                   passwd_settings=None
+
+
+&{USER_GROUP_PROFILE_LOCAL1}          user_group_config=&{DB_LOC_LOCAL_PPSK_DEFAULT}        users_config=None
+...                                   passwd_settings=None                                  expiration_settings=&{EXPIRATION_SETTING2}
+
+&{USER_GROUP_PROFILE_CLOUD1}          user_group_config=&{DB_LOC_CLOUD_PPSK_DEFAULT}        users_config=None
+...                                   passwd_settings=None                                  expiration_settings=&{EXPIRATION_SETTING1}
+
+## User Profiles
+${MAIL_ID1}             wcao@extremenetworks.com
+&{bulk_users_info1}     user-type=bulk     username_prefix=user_     no_of_accounts=2       email_user_account_to=${MAIL_ID1}
+&{bulk_users_info2}     user-type=bulk     username_prefix=user2_    no_of_accounts=2       email_user_account_to=${MAIL_ID1}
+&{bulk_users_info3}     user-type=bulk     username_prefix=user100_  no_of_accounts=1       email_user_account_to=${MAIL_ID1}
+
+&{single_user1_info}    user-type=single   name=Symbol        organization=ExtremeNetworks            purpose_of_visit=guest
+...                     email_address=${MAIL_ID1}      phone_number=+91 India-8971766359       user_name_type=Name
+...                     password=extremextreme                pass-generate=Enable                    description=single user username password verification
+...                     deliver_pass=${MAIL_ID1}
+
+
+&{single_user3_info}    user-type=single   name=Jims          organization=ExtremeNetworksA           purpose_of_visit=guest
+...                     email_address=${MAIL_ID1}      phone_number=+91 India-8971766459       user_name_type=Name
+...                     password=extremexxter                 pass-generate=Enable                    description=single user username password verification
+...                     deliver_pass=${MAIL_ID1}
+
+&{single_user2_info}    user-type=single                     name=Symbol1                             organization=ExtremeNetworks    purpose_of_visit=guest
+...                     email_address=${MAIL_ID1}     phone_number=+504 Honduras-8971766359    user_name_type=Phone Number
+...                     password=extremextreme              pass-generate=Disable                     description=single user username password verification
+...                     deliver_pass=${MAIL_ID1}
+
+
+## Expiration Settings
+&{EXPIRATION_SETTING1}     db_loc=Cloud                account_expiration=Valid For Time Period   in=24   in_period=hours   after=ID Creation   renew_user_cred=Enable
+...                        delete_cred_after=Enable    delete_cred_after_time=24  after_period=Hour   action_at_expiration=Show Expiration Message
+
+
+&{EXPIRATION_SETTING2}     db_loc=Local     account_expiration=Valid During Dates     action_at_expiration=Show Expiration Message
+
+
+#
+&{DB_LOC_CLOUD_PPSK3}        pass_db_loc=WOLKE     pass_type=ppsk      cwp_register=Disable      pcg_use=Disable
+
+&{USER_GROUP_PROFILE_CLOUD2}          user_group_config=&{DB_LOC_CLOUD_PPSK3}        users_config=None
+...                                   passwd_settings=None        expiration_settings=&{EXPIRATION_SETTING4}
+
+&{EXPIRATION_SETTING4}     db_loc=Cloud                account_expiration=Gültig für den Zeitraum   in=24   in_period=Std.   after=ID-Erstellung   renew_user_cred=Enable
+...                        delete_cred_after=Enable    delete_cred_after_time=24  after_period=Protokoll   action_at_expiration=Ablaufmeldung anzeigen
+
+
 
 ################# Enterprise WPA/WPA2/WPA3 #################
 &{WIRELESS_ENTERPRISE_WPA2CCMP_EXT_RADIUS}    ssid_name=auto_8021x_wpa2ccmp_ext_radius          network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}      auth_profile=&{ENTERPRISE_AUTH_PROFILE_WPA2CCMP_EXT_RADIUS}

@@ -32,12 +32,11 @@ ${APP_POLICY_NAME_SW_01}            app_policy_02
 ${LOCATION}                         auto_location_01, Santa Clara, building_02, floor_04
 
 *** Settings ***
-Library     common/Cli.py
+Library     extauto/common/Cli.py
 
 Library     xiq/flows/common/Login.py
 Library     xiq/flows/common/Navigator.py
 Library     xiq/flows/manage/Devices.py
-Library     extauto/app/common/TestFlow.py
 
 Library     xiq/flows/configure/AutoProvisioning.py
 Library     xiq/flows/configure/NetworkPolicy.py
@@ -59,43 +58,50 @@ Suite Teardown    Clean-up          ${ap1.serial}       ${aerohive_sw1.serial}
 *** Keywords ***
 Cleanup-Delete AP
     [Arguments]                             ${SERIAL1}                  ${SERIAL2}
-    Login User                              ${tenant_username}          ${tenant_password}
-    Delete All Auto Provision Policies
+    ${LOGIN_STATUS}=                    Login User      ${tenant_username}      ${tenant_password}      check_warning_msg=True
+    should be equal as integers         ${LOGIN_STATUS}               1
+
+    ${DLT_ALL_AUTOPROV_POLICIES}=       Delete All Auto Provision Policies
+    should be equal as integers         ${DLT_ALL_AUTOPROV_POLICIES}               1
 
     Navigate To Devices
     Refresh Devices Page
-    Delete Device                           device_serial=${SERIAL1}
-    Delete Device                           device_serial=${SERIAL2}
-    Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}
-    Delete SSIDs                            ${SSID_NAME_01}             ${SSID_NAME_02}
+
+    ${DELETE_DEVICE_STATUS1}=       Delete Device                  device_serial=${SERIAL1}
+    should be equal as integers     ${DELETE_DEVICE_STATUS1}    1
+
+    ${DELETE_DEVICE_STATUS2}=       Delete Device                  device_serial=${SERIAL2}
+    should be equal as integers     ${DELETE_DEVICE_STATUS2}    1
+
+    ${DLT_NW_POLICIES}=             Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}
+    should be equal as integers     ${DLT_NW_POLICIES}          1
+
+    ${DELETE_SSIDS}=                Delete SSIDs                            ${SSID_NAME_01}             ${SSID_NAME_02}
+    should be equal as integers     ${DELETE_SSIDS}             1
 
 Clean-up
     [Arguments]                             ${SERIAL1}                  ${SERIAL2}
 
-    Delete All Auto Provision Policies
     Navigate To Devices
-    Delete Device                           device_serial=${SERIAL1}
-    Delete Device                           device_serial=${SERIAL2}
-    Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}
-    Delete SSIDs                            ${SSID_NAME_01}             ${SSID_NAME_02}
+    Refresh Devices Page
+
+    ${DELETE_DEVICE_STATUS1}=       Delete Device       device_serial=${SERIAL1}
+    should be equal as integers     ${DELETE_DEVICE_STATUS1}    1
+
+    ${DELETE_DEVICE_STATUS2}=       Delete Device       device_serial=${SERIAL2}
+    should be equal as integers     ${DELETE_DEVICE_STATUS2}    1
+
+    ${DLT_ALL_AUTOPROV_POLICIES}=       Delete All Auto Provision Policies
+    should be equal as integers         ${DLT_ALL_AUTOPROV_POLICIES}               1
+
+    ${DLT_NW_POLICIES}=             Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}
+    should be equal as integers     ${DLT_NW_POLICIES}          1
+
+    ${DELETE_SSIDS}=                Delete SSIDs                            ${SSID_NAME_01}             ${SSID_NAME_02}
+    should be equal as integers     ${DELETE_SSIDS}             1
 
     [Teardown]   run keywords               logout user
     ...                                     quit browser
-
-Configure XIQ on Fastpath Switch
-    [Arguments]         ${SPAWN}            ${sw_capwap_url}
-    ${OUTPUT0}=         Send                ${SPAWN}         Hivemanager address ${sw_capwap_url}
-    ${OUTPUT0}=         Send                ${SPAWN}         Application stop hiveagent
-    ${OUTPUT0}=         Send                ${SPAWN}         Application start hiveagent
-
-
-Configure XIQ on Aerohive Switch
-    [Arguments]         ${SPAWN}            ${capwap_url}
-    ${OUTPUT0}=         Send                ${SPAWN}            capwap client server name ${capwap_url}
-    ${OUTPUT0}=         Send                ${SPAWN}            capwap client default-server-name ${capwap_url}
-    ${OUTPUT0}=         Send                ${SPAWN}            no capwap client enable
-    ${OUTPUT0}=         Send                ${SPAWN}            capwap client enable
-    ${OUTPUT0}=         Send                ${SPAWN}            save config
 
 *** Test Cases ***
 TCCS-7632: Configure AP Auto Provision Profile
@@ -103,56 +109,74 @@ TCCS-7632: Configure AP Auto Provision Profile
 
     [Tags]                  production      tccs_7632
 
-    ${POLICY_STATUS}=       Create Open Auth Express Network Policy     ${POLICY_NAME_01}      ${SSID_NAME_01}
+    ${POLICY_STATUS}=           Create Open Auth Express Network Policy     ${POLICY_NAME_01}      ${SSID_NAME_01}
+    should be equal as integers             ${POLICY_STATUS}                1
 
-    Auto Provision Basic Settings                   ${APP_POLICY_NAME_AP_01}        ${ap1.country}          &{APP_AP_01}
+    ${APP_BASIC_STGS_STATUS}=   Auto Provision Basic Settings                   ${APP_POLICY_NAME_AP_01}        ${ap1.country}          &{APP_AP_01}
+    should be equal as integers             ${APP_BASIC_STGS_STATUS}        1
+
     Auto Provision Advanced Settings                &{AP_ADVANCED_SETTINGS_04}
+
     Auto Provision Device Credential                &{DEVICE_CREDENTIAL_01}
+
     Auto Provision Capwap Configurations            &{CAPWAP_CONFIGURATION_01}
+
     Save and Enable Auto Provision Policy           ${APP_POLICY_NAME_AP_01}
 
     ${ONBOARD_RESULT}=      Onboard Device          ${ap1.serial}           ${ap1.make}       location=${LOCATION}      device_os=${ap1.cli_type}
+    Should Be Equal As Integers                     ${ONBOARD_RESULT}          1
 
-    ${AP_SPAWN}=        Open Spawn                  ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}      connetion_method=${ap1.connetion_method}
-    ${OUTPUT0}=         Send Commands               ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, no capwap client enable, capwap client enable, save config
+    Configure Device To Connect To Cloud             ${ap1.cli_type}    ${ap1.ip}     ${ap1.port}    ${ap1.username}       ${ap1.password}    ${capwap_url}
 
     Log to Console      Waiting until the AP is online
-    wait_until_device_online        ${ap1.serial}       retry_count=15
+
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${ap1.serial}   retry_count=15
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
 
     ${verify_result}=   Verify Auto Provision Policy Update     ${ap1.serial}     ${ap1.country}     &{APP_AP_01}
     Should Be Equal As Integers                     ${verify_result}        1
+
+    Sleep       ${max_config_push_time}
 
 TCCS-7571: Configure Switch Auto Provision Profile
     [Documentation]         Configure Switch  Autoporvision Profile
 
     [Tags]                  production      tccs_7571
 
-    Depends On              TCCS-7632
+    ${POLICY_STATUS}=           Create Open Auth Express Network Policy     ${POLICY_NAME_02}      ${SSID_NAME_02}
+    should be equal as integers             ${POLICY_STATUS}                1
 
-    ${POLICY_STATUS}=       Create Open Auth Express Network Policy         ${POLICY_NAME_02}      ${SSID_NAME_02}
-
-    Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-fastpath'               Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR22_SR23_01}
-    Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-switch'                 Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR20_SR21_01}
+    IF  '${aerohive_sw1.cli_type}'=='AH-FASTPATH'
+        ${APP_BASIC_STGS_STATUS}=     Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR22_SR23_01}
+        should be equal as integers             ${APP_BASIC_STGS_STATUS}        1
+    ELSE IF     '${aerohive_sw1.cli_type}'=='AH-AP'
+        ${APP_BASIC_STGS_STATUS}=   Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR20_SR21_01}
+        should be equal as integers             ${APP_BASIC_STGS_STATUS}        1
+    END
 
     Auto Provision Advanced Settings                &{SW_ADVANCED_SETTINGS_03}
+
     Auto Provision Device Credential                &{DEVICE_CREDENTIAL_01}
+
     Auto Provision Capwap Configurations            &{CAPWAP_CONFIGURATION_01}
+
     Save and Enable Auto Provision Policy           ${APP_POLICY_NAME_SW_01}
 
     ${ONBOARD_RESULT}=      Onboard Device          ${aerohive_sw1.serial}           ${aerohive_sw1.make}       location=${LOCATION}
-
     Should Be Equal As Integers                     ${ONBOARD_RESULT}          1
 
-
-    ${SW_SPAWN}=        Open Spawn                  ${aerohive_sw1.ip}   ${aerohive_sw1.port}      ${aerohive_sw1.username}       ${aerohive_sw1.password}        ${aerohive_sw1.cli_type}   connection_method=${aerohive_sw1.connection_method}
-
-    Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-fastpath'   Configure XIQ on Fastpath Switch        ${SW_SPAWN}     ${sw_capwap_url}
-    Run Keyword If     '${aerohive_sw1.platform}'=='aerohive-switch'     Configure XIQ on Aerohive Switch        ${SW_SPAWN}     ${capwap_url}
+    Configure Device To Connect To Cloud             ${aerohive_sw1.cli_type}    ${aerohive_sw1.ip}    ${aerohive_sw1.port}   ${aerohive_sw1.username}       ${aerohive_sw1.password}    ${sw_capwap_url}
 
     Log to Console      Waiting until the switch is online
     Sleep               ${config_push_wait}
-    wait_until_device_online        ${aerohive_sw1.serial}       retry_count=15
+
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${aerohive_sw1.serial}   retry_count=15
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
 
     ${verify_result}=   Verify Auto Provision Policy Update     serial=${aerohive_sw1.serial}       country_code=NA    &{SW_SR22_SR23_01}
     Should Be Equal As Integers                     ${verify_result}        1
 
+    ${update_result}=   Wait Until device update done   device_serial=${aerohive_sw1.serial}
+    Should Be Equal As Integers                     ${update_result}        1
+
+    Sleep       ${max_config_push_time}
