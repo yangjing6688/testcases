@@ -177,7 +177,7 @@ aerohive_sw1:
   make:                     "Extreme - Aerohive"
   model:                    "SR2348P"
   device_template:          "SR_2348P-default-template"
-  cli_type:
+  cli_type:                 "AH-XR"
   network_policy:
   username:                 "admin"
   password:                 "Aerohive123"
