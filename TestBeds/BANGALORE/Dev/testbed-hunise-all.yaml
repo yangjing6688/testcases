@@ -79,7 +79,7 @@ ap4:
 
 
 ap5:
-  name:                     AP302W
+  name:                     AP302W_DUT1
   connection_method:        "telnet"
   ip:                       10.234.221.5
   port:                     7025
@@ -99,7 +99,7 @@ ap5:
 
 
 ap6:
-  name:                     AP302W
+  name:                     AP302W_DUT2
   connection_method:        "telnet"
   ip:                       10.234.221.5
   port:                     7024
@@ -119,7 +119,7 @@ ap6:
 
 
 ap7:
-  name:                     AP302W
+  name:                     AP302W_DUT3
   connection_method:        "telnet"
   ip:                       10.234.221.5
   port:                     7023
