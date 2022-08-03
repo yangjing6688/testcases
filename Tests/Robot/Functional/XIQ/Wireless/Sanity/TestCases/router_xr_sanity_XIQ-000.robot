@@ -69,40 +69,49 @@ Cleanup-Delete Router
     ${DLT_NW_POLICY}=               Delete Network Policy                  ${NW_POLICY_NAME}
     should be equal as integers     ${DLT_NW_POLICY}          1
 
-    ${DELETE_SSID}=                 Delete SSID                            ${SSID_NAME}
+    ${DELETE_SSID}=                 Delete SSIDs                            ${SSID_NAME}
     should be equal as integers     ${DELETE_SSID}             1
 
-    Delete Router Template  default_network_policy  ${router1.device_template}
+    ${DELETE_ROUTER_TEMPLATE}=      Delete Router Template  default_network_policy  ${router1.device_template}
+    Should be equal as strings     '${DELETE_ROUTER_TEMPLATE}'             'True'
 
     ${DELETE_SUBNW_SPACE}=          Delete Sub Network Profile  ${SUB_NETWORK_NAME}
     should be equal as integers     ${DELETE_SUBNW_SPACE}             1
 
     ${DELETE_PORT_TYPE}=            Delete Port Type Profile    ${PORT_TYPE_NAME}
-    ${DELETE_VLAN_PROFILE}=         Delete Vlan Profile   ${VLAN_NAME}
+    should be equal as integers     ${DELETE_PORT_TYPE}             1
 
-   [Teardown]   run keywords       logout user
-    ...                             quit browser
+    ${DELETE_VLAN_PROFILE}=         Delete Vlan Profile   ${VLAN_NAME}
+    should be equal as integers     ${DELETE_VLAN_PROFILE}             1
 
 Test Suite Clean Up
     [Documentation]             delete created network policies, SSID, Device etc
 
     [Tags]                      production      cleanup
-    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
-    should be equal as integers             ${LOGIN_STATUS}               1
+
+    Navigate To Devices
+    Refresh Devices Page
 
     ${DELETE_DEVICE}=               Delete Device                  device_serial=${router1.serial}
     should be equal as integers     ${DELETE_DEVICE}    1
 
     ${DLT_NW_POLICY}=               Delete Network Policy                  ${NW_POLICY_NAME}
-    #should be equal as integers     ${DLT_NW_POLICY}          1
+    should be equal as integers     ${DLT_NW_POLICY}          1
 
-    ${DELETE_SSID}=                 Delete SSID                            ${SSID_NAME}
-    #should be equal as integers     ${DELETE_SSID}             1
+    ${DELETE_SSID}=                 Delete SSIDs                            ${SSID_NAME}
+    should be equal as integers     ${DELETE_SSID}             1
 
-    Delete Router Template  default_network_policy  ${router1.device_template}
-    Delete Sub Network Profile  ${SUB_NETWORK_NAME}
-    Delete Port Type Profile    ${PORT_TYPE_NAME}
-    Delete Vlan Profile   ${VLAN_NAME}
+    ${DELETE_ROUTER_TEMPLATE}=      Delete Router Template  default_network_policy  ${router1.device_template}
+    Should be equal as strings     '${DELETE_ROUTER_TEMPLATE}'             'True'
+
+    ${DELETE_SUBNW_SPACE}=          Delete Sub Network Profile  ${SUB_NETWORK_NAME}
+    should be equal as integers     ${DELETE_SUBNW_SPACE}             1
+
+    ${DELETE_PORT_TYPE}=            Delete Port Type Profile    ${PORT_TYPE_NAME}
+    should be equal as integers     ${DELETE_PORT_TYPE}             1
+
+    ${DELETE_VLAN_PROFILE}=         Delete Vlan Profile   ${VLAN_NAME}
+    should be equal as integers     ${DELETE_VLAN_PROFILE}             1
 
     [Teardown]   run keywords       logout user
     ...                             quit browser
@@ -113,11 +122,8 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
 
     [Tags]                  production      tccs_7766       tccs_7766_step1
 
-    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
-    should be equal as integers             ${LOGIN_STATUS}               1
-
-    ${DELETE_DEVICE}=               Delete Device                  device_serial=${router1.serial}
-    should be equal as integers     ${DELETE_DEVICE}    1
+    Navigate To Devices
+    Refresh Devices Page
 
     ${ONBOARD_RESULT}=      Onboard Device          ${router1.serial}         ${router1.make}       location=${LOCATION}
     Should Be Equal As Integers                     ${ONBOARD_RESULT}           1
@@ -147,17 +153,17 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     ${CAPWAP_STATUS}=       Send            ${ROUTER_SPAWN}         ${cmd_capwap_client_state}
     Should Contain                          ${CAPWAP_STATUS}        ${output_capwap_status}
 
-    [Teardown]   run keywords       logout user
-    ...          AND                quit browser
-    ...          AND                Close Spawn        ${ROUTER_SPAWN}
+    [Teardown]
+
+    Close Spawn     ${ROUTER_SPAWN}
 
 TCCS-7766_Step2: Onboard Aerohive XR Router Using Advance Onboarding Method
     [Documentation]         Onboard Aerohive XR Router Using Advance Onboarding Method
 
     [Tags]                  production      tccs_7766       tccs_7766_step2
 
-    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
-    should be equal as integers             ${LOGIN_STATUS}               1
+    Navigate To Devices
+    Refresh Devices Page
 
     ${DELETE_DEVICE}=               Delete Device                  device_serial=${router1.serial}
     should be equal as integers     ${DELETE_DEVICE}    1
@@ -187,9 +193,9 @@ TCCS-7766_Step2: Onboard Aerohive XR Router Using Advance Onboarding Method
     ${CAPWAP_STATUS}=       Send            ${ROUTER_SPAWN}         ${cmd_capwap_client_state}
     Should Contain                          ${CAPWAP_STATUS}        ${output_capwap_status}
 
-    [Teardown]   run keywords       logout user
-    ...          AND                quit browser
-    ...          AND                Close Spawn        ${ROUTER_SPAWN}
+    [Teardown]
+
+    Close Spawn     ${ROUTER_SPAWN}
 
 TCCS-12330: Create Router XR Template
     [Documentation]         Create Router XR Template
@@ -198,21 +204,20 @@ TCCS-12330: Create Router XR Template
 
     Depends On              TCCS-7766_Step1
 
-    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
-    should be equal as integers             ${LOGIN_STATUS}               1
-
     ${CREATE_NW_POLICY}=    Create Network Policy   ${NW_POLICY_NAME}       &{XR_ROUTER_NW_01}
     Should Be Equal As Strings                      '${CREATE_NW_POLICY}'   '1'
 
     ${CREATE_AP_TEMPLATE}=      Add Router Template     ${NW_POLICY_NAME}     &{ROUTER_TEMPLATE_CONFIG1}
-    Should Be Equal As Strings   '${CREATE_AP_TEMPLATE}'   '1'
-
+    
     ${DEVICE_UPDATE_CONFIG}=    Update Network Policy To Router    policy_name=${NW_POLICY_NAME}    router_serial=${router1.serial}
     Should Be Equal As Strings                      '${DEVICE_UPDATE_CONFIG}'       '1'
 
     Log to Console          Sleep for ${config_push_wait}
     sleep                   ${config_push_wait}
 
+    ${DEVICE_UPDATE_STATUS}=    Wait Until Device Update Done   device_serial=${router1.serial}
+    Should Be Equal As Strings                      '${DEVICE_UPDATE_STATUS}'       '1'
+      
     ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}     connection_method=console
     Should Not Be Equal As Strings      '${ROUTER_SPAWN}'        '-1'
 
@@ -224,9 +229,9 @@ TCCS-12330: Create Router XR Template
     Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  mode bridge-802.1q
     Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  allowed-vlan ${EXPECTED_TRUNK_VLANS}
 
-    [Teardown]   run keywords       logout user
-    ...          AND                quit browser
-    ...          AND                Close Spawn        ${ROUTER_SPAWN}
+    [Teardown]
+
+    Close Spawn     ${ROUTER_SPAWN}
 
 TCCS-7351: Upgrade Latest IQ Engine Router Firmware
     [Documentation]     Upgrate latest IQ Engine Router Firmware
@@ -234,9 +239,6 @@ TCCS-7351: Upgrade Latest IQ Engine Router Firmware
     [Tags]              production      tccs_7351
 
     Depends On              TCCS-7766_Step1
-
-    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
-    should be equal as integers             ${LOGIN_STATUS}               1
 
     ${LATEST_VERSION}=      Upgrade Device To Latest Version         ${router1.serial}
 
@@ -255,7 +257,6 @@ TCCS-7351: Upgrade Latest IQ Engine Router Firmware
     Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  mode bridge-802.1q
     Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  allowed-vlan ${EXPECTED_TRUNK_VLANS}
 
-    [Teardown]   run keywords       logout user
-    ...          AND                quit browser
-    ...          AND                Close Spawn        ${ROUTER_SPAWN}
+    [Teardown]
 
+    Close Spawn     ${ROUTER_SPAWN}

@@ -95,7 +95,7 @@ TCCS-7651_Step4: Quick Onboard Simulated Device
     ${SIM_SERIAL}=                  Onboard Simulated Device                AP460C             location=${LOCATION}
     Should not be Empty             ${SIM_SERIAL}
 
-    ${DELETE_AP}=                   Delete APs              ${SIM_SERIAL}
+    ${DELETE_AP}=                   Delete Devices              ${SIM_SERIAL}
     should be equal as integers     ${DELETE_AP}               1
 
     [Teardown]  Run Keywords    Logout User   Quit Browser

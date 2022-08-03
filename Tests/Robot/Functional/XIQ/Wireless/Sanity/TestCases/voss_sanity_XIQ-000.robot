@@ -223,6 +223,13 @@ Log Into XIQ and Set Up Test
     # Create the policy for the test
     Create Open Policy For Switch           ${POLICY_NAME}  ${SSID_NAME}  ${DUT_MODEL}  ${TEMPLATE_NAME}
 
+    # Reset IQAgent version to supported version
+    ${SW_SPAWN}=                        Open Spawn          ${netelem1.ip}       ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
+
+    ${DOWNGRADE_IQAGENT}=               Downgrade iqagent   ${netelem1.ip}       ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
+
+    Close Spawn     ${SW_SPAWN}
+
 Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
 
@@ -328,11 +335,8 @@ Configure iqagent for VOSS Switch
 
     ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${DUT_cli_type}  ${connection_method}
 
-    ${reset_iq_agent}=      Send Commands  ${spawn}  enable, configure terminal, show application iqagent, application, no iqagent enable, software iqagent reinstall , iqagent enable, show application iqagent , end
-    Log To Console          Command results are ${reset_iq_agent}
-
     ${conf_results}=        Send Commands  ${spawn}  enable, configure terminal, application, no iqagent enable, iqagent server ${iqagent}, iqagent enable, show application iqagent
-        Log To Console          Command results are ${conf_results}
+    Log To Console          Command results are ${conf_results}
 
     Should Contain          ${conf_results}  ${iqagent}
     sleep                   ${client_connect_wait}
