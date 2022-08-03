@@ -1,13 +1,9 @@
 netelem1:
   name:                  VSP-4900-48P
   serial:                1935F-10077
-  ip:                    10.234.137.231
-  port:                  7021
-  connection_method:     console
-  # Left the IP in just in case we need it in the future
-  #  ip:                    10.234.137.105
-  #  port:                  "22"
-  #  connection_method:     "ssh"
+  ip:                    10.234.178.62
+  port:                  "22"
+  connection_method:     "ssh"
   profile:               VOSS_v2_Profile
   mac:                   489BD59EB400
   platform:              voss
@@ -17,8 +13,8 @@ netelem1:
   cli_type:              "VOSS"
   default_template:      VSP-4900-48P-default-template
   ccg:                   Model_VSP_SWITCH
-  console_ip:            10.234.137.231
-  console_port:          7021
+  console_ip:            10.234.178.230
+  console_port:          7007
   username:              rwa
   password:              rwa
   test_port:             1/3
