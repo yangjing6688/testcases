@@ -6,7 +6,7 @@ netelem1:
   mac:                      000496A08ABE
   username:                 test
   password:                 test1234
-  ip:                       10.234.105.57
+  ip:                       10.234.105.83
   port:                     22
   connection_method:        ssh
   console_ip:               10.234.105.230

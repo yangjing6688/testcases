@@ -28,12 +28,13 @@ ${IQAGENT}              ${xiq.sw_connection_host}
 
 ${DUT_SERIAL}           ${aerohive_sw1.serial}
 ${DUT_MAC}              ${aerohive_sw1.mac}
-${DUT_CONSOLE_IP}       ${aerohive_sw1.ip}
-${DUT_CONSOLE_PORT}     ${aerohive_sw1.port}
+${DUT_IP}               ${aerohive_sw1.ip}
+${DUT_PORT}             ${aerohive_sw1.port}
 ${DUT_USERNAME}         ${aerohive_sw1.username}
 ${DUT_PASSWORD}         ${aerohive_sw1.password}
 ${DUT_PLATFORM}         ${aerohive_sw1.platform}
 ${DUT_MAKE}             ${aerohive_sw1.make}
+${DUT_CLI_TYPE}         ${aerohive_sw1.cli_type}
 ${DUT_TEST_TEMPLATE}    ${aerohive_sw1.device_template}
 ${DUT_TEST_PORT}        ${aerohive_sw1.test_port}
 
@@ -86,13 +87,9 @@ Test 3: Confirm Port Configuration Was Reverted
 Log In and Set Up Test
     [Documentation]     Logs into XIQ and configures pre-requisites for the test
 
-    Log Into XIQ and Confirm Success  ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
-
+    Log Into XIQ and Confirm Success            ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
     Change Device Password and Confirm Success  ${DEFAULT_DEVICE_PWD}
-
-    Configure iqagent for Aerohive Switch  ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}
-    ...                                    ${DUT_PASSWORD}  ${IQAGENT}
-
+    Configure Device To Connect To Cloud        ${DUT_CLI_TYPE}  ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${IQAGENT}
     Create Open Express Policy With Switch Template and Confirm Success  ${POLICY_NAME}  ${SSID_NAME}  ${DUT_TEST_TEMPLATE}
 
     Onboard New Test Device       ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}
@@ -144,15 +141,3 @@ Onboard New Test Device
     # Onboard the device and confirm it was onboarded successfully
     Onboard Device  ${serial}  ${make}  location=${location}
     Confirm Device Serial Present  ${serial}
-
-Configure iqagent for Aerohive Switch
-    [Documentation]     Configures the iqagent for the Aerohive switch
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${iqagent}
-
-    ${spawn}=  Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  aerohive-switch
-
-    ${conf_results}=  Send Commands  ${spawn}
-    ...  enable, no hivemanager address, hivemanager address ${iqagent}, application stop hiveagent, application start hiveagent, exit
-    Log To Console    Command results are ${conf_results}
-
-    [Teardown]  Close Spawn  ${spawn}

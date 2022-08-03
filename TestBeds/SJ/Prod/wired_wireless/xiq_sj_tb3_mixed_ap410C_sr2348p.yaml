@@ -38,9 +38,6 @@ aerohive_sw1:
   serial:             '23481812230026'
   cli_type:           "AH-FASTPATH"
   mac:                B87CF2026E1C
-  ip:                 10.16.168.37
-  port:               4001
-  connection_method:  "console"
   network_policy:
   username:           admin
   password:           Aerohive123

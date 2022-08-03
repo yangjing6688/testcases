@@ -6,11 +6,11 @@ netelem1:
   mac:                      000496B3FC9D
   username:                 test
   password:                 test1234
-  ip:                       10.234.135.120
+  ip:                       10.234.178.55
   port:                     22
   connection_method:        ssh
-  console_ip:               10.234.135.150
-  console_port:             7007
+  console_ip:               10.234.178.230
+  console_port:             7003
   network_policy:           Test_np
   device_template:          X440G2-default-template
   cli_type:                 "EXOS"
