@@ -637,35 +637,3 @@ class XIQ1429Tests:
             self.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(policy_name)
             self.xiq.xflowsconfigureCommonObjects.delete_switch_template(template_name)
             self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
-
-
-    @mark.development
-    @mark.xim_tcxm_19696
-    @mark.p2
-    @mark.testbed_1_node
-    def test_create_voip_port_type_at_device360_level(self):
-        self.executionHelper.testSkipCheck()
-
-        dut = self.dut
-        exos_port = str(self.inc_port())
-        port_type_name = self.suite_udk.generate_port_type_name()
-
-        self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
-
-        try:
-
-            self.suite_udk.go_to_device_360_port_config(dut)
-            assert self.xiq.xflowsmanageDevice360.create_voice_port(
-                port=exos_port, port_type_name=port_type_name, device_360=True,lldp_voice_options_flag=True,
-                cdp_voice_options_flag=True) == 1, \
-                f"Failed to create a voice port type named {port_type_name}"
-
-            self.suite_udk.save_device_360_port_config()
-            self.suite_udk.verify_port_type_is_created_in_device360(port=exos_port, port_type_name=port_type_name)
-
-        finally:
-            self.suite_udk.revert_port_configuration(exos_port, port_type_name)
-            self.suite_udk.save_device_360_port_config()
-            self.xiq.xflowsmanageDevice360.close_device360_window()
-            self.xiq.xflowsconfigureCommonObjects.delete_port_type_profile(port_type_name)
-            self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
