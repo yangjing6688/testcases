@@ -2,7 +2,7 @@ netelem1:
   name:                  VSP-7400-48Y-8C
   serial:                1934Q-30117
   connection_method:     ssh
-  ip:                    10.234.137.119
+  ip:                    10.234.105.84
   port:                  22
   profile:               VOSS_v2_Profile
   mac:                   489BD5934800
@@ -13,8 +13,8 @@ netelem1:
   cli_type:              "VOSS"
   default_template:      VSP_7400_48Y_8C-default-template
   ccg:                   Model_VSP_SWITCH
-  console_ip:            10.234.137.231
-  console_port:          7020
+  console_ip:            10.234.105.230
+  console_port:          7010
   username:              rwa
   password:              rwa
   test_port:             1/3

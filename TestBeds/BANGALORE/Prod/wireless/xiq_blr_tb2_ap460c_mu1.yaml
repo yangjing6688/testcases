@@ -1,7 +1,7 @@
 ap1:
   name:                     bui-flo-0531
   connection_method:        "ssh"
-  ip:                       10.234.105.77
+  ip:                       10.234.105.64
   port:                     22
   username:                 admin
   password:                 Aerohive123

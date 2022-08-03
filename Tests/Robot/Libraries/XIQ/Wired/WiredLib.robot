@@ -15,7 +15,7 @@ Configure IQagent EXOS
     [Documentation]     Configures the EXOS Iqagent
 
     log to console          "Executed the exos IQAgent configuration"
-    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}  ${netelem1.console_port}
+    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}
     send cmd  dut1_telnet   disable iqagent
     send cmd  dut1_telnet   disable cli prompting
     send cmd  dut1_telnet   configure iqagent server vr VR-Mgmt
@@ -129,7 +129,7 @@ Cleanup IQagent EXOS
     [Documentation]     Unconfigures the EXOS Iqagent
 
     log to console          "Executing the exos IQAgent Cleanup"
-    connect to network element  dut1_telnet  ${netelem1.console_ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}  ${netelem1.console_port}
+    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}
     send cmd  dut1_telnet   disable cli prompting
     send cmd  dut1_telnet   configure iqagent server ipaddress none
     ${check_results}=  send cmd  dut1_telnet   show iqagent
