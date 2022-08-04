@@ -7,6 +7,7 @@ wing1:
   mac:                      84248D861180
   bssid:
   network_policy:           Test_np
+  cli_type:                 "WING-AP"
   username:                 admin
   password:                 extreme
   platform:                 wing

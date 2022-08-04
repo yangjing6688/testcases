@@ -1,7 +1,7 @@
 lab:                        "SALEM"
 
 netelem1:
-  name:                     "VOSS"
+  name:                     "5520-48T-FabricEngine"
   cli_type:                 "VOSS"
   hostname:                 ""
   serial:                   "2024G-00147"
