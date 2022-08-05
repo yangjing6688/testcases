@@ -15,6 +15,7 @@ Library     extauto/xiq/flows/configure/NetworkPolicy.py
 Library     extauto/xiq/flows/globalsettings/GlobalSetting.py
 Library     extauto/common/TestFlow.py
 Library     ExtremeAutomation/Imports/CommonObjectUtils.py
+Library     extauto/xiq/flows/manage/AdvanceOnboarding.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -28,7 +29,6 @@ Suite Teardown     Test Suite Teardown
 
 *** Keywords ***
 Test Suite Setup
-
     # Use this method to convert the ap, wing, netelem to a generic device object
     # ap1       => device1
     # wing1     => device1
@@ -45,6 +45,7 @@ Test Suite Teardown
     Clean Up Device
     Logout User
     Quit Browser
+
 
 Clean Up Device
     ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_cli_feedback=true
@@ -73,22 +74,52 @@ simple_onboard_step1: Onboard Device on XIQ
     ${DEVICE_STATUS_RESULT}=    get device status      ${device1.serial}
     Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
 
-#verify_info_on_devices_page_step2: Verify Information on Device page
-#    [Documentation]         Verify Information on Device page
-#
-#    [Tags]                  verify_device_info
-#
-#    Depends On              simple_onboard_step1
-#    ${DEVICE_ROW}=          get_device_row  device_mac=${device1.mac}
-#    log to console      ${DEVICE_ROW}
-#    ${SYS_INFO_360_PAGE}=          get_device_360_information   ${device1.cli_type}   device_mac=${device1.mac}
-#    ${DEVICE_IP}=                  Get From Dictionary      ${SYS_INFO_360_PAGE}    ip_address
-#    Should Be Equal As Strings    '${DEVICE_IP}'            '${device1.ip}'
-#    ${DEVICE_MAC}=                 Get From Dictionary      ${SYS_INFO_360_PAGE}    mac_address
-#    Should Be Equal As Strings    '${DEVICE_MAC}'           '${device1.mac}'
-#    ${DEVICE_SERIAL}=              Get From Dictionary      ${SYS_INFO_360_PAGE}    serial_number
-#    Should Be Equal As Strings    '${DEVICE_SERIAL}'        '${device1.serial}'
+verify_info_on_devices_page_step2: Verify Information on Device page
+    [Documentation]         Verify Information on Device page
+
+    [Tags]                  verify_device_info      development
+
+    Depends On              simple_onboard_step1
+    @{column_list}=    Create List    MGT IP ADDRESS    MAC
+    ${DEVICE_INFOMATION}=   get_device_column_information  ${device1.serial}    ${column_list}
+    ${DEVICE_IP}=                  Get From Dictionary      ${DEVICE_INFOMATION}    MGT_IP_ADDRESS
+    Should Be Equal As Strings    '${DEVICE_IP}'            '${device1.ip}'
+    ${DEVICE_MAC}=                 Get From Dictionary      ${DEVICE_INFOMATION}    MAC
+    Should Be Equal As Strings    '${DEVICE_MAC}'           '${device1.mac}'
+
+adavnced_onboard_step3: Advanced Onboard Device on XIQ
+    [Documentation]         Checks for Advanced Device onboarding on XIQ
+
+    [Tags]                  advanced_onboard      development
+
+    Clean Up Device
+
+    ${ONBOARD_RESULT}=      Advance Onboard Device         ${device1.serial}    device_make=${device1.make}   dev_location=${LOCATION}
+    Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
+
+    ${CONF_STATUS_RESULT}=      configure device to connect to cloud    ${device1.cli_type}   ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}    ${generic_capwap_url}
+    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    ${ONLINE_STATUS_RESULT}=    wait until device online     ${device1.serial}
+    Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1
+
+    ${MANAGED_STATUS_RESULT}=   wait until device managed   ${device1.serial}
+    Should Be Equal As Strings                  ${MANAGED_STATUS_RESULT}      1
+
+    ${DEVICE_STATUS_RESULT}=    get device status      ${device1.serial}
+    Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
 
 
+verify_info_on_devices_page_step4: Verify Information on Device page (Advanced onboarding)
+    [Documentation]         Verify Information on Device page
 
+    [Tags]                  verify_device_info_advanced     development
+
+    Depends On              simple_onboard_step1
+    @{column_list}=    Create List    MGT IP ADDRESS    MAC
+    ${DEVICE_INFOMATION}=   get_device_column_information  ${device1.serial}    ${column_list}
+    ${DEVICE_IP}=                  Get From Dictionary      ${DEVICE_INFOMATION}    MGT_IP_ADDRESS
+    Should Be Equal As Strings    '${DEVICE_IP}'            '${device1.ip}'
+    ${DEVICE_MAC}=                 Get From Dictionary      ${DEVICE_INFOMATION}    MAC
+    Should Be Equal As Strings    '${DEVICE_MAC}'           '${device1.mac}'
 
