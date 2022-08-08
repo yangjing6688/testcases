@@ -1,6 +1,7 @@
 netelem1:
   name:                     bui-flo-0140
   model:                    VSP 4900-48P
+  cli_type:                 VOSS
   device_template:          VSP4900-default-template
   serial:                   "2002F-20140"
   mac:                      000496E00C81

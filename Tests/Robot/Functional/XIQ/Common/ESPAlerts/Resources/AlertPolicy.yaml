@@ -1,0 +1,12 @@
+alert_device_down:
+  policy_type: "event"
+  source_parent: "device"
+  source: "device_down"
+  trigger_type: "immediate"
+  when: "Device down"
+alert_device_up:
+  policy_type: "event"
+  source_parent: "device"
+  source: "device_up"
+  trigger_type: "immediate"
+  when: "Device up"

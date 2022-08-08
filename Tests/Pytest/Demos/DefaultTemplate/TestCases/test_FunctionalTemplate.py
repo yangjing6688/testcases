@@ -36,20 +36,27 @@ class DefaultTests:
         try:
             # Create the pytest execution helper
             cls.executionHelper = PytestExecutionHelper()
-        
-            # Create an instance of the helper class that will read in the test bed yaml file and provide basic methods and variable access.
-            # The user can also get to the test bed yaml by using the config dictionary
-            cls.tb = PytestConfigHelper(config)
-          
-            # Load up the suite
-            cls.suiteUdks = SuiteUdk()
 
             # Create new objects to use in test. Here we will import everything from the default library
             cls.defaultLibrary = DefaultLibrary()
 
+            # Add a new generic device called device1 for the first AP, Netelem, Wing, router, aerohive_sw
+            cls.defaultLibrary.commonObjectUtils.convert_to_generic_device_object('device', index=1)
+        
+            # Create an instance of the helper class that will read in the test bed yaml file and provide basic methods and variable access.
+            # The user can also get to the test bed yaml by using the config dictionary
+            cls.tb = PytestConfigHelper(config)
+            # you can access this new device object by cls.tb.config.device1
+          
+            # Load up the suite
+            cls.suiteUdks = SuiteUdk()
+
             # Call the setup
             cls.defaultLibrary.apiUdks.setupTeardownUdks.Base_Test_Suite_Setup()
-        except Exception :
+
+
+
+        except Exception as e :
             cls.executionHelper.setSetupFailure(True)
 
     # [Teardown]  Test class Cleanup

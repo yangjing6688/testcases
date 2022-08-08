@@ -143,7 +143,7 @@ TCCS-7267: XAPI Onboard Extreme-Aerohive AP , Assign Location and Assign Network
     Should Be Equal As Integers          ${DEVICE_ONBOARD}       1
     sleep    ${device_onboarding_wait}
 
-    configure_device_to_connect_to_cloud    ${ap1.cli_type}  ${ap1.ip}  ${ap1.port}  ${ap1.username}   ${ap1.password}    ${ap1.server_name}
+    configure_device_to_connect_to_cloud    ${ap1.cli_type}  ${ap1.ip}  ${ap1.port}  ${ap1.username}   ${ap1.password}    ${server_name}
 
 
 #Get Device ID
