@@ -27,7 +27,12 @@ Issue the following commands in a command prompt at the base root for the projec
 
 - Issue the following commands at the prompt:
 
+Cmd1:
+
         python -m venv venv
+
+Cmd2:
+
         venv\\Scripts\\activate.bat
   
 Note: Depending on your python3 installation you may need to use the python3 command instead of python.
@@ -38,7 +43,12 @@ Issue the following commands in a command prompt at the base root for the projec
 
 - Issue the following commands at the prompt:
 
+Cmd1:
+
         python -m venv venv
+
+Cmd2:
+
         source venv/bin/activate
 
 Note: Depending on your python3 installation you may need to use the python3 command instead of python.

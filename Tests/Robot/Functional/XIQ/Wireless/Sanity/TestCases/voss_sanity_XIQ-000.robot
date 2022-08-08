@@ -284,9 +284,8 @@ Onboard New Test Device
     ${voss_result}=  Wait Until Device Online        ${serial}
     Should Be Equal As Integers                     ${voss_result}       1
 
-    #Commented for AIQ-2118
-    #${device_managed_result}=    WAIT UNTIL DEVICE MANAGED       ${serial}           MANAGED
-    #Should Be Equal As Integers                 ${device_managed_result}       1
+    ${device_managed_result}=    WAIT UNTIL DEVICE MANAGED       ${serial}           MANAGED
+    Should Be Equal As Integers                 ${device_managed_result}       1
 
     Confirm Device Status   ${serial}  ${STATUS_AFTER_UPDATE}
 

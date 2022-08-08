@@ -1,0 +1,7 @@
+test_url:                 "https://cp8r1.qa.xcloudiq.com"
+capwap_url:               "cp8r1-cws-0.qa.xcloudiq.com"
+sw_capwap_url:            "cp8r1.qa.xcloudiq.com"
+tenant_username:          "zhichen+cp8auto01@extremenetworks.com"
+tenant_password:          "Extreme@123"
+wing_capwap_url:          "cp8r1-wing.qa.xcloudiq.com"
+base_url:                 "https://cp8r1.qa.xcloudiq.com"

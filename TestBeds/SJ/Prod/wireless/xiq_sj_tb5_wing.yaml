@@ -8,6 +8,7 @@ wing1:
   os_version:               7.6.0.1-004R
   mac:                      84248D16016C
   bssid:
+  cli_type:                 "WING-AP"
   network_policy:           Test_np
   username:                 admin
   password:                 symbol
