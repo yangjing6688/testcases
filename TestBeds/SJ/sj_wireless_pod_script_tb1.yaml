@@ -1,7 +1,7 @@
 ap1:
   name:                     bui-flo-0006
   connection_method:        "ssh"
-  ip:                       10.16.166.250
+  ip:                       10.254.160.24
   port:                     22
   username:                 admin
   password:                 Aerohive123
@@ -9,6 +9,7 @@ ap1:
   console_ip:               10.254.160.173
   console_port:             10004
   mac:                      F064267258C0
+  cli_type:                 AH-AP
   os:                       Cloud IQ Engine
   platform:                 aerohive
   model:                    AP4000U
@@ -44,6 +45,7 @@ ap5010:
   console_ip:               10.16.175.2
   console_port:             2010
   mac:                      B027CF805B40
+  cli_type:                 AH-AP
   os:                       Cloud IQ Engine
   platform:                 aerohive
   model:                    AP5010
@@ -79,6 +81,7 @@ ap302w:
   password:                 Aerohive123
   serial:                   "03022012080161"
   mac:                      40882F57DBC0
+  cli_type:                 AH-AP
   os:                       Cloud IQ Engine
   platform:                 aerohive
   model:                    AP302W
@@ -117,6 +120,7 @@ ap302w2:
   password:                 Aerohive123
   serial:                   "03022012080191"
   mac:                      40882F57DBC0
+  cli_type:                 AH-AP
   os:                       Cloud IQ Engine
   platform:                 aerohive
   model:                    AP302W

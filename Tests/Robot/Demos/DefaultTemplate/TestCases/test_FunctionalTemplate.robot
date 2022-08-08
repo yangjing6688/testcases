@@ -14,8 +14,6 @@ Resource    ExtremeAutomation/Resources/Libraries/DefaultLibraries.robot
     [Tags]   F-12345678902
 
     Log  Running Test Case
-    connect to network element   net_elem_name   ip   username,   password, connection_method, device_cli_type
 
-    send cmd
 
 

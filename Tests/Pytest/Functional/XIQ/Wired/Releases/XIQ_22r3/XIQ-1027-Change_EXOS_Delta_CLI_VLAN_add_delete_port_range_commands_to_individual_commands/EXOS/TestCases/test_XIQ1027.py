@@ -51,15 +51,15 @@ def xiq_teardown_template(request):
         request.instance.cfg['${TEST_NAME}'] = 'Teardown Template'
         if request.instance.tb.dut1.platform == 'Stack':
             for slot in range(1, len(request.instance.tb.dut1.serial.split(',')) + 1):
-
+                request.instance.xiq.xflowscommonNavigator.navigate_to_devices()
+                request.instance.xiq.xflowsmanageDevices.refresh_devices_page()
+                # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+                time.sleep(20)
                 def _check_d360_navigation():
                     return request.instance.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(
                                                                                            request.instance.tb.dut1.mac)
                 request.instance.xiq.Utils.wait_till(_check_d360_navigation, timeout=30, delay=10)
-
-                def _check_port_configuration_navigation():
-                    return request.instance.xiq.xflowsmanageDevice360.device360_navigate_to_port_configuration()
-                request.instance.xiq.Utils.wait_till(_check_port_configuration_navigation, timeout=30, delay=10)
+                request.instance.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
 
                 def _check_stack_selection():
                     return request.instance.xiq.xflowsmanageDevice360.select_stack_unit(slot)
@@ -436,10 +436,13 @@ class XiqTests():
             cls.xiq.xflowscommonNavigator.navigate_to_devices()
             cls.xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings("disable", "EXOS")
             cls.xiq.xflowscommonNavigator.navigate_to_devices()
+
+            # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+            time.sleep(20)
             cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
             solo_serial = cls.tb.dut1.serial.split(',')
             for eachdevice in solo_serial:
-                cls.xiq.xflowscommonDevices.delete_device(device_mac=eachdevice)
+                cls.xiq.xflowscommonDevices.delete_device(device_serial=eachdevice)
             dut_location = f'{location},{building},{floor}'
 
             global setup_flag_onboard_fail
@@ -470,6 +473,9 @@ class XiqTests():
                     pytest.fail("Stack status is disconnected.")
             cls.xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(network_policy_name)
             cls.xiq.xflowscommonNavigator.navigate_to_devices()
+            cls.xiq.xflowsmanageDevices.refresh_devices_page()
+            # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+            time.sleep(20)
             cls.xiq.xflowsmanageDevices.assign_network_policy_to_switch_mac(network_policy_name, cls.tb.dut1.mac)
             if cls.tb.dut1.platform == "Stack":
                 cls.xiq.xflowscommonDevices.column_picker_select('Template')
@@ -513,6 +519,9 @@ class XiqTests():
             pytest.exit("Failed to onboard the device. Exiting...")
 
         if setup_flag_connect_fail:
+            cls.xiq.xflowscommonNavigator.navigate_to_devices()
+            # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+            time.sleep(20)
             if cls.tb.dut1.platform == "Stack":
                 for slot_serial in cls.tb.dut1.serial.split(','):
                     cls.xiq.xflowscommonDevices.delete_device(device_serial=slot_serial)
@@ -524,15 +533,16 @@ class XiqTests():
 
         if cls.tb.dut1.platform == 'Stack':
             for slot in range(1, len(cls.tb.dut1.serial.split(',')) + 1):
-
+                cls.xiq.xflowscommonNavigator.navigate_to_devices()
+                cls.xiq.xflowsmanageDevices.refresh_devices_page()
+                # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+                time.sleep(20)
                 def _check_d360_navigation():
                     return cls.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(
                         cls.tb.dut1.mac)
                 cls.xiq.Utils.wait_till(_check_d360_navigation, timeout=30, delay=5)
 
-                def _check_port_configuration_navigation():
-                    return cls.xiq.xflowsmanageDevice360.device360_navigate_to_port_configuration()
-                cls.xiq.Utils.wait_till(_check_port_configuration_navigation, timeout=30, delay=5)
+                cls.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
 
                 def _check_stack_selection():
                     return cls.xiq.xflowsmanageDevice360.select_stack_unit(slot)
@@ -541,15 +551,16 @@ class XiqTests():
                 cls.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan_stack(port_numbers=port_numbers2,
                                                                                           slot=slot)
             for slot in range(1, len(cls.tb.dut1.serial.split(',')) + 1):
-
+                cls.xiq.xflowscommonNavigator.navigate_to_devices()
+                cls.xiq.xflowsmanageDevices.refresh_devices_page()
+                # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+                time.sleep(20)
                 def _check_d360_navigation():
                     return cls.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(
                         cls.tb.dut1.mac)
                 cls.xiq.Utils.wait_till(_check_d360_navigation, timeout=30, delay=5)
 
-                def _check_port_configuration_navigation():
-                    return cls.xiq.xflowsmanageDevice360.device360_navigate_to_port_configuration()
-                cls.xiq.Utils.wait_till(_check_port_configuration_navigation, timeout=30, delay=5)
+                cls.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
 
                 def _check_stack_selection():
                     return cls.xiq.xflowsmanageDevice360.select_stack_unit(slot)
@@ -573,7 +584,8 @@ class XiqTests():
                 return cls.xiq.xflowsmanageDevices.check_device_update_status_by_using_mac(cls.tb.dut1.mac)
 
             cls.xiq.Utils.wait_till(_check_device_update_status, timeout=300, delay=5, msg='Checking update status')
-
+            # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+            time.sleep(20)
             cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
             cls.xiq.xflowsconfigureSwitchTemplate.delete_stack_switch_template(network_policy_name, sw_template_name)
             cls.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(network_policy_name)
@@ -604,6 +616,8 @@ class XiqTests():
                 return cls.xiq.xflowsmanageDevices.check_device_update_status_by_using_mac(cls.tb.dut1.mac)
 
             cls.xiq.Utils.wait_till(_check_device_update_status, timeout=300, delay=5, msg='Checking update status')
+            # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+            time.sleep(20)
             cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
             cls.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(network_policy_name)
             cls.xiq.xflowsconfigureCommonObjects.delete_switch_template(sw_template_name)
@@ -749,15 +763,17 @@ class XiqTests():
         self.executionHelper.testSkipCheck()
         if self.tb.dut1.platform == 'Stack':
             for slot in range(1, len(self.tb.dut1.serial.split(',')) + 1):
+                self.xiq.xflowscommonNavigator.navigate_to_devices()
+                self.xiq.xflowsmanageDevices.refresh_devices_page()
+                # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+                time.sleep(20)
 
                 def _check_d360_navigation():
                     return self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(
                         self.tb.dut1.mac)
                 self.xiq.Utils.wait_till(_check_d360_navigation, timeout=30, delay=5)
 
-                def _check_port_configuration_navigation():
-                    return self.xiq.xflowsmanageDevice360.device360_navigate_to_port_configuration()
-                self.xiq.Utils.wait_till(_check_port_configuration_navigation, timeout=30, delay=5)
+                self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
 
                 def _check_stack_selection():
                     return self.xiq.xflowsmanageDevice360.select_stack_unit(slot)
@@ -768,8 +784,12 @@ class XiqTests():
                                                                                      trunk_vlan_id=vlan_range2,
                                                                                      slot=slot)
         else:
+            self.xiq.xflowscommonNavigator.navigate_to_devices()
+            self.xiq.xflowsmanageDevices.refresh_devices_page()
+            # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+            time.sleep(20)
             self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(self.tb.dut1.mac)
-            self.xiq.xflowsmanageDevice360.device360_navigate_to_port_configuration()
+            self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
             self.xiq.xflowsmanageDevice360.device360_configure_ports_trunk_vlan(port_numbers=port_numbers2,
                                                                                 trunk_native_vlan="1",
                                                                                 trunk_vlan_id=vlan_range2)
@@ -795,15 +815,16 @@ class XiqTests():
         self.executionHelper.testSkipCheck()
         if self.tb.dut1.platform == 'Stack':
             for slot in range(1, len(self.tb.dut1.serial.split(',')) + 1):
-
+                self.xiq.xflowscommonNavigator.navigate_to_devices()
+                self.xiq.xflowsmanageDevices.refresh_devices_page()
+                # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+                time.sleep(20)
                 def _check_d360_navigation():
                     return self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(
                         self.tb.dut1.mac)
                 self.xiq.Utils.wait_till(_check_d360_navigation, timeout=30, delay=5)
 
-                def _check_port_configuration_navigation():
-                    return self.xiq.xflowsmanageDevice360.device360_navigate_to_port_configuration()
-                self.xiq.Utils.wait_till(_check_port_configuration_navigation, timeout=30, delay=5)
+                self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
 
                 def _check_stack_selection():
                     return self.xiq.xflowsmanageDevice360.select_stack_unit(slot)
@@ -814,8 +835,12 @@ class XiqTests():
                                                                                      trunk_vlan_id=vlan_range,
                                                                                      slot=slot)
         else:
+            self.xiq.xflowscommonNavigator.navigate_to_devices()
+            self.xiq.xflowsmanageDevices.refresh_devices_page()
+            # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+            time.sleep(20)
             self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(self.tb.dut1.mac)
-            self.xiq.xflowsmanageDevice360.device360_navigate_to_port_configuration()
+            self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
             self.xiq.xflowsmanageDevice360.device360_configure_ports_trunk_vlan(port_numbers=port_numbers,
                                                                                 trunk_native_vlan="1",
                                                                                 trunk_vlan_id=vlan_range)
@@ -851,15 +876,16 @@ class XiqTests():
         self.xiq.xflowsmanageDevices.refresh_devices_page()
         if self.tb.dut1.platform == 'Stack':
             for slot in range(1, len(self.tb.dut1.serial.split(',')) + 1):
-
+                self.xiq.xflowscommonNavigator.navigate_to_devices()
+                self.xiq.xflowsmanageDevices.refresh_devices_page()
+                # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+                time.sleep(20)
                 def _check_d360_navigation():
                     return self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(
                         self.tb.dut1.mac)
                 self.xiq.Utils.wait_till(_check_d360_navigation, timeout=30, delay=5)
 
-                def _check_port_configuration_navigation():
-                    return self.xiq.xflowsmanageDevice360.device360_navigate_to_port_configuration()
-                self.xiq.Utils.wait_till(_check_port_configuration_navigation, timeout=30, delay=5)
+                self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
 
                 def _check_stack_selection():
                     return self.xiq.xflowsmanageDevice360.select_stack_unit(slot)
@@ -870,14 +896,16 @@ class XiqTests():
                                                                                      trunk_vlan_id=vlan_range,
                                                                                      slot=slot)
             for slot in range(1, len(self.tb.dut1.serial.split(',')) + 1):
+                self.xiq.xflowscommonNavigator.navigate_to_devices()
+                self.xiq.xflowsmanageDevices.refresh_devices_page()
+                # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+                time.sleep(20)
                 def _check_d360_navigation():
                     return self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(
                         self.tb.dut1.mac)
                 self.xiq.Utils.wait_till(_check_d360_navigation, timeout=30, delay=5)
 
-                def _check_port_configuration_navigation():
-                    return self.xiq.xflowsmanageDevice360.device360_navigate_to_port_configuration()
-                self.xiq.Utils.wait_till(_check_port_configuration_navigation, timeout=30, delay=5)
+                self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
 
                 def _check_stack_selection():
                     return self.xiq.xflowsmanageDevice360.select_stack_unit(slot)
