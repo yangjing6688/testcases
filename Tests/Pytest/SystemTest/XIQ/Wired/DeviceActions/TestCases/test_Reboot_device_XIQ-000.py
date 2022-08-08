@@ -72,13 +72,10 @@ class rebootTests():
 
         global needToDeleteDevice
 
-        # Left this here once AUTO-IQ JIRA 1896 gets fixed we will use this method
-        #res = self.xiq.xflowscommonDevices.onboard_device(device_serial=self.tb.dut1_serial,
-        #                                                  device_make=self.tb.dut1.os,
-        #                                                  location=self.tb.dut1_location1)
+        res = self.xiq.xflowscommonDevices.onboard_device(device_serial=self.tb.dut1_serial,
+                                                          device_make=self.tb.dut1.cli_type,
+                                                          location=self.tb.dut1_location1)
 
-        res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_manual(self.tb.dut1_serial,
-                                                          self.tb.dut1.cli_type,self.tb.dut1_location1)
         if res != 1:
             pytest.fail(f'Could not onboard device {self.tb.dut1_platform} with serial {self.tb.dut1_serial}')
         else:

@@ -44,38 +44,29 @@ Cleanup-Delete Switch
     ${DELETE_DEVICE_STATUS}=            Delete Device                  device_serial=${SERIAL}
     should be equal as integers        ${DELETE_DEVICE_STATUS}               1
 
-    [Teardown]   run keywords           Logout User
-    ...                                 Quit Browser
-
 Test Suite Clean Up
     [Documentation]    delete Exos Switch
 
     [Tags]              production   cleanup
-
-    ${LOGIN_STATUS}=                    Login User          ${tenant_username}      ${tenant_password}
-    should be equal as integers         ${LOGIN_STATUS}               1
 
     ${DELETE_DEVICE_STATUS}=            Delete Device       device_serial=${netelem1.serial}
     Should Be Equal As Integers         ${DELETE_DEVICE_STATUS}     1
 
     [Teardown]   run keywords           Logout User
     ...                                 Quit Browser
-
+    
 *** Test Cases ***
 TCCS-7292_Step1: Onboard EXOS Switch on XIQ
     [Documentation]         Checks for Exos switch onboarding on XIQ
 
     [Tags]                  production      tccs_7292       tccs_7292_step1
 
-    ${LOGIN_STATUS}=                    Login User          ${tenant_username}      ${tenant_password}
-    should be equal as integers         ${LOGIN_STATUS}               1
-
     ${ONBOARD_RESULT}=                  Onboard Switch      ${netelem1.serial}       ${netelem1.make}    location=${LOCATION}
     Should Be Equal As Strings          ${ONBOARD_RESULT}       1
 
     ${SEARCH_SWITCH}=       Search Device       device_serial=${netelem1.serial}
     Should Be Equal As Strings             ${SEARCH_SWITCH}       1
-    
+
     ${SWITCH_CONNECTION_HOST}=      Capture XIQ Switch Connection Host
     Should Not Be Equal As Strings             ${SWITCH_CONNECTION_HOST}       ${EMPTY}
 
@@ -94,18 +85,12 @@ TCCS-7292_Step1: Onboard EXOS Switch on XIQ
     ${DEVICE_STATUS}=                   Get Device Status       device_mac=${netelem1.mac}
     Should contain any                  ${DEVICE_STATUS}    green     config audit mismatch
 
-    [Teardown]         run keywords    logout user
-     ...                               quit browser
-
 TCCS-7292_Step2: Verify EXOS Switch Information on Device 360 page
     [Documentation]         Verify EXOS Switch Information on Device 360 page
 
     [Tags]                  production      tccs_7292       tccs_7292_step2
 
     Depends On              TCCS-7292_Step1
-
-    ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
-    should be equal as integers             ${LOGIN_STATUS}               1
 
     ${SYS_INFO_360_PAGE}=          Get ExOS Switch 360 Information  device_mac=${netelem1.mac}
     ${HOST_NAME}=                  Get From Dictionary      ${SYS_INFO_360_PAGE}    host_name
@@ -119,18 +104,12 @@ TCCS-7292_Step2: Verify EXOS Switch Information on Device 360 page
     ${DEVICE_SERIAL}=              Get From Dictionary      ${SYS_INFO_360_PAGE}    serial_number
     Should Be Equal As Strings    '${DEVICE_SERIAL}'        '${netelem1.serial}'
 
-    [Teardown]         run keywords    logout user
-     ...                               quit browser
-
 TCCS-7292_Step3: Verify ExOS SSH connectivity
   [Documentation]       Verify ExOS SSH connectivity
 
     [Tags]              production      tccs_7292       tccs_7292_step3
 
     Depends On          TCCS-7292_Step2
-
-    ${LOGIN_STATUS}=                    Login User          ${tenant_username}      ${tenant_password}
-    should be equal as integers         ${LOGIN_STATUS}               1
 
     ${ENABLE_SSH}=                      Enable SSH Availability
     should be equal as integers         ${ENABLE_SSH}               1
@@ -157,6 +136,3 @@ TCCS-7292_Step3: Verify ExOS SSH connectivity
 
     ${SPAWN2}=          Open Paramiko SSH Spawn    ${IP_ADDR}   ${netelem1.username}    ${netelem1.password}  ${PORT_NUM}
     should be equal as strings          ${SPAWN2}     -1
-
-    [Teardown]         run keywords    logout user
-     ...                               quit browser

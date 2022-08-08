@@ -1,0 +1,15 @@
+webhook1:
+  url: "https://58l8z.mocklab.io/"
+  secret: ""
+  description: "this is a test webhook can not use it"
+  sendme: true
+  enable: true
+webhook2:
+  url: "https://58l8z.mocklab.io/v2"
+  secret: "v2accessabcde"
+  description: "url has been changed to v2"
+  sendme: false
+  enable: true
+  bind_items:
+    - "Device up"
+    - "Device down"
