@@ -80,7 +80,7 @@ ${LOCATION}             San Jose, building_01, floor_02
 *** Test Cases ***
 Test 1: Confirm Select All Action Works As Expected
     [Documentation]     Confirms the select all action selects all devices, and deselect all action deselects all devices
-    [Tags]              csit_tc_7587   apc_40763    development    xiq    manage_devices    select_all    test1
+    [Tags]              tccs_7587   apc_40763    development    xiq    manage_devices    select_all    test1
 
     # Perform the select all action
     ${action}=  Select All Devices
@@ -102,7 +102,7 @@ Test 1: Confirm Select All Action Works As Expected
 
 Test 2: Confirm Device360 Link Works When All Devices Selected
     [Documentation]     Confirms the Device360 view is accessible when all devices are selected
-    [Tags]              csit_tc_7587   apc_40763    development    xiq    manage_devices    select_all    test2
+    [Tags]              tccs_7587   apc_40763    development    xiq    manage_devices    select_all    test2
 
     # Confirm the Device360 view is accessible for each of the devices when all devices are selected
     Refresh Devices Page

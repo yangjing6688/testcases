@@ -49,14 +49,14 @@ ${TEST_LOCATION}         AUTO LOCATION
 *** Test Cases ***
 Test 1: Add Device
     [Documentation]     Confirms a device can be added
-    [Tags]              xiqse_tc_129    aiq_1332    development    sample    xiqse    devices    test1
+    [Tags]              tcxe_129    aiq_1332    development    sample    xiqse    devices    test1
 
     Navigate and Create Device  ${DUT1_IP}  ${DUT1_PROFILE}
     Confirm Device Status Up    ${DUT1_IP}
 
 Test 2: Create Site
     [Documentation]     Confirms a site can be created
-    [Tags]              xiqse_tc_129    aiq_1332    development    sample    xiqse    devices    test2
+    [Tags]              tcxe_129    aiq_1332    development    sample    xiqse    devices    test2
 
     Navigate and Create Site  ${TEST_SITE}
 
@@ -64,7 +64,7 @@ Test 2: Create Site
 
 Test 3: Select Site
     [Documentation]     Confirms a site can be selected
-    [Tags]              xiqse_tc_129    aiq_1332    development    sample    xiqse    devices    test3
+    [Tags]              tcxe_129    aiq_1332    development    sample    xiqse    devices    test3
 
     # Select the site in the devices tree
     Navigate to Site Tree Node and Confirm Success  ${TEST_SITE}
@@ -76,7 +76,7 @@ Test 3: Select Site
 
 Test 4: Set Device Profile
     [Documentation]     Confirms the profile can be changed on a device
-    [Tags]              xiqse_tc_129    aiq_1332    development    sample    xiqse    devices    test4
+    [Tags]              tcxe_129    aiq_1332    development    sample    xiqse    devices    test4
 
     # Create the profile to use in the test
     Navigate and Create Profile  ${TEST_PROFILE}  ${TEST_PROFILE_VERSION}
@@ -106,7 +106,7 @@ Test 4: Set Device Profile
 
 Test 5: Configure Device Annotations
     [Documentation]     Confirms a device's annotations can be configured
-    [Tags]              xiqse_tc_129    aiq_1332    development    sample    xiqse    devices    test5
+    [Tags]              tcxe_129    aiq_1332    development    sample    xiqse    devices    test5
 
     Navigate to Devices and Confirm Success
 
@@ -154,7 +154,7 @@ Test 5: Configure Device Annotations
 
 Test 6: Configure Device Tab
     [Documentation]     Confirms a device's device tab values can be configured
-    [Tags]              xiqse_tc_129    aiq_1332    development    sample    xiqse    devices    test6
+    [Tags]              tcxe_129    aiq_1332    development    sample    xiqse    devices    test6
 
     Navigate to Devices and Confirm Success
 
@@ -186,7 +186,7 @@ Test 6: Configure Device Tab
 
 Test 7: Filter Devices Table
     [Documentation]     Filters the devices table
-    [Tags]              xiqse_tc_129    aiq_1332    development    sample    xiqse    devices    test7
+    [Tags]              tcxe_129    aiq_1332    development    sample    xiqse    devices    test7
 
     Navigate to Devices and Confirm Success
 
@@ -196,13 +196,13 @@ Test 7: Filter Devices Table
 
 Test 8: Delete Device
     [Documentation]     Confirms a device can be deleted
-    [Tags]              xiqse_tc_129    aiq_1332    development    sample    xiqse    devices    test8
+    [Tags]              tcxe_129    aiq_1332    development    sample    xiqse    devices    test8
 
     Navigate and Delete Device  ${DUT1_IP}
 
 Test 9: Delete Site
     [Documentation]     Confirms a site can be deleted
-    [Tags]              xiqse_tc_129    aiq_1332    development    sample    xiqse    devices    test9
+    [Tags]              tcxe_129    aiq_1332    development    sample    xiqse    devices    test9
 
     Navigate and Delete Site    ${TEST_SITE}
 

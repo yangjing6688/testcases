@@ -55,7 +55,7 @@ ${LOCATION}                 San Jose, building_01, floor_02
 *** Test Cases ***
 Test 1: Confirm Monitor Overview Page Functionality
     [Documentation]     Confirms functionality of graphs on the Monitor> Overview page of the Device360 view
-    [Tags]              csit_tc_8492    aiq_1332    development    xiq    voss    d360    test1
+    [Tags]              tccs_8492    aiq_1332    development    xiq    voss    d360    test1
 
     [Setup]  Navigate To Device360 Page With MAC     ${DUT_MAC}
 
@@ -67,7 +67,7 @@ Test 1: Confirm Monitor Overview Page Functionality
 
 Test 2: Confirm Monitor Clients Page Functionality
     [Documentation]     Confirms functionality of graphs on the Monitor> Clients page of the Device360 view
-    [Tags]              csit_tc_8492    aiq_1332    development    xiq    voss    d360    test2
+    [Tags]              tccs_8492    aiq_1332    development    xiq    voss    d360    test2
 
     [Setup]  Navigate To Device360 Page With MAC     ${DUT_MAC}
 
@@ -79,7 +79,7 @@ Test 2: Confirm Monitor Clients Page Functionality
 
 Test 3: Confirm Monitor Diagnostics Page Functionality
     [Documentation]     Confirms functionality of graphs on the Monitor> Diagnostics page of the Device360 view
-    [Tags]              known_issue    csit_tc_8492    aiq_1332    development    xiq    voss    d360    test3
+    [Tags]              known_issue    tccs_8492    aiq_1332    development    xiq    voss    d360    test3
 
     [Setup]  Navigate To Device360 Page With MAC     ${DUT_MAC}
 

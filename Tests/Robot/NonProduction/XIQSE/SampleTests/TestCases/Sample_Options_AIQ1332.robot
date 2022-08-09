@@ -30,7 +30,7 @@ ${XIQSE_PASSWORD}       ${xiqse.password}
 *** Test Cases ***
 Test 1: Web Server - HTTP Session Timeout
     [Documentation]     Confirms the HTTP Session Timeout option can be configured
-    [Tags]              xiqse_tc_135    aiq_1332    development    sample    xiqse    options    test1
+    [Tags]              tcxe_135    aiq_1332    development    sample    xiqse    options    test1
 
     Set Option Web Server Session Timeout and Confirm Success  16  hr(s)
     Set Option Web Server Session Timeout and Confirm Success  45  min(s)
@@ -38,7 +38,7 @@ Test 1: Web Server - HTTP Session Timeout
 
 Test 2: Site Engine - General - Device Tree Name Format
     [Documentation]     Confirms the Device Tree Name Format option can be configured
-    [Tags]              xiqse_tc_135    aiq_1332    development    sample    xiqse    options    test2
+    [Tags]              tcxe_135    aiq_1332    development    sample    xiqse    options    test2
 
     Set Option Device Tree Name Format and Confirm Success  System Name
     Set Option Device Tree Name Format and Confirm Success  Nickname
@@ -46,7 +46,7 @@ Test 2: Site Engine - General - Device Tree Name Format
 
 Test 3: Restore Defaults
     [Documentation]     Confirms the options can be restored to the defaults
-    [Tags]              xiqse_tc_135    aiq_1332    development    sample    xiqse    options    test3
+    [Tags]              tcxe_135    aiq_1332    development    sample    xiqse    options    test3
 
     ${result_ws}=  XIQSE Restore Default Web Server Options and Save
     Should Be Equal As Integers    ${result_ws}     1

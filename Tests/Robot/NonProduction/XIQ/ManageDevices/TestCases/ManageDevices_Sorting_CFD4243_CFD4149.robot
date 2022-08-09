@@ -76,7 +76,7 @@ ${LOCATION}             San Jose, building_01, floor_02
 *** Test Cases ***
 Test 1: Confirm Sorting On Management IP Address Column When Filter Changed (CFD-4243)
     [Documentation]     Confirms the devices are correctly sorted on the Management IP Address column when a filter is changed
-    [Tags]              csit_tc_6857   cfd_4243    development    xiq    manage_devices    sorting    test1
+    [Tags]              tccs_6857   cfd_4243    development    xiq    manage_devices    sorting    test1
 
     Refresh Devices Page
 
@@ -107,7 +107,7 @@ Test 1: Confirm Sorting On Management IP Address Column When Filter Changed (CFD
 
 Test 2: Confirm Sorting on Updated Column - All Devices Connected (CFD-4149 Case 1)
     [Documentation]     Confirms the devices are correctly sorted on the Updated column when all devices are connected
-    [Tags]              csit_tc_6808   cfd_4149    development    xiq    manage_devices    sorting       test2
+    [Tags]              tccs_6808   cfd_4149    development    xiq    manage_devices    sorting       test2
 
     # Update each of the devices
     Assign Policy to Device and Confirm Success     ${POLICY_NAME}  ${DUT1_SERIAL}
@@ -122,7 +122,7 @@ Test 2: Confirm Sorting on Updated Column - All Devices Connected (CFD-4149 Case
 
 Test 3: Confirm Sorting on Updated Column - One Device Disconnected After Update (CFD-4149 Case 2)
     [Documentation]     Confirms the devices are correctly sorted on the Updated column even when one device is disconnected
-    [Tags]              csit_tc_6923   cfd_4149    development    xiq    manage_devices    sorting       test3
+    [Tags]              tccs_6923   cfd_4149    development    xiq    manage_devices    sorting       test3
 
     # Disconnect one of the devices
     Disconnect Device               ${DUT3_CONSOLE_IP}  ${DUT3_CONSOLE_PORT}  ${DUT3_USERNAME}
@@ -137,7 +137,7 @@ Test 3: Confirm Sorting on Updated Column - One Device Disconnected After Update
 
 Test 4: Confirm Sorting on Updated Column - One Device Disconnected Before Update (CFD-4149 Case 3)
     [Documentation]     Confirms the devices are correctly sorted on the Updated column when the sort is applied while one device is diconnected
-    [Tags]              csit_tc_6941   cfd_4149    development    xiq    manage_devices    sorting       test4
+    [Tags]              tccs_6941   cfd_4149    development    xiq    manage_devices    sorting       test4
 
     Refresh Devices Page
 

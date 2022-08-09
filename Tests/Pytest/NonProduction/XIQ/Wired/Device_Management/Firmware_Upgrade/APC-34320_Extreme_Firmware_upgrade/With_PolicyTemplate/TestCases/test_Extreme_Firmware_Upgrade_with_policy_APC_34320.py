@@ -6,7 +6,7 @@
 # Pre-Requests  : 1. First organization should be created in the XIQ prior to start this test script
 #                 2. If the setup is using VR-Default then default vlan port should be used as a mgmt connection
 # Comments      : This test is applicable for EXOS Standalone , Stack and VOSS device.
-#                 Known EXOS tftp issue EXOS BUG - EXOS-27245 - download url fails over longhaul connection, but rarely 
+#                 Known EXOS tftp issue EXOS BUG - EXOS-27245 - download url fails over longhaul connection, but rarely
 
 
 from pytest_testconfig import config, load_yaml
@@ -81,7 +81,7 @@ class xiqTests():
                  device_serial_list = cls.tb.dut1.serial.split(",")
             else:
                 device_serial_list = ["f{cls.tb.dut1.serial}"]
-                
+
             dutMac = cls.tb.dut1.mac
             dutName = cls.tb.dut1_name
             iqagentServer = cls.cfg['sw_connection_host']
@@ -129,7 +129,7 @@ class xiqTests():
                                          IRV=True,quick=True)
                 # Make connections to all the netlement(s) in testbed.yaml file
                 cls.udks.setupTeardownUdks.networkElementConnectionManager.connect_to_all_network_elements()
-            
+
             def testbed_cleanup(cls):
                 # cleanup iqagent for EXOS
                 if cls.tb.dut1_make.upper() == "EXOS":
@@ -144,7 +144,7 @@ class xiqTests():
                     cls.devCmd.send_cmd(dutName, 'configure terminal', max_wait=10, interval=2)
                     cls.devCmd.send_cmd(dutName, 'application', max_wait=10, interval=2)
                     cls.devCmd.send_cmd(dutName, 'no iqagent enable', max_wait=10, interval=2)
-                    
+
             # To get the virtual router info
             def get_virtual_router(cls, mgmtip):
                 global vrName, slot, port,dut_vlan_name
@@ -275,8 +275,8 @@ class xiqTests():
                 res = cls.xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(nw_policy)
                 if res != 1:
                     pytest.fail(f"No policy was created'{nw_policy}'")
-                print(f"Network Policy '{nw_policy}' was created successfully")                  
-                    
+                print(f"Network Policy '{nw_policy}' was created successfully")
+
                 # Deploy policy for stack devices.
                 if (cls.tb.dut1_platform.lower() == 'stack'):
                     # create switch template with name as SWITCH_TEMPLATE in SWITCH_POLICY for stack device for each slot device model.
@@ -290,7 +290,7 @@ class xiqTests():
                     if res == -1:
                         pytest.fail(f"Deploy switch policy '{nw_policy}' was failed")
                     print(f"Switch Policy '{nw_policy}' was deployed successfully on the device")
-                    
+
                 #deploy policy for standalone devices.
                 else:
                     # create switch template with name as SWITCH_TEMPLATE in SWITCH_POLICY for standalone device with respected device model.
@@ -304,7 +304,7 @@ class xiqTests():
                     if res == -1:
                         pytest.fail(f"Deploy switch policy '{nw_policy}' was failed")
                     print(f"Switch Policy '{nw_policy}' was deployed successfully on the device")
-                    
+
                 # Load the Manage --> Devices page to verify Device update status.
                 cls.xiq.xflowsmanageLocation.auto_actions.click(cls.xiq.xflowsmanageLocation.ml_insights_plan_web_elements.get_manage_left_pane_click())
                 cls.xiq.xflowsmanageLocation.auto_actions.click(cls.xiq.xflowsmanageLocation.ml_insights_plan_web_elements.get_manage_devices_click())
@@ -323,7 +323,7 @@ class xiqTests():
                         pytest.fail(
                             "Device Update Failed for the device with mac {} while performing deploy policy".format(
                                 cls.tb.dut1.mac))
-    
+
                 ##Checking for the device configuration update status every 10 seconds, this loop will continue as long as it is
                 ##"Configuration Updating". Incase of "Update Failed" it will comeout and calls the tear down.
                 count = 0
@@ -362,21 +362,21 @@ class xiqTests():
         """ This function used to cleanup the setup when the test is completed or the encounter any issues during the execution """
 
         print("\nINFO \t ++++++++++++++++++++++++++++++++++++++ Setup TearDown Process Started... +++++++++++++++++++++++++++++++++++\n")
-        
+
         # Unconfigure the IQAgent from the device
         if cls.tb.dut1_make.upper() == "EXOS":
             # Unconfigure the IQAgent from the device
             cls.devCmd.send_cmd(dutName, 'configure iqagent server ipaddress none', max_wait=10, interval=2)
             cls.devCmd.send_cmd(dutName, 'configure iqagent server vr none', max_wait=10, interval=2)
-						
+
         elif cls.tb.dut1_make.upper() == "VOSS":
             cls.devCmd.send_cmd(dutName, 'configure terminal', max_wait=10, interval=2)
             cls.devCmd.send_cmd(dutName, 'application', max_wait=10, interval=2)
             cls.devCmd.send_cmd(dutName, 'no iqagent enable', max_wait=10, interval=2)
             cls.devCmd.send_cmd(dutName, 'exit', max_wait=10, interval=2)
             cls.devCmd.send_cmd(dutName, 'exit', max_wait=10, interval=2)
-			
-		    #wait for below sleep time for configuration get applied in device.	
+
+		    #wait for below sleep time for configuration get applied in device.
         time.sleep(5)
 
         # Reseting the column selection back to it's default value.
@@ -401,7 +401,7 @@ class xiqTests():
 		    #delete the above mention policy file.
         cls.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(nw_policy)
         time.sleep(3)
-		
+
 		    #delete user created switch template from Configure ---> 'Common Objects' for stack device.
         if (cls.tb.dut1_platform.lower() == 'stack'):
             for i in range(1, len(device_serial_list) + 1):
@@ -415,12 +415,12 @@ class xiqTests():
 
 
     # Methods required for the test cases
-    
+
     # This is used to generate the heading with box
     def boxHeading(self, content):
         """ This method is used to create a boxed label and the text will be in the center of the box """
         total_length = 130
-        if len(content)%2 != 0: 
+        if len(content)%2 != 0:
             total_length += 1
         freespace = total_length-len(content)
         multiplier = int(freespace/2)
@@ -432,7 +432,7 @@ class xiqTests():
         print("\t+"+"+"*total_length+"+\n\n")
 
 
-    # This is used to perform the prec condition of the network element 
+    # This is used to perform the prec condition of the network element
     def preCheck (self,test_case, waitTimer = 60):
         """
         This method used to validate the EXOS Stack status and to clear the logs prior to start the test on EXOS
@@ -455,7 +455,7 @@ class xiqTests():
                     self.devCmd.send_cmd_verify_output(self.tb.dut1_name, f'show slot | grep "Operational" | count', f'Total lines: {slotcount}', max_wait=10, interval=2)
                     self.devCmd.send_cmd_verify_output(self.tb.dut1_name, f'show slot detail | grep (Image Booted:\s+)({partition}) | count',  f'Total lines: {slotcount}',max_wait=10, interval=2)
                 else:
-                    pytest.skip("Either all slots are not in 'Operational' state or Image Booted from different partitions...")      
+                    pytest.skip("Either all slots are not in 'Operational' state or Image Booted from different partitions...")
                 self.devCmd.send_cmd(self.tb.dut1_name, 'show version images', max_wait=10, interval=2)
         else:
             self.devCmd.send_cmd(self.tb.dut1_name, 'show sys software | include Version', max_wait=10, interval=2)
@@ -482,9 +482,9 @@ class xiqTests():
         pytest.fail('{} is failed...'.format(test_case))
 
 
-    # """ Test Cases """ 
+    # """ Test Cases """
 
-    @mark.xim_tcxm_20112
+    @mark.tcxm_20112
     @mark.development
     @mark.p1
     @mark.testbed_1_node
@@ -494,12 +494,12 @@ class xiqTests():
         """
         self.cfg['${TEST_NAME}'] = test_case = 'test_20112_update_to_latest_version_and_check_update_same_version_option'
         self.executionHelper.testSkipCheck()
-        
+
         self.preCheck(test_case)
         result = self.xiq.xflowscommonDevices.update_network_device_firmware(device_mac=self.tb.dut1.mac)
         if result == -1: self.collectLogs(test_case)
 
-    @mark.xim_tcxm_20113
+    @mark.tcxm_20113
     @mark.development
     @mark.p1
     @mark.testbed_1_node
@@ -509,12 +509,12 @@ class xiqTests():
         """
         self.cfg['${TEST_NAME}'] = test_case = 'test_20113_update_to_latest_version_and_uncheck_the_update_same_version_option'
         self.executionHelper.testSkipCheck()
-    
+
         self.preCheck(test_case)
         result = self.xiq.xflowscommonDevices.update_network_device_firmware(device_mac=self.tb.dut1.mac, forceDownloadImage="false")
         if result == -1: self.collectLogs(test_case)
-    
-    @mark.xim_tcxm_20115
+
+    @mark.tcxm_20115
     @mark.development
     @mark.p1
     @mark.testbed_1_node
@@ -524,12 +524,12 @@ class xiqTests():
         """
         self.cfg['${TEST_NAME}'] = test_case = 'test_20115_update_to_latest_version_from_specific_and_check_update_same_version'
         self.executionHelper.testSkipCheck()
-    
+
         self.preCheck(test_case)
         result = self.xiq.xflowscommonDevices.update_network_device_firmware(device_mac=self.tb.dut1.mac, version="latest", updateTo="Specific")
         if result == -1: self.collectLogs(test_case)
-    
-    @mark.xim_tcxm_20116
+
+    @mark.tcxm_20116
     @mark.development
     @mark.p1
     @mark.testbed_1_node
@@ -537,15 +537,15 @@ class xiqTests():
         """
         Description:    TCXM-20116       Verify firmware upgrade to a specific firmware version and perform upgrade without upgrade even if versions are same option.
         """
-    
+
         self.cfg['${TEST_NAME}'] = test_case = 'test_20116_update_to_latest_version_from_specific_and_uncheck_update_same_version'
         self.executionHelper.testSkipCheck()
-    
+
         self.preCheck(test_case)
         result = self.xiq.xflowscommonDevices.update_network_device_firmware(device_mac=self.tb.dut1.mac,version="latest", forceDownloadImage="false", updateTo="Specific")
         if result == -1: self.collectLogs(test_case)
-    
-    @mark.xim_tcxm_20114
+
+    @mark.tcxm_20114
     @mark.development
     @mark.p1
     @mark.testbed_1_node
@@ -555,12 +555,12 @@ class xiqTests():
         """
         self.cfg['${TEST_NAME}'] = test_case = 'test_20114_update_to_specific_noncurrent_version_and_uncheck_the_update_same_version'
         self.executionHelper.testSkipCheck()
-    
+
         self.preCheck(test_case)
         result = self.xiq.xflowscommonDevices.update_network_device_firmware(device_mac=self.tb.dut1.mac, forceDownloadImage="false", version="noncurrent",updateTo="specific")
         if result == -1: self.collectLogs(test_case)
-    
-    @mark.xim_tcxm_20117
+
+    @mark.tcxm_20117
     @mark.development
     @mark.p2
     @mark.testbed_1_node
@@ -570,12 +570,12 @@ class xiqTests():
         """
         self.cfg['${TEST_NAME}'] = test_case = 'test_20117_update_to_latest_version_from_D360_and_check_update_same_version'
         self.executionHelper.testSkipCheck()
-    
+
         self.preCheck(test_case)
         result = self.xiq.xflowscommonDevices.update_network_device_firmware(device_mac=self.tb.dut1.mac, forceDownloadImage="false", updatefromD360Page="true")
         if result == -1: self.collectLogs(test_case)
 
-    @mark.xim_tcxm_20676
+    @mark.tcxm_20676
     @mark.development
     @mark.p2
     @mark.testbed_1_node
@@ -585,8 +585,7 @@ class xiqTests():
         """
         self.cfg['${TEST_NAME}'] = test_case = 'test_20676_validating_the_operation_of_close_button_in_update_window'
         self.executionHelper.testSkipCheck()
-    
+
         self.preCheck(test_case)
         result = self.xiq.xflowscommonDevices.update_network_device_firmware(device_mac=self.tb.dut1.mac, performUpgrade="false")
         if result == -1: self.collectLogs(test_case)
-

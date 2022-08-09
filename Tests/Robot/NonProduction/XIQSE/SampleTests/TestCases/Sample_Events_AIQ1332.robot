@@ -30,7 +30,7 @@ ${XIQSE_PASSWORD}       ${xiqse.password}
 *** Test Cases ***
 Test 1: Set Time Range
     [Documentation]     Confirms the events time range can be specified
-    [Tags]              xiqse_tc_137    aiq_1332    development    sample    xiqse    events    test1
+    [Tags]              tcxe_137    aiq_1332    development    sample    xiqse    events    test1
 
     [Setup]  Navigate to Events and Confirm Success
 
@@ -53,7 +53,7 @@ Test 1: Set Time Range
 
 Test 2: Set Type
     [Documentation]     Confirms the events type can be specified
-    [Tags]              xiqse_tc_137    aiq_1332    development    sample    xiqse    events    test2
+    [Tags]              tcxe_137    aiq_1332    development    sample    xiqse    events    test2
 
     [Setup]  Navigate to Events and Confirm Success
 
@@ -64,7 +64,7 @@ Test 2: Set Type
 
 Test 3: Search Events
     [Documentation]     Confirms the events view can be searched
-    [Tags]              xiqse_tc_137    aiq_1332    development    sample    xiqse    events    test3
+    [Tags]              tcxe_137    aiq_1332    development    sample    xiqse    events    test3
 
     [Setup]  Navigate to Events and Confirm Success
 
@@ -73,7 +73,7 @@ Test 3: Search Events
 
 Test 4: Confirm Events
     [Documentation]     Confirms the events view contains the expected event
-    [Tags]              xiqse_tc_137    aiq_1332    development    sample    xiqse    events    test4
+    [Tags]              tcxe_137    aiq_1332    development    sample    xiqse    events    test4
 
     [Setup]  Navigate to Events and Confirm Success
 

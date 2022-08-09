@@ -15,7 +15,7 @@ Library          xiq/flows/common/SideNavMenu.py
 
 Resource         ../../SideNavigation/Resources/AllResources.robot
 
-Force Tags       testbed_not_required
+Force Tags       testbed_none
 
 Suite Setup      Log Into XIQ
 Suite Teardown   Log Out and Close Session
@@ -30,7 +30,7 @@ ${XIQ_PASSWORD}     ${xiq.tenant_password}
 *** Test Cases ***
 TCXM-15229: Confirm Copilot On Top Menu
     [Documentation]     Confirms the Copilot side nav menu item is on top and has the correct icon
-    [Tags]              xim_tc_15229   development
+    [Tags]              tcxm_15229   development
 
     Confirm Main Side Nav Menu Item    ${nav.copilot.tag}   ${nav.copilot.pilot_number}   ${nav.copilot.icon_class}
 
@@ -43,7 +43,7 @@ TCXM-15229: Confirm Copilot On Top Menu
 
 TCXM-18146: Confirm Configure Menu
     [Documentation]     Confirms the Configure side nav menu item is the 2nd memu, has the correct icon and has all expected submenus
-    [Tags]              xim_tc_18146   development
+    [Tags]              tcxm_18146   development
 
     Confirm Main Side Nav Menu Item    ${nav.configure.tag}   ${nav.configure.pilot_number}   ${nav.configure.icon_class}
 
@@ -67,7 +67,7 @@ TCXM-18146: Confirm Configure Menu
 
 TCXM-18162: Confirm Manage Menu
     [Documentation]     Confirms the Manage side nav menu item is the 3rd menu, has the correct icon and has all expected submenus
-    [Tags]              xim_tc_18162   development
+    [Tags]              tcxm_18162   development
 
     Confirm Main Side Nav Menu Item   ${nav.manage.tag}   ${nav.manage.pilot_number}   ${nav.manage.icon_class}
 
@@ -145,7 +145,7 @@ TCXM-18162: Confirm Manage Menu
 
 TCXM-18163: Confirm ML Insights Menu
     [Documentation]     Confirms the ML Insights side nav menu item is the 4th menu, has the correct icon and has all expected submenus
-    [Tags]              xim_tc_18163   development
+    [Tags]              tcxm_18163   development
 
     Confirm Main Side Nav Menu Item   ${nav.insights.tag}   ${nav.insights.pilot_number}   ${nav.insights.icon_class}
 
@@ -184,7 +184,7 @@ TCXM-18163: Confirm ML Insights Menu
 
 TCXM-15230: Confirm Essentials Menu
     [Documentation]     Confirms the Essentials side nav menu item is the 5th, has the correct icon and has all expected submenus
-    [Tags]              xim_tc_15230   development
+    [Tags]              tcxm_15230   development
 
     Confirm Main Side Nav Menu Item    ${nav.essentials.tag}   ${nav.essentials.pilot_number}   ${nav.essentials.icon_class}
 
@@ -220,7 +220,7 @@ TCXM-15230: Confirm Essentials Menu
 
 TCXM-18164: Confirm A3 Menu
     [Documentation]     Confirms the A3 side nav menu item is the 6th menu, has the correct icon and has all the expected submenus
-    [Tags]              xim_tc_18164   development
+    [Tags]              tcxm_18164   development
 
     Confirm Main Side Nav Menu Item   ${nav.a3.tag}   ${nav.a3.pilot_number}   ${nav.a3.icon_class}
 

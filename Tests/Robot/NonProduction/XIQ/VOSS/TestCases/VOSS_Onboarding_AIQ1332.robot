@@ -52,7 +52,7 @@ ${LOCATION}                 San Jose, building_01, floor_02
 *** Test Cases ***
 Test 1: Test Device Onboarding - CSV Entry Type
     [Documentation]     Confirms a VOSS device can be onboarded via the Quick Add workflow using a CSV file and has the expected status
-    [Tags]              csit_tc_8405    aiq_1332    development    xiq    voss    onboarding    csv    test1
+    [Tags]              tccs_8405    aiq_1332    development    xiq    voss    onboarding    csv    test1
 
     [Setup]  Delete Device and Confirm Success  ${DUT_SERIAL}
 
@@ -64,7 +64,7 @@ Test 1: Test Device Onboarding - CSV Entry Type
 
 Test 2: Test Device Onboarding - No IQAgent Upgrade Required
     [Documentation]     Confirms a VOSS device can be onboarded successfully when IQAgent is at latest version
-    [Tags]              csit_tc_8429    aiq_1332    development    xiq    voss    onboarding    no_upgrade    test2
+    [Tags]              tccs_8429    aiq_1332    development    xiq    voss    onboarding    no_upgrade    test2
 
     [Setup]  Delete Device and Confirm Success  ${DUT_SERIAL}
 
@@ -88,7 +88,7 @@ Test 2: Test Device Onboarding - No IQAgent Upgrade Required
 
 Test 3: Test Device Onboarding - IQAgent Upgrade Required
     [Documentation]     Confirms a VOSS device can be onboarded successfully and the IQAgent is upgraded automatically
-    [Tags]              known_issue    csit_tc_8459    aiq_1332    development    xiq    voss    onboarding    upgrade    test3
+    [Tags]              known_issue    tccs_8459    aiq_1332    development    xiq    voss    onboarding    upgrade    test3
 
     [Setup]  Delete Device and Confirm Success  ${DUT_SERIAL}
 

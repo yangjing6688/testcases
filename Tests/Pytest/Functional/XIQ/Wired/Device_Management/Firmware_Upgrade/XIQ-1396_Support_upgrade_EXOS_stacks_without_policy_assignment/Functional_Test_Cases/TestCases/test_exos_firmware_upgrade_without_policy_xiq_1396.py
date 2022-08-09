@@ -54,7 +54,7 @@ class xiqTests():
     # [Setup] Test class setup
     @classmethod
     def setup_class(cls):
-        
+
         """
         This class is used to login to XIQ and onboard the exos stack device in the testbed.yaml file
 
@@ -75,7 +75,7 @@ class xiqTests():
             # Skipping the setup and test case execution in case the platform is not an exos-stack
             if cls.tb.config.netelem1.platform.lower() != 'stack':
                 pytest.skip("This platform {} is not supported for this feature!".format(cls.tb.dut1.cli_type))
-                
+
             # Getting the list of Stack nodes serial numbers from the testbed file
             device_serial_list = cls.tb.dut1.serial.split(",")
             dutMac = cls.tb.dut1.mac
@@ -84,14 +84,14 @@ class xiqTests():
             vrName = "vr-Mgmt"
             floor = "Fourth_"+str(dutMac)                       # Mac address is appended in floor
             DUT_LOCATION = location+","+building+","+floor
-            
+
             # Suite setup, just login to the xiq client and connect all the netelements
             def suite_setup (cls):
                 # Create new objects to use in test. Here we will import everything from the default library
                 cls.defaultLibrary = DefaultLibrary()
                 cls.udks = cls.defaultLibrary.apiUdks
                 cls.devCmd = cls.defaultLibrary.deviceNetworkElement.networkElementCliSend
-                
+
                 cls.xiq = XiqLibrary()
                 cls.xiq.login.login_user(cls.tb.config.tenant_username,
                                          cls.tb.config.tenant_password,
@@ -118,13 +118,13 @@ class xiqTests():
             # Onboarding EXOS device(s)
             def exosDeviceOnboard (cls):
                 # Onboarding the exos stack device dut1 from testbed.yaml file using serial numbers
-                result = cls.xiq.xflowsmanageSwitch.onboard_switch( cls.tb.dut1.serial, 
-                                                                    device_os = "Switch Engine", 
-                                                                    entry_type= "Manual", 
+                result = cls.xiq.xflowsmanageSwitch.onboard_switch( cls.tb.dut1.serial,
+                                                                    device_os = "Switch Engine",
+                                                                    entry_type= "Manual",
                                                                     location= DUT_LOCATION )
                 if result != 1:
                     pytest.fail("Onboard is not successful for all the devices.")
-                time.sleep(5) 
+                time.sleep(5)
 
             def netelementIqagentConfig (cls):
                 # An existing iqagent configs will be removed from device prior to configure the iqagent
@@ -133,13 +133,13 @@ class xiqTests():
 
                 # Verify the state of the XIQ agent is up/ready on the dut1(netelement-1)
                 cls.devCmd.send_cmd_verify_output(dutName, 'show process iqagent', 'Ready', max_wait=30, interval=10)
-                
+
                 vrConfig = "configure iqagent server vr " + vrName
                 # Configuring and enabling iqagent on netlement-1 based on the environment passed to the test script
                 cls.devCmd.send_cmd(dutName, 'configure iqagent server ipaddress ' + iqagentServer, max_wait=10,interval=2)
                 cls.devCmd.send_cmd(dutName, vrConfig, max_wait=10,interval=2)
                 cls.devCmd.send_cmd(dutName, 'enable iqagent', max_wait=10,interval=2)
-                               
+
                 # Verify the iqagent status is connected within the time intervel of 60 seconds
                 cls.devCmd.send_cmd_verify_output_regex(dutName, 'show iqagent', 'Status*.*CONNECTED TO XIQ', max_wait=180, interval=10)
 
@@ -162,11 +162,11 @@ class xiqTests():
                     max_wait -= 10
                     time_elapsed += 10
                     result =  cls.xiq.xflowscommonDevices.get_exos_stack_status(device_mac=dutMac)
-                    # Once the max_wait time is elapsed the it will be declared as not onboared successfully 
+                    # Once the max_wait time is elapsed the it will be declared as not onboared successfully
                     if (result == "red" or result == -1 ) and max_wait == 0 :
                         print ("\nFAILED \t Stack not formed properly, please check.\n")
                         pytest.fail('Expected stack icon colour is blue but found {}, stack not formed properly'.format(result))
-                        
+
                 # Unselect the columns that are not required for this test case.
                 time.sleep(10)
                 cls.xiq.xflowscommonDevices.column_picker_unselect("Template",
@@ -187,8 +187,8 @@ class xiqTests():
                                                                    "WiFi2 Power",
                                                                    "MGT VLAN",
                                                                    "NTP State" )
-                                                                   
-                               
+
+
                 # select the required coloumns from the device table if it is not selected.
                 time.sleep(10)
                 cls.xiq.xflowscommonDevices.column_picker_select("Device Status",
@@ -201,8 +201,8 @@ class xiqTests():
                                                                  "Managed",
                                                                  "Updated On",
                                                                  "IQAgent",
-                                                                 "OS Version" )                 
-                                
+                                                                 "OS Version" )
+
                 # Step-2: # Ensure all the stack members are in managed state under the stack master by checking each slot managed status
                 time.sleep(10)
                 result = cls.xiq.xflowscommonDevices.verify_stack_devices_managed(dutMac, device_serial_list)
@@ -215,9 +215,9 @@ class xiqTests():
                 if result != 'green':
                     print ("\nFAILED \tDevice is not in online or not connected to XIQ...\n")
                     pytest.fail('Status not equal to Green: {}'.format(result))
-                    
+
                 print (f"\nINFO \t Successfully onboarded the '{cls.tb.dut1_platform}' switch with mac '{dutMac}'.\n")
-             
+
             # EXOS Stack device onboarding and verification for the stack is formed properly and managed
             def onboardStack (cls):
                 # The following functions are used to onboard the stack device in XIQ and check the Status of the device is managed.
@@ -227,10 +227,10 @@ class xiqTests():
                 netelementIqagentConfig (cls)
                 checkStackStatusInxiq (cls)
                 checkDeviceStatusInxiq (cls)
-            
+
             # Calling the exos stack onboard function
             onboardStack (cls)
-            
+
         except Exception as e:
             cls.executionHelper.setSetupFailure(True)
 
@@ -259,7 +259,7 @@ class xiqTests():
             time.sleep(5)
             if result != 1:
                 pytest.fail("Could not delete the device with serial {}".format(serial))
-                
+
         # Reseting the column selection back to it's default value.
         cls.xiq.xflowscommonDevices.column_picker_select("MGMT IP Address",
                                                          "Uptime",
@@ -282,7 +282,7 @@ class xiqTests():
         # To Delete the location building floor that was created in the setup_class
         cls.xiq.xflowsmanageLocation.delete_location_building_floor(location, building, floor)
         time.sleep(5)
-        
+
         # Logout XIQ and close the browser
         cls.xiq.login.logout_user()
         cls.xiq.login.quit_browser()
@@ -291,11 +291,11 @@ class xiqTests():
 
     # """ Test Cases """
 
-    @mark.xim_tcxm_15977
+    @mark.tcxm_15977
     @mark.p1
     @mark.testbed_1_node
     def test_15977_check_update_option_stack_device(self):
-        
+
         """
         Description:    TCXM-15977       Verify the firmware upgrade option is available when a stack node is onboarded on XIQ (5520/5420/5320/X440G2) prior to assigning the policy.
 
@@ -313,7 +313,7 @@ class xiqTests():
 
 
 
-    @mark.xim_tcxm_15978
+    @mark.tcxm_15978
     @mark.p2
     @mark.testbed_1_node
     def test_15978_check_update_function_stack_device(self):
@@ -337,9 +337,9 @@ class xiqTests():
         # Check switch log for download image issued by iqagent on the device
         expecedResult = " Download image from hostname*.*"+str(latest_version)
         self.devCmd.send_cmd_verify_output_regex(self.tb.dut1_name, 'show log',expecedResult, max_wait=300, interval=10)
-        # Sleeping for 60 seconds to get this firmware upgrade info to reflect in xiq 
+        # Sleeping for 60 seconds to get this firmware upgrade info to reflect in xiq
         # time.sleep(60)
-        
+
         # Checking for the update column to refect the firmware update status
         result = self.xiq.xflowscommonDevices.get_device_updated_status(device_mac=self.tb.dut1.mac)
         count = 0
@@ -365,7 +365,6 @@ class xiqTests():
             if ("Device Update Failed" in result) or (count > max_wait):
                 self.devCmd.send_cmd_verify_output_regex(self.tb.dut1_name, 'show log',expecedResult, max_wait=30, interval=10)
                 pytest.fail("Device Update Failed for the device with mac {}".format(self.tb.dut1.mac))
-                
+
         # This is to validate the XIQ latest firmware is installed/present in the device post upgrade
         self.devCmd.send_cmd_verify_output(self.tb.dut1_name, 'show version', latest_version, max_wait=10, interval=2)
-

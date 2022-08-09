@@ -41,7 +41,7 @@ ${LOCATION}             San Jose, building_01, floor_02
 *** Test Cases ***
 Test 1: Confirm MGT IP Address Column
     [Documentation]     Confirms the MGT IP Address column is present, contains information, and IPv4 is not present
-    [Tags]              csit_tc_7013    aiq_1332    development    xiq    managed_devices    column_validation    mgt_ip    test1
+    [Tags]              tccs_7013    aiq_1332    development    xiq    managed_devices    column_validation    mgt_ip    test1
 
     Navigate to Devices and Confirm Success
     ${yes_result}=  Confirm Column Picker Contains Column           MGT IP Address
@@ -56,7 +56,7 @@ Test 1: Confirm MGT IP Address Column
 
 Test 2: Confirm Public IP Address Column
     [Documentation]     Confirms the Public IP Address column is present and contains information
-    [Tags]              csit_tc_7071    aiq_1332    development    xiq    managed_devices    column_validation    public_ip    test2
+    [Tags]              tccs_7071    aiq_1332    development    xiq    managed_devices    column_validation    public_ip    test2
 
     Navigate to Devices and Confirm Success
     ${yes_result}=  Confirm Column Picker Contains Column   Public IP Address

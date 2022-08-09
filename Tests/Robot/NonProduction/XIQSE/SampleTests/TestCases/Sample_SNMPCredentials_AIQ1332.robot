@@ -38,7 +38,7 @@ ${PRIV_PWD}             6789wxyZ
 *** Test Cases ***
 Test 1: Add SNMPv1 Credential
     [Documentation]     Confirms an SNMPv1 credential can be added
-    [Tags]              xiqse_tc_897    aiq_1332    development    sample    xiqse    snmp_creds    test1
+    [Tags]              tcxe_897    aiq_1332    development    sample    xiqse    snmp_creds    test1
 
     ${add_result}=  XIQSE Create SNMPv1 Credential  ${V1_CRED_NAME}  ${CRED_COMM}
     Should Be Equal As Integers                     ${add_result}     1
@@ -50,7 +50,7 @@ Test 1: Add SNMPv1 Credential
 
 Test 2: Add SNMPv2 Credential
     [Documentation]     Confirms an SNMPv2 credential can be added
-    [Tags]              xiqse_tc_897    aiq_1332    development    sample    xiqse    snmp_creds    test2
+    [Tags]              tcxe_897    aiq_1332    development    sample    xiqse    snmp_creds    test2
 
     ${add_result}=  XIQSE Create SNMPv2 Credential  ${V2_CRED_NAME}  ${CRED_COMM}
     Should Be Equal As Integers                     ${add_result}     1
@@ -62,7 +62,7 @@ Test 2: Add SNMPv2 Credential
 
 Test 3: Add SNMPv3 Credential - No Authentication
     [Documentation]     Confirms an SNMPv3 credential can be added with No Authentication Type
-    [Tags]              xiqse_tc_897    aiq_1332    development    sample    xiqse    snmp_creds    test3
+    [Tags]              tcxe_897    aiq_1332    development    sample    xiqse    snmp_creds    test3
 
     ${add_result}=  XIQSE Create SNMPv3 Credential  ${V3_CRED_NAME}  ${CRED_USER}
     Should Be Equal As Integers                     ${add_result}     1
@@ -74,7 +74,7 @@ Test 3: Add SNMPv3 Credential - No Authentication
 
 Test 4: Add SNMPv3 Credential - MD5 Authentication
     [Documentation]     Confirms an SNMPv3 credential can be added with MD5 Authentication Type
-    [Tags]              xiqse_tc_897    aiq_1332    development    sample    xiqse    snmp_creds    test4
+    [Tags]              tcxe_897    aiq_1332    development    sample    xiqse    snmp_creds    test4
 
     ${add_result}=  XIQSE Create SNMPv3 Credential  ${V3_CRED_NAME}  ${CRED_USER}  auth_type=MD5  auth_pwd=${AUTH_PWD}
     Should Be Equal As Integers                     ${add_result}     1
@@ -86,7 +86,7 @@ Test 4: Add SNMPv3 Credential - MD5 Authentication
 
 Test 5: Add SNMPv3 Credential - SHA Authentication
     [Documentation]     Confirms an SNMPv3 credential can be added with SHA Authentication Type
-    [Tags]              xiqse_tc_897    aiq_1332    development    sample    xiqse    snmp_creds    test5
+    [Tags]              tcxe_897    aiq_1332    development    sample    xiqse    snmp_creds    test5
 
     ${add_result}=  XIQSE Create SNMPv3 Credential  ${V3_CRED_NAME}  ${CRED_USER}  auth_type=SHA  auth_pwd=${AUTH_PWD}
     Should Be Equal As Integers                     ${add_result}     1
@@ -98,7 +98,7 @@ Test 5: Add SNMPv3 Credential - SHA Authentication
 
 Test 6: Add SNMPv3 Credential - AES Privacy
     [Documentation]     Confirms an SNMPv3 credential can be added with AES Privacy Type
-    [Tags]              xiqse_tc_897    aiq_1332    development    sample    xiqse    snmp_creds    test6
+    [Tags]              tcxe_897    aiq_1332    development    sample    xiqse    snmp_creds    test6
 
     ${add_result}=  XIQSE Create SNMPv3 Credential  ${V3_CRED_NAME}  ${CRED_USER}  auth_type=MD5  auth_pwd=${AUTH_PWD}
     ...    priv_type=AES    priv_pwd=${PRIV_PWD}
@@ -111,7 +111,7 @@ Test 6: Add SNMPv3 Credential - AES Privacy
 
 Test 7: Add SNMPv3 Credential - DES Privacy
     [Documentation]     Confirms an SNMPv3 credential can be added with AES Privacy Type
-    [Tags]              xiqse_tc_897    aiq_1332    development    sample    xiqse    snmp_creds    test7
+    [Tags]              tcxe_897    aiq_1332    development    sample    xiqse    snmp_creds    test7
 
     ${add_result}=  XIQSE Create SNMPv3 Credential  ${V3_CRED_NAME}  ${CRED_USER}  auth_type=MD5  auth_pwd=${AUTH_PWD}
     ...    priv_type=DES    priv_pwd=${PRIV_PWD}

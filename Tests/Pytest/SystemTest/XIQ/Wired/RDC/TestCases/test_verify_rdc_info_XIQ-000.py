@@ -18,7 +18,7 @@ from Tests.Pytest.SystemTest.XIQ.Wired.Resources.SuiteUdks import SuiteUdks
 
 
 
-@mark.testbed_not_required
+@mark.testbed_none
 class verifyRdcInfoTests():
 
 
@@ -82,7 +82,3 @@ class verifyRdcInfoTests():
         else:
             print(f"The XIQ Version found {xiq_version} matches the "
                   f"expected XIQ version  {self.cfg['build_version']} on RDC {self.cfg['data_center_name']}")
-
-
-
-

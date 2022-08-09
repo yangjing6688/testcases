@@ -84,7 +84,7 @@ ${NSRELEASE_VERSION}                ${upgrades.nsrelease_version}
 *** Test Cases ***
 Test 1: Cli XIQSE Upgrade From XIQSE
     [Documentation]  Tests XIQ-SE Upgrades from XIQSE as defined in topology file
-    [Tags]           xiqse_tcxe_958    xmc_5685    development    xiqse    acceptance    upgrade_xiqse_from_xiqse    upgrade_from_xiqse    test1
+    [Tags]           tcxe_958    xmc_5685    development    xiqse    acceptance    upgrade_xiqse_from_xiqse    upgrade_from_xiqse    test1
 
     ${version} =   Get From Dictionary   ${UPGRADE_TEST_XIQSE}    version
     Run Keyword If  'xiqseSnapShotId' in ${UPGRADE_TEST_XIQSE}      Site Engine Upgrade  ${UPGRADE_TEST_XIQSE}
@@ -92,7 +92,7 @@ Test 1: Cli XIQSE Upgrade From XIQSE
 
 Test 2: CLI NAC Appliance From XIQSE
     [Documentation]  Tests NAC Upgrades from XIQSE defined in topology file
-    [Tags]           xiqse_tcxe_958    xmc_5685    development    xiqse    acceptance    upgrade_nac_from_xiqse    upgrade_from_xiqse    test2
+    [Tags]           tcxe_958    xmc_5685    development    xiqse    acceptance    upgrade_nac_from_xiqse    upgrade_from_xiqse    test2
 
     ${version} =   Get From Dictionary   ${UPGRADE_TEST_XIQSE}  version
     Run Keyword If  'nacSnapShotId' in ${UPGRADE_TEST_XIQSE}     Nac Engine Upgrade  ${UPGRADE_TEST_XIQSE}
@@ -100,7 +100,7 @@ Test 2: CLI NAC Appliance From XIQSE
 
 Test 3: CLI Purview Appliance From XIQSE
     [Documentation]  Tests Purview Upgrades from XIQSE as defined in topology file
-    [Tags]           xiqse_tcxe_958    xmc_5685    development    xiqse    acceptance    upgrade_purview_from_xiqse    upgrade_from_xiqse    test3
+    [Tags]           tcxe_958    xmc_5685    development    xiqse    acceptance    upgrade_purview_from_xiqse    upgrade_from_xiqse    test3
 
     ${version} =   Get From Dictionary   ${UPGRADE_TEST_XIQSE}  version
     Run Keyword If   'purviewSnapShotId' in ${UPGRADE_TEST_XIQSE}    Purview Engine Upgrade  ${UPGRADE_TEST_XIQSE}
@@ -108,7 +108,7 @@ Test 3: CLI Purview Appliance From XIQSE
 
 Test 4: CLI NGAnalytics Appliance From XIQSE
     [Documentation]  Tests NGAnalytics Upgrades from XIQSE as defined in topology file
-    [Tags]           xiqse_tcxe_958    xmc_5685    development    xiqse    acceptance    upgrade_nganalytics_from_xiqse    upgrade_from_xiqse    test4
+    [Tags]           tcxe_958    xmc_5685    development    xiqse    acceptance    upgrade_nganalytics_from_xiqse    upgrade_from_xiqse    test4
 
     ${version} =   Get From Dictionary   ${UPGRADE_TEST_XIQSE}  version
     Run Keyword If    'ngAnalyticsSnapShotId' in ${UPGRADE_TEST_XIQSE}   NGAnalytics Engine Upgrade  ${UPGRADE_TEST_XIQSE}
@@ -116,5 +116,5 @@ Test 4: CLI NGAnalytics Appliance From XIQSE
 
 Test 5: Check Server Log
     [Documentation]   Check server.log for exceptions.
-    [Tags]            known_issue    xiqse_tcxe_958    xmc_5685    development    xiqse    acceptance    exception_check    test5
+    [Tags]            known_issue    tcxe_958    xmc_5685    development    xiqse    acceptance    exception_check    test5
     Check Server Log For Exceptions  ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}

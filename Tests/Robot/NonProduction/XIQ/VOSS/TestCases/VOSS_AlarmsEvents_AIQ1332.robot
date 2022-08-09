@@ -46,7 +46,7 @@ ${LOCATION}                 San Jose, building_01, floor_02
 *** Test Cases ***
 Test1: Confirm Link Down Event
     [Documentation]     Disables a port on the test device and confirms a Link Down event is generated
-    [Tags]              csit_tc_8384    aiq_1332    development    xiq    voss    alarms_events    test1
+    [Tags]              tccs_8384    aiq_1332    development    xiq    voss    alarms_events    test1
 
     Disable Port for Test Device            ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_TEST_PORT}
 
@@ -61,7 +61,7 @@ Test1: Confirm Link Down Event
 
 Test2: Confirm Link Up Event
     [Documentation]     Enables a port on the test device and confirms a Link Up event is generated
-    [Tags]              csit_tc_8384    aiq_1332    development    xiq    voss    alarms_events    test2
+    [Tags]              tccs_8384    aiq_1332    development    xiq    voss    alarms_events    test2
 
     Enable Port for Test Device             ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_TEST_PORT}
 
@@ -76,7 +76,7 @@ Test2: Confirm Link Up Event
 
 Test3: Confirm Device Disconnected Alarm
     [Documentation]     Disconnect the test device from the IQ agent and confirms a Device Disconnected alarm is generated
-    [Tags]              csit_tc_8384    aiq_1332    development    xiq    voss    alarms_events    test3
+    [Tags]              tccs_8384    aiq_1332    development    xiq    voss    alarms_events    test3
 
     Disable iqagent for Test Device         ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
 

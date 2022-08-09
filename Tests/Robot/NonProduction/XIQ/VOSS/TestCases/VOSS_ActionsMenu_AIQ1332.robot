@@ -49,7 +49,7 @@ ${SSID_NAME}                VOSS_SSID_AUTO
 *** Test Cases ***
 Test 1: Confirm Action Assign Network Policy
     [Documentation]     Confirms the Assign Network Policy action works successfully
-    [Tags]              csit_tc_8387    aiq_1332    development    xiq    voss    actions_menu    policy    test1
+    [Tags]              tccs_8387    aiq_1332    development    xiq    voss    actions_menu    policy    test1
 
     # Assign the network policy
     ${action_result}=  Update Network Policy to Switch      ${POLICY_NAME}  ${DUT_SERIAL}
@@ -61,7 +61,7 @@ Test 1: Confirm Action Assign Network Policy
 
 Test 2: Confirm Action Assign Location
     [Documentation]     Confirms the Assign Location action works successfully
-    [Tags]              csit_tc_8387    aiq_1332    development    xiq    voss    actions_menu    location    test2
+    [Tags]              tccs_8387    aiq_1332    development    xiq    voss    actions_menu    location    test2
 
     # Assign the location
     ${action_result}=  Assign Location With Device Actions      ${DUT_SERIAL}  ${LOCATION}
@@ -73,7 +73,7 @@ Test 2: Confirm Action Assign Location
 
 Test 3: Confirm Action Reboot
     [Documentation]     Confirms the Reboot action works successfully
-    [Tags]              csit_tc_8387    aiq_1332    development    xiq    voss    actions_menu    reboot    test3
+    [Tags]              tccs_8387    aiq_1332    development    xiq    voss    actions_menu    reboot    test3
 
     # Reboot the device
     ${action_result}=  Device Reboot                ${DUT_SERIAL}

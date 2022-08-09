@@ -766,20 +766,12 @@ jobs:
     # Developers must have two tags or markers.  The first tag or marker will identify the qTest project and test case number in the format: <project>_tc_<test case number>.  The second tag or marker must be: “development”, indicating that this test case is new to the automation system.
     # The project names are short names that identify the qTest project.  The names and their matching project are listed below.
     #
-    # Project Names
-    # csit -> csit
-    # xim -> XIQ Mainline
-    # exos -> EXOS
-    # voss -> VOSS
-    # xiq -> xiq
-    # xnt -> EXOS-NOS-TestPlans
-    # xna -> EXOS-NOS-UnifiedAgile
     #
     #  Robot:
-    # [Tags] csit_tc_4501    development
+    # [Tags] tccs_4501    development
     #
     # PyTest:
-    # @pytest.mark.csit_tc_4501
+    # @pytest.mark.tccs_4501
     # @pytest.mark.development
     #
     # Identifying the TestBed

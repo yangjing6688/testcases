@@ -47,7 +47,7 @@ ${LOCATION}             San Jose, building_01, floor_02
 *** Test Cases ***
 Test 1: Change Port Configuration
     [Documentation]     Changes the port configuration on the switch
-    [Tags]              csit_tc_7032   aiq_1332    development    xiq    manage_devices    switch_revert    test1
+    [Tags]              tccs_7032   aiq_1332    development    xiq    manage_devices    switch_revert    test1
 
     Navigate to Device360 Port Configuration and Confirm Success  ${DUT_MAC}
 
@@ -66,14 +66,14 @@ Test 1: Change Port Configuration
 
 Test 2: Revert Device to Template Defaults
     [Documentation]     Performs the 'Revert Device to Template Defaults' action
-    [Tags]              csit_tc_7032   aiq_1332    development    xiq    manage_devices    switch_revert    test2
+    [Tags]              tccs_7032   aiq_1332    development    xiq    manage_devices    switch_revert    test2
 
     ${result}=  Revert Device to Template  ${DUT_SERIAL}
     Should Be Equal As Integers            ${result}  1
 
 Test 3: Confirm Port Configuration Was Reverted
     [Documentation]     Confirms the port configuration changes were reverted to template defaults
-    [Tags]              csit_tc_7032   aiq_1332    development    xiq    manage_devices    switch_revert    test3
+    [Tags]              tccs_7032   aiq_1332    development    xiq    manage_devices    switch_revert    test3
 
     Navigate to Device360 Port Configuration and Confirm Success  ${DUT_MAC}
 

@@ -22,8 +22,8 @@ Force Tags      testbed_1_node
 TCXM-15265: Verify that WEB CLI is available for EXOS Stack
     #Onboarding:
     [Documentation]	This testcase Onboard and checks the Web CLI is available for stack
-    [Tags]              xim_tcxm_15265   development              p1   
- 
+    [Tags]              tcxm_15265   development              p1
+
     Delete Device     device_mac=${netelem1.mac}
     @{result} =    Split String    ${netelem1.serial}    ,
     FOR		${serialnumber}     IN    @{result}
@@ -64,8 +64,8 @@ TCXM-15265: Verify that WEB CLI is available for EXOS Stack
 
 TCXM-15266: Ping command can be executed to a specific destination
     [Documentation]	Verify that the user can iniate a ping command from EXOS Stack through WEB CLI
-    [Tags]              xim_tcxm_15266   development              p1   
-	
+    [Tags]              tcxm_15266   development              p1
+
     Navigate to Devices and Confirm Success
     refresh devices page
     ${output}=              test device cli   ping 127.0.0.1        device_mac=${netelem1.mac}
@@ -75,7 +75,7 @@ TCXM-15266: Ping command can be executed to a specific destination
 
 TCXM-15267: Traceroute command can be executed to a specific destination
     [Documentation]	Verify that the user can iniate a traceroute command from EXOS Stack through WEB CLI
-    [Tags]              xim_tcxm_15267   development              p1   
+    [Tags]              tcxm_15267   development              p1
     Navigate to Devices and Confirm Success
     refresh devices page
     ${output}=              test device cli    traceroute www.google.com   device_mac=${netelem1.mac}      delay=60
@@ -87,7 +87,7 @@ TCXM-15267: Traceroute command can be executed to a specific destination
 
 TCXM-15268: Verify that the user can iniate show commands for interface, protocols through WEB CLI
     [Documentation]	Verify that the user can iniate show commands for interface, protocols through WEB CLI
-    [Tags]              xim_tcxm_15268   development              p1   
+    [Tags]              tcxm_15268   development              p1
     Navigate to Devices and Confirm Success
     refresh devices page
     ${output}=              test device cli     show ports no-refresh       device_mac=${netelem1.mac}
@@ -103,7 +103,7 @@ TCXM-15268: Verify that the user can iniate show commands for interface, protoco
 
 TCXM-15269 Verify that the user can iniate bogus commands through WEB CLI
     [Documentation]	Verify that the user can iniate bogus commands through WEB CLI
-    [Tags]              xim_tcxm_15269   development              p1   
+    [Tags]              tcxm_15269   development              p1
 
     Navigate to Devices and Confirm Success
     refresh devices page
@@ -115,7 +115,7 @@ TCXM-15269 Verify that the user can iniate bogus commands through WEB CLI
 
 TCXM-15270: Verify that the user has the ability for configuring items are supported in XIQ, through WEB CLI
     [Documentation]	Verify that the user has the ability for configuring items not supported in XIQ, through WEB CLI
-    [Tags]              xim_tcxm_15270   development              p1   
+    [Tags]              tcxm_15270   development              p1
     Navigate to Devices and Confirm Success
     refresh devices page
     ${output}=              test device cli
@@ -146,7 +146,7 @@ Log Into XIQ and Confirm Success
 
 Navigate to Devices and Confirm Success
     [Documentation]     Navigates to the Manage> Devices view and confirms the action was successful
-    
+
     ${nav_result}=  Navigate to Devices
     Should Be Equal As Integers  ${nav_result}  1
 

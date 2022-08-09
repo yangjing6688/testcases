@@ -40,7 +40,7 @@ ${XIQ_PASSWORD}         ${xiq.tenant_password}
 *** Test Cases ***
 Test 1: Onboard XIQSE to XIQ
     [Documentation]     Onboards XIQSE to XIQ and confirms the onboard was successful
-    [Tags]              xiqse_tc_899    aiq_1332    development    sample    xiqse    xiq_integration    test1
+    [Tags]              tcxe_899    aiq_1332    development    sample    xiqse    xiq_integration    test1
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 
@@ -50,7 +50,7 @@ Test 1: Onboard XIQSE to XIQ
 
 Test 2: Confirm XIQSE Present in XIQ Devices Table
     [Documentation]     Performs a search in the XIQ Devices table for XIQSE and confirms XIQSE is present
-    [Tags]              xiqse_tc_899    aiq_1332    development    sample    xiqse    xiq_integration    test2
+    [Tags]              tcxe_899    aiq_1332    development    sample    xiqse    xiq_integration    test2
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -63,7 +63,7 @@ Test 2: Confirm XIQSE Present in XIQ Devices Table
 
 Test 3: Remove XIQSE from XIQ
     [Documentation]     Removes XIQSE from XIQ
-    [Tags]              xiqse_tc_899    aiq_1332    development    sample    xiqse    xiq_integration    test3
+    [Tags]              tcxe_899    aiq_1332    development    sample    xiqse    xiq_integration    test3
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -71,7 +71,7 @@ Test 3: Remove XIQSE from XIQ
 
 Test 4: Confirm XIQSE Not Present in XIQ Devices Table
     [Documentation]     Confirms XIQSE is not present in XIQ Devices table
-    [Tags]              xiqse_tc_899    aiq_1332    development    sample    xiqse    xiq_integration    test4
+    [Tags]              tcxe_899    aiq_1332    development    sample    xiqse    xiq_integration    test4
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 

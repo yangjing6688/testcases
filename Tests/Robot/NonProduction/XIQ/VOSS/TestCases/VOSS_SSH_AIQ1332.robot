@@ -52,7 +52,7 @@ ${SSID_NAME}                VOSS_SSID_AUTO
 *** Test Cases ***
 Test 1: Enable SSH on Teste Device and Confirm SSH Session Can Be Established
     [Documentation]     Enables SSH for the VOSS Switch
-    [Tags]              csit_tc_8553    aiq_1332    development    xiq    voss    ssh    test1
+    [Tags]              tccs_8553    aiq_1332    development    xiq    voss    ssh    test1
 
     &{ip_port_info}=                    Device360 Enable SSH CLI Connectivity   device_mac=${DUT_MAC}  run_time=${SSH_TIMER}
     ${ip}=                              Get From Dictionary  ${ip_port_info}  ip
@@ -70,7 +70,7 @@ Test 1: Enable SSH on Teste Device and Confirm SSH Session Can Be Established
 
 Test 2: Confirm SSH Session Is Automatically Disabled When Timer Expires
     [Documentation]     Confirms SSH is disabled when the timer expires
-    [Tags]              csit_tc_8553    aiq_1332    development    xiq    voss    ssh    test2
+    [Tags]              tccs_8553    aiq_1332    development    xiq    voss    ssh    test2
 
     Depends On  Test 1
 
