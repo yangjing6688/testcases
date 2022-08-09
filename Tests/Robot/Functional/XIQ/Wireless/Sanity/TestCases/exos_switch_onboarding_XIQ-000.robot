@@ -92,7 +92,7 @@ TCCS-7292_Step2: Verify EXOS Switch Information on Device 360 page
 
     Depends On              TCCS-7292_Step1
 
-    ${SYS_INFO_360_PAGE}=          Get ExOS Switch 360 Information  device_mac=${netelem1.mac}
+    ${SYS_INFO_360_PAGE}=          Get Device 360 Information  ${netelem1.cli_type}     device_mac=${netelem1.mac}
     ${HOST_NAME}=                  Get From Dictionary      ${SYS_INFO_360_PAGE}    host_name
     Should Be Equal As Strings    '${HOST_NAME}'            '${netelem1.name}'
     ${DEVICE_MODEL}=               Get From Dictionary      ${SYS_INFO_360_PAGE}    device_model
