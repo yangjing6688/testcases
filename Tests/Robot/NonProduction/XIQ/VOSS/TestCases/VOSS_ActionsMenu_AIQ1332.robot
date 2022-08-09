@@ -31,11 +31,13 @@ ${IQAGENT}                  ${xiq.sw_connection_host}
 ${DUT_SERIAL}               ${netelem3.serial}
 ${DUT_NAME}                 ${netelem3.name}
 ${DUT_TEMPLATE}             ${netelem3.template}
-${DUT_CONSOLE_IP}           ${netelem3.ip}
-${DUT_CONSOLE_PORT}         ${netelem3.port}
+${DUT_IP}                   ${netelem3.ip}
+${DUT_PORT}                 ${netelem3.port}
 ${DUT_USERNAME}             ${netelem3.username}
 ${DUT_PASSWORD}             ${netelem3.password}
 ${DUT_PLATFORM}             ${netelem3.platform}
+${DUT_MAKE}                 ${netelem3.make}
+${DUT_CLI_TYPE}             ${netelem3.cli_type}
 
 ${DEFAULT_DEVICE_PWD}       Aerohive123
 ${LOCATION}                 auto_location_01, Santa Clara, building_02, floor_04
@@ -86,11 +88,11 @@ Test 3: Confirm Action Reboot
 Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ and sets up the elements necessary to complete this test suite
 
-    Log Into XIQ and Confirm Success  ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
+    Log Into XIQ and Confirm Success            ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
     Change Device Password and Confirm Success  ${DEFAULT_DEVICE_PWD}
     Create Open Express Policy With Switch Template and Confirm Success  ${POLICY_NAME}  ${SSID_NAME}  ${DUT_TEMPLATE}
-    Configure Test Device  ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${IQAGENT}
-    Onboard New Test Device  ${DUT_SERIAL}  ${LOCATION}
+    Configure Test Device                       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}
+    Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}
 
 Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
@@ -101,15 +103,15 @@ Tear Down Test and Close Session
     Log Out of XIQ and Quit Browser
 
 Configure Test Device
-    [Documentation]     Configures the specified test device by resetting to factory defaults and configuring the iqagent
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${agent}
+    [Documentation]     Configures the specified test device by rebooting a known good configuration file and then configuring the iqagent
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${agent}
 
-    Reset VOSS Switch to Factory Defaults  ${ip}  ${port}  ${user}  ${pwd}
-    Configure iqagent for VOSS Switch      ${ip}  ${port}  ${user}  ${pwd}  ${agent}
+    Boot Switch To Known Good Configuration     ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
+    Configure Device To Connect To Cloud        ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${agent}
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${location}
+    [Arguments]         ${serial}  ${make}  ${location}
 
     Navigate to Devices and Confirm Success
 
@@ -118,7 +120,7 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    Onboard VOSS Device  ${serial}  loc_name=${location}
+    Onboard Device    ${serial}  ${make}  location=${location}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 
