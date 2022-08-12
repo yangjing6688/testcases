@@ -34,12 +34,13 @@ ap1:
       neighbour_mac:            3485843A5CC0
 
 mu1:
-  ip:             10.16.166.236
+  ip:             10.16.166.36
   port:           8270
   username:       admin
   password:       symbol
   platform:       windows
   mac_wifi_port:  en1
-  wifi_mac:       843a4b916850
-  # wifi_network:   10.234.178
-  # wifi_network_vlan10:    10.234.178
+  wifi_mac:       843A4B916850
+  ethernet_mac:   2C59E50325BC
+  wifi_network:   10.16.166.248
+  wifi_network_vlan10:  10.16.166.248

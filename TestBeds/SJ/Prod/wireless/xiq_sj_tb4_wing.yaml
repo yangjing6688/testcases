@@ -2,16 +2,16 @@ wing1:
   name:                     ap7532-861180
   model:                    AP7532I
   device_template:          AP7532I-default-template
-  serial:                   "15061522201462"
+  serial:                   "16085522201086"
   os_version:               7.6.0.1-004R
-  mac:                      84248D861180
+  mac:                      7467F7A15D1C
   bssid:
   network_policy:           Test_np
   cli_type:                 "WING-AP"
   username:                 admin
   password:                 extreme
   platform:                 wing
-  ip:                       10.16.166.232
+  ip:                       10.16.169.43
   port:                     22
   country:                  United Kingdom
   make:                     Controllers

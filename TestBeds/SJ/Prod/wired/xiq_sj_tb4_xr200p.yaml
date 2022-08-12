@@ -3,7 +3,7 @@ router1:
   model:                    XR200P
   device_template:          XR200P_test_automation
   serial:                   "20316031100565"
-  ip:                       10.16.169.40
+  ip:                       10.16.169.55
   port:                     22
   cli_type:                 "AH-XR"
   connection_method:        "console"

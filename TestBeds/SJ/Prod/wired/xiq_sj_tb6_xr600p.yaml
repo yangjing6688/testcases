@@ -3,10 +3,9 @@ router1:
   model:                    XR600P
   device_template:          XR600P_test_automation
   serial:                   "60018082400393"
-  # Left the IP in just in case we need it in the future
-  ip:                       10.16.171.37 # 10.16.171.73
-  port:                     4001 # 22
-  connect_method:           "console"
+  ip:                       10.16.171.37  #10.16.171.73
+  port:                     4001    #22
+  connect_method:           console
   cli_type:                 "AH-XR"
   mac:                      F4EAB52DCE00
   network_policy:           Test_np

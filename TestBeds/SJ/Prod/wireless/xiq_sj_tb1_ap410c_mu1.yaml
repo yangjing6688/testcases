@@ -35,12 +35,13 @@ ap1:
 
 
 mu1:
-  ip:             10.16.166.237
+  ip:             10.16.166.37
   port:           8270
   username:       admin
   password:       symbol
   platform:       windows
   mac_wifi_port:  en1
   wifi_mac:       0024D765CDB8
-  # wifi_network:   10.234.178
-  # wifi_network_vlan10:    10.234.178
+  ethernet_mac:   68B599EBE79A
+  wifi_network:   10.16.166.235
+  wifi_network_vlan10:    10.234.178

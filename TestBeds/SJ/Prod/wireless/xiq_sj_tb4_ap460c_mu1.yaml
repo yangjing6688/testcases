@@ -35,9 +35,13 @@ ap1:
 
 mu1:
   ip:             10.16.169.36
-  port:           22
-  username:       root
+  port:           8270
+  username:       admin
   password:       aerohive
   platform:       mac
   mac_wifi_port:  en1
   wifi_mac:       F01898881935
+  interface:      wlan0
+  ethernet_mac:   14C213EC8500
+  wifi_network:   10.16.169
+  wifi_network_vlan10:  10.16.169.92
