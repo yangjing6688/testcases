@@ -14,7 +14,7 @@ def parse_args():
     parser.add_argument('--recipients', nargs='+', help="Addresses that will received the email", type=str, required=True)
     parser.add_argument('--subject', help="Subject line", type=str, required=True)
     parser.add_argument('--message', help="Email body", type=str, required=True)
-    parser.add_argument('--attachments', nargs='+', default=[], help="Files to attach", type=str )
+    parser.add_argument('--attachments', nargs='*', default=[], help="Files to attach", type=str )
     parser.add_argument('--auth-token', help="AutoIQ Authentication Token", type=str, required=True)
     parser.add_argument('--warn', help="Don't return a bad return code. Only print problems.", action='store_true')
     return parser.parse_args()

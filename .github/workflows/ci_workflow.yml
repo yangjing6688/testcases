@@ -716,10 +716,6 @@ jobs:
       run: |
         pip install -r requirements.txt
 
-    # TODO: Figure out how to get pytest to only operate on input files. If that isn't viable
-    #       run for all files and only grab the ones we want(would take SIGNIFICANTLY more time)
-    # potential workaround: copy modified tests to another directory and run pytest there
-    # this would require either making a whole mimiced dir tree or using a different method of identifying the tests
     - name: Run pytest inventory tool
       if: ${{env.SKIP_CHECK == 'false' && env.RUN_PYTEST == 'true'}}
       run: |
@@ -825,241 +821,240 @@ jobs:
       run: |
         echo "::set-output name=status::${{ job.status }}"
 
-  check_tests_functionality:
-    needs: [check_changes, check_tags]
-    name: Test functionality validation
-    runs-on: ubuntu-latest
-    outputs:
-      status: ${{ steps.set-output.outputs.status }}
+  # ####
+  # # Commentted out on 8/15/22 by peter sadej
+  # # We decided that coming up with a system that figures out what testbed a testcase needs to run is not worth the effort currently.
+  # # Leaving code here incase we come back to this in the future
+  # ####
 
-    steps:
-    - name: Checkout modified files
-      uses: actions/checkout@v2
+  # check_tests_functionality:
+  #   needs: [check_changes, check_tags]
+  #   name: Test functionality validation
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     status: ${{ steps.set-output.outputs.status }}
 
-    - uses: actions/download-artifact@v2
-      with:
-        name: ${{ env.changed_files_artifact_name }}
+  #   steps:
+  #   - name: Checkout modified files
+  #     uses: actions/checkout@v2
 
-    - name: Prep environment
-      run: |
-        echo "RUN_PYTEST=${{ needs.check_changes.outputs.run-pytest }}" >> $GITHUB_ENV
-        echo "RUN_ROBOT=${{ needs.check_changes.outputs.run-robot }}" >> $GITHUB_ENV
+  #   - uses: actions/download-artifact@v2
+  #     with:
+  #       name: ${{ env.changed_files_artifact_name }}
 
-    # Commented out on 4/21/22 by petersadej.
-    # This report is currently broken due to changes outside of this script. All or parts of this can be used in the future
-    #
-    #     # Create report file
-    #     cat >${{ env.testcase_func_report_path }} <<EOL
-    #     ***********************************************************
-    #     ************** Testcase Functionality Report **************
-    #     ***********************************************************
-
-    #     EOL
-
-    - name: Handle Skip Requests
-      run: |
-        python .github/workflows/skip_handler.py --actor "${{ github.actor }}" --title '${{ github.event.pull_request.title }}' --check func | tee -a ${{ env.testcase_func_report_path }}
-
-    - name: Pre-job-submission prep
-      if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
-      run: |
-        # TODO: get this function working
-        ################################
-        # run_curl () {
-        #   echo $1
-        #   echo "$1"
-        #   curl_output=$( curl $1 )
-        #   curl_return_code=$?
-
-        #   if (( $curl_return_code != 0 )); then
-        #     echo "Error contacting to AutoIQ. Message: ${curl_output}"
-        #     exit 1
-        #   fi
-        # }
-
-        # # Get a session token for this run
-        # curl_command="-X GET --no-progress-meter \"http://autoiq.extremenetworks.com/auth/getSessionTokenFromPAT\" -H \"accept: application/json\" -H \"authorization: PAT ${{ secrets.AUTOIQ_PAT }}\""
-        # echo $curl_command
-        # run_curl "$curl_command"
-        # session_token=$( echo "$curl_command" | jq -r '.result.sessionToken' )
-        # echo $curl_output
-        ################################
-
-        ### Get Session token
-        curl_return_code=0
-        curl_output=$( curl -X GET  --no-progress-meter \
-                        "http://autoiq.extremenetworks.com/auth/getSessionTokenFromPAT" \
-                        -H "accept: application/json" \
-                        -H "authorization: PAT ${{ secrets.AUTOIQ_PAT }}" )
-        curl_return_code=$?
-
-        if (( $curl_return_code != 0 )); then
-          echo "Error getting session token. Message: ${curl_output}"
-          exit 1
-        else
-          session_token=$( echo "${curl_output}" |  jq -r '.result.sessionToken' )
-        fi
-
-        ### Get list of available testbeds for each harness
-        # harnesses: pytest, robot, tcl
-        # 11111111-2222-2222-2222-111111111111 (pytest), 11111111-6666-6666-6666-111111111111 (robot), 11111111-5555-5555-5555-111111111111 (tcl)
-        curl_return_code=0
-        curl_output=$( curl -X GET --no-progress-meter \
-                                    "http://autoiq.extremenetworks.com/tbedmgr/jobmgr/cicdPlatforms/pytest" \
-                                    -H "accept: application/json" \
-                                    -H "authorization: Bearer ${session_token}" )
-        curl_return_code=$?
-
-        if (( $curl_return_code != 0 )); then
-          echo "Error getting session token. Message: ${curl_output}"
-          exit 1
-        else
-          available_testbeds_pytest=$( echo "${curl_output}" | jq '.result[]' )
-        fi
-
-        curl_return_code=0
-        curl_output=$( curl -X GET --no-progress-meter \
-                                    "http://autoiq.extremenetworks.com/tbedmgr/jobmgr/cicdPlatforms/robot" \
-                                    -H "accept: application/json" \
-                                    -H "authorization: Bearer ${session_token}" )
-        curl_return_code=$?
-
-        if (( $curl_return_code != 0 )); then
-          echo "Error getting session token. Message: ${curl_output}"
-          exit 1
-        else
-          available_testbeds_robot=$( echo "${curl_output}" | jq '.result[]' )
-        fi
-
-        echo "pytest testbeds: $available_testbeds_pytest"
-        echo "robot testbeds: $available_testbeds_robot"
-
-        # echo "ROBOT_TESTBEDS=${available_testbeds_robot}" >> $GITHUB_ENV
-        # echo "PYTEST_TESTBEDS=${available_testbeds_pytest}" >> $GITHUB_ENV
-        echo "SESSION_TOKEN=${session_token}" >> $GITHUB_ENV
+  #   - name: Prep environment
+  #     run: |
+  #       echo "RUN_PYTEST=${{ needs.check_changes.outputs.run-pytest }}" >> $GITHUB_ENV
+  #       echo "RUN_ROBOT=${{ needs.check_changes.outputs.run-robot }}" >> $GITHUB_ENV
 
 
-    # Submit job for each platform on each NOS that runs all the tests
-    #
-    - name: Run Modified TestCases
-      if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
-      run: |
-        # CreateJob body template
-        job_template='{
-                "jsonString":{
-                    "description": "CI Verification Run",
-                    "priority": 3,
-                    "version": 1,
-                    "rerun": 0,
-                    "postResults": 1,
-                    "notifyOnStart": 0,
-                    "username": "CI_Service",
-                    "group": "CICD",
-                    "jobType": "private",
-                    "auxInfoList" : [
-                      {"cicd_pr":1},
-                      {"context": "${{ github.event.repository.name }}/test-context"},
-                      {"repo":"${{ github.repository }}"},
-                      {"sha":"${{ github.sha }}"},
-                      {"state":"pending"}
-                    ],
-                    "jobPlatforms": [
-                      {
-                        "platform": "EXOS-DT",
-                        "hardwareConfiguration": "Standalone",
-                        "priority": 3,
-                        "auxInfoList": [],
-                        "jobPlatformTestModules" :
-                        [
-                            {
-                                "testModule_uuid": $harness_uuid,
-                                "auxInfoList" : [
-                                                  {"nodeCount": 4},
-                                                  {"universalTestBedOs": "EXOS"},
-                                                  {"test_name": $tests }
-                                                  ]
-                            },
-                            {
-                                "testModule_uuid": $harness_uuid,
-                                "auxInfoList" : [
-                                                  {"nodeCount": 4},
-                                                  {"universalTestBedOs": "VOSS"},
-                                                  {"test_name": $tests }
-                                                  ]
-                            }
-                        ]
-                      }
-                    ]
-                }
-              }'
+  #       # Create report file
+  #       cat >${{ env.testcase_func_report_path }} <<EOL
+  #       ***********************************************************
+  #       ************** Testcase Functionality Report **************
+  #       ***********************************************************
 
-        # Format Test Lists and add "extreme_automation_tests" prefix to each path
-        pytest_tests=$( cat ${pytest_func_path} | jq -ncR 'inputs | split(",") | [ .[] | "extreme_automation_tests/" + . ]' )
-        robot_tests=$( cat ${robot_func_path} | jq -ncR 'inputs | split(",") | [ .[] | "extreme_automation_tests/" + . ]' )
+  #       EOL
 
-        pytest_harness_uuid="11111111-2222-2222-2222-111111111111"
-        robot_harness_uuid="11111111-6666-6666-6666-111111111111"
+  #   - name: Handle Skip Requests
+  #     run: |
+  #       python .github/workflows/skip_handler.py --actor "${{ github.actor }}" --title '${{ github.event.pull_request.title }}' --check func | tee -a ${{ env.testcase_func_report_path }}
 
-        printf 'Pytest tests to run: %s\nRobot tests to run: %s\n' "$pytest_tests" "$robot_tests"
+  #   - name: Pre-job-submission prep
+  #     if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
+  #     run: |
+  #       # TODO: get this function working
+  #       ################################
+  #       # run_curl () {
+  #       #   echo $1
+  #       #   echo "$1"
+  #       #   curl_output=$( curl $1 )
+  #       #   curl_return_code=$?
 
-    # Commented out on 5/19 by petersadej
-    # Will be uncommented when the system to set PR check status based on the outcome of the test is reworked.
-    # if [[ "${{ env.RUN_ROBOT }}" == "true" ]]; then
+  #       #   if (( $curl_return_code != 0 )); then
+  #       #     echo "Error contacting to AutoIQ. Message: ${curl_output}"
+  #       #     exit 1
+  #       #   fi
+  #       # }
 
-    #     # Generate robot JSON body
-    #     CURL_BODY=$(jq --null-input \
-    #               --argjson tests "$robot_tests" \
-    #               --arg harness_uuid "$robot_harness_uuid" \
-    #               "$job_template")
+  #       # # Get a session token for this run
+  #       # curl_command="-X GET --no-progress-meter \"http://autoiq.extremenetworks.com/auth/getSessionTokenFromPAT\" -H \"accept: application/json\" -H \"authorization: PAT ${{ secrets.AUTOIQ_PAT }}\""
+  #       # echo $curl_command
+  #       # run_curl "$curl_command"
+  #       # session_token=$( echo "$curl_command" | jq -r '.result.sessionToken' )
+  #       # echo $curl_output
+  #       ################################
 
-    #     printf '%s\n\n' "[*] Robot Job Submit JSON: $CURL_BODY" | tee -a ${{ env.testcase_func_report_path }}
+  #       ### Get Session token
+  #       curl_return_code=0
+  #       curl_output=$( curl -X GET  --no-progress-meter \
+  #                       "http://autoiq.extremenetworks.com/auth/getSessionTokenFromPAT" \
+  #                       -H "accept: application/json" \
+  #                       -H "authorization: PAT ${{ secrets.AUTOIQ_PAT }}" )
+  #       curl_return_code=$?
 
-    #     curl -X POST --no-progress-meter \
-    #     "https://autoiq.extremenetworks.com/tbedmgr/jobmgr/createJob" \
-    #     -H "accept: application/json" \
-    #     -H "Content-Type: application/json" \
-    #     -H "authorization: Bearer ${SESSION_TOKEN}" \
-    #     -d "${CURL_BODY}"
-    # fi
+  #       if (( $curl_return_code != 0 )); then
+  #         echo "Error getting session token. Message: ${curl_output}"
+  #         exit 1
+  #       else
+  #         session_token=$( echo "${curl_output}" |  jq -r '.result.sessionToken' )
+  #       fi
 
-    # if [[ "${{ env.RUN_PYTEST }}" == "true" ]]; then
+  #       ### Get list of available testbeds for each harness
+  #       # harnesses: pytest, robot, tcl
+  #       # 11111111-2222-2222-2222-111111111111 (pytest), 11111111-6666-6666-6666-111111111111 (robot), 11111111-5555-5555-5555-111111111111 (tcl)
+  #       curl_return_code=0
+  #       curl_output=$( curl -X GET --no-progress-meter \
+  #                                   "http://autoiq.extremenetworks.com/tbedmgr/jobmgr/cicdPlatforms/pytest" \
+  #                                   -H "accept: application/json" \
+  #                                   -H "authorization: Bearer ${session_token}" )
+  #       curl_return_code=$?
 
-    #     # Generate pytest JSON body
-    #     CURL_BODY=$(jq --null-input \
-    #               --argjson tests "$pytest_tests" \
-    #               --arg harness_uuid "$pytest_harness_uuid" \
-    #               "$job_template")
+  #       if (( $curl_return_code != 0 )); then
+  #         echo "Error getting session token. Message: ${curl_output}"
+  #         exit 1
+  #       else
+  #         available_testbeds_pytest=$( echo "${curl_output}" | jq '.result[]' )
+  #       fi
 
-    #     printf '%s\n\n' "[*] Pytest Job Submit JSON: $CURL_BODY" | tee -a ${{ env.testcase_func_report_path }}
+  #       curl_return_code=0
+  #       curl_output=$( curl -X GET --no-progress-meter \
+  #                                   "http://autoiq.extremenetworks.com/tbedmgr/jobmgr/cicdPlatforms/robot" \
+  #                                   -H "accept: application/json" \
+  #                                   -H "authorization: Bearer ${session_token}" )
+  #       curl_return_code=$?
 
-    #     curl -X POST --no-progress-meter \
-    #     "https://autoiq.extremenetworks.com/tbedmgr/jobmgr/createJob" \
-    #     -H "accept: application/json" \
-    #     -H "Content-Type: application/json" \
-    #     -H "authorization: Bearer ${SESSION_TOKEN}" \
-    #     -d "${CURL_BODY}"
-    # fi
+  #       if (( $curl_return_code != 0 )); then
+  #         echo "Error getting session token. Message: ${curl_output}"
+  #         exit 1
+  #       else
+  #         available_testbeds_robot=$( echo "${curl_output}" | jq '.result[]' )
+  #       fi
+
+  #       echo "pytest testbeds: $available_testbeds_pytest"
+  #       echo "robot testbeds: $available_testbeds_robot"
+
+  #       # echo "ROBOT_TESTBEDS=${available_testbeds_robot}" >> $GITHUB_ENV
+  #       # echo "PYTEST_TESTBEDS=${available_testbeds_pytest}" >> $GITHUB_ENV
+  #       echo "SESSION_TOKEN=${session_token}" >> $GITHUB_ENV
 
 
-    # Commented out on 4/21/22 by petersadej.
-    # This report is currently broken due to changes outside of this script. All or parts of this can be used in the future
-    #
-    # - name: Upload test results to GH artifacts
-    #   uses: actions/upload-artifact@v2
-    #   if: ${{ always() }}
-    #   with:
-    #     name: ${{ env.report_artifact_name }}
-    #     path: |
-    #       ${{ env.testcase_func_report_path }}
+  #   # Submit job for each platform on each NOS that runs all the tests
+  #   #
+  #   - name: Run Modified TestCases
+  #     if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
+  #     run: |
+  #       # CreateJob body template
+  #       job_template='{
+  #               "jsonString":{
+  #                   "description": "CI Verification Run",
+  #                   "priority": 3,
+  #                   "version": 1,
+  #                   "rerun": 0,
+  #                   "postResults": 1,
+  #                   "notifyOnStart": 0,
+  #                   "username": "CI_Service",
+  #                   "group": "CICD",
+  #                   "jobType": "private",
+  #                   "auxInfoList" : [
+  #                     {"cicd_pr":1},
+  #                     {"context": "${{ github.event.repository.name }}/test-context"},
+  #                     {"repo":"${{ github.repository }}"},
+  #                     {"sha":"${{ github.sha }}"},
+  #                     {"state":"pending"}
+  #                   ],
+  #                   "jobPlatforms": [
+  #                     {
+  #                       "platform": "EXOS-DT",
+  #                       "hardwareConfiguration": "Standalone",
+  #                       "priority": 3,
+  #                       "auxInfoList": [],
+  #                       "jobPlatformTestModules" :
+  #                       [
+  #                           {
+  #                               "testModule_uuid": $harness_uuid,
+  #                               "auxInfoList" : [
+  #                                                 {"nodeCount": 4},
+  #                                                 {"universalTestBedOs": "EXOS"},
+  #                                                 {"test_name": $tests }
+  #                                                 ]
+  #                           },
+  #                           {
+  #                               "testModule_uuid": $harness_uuid,
+  #                               "auxInfoList" : [
+  #                                                 {"nodeCount": 4},
+  #                                                 {"universalTestBedOs": "VOSS"},
+  #                                                 {"test_name": $tests }
+  #                                                 ]
+  #                           }
+  #                       ]
+  #                     }
+  #                   ]
+  #               }
+  #             }'
 
-    - name: Set job status output
-      if: ${{ always() }}
-      id: set-output
-      run: |
-        echo "::set-output name=status::${{ job.status }}"
+  #       # Format Test Lists and add "extreme_automation_tests" prefix to each path
+  #       pytest_tests=$( cat ${pytest_func_path} | jq -ncR 'inputs | split(",") | [ .[] | "extreme_automation_tests/" + . ]' )
+  #       robot_tests=$( cat ${robot_func_path} | jq -ncR 'inputs | split(",") | [ .[] | "extreme_automation_tests/" + . ]' )
+
+  #       pytest_harness_uuid="11111111-2222-2222-2222-111111111111"
+  #       robot_harness_uuid="11111111-6666-6666-6666-111111111111"
+
+  #       printf 'Pytest tests to run: %s\nRobot tests to run: %s\n' "$pytest_tests" "$robot_tests"
+
+  #   if [[ "${{ env.RUN_ROBOT }}" == "true" ]]; then
+
+  #       # Generate robot JSON body
+  #       CURL_BODY=$(jq --null-input \
+  #                 --argjson tests "$robot_tests" \
+  #                 --arg harness_uuid "$robot_harness_uuid" \
+  #                 "$job_template")
+
+  #       printf '%s\n\n' "[*] Robot Job Submit JSON: $CURL_BODY" | tee -a ${{ env.testcase_func_report_path }}
+
+  #       curl -X POST --no-progress-meter \
+  #       "https://autoiq.extremenetworks.com/tbedmgr/jobmgr/createJob" \
+  #       -H "accept: application/json" \
+  #       -H "Content-Type: application/json" \
+  #       -H "authorization: Bearer ${SESSION_TOKEN}" \
+  #       -d "${CURL_BODY}"
+  #   fi
+
+  #   if [[ "${{ env.RUN_PYTEST }}" == "true" ]]; then
+
+  #       # Generate pytest JSON body
+  #       CURL_BODY=$(jq --null-input \
+  #                 --argjson tests "$pytest_tests" \
+  #                 --arg harness_uuid "$pytest_harness_uuid" \
+  #                 "$job_template")
+
+  #       printf '%s\n\n' "[*] Pytest Job Submit JSON: $CURL_BODY" | tee -a ${{ env.testcase_func_report_path }}
+
+  #       curl -X POST --no-progress-meter \
+  #       "https://autoiq.extremenetworks.com/tbedmgr/jobmgr/createJob" \
+  #       -H "accept: application/json" \
+  #       -H "Content-Type: application/json" \
+  #       -H "authorization: Bearer ${SESSION_TOKEN}" \
+  #       -d "${CURL_BODY}"
+  #   fi
+
+
+  #   - name: Upload test results to GH artifacts
+  #     uses: actions/upload-artifact@v2
+  #     if: ${{ always() }}
+  #     with:
+  #       name: ${{ env.report_artifact_name }}
+  #       path: |
+  #         ${{ env.testcase_func_report_path }}
+
+  #   - name: Set job status output
+  #     if: ${{ always() }}
+  #     id: set-output
+  #     run: |
+  #       echo "::set-output name=status::${{ job.status }}"
 
   handle_results:
-    needs: [check_tests_functionality, check_file, check_names, check_tags, check_testbeds, check_dir]
+    needs: [check_testbeds, check_file, check_names, check_tags, check_dir] #, check_tests_functionality]
     name: Send result emails
     if: ${{ always() }}
     runs-on: ubuntu-latest
@@ -1092,7 +1087,6 @@ jobs:
 
         <p>Tags/Markers validation:            ${{ needs.check_tags.outputs.status }}</p>
 
-        <p>Test functionality validation:      ${{ needs.check_tests_functionality.outputs.status }}</p>
         <hr>
 
         <p>The log files from your run of ${{ github.workflow }} are attached to this email.</p>
@@ -1101,8 +1095,17 @@ jobs:
         END_LINE
         )
 
+        # Commentted out on 8/15/22 by peter sadej
+        # We decided that coming up with a system that figures out what testbed a testcase needs to run is not worth the effort currently.
+        # Leaving code here incase we come back to this in the future
+        # <p>Test functionality validation:      ${{ needs.check_tests_functionality.outputs.status }}</p>
+
         # Set overall workflow status
-        if [[ "${{ needs.check_testbeds.outputs.status }}" == "failure" || "${{ needs.check_file.outputs.status }}" == "failure" || "${{ needs.check_dir.outputs.status }}" == "failure" || "${{ needs.check_names.outputs.status }}" == "failure" || "${{ needs.check_tags.outputs.status }}" == "failure" || "${{ needs.check_tests_functionality.outputs.status }}" == "failure" ]]; then
+        if [[ "${{ needs.check_testbeds.outputs.status }}" == "failure" || "${{ needs.check_file.outputs.status }}" == "failure" || "${{ needs.check_dir.outputs.status }}" == "failure" || "${{ needs.check_names.outputs.status }}" == "failure" || "${{ needs.check_tags.outputs.status }}" == "failure" ]]; then
+            # Commentted out on 8/15/22 by peter sadej
+            # We decided that coming up with a system that figures out what testbed a testcase needs to run is not worth the effort currently.
+            # Leaving code here incase we come back to this in the future
+            # || "${{ needs.check_tests_functionality.outputs.status }}" == "failure" ]]; then
           WORKFLOW_STATUS="Failed"
         else
           WORKFLOW_STATUS="Passed"
