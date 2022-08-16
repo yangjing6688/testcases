@@ -9,10 +9,12 @@ wing1:
   network_policy:           Test_np
   cli_type:                 "WING-AP"
   username:                 admin
-  password:                 extreme
+  password:                 symbol
   platform:                 wing
   ip:                       10.16.169.43
   port:                     22
   country:                  United Kingdom
   make:                     Controllers
   connection_method:        "ssh"
+  console_ip:               10.16.169.37
+  console_port:             4004
