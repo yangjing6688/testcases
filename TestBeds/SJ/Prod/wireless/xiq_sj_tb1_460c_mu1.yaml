@@ -7,7 +7,7 @@ ap1:
   password:                 Aerohive123
   serial:                   "34602005280046"
   console_ip:               10.16.166.228
-  console_port:             4000
+  console_port:             4003
   mac:                      BCF310678F80
   cli_type:                 "AH-AP"
   platform:                 aerohive
@@ -42,5 +42,5 @@ mu1:
   mac_wifi_port:  en1
   wifi_mac:       843A4B916850
   ethernet_mac:   2C59E50325BC
-  wifi_network:   10.16.166.248
-  wifi_network_vlan10:  10.16.166.248
+  wifi_network:   10.16.166
+  wifi_network_vlan10:  10.16.166

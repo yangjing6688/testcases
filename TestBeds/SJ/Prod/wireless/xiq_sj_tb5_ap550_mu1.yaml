@@ -45,4 +45,4 @@ mu1:
   interface:      wlan0
   ethernet_mac:   14C213ED12B0
   wifi_network:   10.16.170
-  wifi_network_vlan10:  10.16.170.85
+  wifi_network_vlan10:  10.16.170
