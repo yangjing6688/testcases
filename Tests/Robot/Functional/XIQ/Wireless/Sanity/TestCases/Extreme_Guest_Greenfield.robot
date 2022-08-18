@@ -16,9 +16,7 @@ ${TOPO}             Extreme_Guest/topo.aanand.g2r1.yaml
 ${ENV}              Extreme_Guest/environment.remote.chrome.windows.guest2.yaml
 
 *** Settings ***
-
-Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_guest/email_ids.robot
-
+Force Tags      testbed_1_node
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
@@ -27,6 +25,7 @@ Variables    Environments/Config/waits.yaml
 Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_guest/variables.robot
 Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_guest/extreme_guest_sanity_config.robot
 Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_guest/settings.robot
+Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_guest/email_ids.robot
 
 Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
 Library    String
@@ -108,7 +107,7 @@ Create Network Policies
  
 TCCS-12991: Guest Essentials after XIQ login -subscribe-SSO
     [Documentation]         Launch Extreme Guest Subscription Page
-    [Tags]                  devlopement    sanity    greenfield    subscription    TCCS-12991
+    [Tags]                  development    greenfield    subscription    tccs-12991
 
     ${CREATE_SSID}=             create open ssid in common objects  ${SSID_NAME4}
     Should Be Equal As Strings      '${CREATE_SSID}'     '1'
@@ -122,7 +121,7 @@ TCCS-12991: Guest Essentials after XIQ login -subscribe-SSO
 TCCS-12993: Guest Essentials - Enable Adv Guest on existing networks
     
     [Documentation]         Launch Extreme Guest and Subscribe to Guest Application
-    [Tags]                  devlopement    sanity    greenfield    subscription    TCCS-12993
+    [Tags]                  development    greenfield    subscription    tccs-12993
     Depends On              TCCS-12991
 
     ${APPLY_OPEN_SSID}=             apply selected open ssid  ${SSID_NAME4}
@@ -136,7 +135,7 @@ TCCS-12993: Guest Essentials - Enable Adv Guest on existing networks
 
 TCCS-13118: Add Bulk Vouchers
     [Documentation]         Add Bulk Extreme Guest User Vouchers
-    [Tags]                  devlopement    sanity    greenfield    users    TCCS-13118
+    [Tags]                  development    greenfield    users    tccs-13118
     Depends On              TCCS-12993
     
     ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=              go to extreme guest page
@@ -163,7 +162,7 @@ TCCS-13118: Add Bulk Vouchers
 
 TCCS-13119: Clone Extreme Guest System Template
     [Documentation]         Clone Extreme Guest System Template and Create Onboarding Policy and Onboarding Rule
-    [Tags]                  devlopement    sanity    greenfield    brownfield    template    TCCS-13119
+    [Tags]                  development    greenfield    brownfield    template    tccs-13119
     Depends On              TCCS-12993
 
     ${CREATE_N/W_POLICIES}=             Run Keyword        Create Network Policies
@@ -227,7 +226,7 @@ TCCS-13119: Clone Extreme Guest System Template
 
 TCCS-12997: Verify User can register to Cguest server and authenticate on CP with Facebook
     [Documentation]         Verify Facebook Social Login
-    [Tags]                  devlopement    sanity    greenfield    brownfield    social    facebook    TCCS-12997
+    [Tags]                  development    greenfield    brownfield    social    facebook    tccs-12997
     Depends On              TCCS-12993    TCCS-13119
     
     ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME1}     ap_serial=${ap1.serial}   update_method=Complete
@@ -288,7 +287,7 @@ TCCS-12997: Verify User can register to Cguest server and authenticate on CP wit
 
 TCCS-12998: Verify User can register to Cguest server and authenticate on CP with LinkedIn
     [Documentation]         Verify LnkedIn Social Login
-    [Tags]                  devlopement    sanity    greenfield    brownfield    social    linkedin    TCCS-12998
+    [Tags]                  development    greenfield    brownfield    social    linkedin    tccs-12998
     Depends On              TCCS-12993    TCCS-13119
 
     ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME2}     ap_serial=${ap1.serial}
@@ -344,70 +343,10 @@ TCCS-12998: Verify User can register to Cguest server and authenticate on CP wit
     ...                             AP Cleanup
     ...                             go back to xiq
 
-
-TCCS-12999: Verify User can register to Cguest server and authenticate on CP with Google 
-    [Documentation]         Verify Google Social Login
-    [Tags]                  devlopement    greenfield    brownfield    social    google    TCCS-12999
-    Depends On              TCCS-12993    TCCS-13119
-    
-    ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME3}    ap_serial=${ap1.serial}
-    Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
-
-    ${DEVICE_STATUS}=           Wait Until Device Online       ${ap1.serial}
-    Should Be Equal As Strings      '${DEVICE_STATUS}'       '1'
-
-    ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
-    Should Be Equal As Strings      '${NAVIGATE_TO_EXTREME_GUEST_PAGE}'       '1'
-
-    ${NAVIGATE_TO_CONFIGURE_PAGE}=             go to configure page
-    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
-
-    ${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}=             go to configure splash system template tab
-    Should Be Equal As Strings      '${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}'       '1'
-
-    ${APPLY_USER_TEMPLATE}=             apply network to user template  network_name=${SSID_NAME3}      template_name=${TEMPLATE6_NAME}     location=${LOCATION_TREE}
-    Should Be Equal As Strings     '${APPLY_USER_TEMPLATE}'  '1'
-
-    ${SEND_CMD_STATUS}=             send wg cmd to ap  ${SSID_NAME3}    @{gle_cli_obj}
-    
-    Log to Console      Sleep for ${CONFIG_PUSH_WAIT}
-    BuiltIn.Sleep       ${CONFIG_PUSH_WAIT}
-
-    ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME3}
-    Log to Console      Sleep for 5 minutes
-    BuiltIn.Sleep       5 minutes
-    
-    ${OPEN_GUEST_PORTAL}=             open guest portal browser    ${mu1.ip}
-    Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
-    BuiltIn.Sleep       ${CP_PAGE_OPEN_WAIT}
-
-    ${SOCIAL_AUTH_STATUS}=                 validate eguest social login with google    ${MAIL_ID3}      ${MAIL_ID3_PASS}
-    Should Be Equal As Strings     '${SOCIAL_AUTH_STATUS}'  '1'
-    
-    get gp page screen shot
-
-    ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
-    Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
-    BuiltIn.Sleep  ${CLIENT_DISCONNECT_WAIT}
-
-    ${NAVIGATE_TO_CONFIGURE_PAGE}=             go to configure users page
-    Should Be Equal As Strings     '${NAVIGATE_TO_CONFIGURE_PAGE}'  '1'
-    
-    ${DELETE_USER_GOOGLE}=             delete user  google
-    Should Be Equal As Strings     '${DELETE_USER_GOOGLE}'  '1'
-    go back to xiq
-
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             close gp browser
-    ...                             AP Cleanup
-    ...                             go back to xiq
-
-
 TCCS-13014: Verify template Accept_n_connect_w_terms_link
     [Documentation]         Verify default Captive portal Login
     
-    [Tags]                  devlopement    sanity    greenfield    brownfield    simple    TCCS-13014
+    [Tags]                  development    greenfield    brownfield    simple    tccs-13014
 
     ${CREATE_POLICY4}=              Create Network Policy   ${NW_POLICY_NAME4}      &{GUEST_OPEN_NW4}
     Should Be Equal As Strings      '${CREATE_POLICY4}'   '1'
@@ -443,7 +382,7 @@ TCCS-13014: Verify template Accept_n_connect_w_terms_link
 TCCS-12994: Device and OTP Registration - Verify User can register and authenticate on CP with OTP notified over email 
     [Documentation]         Verify Device Registration
     
-    [Tags]                  devlopement    sanity    greenfield    brownfield    dev_reg_email    TCCS-12994
+    [Tags]                  development    greenfield    brownfield    dev_reg_email    tccs-12994
 
     Depends On              TCCS-12993    TCCS-13119
 
