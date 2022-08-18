@@ -230,7 +230,7 @@ Verify Device Managed
     [Documentation]     Confirms that the device is managed by XIQ
     [Arguments]         ${serial}    ${column}
 
-    ${managed}=    Wait Until Device Data Present   ${serial}    ${column}
+    ${managed}=    wait_until_device_managed        ${serial}
     Should Be Equal As Integers                     ${managed}     1
 
 Verify Device Status Green
