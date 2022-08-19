@@ -48,11 +48,16 @@ Test Suite Teardown
     Logout User
     Quit Browser
 
-
 Clean Up Device
     ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_cli_feedback=true
     Run Keyword If  '${search_result}' == '1'       delete device   device_serial=${device1.serial}
 
+Disable SSH and Close Device360 Window
+    ${DISABLE_SSH}=                     Device360 Disable SSH Connectivity
+    Should Be Equal As Integers         ${DISABLE_SSH}     1
+
+    ${CLOSE_DEVICE360_WINDOW}=          Close Device360 Window
+    Should Be Equal As Integers         ${CLOSE_DEVICE360_WINDOW}     1
 
 Validate Device Information
     @{column_list}=    Create List    MGT IP ADDRESS    MAC
@@ -148,6 +153,11 @@ verify_info_on_devices_page_step5: Verify Information on Device page (Advanced o
 #
 #    Depends On         simple_onboard_step1
 #
+#     # FIXME Need to increase Support for all Devices
+#     # Check to see if this test is supported on the device type
+#     @{supported_cli_types}=    Create List   AH-AP
+#     check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+#
 #    ${DEVICE_STATUS}=                   Get Device Status       device_mac=${device1.mac}
 #    Should contain any                  ${DEVICE_STATUS}    green     config audit mismatch
 #
@@ -161,3 +171,45 @@ verify_info_on_devices_page_step5: Verify Information on Device page (Advanced o
 #    should be equal as strings          '${ALARM_DETAILS}[category]'       'System'
 #    should be equal as strings          '${ALARM_DETAILS}[description]'    'fan failure.'
 #    should be equal as strings          '${ALARM_DETAILS}[deviceMac]'      '${device1.mac}'
+
+
+Switch SSH Step6: Enable SSH on Switch and Confirm SSH Session Can Be Established
+    [Documentation]     Enables SSH for the Switch
+
+    [Tags]              ssh_switch      development
+
+    Depends On           simple_onboard_step1
+
+    &{ip_port_info}=                    Device360 Enable SSH CLI Connectivity   ${device1.mac}  run_time=30
+    ${ip}=                              Get From Dictionary  ${ip_port_info}  ip
+    ${port}=                            Get From Dictionary  ${ip_port_info}  port
+
+    Should not be Empty     ${ip}
+    Should not be Empty     ${port}
+    ${ssh_spawn}=                       Open Spawn    ${ip}  ${port}  ${device1.username}  ${device1.password}  ${device1.cli_type}  pxssh=True
+    ${close_result}=                    Close Spawn  ${ssh_spawn}  pxssh=True
+
+    [Teardown]  Disable SSH and Close Device360 Window
+
+
+Switch SSH Step7: Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Established
+    [Documentation]     Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Established
+
+    [Tags]              ssh_switch      development
+
+    Depends On           simple_onboard_step1
+
+    &{ip_port_info}=                    Device360 Enable SSH CLI Connectivity   ${device1.mac}  run_time=30
+    ${ip}=                              Get From Dictionary  ${ip_port_info}  ip
+    ${port}=                            Get From Dictionary  ${ip_port_info}  port
+
+    Should not be Empty     ${ip}
+    Should not be Empty     ${port}
+    # SSH to the connection
+    ${ssh_spawn}=                       Open Spawn    ${ip}  ${port}  ${device1.username}  ${device1.password}  ${device1.cli_type}  pxssh=True
+    # Close the connection
+    ${close_result}=                    Close Spawn   ${ssh_spawn}  pxssh=True
+    # Try to ssh again ( this should fail )
+    ${ssh_spawn}=                       Open Spawn    ${ip}  ${port}  ${device1.username}  ${device1.password}  ${device1.cli_type}  pxssh=True  expect_error=true
+
+    [Teardown]  Disable SSH and Close Device360 Window

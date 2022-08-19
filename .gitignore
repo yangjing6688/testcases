@@ -25,5 +25,6 @@ allure_output/
 **log.html**
 **output.xml**
 .idea/**
+**.png***
 
 .vscode/settings.json
