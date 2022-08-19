@@ -284,7 +284,7 @@ Onboard New Test Device
     ${voss_result}=  Wait Until Device Online        ${serial}
     Should Be Equal As Integers                     ${voss_result}       1
 
-    ${device_managed_result}=    WAIT UNTIL DEVICE MANAGED       ${serial}           MANAGED
+    ${device_managed_result}=    WAIT UNTIL DEVICE MANAGED       ${serial}
     Should Be Equal As Integers                 ${device_managed_result}       1
 
     Confirm Device Status   ${serial}  ${STATUS_AFTER_UPDATE}
@@ -366,4 +366,3 @@ Clean Up Open Policy For Switch
 
     ${DELETE_SWITCH_TEMPLATE}=      Delete Switch Template                  ${switch_template}
     should be equal as integers     ${DELETE_SWITCH_TEMPLATE}   1
-
