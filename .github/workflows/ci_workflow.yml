@@ -752,45 +752,6 @@ jobs:
             exit 1
         fi
 
-    # Tags and Markers:
-    # Tests should contain Tags (Robot) or Markers (pyTest) to categorize the tests allowing test case selection during a test run.  This allows the automation system to select or omit specific tests.  For example, if tests are specific to a particular device and cannot be run on other devices you would want to add a tag or marker to identify the hardware the test can run on.   The number and types of tags are essentially limitless.  To avoid clutter please review existing tags and reuse them where possible.
-    #
-    # The following tags will be selected by the automation team, test developers must avoid using them (CI/CD will check for this):
-    # production, regression, nightly, sanity, p1, p2, p3, p4
-    #
-    # All tags or markers should be in lower case only.
-    # Developers must have two tags or markers.  The first tag or marker will identify the qTest project and test case number in the format: <project>_tc_<test case number>.  The second tag or marker must be: “development”, indicating that this test case is new to the automation system.
-    # The project names are short names that identify the qTest project.  The names and their matching project are listed below.
-    #
-    #
-    #  Robot:
-    # [Tags] tccs_4501    development
-    #
-    # PyTest:
-    # @pytest.mark.tccs_4501
-    # @pytest.mark.development
-    #
-    # Identifying the TestBed
-    # The type of testbed must be specified in the test suite.  This should be done by specifying the testbed type using “Force Tags” in robot or by marking the class in PyTest.  Possible options for the testbed type are limited to:
-    #
-    # testbed_1_node
-    # testbed_2_node
-    # testbed_3_node
-    # testbed_4_node
-    # testbed_5_node
-    #
-    # Robot:
-    # Robot uses “Force Tags” to mark all of the tests with the same tag.  The TestBed type must be identified in each Test Case.  Using “Force Tags” you can mark every test.  Here is an example:
-    #
-    # *** Settings ***
-    # Force Tags      testbed_1_node
-    #
-    # PyTest:
-    # To mark every test with the proper testbed you can mark the entire class with the testbed.  Here is an example:
-    #
-    # @mark.testbed_1_node
-    # Class DefaultTests:
-    #
     - name: Check pytest markers
       if: ${{env.SKIP_CHECK == 'false' && env.RUN_PYTEST == 'true'}}
       run: |
