@@ -62,7 +62,7 @@ ${NSRELEASE_VERSION}                ${upgrades.nsrelease_version}
 *** Test Cases ***
 Test 1: Cli XIQSE Upgrade From XIQSE
     [Documentation]  Tests XIQ-SE Upgrades from XIQSE as defined in topology file
-    [Tags]           xiqse_tcxe_958    xmc_5685    development    xiqse    acceptance    upgrade_xiqse_from_xiqse    upgrade_from_xiqse    test1
+    [Tags]           tcxe_958    xmc_5685    development    xiqse    acceptance    upgrade_xiqse_from_xiqse    upgrade_from_xiqse    test1
 
     ${version} =   Get From Dictionary   ${UPGRADE_TEST_XIQSE}    version
     Run Keyword If  'xiqseSnapShotId' in ${UPGRADE_TEST_XIQSE}      Site Engine Upgrade  ${UPGRADE_TEST_XIQSE}
@@ -70,5 +70,5 @@ Test 1: Cli XIQSE Upgrade From XIQSE
 
 Test 2: Check Server Log
     [Documentation]   Check server.log for exceptions.
-    [Tags]            known_issue    xiqse_tcxe_958    xmc_5685    development    xiqse    acceptance    exception_check    test5
+    [Tags]            known_issue    tcxe_958    xmc_5685    development    xiqse    acceptance    exception_check    test5
     Check Server Log For Exceptions  ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}

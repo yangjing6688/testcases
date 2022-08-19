@@ -1,6 +1,6 @@
 netelem1:
   platform:                 EXOS
-  name:                     X465-48W
+  name:                     bui-flo-0139
   model:                    X465-48W
   serial:                   '1924F-10139'
   mac:                      000496BA7F0C

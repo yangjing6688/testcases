@@ -40,7 +40,7 @@ ${TEST_SITE}            AutomationSite
 *** Test Cases ***
 Test 1: Discover IP Range
     [Documentation]     Confirms an IP range discovery can be performed
-    [Tags]              xiqse_tc_138    aiq_1332    development    sample    xiqse    discovery    test1
+    [Tags]              tcxe_138    aiq_1332    development    sample    xiqse    discovery    test1
 
     Navigate to Site Tab and Confirm Success                        ${TEST_SITE}
     Perform IP Range Discovery and Obtain Discovered Device Count   ${DISCOVER_IP_START}  ${DISCOVER_IP_END}  ${DISCOVER_PROFILE}
@@ -49,7 +49,7 @@ Test 1: Discover IP Range
 
 Test 2: Discovery Check Column Value
     [Documentation]     Checks the column value for a device in the Discovered tab
-    [Tags]              xiqse_tc_138    aiq_1332    development    sample    xiqse    discovery    test2
+    [Tags]              tcxe_138    aiq_1332    development    sample    xiqse    discovery    test2
 
     Navigate to Discovered and Confirm Success
     XIQSE Discovered Do Not Show In Groups
@@ -61,7 +61,7 @@ Test 2: Discovery Check Column Value
 
 Test 3: Add Selected Device from Discovered Tab
     [Documentation]     Confirms a specific device can be removed from the Discovered tab
-    [Tags]              xiqse_tc_138    aiq_1332    development    sample    xiqse    discovery    test3
+    [Tags]              tcxe_138    aiq_1332    development    sample    xiqse    discovery    test3
 
     Navigate to Discovered and Confirm Success
     XIQSE Discovered Do Not Show In Groups
@@ -82,7 +82,7 @@ Test 3: Add Selected Device from Discovered Tab
 
 Test 4: Clear Selected Device from Discovered Tab
     [Documentation]     Confirms a specific device can be removed from the Discovered tab
-    [Tags]              xiqse_tc_138    aiq_1332    development    sample    xiqse    discovery    test4
+    [Tags]              tcxe_138    aiq_1332    development    sample    xiqse    discovery    test4
 
     Navigate to Discovered and Confirm Success
     XIQSE Discovered Do Not Show In Groups
@@ -92,14 +92,14 @@ Test 4: Clear Selected Device from Discovered Tab
 
 Test 5: Clear All from Discovered Tab - Small Number of Devices
     [Documentation]     Confirms clear all removes all devices from the Discovered tab
-    [Tags]              xiqse_tc_138    aiq_1332    development    sample    xiqse    discovery    test5
+    [Tags]              tcxe_138    aiq_1332    development    sample    xiqse    discovery    test5
 
     Navigate to Discovered and Confirm Success
     Clear All From Discovered and Confirm Success
 
 Test 6: Discover Subnet
     [Documentation]     Confirms a subnet discovery can be performed
-    [Tags]              xiqse_tc_138    aiq_1332    development    sample    xiqse    discovery    test6
+    [Tags]              tcxe_138    aiq_1332    development    sample    xiqse    discovery    test6
 
     Navigate to Site Tab and Confirm Success                        ${TEST_SITE}
     Perform Subnet Discovery and Obtain Discovered Device Count     ${DISCOVER_SUBNET}  ${DISCOVER_PROFILE}
@@ -108,14 +108,14 @@ Test 6: Discover Subnet
 
 Test 7: Clear All from Discovered Tab - Large Number of Devices
     [Documentation]     Confirms clear all removes all devices from the Discovered tab
-    [Tags]              xiqse_tc_138    aiq_1332    development    sample    xiqse    discovery    test7
+    [Tags]              tcxe_138    aiq_1332    development    sample    xiqse    discovery    test7
 
     Navigate to Discovered and Confirm Success
     Clear All From Discovered and Confirm Success
 
 Test 8: Confirm Duplicate Addresses Handled Gracefully
     [Documentation]     Confirms attempting to add a duplicate address entry is handled gracefully (no error)
-    [Tags]              xiqse_tc_138    aiq_1332    development    sample    xiqse    discovery    test8
+    [Tags]              tcxe_138    aiq_1332    development    sample    xiqse    discovery    test8
 
     Navigate to Site Tab and Confirm Success    ${TEST_SITE}
 

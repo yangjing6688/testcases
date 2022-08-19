@@ -16,7 +16,7 @@ Library          xiq/flows/common/SideNavMenu.py
 
 Resource         ../../SideNavigation/Resources/AllResources.robot
 
-Force Tags       testbed_not_required
+Force Tags       testbed_none
 
 Suite Setup      Log Into XIQ
 Suite Teardown   Log Out and Close Session
@@ -29,7 +29,7 @@ ${XIQ_URL}          ${xiq.test_url}
 *** Test Cases ***
 TCXM-19756: Confirm Manage Menu Is The Only One
     [Documentation]     Confirms the Manage side nav menu item is the only menu, has the correct icon and has all expected submenus
-    [Tags]              xim_tc_19756   development
+    [Tags]              tcxm_19756   development
 
     Confirm Main Side Nav Menu Item   ${nav.manage.tag}   ${nav.manage.helpdesk_number}   ${nav.manage.icon_class}
 

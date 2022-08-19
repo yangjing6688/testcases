@@ -60,7 +60,7 @@ ${TEST_COLL_INTERVAL}    12
 *** Test Cases ***
 Test 1: Configure Device Annotations
     [Documentation]     Confirms a device's annotations can be configured and saved
-    [Tags]              xiqse_tc_890    aiq_1332    development    sample    xiqse    configure_device    test1
+    [Tags]              tcxe_890    aiq_1332    development    sample    xiqse    configure_device    test1
 
     # Make sure the necessary columns are displayed
     XIQSE Devices Show Columns    Asset Tag  User Data 1  User Data 2  User Data 3  User Data 4  Notes
@@ -106,7 +106,7 @@ Test 1: Configure Device Annotations
 
 Test 2: Configure Device
     [Documentation]     Confirms a device's device tab values can be configured and saved
-    [Tags]              xiqse_tc_890    aiq_1332    development    sample    xiqse    configure_device    test2
+    [Tags]              tcxe_890    aiq_1332    development    sample    xiqse    configure_device    test2
 
     # Make sure the necessary columns are displayed
     XIQSE Devices Show Columns    System Name  Contact  Location
@@ -136,7 +136,7 @@ Test 2: Configure Device
 
 Test 3: Configure Device Tab Settings
     [Documentation]     Confirms a device's device tab values can be configured - these changes are not saved
-    [Tags]              xiqse_tc_890    aiq_1332    development    sample    xiqse    configure_device    test3
+    [Tags]              tcxe_890    aiq_1332    development    sample    xiqse    configure_device    test3
 
     XIQSE Devices Refresh Table
 

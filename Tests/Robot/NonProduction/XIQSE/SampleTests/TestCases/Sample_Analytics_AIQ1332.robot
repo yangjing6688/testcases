@@ -34,18 +34,18 @@ ${APPLIANCE_PROFILE}    snmp_v3_profile
 *** Test Cases ***
 Test 1: Create Analytics Engine and Confirm Success
     [Documentation]     Creates an analytics engine and confirms the action was successful
-    [Tags]              xiqse_tc_888    aiq_1332    development    sample    xiqse    analytics    test1
+    [Tags]              tcxe_888    aiq_1332    development    sample    xiqse    analytics    test1
 
     Navigate and Add Analytics Engine  ${NEXTGEN_IP}  ${NEXTGEN_NAME}  ${APPLIANCE_PROFILE}
 
 Test 2: Confirm Adding Duplicate Analytics Engine Does Not Fail Test
     [Documentation]     Creates a duplicate analytics engine and confirms the test does not fail
-    [Tags]              xiqse_tc_888    aiq_1332    development    sample    xiqse    analytics    test2
+    [Tags]              tcxe_888    aiq_1332    development    sample    xiqse    analytics    test2
 
     Navigate and Add Analytics Engine  ${NEXTGEN_IP}  ${NEXTGEN_NAME}  ${APPLIANCE_PROFILE}
 
 Test 3: Delete Analytics Engine and Confirm Success
     [Documentation]     Confirms an engine can be deleted
-    [Tags]              xiqse_tc_888    aiq_1332    development    sample    xiqse    analytics    test3
+    [Tags]              tcxe_888    aiq_1332    development    sample    xiqse    analytics    test3
 
     Navigate and Delete Analytics Engine  ${NEXTGEN_IP}

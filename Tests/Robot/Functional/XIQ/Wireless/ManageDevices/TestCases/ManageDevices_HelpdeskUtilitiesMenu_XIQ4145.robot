@@ -42,7 +42,7 @@ ${RT_LOCATION}        Aerohive Networks, Milpitas, Aerohive HQ, 2nd Fl - M
 *** Test Cases ***
 TCXM-19799: Confirm Access To APs Diagnostics
     [Documentation]     Confirms the expected list of utilities diagnostics are available for APs
-    [Tags]              xim_tc_19799   development
+    [Tags]              tcxm_19799   development
 
     Navigate to Devices and Confirm Success
     Select Device       ${AP_SERIAL}
@@ -90,21 +90,21 @@ TCXM-19799: Confirm Access To APs Diagnostics
 
 TCXM-19757: Confirm No Access To APs Reset Device To Default
     [Documentation]     Confirms the Reset Device To Default is not available for APs
-    [Tags]              xim_tc_19757   development
+    [Tags]              tcxm_19757   development
 
     ${nav_visible}=     Is Reset Device To Default Available
     Should Be Equal As Integers   ${nav_visible}   -1
 
 TCXM-19801: Confirm Access To APs Spectrum Intelligence
     [Documentation]     Confirms the Spectrum Intelligence is available for APs
-    [Tags]              xim_tc_19801   development
+    [Tags]              tcxm_19801   development
 
     ${nav_visible}=     Is Device Spectrum Intelligence Available
     Should Be Equal As Integers   ${nav_visible}   1
 
 TCXM-19805: Confirm Access To APs Status
     [Documentation]     Confirms the expected list of Status actions are available for APs
-    [Tags]              xim_tc_19805   development
+    [Tags]              tcxm_19805   development
 
     ${nav_result}=      Navigate To Device Utilities Status
     Should Be Equal As Integers  ${nav_result}  1
@@ -118,7 +118,7 @@ TCXM-19805: Confirm Access To APs Status
 
 TCXM-19808: Confirm Access To APs Tools
     [Documentation]     Confirms the expected list of Tools are available for APs
-    [Tags]              xim_tc_19808   development
+    [Tags]              tcxm_19808   development
 
     ${nav_result}=      Navigate To Device Utilities Tools
     Should Be Equal As Integers  ${nav_result}  1
@@ -138,7 +138,7 @@ TCXM-19808: Confirm Access To APs Tools
 
 TCXM-19800: Confirm Access To Routers Diagnostics
     [Documentation]     Confirms the expected list of utilities diagnostics are available for routers
-    [Tags]              xim_tc_19800   development
+    [Tags]              tcxm_19800   development
 
     Refresh Devices Page
     Select Device       ${RT_SERIAL}
@@ -176,14 +176,14 @@ TCXM-19800: Confirm Access To Routers Diagnostics
 
 TCXM-19757: Confirm No Access To Routers Reset Device To Default
     [Documentation]     Confirms the Reset Device To Default is not available for routers
-    [Tags]              xim_tc_19757   development
+    [Tags]              tcxm_19757   development
 
     ${nav_visible}=     Is Reset Device To Default Available
     Should Be Equal As Integers   ${nav_visible}   -1
 
 TCXM-19807: Confirm Access To Routers Status
     [Documentation]     Confirms the expected list of Status actions are available for routers
-    [Tags]              xim_tc_19807   development
+    [Tags]              tcxm_19807   development
 
     ${nav_result}=      Navigate To Device Utilities Status
     Should Be Equal As Integers  ${nav_result}  1
@@ -193,7 +193,7 @@ TCXM-19807: Confirm Access To Routers Status
 
 TCXM-19809: Confirm Access To Routers Tools
     [Documentation]     Confirms the expected list of Tools are available for routers
-    [Tags]              xim_tc_19809   development
+    [Tags]              tcxm_19809   development
 
     ${nav_result}=      Navigate To Device Utilities Tools
     Should Be Equal As Integers  ${nav_result}  1
@@ -211,7 +211,7 @@ TCXM-19809: Confirm Access To Routers Tools
 
 TCXM-19810: Confirm Access To Switches Diagnostics
     [Documentation]     Confirms the expected list of utilities diagnostics are available for switches
-    [Tags]              xim_tc_19810   development
+    [Tags]              tcxm_19810   development
 
     Refresh Devices Page
     Select Device       ${SW_SERIAL}
@@ -241,14 +241,14 @@ TCXM-19810: Confirm Access To Switches Diagnostics
 
 TCXM-19757: Confirm No Access To Switches Reset Device To Default
     [Documentation]     Confirms the Reset Device To Default is not available for switches
-    [Tags]              xim_tc_19757   development
+    [Tags]              tcxm_19757   development
 
     ${nav_visible}=     Is Reset Device To Default Available
     Should Be Equal As Integers   ${nav_visible}   -1
 
 TCXM-19993: Confirm Access To Switches Tools
     [Documentation]     Confirms the expected list of Tools are available for switches
-    [Tags]              xim_tc_19993   development
+    [Tags]              tcxm_19993   development
 
     ${nav_result}=      Navigate To Device Utilities Tools
     Should Be Equal As Integers  ${nav_result}  1

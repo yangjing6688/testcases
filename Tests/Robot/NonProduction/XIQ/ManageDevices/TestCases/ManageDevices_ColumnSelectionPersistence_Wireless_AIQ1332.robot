@@ -56,7 +56,7 @@ ${COLUMN_4}                 Connected Clients
 *** Test Cases ***
 Make Changes to the Column Picker Selections
     [Documentation]     Updates the column picker selections in the Manage> Devices table
-    [Tags]              csit_tc_7070   aiq_1332    development    xiq    manage_devices    column_persistence_wireless    test1
+    [Tags]              tccs_7070   aiq_1332    development    xiq    manage_devices    column_persistence_wireless    test1
 
     [Setup]     Log In and Navigate to Devices  ${WIN_1}  ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
 
@@ -74,7 +74,7 @@ Make Changes to the Column Picker Selections
 
 Confirm Column Picker Selections Persist For User in New Browser Session
     [Documentation]     Confirms the column picker selections have persisted in a new browser session
-    [Tags]              csit_tc_7070   aiq_1332    development    xiq    manage_devices    column_persistence_wireless    test2
+    [Tags]              tccs_7070   aiq_1332    development    xiq    manage_devices    column_persistence_wireless    test2
 
     [Setup]     Log In and Navigate to Devices      ${WIN_1}  ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
 
@@ -84,7 +84,7 @@ Confirm Column Picker Selections Persist For User in New Browser Session
 
 Confirm Column Picker Selections Do Not Apply To Other View Types
     [Documentation]     Confirms the column picker selections only apply to the current view type
-    [Tags]              csit_tc_7070   aiq_1332    development    xiq    manage_devices    column_persistence_wireless    test3
+    [Tags]              tccs_7070   aiq_1332    development    xiq    manage_devices    column_persistence_wireless    test3
 
     [Setup]     Log In and Navigate to Devices      ${WIN_1}  ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
 
@@ -96,7 +96,7 @@ Confirm Column Picker Selections Do Not Apply To Other View Types
 
 Confirm Column Picker Selections Persist For Same User on Different PC
     [Documentation]     Confirms the column picker selections have persisted for the same user on a different PC
-    [Tags]              csit_tc_7070   aiq_1332    development    xiq    manage_devices    column_persistence_wireless    test4
+    [Tags]              tccs_7070   aiq_1332    development    xiq    manage_devices    column_persistence_wireless    test4
 
     [Setup]     Log In and Navigate to Devices      ${WIN_2}  ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
 
@@ -106,7 +106,7 @@ Confirm Column Picker Selections Persist For Same User on Different PC
 
 Confirm Column Picker Selections Do Not Persist For Different User
     [Documentation]     Confirms the column picker selections made by one user have not persisted for a different user
-    [Tags]              csit_tc_7070   aiq_1332    development    xiq    manage_devices    column_persistence_wireless    test5
+    [Tags]              tccs_7070   aiq_1332    development    xiq    manage_devices    column_persistence_wireless    test5
 
     [Setup]     Log In and Navigate to Devices      ${WIN_2}  ${XIQ_USER_2}  ${XIQ_PASSWORD_2}  ${XIQ_URL}
 

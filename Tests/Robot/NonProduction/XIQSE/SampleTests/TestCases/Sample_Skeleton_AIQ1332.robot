@@ -33,7 +33,7 @@ ${DUT1_PROFILE}         ${netelem1.profile}
 *** Test Cases ***
 Test 1: This is the First Test
     [Documentation]     This is the first test
-    [Tags]              xiqse_tc_###    aiq_1332    development    sample    xiqse    skeleton    test1
+    [Tags]              tcxe_###    aiq_1332    development    sample    xiqse    skeleton    test1
 
     [Setup]  Log To Console  This is a setup step which will always run at the beginning of this test case
 

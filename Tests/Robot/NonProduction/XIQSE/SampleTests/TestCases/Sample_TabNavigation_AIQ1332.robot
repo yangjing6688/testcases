@@ -52,7 +52,7 @@ ${XIQSE_PASSWORD}       ${xiqse.password}
 *** Test Cases ***
 Test 1: Confirm Main Navigation Works
     [Documentation]     Confirms the main navigation works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test1
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test1
 
     ${connect_result}=  XIQSE Navigate to Connect Tab
     Should Be Equal As Integers    ${connect_result}    1
@@ -83,7 +83,7 @@ Test 1: Confirm Main Navigation Works
 
 Test 2: Confirm Network Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Network tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test2
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test2
 
     ${nav_result}=  XIQSE Navigate to Network Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -111,7 +111,7 @@ Test 2: Confirm Network Tab Navigation Works
 
 Test 3: Confirm Network Devices Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Network> Devices tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test3
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test3
 
     ${nav_result}=  XIQSE Navigate to Network Devices Tab
     Should Be Equal As Integers         ${nav_result}     1
@@ -133,7 +133,7 @@ Test 3: Confirm Network Devices Tab Navigation Works
 
 Test 4: Confirm Network Devices Site Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Network> Devices> Site tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test4
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test4
 
     ${nav_result}=  XIQSE Navigate to Network Devices Tab
     Should Be Equal As Integers         ${nav_result}     1
@@ -173,7 +173,7 @@ Test 4: Confirm Network Devices Site Tab Navigation Works
 
 Test 5: Confirm Alarm and Events Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Alarms & Events tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test5
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test5
 
     ${nav_result}=  XIQSE Navigate to Alarms and Events Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -192,7 +192,7 @@ Test 5: Confirm Alarm and Events Tab Navigation Works
 
 Test 6: Confirm Event Configuration Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Alarms & Events> Event Configuration tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test6
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test6
 
     ${nav_result}=  XIQSE Navigate to Event Configuration Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -205,7 +205,7 @@ Test 6: Confirm Event Configuration Tab Navigation Works
 
 Test 7: Confirm Control Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Control tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test7
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test7
 
     ${nav_result}=  XIQSE Navigate to Control Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -227,7 +227,7 @@ Test 7: Confirm Control Tab Navigation Works
 
 Test 8: Confirm Analytics Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Analytics tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test8
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test8
 
     ${nav_result}=  XIQSE Navigate to Analytics Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -257,7 +257,7 @@ Test 8: Confirm Analytics Tab Navigation Works
 
 Test 9: Confirm Wireless Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Wireless tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test9
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test9
 
     ${nav_result}=  XIQSE Navigate to Wireless Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -285,7 +285,7 @@ Test 9: Confirm Wireless Tab Navigation Works
 
 Test 10: Confirm Wireless Client Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Wireless> Clients tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test10
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test10
 
     ${nav_result}=  XIQSE Navigate to Wireless Clients Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -303,7 +303,7 @@ Test 10: Confirm Wireless Client Tab Navigation Works
 
 Test 11: Confirm Wireless Threats Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Wireless> Threats tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test11
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test11
 
     ${nav_result}=  XIQSE Navigate to Wireless Threats Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -322,7 +322,7 @@ Test 11: Confirm Wireless Threats Tab Navigation Works
 
 Test 12: Confirm Reports Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Reports tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test12
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test12
 
     ${nav_result}=  XIQSE Navigate to Reports Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -340,7 +340,7 @@ Test 12: Confirm Reports Tab Navigation Works
 
 Test 13: Confirm Tasks Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Tasks tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test13
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test13
 
     ${nav_result}=  XIQSE Navigate to Tasks Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -362,7 +362,7 @@ Test 13: Confirm Tasks Tab Navigation Works
 
 Test 14: Confirm Administration Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Administration tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test14
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test14
 
     ${nav_result}=  XIQSE Navigate to Administration Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -399,7 +399,7 @@ Test 14: Confirm Administration Tab Navigation Works
 
 Test 15: Confirm Profiles Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Administration> Profiles tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test15
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test15
 
     ${nav_result}=  XIQSE Navigate to Admin Profiles Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -415,7 +415,7 @@ Test 15: Confirm Profiles Tab Navigation Works
 
 Test 16: Confirm Device Types Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Administration> Device Types tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test16
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test16
 
     ${nav_result}=  XIQSE Navigate to Admin Device Types Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -428,7 +428,7 @@ Test 16: Confirm Device Types Tab Navigation Works
 
 Test 17: Confirm Connect Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Connect tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test17
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test17
 
     ${nav_result}=  XIQSE Navigate to Connect Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -444,7 +444,7 @@ Test 17: Confirm Connect Tab Navigation Works
 
 Test 18: Confirm Connect Configuration Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Connect> Configuration tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test18
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test18
 
     ${nav_result}=  XIQSE Navigate to Connect Configuration Tab
     Should Be Equal As Integers    ${nav_result}    1
@@ -457,7 +457,7 @@ Test 18: Confirm Connect Configuration Tab Navigation Works
 
 Test 19: Confirm Connect Diagnostics Tab Navigation Works
     [Documentation]     Confirms navigation to the sub tabs of the Connect> Diagnostics tab works
-    [Tags]              xiqse_tc_105    aiq_1332    development    sample    xiqse    tab_nav    test19
+    [Tags]              tcxe_105    aiq_1332    development    sample    xiqse    tab_nav    test19
 
     ${nav_result}=  XIQSE Navigate to Connect Diagnostics Tab
     Should Be Equal As Integers    ${nav_result}    1

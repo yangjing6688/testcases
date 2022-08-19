@@ -2,7 +2,7 @@ router1:
   name:                     bui-flo-0281
   model:                    XR600P
   device_template:          XR600P_test_automation
-  serial:                   "60018082400281"
+  serial:                   "60018082100596"
   ip:                       10.16.169.67
   port:                     22
   cli_type:                 "AH-XR"

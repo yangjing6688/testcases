@@ -1,20 +1,20 @@
 ap1:
-  name:                     bui-flo-0223
+  name:                     San-flo-0930
   connection_method:        "ssh"
-  ip:                       10.16.166.249
+  ip:                       10.16.134.104
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   "06301805230223"
-  console_ip:               10.16.166.229
-  console_port:             4000
-  mac:                      3485840196C0
+  serial:                   "WM052209W-30930"
+  console_ip:               10.16.165.249
+  console_port:             "22"
+  mac:                      B027CF8064C0
+  os:                       Cloud IQ Engine
   cli_type:                 "AH-AP"
-  platform:                 aerohive
-  model:                    AP630
-  template:                 AP630-default-template
+  model:                    AP5010
+  template:                 AP5010-default-template
   make:                     Extreme - Aerohive
-  mgmt_vlan:                10
+  mgmt_vlan:                1
   country:                  United States
   location:                 auto_location_01, Santa Clara, building_02, floor_04
   power_strip:
@@ -29,7 +29,8 @@ ap1:
   extra:
       country:                  United Kingdom
       network_policy:           Test_np
-      ssid:                     AP630_01
+      ssid:                     AP230_01
       version:                  6.5
       neighbour_serial:         06301908310556
       neighbour_mac:            7C95B1005700
+

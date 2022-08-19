@@ -35,7 +35,7 @@ ${LOCATION}                 auto_location_01, Santa Clara, building_02, floor_04
 
 TCXM-19753 - XIQ-4593 - QuickAdd: Onboard AP5010/AP5010U cloud managed - step1
     [Documentation]         Checks for ap onboarding is success in case of valid scenario
-    [Tags]                  xim_tc_19753    development     ap5010      step1      tcxm-19753      quickadd
+    [Tags]                  tcxm_19753    development     ap5010      step1      tcxm-19753      quickadd
     ${result}=              Login User          ${tenant_username}      ${tenant_password}
     Delete AP               ap_serial=${ap5010.serial}
     Change Device Password                      Aerohive123
@@ -51,7 +51,7 @@ TCXM-19753 - XIQ-4593 - QuickAdd: Onboard AP5010/AP5010U cloud managed - step1
 
 TCXM-19753 - XIQ-4593 - QuickAdd: Onboard AP5010/AP5010U cloud managed - step2
     [Documentation]     Configure Capwap client server on AP
-    [Tags]              xim_tc_19753    development     ap5010      step2     tcxm-19753      quickadd
+    [Tags]              tcxm_19753    development     ap5010      step2     tcxm-19753      quickadd
     Depends On          step1
     ${AP_SPAWN}=        Open Spawn          ${ap5010.ip}   ${ap5010.port}      ${ap5010.username}       ${ap5010.password}        ${ap5010.cli_type}
 
@@ -71,7 +71,7 @@ TCXM-19753 - XIQ-4593 - QuickAdd: Onboard AP5010/AP5010U cloud managed - step2
 
 TCXM-19753 - XIQ-4593 - QuickAdd: Onboard AP5010/AP5010U cloud managed - step3
     [Documentation]     Check AP Status On UI
-    [Tags]              xim_tc_19753    development     ap5010      step3      tcxm-19753      quickadd
+    [Tags]              tcxm_19753    development     ap5010      step3      tcxm-19753      quickadd
     Depends On          step2
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
     Wait Until Device Online                ${ap5010.serial}
