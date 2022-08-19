@@ -7,7 +7,7 @@ ap1:
   password:                 Aerohive123
   serial:                   "02301402270015"
   console_ip:               10.16.166.228
-  console_port:             4001
+  console_port:             4006
   mac:                      9C5D120053C0
   cli_type:                 "AH-AP"
   platform:                 aerohive

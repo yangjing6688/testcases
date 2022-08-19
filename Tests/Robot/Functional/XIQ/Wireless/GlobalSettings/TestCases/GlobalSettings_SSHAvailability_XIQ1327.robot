@@ -42,7 +42,7 @@ ${AP_PLATFORM}        ${ap1.platform}
 *** Test Cases ***
 TCXM-15253: Disable SSH Availability
     [Documentation]     Confirms the disabling of SSH Availability
-    [Tags]              xim_tc_15253   development
+    [Tags]              tcxm_15253   development
 
     ${dis_result}=      Disable SSH Availability
     Should Be Equal As Integers   ${dis_result}   1
@@ -53,7 +53,7 @@ TCXM-15253: Disable SSH Availability
 
 TCXM-15252: Enable SSH Availability
     [Documentation]     Confirms the enabling of SSH Availability
-    [Tags]              xim_tc_15252   development
+    [Tags]              tcxm_15252   development
 
     ${en_result}=       Enable SSH Availability
     Should Be Equal As Integers   ${en_result}   1

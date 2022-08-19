@@ -62,7 +62,7 @@ ${WORLD_SITE}           World
 *** Test Cases ***
 Test 1: Confirm Initial Device Annotation Values in XIQSE are Reflected in XIQ
     [Documentation]     Confirms the initial device annotations in XIQSE are reflected in XIQ
-    [Tags]              nightly2    release_testing    csit_tc_10318   apc_44684    development    xiqse    xiq_integration    d360    annotations    test1
+    [Tags]              nightly2    release_testing    tccs_10318   apc_44684    development    xiqse    xiq_integration    d360    annotations    test1
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
     XIQSE Navigate to Devices and Confirm Success
@@ -77,7 +77,7 @@ Test 1: Confirm Initial Device Annotation Values in XIQSE are Reflected in XIQ
 
 Test 2: Confirm Device Annotations Configured in XIQSE are Reflected in XIQ
     [Documentation]     Configures the device annotations in XIQSE and confirms XIQ displays them correctly
-    [Tags]              nightly2    release_testing    known_issue    csit_tc_10318   apc_44684    development    xiqse    xiq_integration    d360    annotations    test2
+    [Tags]              nightly2    release_testing    known_issue    tccs_10318   apc_44684    development    xiqse    xiq_integration    d360    annotations    test2
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
     XIQSE Navigate to Devices and Confirm Success
@@ -96,7 +96,7 @@ Test 2: Confirm Device Annotations Configured in XIQSE are Reflected in XIQ
 
 Test 3: Confirm Device Annotations Updated in XIQSE are Reflected in XIQ
     [Documentation]     Resets the device annotations in XIQSE and confirms XIQ displays them correctly
-    [Tags]              nightly2    release_testing    known_issue    csit_tc_10318   apc_44684    development    xiqse    xiq_integration    d360    annotations    test3
+    [Tags]              nightly2    release_testing    known_issue    tccs_10318   apc_44684    development    xiqse    xiq_integration    d360    annotations    test3
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
     XIQSE Navigate to Devices and Confirm Success

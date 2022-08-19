@@ -40,7 +40,7 @@ ${SSID_NAME}                Auto_SSID
 *** Test Cases ***
 Confirm NTP State Immediately After Onboarding
     [Documentation]     Confirms the default value of the NTP State column
-    [Tags]              csit_tc_8328   aiq_1332    development    xiq    manage_devices    ntp_state_enabled    test1
+    [Tags]              tccs_8328   aiq_1332    development    xiq    manage_devices    ntp_state_enabled    test1
 
     Onboard New Test Device       ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}
 
@@ -53,7 +53,7 @@ Confirm NTP State Immediately After Onboarding
 
 Confirm NTP State Ten Minutes After Onboarding
     [Documentation]     Confirms the default value of the NTP State column
-    [Tags]      csit_tc_8328   aiq_1332    development    xiq    manage_devices    ntp_state_enabled    test2
+    [Tags]      tccs_8328   aiq_1332    development    xiq    manage_devices    ntp_state_enabled    test2
 
     Count Down in Minutes  10
 
@@ -62,7 +62,7 @@ Confirm NTP State Ten Minutes After Onboarding
 
 Confirm NTP State is Unchanged After Policy Assigned
     [Documentation]     Confirms the value of the NTP State column is unchanged after policy is assigned
-    [Tags]      csit_tc_8328   aiq_1332    development    xiq    manage_devices    ntp_state_enabled    test3
+    [Tags]      tccs_8328   aiq_1332    development    xiq    manage_devices    ntp_state_enabled    test3
 
     Assign Policy to Device and Confirm Success  ${POLICY_NAME}  ${DUT_SERIAL}
     sleep  ${CONFIG_PUSH_WAIT}

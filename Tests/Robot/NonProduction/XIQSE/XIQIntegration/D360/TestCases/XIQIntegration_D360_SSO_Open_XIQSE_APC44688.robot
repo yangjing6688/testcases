@@ -52,7 +52,7 @@ ${WORLD_SITE}           World
 *** Test Cases ***
 Test 1: Open Site Engine Link: XIQ-SE Managed Device
     [Documentation]     Confirms that the D360 "Open Site Engine" link works for a device managed by XIQ Site Engine
-    [Tags]              nightly2    release_testing    staging_testing    csit_tc_11878    apc_44688    development    xiqse    xiq_integration    d360     sso    test1
+    [Tags]              nightly2    release_testing    staging_testing    tccs_11878    apc_44688    development    xiqse    xiq_integration    d360     sso    test1
 
     XIQ Navigate to Devices and Confirm Success
     XIQ Device360 Click Open Site Engine Link       ${DUT_MAC}

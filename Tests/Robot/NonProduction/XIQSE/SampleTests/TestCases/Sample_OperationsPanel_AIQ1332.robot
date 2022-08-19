@@ -35,7 +35,7 @@ ${DUT_PROFILE}          ${netelem1.profile}
 *** Test Cases ***
 Test 1: Open and Close Operations Panel
     [Documentation]     Confirms the Operations Panel can be opened and closed
-    [Tags]              xiqse_tc_895    aiq_1332    development    sample    xiqse    ops_panel    test1
+    [Tags]              tcxe_895    aiq_1332    development    sample    xiqse    ops_panel    test1
 
     Open Operations Panel and Confirm Success
     Save Screen Shot
@@ -44,7 +44,7 @@ Test 1: Open and Close Operations Panel
 
 Test 2: Confirm Operations Panel Message
     [Documentation]     Confirms the expected message is displayed in the Operations Panel
-    [Tags]              xiqse_tc_895    aiq_1332    development    sample    xiqse    ops_panel    test2
+    [Tags]              tcxe_895    aiq_1332    development    sample    xiqse    ops_panel    test2
 
     [Setup]  Navigate and Create Device  ${DUT_IP}  ${DUT_PROFILE}
 
@@ -63,7 +63,7 @@ Test 2: Confirm Operations Panel Message
 
 Test 3: Clear Operations Panel
     [Documentation]     Confirms the Operations Panel can be cleared
-    [Tags]              xiqse_tc_895    aiq_1332    development    sample    xiqse    ops_panel    test3
+    [Tags]              tcxe_895    aiq_1332    development    sample    xiqse    ops_panel    test3
 
     Clear Operations Panel and Confirm Success
     Confirm Operations Panel is Empty
@@ -73,7 +73,7 @@ Test 3: Clear Operations Panel
 
 Test 4: Clear Empty Operations Panel
     [Documentation]     Confirms clearing an empty Operations Panel does not result in a failure
-    [Tags]              xiqse_tc_895    aiq_1332    development    sample    xiqse    ops_panel    test4
+    [Tags]              tcxe_895    aiq_1332    development    sample    xiqse    ops_panel    test4
 
     Clear Operations Panel and Confirm Success
     Save Screen Shot

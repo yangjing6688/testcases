@@ -38,19 +38,19 @@ ${NAVIGATOR_LICENSE}      PRD-XIQ-NAV-S-C
 *** Test Cases ***
 Test 1: Navigate to XIQ Manage> Devices
     [Documentation]     Confirms navigating to the Manage> Devices view of XIQ is successful
-    [Tags]              xiqse_tc_898    aiq_1332    development    sample    xiqse    xiq    test1
+    [Tags]              tcxe_898    aiq_1332    development    sample    xiqse    xiq    test1
 
     Navigate to XIQ Devices and Confirm Success
 
 Test 2: Log License Information
     [Documentation]     Logs the license information from the Copilot Dashboard page
-    [Tags]              xiqse_tc_898    aiq_1332    development    sample    xiqse    xiq    test2
+    [Tags]              tcxe_898    aiq_1332    development    sample    xiqse    xiq    test2
 
     Log License Information From CoPilot Dashboard
 
 Test 3: Get License Counts from CoPilot Dashboard
     [Documentation]     Obtains the license counts from the Copilot Dashboard page and prints the values
-    [Tags]              xiqse_tc_898    aiq_1332    development    sample    xiqse    xiq    test3
+    [Tags]              tcxe_898    aiq_1332    development    sample    xiqse    xiq    test3
 
     ${pilot_entitled}=  Get Total Pilot License Entitlements From CoPilot Dashboard
     Log To Console  Pilots Entitled: ${pilot_entitled}
@@ -73,7 +73,7 @@ Test 3: Get License Counts from CoPilot Dashboard
 Test 4: Confirm License Counts
     [Documentation]     Confirms the license counts match what is expected.
     ...                 This test assumes there are currently no licenses consumed.
-    [Tags]              xiqse_tc_898    aiq_1332    development    sample    xiqse    xiq    test4
+    [Tags]              tcxe_898    aiq_1332    development    sample    xiqse    xiq    test4
 
     Confirm Expected Pilot Licenses Consumed      ${PILOT_ENTITLEMENT}      0  ${PILOT_LICENSE}
     Confirm Expected Navigator Licenses Consumed  ${NAVIGATOR_ENTITLEMENT}  0  ${NAVIGATOR_LICENSE}

@@ -70,7 +70,7 @@ ${WORLD_SITE}               World
 *** Test Cases ***
 Test 1: Confirm Device Type Filter
     [Documentation]     Tests the Device Type Filter functionality
-    [Tags]              nightly2    release_testing    csit_tc_8984    xmc_3196    development    xiqse    xiq_integration    device_table    filters    test1
+    [Tags]              nightly2    release_testing    tccs_8984    xmc_3196    development    xiqse    xiq_integration    device_table    filters    test1
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
     Clear All Filters
@@ -100,7 +100,7 @@ Test 1: Confirm Device Type Filter
 
 Test 2: Confirm Device Connection State Filter
     [Documentation]     Tests the Device Connection State Filter functionality
-    [Tags]              nightly2    release_testing    csit_tc_8984    xmc_3196    development    xiqse    xiq_integration    device_table    filters    test2
+    [Tags]              nightly2    release_testing    tccs_8984    xmc_3196    development    xiqse    xiq_integration    device_table    filters    test2
 
     # Disconnect a device in XNC
     Switch To Window  ${XIQSE_WINDOW_INDEX}
@@ -157,7 +157,7 @@ Test 2: Confirm Device Connection State Filter
 
 Test 3: Confirm Device Management State Filter
     [Documentation]     Tests the Device Management State Filter functionality
-    [Tags]              nightly2    release_testing    csit_tc_8984    xmc_3196    development    xiqse    xiq_integration    device_table    filters    test3
+    [Tags]              nightly2    release_testing    tccs_8984    xmc_3196    development    xiqse    xiq_integration    device_table    filters    test3
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
     Clear All Filters
@@ -187,7 +187,7 @@ Test 3: Confirm Device Management State Filter
 
 Test 4: Confirm Device Function Filter
     [Documentation]     Tests the Device Function Filter functionality
-    [Tags]              nightly2    release_testing    csit_tc_8984    xmc_3196    development    xiqse    xiq_integration    device_table    filters    test4
+    [Tags]              nightly2    release_testing    tccs_8984    xmc_3196    development    xiqse    xiq_integration    device_table    filters    test4
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
     Clear All Filters
@@ -217,7 +217,7 @@ Test 4: Confirm Device Function Filter
 
 Test 5: Confirm Device Software Version Filter
     [Documentation]     Tests the Device Software Version Filter functionality
-    [Tags]              nightly2    release_testing    csit_tc_8984    xmc_3196    development    xiqse    xiq_integration    device_table    filters    test5
+    [Tags]              nightly2    release_testing    tccs_8984    xmc_3196    development    xiqse    xiq_integration    device_table    filters    test5
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
     Clear All Filters
@@ -247,7 +247,7 @@ Test 5: Confirm Device Software Version Filter
 
 Test 6: Confirm Cloud Config Groups Filter
     [Documentation]     Tests the Cloud Config Groups Filter functionality
-    [Tags]              nightly2    release_testing    csit_tc_8984    xmc_3196    development    xiqse    xiq_integration    device_table    filters    test6
+    [Tags]              nightly2    release_testing    tccs_8984    xmc_3196    development    xiqse    xiq_integration    device_table    filters    test6
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
     Clear All Filters
@@ -284,7 +284,7 @@ Test 6: Confirm Cloud Config Groups Filter
 # This test is commented out as there is an automation bug where the incorrect element is being identified
 #Test 7: Confirm Device Product Type Filter
 #    [Documentation]     Tests the Device Product Type Filter functionality
-#    [Tags]              nightly2    release_testing    csit_tc_8984    xmc_3196    development    xiqse    xiq_integration    device_table    filters    test7
+#    [Tags]              nightly2    release_testing    tccs_8984    xmc_3196    development    xiqse    xiq_integration    device_table    filters    test7
 #
 #    Switch To Window  ${XIQ_WINDOW_INDEX}
 #    Clear All Filters

@@ -1,0 +1,76 @@
+ap1:
+  name:                     bui-flo-0188
+  connection_method:        "ssh"
+  ip:                       10.234.131.97
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '04102005200188'
+  mac:                      BCF3105CC440
+  console_ip:               10.234.217.20
+  console_port:             7014
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP410C
+  template:                 AP_410C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  extra:
+      country:                  United Kingdom
+      network_policy:           BLR_TB2_AP410C_01
+      ssid:                     AP410C_01
+      version:                  6.5
+      neighbour_serial:         13052007030033
+      neighbour_mac:            BCF310726400
+
+ap2:
+  name:                     bui-flo-0033
+  connection_method:        "ssh"
+  ip:                       10.234.131.100
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '13052007030033'
+  console_ip:               10.234.217.20
+  console_port:             7013
+  mac:                      BCF310726400
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP305C
+  template:                 AP_305C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  extra:
+      country:                  United Kingdom
+      network_policy:           BLR_TB2_AP305C_01
+      ssid:                     AP305C_01
+      version:                  6.5
+      neighbour_serial:         04102005200188
+      neighbour_mac:            BCF3105CC440
+
+
+mu1:
+  ip:                       10.234.131.101
+  port:                     8270
+  username:                 extreme
+  password:                 Extreme@123
+  platform:                 windows
+  interface:                wlan0
+  wifi_mac:                 104A7DC3BFB3
+  ethernet_mac:             0050B61653CC
+  wifi_network:             10.234.131
+  wifi_network_vlan10:      10.234.131
+
+mu2:
+  ip:                       10.234.131.102
+  port:                     8270
+  username:                 extreme
+  password:                 Extreme@123
+  platform:                 windows
+  interface:                wlan0
+  wifi_mac:                 2477034ECA78
+  ethernet_mac:             D067E542981B
+  wifi_network:             10.234.131
+  wifi_network_vlan10:      10.234.131

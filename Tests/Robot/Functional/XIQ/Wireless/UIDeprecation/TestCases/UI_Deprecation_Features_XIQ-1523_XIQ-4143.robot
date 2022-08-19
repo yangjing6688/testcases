@@ -33,10 +33,10 @@ Pre Condition
 *** Test Cases ***
 
 TCXM-18052 : Verify Navigation to 'Client Monitor and Diagnosis' page
-    
+
 	[Documentation]         Verify that user is able to navigate to 'Client Monitor and Diagnosis' page under Manage
 
-    [Tags]       xim_tc_18052         development
+    [Tags]       tcxm_18052         development
 
     ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
     should be equal as strings       '${result}'                    '1'
@@ -54,10 +54,10 @@ TCXM-18052 : Verify Navigation to 'Client Monitor and Diagnosis' page
 
 
 TCXM-17452 : Verify Navigation to 'Applications' page
-    
+
 	[Documentation]         Verify that user is able to navigate to 'Applications' page under Manage
 
-    [Tags]       xim_tc_17452         development
+    [Tags]       tcxm_17452         development
 
     ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
 
@@ -76,10 +76,10 @@ TCXM-17452 : Verify Navigation to 'Applications' page
 
 
 TCXM-17491 : Create Custom Application
-    
+
 	[Documentation]         Verify that user is able to create custom applications
 
-    [Tags]       xim_tc_17491         development
+    [Tags]       tcxm_17491         development
 
     ${result}=                Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
 
@@ -104,10 +104,10 @@ TCXM-17491 : Create Custom Application
 
 
 TCXM-17493 : Edit Custom Application
-   
+
    [Documentation]         Verify that user is able to edit custom applications
 
-    [Tags]       xim_tc_17493         development
+    [Tags]       tcxm_17493         development
 
     ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
 
@@ -135,7 +135,7 @@ TCXM-17494 : Delete Custom Application
 
     [Documentation]         Verify that user is able to delete custom applications
 
-    [Tags]       xim_tc_17493         development
+    [Tags]       tcxm_17493         development
 
     ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
 

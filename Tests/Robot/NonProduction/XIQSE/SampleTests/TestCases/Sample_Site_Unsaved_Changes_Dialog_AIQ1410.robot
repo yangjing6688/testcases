@@ -31,7 +31,7 @@ ${XIQSE_PASSWORD}   ${xiqse.password}
 *** Test Cases ***
 Test 1: Site Unsaved Changes Click Yes
     [Documentation]     Confirms the Yes button can be selected in the 'Site - Unsaved Changes' dialog panel.
-    [Tags]              xiqse_tc_941    aiq-1410    development     xiqse     site      test1
+    [Tags]              tcxe_941    aiq-1410    development     xiqse     site      test1
 
     Navigate to Site and Select ZTP+ Device Defaults            World
 
@@ -52,7 +52,7 @@ Test 1: Site Unsaved Changes Click Yes
 
 Test 2: Site Unsaved Changes Click No
     [Documentation]     Confirms the No button can be selected in the 'Site - Unsaved Changes' dialog panel.
-    [Tags]              xiqse_tc_941    aiq-1410    development     xiqse     site      test2
+    [Tags]              tcxe_941    aiq-1410    development     xiqse     site      test2
 
     Navigate to Site and Select ZTP+ Device Defaults            World
 
@@ -73,7 +73,7 @@ Test 2: Site Unsaved Changes Click No
 
 Test 3: Site Unsaved Changes Click Cancel
     [Documentation]     Confirms the Cancel button can be selected in the 'Site - Unsaved Changes' dialog panel.
-    [Tags]              xiqse_tc_941    aiq-1410    development     xiqse     site      test3
+    [Tags]              tcxe_941    aiq-1410    development     xiqse     site      test3
 
     Navigate to Site and Select ZTP+ Device Defaults            World
 

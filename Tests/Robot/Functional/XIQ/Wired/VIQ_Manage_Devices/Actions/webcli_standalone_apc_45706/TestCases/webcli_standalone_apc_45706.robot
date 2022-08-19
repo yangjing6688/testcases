@@ -21,7 +21,7 @@ Force Tags      testbed_1_node
 *** Test Cases ***
 TCXM-13367: CLI Access is available for an EXOS device
     [Documentation]     Verify that CLI Access is available for an EXOS device
-    [Tags]              xim_tcxm_13367                 p2
+    [Tags]              tcxm_13367                 p2
 
     sleep  2s
     refresh devices page
@@ -32,7 +32,7 @@ TCXM-13367: CLI Access is available for an EXOS device
 
 TCXM-13373: Show commands can be executed from WEB CLI on an EXOS switch
     [Documentation]     Verify that show commands can be executed from WEB CLI on an EXOS switch
-    [Tags]              xim_tcxm_13373                 p2
+    [Tags]              tcxm_13373                 p2
 
     refresh devices page
     ${output}=              test device cli     show switch     	device_serial=${netelem1.serial}      delay=60
@@ -43,7 +43,7 @@ TCXM-13373: Show commands can be executed from WEB CLI on an EXOS switch
 
 TCXM-13369: Traceroute command can be executed to a specific destination
     [Documentation]     Verify that Traceroute command can be executed to a specific destination from an onboarded EXOS switch
-    [Tags]              xim_tcxm_13369                 p2
+    [Tags]              tcxm_13369                 p2
 
     refresh devices page
     ${output}=              test device cli     traceroute www.google.com	device_serial=${netelem1.serial}      delay=60
@@ -54,7 +54,7 @@ TCXM-13369: Traceroute command can be executed to a specific destination
 
 TCXM-13368 Ping command can be executed to a specific destination
     [Documentation]     Verify that Ping command can be executed to a specific destination from an onboarded EXOS switch
-    [Tags]              xim_tcxm_13368                 p2
+    [Tags]              tcxm_13368                 p2
 
     refresh devices page
     ${output}=              test device cli     ping 127.0.0.1	    device_serial=${netelem1.serial}
@@ -64,7 +64,7 @@ TCXM-13368 Ping command can be executed to a specific destination
 
 TCXM-13371 Interface status commands can be executed from WEB CLI on an EXOS switch
     [Documentation]     Verify that interface status commands can be executed from WEB CLI on an EXOS switch
-    [Tags]              xim_tcxm_13371                 p2
+    [Tags]              tcxm_13371                 p2
 
     refresh devices page
     ${output}=              test device cli     show ports no-refresh	     device_serial=${netelem1.serial}
@@ -75,7 +75,7 @@ TCXM-13371 Interface status commands can be executed from WEB CLI on an EXOS swi
 
 TCXM-13370 Protocol status commands can be executed from WEB CLI on an EXOS switch
     [Documentation]     Verify that protocol status commands can be executed from WEB CLI on an EXOS switch
-    [Tags]              xim_tcxm_13370                 p2
+    [Tags]              tcxm_13370                 p2
 
     refresh devices page
     ${output}=              test device cli    show protocol 		device_serial=${netelem1.serial}
@@ -85,7 +85,7 @@ TCXM-13370 Protocol status commands can be executed from WEB CLI on an EXOS swit
 
 TCXM-13372 User can send configuration commands from WEB CLI
     [Documentation]     Verify that user can send configuration commands from WEB CLI
-    [Tags]              xim_tcxm_13372                 p2
+    [Tags]              tcxm_13372                 p2
 
     refresh devices page
     ${output}=              test device cli
@@ -99,7 +99,7 @@ TCXM-13372 User can send configuration commands from WEB CLI
 
 TCXM-13377 Execute multiple commands from WEB CLI on an EXOS switch
     [Documentation]     Execute multiple commands separated by a semicolon cannot be executed from WEB CLI on an EXOS switch
-    [Tags]              xim_tcxm_13377                 p2
+    [Tags]              tcxm_13377                 p2
 
     refresh devices page
     ${output}=              test device cli    ping 127.0.0.1,show iq,show vlan  	device_serial=${netelem1.serial}
@@ -112,7 +112,7 @@ TCXM-13377 Execute multiple commands from WEB CLI on an EXOS switch
 
 TCXM-13376 Invalid commands cannot be executed from WEB CLI on an EXOS switch
     [Documentation]     Verify that invalid commands cannot be executed from WEB CLI on an EXOS switch
-    [Tags]              xim_tcxm_13376                 p2
+    [Tags]              tcxm_13376                 p2
 
     refresh devices page
     ${output}=              test device cli    randomtext		device_serial=${netelem1.serial}
@@ -123,7 +123,7 @@ TCXM-13376 Invalid commands cannot be executed from WEB CLI on an EXOS switch
 
 TCXM-13374 Commands are prefixed with disabled cli paging and cli refresh
     [Documentation]    Verify  CLI commands are prefixed with disabled cli paging and cli refresh, to avoid EXOS paging the output.
-    [Tags]              xim_tcxm_13374                 p2
+    [Tags]              tcxm_13374                 p2
 
     refresh devices page
     ${output}=              test device cli    show configuration	 device_serial=${netelem1.serial}
@@ -224,7 +224,7 @@ Check Device Online
 clear vlans
     [Documentation]     This keyword will delete vlan 3
 
-    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}  
+    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}
     send cmd   dut1_telnet      delete vlan 3
 
     [Teardown]  close connection to network element  dut1_telnet

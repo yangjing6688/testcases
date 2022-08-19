@@ -86,7 +86,7 @@ ${WORLD_SITE}             World
 *** Test Cases ***
 Test 1: TC-11450 - With No Pilots> Add Device
     [Documentation]     Confirms functionality surrounding adding a device in XIQSE when no pilot licenses are available
-    [Tags]              staging_testing    release_testing    license_testing    csit_tc_11450    apc_46353    development    xiqse    xiq_integration    no_pilots    test1
+    [Tags]              staging_testing    release_testing    license_testing    tccs_11450    apc_46353    development    xiqse    xiq_integration    no_pilots    test1
 
     [Setup]  XIQSE Close All Banner Messages and Confirm Success
 
@@ -107,7 +107,7 @@ Test 1: TC-11450 - With No Pilots> Add Device
 
 Test 2: TC-11449 - With No Pilots> Discover Device
     [Documentation]     Confirms functionality surrounding discovering a single device in XIQSE when no pilot licenses are available
-    [Tags]              staging_testing    release_testing    license_testing    csit_tc_11449    apc_46353    development    xiqse    xiq_integration    no_pilots    test2
+    [Tags]              staging_testing    release_testing    license_testing    tccs_11449    apc_46353    development    xiqse    xiq_integration    no_pilots    test2
 
     [Setup]  XIQSE Close All Banner Messages and Confirm Success
 
@@ -140,7 +140,7 @@ Test 2: TC-11449 - With No Pilots> Discover Device
 
 Test 3: TC-11448 - With No Pilots> Discover Multiple Devices
     [Documentation]     Confirms functionality surrounding discovering multiple devices in XIQSE when no pilot licenses are available
-    [Tags]              staging_testing    release_testing    license_testing    csit_tc_11448    apc_46353    development    xiqse    xiq_integration    no_pilots    test3
+    [Tags]              staging_testing    release_testing    license_testing    tccs_11448    apc_46353    development    xiqse    xiq_integration    no_pilots    test3
 
     [Setup]  XIQSE Close All Banner Messages and Confirm Success
 
@@ -173,7 +173,7 @@ Test 3: TC-11448 - With No Pilots> Discover Multiple Devices
 
 Test 4: TC-11447 - With No Pilots> Add From Discovered
     [Documentation]     Confirms functionality surrounding adding a device from the discovered tab in XIQSE when no pilot licenses are available
-    [Tags]              staging_testing    release_testing    license_testing    csit_tc_11447    apc_46353    development    xiqse    xiq_integration    no_pilots    test4
+    [Tags]              staging_testing    release_testing    license_testing    tccs_11447    apc_46353    development    xiqse    xiq_integration    no_pilots    test4
 
     [Setup]  XIQSE Close All Banner Messages and Confirm Success
 
@@ -184,7 +184,7 @@ Test 4: TC-11447 - With No Pilots> Add From Discovered
 
 Test 5: TC-11454 - With No Pilots> Add "Status Only" Device
     [Documentation]     Confirms functionality surrounding adding a status only device in XIQSE when no pilot licenses are available
-    [Tags]              staging_testing    release_testing    license_testing    csit_tc_11454    apc_46353    development    xiqse    xiq_integration    no_pilots    test5
+    [Tags]              staging_testing    release_testing    license_testing    tccs_11454    apc_46353    development    xiqse    xiq_integration    no_pilots    test5
 
     [Setup]  XIQSE Close All Banner Messages and Confirm Success
 
@@ -202,7 +202,7 @@ Test 5: TC-11454 - With No Pilots> Add "Status Only" Device
 Test 6: TC-11455 - With No Pilots> Add "Ping Only" Device
     [Documentation]     Confirms functionality surrounding adding a ping only device in XIQSE when no pilot licenses are available
     ...                 NOTE: this test will not work against 21.4.x XIQSE
-    [Tags]              staging_testing    release_testing    license_testing    csit_tc_11455    apc_46353    development    xiqse    xiq_integration    no_pilots    test6
+    [Tags]              staging_testing    release_testing    license_testing    tccs_11455    apc_46353    development    xiqse    xiq_integration    no_pilots    test6
 
     [Setup]  XIQSE Close All Banner Messages and Confirm Success
 

@@ -38,7 +38,7 @@ ${LOCATION}                 auto_location_01, Santa Clara, building_02, floor_04
 
 TCXM-19754 - XIQ-4593 - Advanced onboard: Onboard AP5010/AP5010U cloud managed - step1
     [Documentation]         Checks for AP advanced onboarding is success
-    [Tags]                  xim_tc_19754    development     ap5010      step1     tcxm-19754    advanced
+    [Tags]                  tcxm_19754    development     ap5010      step1     tcxm-19754    advanced
     ${result}=              Login User          ${tenant_username}      ${tenant_password}
     Delete AP               ap_serial=${ap5010.serial}
     Change Device Password                      Aerohive123
@@ -51,7 +51,7 @@ TCXM-19754 - XIQ-4593 - Advanced onboard: Onboard AP5010/AP5010U cloud managed -
 
 TCXM-19754 - XIQ-4593 - Advanced onboard: Onboard AP5010/AP5010U cloud managed - step2
     [Documentation]     Configure Capwap client server
-    [Tags]              xim_tc_19754    development     ap5010      step2      tcxm-19754   advanced
+    [Tags]              tcxm_19754    development     ap5010      step2      tcxm-19754   advanced
     Depends On          step1
     ${AP_SPAWN}=        Open Spawn          ${ap5010.ip}   ${ap5010.port}      ${ap5010.username}       ${ap5010.password}        ${ap5010.cli_type}
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
@@ -70,7 +70,7 @@ TCXM-19754 - XIQ-4593 - Advanced onboard: Onboard AP5010/AP5010U cloud managed -
 
 TCXM-19754 - XIQ-4593 - Advanced onboard: Onboard AP5010/AP5010U cloud managed - step3
     [Documentation]     Checks for ap status
-    [Tags]              xim_tc_19754    development     ap5010      step3     tcxm-19754    advanced
+    [Tags]              tcxm_19754    development     ap5010      step3     tcxm-19754    advanced
     Depends On          step2
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
     Wait Until Device Online                ${ap5010.serial}

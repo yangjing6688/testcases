@@ -11,3 +11,4 @@ cmd_show_station:                 show station
 cmd_console_page_0:               console page 0
 cmd_show_version_detail:          show version detail
 cmd_show_capwap_client:           show capwap client
+cmd_boot_param:                   show boot-param | include "Country Code"
