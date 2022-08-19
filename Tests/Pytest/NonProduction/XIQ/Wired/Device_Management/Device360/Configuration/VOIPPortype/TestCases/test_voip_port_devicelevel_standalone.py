@@ -92,7 +92,7 @@ class XIQ1429Tests:
         return current_exos_port
 
     @mark.development
-    @mark.xim_tcxm_19696
+    @mark.tcxm_19696
     @mark.p2
     @mark.testbed_1_node
     def test_create_voip_port_type_at_device360_level(self):
@@ -126,7 +126,7 @@ class XIQ1429Tests:
             self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
 
     @mark.development
-    @mark.xim_tcxm_19689
+    @mark.tcxm_19689
     @mark.p3
     @mark.testbed_1_node
     def test_verify_voice_signaling_vlan_dscp_value_device_360(self):
@@ -167,7 +167,7 @@ class XIQ1429Tests:
             self.xiq.xflowsmanageDevice360.close_device360_window()
 
     @mark.development
-    @mark.xim_tcxm_19692
+    @mark.tcxm_19692
     @mark.testbed_1_node
     @mark.p3
     def test_verify_voice_vlan_dscp_value_device_360(self):
@@ -205,7 +205,7 @@ class XIQ1429Tests:
             self.xiq.xflowsmanageDevice360.close_device360_window()
 
     @mark.development
-    @mark.xim_tcxm_19684
+    @mark.tcxm_19684
     @mark.p3
     @mark.testbed_1_node
     def test_voice_data_should_not_be_the_same_device_360(self):
@@ -247,7 +247,7 @@ class XIQ1429Tests:
 
 
     @mark.development
-    @mark.xim_tcxm_19498
+    @mark.tcxm_19498
     @mark.p3
     @mark.testbed_1_node
     def test_verify_voice_signaling_vlan_dscp_value_template(self):
@@ -307,7 +307,7 @@ class XIQ1429Tests:
             self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
 
     @mark.development
-    @mark.xim_tcxm_19496
+    @mark.tcxm_19496
     @mark.p3
     @mark.testbed_1_node
     def test_verify_voice_vlan_dscp_value_template(self):
@@ -368,7 +368,7 @@ class XIQ1429Tests:
             self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
 
     @mark.development
-    @mark.xim_tcxm_19703
+    @mark.tcxm_19703
     @mark.p3
     @mark.testbed_1_node
     def test_verify_device360_summary_when_lldp_cdp_are_disabled(self):
@@ -439,7 +439,7 @@ class XIQ1429Tests:
             self.xiq.xflowsmanageDevice360.close_device360_window()
 
     @mark.development
-    @mark.xim_tcxm_19687
+    @mark.tcxm_19687
     @mark.p1
     @mark.testbed_1_node
     def test_verify_voice_and_data_vlan_can_be_created_device_360_level(self):
@@ -510,7 +510,7 @@ class XIQ1429Tests:
             self.xiq.xflowsmanageDevice360.close_device360_window()
 
     @mark.development
-    @mark.xim_tcxm_19506
+    @mark.tcxm_19506
     @mark.p2
     @mark.testbed_1_node
     def test_verify_voice_and_data_vlan_can_be_created_template_level(self):
@@ -597,7 +597,7 @@ class XIQ1429Tests:
             self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
 
     @mark.development
-    @mark.xim_tcxm_19742
+    @mark.tcxm_19742
     @mark.p3
     @mark.testbed_1_node
     def test_verify_voip_port_type_not_available_for_voss_template(self):

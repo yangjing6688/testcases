@@ -77,7 +77,7 @@ ${ZTP1_TOPO_LAYER}              L2 Access
 *** Test Cases ***
 Test 1: Configure Devices Dialog For Ztp Plus Device Use Discovered Disabled
     [Documentation]     Confirms that the Configure Device Dialog can be open and configured for a ZTP+ Device
-    [Tags]              xiqse_tc_901    xmc_4478    development     xiqse     ztp+    discovered_configure      test1
+    [Tags]              tcxe_901    xmc_4478    development     xiqse     ztp+    discovered_configure      test1
 
     Navigate To Network Discovered and Update Table
 
@@ -114,7 +114,7 @@ Test 1: Configure Devices Dialog For Ztp Plus Device Use Discovered Disabled
 
 Test 2: Configure Devices Dialog For Ztp Plus Device Use Discovered IP
     [Documentation]     Confirms that the Configure Device Dialog can be open and configured for a ZTP+ Device
-    [Tags]              xiqse_tc_901    xmc_4478    development     xiqse     ztp+    discovered_configure      test2
+    [Tags]              tcxe_901    xmc_4478    development     xiqse     ztp+    discovered_configure      test2
 
     Navigate To Network Discovered and Update Table
 
@@ -152,7 +152,7 @@ Test 2: Configure Devices Dialog For Ztp Plus Device Use Discovered IP
 
 Test 3: Configure Devices Dialog For Ztp Plus Device Use Discovered IP And Management Interface
     [Documentation]     Confirms that the Configure Device Dialog can be open and configured for a ZTP+ Device
-    [Tags]              xiqse_tc_901    xmc_4478    development     xiqse     ztp+    discovered_configure      test3
+    [Tags]              tcxe_901    xmc_4478    development     xiqse     ztp+    discovered_configure      test3
 
     Navigate To Network Discovered and Update Table
 
@@ -189,7 +189,7 @@ Test 3: Configure Devices Dialog For Ztp Plus Device Use Discovered IP And Manag
 
 Test 4: Configure Devices Dialog For Ztp Plus Device Use Discovered Management Interface
     [Documentation]     Confirms that the Configure Device Dialog can be open and configured for a ZTP+ Device
-    [Tags]              xiqse_tc_901    xmc_4478    development     xiqse     ztp+    discovered_configure      test4
+    [Tags]              tcxe_901    xmc_4478    development     xiqse     ztp+    discovered_configure      test4
 
     Navigate To Network Discovered and Update Table
 

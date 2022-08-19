@@ -1,4 +1,4 @@
-name: Update qTest
+name: Post Merge CI
 on:
   workflow_dispatch:
   push:
@@ -55,10 +55,6 @@ jobs:
       run: |
         pip install -r requirements.txt
 
-    # TODO: Figure out how to get pytest to only operate on input files. If that isn't viable
-    #       run for all files and only grab the ones we want(would take SIGNIFICANTLY more time)
-    # potential workaround: copy modified tests to another directory and run pytest there
-    # this would require either making a whole mimiced dir tree or using a different method of identifying the tests
     - name: Run pytest inventory tool
       if: ${{ steps.pytest-func.outputs.any_changed == 'true' }}
       run: |
@@ -95,46 +91,44 @@ jobs:
             exit 1
         fi
 
-    - name: Check pytest markers
+    - name: Update pytest qtest information
       if: ${{ steps.pytest-func.outputs.any_changed == 'true' }}
       run: |
         set -o pipefail # Preserves the return code from the python script in pipeline below
         python .github/workflows/testcase_tags_parser.py ${{ env.pytest_result_file }} --mode update_qtest \
           --auth_token ${{ secrets.AUTOIQ_PAT }} | tee -a ${{ env.tag_marker_report_path }}
 
-    - name: Check robot tags
+    - name: Update robot qtest information
       if: ${{ steps.robot-func.outputs.any_changed == 'true' }}
       run: |
         set -o pipefail # Preserves the return code from the python script in pipeline below
         python .github/workflows/testcase_tags_parser.py ${{ env.robot_result_file }} --mode update_qtest \
           --auth_token ${{ secrets.AUTOIQ_PAT }} | tee -a ${{ env.tag_marker_report_path }}
 
-    - name: Email results
-      uses: dawidd6/action-send-mail@v3
-      if: ${{ failure() }}
-      with:
-        # Required mail server address:
-        server_address: smtp.office365.com
-        # Required mail server port:
-        server_port: 587
-        # Mail server username:
-        username: srv-econ-notify@extremenetworks.com
-        # Mail server password:
-        password: "[kkwm{Y-36{k"
-        # Required mail subject:
-        subject: Error updating qTest - ${{ github.repository }}
-        # Required recipients' addresses:
-        to: psadej@extremenetworks.com
-        # to: ${{ env.ACTOR_EMAIL }}
-        # Required sender full name (address can be skipped):
-        from: srv-econ-notify@extremenetworks.com
-        # Optional whether this connection use TLS (default is true if server_port is 465)
-        secure: false
-        # Optional plain body:
-        body: "See error in attached report or on GitHub: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        # Optional unsigned/invalid certificates allowance:
-        ignore_cert: true
-        # Optional converting Markdown to HTML (set content_type to text/html too):
-        convert_markdown: true
-        attachments: ./${{ env.tag_marker_report_path }}
+    - name: Update AutoIQ testcase data
+      if: ${{ steps.pytest-func.outputs.any_changed == 'true' || steps.robot-func.outputs.any_changed == 'true' }}
+      run: |
+        echo 'github actor: ${{ github.actor }}'
+        ACTOR_EMAIL=$( jq -r '."${{ github.actor }}"' .github/workflows/github_names_to_extr_email.json )
+        set -o pipefail # Preserves the return code from the python script in pipeline below
 
+        if [[ "${{ steps.robot-func.outputs.any_changed }}" == "true" ]]; then
+          python .github/workflows/testcase_tags_parser.py ${{ env.robot_result_file }} --mode update_testcase_data \
+            --auth_token ${{ secrets.AUTOIQ_PAT }} --testcase_author "${ACTOR_EMAIL}" | tee -a ${{ env.tag_marker_report_path }}
+        fi
+
+        if [[ "${{ steps.pytest-func.outputs.any_changed }}" == "true" ]]; then
+          python .github/workflows/testcase_tags_parser.py ${{ env.pytest_result_file }} --mode update_testcase_data \
+            --auth_token ${{ secrets.AUTOIQ_PAT }} --testcase_author "${ACTOR_EMAIL}" | tee -a ${{ env.tag_marker_report_path }}
+        fi
+
+    - name: Email results
+      if: ${{ failure() }}
+      run: |
+        RECIPIENTS="psadej@extremenetworks.com"
+        SUBJECT="Error updating qTest or Testcase data - ${{ github.repository }}"
+        EMAIL_BODY="See error in attached report or on GitHub: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        ATTACHMENTS=./${{ env.tag_marker_report_path }}
+
+        # Send email
+        python .github/workflows/send_email.py --recipients "${RECIPIENTS}" --subject "${SUBJECT}" --message "${EMAIL_BODY}" --attachments ${ATTACHMENTS} --auth-token "${{ secrets.AUTOIQ_PAT }}"

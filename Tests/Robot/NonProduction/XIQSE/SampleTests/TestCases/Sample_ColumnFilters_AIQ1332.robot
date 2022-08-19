@@ -32,7 +32,7 @@ ${XIQSE_PASSWORD}       ${xiqse.password}
 *** Test Cases ***
 Test 1: Set a Single Text Column Filter
     [Documentation]     Confirms a column filter which uses a text field can be applied
-    [Tags]              xiqse_tc_889    aiq_1332    development    sample    xiqse    column_filters    test1
+    [Tags]              tcxe_889    aiq_1332    development    sample    xiqse    column_filters    test1
 
     ${set_result}=  XIQSE Table Set Column Filter  Admin Profile    public_v1_Profile
     Should Be Equal As Integers  ${set_result}      1
@@ -40,14 +40,14 @@ Test 1: Set a Single Text Column Filter
 
 Test 2: Remove a Single Column Filter
     [Documentation]     Confirms a column filter can be removed (depends on test 1)
-    [Tags]              xiqse_tc_889    aiq_1332    development    sample    xiqse    column_filters    test2
+    [Tags]              tcxe_889    aiq_1332    development    sample    xiqse    column_filters    test2
 
     ${remove_result}=  XIQSE Table Remove Column Filter  Admin Profile
     Should Be Equal As Integers  ${remove_result}      1
 
 Test 3: Set a Radio Button Column Filter
     [Documentation]     Confirms a column filter which uses a radio button can be applied
-    [Tags]              xiqse_tc_889    aiq_1332    development    sample    xiqse    column_filters    test3
+    [Tags]              tcxe_889    aiq_1332    development    sample    xiqse    column_filters    test3
 
     ${set_result}=  XIQSE Table Set Column Filter  Archived    Yes    filter_type=Radio
     Should Be Equal As Integers  ${set_result}      1
@@ -57,7 +57,7 @@ Test 3: Set a Radio Button Column Filter
 
 Test 4: Set a Checkbox Column Filter
     [Documentation]     Confirms a column filter which uses a checkbox can be applied
-    [Tags]              xiqse_tc_889    aiq_1332    development    sample    xiqse    column_filters    test4
+    [Tags]              tcxe_889    aiq_1332    development    sample    xiqse    column_filters    test4
 
     ${set_result}=  XIQSE Table Set Column Filter  Status    Critical Alarms,Error Alarms    filter_type=Checkbox
     Should Be Equal As Integers  ${set_result}      1
@@ -67,7 +67,7 @@ Test 4: Set a Checkbox Column Filter
 
 Test 5: Set Multiple Column Filters
     [Documentation]     Confirms multiple column filters can be applied
-    [Tags]              xiqse_tc_889    aiq_1332    development    sample    xiqse    column_filters    test5
+    [Tags]              tcxe_889    aiq_1332    development    sample    xiqse    column_filters    test5
 
     ${open_result}=  XIQSE Table Open Column Filters Dialog
     Should Be Equal As Integers  ${open_result}      1
@@ -87,7 +87,7 @@ Test 5: Set Multiple Column Filters
 
 Test 6: Remove Multiple Column Filters
     [Documentation]     Confirms a column filter can be removed (depends on test 5)
-    [Tags]              xiqse_tc_889    aiq_1332    development    sample    xiqse    column_filters    test6
+    [Tags]              tcxe_889    aiq_1332    development    sample    xiqse    column_filters    test6
 
     ${remove_result}=  XIQSE Table Remove Column Filters  Status,Archived,Admin Profile
     Should Be Equal As Integers  ${remove_result}      1

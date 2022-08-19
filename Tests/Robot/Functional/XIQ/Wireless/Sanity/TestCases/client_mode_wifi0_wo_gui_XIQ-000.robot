@@ -75,7 +75,7 @@ Suite Setup     Cleanup
 *** Test Cases ***
 Test1: Advance Onboard AP1 and AP2 - TCXM-16059
     [Documentation]    Advance Onboard AP1 and AP2
-    [Tags]             xim_tc_16059     development     test1     test
+    [Tags]             tcxm_16059     development     test1     test
     ${aps}=      Create List        ${ap1}        ${ap2}
     ${LOGIN_STATUS}=                Login User               ${tenant_username}     ${tenant_password}
     should be equal as strings     '${LOGIN_STATUS}'      '1'
@@ -88,7 +88,7 @@ Test1: Advance Onboard AP1 and AP2 - TCXM-16059
 
 Test2: Config AP1 and AP2 Capwap to Report AIO - TCXM-16059
     [Documentation]     Configure Capwap client server
-    [Tags]              xim_tc_16059     development    test2      test
+    [Tags]              tcxm_16059     development    test2      test
     Depends On          Test1
     ${aps}=      Create List        ${ap1}        ${ap2}
     FOR    ${ap}    IN    @{aps}
@@ -108,7 +108,7 @@ Test2: Config AP1 and AP2 Capwap to Report AIO - TCXM-16059
 
 Test3: Check AP1 and AP2 Status On UI - TCXM-16059
     [Documentation]     Checks for ap1 ap2 status
-    [Tags]              xim_tc_16059      development     test3       test
+    [Tags]              tcxm_16059      development     test3       test
     Depends On          Test2
     ${aps}=      Create List        ${ap1}        ${ap2}
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
@@ -123,7 +123,7 @@ Test3: Check AP1 and AP2 Status On UI - TCXM-16059
 
 Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-16059
     [Documentation]     Create policy and Update policy to AP1 and AP2
-    [Tags]              xim_tc_16059     development     test4      test
+    [Tags]              tcxm_16059     development     test4      test
     Depends On          Test3
     ${NUM}=                     Generate Random String    5     0123456789
     Set Suite Variable          ${POLICY}                       BkHaul_wifi0_${NUM}
@@ -173,7 +173,7 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-16059
 
 Test5: Setup WIFI on STA2 and Connect to AP2 - TCXM-16059
     [Documentation]     Setup WIFI on STA2 and Connect to AP2 on Client Mode
-    [Tags]              xim_tc_16059       development        test5      test
+    [Tags]              tcxm_16059       development        test5      test
     Depends On          Test4
     ${mu}                 set variable               ${mu2}
     Setup AP in Client Mode          ${ap2}
@@ -183,7 +183,7 @@ Test5: Setup WIFI on STA2 and Connect to AP2 - TCXM-16059
 
 Test6: Verify Connection - TCXM-16059
     [Documentation]     Setup WIFI on STA2 and Connect to AP2 on Client Mode
-    [Tags]              xim_tc_16059     development    test6      test
+    [Tags]              tcxm_16059     development    test6      test
     Depends On          Test5
     ${mu}               set variable    ${mu2}
     sleep               10s

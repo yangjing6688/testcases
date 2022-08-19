@@ -12,12 +12,18 @@ from requests import exceptions as req_excepts, get as http_get, post as http_po
 ##########################
 def parse_args():
     parser = ArgumentParser()
+    # General Args
     parser.add_argument("file", help="File that contains the results of the tag/marker checks", type=str)
-    parser.add_argument("--mode", help="Script operating mode.", choices=['validate_tags', 'update_qtest'])
+    parser.add_argument("--mode", help="Script operating mode.", choices=['validate_tags', 'update_qtest', 'update_testcase_data'])
     parser.add_argument("--framework", help="The type of test cases we are parsing.", choices=['pytest', 'robot'] )
-    parser.add_argument('--skip_reserved_tags', help="Don't fail testcases for containing reserved tags/markers", choices=['true', 'false'])
     parser.add_argument("--auth_token", help="AutoIQ auth token for calling endpoints", required=True, type=str)
     parser.add_argument('--warn', help="Don't return a bad return code. Only print problems.", action='store_true')
+
+    # Only applicable to update_testcase_data
+    parser.add_argument('--testcase_author', help="Author of the testcases", type=str)
+
+    # Only applicable to validate_tags mode
+    parser.add_argument('--skip_reserved_tags', help="Don't fail testcases for containing reserved tags/markers", choices=['true', 'false'])
     return parser.parse_args()
 
 def readFile(file):
@@ -71,11 +77,9 @@ def validate_tags():
                 # Validate each qtest tag with qtest
                 for tag in qtest_tags:
                     url = f"{AUTOIQ_BASE_URL}/qtest-client/testcases/testcaseid/{tag}"
-                    headers = {
-                        'authorization': f'PAT {args.auth_token}'
-                    }
+
                     try:
-                        r = http_get(url, headers=headers)
+                        r = http_get(url, headers=HEADERS)
                     except req_excepts.RequestException as e:
                         raise Exception(f'Encountered a problem calling url: {url}') from e
 
@@ -117,9 +121,7 @@ def update_qtest():
                 # Set automated status of each tag in qTest
                 for tag in qtest_tags:
                     url = f"{AUTOIQ_BASE_URL}/qtest-client/testcases/automated"
-                    headers = {
-                        'authorization': f'PAT {args.auth_token}'
-                    }
+
                     payload = {
                         "tcid": tag,
                         "repo": "https://github.com/extremenetworks/extreme_automation_tests",
@@ -127,7 +129,7 @@ def update_qtest():
                         "branch": ["main"]
                     }
                     try:
-                        r = http_post(url, headers=headers, json=payload)
+                        r = http_post(url, headers=HEADERS, json=payload)
                     except req_excepts.RequestException as e:
                         raise Exception(f'Encountered a problem calling url: {url}') from e
 
@@ -148,6 +150,49 @@ def update_qtest():
                         raise Exception(f'Bad response from endpoint: {r.text}') from e
 
                 print() # Add blank line between testcases
+        print() # Add blank line between files
+
+    return rc
+
+def update_testcase_data():
+    rc=0
+    for file, file_info in results.items():
+        print(f'{LINE_BREAK}\nProcessing testcases from file: {file}')
+        for testcase, testcase_info in file_info.items():
+            print(f'Processing testcase: {testcase}')
+
+            # Attempt to add testcase to AutoIQ testcase DB
+            url = f"{AUTOIQ_BASE_URL}/stats/testCaseMetadata/testCases"
+
+            payload={
+                "filePath": file,
+                "testCaseName": testcase,
+                "qTestId":  testcase_info.get('valid_qtest_tag', ''),
+                "author": args.testcase_author,
+                "authorsManager": "", # TODO: To be implemented in the future
+                "pod": "" # TODO: To be implemented in the future
+            }
+
+            try:
+                r = http_post(url, headers=HEADERS, json=payload)
+            except req_excepts.RequestException as e:
+                raise Exception(f'Encountered a problem calling url: {url}') from e
+
+            try:
+                json_response = r.json()
+                if json_response['result'].get('status') == 'success':
+                    print(f"{SUCCESS_PREFIX} Test Case [{testcase}] added to the AutoIQ Database")
+                elif 'Duplicate' in json_response['errors'][0]:
+                    print(f"{SUCCESS_PREFIX} Test Case [{testcase}] is already in the AutoIQ Database")
+                else:
+                    print(f"{PRINT_PREFIX} {json_response}")
+                    rc=1
+            except Exception as e:
+                # endpoint returned non-json response or didn't contain status key in dict
+                # Since this is unhandled it exits with a 1 code
+                raise Exception(f'Bad response from endpoint: {r.text}') from e
+
+            print() # Add blank line between testcases
         print() # Add blank line between files
 
     return rc
@@ -175,6 +220,11 @@ if __name__ == '__main__':
 
     PRINT_PREFIX = WARN_PREFIX if args.warn else FAIL_PREFIX
 
+    HEADERS = {
+        'Content-Type': 'application/json',
+        'authorization': f'PAT {args.auth_token}'
+    }
+
     if args.mode == 'validate_tags':
         SKIP_RESERVED_TAGS = True if args.skip_reserved_tags == 'true' else False
 
@@ -183,9 +233,13 @@ if __name__ == '__main__':
     elif args.mode == 'update_qtest':
         rc = update_qtest()
 
+    elif args.mode == 'update_testcase_data':
+        if not args.testcase_author:
+            raise ValueError("Error: Testcase Author required when using update_testcase_data mode")
+        rc = update_testcase_data()
+
 
 
     if args.warn:
         rc=0
     exit(rc)
-

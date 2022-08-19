@@ -75,7 +75,7 @@ Suite Setup     Cleanup
 *** Test Cases ***
 Test1: Advance Onboard AP1 and AP2 - TCXM-15115
     [Documentation]    Advance Onboard AP1 and AP2
-    [Tags]             xim_tc_15115     development     test1     test
+    [Tags]             tcxm_15115     development     test1     test
     ${aps}=      Create List        ${ap1}        ${ap2}
     ${LOGIN_STATUS}=                Login User               ${tenant_username}     ${tenant_password}
     should be equal as strings     '${LOGIN_STATUS}'      '1'
@@ -88,7 +88,7 @@ Test1: Advance Onboard AP1 and AP2 - TCXM-15115
 
 Test2: Config AP1 and AP2 Capwap to Report AIO - TCXM-15115
     [Documentation]     Configure Capwap client server
-    [Tags]              xim_tc_15115     development    test2      test
+    [Tags]              tcxm_15115     development    test2      test
     Depends On          Test1
     ${aps}=      Create List        ${ap1}        ${ap2}
     FOR    ${ap}    IN    @{aps}
@@ -108,7 +108,7 @@ Test2: Config AP1 and AP2 Capwap to Report AIO - TCXM-15115
 
 Test3: Check AP1 and AP2 Status On UI - TCXM-15115
     [Documentation]     Checks for ap1 ap2 status
-    [Tags]              xim_tc_15115      development     test3       test
+    [Tags]              tcxm_15115      development     test3       test
     Depends On          Test2
     ${aps}=      Create List        ${ap1}        ${ap2}
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
@@ -123,7 +123,7 @@ Test3: Check AP1 and AP2 Status On UI - TCXM-15115
 
 Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15115
     [Documentation]     Create policy and Update policy to AP1 and AP2
-    [Tags]              xim_tc_15115     development     test4      test
+    [Tags]              tcxm_15115     development     test4      test
     Depends On          Test3
     ${NUM}=                     Generate Random String    5     0123456789
     Set Suite Variable          ${POLICY}                       BkHaul_wifi0_${NUM}
@@ -163,7 +163,7 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15115
 
 Test5: Client mode enable in device Configuration for AP2 - TCXM-15115
     [Documentation]     Client mode enable in device Configuration for AP2
-    [Tags]              xim_tc_15115   development     test5      test
+    [Tags]              tcxm_15115   development     test5      test
     Depends On          Test4
     Set To Dictionary           ${CLIENT_MODE_PROFILE_WIFI0}    client_mode_profile_name=${CLIENT_PROFLE_NAME_CM}    ssid_name=${SSID}     password=${WIRELESS_PESRONAL_ENT_00}[auth_profile][key_encryption][key_value]
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2_WIFI0}   client_mode_profile=${CLIENT_MODE_PROFILE_WIFI0}
@@ -190,7 +190,7 @@ Test5: Client mode enable in device Configuration for AP2 - TCXM-15115
 
 Test6: Setup WIFI on STA2 and Connect to AP2 - TCXM-15115
     [Documentation]     Setup WIFI on STA2 and Connect to AP2 on Client Mode
-    [Tags]              xim_tc_15115       development        test6      test
+    [Tags]              tcxm_15115       development        test6      test
     Depends On          Test5
     ${mu}                            set variable        ${mu2}
     Setup AP in Client Mode          ${ap2}
@@ -200,7 +200,7 @@ Test6: Setup WIFI on STA2 and Connect to AP2 - TCXM-15115
 
 Test7: Verify Connection - TCXM-15115
     [Documentation]     Setup WIFI on STA2 and Connect to AP2 on Client Mode
-    [Tags]              xim_tc_15115     development    test7      test
+    [Tags]              tcxm_15115     development    test7      test
     Depends On          Test6
     ${mu}               set variable    ${mu2}
     sleep               10s

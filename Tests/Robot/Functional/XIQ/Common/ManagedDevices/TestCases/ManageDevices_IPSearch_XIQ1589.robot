@@ -12,7 +12,7 @@
 *** Settings ***
 Resource         ../Resources/AllResources.robot
 
-Force Tags       testbed_not_required
+Force Tags       testbed_none
 
 Suite Setup      Log Into XIQ and Set Up Test
 Suite Teardown   Tear Down Test and Close Session
@@ -28,7 +28,7 @@ ${LOCATION}             auto_location_milpitas, San_Jose, building_1, floor_1
 *** Test Cases ***
 TCXM-18675: Basic IP Address Search
     [Documentation]     Confirms the device IP Search
-    [Tags]              xim_tc_18675   development
+    [Tags]              tcxm_18675   development
 
     ${ip_list_result}=      Get Device Data Field Value     AP460C      ipAddress
     ${search-result}=       Perform Search on Devices Table    ${ip_list_result[0]}

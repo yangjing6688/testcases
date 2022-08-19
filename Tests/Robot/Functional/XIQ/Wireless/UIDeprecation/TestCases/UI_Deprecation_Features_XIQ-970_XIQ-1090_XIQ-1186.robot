@@ -25,11 +25,10 @@ Pre Condition
 
 
 *** Test Cases ***
-
 TC-15158: Verify Navigation to 'Network 360 Plan' page
     [Documentation]         Verify that user is able to navigate to 'Network 360 Plan' page under Manage sub-menu
 
-    [Tags]       xim_tc_15158            development
+    [Tags]       tcxm_15158            development
 
     ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
     should be equal as strings       '${result}'        '1'
@@ -47,7 +46,7 @@ TC-15158: Verify Navigation to 'Network 360 Plan' page
 TC-15188: Verify Navigation to 'Unbind MAC/PPSK binding' page
     [Documentation]         Verify that user is able to navigate to 'Unbind MAC/PPSK binding' page under Configure > Users > User management
 
-    [Tags]        xim_tc_15188           development
+    [Tags]        tcxm_15188           development
 
     ${result}=              Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
     should be equal as strings       '${result}'        '1'
@@ -65,7 +64,7 @@ TC-15188: Verify Navigation to 'Unbind MAC/PPSK binding' page
 TC-15146: Verify Navigation to Configure > Users > User management > 'Locked Users' page
     [Documentation]         Verify that user is able to navigate to 'Locked Users' page under Configure > Users > User management
 
-    [Tags]        xim_tc_15146           development
+    [Tags]        tcxm_15146           development
 
     ${result}=              Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
     should be equal as strings       '${result}'        '1'

@@ -66,7 +66,7 @@ ${SITE_VXLAN}                    Disable
 *** Test Cases ***
 Test 1: Site ZTP Plus Configuration Use Discovered Disabled
     [Documentation]     Confirms the Site > ZTP+ Device Defaults panel can be successfully configured.
-    [Tags]              xiqse_tc_902    xmc_4478    development     xiqse     ztp+    use_discovered    site_defaults   test1
+    [Tags]              tcxe_902    xmc_4478    development     xiqse     ztp+    use_discovered    site_defaults   test1
 
     Navigate to Site and Select ZTP+ Device Defaults            ${SITE}
 
@@ -89,7 +89,7 @@ Test 1: Site ZTP Plus Configuration Use Discovered Disabled
 
 Test 2: Site ZTP Plus Configuration Use Discovered IP
     [Documentation]     Confirms the Site > ZTP+ Device Defaults panel can be successfully configured.
-    [Tags]              xiqse_tc_902    xmc_4478    development     xiqse     ztp+    use_discovered    site_defaults   test2
+    [Tags]              tcxe_902    xmc_4478    development     xiqse     ztp+    use_discovered    site_defaults   test2
 
     Navigate to Site and Select ZTP+ Device Defaults            ${SITE}
 
@@ -112,7 +112,7 @@ Test 2: Site ZTP Plus Configuration Use Discovered IP
 
 Test 3: Site ZTP Plus Configuration Use Discovered IP And Management Interface
     [Documentation]     Confirms the Site > ZTP+ Device Defaults panel can be successfully configured.
-    [Tags]              xiqse_tc_902    xmc_4478    development     xiqse     ztp+    use_discovered    site_defaults   test3
+    [Tags]              tcxe_902    xmc_4478    development     xiqse     ztp+    use_discovered    site_defaults   test3
 
     Navigate to Site and Select ZTP+ Device Defaults            ${SITE}
 
@@ -135,7 +135,7 @@ Test 3: Site ZTP Plus Configuration Use Discovered IP And Management Interface
 
 Test 4: Site ZTP Plus Configuration Use Discovered Management Interface
     [Documentation]     Confirms the Site > ZTP+ Device Defaults panel can be successfully configured.
-    [Tags]              xiqse_tc_902    xmc_4478    development     xiqse     ztp+    use_discovered    site_defaults   test4
+    [Tags]              tcxe_902    xmc_4478    development     xiqse     ztp+    use_discovered    site_defaults   test4
 
     Navigate to Site and Select ZTP+ Device Defaults            ${SITE}
 
@@ -158,7 +158,7 @@ Test 4: Site ZTP Plus Configuration Use Discovered Management Interface
 
 Test 5: Site ZTP Plus Configuration CLI Recovery Mode Only
     [Documentation]     Confirms the Site > ZTP+ Device Defaults > CLI Recovery Mode Only field is read-only when the Poll Type is set to SNMP.
-    [Tags]              xiqse_tc_902    xmc_4478    development     xiqse     ztp+    cli_recoverey_mode    site_defaults   test5
+    [Tags]              tcxe_902    xmc_4478    development     xiqse     ztp+    cli_recoverey_mode    site_defaults   test5
 
     Navigate to Site and Select ZTP+ Device Defaults            ${SITE}
 
@@ -183,7 +183,7 @@ Test 5: Site ZTP Plus Configuration CLI Recovery Mode Only
 
 Test 6: Site ZTP Plus Configuration SNMP Device Protocol
     [Documentation]     Confirms the Site > ZTP+ Device Defaults > SNMP Device Protocol field is read-only when the Poll Type is set to SNMP.
-    [Tags]              xiqse_tc_902    xmc_4478    development     xiqse     ztp+    snmp_device_protocol  site_defaults   test6
+    [Tags]              tcxe_902    xmc_4478    development     xiqse     ztp+    snmp_device_protocol  site_defaults   test6
 
     Navigate to Site and Select ZTP+ Device Defaults            ${SITE}
 
@@ -208,7 +208,7 @@ Test 6: Site ZTP Plus Configuration SNMP Device Protocol
 
 Test 7: Site ZTP Plus Configuration Site Assignment Precedence
     [Documentation]     Confirms the Site > ZTP+ Device Defaults > Site Assignment Prcedence field is read-write for the World site.
-    [Tags]              xiqse_tc_902    xmc_4478    development     xiqse     ztp+    site_assignment_precedence  site_defaults   test7
+    [Tags]              tcxe_902    xmc_4478    development     xiqse     ztp+    site_assignment_precedence  site_defaults   test7
 
     Navigate to Site and Select ZTP+ Device Defaults            ${SITE}
 
@@ -238,7 +238,7 @@ Test 7: Site ZTP Plus Configuration Site Assignment Precedence
 
 Test 8: Site ZTP Plus Configuration Global IP to Site Mapping
     [Documentation]     Confirms the Site > ZTP+ Device Defaults > Global IP to Site Mapping field is read-write for the World site.
-    [Tags]              xiqse_tc_902    xmc_4478    development     xiqse     ztp+    global_ip_to_site  site_defaults   test8
+    [Tags]              tcxe_902    xmc_4478    development     xiqse     ztp+    global_ip_to_site  site_defaults   test8
 
     Navigate to Site and Select ZTP+ Device Defaults            ${SITE}
 

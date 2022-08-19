@@ -213,7 +213,7 @@ class xiqTests():
     @mark.p1
     @mark.testbed_1_node
     @mark.development
-    @mark.xim_tcxm_19208
+    @mark.tcxm_19208
     def test_Create_VOIP_Port_type_at_template_Level(self):
         """Test Objective: Create VOIP Port type at template Level"""
         self.executionHelper.testSkipCheck()
@@ -254,7 +254,7 @@ class xiqTests():
             pytest.fail("testcase has failed")
     @mark.p1
     @mark.testbed_1_node
-    @mark.xim_tcxm_19433
+    @mark.tcxm_19433
     @mark.development
     def test_In_new_port_type_editor_Phone_with_Data_Port_should_present(self):
         """In new port type editor - "Phone with a Data Port" should present"""
@@ -281,7 +281,7 @@ class xiqTests():
         self.xiq.xflowscommonNavigator.navigate_to_devices()
     @mark.p1
     @mark.testbed_1_node
-    @mark.xim_tcxm_19476
+    @mark.tcxm_19476
     @mark.development
     def test_verify_template_voice_view_when_lldp_cdp_advertisements_are_disabled(self):
         """Verify Template voice view - when lldp and cdp advertisements are disabled"""
@@ -298,7 +298,7 @@ class xiqTests():
 
     @mark.p1
     @mark.testbed_1_node
-    @mark.xim_tcxm_19489
+    @mark.tcxm_19489
     @mark.development
     def test_verify_template_voice_view_when_lldp_disabled_cdp_advertisements_are_enabled(self):
         """ Verify Template voice view - when lldp advertisement - disabled & cdp advertisements - enabled"""
@@ -334,7 +334,7 @@ class xiqTests():
         self.xiq.xflowscommonNavigator.navigate_to_devices()
     @mark.p1
     @mark.testbed_1_node
-    @mark.xim_tcxm_19491
+    @mark.tcxm_19491
     @mark.development
     def test_verify_template_voice_view_when_lldp_enabled_med_voice_vlan_enabled_cdp_advertisements_are_disabled(self):
         """ Verify Template voice view - when lldp advertisement - enabled and MED  Voice VLAN/DSCP	"""
@@ -377,7 +377,7 @@ class xiqTests():
         self.xiq.xflowscommonNavigator.navigate_to_devices()
     @mark.p1
     @mark.testbed_1_node
-    @mark.xim_tcxm_19494
+    @mark.tcxm_19494
     @mark.development
     def test_verify_template_voice_view_when_lldp_disabled_cdp_advertisements_are_enabled_voice_vlan_enabled(self):
         """ Verify Template voice view - cdp advertisements - enabled and Enable CDP advertisement of Voice VLAN"""
@@ -416,7 +416,7 @@ class xiqTests():
 
     @mark.p2
     @mark.testbed_1_node
-    @mark.xim_tcxm_19434
+    @mark.tcxm_19434
     @mark.development
     def test_verify_voice_vlan_and_data_vlan_is_visible_on_selection_phone_with_a_data_port(self):
         """ Check Voice VLAN and Data VLAN can be created"""
@@ -441,7 +441,7 @@ class xiqTests():
 
     @mark.p2
     @mark.testbed_1_node
-    @mark.xim_tcxm_19507
+    @mark.tcxm_19507
     @mark.development
     def test_verify_voice_vlan_data_vlan_cannot_be_same(self):
         """ Text Box validation - Voice and Data vlan should not be same	"""
@@ -480,7 +480,7 @@ class xiqTests():
             self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
     @mark.p2
     @mark.testbed_1_node
-    @mark.xim_tcxm_19562
+    @mark.tcxm_19562
     @mark.development
     def test_verify_switch_between_voip_and_access_port(self):
         """ Switching between VOIP and Access port and making sure that the CLI is updated right"""
@@ -518,7 +518,7 @@ class xiqTests():
         self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
     @mark.p2
     @mark.testbed_1_node
-    @mark.xim_tcxm_19579
+    @mark.tcxm_19579
     @mark.development
     def test_verify_revert_of_lldp_advertisement_enabled_med_voice_enabled_disabled(self):
         """ Verify revert of lldp advertisement - when lldp advertisement - enabled and MED  Voice Signaling/DSCP is enabled and disabled	"""
@@ -579,7 +579,7 @@ class xiqTests():
 
     @mark.p1
     @mark.testbed_1_node
-    @mark.xim_tcxm_19477
+    @mark.tcxm_19477
     @mark.development
     def test_verify_template_voice_view_when_lldp_disabled_cdp_advertisements_are_disabled(self):
         """Verify Template voice view - when lldp advertisement - disabled & cdp advertisements - enabled"""
@@ -613,7 +613,7 @@ class xiqTests():
         self.xiq.xflowscommonNavigator.navigate_to_devices()
     @mark.p2
     @mark.testbed_1_node
-    @mark.xim_tcxm_19490
+    @mark.tcxm_19490
     @mark.development
     def test_verify_template_voice_view_when_lldp_advertisement_enabled_802_1_vlan_enabled(self):
         """Verify Template voice view - when lldp advertisement - enabled - 801.2 vlan - enabled"""
@@ -647,7 +647,7 @@ class xiqTests():
         self.xiq.xflowscommonNavigator.navigate_to_devices()
     @mark.p2
     @mark.testbed_1_node
-    @mark.xim_tcxm_19630
+    @mark.tcxm_19630
     @mark.development
     def test_verify_revert_of_lldp_advertisement_disabled_cdp_enabled_disabled(self):
         """ Verify revert of CDP advertisement - Voice VLAN enabled/disabled	"""
@@ -702,7 +702,7 @@ class xiqTests():
                 pytest.fail("UnExpected CLI: %s  present in Delta", eachcli)
     @mark.p2
     @mark.testbed_1_node
-    @mark.xim_tcxm_19681
+    @mark.tcxm_19681
     @mark.development
     def test_verify_revert_of_lldp_cdp_advertisement_enabled_disabled(self):
         """ Verify revert of lldp and cdp advertisements are enabled/disabled"""
@@ -759,7 +759,7 @@ class xiqTests():
                 pytest.fail("UnExpected CLI: %s  present in Delta", eachcli)
     @mark.p2
     @mark.testbed_1_node
-    @mark.xim_tcxm_19688
+    @mark.tcxm_19688
     @mark.development
     def test_verify_revert_of_lldp_advertisement_enabled_802_1_vlan_enabled_disabled(self):
         """ Device360 - Verify revert of lldp advertisement - when lldp advertisement is enabled - 801.2 vlan - enabled/disabled"""
@@ -815,7 +815,7 @@ class xiqTests():
 
     @mark.p2
     @mark.testbed_1_node
-    @mark.xim_tcxm_19690
+    @mark.tcxm_19690
     @mark.development
     def test_lldp_cdp_advertisments_are_enabled(self):
         """ Verify Device360 voice view - when lldp and cdp advertisements are enabled"""
@@ -848,7 +848,7 @@ class xiqTests():
 
     @mark.testbed_1_node
     @mark.development
-    @mark.xim_tcxm_19697
+    @mark.tcxm_19697
     @mark.p1
     def test_verify_revert_of_cdp_advertisment_voice_vlan_enabled_disabled(self):
         """ Verify Device360 voice view - cdp advertisements - enabled and Enable CDP advertisement of Voice VLAN	"""
@@ -897,7 +897,7 @@ class xiqTests():
                 pytest.fail("UnExpected CLI: %s present in Delta", eachcli)
     @mark.development
     @mark.testbed_1_node
-    @mark.xim_tcxm_19699
+    @mark.tcxm_19699
     @mark.p1
     def test_verify_lldp_advertisment_disabled_cdp_advertisment_enabled(self):
         """ Verify Device360 Summary view - when lldp advertisement - disabled & cdp advertisements - enabled	"""
@@ -927,7 +927,7 @@ class xiqTests():
                 pytest.fail("Expected CLI: %s Not present in Delta", eachcli)
     @mark.testbed_1_node
     @mark.development
-    @mark.xim_tcxm_19705
+    @mark.tcxm_19705
     @mark.p1
     def test_verify_voice_vlan_data_vlan_visible_on_voip_port(self):
         """ "Voice Vlan" and "Data Vlan" should be visible on selection of "Phone with a Data Port"	"""
@@ -967,7 +967,7 @@ class xiqTests():
             self.xiq.xflowsmanageDevice360.close_device360_window()
     @mark.p1
     @mark.testbed_1_node
-    @mark.xim_tcxm_19735
+    @mark.tcxm_19735
     @mark.development
     def test_verify_voip_enabled_at_template_level_disabled_at_device_level(self):
         """ Hierarchical configuration - VOIP lldp enabled at Template level and disabled at device level	"""
@@ -1021,7 +1021,7 @@ class xiqTests():
 
     @mark.p1
     @mark.testbed_1_node
-    @mark.xim_tcxm_19736
+    @mark.tcxm_19736
     @mark.development
     def test_verify_cdp_enabled_at_template_level_disabled_at_device_level(self):
         """ Hierarchical configuration - VOIP CDP enabled at Template level and disabled at device level	"""
@@ -1078,7 +1078,7 @@ class xiqTests():
 
     @mark.testbed_1_node
     @mark.development
-    @mark.xim_tcxm_19695
+    @mark.tcxm_19695
     @mark.p1
     def test_verify_revert_of_lldp_advertisement_enabled_med_voice_signalling_dscp_enabled_disabled(self):
         """ Device 360 Verify revert of lldp advertisement - when lldp advertisement - enabled and MED  Voice Signaling/DSCP is enabled and disabled"""

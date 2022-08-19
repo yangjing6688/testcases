@@ -28,12 +28,14 @@ ${IQAGENT}                  ${xiq.sw_connection_host}
 ${DUT_SERIAL}               ${netelem3.serial}
 ${DUT_MAC}                  ${netelem3.mac}
 ${DUT_NAME}                 ${netelem3.name}
-${DUT_CONSOLE_IP}           ${netelem3.ip}
-${DUT_CONSOLE_PORT}         ${netelem3.port}
+${DUT_IP}                   ${netelem3.ip}
+${DUT_PORT}                 ${netelem3.port}
 ${DUT_USERNAME}             ${netelem3.username}
 ${DUT_PASSWORD}             ${netelem3.password}
 ${DUT_PLATFORM}             ${netelem3.platform}
 ${DUT_TEST_PORT}            ${netelem3.test_port_num}
+${DUT_MAKE}                 ${netelem3.make}
+${DUT_CLI_TYPE}             ${netelem3.cli_type}
 
 ${LOCATION}                 San Jose, building_01, floor_02
 
@@ -53,7 +55,7 @@ ${LOCATION}                 San Jose, building_01, floor_02
 *** Test Cases ***
 Test 1: Confirm Monitor Overview Page Functionality
     [Documentation]     Confirms functionality of graphs on the Monitor> Overview page of the Device360 view
-    [Tags]              csit_tc_8492    aiq_1332    development    xiq    voss    d360    test1
+    [Tags]              tccs_8492    aiq_1332    development    xiq    voss    d360    test1
 
     [Setup]  Navigate To Device360 Page With MAC     ${DUT_MAC}
 
@@ -65,7 +67,7 @@ Test 1: Confirm Monitor Overview Page Functionality
 
 Test 2: Confirm Monitor Clients Page Functionality
     [Documentation]     Confirms functionality of graphs on the Monitor> Clients page of the Device360 view
-    [Tags]              csit_tc_8492    aiq_1332    development    xiq    voss    d360    test2
+    [Tags]              tccs_8492    aiq_1332    development    xiq    voss    d360    test2
 
     [Setup]  Navigate To Device360 Page With MAC     ${DUT_MAC}
 
@@ -77,7 +79,7 @@ Test 2: Confirm Monitor Clients Page Functionality
 
 Test 3: Confirm Monitor Diagnostics Page Functionality
     [Documentation]     Confirms functionality of graphs on the Monitor> Diagnostics page of the Device360 view
-    [Tags]              known_issue    csit_tc_8492    aiq_1332    development    xiq    voss    d360    test3
+    [Tags]              known_issue    tccs_8492    aiq_1332    development    xiq    voss    d360    test3
 
     [Setup]  Navigate To Device360 Page With MAC     ${DUT_MAC}
 
@@ -95,11 +97,10 @@ Test 3: Confirm Monitor Diagnostics Page Functionality
 Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ and sets up the elements necessary to complete this test suite
 
-    Log Into XIQ and Confirm Success  ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
-
-    Onboard New Test Device  ${DUT_SERIAL}  ${LOCATION}
-    Configure Test Device    ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${IQAGENT}
-    Confirm Device Serial Online  ${DUT_SERIAL}
+    Log Into XIQ and Confirm Success            ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
+    Configure Test Device                       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}
+    Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}
+    Confirm Device Serial Online                ${DUT_SERIAL}
 
 Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
@@ -109,7 +110,7 @@ Tear Down Test and Close Session
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${location}
+    [Arguments]         ${serial}  ${make}  ${location}
 
     Navigate to Devices and Confirm Success
 
@@ -118,16 +119,16 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    Onboard VOSS Device  ${serial}  loc_name=${location}
+    Onboard Device    ${serial}  ${make}  location=${location}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 
 Configure Test Device
-    [Documentation]     Configures the specified test device by resetting to factory defaults and configuring the iqagent
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${agent}
+    [Documentation]     Configures the specified test device by rebooting a known good configuration file and then configuring the iqagent
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${agent}
 
-    Reset VOSS Switch to Factory Defaults  ${ip}  ${port}  ${user}  ${pwd}
-    Configure iqagent for VOSS Switch      ${ip}  ${port}  ${user}  ${pwd}  ${agent}
+    Boot Switch To Known Good Configuration     ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
+    Configure Device To Connect To Cloud        ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${agent}
 
 Clean Up Test Device and Confirm Success
     [Documentation]     Deletes the specified device and confirms the action was successful

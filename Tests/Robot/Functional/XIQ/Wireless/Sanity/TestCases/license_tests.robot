@@ -11,13 +11,13 @@
 #${LOGIN_OPTION}             trial or legacylicense or extremecloudiqlicense or connect
 #For now please keep the below account for  license sanity
 #May change once new accounts are created
-${EKEY}                     None 
+${EKEY}                     None
 ${SFDC_USER_TYPE}           partner
-${SFDC_PARTNER_EMAIL}       ahqalabpw1+part11@gmail.com 
+${SFDC_PARTNER_EMAIL}       ahqalabpw1+part11@gmail.com
 ${SFDC_PARTNER_PWD}         Aerohive123
-${SHARED_CUID}              FJtHxWDlE 
-${SFDC_CUST_EMAIL}          ahqalabwp+cust1@gmail.com 
-${SFDC_CUST_PWD}            Aerohive123 
+${SHARED_CUID}              FJtHxWDlE
+${SFDC_CUST_EMAIL}          ahqalabwp+cust1@gmail.com
+${SFDC_CUST_PWD}            Aerohive123
 *** Settings ***
 Library     Collections
 Library     common/Cli.py
@@ -42,11 +42,11 @@ Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
-Force Tags   testbed_not_required
+Force Tags   testbed_none
 *** Test Cases ***
 TCCS-11519: Welcome Page TRIAL User login to XIQ
     [Documentation]  Trial customer login to XIQ and verify link to extr portal is available
-    [Tags]   sanity   gemaltolicense   development   tccs-11519  
+    [Tags]   sanity   gemaltolicense   development   tccs-11519
     welcome page login  ${tenant_username}     ${tenant_password}   trial
     ${result1}=  navigate to license mgmt
     should be equal as strings  '${result1}'  '1'

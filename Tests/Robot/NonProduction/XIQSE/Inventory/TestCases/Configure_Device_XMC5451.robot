@@ -52,7 +52,7 @@ ${TEST_NOTE}                AUTO NOTE
 *** Test Cases ***
 Test 1: Set Device Profile
     [Documentation]     Confirms the profile can be changed on a device
-    [Tags]              nightly1    xiqse_tc_869    xmc_5451    development    xiqse    acceptance    inventory    configure    test1
+    [Tags]              nightly1    tcxe_869    xmc_5451    development    xiqse    acceptance    inventory    configure    test1
 
     Navigate and Create Profile      ${TEST_PROFILE}  ${TEST_PROFILE_VERSION}  ${TEST_PROFILE_READ}  ${TEST_PROFILE_WRITE}  ${TEST_PROFILE_MAX}  ${TEST_PROFILE_CLI}
 
@@ -80,7 +80,7 @@ Test 1: Set Device Profile
 
 Test 2: Configure Device
     [Documentation]     Confirms a device can be configured
-    [Tags]              nightly1    known_issue    xiqse_tc_869    xmc_5451    development    xiqse    acceptance    inventory    configure    test2
+    [Tags]              nightly1    known_issue    tcxe_869    xmc_5451    development    xiqse    acceptance    inventory    configure    test2
 
     Navigate to Devices and Confirm Success
 
@@ -114,7 +114,7 @@ Test 2: Configure Device
     ${after_ud3}=       Get From Dictionary  ${after_info}  User Data 3
     ${after_ud4}=       Get From Dictionary  ${after_info}  User Data 4
     ${after_note}=      Get From Dictionary  ${after_info}  Notes
-  
+
     Should Be Equal As Strings  ${after_nn}     ${TEST_NICKNAME}
     Should Be Equal As Strings  ${after_asset}  ${TEST_ASSET_TAG}
     Should Be Equal As Strings  ${after_ud1}    ${TEST_USER_DATA_1}
@@ -122,7 +122,7 @@ Test 2: Configure Device
     Should Be Equal As Strings  ${after_ud3}    ${TEST_USER_DATA_3}
     Should Be Equal As Strings  ${after_ud4}    ${TEST_USER_DATA_4}
     Should Be Equal As Strings  ${after_note}   ${TEST_NOTE}
-    
+
     [Teardown]  Set Device Annotations  ${DUT_IP}
     ...         ${before_nn}  ${before_asset}  ${before_ud1}  ${before_ud2}  ${before_ud3}  ${before_ud4}  ${before_note}
 

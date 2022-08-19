@@ -33,11 +33,13 @@ ${DUT_SERIAL}               ${netelem3.serial}
 ${DUT_MAC}                  ${netelem3.mac}
 ${DUT_NAME}                 ${netelem3.name}
 ${DUT_TEMPLATE}             ${netelem3.template}
-${DUT_CONSOLE_IP}           ${netelem3.ip}
-${DUT_CONSOLE_PORT}         ${netelem3.port}
+${DUT_IP}                   ${netelem3.ip}
+${DUT_PORT}                 ${netelem3.port}
 ${DUT_USERNAME}             ${netelem3.username}
 ${DUT_PASSWORD}             ${netelem3.password}
 ${DUT_PLATFORM}             ${netelem3.platform}
+${DUT_MAKE}                 ${netelem3.make}
+${DUT_CLI_TYPE}             ${netelem3.cli_type}
 
 ${DEFAULT_DEVICE_PWD}       Aerohive123
 ${SSH_TIMER}                5
@@ -48,9 +50,9 @@ ${SSID_NAME}                VOSS_SSID_AUTO
 
 
 *** Test Cases ***
-Test 1: Enable SSH on VOSS Switch and Confirm SSH Session Can Be Established
+Test 1: Enable SSH on Teste Device and Confirm SSH Session Can Be Established
     [Documentation]     Enables SSH for the VOSS Switch
-    [Tags]              csit_tc_8553    aiq_1332    development    xiq    voss    ssh    test1
+    [Tags]              tccs_8553    aiq_1332    development    xiq    voss    ssh    test1
 
     &{ip_port_info}=                    Device360 Enable SSH CLI Connectivity   device_mac=${DUT_MAC}  run_time=${SSH_TIMER}
     ${ip}=                              Get From Dictionary  ${ip_port_info}  ip
@@ -58,19 +60,17 @@ Test 1: Enable SSH on VOSS Switch and Confirm SSH Session Can Be Established
     Set Suite Variable                  ${SSH_IP}     ${ip}
     Set Suite Variable                  ${SSH_PORT}   ${port}
 
-    ${ssh_spawn}=                       Open pxssh Spawn    ${SSH_IP}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${SSH_PORT}
-    ${cmd_result}=                      Send pxssh  ${ssh_spawn}  show sys-info | include Serial
+    ${spawn}=                           Open Spawn    ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}
+    ${cmd_result}=                      Send  ${spawn}  show sys-info | include Serial
     Log To Console                      SSH Command Result Is ${cmd_result}
-
-    ${close_result}=                    Close pxssh Spawn  ${ssh_spawn}
-    Should Not Be Equal As Integers     ${close_result}  -1
+    ${close_result}=                    Close Spawn and Confirm Success  ${spawn}
 
     [Teardown]  Close Device360 Window
 
 
 Test 2: Confirm SSH Session Is Automatically Disabled When Timer Expires
     [Documentation]     Confirms SSH is disabled when the timer expires
-    [Tags]              csit_tc_8553    aiq_1332    development    xiq    voss    ssh    test2
+    [Tags]              tccs_8553    aiq_1332    development    xiq    voss    ssh    test2
 
     Depends On  Test 1
 
@@ -93,10 +93,9 @@ Log Into XIQ and Set Up Test
 
     Create Open Express Policy With Switch Template and Confirm Success  ${POLICY_NAME}  ${SSID_NAME}  ${DUT_TEMPLATE}
 
-    Reset VOSS Switch to Factory Defaults        ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
-    Configure iqagent for VOSS Switch            ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${IQAGENT}
+    Configure Test Device                        ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}
 
-    Onboard New Test Device                      ${DUT_SERIAL}  ${POLICY_NAME}  ${LOCATION}
+    Onboard New Test Device                      ${DUT_SERIAL}  ${DUT_MAKE}  ${POLICY_NAME}  ${LOCATION}
     Assign Policy to Switch and Confirm Success  ${POLICY_NAME}  ${DUT_SERIAL}
     Confirm Device Serial Has Expected Status    ${DUT_SERIAL}  ${STATUS_AFTER_UPDATE}
 
@@ -111,9 +110,16 @@ Tear Down Test and Close Session
 
     Log Out of XIQ and Quit Browser
 
+Configure Test Device
+    [Documentation]     Configures the specified test device by rebooting a known good configuration file and then configuring the iqagent
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${agent}
+
+    Boot Switch To Known Good Configuration     ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
+    Configure Device To Connect To Cloud        ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${agent}
+
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${policy}  ${location}
+    [Arguments]         ${serial}  ${make}  ${policy}  ${location}
 
     Navigate to Devices and Confirm Success
 
@@ -122,7 +128,7 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    Onboard VOSS Device  ${serial}  loc_name=${location}
+    Onboard Device    ${serial}  ${make}  ${policy}  location=${location}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 

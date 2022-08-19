@@ -63,14 +63,14 @@ ${EVENT_FIRMWARE_DOWNLOAD}          (${DUT_IP}) - Operation Complete.  Downloade
 *** Test Cases ***
 Test 1: Perform Upgrade Firmware
     [Documentation]     Perform firmware upgrade of switch in XIQSE
-    [Tags]              xiqse_tc_908    xmc_5485    development    xiqse    inventory    firmware_upgrade    universal    voss    scp    test1
+    [Tags]              tcxe_908    xmc_5485    development    xiqse    inventory    firmware_upgrade    universal    voss    scp    test1
 
     Perform Firmware Upgrade and Confirm Success        ${DUT_IP}    ${VOSS_SCP_TRANSFER_MODE}    ${VOSS_SCP_DEFINITION_FILENAME}
     ...                                                 ${VOSS_UPGRADE_RELEASE}    ${VOSS_FIRMWARE_VERSION}
 
 Test 2: Confirm Operations Panel Message
     [Documentation]     Confirms the operations panel contains the expected messages
-    [Tags]              xiqse_tc_908    xmc_5485    development    xiqse    inventory    firmware_upgrade    universal    voss    scp    test2
+    [Tags]              tcxe_908    xmc_5485    development    xiqse    inventory    firmware_upgrade    universal    voss    scp    test2
 
     XIQSE Operations Wait Until Operation Complete      Inventory Audit
     Confirm Operations Panel Message For Type           Inventory Audit  ${OPS_PANEL_RESTART}
@@ -79,7 +79,7 @@ Test 2: Confirm Operations Panel Message
 
 Test 3: Confirm Events
     [Documentation]     Confirms the events view contains the expected events
-    [Tags]              xiqse_tc_908    xmc_5485    development    xiqse    inventory    firmware_upgrade    universal    voss    scp    test3
+    [Tags]              tcxe_908    xmc_5485    development    xiqse    inventory    firmware_upgrade    universal    voss    scp    test3
 
     Navigate to Events and Confirm Success
     Set Event Time Range and Confirm Success        Last 30 Minutes

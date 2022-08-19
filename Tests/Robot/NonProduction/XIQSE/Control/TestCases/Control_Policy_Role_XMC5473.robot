@@ -42,7 +42,7 @@ ${WORLD_SITE}               World
 *** Test Cases ***
 Test 1: Test Create And Delete Policy Role:
     [Documentation]    Creates and deletes a policy role in the test domain
-    [Tags]             nightly1    xiqse_tc_881    xmc_5473    development    xiqse    acceptance    control    policy    test1
+    [Tags]             nightly1    tcxe_881    xmc_5473    development    xiqse    acceptance    control    policy    test1
 
     ${result}=  XIQSE Control Policy Create Role    TestRole
     Should Be Equal As Integers                 ${result}     1

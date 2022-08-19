@@ -32,7 +32,7 @@ ${SIM_LOCATION}      Aerohive Networks, Milpitas, Aerohive HQ, 2nd Fl - M
 *** Test Cases ***
 TCXM-19759: Confirm That Left Side Action Icons Are Not Available
     [Documentation]     Confirms that the left side grid action icons (add, download, edit, delete) are not visible
-    [Tags]              xim_tc_19759   development
+    [Tags]              tcxm_19759   development
 
     Navigate to Devices and Confirm Success
 
@@ -47,28 +47,28 @@ TCXM-19759: Confirm That Left Side Action Icons Are Not Available
 
 TCXM-19758: Confirm The Update Device Button Is Not Available
     [Documentation]     Confirms that the right side Update Device button is not visible
-    [Tags]              xim_tc_19758   development
+    [Tags]              tcxm_19758   development
 
     ${btn_visible}=     Is Update Device Button Visible
     Should Be Equal As Integers   ${btn_visible}   -1
 
 TCXM-19835: Confirm The Actions Button Is Not Available
     [Documentation]     Confirms that the right side Actions button is not visible
-    [Tags]              xim_tc_19835   development
+    [Tags]              tcxm_19835   development
 
     ${btn_visible}=     Is Actions Button Visible
     Should Be Equal As Integers   ${btn_visible}   -1
 
 TCXM-19834: Confirm The Utilities Button Is Available
     [Documentation]     Confirms that the right side Utilities button is visible
-    [Tags]              xim_tc_19834   development
+    [Tags]              tcxm_19834   development
 
     ${btn_visible}=     Is Utilities Button Visible
     Should Be Equal As Integers   ${btn_visible}   1
 
 TCXM-19760: Confirm No Access To Device360
     [Documentation]     Confirms no access to the Device360 popup
-    [Tags]              xim_tc_19760   development
+    [Tags]              tcxm_19760   development
 
     ${is_link}=         Is Hostname Link Available   ${SIM_SERIAL}
     Should Be Equal As Integers   ${is_link}   -1
@@ -77,21 +77,21 @@ TCXM-19760: Confirm No Access To Device360
 
 TCXM-19838: Confirm No Access To Device360 With Clients
     [Documentation]     Confirms no access to the Device360 popup through clients
-    [Tags]              xim_tc_19838   development
+    [Tags]              tcxm_19838   development
 
     ${is_link}=         Is Client Link Available   ${SIM_SERIAL}
     Should Be Equal As Integers   ${is_link}   -1
 
 TCXM-19836: Confirm No Access To Policy Change
     [Documentation]     Confirms no access to the policy change popup
-    [Tags]              xim_tc_19836   development
+    [Tags]              tcxm_19836   development
 
     ${is_link}=         Is Policy Link Available   ${SIM_SERIAL}
     Should Be Equal As Integers   ${is_link}   -1
 
 TCXM-19837: Confirm No Access To Location Change
     [Documentation]     Confirms no access to the location change popup
-    [Tags]              xim_tc_19837   development
+    [Tags]              tcxm_19837   development
 
     ${is_link}=         Is Location Link Available   ${SIM_SERIAL}
     Should Be Equal As Integers   ${is_link}   -1
