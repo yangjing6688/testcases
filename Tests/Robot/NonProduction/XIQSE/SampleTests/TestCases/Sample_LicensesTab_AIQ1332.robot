@@ -32,7 +32,7 @@ ${XIQSE_PASSWORD}       ${xiqse.password}
 *** Test Cases ***
 Test 1: Retrieve Pilot License Count
     [Documentation]     Retrieves the total Pilot licenses found on the Administration> Licenses tab
-    [Tags]              xiqse_tc_893    aiq_1332    development    sample    xiqse    licenses_tab    test1
+    [Tags]              tcxe_893    aiq_1332    development    sample    xiqse    licenses_tab    test1
 
     Navigate to Licenses and Confirm Success
     ${pilot_count}=  XIQSE Get License Quantity For Feature  XIQ-PIL-S-C
@@ -40,7 +40,7 @@ Test 1: Retrieve Pilot License Count
 
 Test 2: Retrieve Navigator License Count
     [Documentation]     Retrieves the total Navigator licenses found on the Administration> Licenses tab
-    [Tags]              xiqse_tc_893    aiq_1332    development    sample    xiqse    licenses_tab    test2
+    [Tags]              tcxe_893    aiq_1332    development    sample    xiqse    licenses_tab    test2
 
     Navigate to Licenses and Confirm Success
     ${nav_count}=  XIQSE Get License Quantity For Feature  XIQ-NAV-S-C
@@ -48,7 +48,7 @@ Test 2: Retrieve Navigator License Count
 
 Test 3: Retrieve NAC License Count
     [Documentation]     Retrieves the total NAC licenses found on the Administration> Licenses tab
-    [Tags]              xiqse_tc_893    aiq_1332    development    sample    xiqse    licenses_tab    test3
+    [Tags]              tcxe_893    aiq_1332    development    sample    xiqse    licenses_tab    test3
 
     Navigate to Licenses and Confirm Success
     ${nac_count}=  XIQSE Get License Quantity For Feature  XIQ-NAC-S

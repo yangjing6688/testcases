@@ -52,7 +52,7 @@ ${LOCATION_2_DISPLAY}       auto_location_01 >> San Jose >> building_01 >> floor
 *** Test Cases ***
 Test 1: Assign Location Using Actions Menu
     [Documentation]     Assigns a location to the device using the Actions menu
-    [Tags]      csit_tc_8192   aiq_1332    development    xiq    manage_devices    location    test1
+    [Tags]      tccs_8192   aiq_1332    development    xiq    manage_devices    location    test1
 
     ${result}=  Assign Location With Device Actions     ${DUT_SERIAL}   ${LOCATION_1}
     Should Be Equal As Integers                         ${result}   1
@@ -65,7 +65,7 @@ Test 1: Assign Location Using Actions Menu
 
 Test 2: Assign Location Using Table Hyperlink
     [Documentation]     Assigns a location to the device using the hyperlink in the table
-    [Tags]      csit_tc_6986   aiq_1332    development    xiq    manage_devices    location    test1
+    [Tags]      tccs_6986   aiq_1332    development    xiq    manage_devices    location    test1
 
     ${result}=  Assign Location With Hyperlink      ${DUT_SERIAL}  ${LOCATION_2}
     Should Be Equal As Integers                     ${result}   1

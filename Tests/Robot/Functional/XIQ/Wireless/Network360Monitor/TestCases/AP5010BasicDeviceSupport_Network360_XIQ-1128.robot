@@ -8,7 +8,7 @@
 #
 #  To run using topo and environment:
 #  ----------------------------------
-#  robot -v TOPO:topology.yaml -v ENV:environment.yaml -v TESTBED:SJ/FT_testbed1.yaml -i xim_tc_18725 XIQ-1128.robot
+#  robot -v TOPO:topology.yaml -v ENV:environment.yaml -v TESTBED:SJ/FT_testbed1.yaml -i tcxm_18725 XIQ-1128.robot
 #
 #
 #  ---------------------
@@ -74,7 +74,7 @@ Suite Setup    Cleanup
 Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
     [Documentation]   Correctness of N360M Device Availability Score is verified.
 #                     Assumption is that there is only 1 Device (added by this script) listed in XIQ, in this location.
-    [Tags]            xim_tc_18636    development
+    [Tags]            tcxm_18636    development
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
@@ -105,7 +105,7 @@ Test2 - TCXM-18674 - N360M_DeviceScoring_DeviceHardwareHealthScore_100_1
 #                     Assumption is that:
 #                     there is only 1 Device listed in XIQ, in this location.
 #                     "TCXM-18636: N360M_DeviceScoring_DeviceAvailabilityScore_100_1" was executed and Device was onboarded
-    [Tags]            xim_tc_18674    development
+    [Tags]            tcxm_18674    development
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
@@ -123,7 +123,7 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
 #                     Assumption is that:
 #                     there is only 1 Device listed in XIQ, in this location.
 #                     "TCXM-18636: N360M_DeviceScoring_DeviceAvailabilityScore_100_1" was executed and Device was onboarded
-    [Tags]            xim_tc_18644    development
+    [Tags]            tcxm_18644    development
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
@@ -174,7 +174,7 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
 Test4 - TCXM-18725: N360M_Client_Count_1_1
     [Documentation]   Correctness of Client count (one 5GHz Client) is verified in N360M Client Health, CLIENTS widget.
 #                     Assumption is that there is only one Client connected.
-    [Tags]              xim_tc_18725    development
+    [Tags]              tcxm_18725    development
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser

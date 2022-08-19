@@ -3,7 +3,7 @@ wing1:
   model:                    AP-7532I
   device_template:          AP-7532I-default-template
   serial:                   "15061522201462"
-  os_version:               7.6.0.1-004R
+  os_version:               7.8.3.0-004R
   mac:                      84248D861180
   bssid:
   cli_type:                 "WING-AP"

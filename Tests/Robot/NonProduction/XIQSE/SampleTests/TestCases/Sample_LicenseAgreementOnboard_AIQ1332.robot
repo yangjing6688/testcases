@@ -31,7 +31,7 @@ ${XIQ_PASSWORD}         ${xiq.tenant_password}
 *** Test Cases ***
 Test 1: Confirm License Agreement Page is Displayed Correctly
     [Documentation]     Confirms the license agreement page is displayed correctly
-    [Tags]              xiqse_tc_104    aiq_1332    development    sample    xiqse    license_agreement    test1
+    [Tags]              tcxe_104    aiq_1332    development    sample    xiqse    license_agreement    test1
 
     [Setup]     Log Into XIQSE and confirm Success  ${XIQSE_USER}  ${XIQSE_PASSWORD}  url=${XIQSE_URL}
 
@@ -69,7 +69,7 @@ Test 1: Confirm License Agreement Page is Displayed Correctly
 
 Test 2: Confirm License Agreement Can Be Accepted
     [Documentation]     Confirms the license agreement can be accepted
-    [Tags]              xiqse_tc_104    aiq_1332    development    sample    xiqse    license_agreement     test2
+    [Tags]              tcxe_104    aiq_1332    development    sample    xiqse    license_agreement     test2
 
     [Setup]     Log Into XIQSE and Confirm Success  ${XIQSE_USER}  ${XIQSE_PASSWORD}  url=${XIQSE_URL}
 
@@ -82,7 +82,7 @@ Test 2: Confirm License Agreement Can Be Accepted
 
 Test 3: Confirm XIQ-SE Can Be Onboarded via License Agreement Workflow
     [Documentation]     Confirms XIQ-SE can be onboarded without error
-    [Tags]              xiqse_tc_104    aiq_1332    development    sample    xiqse    license_agreement     test3
+    [Tags]              tcxe_104    aiq_1332    development    sample    xiqse    license_agreement     test3
 
     [Setup]    Log Into XIQSE and Confirm Success       ${XIQSE_USER}  ${XIQSE_PASSWORD}  url=${XIQSE_URL}
 

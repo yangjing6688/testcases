@@ -31,12 +31,14 @@ ${DUT_SERIAL}               ${netelem3.serial}
 ${DUT_MAC}                  ${netelem3.mac}
 ${DUT_NAME}                 ${netelem3.name}
 ${DUT_TEMPLATE}             ${netelem3.template}
-${DUT_CONSOLE_IP}           ${netelem3.ip}
-${DUT_CONSOLE_PORT}         ${netelem3.port}
+${DUT_IP}                   ${netelem3.ip}
+${DUT_PORT}                 ${netelem3.port}
 ${DUT_USERNAME}             ${netelem3.username}
 ${DUT_PASSWORD}             ${netelem3.password}
 ${DUT_PLATFORM}             ${netelem3.platform}
 ${DUT_TEST_PORT}            ${netelem3.test_port}
+${DUT_MAKE}                 ${netelem3.make}
+${DUT_CLI_TYPE}             ${netelem3.cli_type}
 
 ${LOCATION}                 San Jose, building_01, floor_02
 
@@ -44,9 +46,9 @@ ${LOCATION}                 San Jose, building_01, floor_02
 *** Test Cases ***
 Test1: Confirm Link Down Event
     [Documentation]     Disables a port on the test device and confirms a Link Down event is generated
-    [Tags]              csit_tc_8384    aiq_1332    development    xiq    voss    alarms_events    test1
+    [Tags]              tccs_8384    aiq_1332    development    xiq    voss    alarms_events    test1
 
-    Disable Port for VOSS Switch            ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_TEST_PORT}
+    Disable Port for Test Device            ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_TEST_PORT}
 
     Refresh Devices Page
     Navigate to Device360 Page with MAC     ${DUT_MAC}
@@ -59,9 +61,9 @@ Test1: Confirm Link Down Event
 
 Test2: Confirm Link Up Event
     [Documentation]     Enables a port on the test device and confirms a Link Up event is generated
-    [Tags]              csit_tc_8384    aiq_1332    development    xiq    voss    alarms_events    test2
+    [Tags]              tccs_8384    aiq_1332    development    xiq    voss    alarms_events    test2
 
-    Enable Port for VOSS Switch             ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_TEST_PORT}
+    Enable Port for Test Device             ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_TEST_PORT}
 
     Refresh Devices Page
     Navigate to Device360 Page with MAC     ${DUT_MAC}
@@ -74,9 +76,9 @@ Test2: Confirm Link Up Event
 
 Test3: Confirm Device Disconnected Alarm
     [Documentation]     Disconnect the test device from the IQ agent and confirms a Device Disconnected alarm is generated
-    [Tags]              csit_tc_8384    aiq_1332    development    xiq    voss    alarms_events    test3
+    [Tags]              tccs_8384    aiq_1332    development    xiq    voss    alarms_events    test3
 
-    Disable iqagent for VOSS Switch         ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
+    Disable iqagent for Test Device         ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
 
     Refresh Devices Page
     Navigate to Device360 Page with MAC     ${DUT_MAC}
@@ -93,16 +95,13 @@ Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ and sets up the elements necessary to complete this test suite
 
     Log Into XIQ and Confirm Success            ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
-
     Change XIQ Account Time Zone                (GMT) UTC
 
-    Reset VOSS Switch to Factory Defaults       ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
-    Configure iqagent for VOSS Switch           ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}
-    ...                                         ${DUT_USERNAME}  ${DUT_PASSWORD}  ${IQAGENT}
-    Enable Port for VOSS Switch                 ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}
-    ...                                         ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_TEST_PORT}
+    Configure Test Device                       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}
 
-    Onboard New Test Device                     ${DUT_SERIAL}  ${LOCATION}
+    Enable Port for Test Device                 ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_TEST_PORT}
+
+    Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}
     Wait Until Device Online                    ${DUT_SERIAL}
 
     ${date_time}=                               Get UTC Time    %Y-%m-%d %H:%M:%S
@@ -113,6 +112,13 @@ Tear Down Test and Close Session
 
     Clean Up Test Device and Confirm Success    ${DUT_SERIAL}
     Log Out of XIQ and Quit Browser
+
+Configure Test Device
+    [Documentation]     Configures the specified test device by rebooting a known good configuration file and then configuring the iqagent
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${agent}
+
+    Boot Switch To Known Good Configuration     ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
+    Configure Device To Connect To Cloud        ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${agent}
 
 Confirm Event Exists
     [Documentation]     Confirms the specified event exists after the specified time
@@ -131,12 +137,12 @@ Confirm Alarm Exists
 Clear Alarm Condition and Close Device360 Window
     [Documentation]     Re-enables the iqagent to clear the alarm condition, and closes the Device360 window
 
-    Enable iqagent for VOSS Switch  ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
+    Enable iqagent for Test Device  ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
     Close Device360 Window
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${location}
+    [Arguments]         ${serial}  ${make}  ${location}
 
     Navigate to Devices and Confirm Success
 
@@ -145,7 +151,7 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    Onboard VOSS Device  ${serial}  loc_name=${location}
+    Onboard Device    ${serial}  ${make}  location=${location}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 

@@ -32,7 +32,7 @@ ${XIQSE_PASSWORD}       ${xiqse.password}
 *** Test Cases ***
 Test 1: Device Tree Context Selection - By Contact
     [Documentation]     Confirms the 'by Contact' device tree context can be selected
-    [Tags]              xiqse_tc_891    aiq_1332    development    sample    xiqse    device_tree    test1
+    [Tags]              tcxe_891    aiq_1332    development    sample    xiqse    device_tree    test1
 
     ${result}=  XIQSE Devices Select Device Tree Context  by Contact
     Should Be Equal As Integers  ${result}     1
@@ -40,7 +40,7 @@ Test 1: Device Tree Context Selection - By Contact
 
 Test 2: Device Tree Context Selection - By Device Type
     [Documentation]     Confirms the 'by Device Type' device tree context can be selected
-    [Tags]              xiqse_tc_891    aiq_1332    development    sample    xiqse    device_tree    test2
+    [Tags]              tcxe_891    aiq_1332    development    sample    xiqse    device_tree    test2
 
     ${result}=  XIQSE Devices Select Device Tree Context  by Device Type
     Should Be Equal As Integers  ${result}     1
@@ -48,7 +48,7 @@ Test 2: Device Tree Context Selection - By Device Type
 
 Test 3: Device Tree Context Selection - By IP
     [Documentation]     Confirms the 'by IP' device tree context can be selected
-    [Tags]              xiqse_tc_891    aiq_1332    development    sample    xiqse    device_tree    test3
+    [Tags]              tcxe_891    aiq_1332    development    sample    xiqse    device_tree    test3
 
     ${result}=  XIQSE Devices Select Device Tree Context  by IP
     Should Be Equal As Integers  ${result}     1
@@ -56,7 +56,7 @@ Test 3: Device Tree Context Selection - By IP
 
 Test 4: Device Tree Context Selection - By Location
     [Documentation]     Confirms the 'by Location' device tree context can be selected
-    [Tags]              xiqse_tc_891    aiq_1332    development    sample    xiqse    device_tree    test4
+    [Tags]              tcxe_891    aiq_1332    development    sample    xiqse    device_tree    test4
 
     ${result}=  XIQSE Devices Select Device Tree Context  by Location
     Should Be Equal As Integers  ${result}     1
@@ -64,7 +64,7 @@ Test 4: Device Tree Context Selection - By Location
 
 Test 5: Device Tree Context Selection - Extended Bridges
     [Documentation]     Confirms the 'Extended Bridges' device tree context can be selected
-    [Tags]              xiqse_tc_891    aiq_1332    development    sample    xiqse    device_tree    test5
+    [Tags]              tcxe_891    aiq_1332    development    sample    xiqse    device_tree    test5
 
     ${result}=  XIQSE Devices Select Device Tree Context  Extended Bridges
     Should Be Equal As Integers  ${result}     1
@@ -72,7 +72,7 @@ Test 5: Device Tree Context Selection - Extended Bridges
 
 Test 6: Device Tree Context Selection - Sites
     [Documentation]     Confirms the 'Sites' device tree context can be selected
-    [Tags]              xiqse_tc_891    aiq_1332    development    sample    xiqse    device_tree    test6
+    [Tags]              tcxe_891    aiq_1332    development    sample    xiqse    device_tree    test6
 
     ${result}=  XIQSE Devices Select Device Tree Context  Sites
     Should Be Equal As Integers  ${result}     1
@@ -80,7 +80,7 @@ Test 6: Device Tree Context Selection - Sites
 
 Test 7: Device Tree Context Selection - User Device Groups
     [Documentation]     Confirms the 'User Device Groups' device tree context can be selected
-    [Tags]              xiqse_tc_891    aiq_1332    development    sample    xiqse    device_tree    test7
+    [Tags]              tcxe_891    aiq_1332    development    sample    xiqse    device_tree    test7
 
     ${result}=  XIQSE Devices Select Device Tree Context  User Device Groups
     Should Be Equal As Integers  ${result}     1
@@ -88,7 +88,7 @@ Test 7: Device Tree Context Selection - User Device Groups
 
 Test 8: Device Tree Context Selection - Wireless Controllers
     [Documentation]     Confirms the 'Wireless Controllers' device tree context can be selected
-    [Tags]              xiqse_tc_891    aiq_1332    development    sample    xiqse    device_tree    test8
+    [Tags]              tcxe_891    aiq_1332    development    sample    xiqse    device_tree    test8
 
     ${result}=  XIQSE Devices Select Device Tree Context  Wireless Controllers
     Should Be Equal As Integers  ${result}     1

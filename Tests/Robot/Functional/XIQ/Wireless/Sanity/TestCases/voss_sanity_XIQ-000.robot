@@ -47,8 +47,8 @@ ${DUT_SERIAL}               ${netelem1.serial}
 ${DUT_NAME}                 ${netelem1.name}
 ${DUT_MODEL}                ${netelem1.model}
 ${DUT_MAC}                  ${netelem1.mac}
-${DUT_CONSOLE_IP}           ${netelem1.ip}
-${DUT_CONSOLE_PORT}         ${netelem1.port}
+${DUT_IP}           ${netelem1.ip}
+${DUT_PORT}         ${netelem1.port}
 ${DUT_USERNAME}             ${netelem1.username}
 ${DUT_PASSWORD}             ${netelem1.password}
 ${DUT_PLATFORM}             ${netelem1.platform}
@@ -72,8 +72,8 @@ TCCS-7299_Step1: Configure VOSS Switch
 
     [Tags]              production      tccs_7299       tccs_7299_step1
 
-    Reset VOSS Switch to Factory Defaults       ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CONNECTION_METHOD}
-    Configure iqagent for VOSS Switch           ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${sw_capwap_url}   ${DUT_CONNECTION_METHOD}
+    Reset VOSS Switch to Factory Defaults       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CONNECTION_METHOD}
+    configure_device_to_connect_to_cloud    ${DUT_cli_type}  ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}   ${DUT_PASSWORD}    ${sw_capwap_url}
 
 TCCS-7299_Step2: Onboard VOSS Device With Policy and Location Set Using Quick Add
     [Documentation]     Confirms a VOSS switch can be onboarded with policy and location set via the Quick Add workflow
@@ -111,7 +111,7 @@ TCCS-7299_Step4: Confirm iqagent for VOSS Switch is Connected to XIQ After Onboa
 
     Depends On          TCCS-7299_Step3
 
-    Confirm iqagent for VOSS Switch is Connected to XIQ     ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}
+    Confirm iqagent for VOSS Switch is Connected to XIQ     ${DUT_IP}  ${DUT_PORT}
     ...                                                     ${DUT_USERNAME}  ${DUT_PASSWORD}  ${sw_capwap_url}  ${DUT_CONNECTION_METHOD}
 
 TCCS-7299_Step5: Perform Device Update on VOSS Switch
@@ -323,26 +323,6 @@ Reset VOSS Switch to Factory Defaults
     Log To Console                      Command results are ${remove_results}
 
     sleep                   ${switch_reboot_wait}
-
-    [Teardown]              Close Spawn  ${spawn}
-
-Configure iqagent for VOSS Switch
-    [Documentation]     Configures the iqagent for the VOSS switch
-    [Tags]              voss
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${iqagent}  ${connection_method}
-
-
-    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${DUT_cli_type}  ${connection_method}
-
-    ${conf_results}=        Send Commands  ${spawn}  enable, configure terminal, application, no iqagent enable, iqagent server ${iqagent}, iqagent enable, show application iqagent
-    Log To Console          Command results are ${conf_results}
-
-    Should Contain          ${conf_results}  ${iqagent}
-    sleep                   ${client_connect_wait}
-
-    ${check_results}=       Send  ${spawn}  show application iqagent
-    Log To Console          Command results are ${check_results}
-    Should Contain          ${check_results}  ${iqagent}
 
     [Teardown]              Close Spawn  ${spawn}
 

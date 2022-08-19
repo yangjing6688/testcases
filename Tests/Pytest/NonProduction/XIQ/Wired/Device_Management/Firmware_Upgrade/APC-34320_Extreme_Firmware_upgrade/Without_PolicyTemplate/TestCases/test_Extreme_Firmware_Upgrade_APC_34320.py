@@ -3,10 +3,10 @@
 # Test Cases    : TC_XIM_20120, TC_XIM_20121, TC_XIM_20122, TC_XIM_20123, TC_XIM_20124, TC_XIM_20125, TC_XIM_20677
 # Total no Cases: 7
 # Date Updated  : 16-May-2022
-# Pre-Requests  : First organization should be created in the XIQ prior to start this testing. The firmware images like 
+# Pre-Requests  : First organization should be created in the XIQ prior to start this testing. The firmware images like
 #                 Latest and last supported four images should be copied to the test environment prior to start this test.
-# Comments      : These test cases are applicable for EXOS, VOSS and EXOS-STACK devices that are supported by XIQ. 
-#                 EXOS is having known bug OS-27245 which will often failed to download the image to device, if the device 
+# Comments      : These test cases are applicable for EXOS, VOSS and EXOS-STACK devices that are supported by XIQ.
+#                 EXOS is having known bug OS-27245 which will often failed to download the image to device, if the device
 #                 and tftp server in different locations. So it is recommented to run these upgrade tests when both Test
 #                 Environment and Testbeds are in the same geological location.
 #                 EXOS BUG - EXOS-27245 - download url fails over longhaul connection, but rarely
@@ -65,8 +65,8 @@ class xiqTests():
             cls.cfg['${TEST_NAME}'] = 'SETUP'
             dut_mac = cls.tb.dut1.mac
             dut_name = cls.tb.dut1_name
-            iqagentServer = cls.cfg['sw_connection_host']                
-                      
+            iqagentServer = cls.cfg['sw_connection_host']
+
             # To identify the testbed platform is a exos-stack to get the serial numbers in the list
             if cls.tb.dut1_platform.lower() == 'stack' :
                 # Getting the list of Stack nodes serial numbers from the testbed file
@@ -171,7 +171,7 @@ class xiqTests():
 
                 else:
                     pytest.fail('Device make \'{}\' is not supportted!'.format(cls.tb.dut1_make))
-                    
+
                 # Waiting for 60 seconds, device to ommunicate XIQ and XIQ to process the data
                 time.sleep(60)
 
@@ -180,7 +180,7 @@ class xiqTests():
                 # Refreshing the XIQ device page before checking the stack status
                 cls.xiq.xflowsmanageDevices.refresh_devices_page()
                 time.sleep(10)
-                
+
                 # Unselect the columns that are not required for this test case.
                 # cls.xiq.xflowscommonDevices.column_picker_unselect(defaultColumns)
                 cls.xiq.xflowscommonDevices.column_picker_unselect("Template",
@@ -203,7 +203,7 @@ class xiqTests():
                                                                    "MGT VLAN",
                                                                    "NTP State")
                 time.sleep(10)
-                
+
                 # select the required coloumns from the device table if it is not selected.
                 # cls.xiq.xflowscommonDevices.column_picker_select(columnsToBeSelected)
                 cls.xiq.xflowscommonDevices.column_picker_select("Device Status",
@@ -216,7 +216,7 @@ class xiqTests():
                                                                  "Updated On",
                                                                  "IQAgent",
                                                                  "OS Version")
-                
+
                 # Refreshing the XIQ device page before checking the stack status
                 cls.xiq.xflowsmanageDevices.refresh_devices_page()
                 time.sleep(10)
@@ -282,7 +282,7 @@ class xiqTests():
             cls.devCmd.send_cmd(cls.tb.dut1_name, 'configure terminal', max_wait=10, interval=2)
             cls.devCmd.send_cmd(cls.tb.dut1_name, 'application', max_wait=10, interval=2)
             cls.devCmd.send_cmd(cls.tb.dut1_name, 'no iqagent enable', max_wait=10, interval=2)
-            cls.devCmd.send_cmd(cls.tb.dut1_name, 'exit', max_wait=10, interval=2)    
+            cls.devCmd.send_cmd(cls.tb.dut1_name, 'exit', max_wait=10, interval=2)
         time.sleep(5)
 
         # Reseting the column selection back to it's default value.
@@ -328,12 +328,12 @@ class xiqTests():
 
 
     # Methods required for the test cases
-    
+
     # This is used to generate the heading with box
     def boxHeading(self, content):
         """ This method used to create a boxed label and the text will be in the center of the box """
         total_length = 130
-        if len(content)%2 != 0: 
+        if len(content)%2 != 0:
             total_length += 1
         freespace = total_length-len(content)
         multiplier = int(freespace/2)
@@ -345,7 +345,7 @@ class xiqTests():
         print("\t+"+"+"*total_length+"+\n\n")
 
 
-    # This is used to perform the prec condition of the network element 
+    # This is used to perform the prec condition of the network element
     def preCheck (self,test_case):
         """
         This method used to validate the EXOS Stack status and to clear the logs prior to start the test on EXOS
@@ -368,7 +368,7 @@ class xiqTests():
                     self.devCmd.send_cmd_verify_output(self.tb.dut1_name, f'show slot | grep "Operational" | count', f'Total lines: {slotcount}', max_wait=10, interval=2)
                     self.devCmd.send_cmd_verify_output(self.tb.dut1_name, f'show slot detail | grep (Image Booted:\s+)({partition}) | count',  f'Total lines: {slotcount}',max_wait=10, interval=2)
                 else:
-                    pytest.skip("Either all slots are not in 'Operational' state or Image Booted from different partitions...")      
+                    pytest.skip("Either all slots are not in 'Operational' state or Image Booted from different partitions...")
                 self.devCmd.send_cmd(self.tb.dut1_name, 'show version images', max_wait=10, interval=2)
         else:
             self.devCmd.send_cmd(self.tb.dut1_name, 'show sys software | include Version', max_wait=10, interval=2)
@@ -393,13 +393,13 @@ class xiqTests():
             self.devCmd.send_cmd(self.tb.dut1_name, 'clear logging', max_wait=10, interval=2)
         time.sleep(30)
         pytest.fail('{} is failed...'.format(test_case))
-        
 
 
 
-    # """ Test Cases """ 
 
-    @mark.xim_tcxm_20120
+    # """ Test Cases """
+
+    @mark.tcxm_20120
     @mark.development
     @mark.p1
     @mark.testbed_1_node
@@ -409,14 +409,14 @@ class xiqTests():
         """
         self.cfg['${TEST_NAME}'] = test_case = 'test_20120_update_to_latest_version_and_check_update_same_version_option'
         self.executionHelper.testSkipCheck()
-        
+
         self.preCheck(test_case)
         result = self.xiq.xflowscommonDevices.update_network_device_firmware(device_mac=self.tb.dut1.mac)
         if result == -1: self.collectLogs(test_case)
 
 
 
-    @mark.xim_tcxm_20121
+    @mark.tcxm_20121
     @mark.development
     @mark.p1
     @mark.testbed_1_node
@@ -426,14 +426,14 @@ class xiqTests():
         """
         self.cfg['${TEST_NAME}'] = test_case = 'test_20121_update_to_latest_version_and_uncheck_the_update_same_version_option'
         self.executionHelper.testSkipCheck()
-        
+
         self.preCheck(test_case)
         result = self.xiq.xflowscommonDevices.update_network_device_firmware(device_mac=self.tb.dut1.mac, forceDownloadImage="false")
         if result == -1: self.collectLogs(test_case)
 
 
 
-    @mark.xim_tcxm_20123
+    @mark.tcxm_20123
     @mark.development
     @mark.p1
     @mark.testbed_1_node
@@ -443,14 +443,14 @@ class xiqTests():
         """
         self.cfg['${TEST_NAME}'] = test_case = 'test_20123_update_to_latest_version_from_specific_and_check_update_same_version'
         self.executionHelper.testSkipCheck()
-        
+
         self.preCheck(test_case)
         result = self.xiq.xflowscommonDevices.update_network_device_firmware(device_mac=self.tb.dut1.mac, version="latest", updateTo="Specific")
         if result == -1: self.collectLogs(test_case)
 
 
 
-    @mark.xim_tcxm_20124
+    @mark.tcxm_20124
     @mark.development
     @mark.p1
     @mark.testbed_1_node
@@ -461,14 +461,14 @@ class xiqTests():
 
         self.cfg['${TEST_NAME}'] = test_case = 'test_20124_update_to_latest_version_from_specific_and_uncheck_update_same_version'
         self.executionHelper.testSkipCheck()
-        
+
         self.preCheck(test_case)
         result = self.xiq.xflowscommonDevices.update_network_device_firmware(device_mac=self.tb.dut1.mac,version="latest", forceDownloadImage="false", updateTo="Specific")
         if result == -1: self.collectLogs(test_case)
 
 
 
-    @mark.xim_tcxm_20122
+    @mark.tcxm_20122
     @mark.development
     @mark.p1
     @mark.testbed_1_node
@@ -478,14 +478,14 @@ class xiqTests():
         """
         self.cfg['${TEST_NAME}'] = test_case = 'test_20122_update_to_specific_noncurrent_version_and_uncheck_the_update_same_version'
         self.executionHelper.testSkipCheck()
-        
+
         self.preCheck(test_case)
         result = self.xiq.xflowscommonDevices.update_network_device_firmware(device_mac=self.tb.dut1.mac, forceDownloadImage="false", version="noncurrent",updateTo="specific")
         if result == -1: self.collectLogs(test_case)
 
 
 
-    @mark.xim_tcxm_20125
+    @mark.tcxm_20125
     @mark.development
     @mark.p1
     @mark.testbed_1_node
@@ -495,14 +495,14 @@ class xiqTests():
         """
         self.cfg['${TEST_NAME}'] = test_case = 'test_20125_update_to_latest_version_from_D360_and_check_update_same_version'
         self.executionHelper.testSkipCheck()
-        
+
         self.preCheck(test_case)
         result = self.xiq.xflowscommonDevices.update_network_device_firmware(device_mac=self.tb.dut1.mac, forceDownloadImage="false", updatefromD360Page="true")
         if result == -1: self.collectLogs(test_case)
-        
-        
-        
-    @mark.xim_tcxm_20677
+
+
+
+    @mark.tcxm_20677
     @mark.development
     @mark.p2
     @mark.testbed_1_node
@@ -512,8 +512,7 @@ class xiqTests():
         """
         self.cfg['${TEST_NAME}'] = test_case = 'test_20677_validating_the_operation_of_close_button_in_update_window'
         self.executionHelper.testSkipCheck()
-        
+
         self.preCheck(test_case)
         result = self.xiq.xflowscommonDevices.update_network_device_firmware(device_mac=self.tb.dut1.mac, performUpgrade="false")
         if result == -1: self.collectLogs(test_case)
-        

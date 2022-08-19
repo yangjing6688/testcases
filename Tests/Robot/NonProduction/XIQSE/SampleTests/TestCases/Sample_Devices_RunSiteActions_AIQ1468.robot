@@ -33,7 +33,7 @@ ${DUT1_PROFILE}          ${netelem1.profile}
 *** Test Cases ***
 Test 1: Add Device And Deselect Run Site Add Actions
     [Documentation]     Confirms a device can be added
-    [Tags]              xiqse_tc_948    aiq_1468    development    sample    xiqse    devices    add_actions    test1
+    [Tags]              tcxe_948    aiq_1468    development    sample    xiqse    devices    add_actions    test1
 
     # Clear the Operations panel
     ${action_result}=    XIQSE Clear Operations Panel

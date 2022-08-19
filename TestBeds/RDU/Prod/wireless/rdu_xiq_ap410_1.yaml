@@ -5,12 +5,11 @@ wing1:
   connection_method:        "ssh"
   username:                 admin
   password:                 Aerohive123
-  serial:                   "1951y-10496"
-  console_ip:               10.69.1.112
-  console_port:             2002
+  serial:                   "1951Y-10496"
+  console_ip:               10.69.1.244
+  console_port:             2022
   mac:                      489bd5fdc3ae
-  cli_type:                 "AH-AP"
-  os_version:               7.6.3.0-012R
+  cli_type:                 "WING-AP"
   platform:                 wing
   model:                    AP410
   device_template:          AP410-default-template

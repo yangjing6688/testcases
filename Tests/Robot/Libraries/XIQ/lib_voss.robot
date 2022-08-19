@@ -12,30 +12,23 @@ Library          common/Cli.py
 
 
 *** Keywords ***
-Reset VOSS Switch to Factory Defaults
-    [Documentation]     Resets the VOSS switch to the factory defaults by remcoving the config.cfg file and resetting the device
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}
+Boot Switch To Known Good Configuration
+    [Documentation]     Boots the Test Device to a known good configuration
+    [Tags]              voss
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
 
-    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss
+    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
 
     ${enable_results}=      Send  ${spawn}  enable
     Log To Console          Command results are ${enable_results}
-    ${remove_results}=      Send  ${spawn}  remove config.cfg     expect_match=Are you sure (y/n) ?
-    Log To Console          Command results are ${remove_results}
-    ${confirm_remove}=      Send  ${spawn}  y
-    Log To Console          Command results are ${confirm_remove}
 
-    ${reset_results}=       Send  ${spawn}  reset     expect_match=Are you sure you want to reset the switch (y/n) ?
-    Log To Console          Command results are ${reset_results}
-    ${confirm_reset}=       Send  ${spawn}  y
-    Log To Console          Command results are ${confirm_reset}
+    ${boot_results}=        Send  ${spawn}  boot config configcfg_orig     confirmation_phrases=Are you sure you want to re-boot the switch (y/n) ?    confirmation_args=y
+    Log To Console          Command results are ${boot_results}
 
-    sleep                   ${SWITCH_REBOOT_WAIT}
+    sleep                   ${switch_reboot_wait}
 
-    [Teardown]              Close VOSS Spawn and Confirm Success  ${spawn}
-
-Configure iqagent for VOSS Switch
-    [Documentation]     Configures the iqagent for the VOSS switch
+Configure iqagent for Test Device
+    [Documentation]     Configures the iqagent for the Test Device
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${iqagent}
 
     ${spawn}=           Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss
@@ -46,7 +39,7 @@ Configure iqagent for VOSS Switch
     Should Contain      ${conf_results}  ${iqagent}
     ${save_results}=    Send  ${spawn}  save config
     Log To Console      Save results are ${save_results}
-    Should Contain      ${save_results}  Save config successful
+    Should Contain      ${save_results}  successful
 
     sleep               ${CLIENT_CONNECT_WAIT}
 
@@ -54,10 +47,10 @@ Configure iqagent for VOSS Switch
     Log To Console      Command results are ${check_results}
     Should Contain      ${check_results}  ${iqagent}
 
-    [Teardown]          Close VOSS Spawn and Confirm Success  ${spawn}
+    [Teardown]          Close Spawn and Confirm Success  ${spawn}
 
-Disable iqagent for VOSS Switch
-    [Documentation]     Disables the iqagent for the VOSS switch
+Disable iqagent for Test Device
+    [Documentation]     Disables the iqagent for the Test Device
     [Tags]              voss
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}
 
@@ -70,10 +63,10 @@ Disable iqagent for VOSS Switch
     Log To Console          Command results are ${iqagent_results}
     Should Contain          ${iqagent_results}  disconnected
 
-    [Teardown]              Close VOSS Spawn and Confirm Success  ${spawn}
+    [Teardown]              Close Spawn and Confirm Success  ${spawn}
 
-Enable iqagent for VOSS Switch
-    [Documentation]     Enables the iqagent for the VOSS switch
+Enable iqagent for Test Device
+    [Documentation]     Enables the iqagent for the Test Device
     [Tags]              voss
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}
 
@@ -82,18 +75,17 @@ Enable iqagent for VOSS Switch
     Log To Console          Command results are ${results}
     ${save_results}=        Send  ${spawn}  save config
     Log To Console          Save results are ${save_results}
-    Should Contain          ${save_results}  Save config successful
-
+    Should Contain          ${save_results}  successful
     sleep                   ${CLIENT_CONNECT_WAIT}
 
     ${iqagent_results}=     Send  ${spawn}  show application iqagent
     Log To Console          Command results are ${iqagent_results}
     Should Not Contain      ${iqagent_results}  disconnected
 
-    [Teardown]              Close VOSS Spawn and Confirm Success  ${spawn}
+    [Teardown]              Close Spawn and Confirm Success  ${spawn}
 
-Update NOS Version on VOSS Switch
-    [Documentation]     Updates the NOS version on the VOSS switch to the specified version
+Update NOS Version on Test Device
+    [Documentation]     Updates the NOS version on the Test Device to the specified version
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${nos_dir}
 
     ${spawn}=            Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss
@@ -111,7 +103,7 @@ Update NOS Version on VOSS Switch
     ${reset_results}=    Send  ${spawn}  reset -Y
     Log To Console       Command results are ${reset_results}
 
-    Close VOSS Spawn and Confirm Success  ${spawn}
+    Close Spawn and Confirm Success  ${spawn}
     sleep                ${SWITCH_REBOOT_WAIT}
 
     ${spawn}=            Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss
@@ -121,10 +113,10 @@ Update NOS Version on VOSS Switch
     Log To Console       Command results are ${commit_results}
     Should Contain Any   ${commit_results}  Software commit successful  has already been committed
 
-    [Teardown]  Close VOSS Spawn and Confirm Success  ${spawn}
+    [Teardown]  Close Spawn and Confirm Success  ${spawn}
 
-Downgrade IQAgent on VOSS Switch
-    [Documentation]     Downgrades the IQAgent version on the VOSS switch to an older version
+Downgrade IQAgent on Test Device
+    [Documentation]     Downgrades the IQAgent version on the Test Device to an older version
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}
 
     ${spawn}=          Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss
@@ -137,22 +129,22 @@ Downgrade IQAgent on VOSS Switch
     Log To Console     Command results are ${check_results}
     Should Contain     ${check_results}  ${IQAGENT_VERSION_OLD}
 
-    [Teardown]  Close VOSS Spawn and Confirm Success  ${spawn}
+    [Teardown]  Close Spawn and Confirm Success  ${spawn}
 
-Confirm NOS Version on VOSS Switch
-    [Documentation]     Confirms the NOS version on the VOSS switch is at the specified version
+Confirm NOS Version on Test Device
+    [Documentation]     Confirms the NOS version on the Test Device is at the specified version
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${nos_version}
 
     ${spawn}=       Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss
 
-    ${results}=     Send  ${spawn}  show sys software
+    ${results}=     Send  ${spawn}  show sys software | include Version
     Log To Console  Command results are ${results}
     Should Contain  ${results}  ${nos_version}
 
-    [Teardown]  Close VOSS Spawn and Confirm Success  ${spawn}
+    [Teardown]  Close Spawn and Confirm Success  ${spawn}
 
-Confirm IQAgent Version on VOSS Switch
-    [Documentation]     Confirma the IQAgent on the VOSS switch is at the expected version
+Confirm IQAgent Version on Test Device
+    [Documentation]     Confirma the IQAgent on the Test Device is at the expected version
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${iqa_version}
 
     ${spawn}=       Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  voss
@@ -161,10 +153,10 @@ Confirm IQAgent Version on VOSS Switch
     Log To Console  Command results are ${result}
     Should Contain  ${result}  ${iqa_version}
 
-    [Teardown]  Close VOSS Spawn and Confirm Success  ${spawn}
+    [Teardown]  Close Spawn and Confirm Success  ${spawn}
 
-Disable Port for VOSS Switch
-    [Documentation]     Disables the specified port for the VOSS switch
+Disable Port for Test Device
+    [Documentation]     Disables the specified port for the Test Device
     [Tags]              voss
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${test_port}
 
@@ -175,10 +167,10 @@ Disable Port for VOSS Switch
     Log To Console      Command results are ${results}
     Should Contain      ${results}  down
 
-    [Teardown]          Close VOSS Spawn and Confirm Success  ${spawn}
+    [Teardown]          Close Spawn and Confirm Success  ${spawn}
 
-Enable Port for VOSS Switch
-    [Documentation]     Enables the specified port for the VOSS switch
+Enable Port for Test Device
+    [Documentation]     Enables the specified port for the Test Device
     [Tags]              voss
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${test_port}
 
@@ -189,10 +181,10 @@ Enable Port for VOSS Switch
     Log To Console      Command results are ${results}
     Should Contain      ${results}  up
 
-    [Teardown]          Close VOSS Spawn and Confirm Success  ${spawn}
+    [Teardown]          Close Spawn and Confirm Success  ${spawn}
 
-Close VOSS Spawn and Confirm Success
-    [Documentation]     This is a local keyword to close the VOSS spawn and confirm the action was successful.
+Close Spawn and Confirm Success
+    [Documentation]     This is a local keyword to close the test device spawn and confirm the action was successful.
     [Arguments]         ${spawn}
 
     ${result}=  Close Spawn  ${spawn}

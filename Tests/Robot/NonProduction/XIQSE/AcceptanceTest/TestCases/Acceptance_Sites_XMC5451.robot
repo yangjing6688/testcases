@@ -46,19 +46,19 @@ ${TEST_ARCHIVE}             /World/AutomationSite
 *** Test Cases ***
 Test 1: Create Site
     [Documentation]     Confirms a site can be created
-    [Tags]              nightly1    xiqse_tc_871    xmc_5451    development    xiqse    acceptance    sites    test1
+    [Tags]              nightly1    tcxe_871    xmc_5451    development    xiqse    acceptance    sites    test1
 
     Navigate and Create Site          ${TEST_SITE}
 
 Test 2: Select Site
     [Documentation]     Confirms a site can be selected
-    [Tags]              nightly1    xiqse_tc_871    xmc_5451    development    xiqse    acceptance    sites    test2
+    [Tags]              nightly1    tcxe_871    xmc_5451    development    xiqse    acceptance    sites    test2
 
     Select Site and Confirm Success        ${TEST_SITE}
 
 Test 3: Discover IP Range
     [Documentation]     Confirms an IP range discovery can be performed
-    [Tags]              nightly1    xiqse_tc_871    xmc_5451    development    xiqse    acceptance    sites    test3
+    [Tags]              nightly1    tcxe_871    xmc_5451    development    xiqse    acceptance    sites    test3
 
     Clear Operations Panel and Confirm Success
     Navigate to Site Tab and Confirm Success                    ${TEST_SITE}
@@ -70,20 +70,20 @@ Test 3: Discover IP Range
 
 Test 4: Navigate and Confirm IP Address Present in Devices Table
     [Documentation]     Confirms the specified IP address is present in the Devices table
-    [Tags]              nightly1    xiqse_tc_871    xmc_5451    development    xiqse    acceptance    sites    test4
+    [Tags]              nightly1    tcxe_871    xmc_5451    development    xiqse    acceptance    sites    test4
 
     Navigate to Devices and Confirm Success
     Confirm IP Address Present in Devices Table    ${DUT_IP}
 
 Test 5: Confirm Archive Exists In Tree
     [Documentation]     Confirms an archive exists in the Network> Archives tree in XIQ-SE and confirms the action was successful
-    [Tags]              nightly1    xiqse_tc_871    xmc_5451    development    xiqse    acceptance    sites    test5
+    [Tags]              nightly1    tcxe_871    xmc_5451    development    xiqse    acceptance    sites    test5
 
     Navigate and Confirm Archive Exists In Tree     ${TEST_ARCHIVE}
 
 Test 6: Confirm Events - Site Discovery
     [Documentation]     Confirms the events view contains the expected event
-    [Tags]              nightly1    xiqse_tc_871    xmc_5451    development    xiqse    acceptance    sites    test6
+    [Tags]              nightly1    tcxe_871    xmc_5451    development    xiqse    acceptance    sites    test6
 
     Navigate to Events and Confirm Success
     Set Event Time Range and Confirm Success        Last 30 Minutes
@@ -93,19 +93,19 @@ Test 6: Confirm Events - Site Discovery
 
 Test 7: Delete Device
     [Documentation]     Confirms a device can be deleted
-    [Tags]              nightly1    xiqse_tc_871    xmc_5451    development    xiqse    acceptance    sites    test7
+    [Tags]              nightly1    tcxe_871    xmc_5451    development    xiqse    acceptance    sites    test7
 
     Navigate and Delete Device      ${DUT_IP}
 
 Test 8: Delete Site
     [Documentation]     Confirms a site can be deleted
-    [Tags]              nightly1    xiqse_tc_871    xmc_5451    development    xiqse    acceptance    sites    test8
+    [Tags]              nightly1    tcxe_871    xmc_5451    development    xiqse    acceptance    sites    test8
 
     Navigate and Delete Site        ${TEST_SITE}
 
 Test 9: Delete Archive
     [Documentation]     Confirms an archive can be deleted
-    [Tags]              nightly1    xiqse_tc_871    xmc_5451    development    xiqse    acceptance    sites    test9
+    [Tags]              nightly1    tcxe_871    xmc_5451    development    xiqse    acceptance    sites    test9
 
     Navigate and Delete Archive     ${TEST_ARCHIVE}
 

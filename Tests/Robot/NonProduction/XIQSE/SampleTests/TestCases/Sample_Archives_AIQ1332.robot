@@ -42,19 +42,19 @@ ${MULTI_ARCHIVE}        AUTO_MULTI_ARCHIVE
 *** Test Cases ***
 Test 1: Create Archive with Single Device and No Frequency Specified
     [Documentation]     Confirms an archive can be created with a single device and the default frquency
-    [Tags]              xiqse_tc_136    aiq_1332    development    sample    xiqse    archives    test1
+    [Tags]              tcxe_136    aiq_1332    development    sample    xiqse    archives    test1
 
     Navigate and Create Archive    ${SINGLE_ARCHIVE}    ${DUT1_IP}
 
 Test 2: Create Archive with Multiple Devices and a Frequency Specified
     [Documentation]     Confirms an archive can be created with multiple devices and a specified frequency
-    [Tags]              xiqse_tc_136    aiq_1332    development    sample    xiqse    archives    test2
+    [Tags]              tcxe_136    aiq_1332    development    sample    xiqse    archives    test2
 
     Navigate and Create Archive    ${MULTI_ARCHIVE}  ${DUT1_IP},${DUT2_IP},${DUT3_IP}  frequency=Daily
 
 Test 3: Stamp New Version for Archive
     [Documentation]     Confirms the Stamp New Version action can be performed on an archive
-    [Tags]              xiqse_tc_136    aiq_1332    development    sample    xiqse    archives    test3
+    [Tags]              tcxe_136    aiq_1332    development    sample    xiqse    archives    test3
 
     Navigate to Archives and Confirm Success
     Stamp New Version and Confirm Success       ${SINGLE_ARCHIVE}
@@ -62,7 +62,7 @@ Test 3: Stamp New Version for Archive
 
 Test 4: Delete Archive
     [Documentation]     Confirms an archive can be deleted (depends on tests 1 and 2 to successfully create the archives)
-    [Tags]              xiqse_tc_136    aiq_1332    development    sample    xiqse    archives    test4
+    [Tags]              tcxe_136    aiq_1332    development    sample    xiqse    archives    test4
 
     Navigate to Archives and Confirm Success
     Delete Archive and Confirm Success          ${SINGLE_ARCHIVE}

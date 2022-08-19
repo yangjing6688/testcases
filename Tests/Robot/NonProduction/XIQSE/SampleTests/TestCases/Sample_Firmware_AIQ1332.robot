@@ -33,7 +33,7 @@ ${DUT1_PROFILE}         ${netelem1.profile}
 *** Test Cases ***
 Test 1: Open and Close Upgrade Firmware dialog
     [Documentation]     Confirms the Upgrade Firmware dialog can be opened and closed
-    [Tags]              xiqse_tc_892    aiq_1332    development    sample    xiqse    firmware    test1
+    [Tags]              tcxe_892    aiq_1332    development    sample    xiqse    firmware    test1
 
     Navigate to Devices and Confirm Success
 
@@ -45,7 +45,7 @@ Test 1: Open and Close Upgrade Firmware dialog
 
 Test 2: Confirm Firmware Selection Dialog Components
     [Documentation]     Confirms the components of the Firmware Selection dialog (Assign Image))
-    [Tags]              xiqse_tc_892    aiq_1332    development    sample    xiqse    firmware    test2
+    [Tags]              tcxe_892    aiq_1332    development    sample    xiqse    firmware    test2
 
     Navigate to Devices and Confirm Success
 
@@ -66,7 +66,7 @@ Test 2: Confirm Firmware Selection Dialog Components
 
 Test 3: Confirm Inventory Settings Dialog Components
     [Documentation]     Confirms the components of the Inventory Settings dialog
-    [Tags]              xiqse_tc_892    aiq_1332    development    sample    xiqse    firmware    test3
+    [Tags]              tcxe_892    aiq_1332    development    sample    xiqse    firmware    test3
 
     Navigate to Devices and Confirm Success
 
@@ -96,7 +96,7 @@ Test 3: Confirm Inventory Settings Dialog Components
 
 Test 4: Navigate to Firmware Tab
     [Documentation]     Confirms the Firmware tab can be navugated to
-    [Tags]              xiqse_tc_892    aiq_1332    development    sample    xiqse    firmware    test4
+    [Tags]              tcxe_892    aiq_1332    development    sample    xiqse    firmware    test4
 
     Navigate to Firmware and Confirm Success
 
