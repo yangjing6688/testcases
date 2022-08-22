@@ -40,7 +40,7 @@ TCCS-7651_Step1: Onboard Aerohive AP
     ${CHANGE_PASSWORD_STATUS}=      Change Device Password                  Aerohive123
     should be equal as integers     ${CHANGE_PASSWORD_STATUS}               1
 
-    ${ONBOARD_RESULT}=              Onboard Device      ${ap1.serial}           ${ap1.make}       location=${LOCATION}
+    ${ONBOARD_RESULT}=              Onboard Device      ${ap1.serial}           ${ap1.cli_type}       location=${LOCATION}
     should be equal as integers     ${ONBOARD_RESULT}       1
 
     ${search_result}=               Search AP Serial    ${ap1.serial}
@@ -72,7 +72,7 @@ TCCS-7651_Step2: Config AP to Report AIO
 
 TCCS-7651_Step3: Check AP Status On UI
     [Documentation]     Checks for ap status
-    [Tags]              production      tccs_7651       tccs_7651_step_3 
+    [Tags]              production      tccs_7651       tccs_7651_step_3
     Depends On          TCCS-7651_Step2
 
     ${LOGIN_STATUS}=          Login User          ${tenant_username}     ${tenant_password}

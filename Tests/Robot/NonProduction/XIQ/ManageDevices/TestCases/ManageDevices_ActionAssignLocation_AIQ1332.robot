@@ -112,7 +112,7 @@ Tear Down Test and Close Session
 Set Up Aerohive Switch Test
     [Documentation]     Configures and onboards the Aerohive Switch test device
 
-    Onboard Device                         ${DUT_SERIAL}  ${DUT_MAKE}  location=${LOCATION}
+    Onboard Device                         ${DUT_SERIAL}  ${DUT_CLI_TYPE}  location=${LOCATION}
     Configure iqagent for Aerohive Switch  ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}
     ...                                    ${DUT_PASSWORD}  ${IQAGENT}
     Confirm Device Serial Present          ${DUT_SERIAL}
@@ -120,7 +120,7 @@ Set Up Aerohive Switch Test
 Set Up Aerohive AP Test
     [Documentation]     Configures and onboards the Aerohive AP test device
 
-    Onboard Device                                  ${DUT_SERIAL}  ${DUT_MAKE}  location=${LOCATION}
+    Onboard Device                                  ${DUT_SERIAL}  ${DUT_CLI_TYPE}  location=${LOCATION}
     Configure CAPWAP Device To Connect To Cloud     ${DUT_CLI_TYPE}  ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}
     ...                                             ${DUT_PASSWORD}  ${XIQ_CAPWAP_URL}
     Confirm Device Serial Present                   ${DUT_SERIAL}

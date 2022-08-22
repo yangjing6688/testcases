@@ -34,6 +34,7 @@ ${IQAGENT}            ${xiq.sw_connection_host}
 
 ${AP_SERIAL}          ${ap1.serial}
 ${AP_MAKE}            ${ap1.make}
+${AP_CLI_TYPE}        ${ap1.cli_type}
 ${AP_LOCATION}        ${ap1.location}
 ${AP_CONSOLE_IP}      ${ap1.ip}
 ${AP_CONSOLE_PORT}    ${ap1.port}
@@ -43,6 +44,7 @@ ${AP_PLATFORM}        ${ap1.platform}
 
 ${SW_SERIAL}          ${aerohive_sw1.serial}
 ${SW_MAKE}            ${aerohive_sw1.make}
+${SW_CLI_TYPE}        ${aerohive_sw1.cli_type}
 ${SW_LOCATION}        ${aerohive_sw1.location}
 ${SW_CONSOLE_IP}      ${aerohive_sw1.ip}
 ${SW_CONSOLE_PORT}    ${aerohive_sw1.port}
@@ -52,6 +54,7 @@ ${SW_PLATFORM}        ${aerohive_sw1.platform}
 
 ${RT_SERIAL}          ${router1.serial}
 ${RT_MAKE}            ${router1.make}
+${RT_CLI_TYPE}        ${router1.cli_type}
 ${RT_LOCATION}        ${router1.location}
 ${RT_CONSOLE_IP}      ${router1.ip}
 ${RT_CONSOLE_PORT}    ${router1.port}
@@ -384,11 +387,11 @@ Onboard Test Devices
 
     # Onboard the devices for the test
     ${dut1_result}=     Search Device Serial   ${AP_SERIAL}
-    Run Keyword If      '${dut1_result}' != '1'  Onboard Device   ${AP_SERIAL}  ${AP_MAKE}  location=${AP_LOCATION}
+    Run Keyword If      '${dut1_result}' != '1'  Onboard Device   ${AP_SERIAL}  ${AP_CLI_TYPE}  location=${AP_LOCATION}
     ${dut2_result}=     Search Device Serial   ${SW_SERIAL}
-    Run Keyword If      '${dut2_result}' != '1'  Onboard Device   ${SW_SERIAL}  ${SW_MAKE}  location=${SW_LOCATION}
+    Run Keyword If      '${dut2_result}' != '1'  Onboard Device   ${SW_SERIAL}  ${SW_CLI_TYPE}  location=${SW_LOCATION}
     ${dut3_result}=     Search Device Serial   ${RT_SERIAL}
-    Run Keyword If      '${dut3_result}' != '1'  Onboard Device   ${RT_SERIAL}  ${RT_MAKE}  location=${RT_LOCATION}
+    Run Keyword If      '${dut3_result}' != '1'  Onboard Device   ${RT_SERIAL}  ${RT_CLI_TYPE}  location=${RT_LOCATION}
 
     # Confirm the devices were onboarded
     Confirm Device Serial Present  ${AP_SERIAL}
@@ -431,9 +434,9 @@ Clean Up Test Device and Confirm Success
 
 Configure CAPWAP
     [Documentation]     Configures the CAPWAP client
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${platform}  ${capwap_server}
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${capwap_server}
 
-    ${spawn}=           Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${platform}
+    ${spawn}=           Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
 
     Send                ${spawn}   capwap client server name ${capwap_server}
     Send                ${spawn}   capwap client default-server-name ${capwap_server}

@@ -125,10 +125,10 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     Navigate To Devices
     Refresh Devices Page
 
-    ${ONBOARD_RESULT}=      Onboard Device          ${router1.serial}         ${router1.make}       location=${LOCATION}
+    ${ONBOARD_RESULT}=      Onboard Device          ${router1.serial}         ${router1.cli_type}       location=${LOCATION}
     Should Be Equal As Integers                     ${ONBOARD_RESULT}           1
 
-    ${SEARCH_ROUTER}=       Search Device           device_serial=${router1.serial}
+    ${SEARCH_ROUTER}=       Search Device Serial    ${router1.serial}
     Should Be Equal As Integers             ${SEARCH_ROUTER}        1
 
     ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}   connection_method=${router1.connection_method}
@@ -168,12 +168,12 @@ TCCS-7766_Step2: Onboard Aerohive XR Router Using Advance Onboarding Method
     ${DELETE_DEVICE}=               Delete Device                  device_serial=${router1.serial}
     should be equal as integers     ${DELETE_DEVICE}    1
 
-    ${ONBOARD_ROUTER}=          Advance Onboard Device         ${router1.serial}    device_make=${router1.make}   dev_location=${LOCATION}
+    ${ONBOARD_ROUTER}=          Advance Onboard Device         ${router1.serial}    device_make=${router1.cli_type}   dev_location=${LOCATION}
     Should Be Equal As Integers             ${ONBOARD_ROUTER}           1
 
     ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}      connection_method=${router1.connection_method}
     Should Not Be Equal As Strings      '${ROUTER_SPAWN}'        '-1'
-    
+
     Set Suite Variable      ${ROUTER_SPAWN}
     ${CONFIG_CAPWAP}=       Send Commands       ${ROUTER_SPAWN}         capwap client server name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
@@ -208,7 +208,7 @@ TCCS-12330: Create Router XR Template
     Should Be Equal As Strings                      '${CREATE_NW_POLICY}'   '1'
 
     ${CREATE_AP_TEMPLATE}=      Add Router Template     ${NW_POLICY_NAME}     &{ROUTER_TEMPLATE_CONFIG1}
-    
+
     ${DEVICE_UPDATE_CONFIG}=    Update Network Policy To Router    policy_name=${NW_POLICY_NAME}    router_serial=${router1.serial}
     Should Be Equal As Strings                      '${DEVICE_UPDATE_CONFIG}'       '1'
 
@@ -217,7 +217,7 @@ TCCS-12330: Create Router XR Template
 
     ${DEVICE_UPDATE_STATUS}=    Wait Until Device Update Done   device_serial=${router1.serial}
     Should Be Equal As Strings                      '${DEVICE_UPDATE_STATUS}'       '1'
-      
+
     ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}     connection_method=console
     Should Not Be Equal As Strings      '${ROUTER_SPAWN}'        '-1'
 

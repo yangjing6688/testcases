@@ -184,10 +184,10 @@ Onboard and Configure Test Devices
     Navigate to Devices and Confirm Success
 
     # Onboard the devices for the test
-    Onboard Device      ${DUT1_SERIAL}  ${DUT1_MAKE}  location=${LOCATION}
-    Onboard Device      ${DUT2_SERIAL}  ${DUT2_MAKE}  location=${LOCATION}
-    Onboard Device      ${DUT3_SERIAL}  ${DUT3_MAKE}  location=${LOCATION}
-    Onboard Device      ${DUT4_SERIAL}  ${DUT4_MAKE}  location=${LOCATION}
+    Onboard Device      ${DUT1_SERIAL}  ${DUT1_CLI_TYPE}  location=${LOCATION}
+    Onboard Device      ${DUT2_SERIAL}  ${DUT2_CLI_TYPE}  location=${LOCATION}
+    Onboard Device      ${DUT3_SERIAL}  ${DUT3_CLI_TYPE}  location=${LOCATION}
+    Onboard Device      ${DUT4_SERIAL}  ${DUT4_CLI_TYPE}  location=${LOCATION}
 
     # Confirm the devices were onboarded
     Confirm Device Serial Present  ${DUT1_SERIAL}
