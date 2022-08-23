@@ -63,9 +63,6 @@ TCCS-7292_Step1: Onboard EXOS Switch on XIQ
 
     ${ONBOARD_RESULT}=                  Onboard Switch      ${netelem1.serial}       ${netelem1.make}    location=${LOCATION}
     Should Be Equal As Strings          ${ONBOARD_RESULT}       1
-    ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
-    ${ONBOARD_RESULT}=      Onboard Switch      ${netelem1.serial}       ${netelem1.cli_type}    location=${LOCATION}
-    Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
     ${SEARCH_SWITCH}=       Search Device       device_serial=${netelem1.serial}
     Should Be Equal As Strings             ${SEARCH_SWITCH}       1

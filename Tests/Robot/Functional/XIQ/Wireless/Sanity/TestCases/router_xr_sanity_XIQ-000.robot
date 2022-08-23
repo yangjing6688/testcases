@@ -128,7 +128,7 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     ${ONBOARD_RESULT}=      Onboard Device          ${router1.serial}         ${router1.cli_type}       location=${LOCATION}
     Should Be Equal As Integers                     ${ONBOARD_RESULT}           1
 
-    ${SEARCH_ROUTER}=       Search Device Serial    ${router1.serial}
+    ${SEARCH_ROUTER}=       Search Device           device_serial=${router1.serial}
     Should Be Equal As Integers             ${SEARCH_ROUTER}        1
 
     ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}   connection_method=${router1.connection_method}
