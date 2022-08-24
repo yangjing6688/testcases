@@ -56,7 +56,7 @@ ${DUT_PROFILE}          ${netelem1.profile}
 ${DUT_NAME}             ${netelem1.name}
 ${DUT_MODEL}            ${netelem1.model}
 ${DUT_MAKE}             ${netelem1.make}
-${DUT_OS}               ${netelem1.os}
+${DUT_OS}               ${netelem1.xiq_os}
 
 @{COLUMNS}          Serial #  Managed By  MAC Address  Make  Model  MGT IP Address  OS  OS Version  Cloud Config Groups
 ${COLUMN_LABELS}    SERIAL,MANAGED BY,MAC,MAKE,MODEL,MGT IP ADDRESS,OS,OS VERSION,CLOUD CONFIG GROUPS
