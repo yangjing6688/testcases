@@ -50,12 +50,14 @@ ${XIQ_DUT_SERIAL}           ${ap1.serial}
 ${XIQ_DUT_NAME}             ${ap1.name}
 ${XIQ_DUT_MODEL}            ${ap1.model}
 ${XIQ_DUT_MAKE}             ${ap1.make}
+${XIQ_DUT_CLI_TYPE}         ${ap1.cli_type}
 ${XIQ_DUT_CCG}              ${ap1.ccg}
-${XIQ_DUT_CONSOLE_IP}       ${ap1.ip}
-${XIQ_DUT_CONSOLE_PORT}     ${ap1.port}
+${XIQ_DUT_IP}               ${ap1.ip}
+${XIQ_DUT_PORT}             ${ap1.port}
 ${XIQ_DUT_USERNAME}         ${ap1.username}
 ${XIQ_DUT_PASSWORD}         ${ap1.password}
 ${XIQ_DUT_PLATFORM}         ${ap1.platform}
+${IQAGENT}                  ${xiq.sw_connection_host}
 
 ${XIQSE_DUT_IP}             ${netelem1.ip}
 ${XIQSE_DUT_PROFILE}        ${netelem1.profile}
@@ -408,9 +410,10 @@ Set Up XIQ Components
     Remove Device By MAC From XIQ and Confirm Success  ${XIQSE_MAC}
 
     # Onboard a test device managed by XIQ
-    Onboard New XIQ Device                      ${XIQ_DUT_SERIAL}  ${XIQ_DUT_MAKE}  ${LOCATION}
-    Configure CAPWAP                            ${XIQ_DUT_CONSOLE_IP}  ${XIQ_DUT_CONSOLE_PORT}  ${XIQ_DUT_USERNAME}  ${XIQ_DUT_PASSWORD}
-    ...                                         ${XIQ_DUT_PLATFORM}  ${XIQ_CAPWAP_URL}
+    Onboard New XIQ Device                                      ${XIQ_DUT_SERIAL}  ${XIQ_DUT_MAKE}  ${LOCATION}
+    ${CONFIG_RESULT}=   Configure Device To Connect To Cloud    ${XIQ_DUT_CLI_TYPE}  ${XIQ_DUT_IP}  ${XIQ_DUT_PORT}  ${XIQ_DUT_USERNAME}  ${XIQ_DUT_PASSWORD}  ${XIQ_CAPWAP_URL}
+    Should Be Equal as Integers                                 ${CONFIG_RESULT}        1
+
     ${conn_result}=  Wait Until Device Online   ${XIQ_DUT_SERIAL}
     Should Be Equal As Integers                 ${conn_result}     1
 
@@ -437,7 +440,7 @@ Confirm XIQ Site Engine Onboarded to XIQ
 
 Onboard New XIQ Device
     [Documentation]     Onboards the specified test device to XIQ, deleting it first if it already exists
-    [Arguments]         ${serial}  ${type}  ${loc}
+    [Arguments]         ${serial}  ${make}  ${loc}
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -447,27 +450,12 @@ Onboard New XIQ Device
     ${search_result}=  Search Device   ${serial}
 
     # Onboard the device
-    Run Keyword If  '${search_result}' != '1'    Onboard Device  ${serial}  ${type}  location=${loc}
+    Run Keyword If  '${search_result}' != '1'    Onboard Device  ${serial}  ${make}  location=${loc}
     Run Keyword If  '${search_result}' != '1'    Sleep   ${device_onboarding_wait}
 
     # Confirm the device was added successfully
     ${added_result}=  Wait Until Device Added  ${serial}
     Should Be Equal As Integers  ${added_result}  1
-
-Configure CAPWAP
-    [Documentation]     Configures the CAPWAP client
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${platform}  ${capwap_server}
-
-    ${spawn}=           Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${platform}
-
-    Send                ${spawn}   capwap client server name ${capwap_server}
-    Send                ${spawn}   capwap client default-server-name ${capwap_server}
-    Send                ${spawn}   capwap client server backup name ${capwap_server}
-    Send                ${spawn}   no capwap client enable
-    Send                ${spawn}   capwap client enable
-    Send                ${spawn}   save config
-
-    Close Spawn         ${spawn}
 
 XIQ Navigate to Devices and Confirm Success
     [Documentation]     Navigates to the Manage> Devices view in XIQ and confirms the action was successful

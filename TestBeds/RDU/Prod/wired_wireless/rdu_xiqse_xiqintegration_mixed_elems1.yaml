@@ -84,16 +84,16 @@ netelem3:
   test_port_num:            "3"
   nos:
     dir:
-      min:                  "8.1.60.0.GA"
-      old:                  "8.2.0.0.GA"
-      new:                  "8.2.5.0.GA"
+      min: "8.6.0.0.GA"
+      old: "8.6.1.0.GA"
+      new: "8.6.1.1.GA"
     version:
-      min:                  "8.1.60.0"
-      old:                  "8.2.0.0"
-      new:                  "8.2.5.0"
+      min: "8.6.0.0"
+      old: "8.6.1.0"
+      new: "8.6.1.1"
   iqagent_version:
-    old:                    "0.3.5"
-    new:                    "0.4.0"
+    old: "0.5.13"
+    new: "0.5.38"
   vr:                       "VR-Default"
 
 netelem4:

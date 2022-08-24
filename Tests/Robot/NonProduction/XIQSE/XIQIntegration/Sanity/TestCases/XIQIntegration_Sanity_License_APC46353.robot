@@ -217,6 +217,9 @@ Set Up XIQ Components
     # Remove XIQSE if it is already present
     Navigate and Remove Device by MAC From XIQ  ${XIQSE_MAC}
 
+    # Enable CoPilot Feature
+    Enable CoPilot Feature
+
     # Confirm we have the expected number of available entitlements - wait until this keyword succeeds, up to 5 minutes
     Wait Until Keyword Succeeds  10x  30s
     ...  Confirm Number of Licenses Available From CoPilot Dashboard  ${PILOT_ENTITLEMENT}  ${NAVIGATOR_ENTITLEMENT}
@@ -227,6 +230,9 @@ Clean Up XIQ Components
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
     Navigate and Remove Device by MAC From XIQ   ${XIQSE_MAC}
+
+    # Disable CoPilot Feature
+    Disable CoPilot Feature
 
     Log Out of XIQ and Confirm Success
 

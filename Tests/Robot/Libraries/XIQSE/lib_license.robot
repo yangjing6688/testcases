@@ -13,6 +13,7 @@ Library     xiqse/flows/common/XIQSE_CommonNavigator.py
 Library     xiqse/flows/license/XIQSE_LicenseAgreement.py
 Library     xiqse/flows/license/XIQSE_LicenseDeployment.py
 Library     xiqse/flows/license/XIQSE_LicenseOnboard.py
+Library     xiq/flows/globalsettings/GlobalSetting.py
 
 
 *** Keywords ***
@@ -68,3 +69,15 @@ Enter XIQ Credentials on Onboard Page
 
     ${onboard_result}=  XIQSE Onboard to XIQ    ${xiq_email}    ${xiq_pwd}
     Should Be Equal As Integers    ${onboard_result}     1
+
+Enable CoPilot Feature
+    [Documentation]     Enables CoPilot Feature for this VIQ in Global Settings-> VIQ Management page
+
+    ${enable_result}=  Enable CoPilot feature for this VIQ
+    Should Be Equal As Integers    ${enable_result}     1
+
+Disable CoPilot Feature
+    [Documentation]     Disables CoPilot Feature for this VIQ in Global Settings-> VIQ Management page
+
+    ${disable_result}=  Disable CoPilot feature for this VIQ
+    Should Be Equal As Integers    ${disable_result}     1
