@@ -69,7 +69,7 @@ Pre Condition
     Should Be Equal As Strings    ${IMPORT_MAP}       1
 
     #Onboard AP                  ${ap1.serial}       aerohive
-    ${ONBOARD_RESULT}=      Onboard Device      ${ap1.serial}           ${ap1.cli_type}       location=${LOCATION}
+    ${ONBOARD_RESULT}=      Onboard Device      ${ap1.serial}           ${ap1.make}       location=${LOCATION}
     Should be equal as integers                 ${ONBOARD_RESULT}       1
 
     ${AP_SPAWN}=                Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}

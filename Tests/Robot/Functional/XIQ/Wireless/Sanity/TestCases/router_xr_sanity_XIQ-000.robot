@@ -125,7 +125,7 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     Navigate To Devices
     Refresh Devices Page
 
-    ${ONBOARD_RESULT}=      Onboard Device          ${router1.serial}         ${router1.cli_type}       location=${LOCATION}
+    ${ONBOARD_RESULT}=      Onboard Device          ${router1.serial}         ${router1.make}       location=${LOCATION}
     Should Be Equal As Integers                     ${ONBOARD_RESULT}           1
 
     ${SEARCH_ROUTER}=       Search Device           device_serial=${router1.serial}
@@ -168,7 +168,7 @@ TCCS-7766_Step2: Onboard Aerohive XR Router Using Advance Onboarding Method
     ${DELETE_DEVICE}=               Delete Device                  device_serial=${router1.serial}
     should be equal as integers     ${DELETE_DEVICE}    1
 
-    ${ONBOARD_ROUTER}=          Advance Onboard Device         ${router1.serial}    device_make=${router1.cli_type}   dev_location=${LOCATION}
+    ${ONBOARD_ROUTER}=          Advance Onboard Device         ${router1.serial}    device_make=${router1.make}   dev_location=${LOCATION}
     Should Be Equal As Integers             ${ONBOARD_ROUTER}           1
 
     ${ROUTER_SPAWN}=        Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}      connection_method=${router1.connection_method}
