@@ -166,7 +166,7 @@ Pre Condition
     #Check Managed status:
     column picker select    Managed
 
-    ${mngt_sw2}=    WAIT UNTIL DEVICE MANAGED       ${netelem1.serial}           MANAGED
+    ${mngt_sw2}=    WAIT UNTIL DEVICE MANAGED       ${netelem1.serial} 
 
     Should Be Equal As Integers                 ${mngt_sw2}       1
 

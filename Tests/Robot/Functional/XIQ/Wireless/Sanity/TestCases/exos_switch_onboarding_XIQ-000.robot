@@ -54,7 +54,7 @@ Test Suite Clean Up
 
     [Teardown]   run keywords           Logout User
     ...                                 Quit Browser
-    
+
 *** Test Cases ***
 TCCS-7292_Step1: Onboard EXOS Switch on XIQ
     [Documentation]         Checks for Exos switch onboarding on XIQ

@@ -15,7 +15,7 @@ xiqse:
   model:                   "XIQSE"
   product:                 "XIQ_SE"
   function:                "XIQSE"
-  os:                      "XIQSE"
+  xiq_os:                  "XIQSE"
   log_dir:                 "/usr/local/Extreme_Networks/NetSight/appdata/logs"
   server_log:              "server.log"
 

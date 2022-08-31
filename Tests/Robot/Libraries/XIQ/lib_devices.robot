@@ -103,3 +103,17 @@ Confirm Device Serial Has Expected Status
 
     ${device_status}=  Get Device Status  device_serial=${serial}
     Should Contain     ${device_status}   ${expected_status}
+
+Confirm Device Serial Managed
+    [Documentation]     Confirms the specified serial number has the "Managed" option set to "Managed"
+    [Arguments]         ${serial}   ${retry_duration}=30  ${retry_count}=10
+
+    ${result}=    Wait Until Device Managed    ${serial}   retry_duration=${retry_duration}  retry_count=${retry_count}
+    Should Be Equal As Integers                ${result}      1
+
+Confirm Device Status Icon
+    [Documentation]     Checks that the specified device has the expected Device Status icon
+    [Arguments]         ${serial}   ${expected_icon}
+
+    ${status_icon}=    Get Device Status Icon   ${serial}
+    Should Be Equal As Strings                  ${status_icon}      ${expected_icon}

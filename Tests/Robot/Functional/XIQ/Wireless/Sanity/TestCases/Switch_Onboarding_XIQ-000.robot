@@ -67,9 +67,9 @@ TCCS-7748_Step3: Check Aerohive Switch Status On UI
     ${ONLINE_STATUS}=   Wait Until Device Online    device_serial=${aerohive_sw1.serial}
     Should Be Equal as Integers         ${ONLINE_STATUS}        1
     ${SW_STATUS}=       Get Device Status           device_serial=${aerohive_sw1.serial}
-    Should Be Equal as Strings          ${SW_STATUS}            green
+    Should contain any  ${SW_STATUS}    green     config audit mismatch
 
-    ${DELETE_STATUS}=   Delete Device   ${aerohive_sw1.serial}
+    ${DELETE_STATUS}=   Delete Device   ${aerohive_sw1.serial} 
     Should Be Equal as Integers         ${DELETE_STATUS}        1
 
 

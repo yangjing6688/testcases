@@ -38,34 +38,7 @@ ap2:
   country:                  United States
   location:                 auto_location_01, Santa Clara, building_02, floor_04
 
-ap3:
-  name:                     AH-006200#
-  connection_method:        ssh
-  ip:                       10.16.168.117
-  port:                     22
-  username:                 admin
-  password:                 Aerohive123
-  serial:                   '01501707240100'
-  console_ip:               10.16.168.37
-  console_port:             4001
-  mac:                      7C95B1006200
-  cli_type:                 AH-AP
-  platform:                 aerohive
-  model:                    AP150W
-  template:                 AP_150W-default-template
-  make:                     Extreme - Aerohive
-  mgmt_vlan:                10
-  country:                  United States
-  location:                 auto_location_01, Santa Clara, building_02, floor_04
-
 mu1:
-  ip:             10.16.168.35
-  port:           8270
-  username:       admin
-  password:       aerohive
-  platform:       macmini
-
-mu2:
   ip:             10.16.168.36
   port:           8270
   username:       admin

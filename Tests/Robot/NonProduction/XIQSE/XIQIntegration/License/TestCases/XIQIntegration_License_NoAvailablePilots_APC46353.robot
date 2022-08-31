@@ -277,6 +277,9 @@ Set Up XIQ Components
     # Remove XIQSE if it is already present
     Navigate and Remove Device by MAC From XIQ  ${XIQSE_MAC}
 
+    # Enable CoPilot Feature
+    Enable CoPilot Feature
+
     # Confirm we have the expected number of available entitlements
     XIQ Confirm Expected Pilot Licenses Consumed        0
     XIQ Confirm Expected Navigator Licenses Consumed    0
@@ -586,6 +589,9 @@ Clean Up XIQ Components
     # Confirm all entitlements have been returned
     XIQ Confirm Expected Pilot Licenses Consumed        0
     XIQ Confirm Expected Navigator Licenses Consumed    0
+
+    # Disable CoPilot Feature
+    Disable CoPilot Feature
 
     # Log out and close the window
     [Teardown]  XIQ Log Out and Close Window

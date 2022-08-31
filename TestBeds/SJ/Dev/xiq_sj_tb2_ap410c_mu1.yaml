@@ -1,0 +1,29 @@
+ap1:
+  name:                     bui-flo-2763
+  connection_method:        ssh
+  ip:                       10.16.172.156
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '04102006082763'
+  console_ip:               10.16.167.37
+  console_port:             10002
+  mac:                      BCF310706840
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP410C
+  template:                 AP_410C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+
+mu1:
+  ip:             10.16.167.102
+  port:           8270
+  username:       user
+  password:       aerohive
+  platform:       windows
+  interface:      wlan0
+  wifi_mac:       44E517D4ABA2
+  ethernet_mac:   54AB3A37687C

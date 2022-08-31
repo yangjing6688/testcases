@@ -135,11 +135,11 @@ def update_qtest():
 
                     try:
                         json_response = r.json()
-                        if json_response['result']['status'] == 'pass':
+                        if json_response['result'].get('status') == 'pass':
                             print(f"{SUCCESS_PREFIX} Test Case [{tag}] marked automated in qTest ")
-                        elif json_response['result']['status'] == 'already automated':
+                        elif json_response['result'].get('status') == 'already automated':
                             print(f"{SUCCESS_PREFIX} Test Case [{tag}] is already marked automated in qTest")
-                        elif json_response['result']['status'] == 'fail':
+                        elif json_response['result'].get('status') == 'fail':
                             print(f"{PRINT_PREFIX} Test Case [{tag}] does not exist in qTest")
                         else:
                             print(f"{PRINT_PREFIX} {json_response}")
