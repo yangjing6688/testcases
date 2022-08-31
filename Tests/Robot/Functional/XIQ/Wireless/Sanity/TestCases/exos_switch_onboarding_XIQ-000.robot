@@ -73,7 +73,7 @@ TCCS-7292_Step1: Onboard EXOS Switch on XIQ
     ${SW_SPAWN}=            Open Spawn          ${netelem1.ip}       ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
     ${CONF_SWITCH_HOST}=    Send                ${SW_SPAWN}         configure iqagent server ipaddress ${SWITCH_CONNECTION_HOST}
     ${CONF_VR}=             Send                ${SW_SPAWN}         configure iqagent server vr VR-Default
-    ${CONF_VR}=             Send                ${SW_SPAWN}         save config
+    ${CONF_VR}=             Send                ${SW_SPAWN}         save config    ignore_cli_feedback=True
     ${SHOW_PROCESS}=        Send                ${SW_SPAWN}         show process iqagent
     Should Contain                              ${SHOW_PROCESS}     Ready
 
