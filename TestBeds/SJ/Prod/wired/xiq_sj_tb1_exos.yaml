@@ -8,7 +8,7 @@ netelem1:
   password:                 Aerohive123
   ip:                       10.16.148.24
   port:                     "22"
-  connection_method:        "telnet"
+  connection_method:        "ssh"
   console_ip:               10.16.128.23
   console_port:             7036
   network_policy:           Test_np

@@ -72,7 +72,7 @@ TCCS-7651_Step2: Config AP to Report AIO
 
 TCCS-7651_Step3: Check AP Status On UI
     [Documentation]     Checks for ap status
-    [Tags]              production      tccs_7651       tccs_7651_step_3 
+    [Tags]              production      tccs_7651       tccs_7651_step_3
     Depends On          TCCS-7651_Step2
 
     ${LOGIN_STATUS}=          Login User          ${tenant_username}     ${tenant_password}
@@ -99,4 +99,3 @@ TCCS-7651_Step4: Quick Onboard Simulated Device
     should be equal as integers     ${DELETE_AP}               1
 
     [Teardown]  Run Keywords    Logout User   Quit Browser
-

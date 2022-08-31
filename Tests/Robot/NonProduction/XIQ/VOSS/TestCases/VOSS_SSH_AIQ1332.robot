@@ -115,6 +115,10 @@ Configure Test Device
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${agent}
 
     Boot Switch To Known Good Configuration     ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
+
+    # Downgrade the device's iqagent if needed
+    Downgrade Iqagent                           ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
+
     Configure Device To Connect To Cloud        ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${agent}
 
 Onboard New Test Device

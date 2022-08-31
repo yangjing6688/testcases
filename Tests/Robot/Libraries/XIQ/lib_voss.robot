@@ -22,7 +22,7 @@ Boot Switch To Known Good Configuration
     ${enable_results}=      Send  ${spawn}  enable
     Log To Console          Command results are ${enable_results}
 
-    ${boot_results}=        Send  ${spawn}  boot config configcfg_orig     confirmation_phrases=Are you sure you want to re-boot the switch (y/n) ?    confirmation_args=y
+    ${boot_results}=        Send  ${spawn}  boot config config_knowngood.cfg     confirmation_phrases=Are you sure you want to re-boot the switch (y/n) ?    confirmation_args=y
     Log To Console          Command results are ${boot_results}
 
     sleep                   ${switch_reboot_wait}

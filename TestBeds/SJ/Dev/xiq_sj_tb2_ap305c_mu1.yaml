@@ -1,6 +1,6 @@
 ap1:
   name:                     AH-009540
-  connection_method:        "telnet"
+  connection_method:        ssh
   ip:                       10.16.172.155
   port:                     22
   connection_method:        "ssh"
@@ -18,34 +18,13 @@ ap1:
   mgmt_vlan:                10
   country:                  United States
   location:                 auto_location_01, Santa Clara, building_02, floor_04
-  power_strip:
-    ip:
-    port:
-    username:
-    password:
-    plug:
-        plug_a:
-        plug_b:
-    type:
-  extra:
-      country:                  United Kingdom
-      network_policy:           Test_np
-      ssid:                     AP230_01
-      version:                  6.5
-      neighbour_serial:         06301908310556
-      neighbour_mac:            3485843A5CC0
-
 
 mu1:
-  ip:             10.16.166.237
+  ip:             10.16.167.101
   port:           8270
-  username:       admin
-  password:       symbol
+  username:       user
+  password:       aerohive
   platform:       windows
   interface:      wlan0
-  wifi_mac:       0024D765CDB8
-  ethernet_mac:   D067E5429420
-  wifi_network:   20.1.1
-  wifi_network_vlan10:    10.16.172
-
-
+  wifi_mac:       44E517D57CDF
+  ethernet_mac:   54AB3A376425

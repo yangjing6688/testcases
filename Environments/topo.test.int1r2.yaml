@@ -1,7 +1,7 @@
 test_url: "https://int1r2.qa.xcloudiq.com"
 capwap_url: "int1r2-cwpm-01.qa.xcloudiq.com"
 sw_connection_host: "int1r2.qa.xcloudiq.com"
-tenant_username: "int1r2+wiredit+may22@gmail.com"
+tenant_username: "wiredit+aug22+int1r2@gmail.com"
 tenant_password: "Aerohive123"
 base_url: "https://int1-api.qa.xcloudiq.com"
 aio_xiq: 0
