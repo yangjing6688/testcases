@@ -15,7 +15,7 @@ Library     xiq/flows/extreme_guest/Summary.py
 Library     xiq/flows/extreme_guest/ExtremeGuestUsers.py
 Library     xiq/flows/extreme_guest/AnalyzeClients.py
 Library     xiq/flows/extreme_guest/Reports.py
-#Library     xiq/flows/extreme_guest/AnalyzeUsers.py
+Library     xiq/flows/extreme_guest/AnalyzeUsers.py
 Library     xiq/flows/extreme_guest/Dashboard.py
 Library     xiq/flows/configure/CommonObjects.py
 Library     xiq/flows/manage/Location.py

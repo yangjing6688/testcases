@@ -9,12 +9,6 @@
 #                   - a Fresh setup where eGuest is not yet initialized.
 # Host ----- Cloud
 
-*** Variables ***
-#${WEB_DRIVER_LOC}           local
-${TESTBED}          BANGALORE/Dev/guest_blr_tb_1/testbed_1.yaml
-${TOPO}             Extreme_Guest/topo.aanand.g2r1.yaml
-${ENV}              Extreme_Guest/environment.remote.chrome.windows.guest2.yaml
-
 *** Settings ***
 Force Tags      testbed_1_node
 Variables    TestBeds/${TESTBED}
@@ -107,6 +101,7 @@ Create Network Policies
  
 TCCS-12991: Guest Essentials after XIQ login -subscribe-SSO
     [Documentation]         Launch Extreme Guest Subscription Page
+
     [Tags]                  development    greenfield    subscription    tccs-12991
 
     ${CREATE_SSID}=             create open ssid in common objects  ${SSID_NAME4}
@@ -121,7 +116,9 @@ TCCS-12991: Guest Essentials after XIQ login -subscribe-SSO
 TCCS-12993: Guest Essentials - Enable Adv Guest on existing networks
     
     [Documentation]         Launch Extreme Guest and Subscribe to Guest Application
+
     [Tags]                  development    greenfield    subscription    tccs-12993
+
     Depends On              TCCS-12991
 
     ${APPLY_OPEN_SSID}=             apply selected open ssid  ${SSID_NAME4}
@@ -135,7 +132,9 @@ TCCS-12993: Guest Essentials - Enable Adv Guest on existing networks
 
 TCCS-13118: Add Bulk Vouchers
     [Documentation]         Add Bulk Extreme Guest User Vouchers
+
     [Tags]                  development    greenfield    users    tccs-13118
+
     Depends On              TCCS-12993
     
     ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=              go to extreme guest page
@@ -162,7 +161,9 @@ TCCS-13118: Add Bulk Vouchers
 
 TCCS-13119: Clone Extreme Guest System Template
     [Documentation]         Clone Extreme Guest System Template and Create Onboarding Policy and Onboarding Rule
+
     [Tags]                  development    greenfield    brownfield    template    tccs-13119
+
     Depends On              TCCS-12993
 
     ${CREATE_N/W_POLICIES}=             Run Keyword        Create Network Policies
@@ -226,7 +227,9 @@ TCCS-13119: Clone Extreme Guest System Template
 
 TCCS-12997: Verify User can register to Cguest server and authenticate on CP with Facebook
     [Documentation]         Verify Facebook Social Login
+
     [Tags]                  development    greenfield    brownfield    social    facebook    tccs-12997
+
     Depends On              TCCS-12993    TCCS-13119
     
     ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME1}     ap_serial=${ap1.serial}   update_method=Complete
@@ -287,7 +290,9 @@ TCCS-12997: Verify User can register to Cguest server and authenticate on CP wit
 
 TCCS-12998: Verify User can register to Cguest server and authenticate on CP with LinkedIn
     [Documentation]         Verify LnkedIn Social Login
+
     [Tags]                  development    greenfield    brownfield    social    linkedin    tccs-12998
+
     Depends On              TCCS-12993    TCCS-13119
 
     ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME2}     ap_serial=${ap1.serial}
@@ -314,6 +319,7 @@ TCCS-12998: Verify User can register to Cguest server and authenticate on CP wit
     BuiltIn.Sleep                         ${CONFIG_PUSH_WAIT}
 
     ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME2}
+    Should Be Equal As Strings      '${CONNECT_CLIENT_OPEN_N/W}'     '1'
     Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
     BuiltIn.Sleep                         ${CLIENT_CONNECT_WAIT}
     
@@ -327,6 +333,7 @@ TCCS-12998: Verify User can register to Cguest server and authenticate on CP wit
     get gp page screen shot
 
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
+    Should Be Equal As Strings      '${WIFI_DISCONNECT}'     '1'
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
     BuiltIn.Sleep  ${CLIENT_DISCONNECT_WAIT}
 
@@ -343,6 +350,7 @@ TCCS-12998: Verify User can register to Cguest server and authenticate on CP wit
     ...                             AP Cleanup
     ...                             go back to xiq
 
+
 TCCS-13014: Verify template Accept_n_connect_w_terms_link
     [Documentation]         Verify default Captive portal Login
     
@@ -358,6 +366,7 @@ TCCS-13014: Verify template Accept_n_connect_w_terms_link
     Should Be Equal As Strings      '${DEVICE_STATUS}'       '1'
 
     ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME4}
+    Should Be Equal As Strings      '${CONNECT_CLIENT_OPEN_N/W}'       '1'
     Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
     BuiltIn.Sleep                         ${CLIENT_CONNECT_WAIT}
     
@@ -371,10 +380,13 @@ TCCS-13014: Verify template Accept_n_connect_w_terms_link
     get gp page screen shot
 
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
+    Should Be Equal As Strings      '${WIFI_DISCONNECT}'       '1'
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
     BuiltIn.Sleep       ${CLIENT_DISCONNECT_WAIT}
 
-    [Teardown]   run keywords       close gp browser
+    [Teardown]   run keywords       switch_to_extreme_guest_window
+    ...                             close_extreme_guest_window
+    ...                             close gp browser
     ...                             AP Cleanup
     ...                             go back to xiq
 
@@ -390,6 +402,7 @@ TCCS-12994: Device and OTP Registration - Verify User can register and authentic
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
     ${DEVICE_STATUS}=           Wait Until Device Online       ${ap1.serial}
+    Should Be Equal As Strings      '${DEVICE_STATUS}'       '1'
 
     ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
     Should Be Equal As Strings      '${NAVIGATE_TO_EXTREME_GUEST_PAGE}'       '1'
@@ -404,6 +417,7 @@ TCCS-12994: Device and OTP Registration - Verify User can register and authentic
     Should Be Equal As Strings      '${APPLY_USER_TEMPLATE}'     '1'
 
     ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME5}
+    Should Be Equal As Strings      '${CONNECT_CLIENT_OPEN_N/W}'     '1'
     Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
     BuiltIn.Sleep                         ${CLIENT_CONNECT_WAIT}
     
@@ -415,18 +429,319 @@ TCCS-12994: Device and OTP Registration - Verify User can register and authentic
     get gp page screen shot
     Should Be Equal As Strings     '${REGISTRATION_STATUS}'  '1'
 
+    Log to Console      Sleep for ${RECEIVE_MAIL}
+    BuiltIn.Sleep                         ${RECEIVE_MAIL}
+
     ${ACCESS_STATUS}=    Validate Sponsored Guest Access    ${USER_EMAIL}    ${USER_PASSWORD}    ${SEND_OTP_TO_USER}
     get gp page screen shot
     Should Be Equal As Strings     '${ACCESS_STATUS}'  '1'
 
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
+    Should Be Equal As Strings      '${WIFI_DISCONNECT}'     '1'
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
     BuiltIn.Sleep  ${CLIENT_DISCONNECT_WAIT}
 
     ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
-    ${DELETE_USER_EMAIL}=             Delete User  ${USER_EMAIL}
-    
+    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
 
-    [Teardown]   run keywords       close gp browser
+    ${DELETE_USER_EMAIL}=             Delete User  ${USER_EMAIL}
+    Should Be Equal As Strings     '${DELETE_USER_EMAIL}'  '1'
+
+    [Teardown]   run keywords       switch_to_extreme_guest_window
+    ...                             close_extreme_guest_window
+    ...                             close gp browser
     ...                             AP Cleanup
     ...                             go back to xiq
+
+TCCS-13012: User registration - Verify User can register and authenticate on CP with passcode notified over email
+    [Documentation]         Verify User Registration
+
+    [Tags]                  development    greenfield    brownfield    user_reg_email    tccs_13012
+    
+    Depends On              TCCS-12993    TCCS-13119
+
+    ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME6}     ap_serial=${ap1.serial}
+    Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
+
+    ${DEVICE_STATUS}=           Wait Until Device Online       ${ap1.serial}
+    Should Be Equal As Strings     '${DEVICE_STATUS}'  '1'
+
+    ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
+    Should Be Equal As Strings     '${NAVIGATE_TO_EXTREME_GUEST_PAGE}'  '1'
+
+    ${NAVIGATE_TO_CONFIGURE_PAGE}=             go to configure page
+    Should Be Equal As Strings     '${NAVIGATE_TO_CONFIGURE_PAGE}'  '1'
+
+    ${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}=             go to configure splash system template tab
+    Should Be Equal As Strings     '${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}'  '1'
+
+    ${APPLY_USER_TEMPLATE}=             apply network to user template  network_name=${SSID_NAME6}      template_name=${TEMPLATE9_NAME}     location=${LOCATION_TREE}
+    Should Be Equal As Strings     '${APPLY_USER_TEMPLATE}'  '1'
+
+    ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME6}
+    Should Be Equal As Strings     '${CONNECT_CLIENT_OPEN_N/W}'  '1'
+    Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
+    BuiltIn.Sleep                         ${CLIENT_CONNECT_WAIT}
+
+    ${OPEN_GUEST_PORTAL}=             Open Guest Portal Browser    ${mu1.ip}
+    Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
+    BuiltIn.Sleep  ${CP_PAGE_OPEN_WAIT}
+
+    ${REGISTRATION_STATUS}=                 Register Device for Guest Access    ${USER_NAME}    ${USER_EMAIL}
+    get gp page screen shot
+    Should Be Equal As Strings     '${REGISTRATION_STATUS}'  '1'
+
+    Log to Console      Sleep for ${RECEIVE_MAIL}
+    BuiltIn.Sleep                         ${RECEIVE_MAIL}
+
+    ${ACCESS_STATUS}=    Validate Sponsored Guest Access    ${USER_EMAIL}    ${USER_PASSWORD}    ${SEND_OTP_TO_USER}
+    get gp page screen shot
+    Should Be Equal As Strings     '${ACCESS_STATUS}'  '1'
+
+    ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
+    Should Be Equal As Strings     '${WIFI_DISCONNECT}'  '1'
+    Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
+    BuiltIn.Sleep  ${CLIENT_DISCONNECT_WAIT}
+
+    ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
+    Should Be Equal As Strings     '${NAVIGATE_TO_CONFIGURE_PAGE}'  '1'
+
+    ${DELETE_USER_EMAIL}=             Delete User  ${USER_EMAIL}
+    Should Be Equal As Strings     '${DELETE_USER_EMAIL}'  '1'
+
+    [Teardown]   run keywords       switch_to_extreme_guest_window
+    ...                             close_extreme_guest_window
+    ...                             close gp browser
+    ...                             AP Cleanup
+    ...                             go back to xiq
+
+
+
+TCCS-12995: User Auth with guest vouchers
+    [Documentation]         Verify User auth with Guest Vouchers
+
+    [Tags]                  development    greenfield    brownfield    voucher_login    tccs_12995
+
+    Depends On              TCCS-12993    TCCS-13119
+
+    ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME0}    ap_serial=${ap1.serial}
+    Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
+
+    ${DEVICE_STATUS}=           Wait Until Device Online       ${ap1.serial}
+    Should Be Equal As Strings      '${DEVICE_STATUS}'       '1'
+
+    ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
+    Should Be Equal As Strings      '${NAVIGATE_TO_EXTREME_GUEST_PAGE}'       '1'
+
+    ${NAVIGATE_TO_CONFIGURE_PAGE}=             go to configure page
+    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
+
+    ${NAVIGATE_TO_CONFIGURE_USERS_PAGE}=             go to configure users page
+    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_USERS_PAGE}'       '1'
+
+    ${USER_COUNT1}=    Get Extreme Guest Users Count
+    Log to Console     Number of Guest Users: ${USER_COUNT1}
+
+    ${VOUCHER_CREDENTIALS}=             create bulk vouchers client login  ${NO_OF_VOUCHERS}    access_group=${ACCESS_GROUP}    location_name=${LOCATION_TREE}
+
+    ${USER_COUNT2}=    Get Extreme Guest Users Count
+    Log to Console     Number of Guest Users: ${USER_COUNT2}
+
+    ${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}=             go to configure splash system template tab
+    Should Be Equal As Strings      '${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}'       '1'
+
+    ${APPLY_STATUS}=             apply network to user template  network_name=${SSID_NAME0}      template_name=${TEMPLATE9_NAME}     location=${LOCATION_TREE}
+    Should Be Equal As Strings      '${APPLY_STATUS}'       '1'
+
+    ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME0}
+    Should Be Equal As Strings      '${CONNECT_CLIENT_OPEN_N/W}'       '1'
+    Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
+    BuiltIn.Sleep                         ${CLIENT_CONNECT_WAIT}
+
+    ${OPEN_GUEST_PORTAL}=             open guest portal browser    ${mu1.ip}
+    Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
+    BuiltIn.Sleep       ${CP_PAGE_OPEN_WAIT}
+
+    ${USER_AUTH_STATUS}=                 validate eguest user login with voucher credentials    ${VOUCHER_CREDENTIALS}
+    get gp page screen shot
+    Should Be Equal As Strings      '${USER_AUTH_STATUS}'       '1'
+
+    ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
+    Should Be Equal As Strings      '${WIFI_DISCONNECT}'       '1'
+    Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
+    BuiltIn.Sleep  ${CLIENT_DISCONNECT_WAIT}
+
+    ${USERNAME1}=                 Get Username from vouchers   ${VOUCHER_CREDENTIALS}
+    ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
+    Should Be Equal As Strings     '${NAVIGATE_TO_CONFIGURE_PAGE}'  '1'
+
+    ${DELETE_USER}=             Delete User    ${USERNAME1}
+    Should Be Equal As Strings     '${DELETE_USER}'  '1'
+
+    [Teardown]   run keywords       switch_to_extreme_guest_window
+    ...                             close_extreme_guest_window
+    ...                             switch_to_extreme_guest_window
+    ...                             close_extreme_guest_window
+    ...                             close gp browser
+    ...                             AP Cleanup
+    ...                             go back to xiq
+
+
+TCCS-12996: Device registration - Verify User can register and get CP access using E-mail
+    [Documentation]         Verify Device Registration
+
+    [Tags]                  development    greenfield    brownfield    email_access    tccs_12996
+
+    Depends On              TCCS-12993    TCCS-13119
+
+    ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME7}     ap_serial=${ap1.serial}
+    Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
+
+    ${DEVICE_STATUS}=           Wait Until Device Online       ${ap1.serial}
+    Should Be Equal As Strings      '${DEVICE_STATUS}'       '1'
+
+    ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
+    Should Be Equal As Strings      '${NAVIGATE_TO_EXTREME_GUEST_PAGE}'       '1'
+
+    ${NAVIGATE_TO_CONFIGURE_PAGE}=             go to configure page
+    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
+
+    ${EG_POLICY_NAME_STATUS1}=             ADD ONBOARDING POLICY EXISTING ONE   policy_name=${EG_POLICY_NAME2}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE4}    condition_value=${CONDITION_VALUE}
+    Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS1}'     '1'
+
+    ${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}=             go to configure splash system template tab
+    Should Be Equal As Strings      '${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}'       '1'
+
+    ${APPLY_USER_TEMPLATE}=             apply network to user template  network_name=${SSID_NAME7}      template_name=${TEMPLATE4_NAME}     location=${LOCATION_TREE}
+    Should Be Equal As Strings     '${APPLY_USER_TEMPLATE}'  '1'
+
+    ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME7}
+    Should Be Equal As Strings     '${CONNECT_CLIENT_OPEN_N/W}'  '1'
+    Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
+    BuiltIn.Sleep                         ${CLIENT_CONNECT_WAIT}
+
+    ${OPEN_GUEST_PORTAL}=             Open Guest Portal Browser    ${mu1.ip}
+    Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
+    BuiltIn.Sleep  ${CP_PAGE_OPEN_WAIT}
+
+    ${REGISTRATION_STATUS}=                 Register Device with Email for Guest Access    ${USER_EMAIL}
+    get gp page screen shot
+    Should Be Equal As Strings     '${REGISTRATION_STATUS}'  '1'
+
+    Set Suite Variable    ${USERNAME}        ${USER_EMAIL}
+
+    [Teardown]   run keywords       switch_to_extreme_guest_window
+    ...                             close_extreme_guest_window
+    ...                             close gp browser
+    ...                             go back to xiq
+
+TCCS-13019: Analyze Users
+    [Documentation]        Check username in Analyze Users page
+
+    [Tags]                  development    greenfield    brownfield    analyze_users    tccs_13019
+
+    Depends On             TCCS-12993    TCCS-12995    TCCS-12996
+
+    ${NAVIGATE_TO_ANALYZE_PAGE}=             Go To Analyze Page
+    Should Be Equal As Strings      '${NAVIGATE_TO_ANALYZE_PAGE}'       '1'
+
+    ${NAVIGATE_TO_ANALYZE_USER_PAGE}=             Go to Analyze Users Page
+    Should Be Equal As Strings      '${NAVIGATE_TO_ANALYZE_USER_PAGE}'       '1'
+
+    ${USER_EXISTS}=              Check If The User Exists        ${USERNAME}        ${LOCATION_TREE}
+    Should Be Equal As Strings      '${USER_EXISTS}'       '1'
+
+    [Teardown]   run keywords       switch_to_extreme_guest_window
+    ...                             close_extreme_guest_window
+    ...                             Go back To XIQ
+
+TCCS-13020: Analyze Clients
+    [Documentation]        Check Client MAC address in Analyze Clients page
+
+    [Tags]                  development    greenfield    brownfield    analyze_clients    tccs_13020
+
+    Depends On             TCCS-12993    TCCS-12995
+
+    ${NAVIGATE_TO_ANALYZE_PAGE}=             Go To Analyze Page
+    Should Be Equal As Strings      '${NAVIGATE_TO_ANALYZE_PAGE}'       '1'
+
+    ${NAVIGATE_TO_ANALYZE_USER_PAGE}=             Go to Analyze Clients Page
+    Should Be Equal As Strings      '${NAVIGATE_TO_ANALYZE_USER_PAGE}'       '1'
+
+    ${CLIENT_EXISTS}=              Check If The Client Exists        ${mu1.wifi_mac}        ${LOCATION_TREE}
+    Should Be Equal As Strings      '${CLIENT_EXISTS}'       '1'
+
+    [Teardown]   run keywords       switch_to_extreme_guest_window
+    ...                             close_extreme_guest_window
+    ...                             Go back To XIQ
+
+TCCS-13000: Guest-Essentials -Summary-Analytics
+    [Documentation]         Check all Summary page Widgets
+
+    [Tags]                  development    greenfield    brownfield    analytics    tccs_13000
+
+    Depends On              TCCS-12993    TCCS-12995
+
+    ${VALIDATE_LANDING_PAGE}=             check all landing page widgets
+    Save Screen shot
+    Should Be Equal As Strings      '${VALIDATE_LANDING_PAGE}'     '1'
+
+    [Teardown]   run keywords       go back to xiq
+
+
+TCCS-13008: Guest-Essentials -Summary-More Insights
+    [Documentation]         Check all Landing page widgets
+
+    [Tags]                  development    greenfield    brownfield    analytics    tccs_13008
+
+    Depends On              TCCS-12993    TCCS-12995
+
+    ${CHACK_SUMMARY_PAGE}=             check all summary page widgets
+    Save Screen shot
+    Should Be Equal As Strings      '${CHACK_SUMMARY_PAGE}'     '1'
+
+    [Teardown]   run keywords       switch_to_extreme_guest_window
+    ...                             close_extreme_guest_window
+    ...                             Go back To XIQ
+
+TCCS-13009: Verify All the counters of KMS at Root Level
+    [Documentation]         Verify all KMS count
+
+    [Tags]                  development    greenfield    brownfield    analytics    tccs_13009
+
+    Depends On              TCCS-12993    TCCS-12995
+
+    ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
+    Should Be Equal As Strings      '${NAVIGATE_TO_EXTREME_GUEST_PAGE}'     '1'
+
+    ${TOTAL_USER_WIDGET_DATA}=             check summary page total users widget data
+    Should Be Equal As Strings      '${TOTAL_USER_WIDGET_DATA}'     '1'
+
+    ${ONLINE_USER_WIDGET_DATA}=             check summary page online users widget data
+    Should Be Equal As Strings      '${ONLINE_USER_WIDGET_DATA}'     '1'
+
+    ${TOTAL_CLIENTS_WIDGET_DATA}=             check summary page total clients widget data
+    Should Be Equal As Strings      '${TOTAL_CLIENTS_WIDGET_DATA}'     '1'
+
+    Save Screen shot
+
+    [Teardown]   run keywords       switch_to_extreme_guest_window
+    ...                             close_extreme_guest_window
+    ...                             Go back To XIQ
+
+TCCS-13018: Online users by location widget
+    [Documentation]        Online users by location widget
+
+    [Tags]                  development    greenfield    brownfield    analytics    tccs_13018
+
+    Depends On             TCCS-12993    TCCS-12995
+
+    ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
+    Should Be Equal As Strings      '${NAVIGATE_TO_EXTREME_GUEST_PAGE}'     '1'
+
+    ${WIDGET}=        Check Map Location Widget
+    Should Be Equal As Strings      '${WIDGET}'     '1'
+
+    [Teardown]   run keywords       switch_to_extreme_guest_window
+    ...                             close_extreme_guest_window
+    ...                             Go back To XIQ
