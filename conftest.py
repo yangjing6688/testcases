@@ -1,5 +1,6 @@
 # Built-in imports
 from collections import defaultdict
+from dataclasses import dataclass
 from email.policy import default
 import inspect
 import logging
@@ -732,19 +733,22 @@ def configure_iq_agent(dev_cmd, loaded_config, network_manager, close_connection
         def worker(dut):
             with enter_switch_cli(dut, network_manager, close_connection):
                 if dut.cli_type.upper() == "EXOS":
-                    dev_cmd.send_cmd_verify_output(dut.name, 'show process iqagent', 'Ready', max_wait=30, interval=10)
-                    dev_cmd.send_cmd(dut.name, 'disable iqagent', max_wait=10, interval=2,
-                                    confirmation_phrases='Do you want to continue?', confirmation_args='y')
+                    dev_cmd.send_cmd_verify_output(
+                        dut.name, 'show process iqagent', 'Ready', max_wait=30, interval=10)
+                    dev_cmd.send_cmd(
+                        dut.name, 'disable iqagent', max_wait=10, interval=2,
+                        confirmation_phrases='Do you want to continue?', confirmation_args='y')
                     
                     dev_cmd.send_cmd(dut.name, 'configure iqagent server ipaddress none', max_wait=10, interval=2)
                     vr_name = get_virtual_router(dev_cmd, dut)
                     if vr_name == -1:
                         print("Error: Can't extract Virtual Router information")
-                        return -1
+                        # return -1
                     dev_cmd.send_cmd(dut.name, f'configure iqagent server vr {vr_name}', max_wait=10, interval=2)
                 
-                    dev_cmd.send_cmd(dut.name, 'configure iqagent server ipaddress ' + loaded_config['sw_connection_host'],
-                                    max_wait=10, interval=2)
+                    dev_cmd.send_cmd(
+                        dut.name, 'configure iqagent server ipaddress ' + loaded_config['sw_connection_host'],
+                        max_wait=10, interval=2)
                     dev_cmd.send_cmd(dut.name, 'enable iqagent', max_wait=10, interval=2)
                 
                 elif dut.cli_type.upper() == "VOSS":
@@ -764,8 +768,10 @@ def configure_iq_agent(dev_cmd, loaded_config, network_manager, close_connection
                         dev_cmd.send_cmd(dut.name, "enable")
                     except:
                         dev_cmd.send_cmd(dut.name, "exit")
-                    dev_cmd.send_cmd(dut.name, f'hivemanager address {loaded_config["sw_connection_host"]}', max_wait=10, interval=2)
-                    dev_cmd.send_cmd(dut.name, 'application start hiveagent', max_wait=10, interval=2)
+                    dev_cmd.send_cmd(
+                        dut.name, f'hivemanager address {loaded_config["sw_connection_host"]}', max_wait=10, interval=2)
+                    dev_cmd.send_cmd(
+                        dut.name, 'application start hiveagent', max_wait=10, interval=2)
                     dev_cmd.send_cmd(dut.name, "exit")
                 time.sleep(10)
         
@@ -821,11 +827,12 @@ def check_duts_are_reachable(utils):
     
     def func(duts, results=results, retries=3):
         def worker(dut):
-            ping_response = ""
             
             for _ in range(retries):
                 try:
-                    ping_response = subprocess.Popen(["ping", "-c 1", dut.ip], stdout=subprocess.PIPE).stdout.read().decode()
+                    ping_response = subprocess.Popen(
+                        ["ping", "-c 1", dut.ip], stdout=subprocess.PIPE).stdout.read().decode()
+                    utils.print_info(ping_response)
                     if re.search("0% packet loss", ping_response):
                         results.append(f"({dut.ip}): Successfully verified that this dut is reachable: {dut}")
                         return
@@ -841,7 +848,7 @@ def check_duts_are_reachable(utils):
                 threads.append(thread)
                 thread.start()
         finally:
-            for dut in duts:
+            for thread in threads:
                 thread.join()
         
         for message in results:
@@ -957,22 +964,27 @@ def cleanup(xiq, duts=[], onboarding_location='', network_policies=[], templates
 
 def configure_network_policies(xiq, dut_config):
     
-    for dut, dut_info in dut_config.items():
-        network_policy = dut_info['policy_name']
-        template_switch = dut_info['template_name']
-        dut_config = dut_info['config']
-        assert xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(network_policy), \
+    for dut, data in dut_config.items():
+        
+        network_policy = data['policy_name']
+        template_switch = data['template_name']
+        dut_info = data['info']
+        
+        assert xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
+            network_policy), \
             f"Policy {network_policy} wasn't created successfully "
         
-        if dut_config.platform.upper() == "STACK":
-            xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(dut_config.model_units,
-                                                                                    network_policy,
-                                                                                    dut_config.model_template,
-                                                                                    template_switch)
+        if dut_info.platform.upper() == "STACK":
+            xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(
+                dut_info.model_units, network_policy,
+                dut_info.model_template, template_switch)
         else:
-            sw_model_template = generate_template_for_given_model(dut_config.platform, dut_config.model)
-            xiq.xflowsconfigureSwitchTemplate.add_sw_template(network_policy, sw_model_template, template_switch)
-            assert xiq.xflowsmanageDevices.assign_network_policy_to_switch(policy_name=network_policy, serial=dut_config.serial) == 1, \
+            sw_model_template = generate_template_for_given_model(
+                dut_info.platform, dut_info.model)
+            xiq.xflowsconfigureSwitchTemplate.add_sw_template(
+                network_policy, sw_model_template, template_switch)
+            assert xiq.xflowsmanageDevices.assign_network_policy_to_switch(
+                policy_name=network_policy, serial=dut_info.serial) == 1, \
                 f"Couldn't assign policy {network_policy} to device {dut}"
 
 
@@ -1020,127 +1032,103 @@ def pytest_collection_modifyitems(session, items):
     global onboard_two_node_flag
     global onboard_stack_flag
     
-    testbed_1_node_tests = [item for item in items if 'testbed_1_node' in [marker.name for marker in item.own_markers]]
-    testbed_2_node_tests = [item for item in items if 'testbed_2_node' in [marker.name for marker in item.own_markers]]
-    testbed_stack_tests = [item for item in items if 'testbed_stack' in [marker.name for marker in item.own_markers]]
-    
     testbed = PytestConfigHelper(config)
     nodes = list(filter(lambda d: d is not None, [getattr(testbed, f"dut{i}", None) for i in range(1, 5)]))
-    node_count = len(nodes)
+    temp_items = items[:]
+
+    standalone_nodes = [node for node in nodes if node.get("platform", "").upper() != "STACK"]
+    stack_nodes = [node for node in nodes if node not in standalone_nodes]
+
+    onboard_stack_flag = bool(stack_nodes)
+    if not onboard_stack_flag:
+        temp_items = [
+            item for item in temp_items if 'testbed_stack' not in [marker.name for marker in item.own_markers]]
+
+    onboard_two_node_flag = len(standalone_nodes) > 1
+    if not onboard_two_node_flag:
+        temp_items = [
+            item for item in temp_items if 'testbed_2_node' not in [marker.name for marker in item.own_markers]]
     
-    # if any(n.get("platform").upper() == "STACK" for n in nodes):
-    #     onboard_stack_flag = True
-    # else:
-    #     for test in testbed_stack_tests:
-    #         test.add_marker("skip")
-
-    # if (node_count > 1) and not any(n.get("platform").upper() == "STACK" for n in nodes):
-    #     onboard_two_node_flag = True
-    # else:
-    #     for test in testbed_2_node_tests:
-    #         test.add_marker("skip")
-            
-    # if (node_count >= 1) and not all(n.get("platform").upper() == "STACK" for n in nodes):
-    #     onboard_one_node_flag = True
-    # else:
-    #     for test in testbed_1_node_tests:
-    #         test.add_marker("skip")
-
-    if any(n.get("platform").upper() == "STACK" for n in nodes):
-        onboard_stack_flag = True
-    else:
-        for test in testbed_stack_tests:
-            test.add_marker("skip")
-
-        if node_count > 1:
-            onboard_two_node_flag = True
-        else:
-            for test in testbed_2_node_tests:
-                test.add_marker("skip")
-            
-        if node_count == 1:
-            onboard_one_node_flag = True
-        else:
-            for test in testbed_1_node_tests:
-                test.add_marker("skip")
-
-    items = testbed_1_node_tests + testbed_2_node_tests + testbed_stack_tests
+    onboard_one_node_flag = len(standalone_nodes) >= 1
+    if not onboard_one_node_flag:
+        temp_items = [
+            item for item in temp_items if 'testbed_1_node' not in [marker.name for marker in item.own_markers]]
+    items[:] = temp_items
 
 
 @pytest.fixture(scope="session")
 def onboard(request):
-
+    
     onboarding_location = request.getfixturevalue("onboarding_location")
-    testbed = request.getfixturevalue("testbed")
-    loaded_config = request.getfixturevalue("loaded_config")
     configure_iq_agent = request.getfixturevalue("configure_iq_agent")
     check_device_is_onboarded = request.getfixturevalue("check_device_is_onboarded")
     loaded_config = request.getfixturevalue("loaded_config")
     check_duts_are_reachable = request.getfixturevalue("check_duts_are_reachable")
-    configure_iq_agent = request.getfixturevalue("configure_iq_agent")
-    get_default_password = request.getfixturevalue("get_default_password")
     utils = request.getfixturevalue("utils")
+    testbed = request.getfixturevalue("testbed")
+    close_connection = request.getfixturevalue("close_connection")
+
+    nodes = list(filter(lambda d: d is not None, [getattr(testbed, f"dut{i}", None) for i in range(1, 5)]))
+    standalone_nodes = [node for node in nodes if node.get("platform", "").upper() != "STACK"]
+    stack_nodes = [node for node in nodes if node not in standalone_nodes]
 
     dut_list = []
     
     if onboard_two_node_flag:
-        dut_list.extend([testbed.dut1, testbed.dut2])
+        dut_list.extend(standalone_nodes[:2])
+    elif onboard_one_node_flag:
+        dut_list.append(standalone_nodes[0])
     
     if onboard_stack_flag:
-        stack_dut = get_dut(testbed, os="exos", platform="stack")
+        stack_dut = stack_nodes[0]
+        dut_list.append(stack_dut)
+        
         if ("Series Stack" in stack_dut.model) and (stack_dut.model_units is not None or stack_dut.model_units != ""):
             utils.print_info("Conftest with Stack: ", stack_dut.model, " and units: ", stack_dut.model_units)
         else:
             utils.print_info("Try to update Stack Template Model and Units")
             dut_stack_model_update(stack_dut, stack_dut.stack)
             utils.print_info("Conftest with Stack: ", stack_dut.model_template, " and units: ", stack_dut.model_units)
-        dut_list.append(stack_dut)
     
-    if not onboard_two_node_flag and onboard_one_node_flag:
-        dut_list.append(testbed.dut1)
-
     check_duts_are_reachable(dut_list)
     configure_iq_agent(dut_list)
     
     dut_config = defaultdict(lambda: {})
+    pool = list(string.ascii_letters) + list(string.digits)
     
     for dut in dut_list:
-        dut_config[dut.name]["policy_name"] = f"np_{str(time.time())[::-1][:5]}"
-        dut_config[dut.name]['template_name'] = f"template_{str(time.time())[::-1][:5]}"
-        time.sleep(1)
+        dut_config[dut.name]["policy_name"] = f"np_{''.join(random.sample(pool, k=7))}"
+        dut_config[dut.name]['template_name'] = f"template_{''.join(random.sample(pool, k=7))}"
+        dut_config[dut.name]['info'] = dut
 
     try:
+        
         with init_xiq_libraries_and_login(
-            username=loaded_config['tenant_username'], 
-            password=loaded_config['tenant_password'], 
-            url=loaded_config['test_url']
-                ) as xiq:
+                username=loaded_config['tenant_username'],
+                password=loaded_config['tenant_password'],
+                url=loaded_config['test_url']) as xiq:
 
-            change_device_management_settings(xiq, option="disable", platform=dut.cli_type.upper())
-            
-            default_password = get_default_password(xiq)
-            dut_config['default_password'] = default_password
+            change_device_management_settings(
+                xiq, option="disable", platform=dut.cli_type.upper())
             
             cleanup(xiq=xiq, duts=dut_list)
             create_location(xiq, onboarding_location)
 
             for dut in dut_list:
                 xiq.xflowsmanageSwitch.onboard_switch(
-                    dut.serial, device_os=dut.cli_type, location=onboarding_location)
+                    dut.serial, device_os=dut.cli_type,
+                    location=onboarding_location)
 
             check_device_is_onboarded(xiq, dut_list)
             
-            # TODO
-            # configure_network_policies(xiq, dut_list)
+            configure_network_policies(xiq, dut_config)
 
         yield dut_list, dut_config
 
     finally:
         with init_xiq_libraries_and_login(
-            username=loaded_config['tenant_username'], 
-            password=loaded_config['tenant_password'], 
-            url=loaded_config['test_url']
-            ) as xiq:
+                username=loaded_config['tenant_username'], password=loaded_config['tenant_password'],
+                url=loaded_config['test_url']) as xiq:
         
             try:
                 cleanup(
@@ -1177,4 +1165,12 @@ def onboarded_stack(request):
     if onboard_one_node_flag:
         dut_list, _ = request.getfixturevalue("onboard")
         return dut_list[0]
+    return
+
+
+@pytest.fixture(scope="session")
+def policy_config(request):
+    if onboard_one_node_flag or onboard_two_node_flag or onboard_stack_flag:
+        _, policy_config = request.getfixturevalue("onboard")
+        return policy_config
     return
