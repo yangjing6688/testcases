@@ -957,7 +957,8 @@ def cleanup(xiq, duts=[], onboarding_location='', network_policies=[], templates
     try:
         for dut in duts:
             xiq.xflowscommonDevices._goto_devices()
-            xiq.xflowscommonDevices.delete_device(device_serial=dut.serial)
+            xiq.xflowscommonDevices.delete_device(
+                device_mac=dut.mac)
         if onboarding_location:
             xiq.xflowsmanageLocation.delete_location_building_floor(*onboarding_location.split(","))
         for network_policy in network_policies:
@@ -1109,7 +1110,7 @@ def onboard(request):
         stack_dut = stack_nodes[0]
         dut_list.append(stack_dut)
         dut_stack_model_update(stack_dut, stack_dut.stack)
-    
+
     check_duts_are_reachable(dut_list)
     configure_iq_agent(dut_list)
     
@@ -1183,7 +1184,7 @@ def onboarded_two_node(request):
 
 @pytest.fixture(scope="session")
 def onboarded_stack(request):
-    if onboard_one_node_flag:
+    if onboard_stack_flag:
         dut_list, _ = request.getfixturevalue("onboard")
         return [dut for dut in dut_list if dut.platform.upper() == "STACK"][0]
     return
@@ -1195,3 +1196,87 @@ def policy_config(request):
         _, policy_config = request.getfixturevalue("onboard")
         return policy_config
     return
+
+
+@pytest.fixture(scope="session")
+def dut_ports(request):
+    
+    dut_list, _ = request.getfixturevalue("onboard")
+    dev_cmd = request.getfixturevalue("dev_cmd")
+
+    ports = {}
+    
+    def worker(dut):
+        with enter_switch_cli(dut, network_manager, close_connection):
+            if dut.cli_type.upper() == "VOSS":
+                dev_cmd.send_cmd(
+                    dut.name, 'enable', max_wait=10, interval=2)
+                output = dev_cmd.send_cmd(
+                    dut.name, 'show int gig int | no-more',
+                    max_wait=10, interval=2)[0].return_text
+                
+                p = re.compile(r'^\d+\/\d+', re.M)
+                match_port = re.findall(p, output)
+
+                p2 = re.compile(r'\d+\/\d+\/\d+', re.M)
+                filtered = [port for port in match_port if not p2.match(port)]
+                ports[dut.name] = filtered
+            
+            elif dut.cli_type.upper() == "EXOS":
+                
+                dev_cmd.send_cmd(
+                    dut.name, 'disable cli paging', max_wait=10, interval=2)
+                output = dev_cmd.send_cmd(
+                    dut.name, 'show ports info', max_wait=20, interval=5)[0].return_text
+                p = re.compile(r'^\d+:\d+', re.M)
+                match_port = re.findall(p, output)
+                is_stack = True
+                if len(match_port) == 0:
+                    is_stack = False
+                    p = re.compile(r'^\d+', re.M)
+                    match_port = re.findall(p, output)
+
+                if is_stack:
+                    p_notPresent = re.compile(r'^\d+:\d+.*NotPresent.*$', re.M)
+                else:
+                    p_notPresent = re.compile(r'^\d+.*NotPresent.*$', re.M)
+                parsed_info = re.findall(p_notPresent, output)
+
+                for port in parsed_info:
+                    port_num = re.findall(p, port)
+                    match_port.remove(port_num[0])
+                ports[dut.name] = match_port
+
+        threads = []
+        try:
+            for dut in dut_list:
+                thread = threading.Thread(target=worker, args=(dut, ))
+                threads.append(thread)
+                thread.start()
+        finally:
+            for thread in threads:
+                thread.join()
+    return ports
+
+
+@pytest.fixture(scope="session")
+def bounce_iqagent(dev_cmd, network_manager, close_connection):
+    
+    def func(dut, xiq=None, wait=False):
+        
+        with enter_switch_cli(dut, network_manager, close_connection):
+            if dut.cli_type.upper() == "EXOS":
+                dev_cmd.send_cmd(dut.name, 'disable iqagent', max_wait=10, interval=2,
+                                                    confirmation_phrases='Do you want to continue?',
+                                                    confirmation_args='Yes')
+                dev_cmd.send_cmd(dut.name, 'enable iqagent', max_wait=10, interval=2)
+        
+            elif dut.cli_type.upper() == "VOSS":
+                dev_cmd.send_cmd(dut.name, 'enable', max_wait=10, interval=2)
+                dev_cmd.send_cmd(dut.name, 'configure terminal', max_wait=10, interval=2)
+                dev_cmd.send_cmd(dut.name, 'application', max_wait=10, interval=2)
+                dev_cmd.send_cmd(dut.name, 'no iqagent enable', max_wait=10, interval=2)
+                dev_cmd.send_cmd(dut.name, 'iqagent enable', max_wait=10, interval=2)
+        if wait is True and xiq is not None:
+            xiq.xflowscommonDevices.wait_until_device_online(dut.mac)
+    return func
