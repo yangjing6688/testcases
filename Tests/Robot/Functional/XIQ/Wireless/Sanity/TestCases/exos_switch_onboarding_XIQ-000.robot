@@ -44,6 +44,13 @@ Cleanup-Delete Switch
     ${DELETE_DEVICE_STATUS}=            Delete Device                  device_serial=${SERIAL}
     should be equal as integers        ${DELETE_DEVICE_STATUS}               1
 
+    ${SW_SPAWN}=                        Open Spawn          ${netelem1.ip}       ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
+
+    ${DOWNGRADE_IQAGENT}=               Downgrade iqagent   ${netelem1.ip}       ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
+    Should Be Equal As Integers         ${DOWNGRADE_IQAGENT}       1
+
+    Close Spawn     ${SW_SPAWN}
+
 Test Suite Clean Up
     [Documentation]    delete Exos Switch
 
