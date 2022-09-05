@@ -8,10 +8,14 @@
 /TestBeds                                       @extremenetworks/autoiq-framework
 /doc                                            @extremenetworks/autoiq-framework
 /.github                                        @extremenetworks/autoiq-framework @mgoddard27
-/Tests/Robot/Functional/XIQ/Wireless/Sanity     @extremenetworks/autoiq-framework
+/Tests/Robot/Functional/XIQ/Wireless/Sanity     @extremenetworks/autoiq-framework @shreenbanu @pdungdo
+
 
 # XIQ wired team directories
 /Tests/Robot/Functional/XIQ/Wired/      @extremenetworks/xiq-wired-it
 /Tests/Robot/NonProduction/XIQ/Wired/   @extremenetworks/xiq-wired-it
 /Tests/Pytest/NonProduction/XIQ/Wired/  @extremenetworks/xiq-wired-it
 /Tests/Pytest/Functional/XIQ/Wired/     @extremenetworks/xiq-wired-it
+
+# XIQ Cloud directories
+/TestBeds/BANGALORE/Prod                @extremenetworks/autoiq-framework @shreenbanu

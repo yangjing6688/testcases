@@ -387,11 +387,11 @@ Onboard Test Devices
 
     # Onboard the devices for the test
     ${dut1_result}=     Search Device Serial   ${AP_SERIAL}
-    Run Keyword If      '${dut1_result}' != '1'  Onboard Device   ${AP_SERIAL}  ${AP_CLI_TYPE}  location=${AP_LOCATION}
+    Run Keyword If      '${dut1_result}' != '1'  Onboard Device   ${AP_SERIAL}  ${AP_MAKE}  location=${AP_LOCATION}
     ${dut2_result}=     Search Device Serial   ${SW_SERIAL}
-    Run Keyword If      '${dut2_result}' != '1'  Onboard Device   ${SW_SERIAL}  ${SW_CLI_TYPE}  location=${SW_LOCATION}
+    Run Keyword If      '${dut2_result}' != '1'  Onboard Device   ${SW_SERIAL}  ${SW_MAKE}  location=${SW_LOCATION}
     ${dut3_result}=     Search Device Serial   ${RT_SERIAL}
-    Run Keyword If      '${dut3_result}' != '1'  Onboard Device   ${RT_SERIAL}  ${RT_CLI_TYPE}  location=${RT_LOCATION}
+    Run Keyword If      '${dut3_result}' != '1'  Onboard Device   ${RT_SERIAL}  ${RT_MAKE}  location=${RT_LOCATION}
 
     # Confirm the devices were onboarded
     Confirm Device Serial Present  ${AP_SERIAL}

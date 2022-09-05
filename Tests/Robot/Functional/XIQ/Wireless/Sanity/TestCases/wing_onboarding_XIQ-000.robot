@@ -62,7 +62,7 @@ TCCS-7279_Step1: Onboard WiNG AP
     ${DELETE_STATUS}=               Delete Device           device_serial=${wing1.serial}
     Should be Equal As Integers     ${DELETE_STATUS}      1
 
-    ${ONBOARD_RESULT}=              Onboard WiNG AP         ${wing1.serial}         ${wing1.mac}   ${wing1.cli_type}
+    ${ONBOARD_RESULT}=              Onboard WiNG AP         ${wing1.serial}         ${wing1.mac}   ${wing1.make}
     Should Be Equal As Integers     ${ONBOARD_RESULT}           1
 
     ${search_result}=               Search AP Serial    ${wing1.serial}
@@ -77,18 +77,9 @@ TCCS-7279_Step2: Config AP to Report XIQ
     [Tags]              production      tccs_7279   tccs_7279_step2
 
     Depends On          TCCS_7279_Step1
-    ${AP_SPAWN}=        Open Spawn          ${wing1.ip}   ${wing1.port}      ${wing1.username}       ${wing1.password}        ${wing1.cli_type}
 
-    Set Suite Variable  ${AP_SPAWN}
-    ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         en, end, en, configure, no nsight-policy xiq, commit write memory, commit write memory
-    ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         nsight-policy xiq, server host ${wing_capwap_url} https enforce-verification poll-work-queue, commit write memory
-    ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         rf-domain default, use nsight-policy xiq, commit write memory
-
-    ${OUTPUT1}=         Send                ${AP_SPAWN}         show running-config nsight-policy xiq
-    ${OUTPUT2}=         Send                ${AP_SPAWN}         show running-config rf-domain default
-    ${OUTPUT3}=         Send       ${AP_SPAWN}         self, show context, end
-
-    [Teardown]          Close Spawn         ${AP_SPAWN}
+    ${CONF_STATUS_RESULT}=      configure device to connect to cloud    ${wing1.cli_type}   ${wing1.ip}    ${wing1.port}   ${wing1.username}    ${wing1.password}    ${wing_capwap_url}
+    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
 
 TCCS-7279_Step3: Check AP Status On UI
     [Documentation]     Checks for ap status

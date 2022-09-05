@@ -18,10 +18,6 @@
 #                   TCXM-21617 - Digital Twin - Disable the feature using the "Soft Launch" URL
 
 *** Settings ***
-Library          common/Cli.py
-Library          xiq/flows/manage/Location.py
-Library          xiq/flows/manage/DevicesActions.py
-
 Resource         ../../DigitalTwin/Resources/AllResources.robot
 
 Force Tags       testbed_not_required
@@ -42,10 +38,14 @@ ${DT_SE_PERSONA}            SwitchEngine
 ${DT_SE_MODEL}              5320-24T-8XE
 ${DT_SE_VERSION}            32.1.1.6
 ${DT_SE_POLICY}
+${DT_SE_SERIAL}
+${DT_SE_MAC}
 ${DT_FE_PERSONA}            FabricEngine
 ${DT_FE_MODEL}              5420F-24S-4XE
 ${DT_FE_VERSION}            8.7.0.0
 ${DT_FE_POLICY}
+${DT_FE_SERIAL}
+${DT_FE_MAC}
 
 ${LOCATION}                 San Jose, building_01, floor_02
 ${DEFAULT_DEVICE_PWD}       Aerohive123
@@ -55,24 +55,18 @@ ${POLICY_NAME}              Automation_Policy
 *** Test Cases ***
 Test 1: Enable Digital Twin Soft Launch Feature
     [Documentation]     Enables the "Digital Twin" soft-launch feature. (Required for 22R4 & 22R5)
-    [Tags]      xim_tcxm_21616   xiq_4627    xiq_6669   development    xiq    digital_twin    test1
+    [Tags]      tcxm_21616   xiq_4627    xiq_6669   development    xiq    digital_twin    test1
 
     Navigate to Devices and Confirm Success
-
-    ${result}=   Is Digital Twin Option Visible
-    Should Be Equal As Integers                             ${result}   -1
-
-    ${result}=   XIQ Soft Launch Feature Url                ${ENABLE_DT_FEATURE}
-    Should Be Equal As Integers                             ${result}   1
-
-    ${result}=   Is Digital Twin Option Visible
-    Should Be Equal As Integers                             ${result}   1
+    Confirm Digital Twin Feature Is Disabled
+    Enable Digital Twin Feature                             ${XIQ_URL}
+    Confirm Digital Twin Feature Is Enabled
 
     [Teardown]    Refresh Page
 
 Test 2: Onboard Digital Twin Switch Engine Device
     [Documentation]     Onboard "Digital Twin" Switch Engine device.
-    [Tags]      xim_tcxm_21215    xim_tcxm_21229    xiq_4627     xiq_6669    development    xiq    digital_twin    test2
+    [Tags]      tcxm_21215    tcxm_21229    xiq_4627     xiq_6669    development    xiq    digital_twin    test2
 
     Navigate to Devices and Confirm Success
 
@@ -80,31 +74,26 @@ Test 2: Onboard Digital Twin Switch Engine Device
     ...                                                     device_model=${DT_SE_MODEL}     os_version=${DT_SE_VERSION}
     ...                                                     policy=${DT_SE_POLICY}
     Set Suite Variable                                      ${DT_SE_SERIAL}     ${dt_se_serial}
-    Should Not Be Equal As Strings                          ${DT_SE_SERIAL}     -1
 
-    ${dt_se_icon}=    Get Device Status Icon                ${DT_SE_SERIAL}
-    Should Be Equal As Strings                              ${dt_se_icon}       digital_twin
-
+    Confirm Digital Twin Serial Number                      ${DT_SE_SERIAL}
+    Confirm Device Status Icon                              ${DT_SE_SERIAL}     expected_icon=digital_twin
     Select Device                                           ${DT_SE_SERIAL}
-    ${dt_action_menu}=  Actions Relaunch Digital Twin Visible
-    Should Be Equal As Integers                             ${dt_action_menu}   1
-    ${dt_action_menu}=  Actions Shutdown Digital Twin Visible
-    Should Be Equal As Integers                             ${dt_action_menu}   -1
+    Confirm Actions Relaunch Digital Twin Option Visible
+    Confirm Actions Shutdown Digital Twin Option Hidden
+    Confirm Device Serial Online                            ${DT_SE_SERIAL}     retry_duration=10    retry_count=60
+    Confirm Device Serial Managed                           ${DT_SE_SERIAL}     retry_duration=10    retry_count=60
+    Confirm Device Serial Has Expected Status               ${DT_SE_SERIAL}     green
 
-    ${dt_se_status}=    Wait Until Device Online            device_serial=${DT_SE_SERIAL}   retry_duration=5    retry_count=60
-    Should Be Equal As Integers                             ${dt_se_status}     1
-
-    ${dt_se_state}=    Get Device Status                    ${DT_SE_SERIAL}
-    Should Be Equal As Strings                              ${dt_se_state}      green
-
-    ${dt_se_mac}=   Get Device Details                      ${dt_se_serial}     MAC
+    ${dt_se_mac}=   Get Device Details                      ${DT_SE_SERIAL}     MAC
     Set Suite Variable                                      ${DT_SE_MAC}        ${dt_se_mac}
+
+    Confirm Digital Twin MAC Address                        ${DT_SE_MAC}
 
     [Teardown]    Refresh Page
 
 Test 3: Onboard Digital Twin Fabric Engine Device
     [Documentation]     Onboard "Digital Twin" Fabric Engine device.
-    [Tags]      xim_tcxm_21216   xim_tcxm_21229    xiq_4627   xiq_6669    development    xiq    digital_twin    test3
+    [Tags]      tcxm_21216   tcxm_21229    xiq_4627   xiq_6669    development    xiq    digital_twin    test3
 
     Navigate to Devices and Confirm Success
 
@@ -112,111 +101,71 @@ Test 3: Onboard Digital Twin Fabric Engine Device
     ...                                                     device_model=${DT_FE_MODEL}     os_version=${DT_FE_VERSION}
     ...                                                     policy=${DT_FE_POLICY}
     Set Suite Variable                                      ${DT_FE_SERIAL}     ${dt_fe_serial}
-    Should Not Be Equal As Strings                          ${DT_FE_SERIAL}     -1
 
-    ${dt_fe_icon}=    Get Device Status Icon                ${DT_FE_SERIAL}
-    Should Be Equal As Strings                              ${dt_fe_icon}       digital_twin
-
-    Select Device                                           ${DT_FE_SERIAL}
-    ${dt_action_menu}=  Actions Relaunch Digital Twin Visible
-    Should Be Equal As Integers                             ${dt_action_menu}   1
-    ${dt_action_menu}=  Actions Shutdown Digital Twin Visible
-    Should Be Equal As Integers                             ${dt_action_menu}   -1
-
-    ${dt_fe_status}=    Wait Until Device Online            device_serial=${DT_FE_SERIAL}   retry_duration=5    retry_count=60
-    Should Be Equal As Integers                             ${dt_fe_status}     1
-
-    ${dt_fe_state}=    Get Device Status                    ${DT_FE_SERIAL}
-    Should Be Equal As Strings                              ${dt_fe_state}      green
+    Confirm Digital Twin Serial Number                      ${DT_FE_SERIAL}
+    Confirm Device Status Icon                              ${DT_FE_SERIAL}     expected_icon=digital_twin
+    Select Device Row                                       ${DT_FE_SERIAL}
+    Confirm Actions Relaunch Digital Twin Option Visible
+    Confirm Actions Shutdown Digital Twin Option Hidden
+    Confirm Device Serial Online                            ${DT_FE_SERIAL}     retry_duration=10    retry_count=60
+    Confirm Device Serial Managed                           ${DT_FE_SERIAL}     retry_duration=10    retry_count=60
+    Confirm Device Serial Has Expected Status               ${DT_FE_SERIAL}     green
 
     ${dt_fe_mac}=   Get Device Details                      ${DT_FE_SERIAL}     MAC
     Set Suite Variable                                      ${DT_FE_MAC}        ${dt_fe_mac}
+
+    Confirm Digital Twin MAC Address                        ${DT_FE_MAC}
 
     [Teardown]    Refresh Page
 
 Test 4: Shutdown Digital Twin Device
     [Documentation]     Shutdown "Digital Twin" devices and verify Actions menu options.
-    [Tags]      xim_tcxm_21230   xim_tcxm_21229    xiq_4627   xiq_6669    development    xiq    digital_twin    test4
+    [Tags]      tcxm_21230   tcxm_21229    xiq_4627   xiq_6669    development    xiq    digital_twin    test4
 
     Navigate to Devices and Confirm Success
-
-    Should Not Be Equal As Strings                          ${DT_SE_SERIAL}     -1
-    Shutdown Digital Twin Device                            ${DT_SE_MAC}
-
-    Should Not Be Equal As Strings                          ${DT_FE_SERIAL}     -1
-    Shutdown Digital Twin Device                            ${DT_FE_MAC}
-
-    ${dt_se_status}=    Wait Until Device Offline           device_mac=${DT_SE_MAC}     retry_duration=5    retry_count=60
-    Should Be Equal As Integers                             ${dt_se_status}     1
-    ${dt_fe_status}=    Wait Until Device Offline           device_mac=${DT_FE_MAC}     retry_duration=5    retry_count=60
-    Should Be Equal As Integers                             ${dt_fe_status}     1
-
-    ${dt_se_state}=    Get Device Status                    ${DT_SE_SERIAL}
-    Log To Console    Digital Twin Device Status '${dt_se_state}'
-    Should Be Equal As Strings                              ${dt_se_state}      disconnected
-    ${dt_fe_state}=    Get Device Status                    ${DT_FE_SERIAL}
-    Log To Console    Digital Twin Device Status ${dt_fe_state}
-    Should Be Equal As Strings                              ${dt_fe_state}      disconnected
-
-    Select Device                                           ${DT_SE_SERIAL}
-    Select Device                                           ${DT_FE_SERIAL}
-    ${dt_action_menu}=  Actions Relaunch Digital Twin Visible
-    Should Be Equal As Integers                             ${dt_action_menu}   1
-    ${dt_action_menu}=  Actions Shutdown Digital Twin Visible
-    Should Be Equal As Integers                             ${dt_action_menu}   -1
+    Select Device Rows                                      device_serials=${DT_SE_SERIAL},${DT_FE_SERIAL}
+    Confirm Actions Relaunch Digital Twin Option Hidden
+    Confirm Actions Shutdown Digital Twin Option Visible
+    Shutdown Digital Twin Device
+    Confirm Device Serial Offline                           ${DT_SE_SERIAL}     retry_duration=10    retry_count=60
+    Confirm Device Serial Offline                           ${DT_FE_SERIAL}     retry_duration=10    retry_count=60
+    Confirm Device Serial Has Expected Status               ${DT_SE_SERIAL}     disconnected
+    Confirm Device Serial Has Expected Status               ${DT_FE_SERIAL}     disconnected
+    Select Device Rows                                      device_serials=${DT_SE_SERIAL},${DT_FE_SERIAL}
+    Confirm Actions Relaunch Digital Twin Option Visible
+    Confirm Actions Shutdown Digital Twin Option Hidden
 
     [Teardown]    Refresh Page
 
 Test 5: Relaunch Digital Twin Device
     [Documentation]     Relaunch "Digital Twin" devices and verify Actions menu options.
-    [Tags]      xim_tcxm_21275   xim_tcxm_21229    xiq_4627     xiq_6669    development    xiq    digital_twin    test5
+    [Tags]      tcxm_21275   tcxm_21229    xiq_4627     xiq_6669    development    xiq    digital_twin    test5
 
     Navigate to Devices and Confirm Success
-
-    Should Not Be Equal As Strings                          ${DT_SE_SERIAL}     -1
-    Relaunch Digital Twin Device                            ${DT_SE_MAC}
-
-    Should Not Be Equal As Strings                          ${DT_FE_SERIAL}     -1
-    Relaunch Digital Twin Device                            ${DT_FE_MAC}
-
-    Select Device                                           ${DT_SE_SERIAL}
-    Select Device                                           ${DT_FE_SERIAL}
-    ${dt_action_menu}=  Actions Relaunch Digital Twin Visible
-    Should Be Equal As Integers                             ${dt_action_menu}   1
-
-    ${dt_se_status}=    Wait Until Device Online            device_serial=${DT_SE_SERIAL}   retry_duration=5    retry_count=60
-    Should Be Equal As Integers                             ${dt_se_status}     1
-    ${dt_fe_status}=    Wait Until Device Online            device_serial=${DT_FE_SERIAL}   retry_duration=5    retry_count=60
-    Should Be Equal As Integers                             ${dt_fe_status}     1
-
-    ${dt_se_state}=    Get Device Status                    ${DT_SE_SERIAL}
-    Should Be Equal As Strings                              ${dt_se_state}      green
-    ${dt_fe_state}=    Get Device Status                    ${DT_FE_SERIAL}
-    Should Be Equal As Strings                              ${dt_fe_state}      green
-
-    Select Device                                           ${DT_SE_SERIAL}
-    Select Device                                           ${DT_FE_SERIAL}
-    ${dt_action_menu}=  Actions Relaunch Digital Twin Visible
-    Should Be Equal As Integers                             ${dt_action_menu}   -1
-    ${dt_action_menu}=  Actions Shutdown Digital Twin Visible
-    Should Be Equal As Integers                             ${dt_action_menu}   1
+    Select Device Rows                                      device_serials=${DT_SE_SERIAL},${DT_FE_SERIAL}
+    Confirm Actions Relaunch Digital Twin Option Visible
+    Confirm Actions Shutdown Digital Twin Option Hidden
+    Relaunch Digital Twin Device
+    Select Device Rows                                      device_serials=${DT_SE_SERIAL},${DT_FE_SERIAL}
+    Confirm Actions Relaunch Digital Twin Option Visible
+    Confirm Device Serial Online                            ${DT_SE_SERIAL}     retry_duration=10    retry_count=60
+    Confirm Device Serial Online                            ${DT_FE_SERIAL}     retry_duration=10    retry_count=60
+    Confirm Device Serial Has Expected Status               ${DT_SE_SERIAL}     green
+    Confirm Device Serial Has Expected Status               ${DT_FE_SERIAL}     green
+    Select Device Rows                                      device_serials=${DT_SE_SERIAL},${DT_FE_SERIAL}
+    Confirm Actions Relaunch Digital Twin Option Hidden
+    Confirm Actions Shutdown Digital Twin Option Visible
 
     [Teardown]    Refresh Page
 
 Test 6: Disable Digital Twin Soft Launch Feature
     [Documentation]     Disables the "Digital Twin" soft-launch feature. (Required for 22R4 & 22R5)
-    [Tags]      xim_tcxm_21617   xiq_4627     xiq_6669    development    xiq    digital_twin    test6
+    [Tags]      tcxm_21617   xiq_4627     xiq_6669    development    xiq    digital_twin    test6
 
     Navigate to Devices and Confirm Success
-
-    ${result}=   Is Digital Twin Option Visible
-    Should Be Equal As Integers                             ${result}   1
-
-    ${result}=   XIQ Soft Launch Feature Url                ${DISABLE_DT_FEATURE}
-    Should Be Equal As Integers                             ${result}   1
-
-    ${result}=   Is Digital Twin Option Visible
-    Should Be Equal As Integers                             ${result}   -1
+    Confirm Digital Twin Feature Is Enabled
+    Disable Digital Twin Feature                            ${XIQ_URL}
+    Confirm Digital Twin Feature Is Disabled
 
     [Teardown]    Refresh Page
 
@@ -235,25 +184,6 @@ Log In and Set Up Test
 Tear Down Test and Close Session
     [Documentation]     Cleans up the components created during the test and ends the test
 
-    ${del_result}=   Delete Device                           device_mac=${DT_SE_MAC}
-    Should Be Equal As Integers                              ${del_result}      1
-    ${del_result}=   Delete Device                           device_mac=${DT_FE_MAC}
-    Should Be Equal As Integers                              ${del_result}      1
-
+    Delete Device and Confirm Success                       ${DT_SE_SERIAL}
+    Delete Device and Confirm Success                       ${DT_FE_SERIAL}
     Log Out of XIQ and Quit Browser
-
-Shutdown Digital Twin Device
-    [Documentation]    Selects the specified device and runs the "Shutdown Digital Twin" action
-    [Arguments]    ${device_mac}
-
-    Select Device                                           device_mac=${device_mac}
-    Actions Shutdown Digital Twin
-    Refresh Devices Page
-
-Relaunch Digital Twin Device
-    [Documentation]    Selects the specified device and runs the "Relaunch Digital Twin" action
-    [Arguments]    ${device_mac}
-
-    Select Device                                           device_mac=${device_mac}
-    Actions Relaunch Digital Twin
-    Refresh Devices Page

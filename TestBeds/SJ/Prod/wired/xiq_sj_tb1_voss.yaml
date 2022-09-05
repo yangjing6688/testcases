@@ -4,7 +4,7 @@ netelem1:
   cli_type:                 VOSS
   device_template:          VSP4900-default-template
   serial:                   "2002F-20140"
-  mac:                      000496E00C81
+  mac:                      000496E00C00
   connection_method:        "ssh"
   cli_type:                 "VOSS"
   bssid:
@@ -12,7 +12,7 @@ netelem1:
   username:                 rwa
   password:                 rwa
   platform:                 voss
-  ip:                       10.16.145.232
+  ip:                       10.16.148.82
   port:                     "22"
   console_ip:               10.16.128.22
   console_port:             7046

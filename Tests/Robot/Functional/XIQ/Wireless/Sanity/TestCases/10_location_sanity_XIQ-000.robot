@@ -26,6 +26,7 @@ Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
+Variables    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/location_sanity_config.py
 
 Force Tags   testbed_1_node
 
@@ -75,8 +76,9 @@ TCCS-7284: Assign Location to AP Device
     ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}    check_warning_msg=True
     should be equal as integers             ${LOGIN_STATUS}               1
 
-    ${POLICY_NAME}                  Get Random String
-    ${SSID_NAME}                    Get Random String
+    # Dynamic named from Resoures file  Location_POLICY_<random 1-999>
+    #${POLICY_NAME}                  Get Random String
+    #${SSID_NAME}                    Get Random String
     Set Suite Variable              ${POLICY_NAME}
     Set Suite Variable              ${SSID_NAME}
 
