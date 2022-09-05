@@ -1247,15 +1247,15 @@ def dut_ports(request):
                     match_port.remove(port_num[0])
                 ports[dut.name] = match_port
 
-        threads = []
-        try:
-            for dut in dut_list:
-                thread = threading.Thread(target=worker, args=(dut, ))
-                threads.append(thread)
-                thread.start()
-        finally:
-            for thread in threads:
-                thread.join()
+    threads = []
+    try:
+        for dut in dut_list:
+            thread = threading.Thread(target=worker, args=(dut, ))
+            threads.append(thread)
+            thread.start()
+    finally:
+        for thread in threads:
+            thread.join()
     return ports
 
 
