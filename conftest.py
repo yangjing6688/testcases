@@ -1199,6 +1199,14 @@ def policy_config(request):
 
 
 @pytest.fixture(scope="session")
+def dut_list(request):
+    if onboard_one_node_flag or onboard_two_node_flag or onboard_stack_flag:
+        dut_list, _ = request.getfixturevalue("onboard")
+        return dut_list
+    return
+ 
+ 
+@pytest.fixture(scope="session")
 def dut_ports(request):
     
     dut_list, _ = request.getfixturevalue("onboard")
