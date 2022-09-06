@@ -17,42 +17,11 @@
 
 *** Variables ***
 # Arguments passed from the command line
-${BULK_CLOUD_NW_POLICY}             AUTO_CLOUD_BULK_NW
-${BULK_CLOUD_NW_SSID}               AUTO_CLOUD_BULK_SSID
-${BULK_CLOUD_USER_GROUP}            AUTO_CLOUD_BULK_GRP
+# Until keyword is created.. variable names created in resources file
 
-${BULK_LOCAL_NW_POLICY}             AUTO_LOCAL_BULK_NW
-${BULK_LOCAL_NW_SSID}               AUTO_LOCAL_BULK_SSID
-${BULK_LOCAL_USER_GROUP}            AUTO_LOCAL_BULK_GRP
-
-${SINGLE_CLOUD_NW_POLICY}           AUTO_CLOUD_SNGLE_NW
-${SINGLE_CLOUD_NW_SSID}             AUTO_CLOUD_SNG_SSID
-${SINGLE_CLOUD_USER_GROUP}          AUTO_CLOUD_SNG_GRP
-
-${SINGLE_LOCAL_NW_POLICY}           AUTO_LOCAL_SNGL_NW
-${SINGLE_LOCAL_NW_SSID}             AUTO_LOCAL_SNGL_SSID
-${SINGLE_LOCAL_USER_GROUP}          AUTO_LOCAL_SNGL_GRP
-
-${CLOUD_CWP_NW_POLICY}              AUTO_PPSK_CWP_NW
-${CLOUD_CWP_NW_SSID}                AUTO_PPSK_CWP_SSID
-${CLOUD_CWP_OPEN_NW_SSID}           OPEN_CWP_SELF_REG
-${CLOUD_CWP_USER_GROUP}             AUTO_CWP_CLOUD_GRP
-${SELF_REG_RETURN_PPSK_CWP}         SELF_REG_RET_PPSK
-
-${SINGLE_CLOUD_NW_POLICY1}          AUTO_PPSK_CLOUD_SNGLE_NW1
-${SINGLE_CLOUD_NW_SSID1}            AUTO_PPSK_CLOUD_SNGL_SSID1
-${SINGLE_CLOUD_USER_GROUP1}         AUTO_PPSK_CLOUD_SNGL_GRP1
-${WRONG_PPSK_PASSWORD}              abcdxyzss
-
-${CLIENT_PER_PPSK_POLICY}          AUTO_CLIENT_PER_PPSK_NW
-${CLIENT_PER_PPSK_SSID}            AUTO_CLIENT_PER_PPSK_SSID
-${CLIENT_PER_PPSK_GRP}             AUTO_CLIENT_PER_PPSK_GRP
-
-${LOCAL_DB_PPSK_NW1}               LOCAL_DB_NW1
-${LOCAL_DB_PPSK_SSID1}             LOCAL_DB_SSID1
-${LOCAL_DB_PPSK_GROUP}             LOCAL_DB_GRP1
-
-&{self_reg_user1_info}              email=${MAIL_ID1}    ccode=91   ph_num=8971766359    visitor_email=${MAIL_ID2}
+# !!!!!
+# Policy,SSID and Group variables Moved to Resources python file for randomization 2022-08-31
+# !!!!!
 
 ${PAGE_TITLE}                       End-to-End Cloud Driven Networking Solutions - Extreme Networks
 
@@ -81,14 +50,17 @@ Library     xiq/flows/configure/CommonObjects.py
 Library     xiq/flows/mlinsights/MLInsightClient360.py
 Library     xiq/flows/globalsettings/GlobalSetting.py
 
-Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/test_email_ids.robot
-Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/private_pre_shared_key_config.robot
+# Moved to python Resources file for randomizing 2022-08-31
+#Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/test_email_ids.robot
+#Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/private_pre_shared_key_config.robot
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
+Variables    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/test_email_ids.py
+Variables    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/private_pre_shared_key_config.py
 
 Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   mu1
 
@@ -107,10 +79,10 @@ Pre Condition
     ${DEVICE_STATUS}=               Get Device Status       device_mac=${ap1.mac}
     Should contain any              ${DEVICE_STATUS}        green     config audit mismatch
 
-    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          OPEN_AUTO                 &{CONFIG_PUSH_OPEN_NW_01}
+    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          ${OPEN_POLICY}            &{CONFIG_PUSH_OPEN_NW_01}
     should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
 
-    ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap    policy_name=OPEN_AUTO     ap_serial=${ap1.serial}
+    ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap    policy_name=${OPEN_POLICY}   ap_serial=${ap1.serial}
     should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
 
     ${DELETE_STATUS}=               Delete network polices      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
@@ -141,10 +113,10 @@ Test Suite Clean Up
     ${DELETE_DEVICE_STATUS}=        Delete Device       device_serial=${ap1.serial}
     should be equal as integers         ${DELETE_DEVICE_STATUS}               1
 
-    ${DELETE_STATUS}=              delete network polices      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
+    ${DELETE_STATUS}=              delete network polices    ${BULK_CLOUD_NW_POLICY}  ${BULK_LOCAL_NW_POLICY}
     should be equal as strings    '${DELETE_STATUS}'           '1'     ppsk network policy assigned to other AP,disassociate it or issue with deleting policy
 
-    ${SSID_DLT_STATUS}=            Delete ssids                 ${BULK_CLOUD_NW_SSID}       ${BULK_LOCAL_NW_SSID}
+    ${SSID_DLT_STATUS}=            Delete ssids              ${BULK_CLOUD_NW_SSID}       ${BULK_LOCAL_NW_SSID}
     should be equal as strings      '1'                        '${SSID_DLT_STATUS}'       Issue with deleting the SSID's
 
     ${DELETE_CWP_STATUS}=           Delete captive web portal      ${SELF_REG_RETURN_PPSK_CWP}

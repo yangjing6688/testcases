@@ -16,32 +16,32 @@ Library     xiq/flows/common/Navigator.py
 *** Keywords ***
 Confirm Entitlement Counts for Feature Matches Expected
     [Documentation]     Confirms the specified feature in the Entitlements table has the expected counts
-    [Arguments]         ${feature}  ${available}  ${activated}  ${devices}
+    [Arguments]         ${feature}  ${available}  ${activated}  ${devices}  ${retry_interval}=30  ${retry_count}=40
 
     # Wait until the entitlement counts match what we expect.
-    ${result}=  Wait Until Entitlement Counts for Feature Matches  ${feature}  ${available}  ${activated}  ${devices}
+    ${result}=  Wait Until Entitlement Counts for Feature Matches  ${feature}  ${available}  ${activated}  ${devices}   ${retry_interval}  ${retry_count}
     Should Be Equal As Integers  ${result}  1
 
 Confirm Entitlement Device Count for Feature Matches Expected
     [Documentation]     Confirms the specified feature has the expected number of devices associated with it
-    [Arguments]         ${feature}  ${expected}
+    [Arguments]         ${feature}  ${expected}  ${retry_interval}=30  ${retry_count}=40
 
     # Wait until the "Device Count" entitlement value matches what we expect.
-    ${result}=  Wait Until Entitlement Device Count for Feature Matches  ${expected}  feature=${feature}
+    ${result}=  Wait Until Entitlement Device Count for Feature Matches  ${expected}  feature=${feature}   ${retry_interval}  ${retry_count}
     Should Be Equal As Integers  ${result}  1
 
 Confirm Entitlement Available Count for Feature Matches Expected
     [Documentation]     Confirms the specified feature has the expected number of available entitlements associated with it
-    [Arguments]         ${feature}  ${expected}
+    [Arguments]         ${feature}  ${expected}  ${retry_interval}=30  ${retry_count}=40
 
     # Wait until the "Available" entitlement value matches what we expect.
-    ${result}=  Wait Until Entitlement Available Count for Feature Matches  ${expected}  feature=${feature}
+    ${result}=  Wait Until Entitlement Available Count for Feature Matches  ${expected}  feature=${feature}   ${retry_interval}  ${retry_count}
     Should Be Equal As Integers  ${result}  1
 
 Confirm Entitlement Activated Count for Feature Matches Expected
     [Documentation]     Confirms the specified feature has the expected number of activated entitlements associated with it
-    [Arguments]         ${feature}  ${expected}
+    [Arguments]         ${feature}  ${expected}  ${retry_interval}=30  ${retry_count}=40
 
     # Wait until the "Activated" entitlement value matches what we expect.
-    ${result}=  Wait Until Entitlement Activated Count for Feature Matches  ${expected}  feature=${feature}
+    ${result}=  Wait Until Entitlement Activated Count for Feature Matches  ${expected}  feature=${feature}   ${retry_interval}  ${retry_count}
     Should Be Equal As Integers  ${result}  1

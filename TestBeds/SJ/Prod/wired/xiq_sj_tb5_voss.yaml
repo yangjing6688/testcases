@@ -1,0 +1,77 @@
+---
+lab:                      "RDU"
+
+netelem1:
+  name:                     "bui-flo-1073"
+  ip:                       "10.69.61.71"
+  port:                     "22"
+  mgmt_vlan:                "mgmt"
+  username:                 "rwa"
+  password:                 "Aerohive123"
+  connection_method:        "ssh"
+  cli_type:                 "VOSS"
+  make:                     "VOSS"
+  hostname:                 "bui-flo-1073"
+  serial:                   "2041G-01073"
+  console_ip:               "10.69.1.4"
+  console_port:             "2020"
+  template:                 "FabricEngine_5420F_8W_16P-4XE-default-template"
+  mac:                      "40882FE39400"
+  host_mac:                 "40-88-2F-E3-94-00"
+  image_family:             "summit_arm"
+  platform:                 "5420F-8W-16P-4XE-FabricEngine"
+  model:                    "Fabric Engine 5420F-8W-16P-4XE"
+  snmp_version:             "v2c"
+  snmp_community_name:      "extreme123"
+  snmp_user_name:           "user_md5_des"
+  snmp_auth_protocol:       "md5"
+  snmp_auth_password:       "extreme123"
+  snmp_privacy_protocol:    "des"
+  snmp_privacy_password:    "extreme123"
+  tgen:
+    port_a:
+      ifname: &netelem2_tgen_port_a_ifname "1/7"
+      intnet: "link435"
+    port_b:
+      ifname: &netelem2_tgen_port_b_ifname "1/9"
+      intnet: "link436"
+    port_c:
+      ifname: &netelem2_tgen_port_c_ifname "1/10"
+      intnet: "link437"
+    port_d:
+      ifname: &netelem2_tgen_port_d_ifname "1/8"
+      intnet: "link438"
+      
+tgen1:
+  name:                     &tgen1_name "JETS"
+  vendor:                   "jets"
+  chassis_type:             "jets"
+  software:                 "N/A"
+  ip:                       "10.69.61.2"
+  vm_ip:                    "N/A"
+  username:                 "root"
+  password:                 "PASprt86"
+  ssh_port:                 "22"
+  vm_port:                  "22"
+  cli_type:                 "MU-LINUX"
+  dynamic_deployment:       "False"
+  vm_location:
+
+tgen_ports:
+  netelem1:
+    port_a: &tgen_ports_netelem1_port_a
+      tgen_name: *tgen1_name
+      ifname:             "eth5"
+      intnet:             "link435"
+    port_b: &tgen_ports_netelem1_port_b
+      tgen_name: *tgen1_name
+      ifname:             "eth6"
+      intnet:             "link436"
+    port_c: &tgen_ports_netelem1_port_c
+      tgen_name: *tgen1_name
+      ifname:             "eth7"
+      intnet:             "link437"
+    port_d: &tgen_ports_netelem1_port_d
+      tgen_name: *tgen1_name
+      ifname:             "eth8"
+      intnet:             "link438"

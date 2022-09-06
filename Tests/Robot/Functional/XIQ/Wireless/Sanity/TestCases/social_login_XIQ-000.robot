@@ -20,30 +20,11 @@
 # Execution Command:
 # ------------------
 # robot  -v AIO_IP:$AIO_IP -v DEVICE:AP630 -v TOPO:qa1_r2 social_login.robot
-
-
 *** Variables ***
 ${cmd_clear_client_mac}          clear auth station mac ${mu1.wifi_mac}
 ${cmd_show_station}              show station
 ${SOCIAL_WRONG_PASSWORD}         Symbol@12345
-${NW_POLICY_NAME1}               automation_policy_fb
-${NW_POLICY_NAME2}               automation_policy_google
-${NW_POLICY_NAME3}               automation_policy_linkedin
-${NW_POLICY_NAME4}               automation_social_policy
-${NW_POLICY_SSID1}               automation_policy_fb
-${NW_POLICY_SSID2}               automation_policy_google
-${NW_POLICY_SSID3}               automation_policy_linkedin
-${NW_POLICY_SSID4}               test_social_login4
-${NP_AUTHLOG_SSID}               social_login_authlogs
-${CWP_NAME_FACEBOOK}             cloudcwpsocialfacebook
-${CWP_NAME_GOOGLE}               cloudcwpsocialgoogle
-${CWP_NAME_LINKEDIN}             cloudcwpsociallinkedin
-${CWP_NAME_FACEBOOK1}            cloudcwpsocialfacebook4
 ${INTERNET_PAGE_TITLE}           CNN International - Breaking News, US News, World News and Video
-${NW_POLICY_NAME5}               social_restrict_access
-${NW_POLICY_SSID5}               social_restrict_access
-${NW_POLICY_NAME6}               cache_duration_max_limit
-${NW_POLICY_SSID6}               cache_duration_max_limit
 ${PAGE_TITLE}                    End-to-End Cloud Driven Networking Solutions - Extreme Networks
 ${AUTH_STATUS_ACCEPT}            auth-logs-accept
 ${AUTH_TYPE_FACEBOOK}            facebook
@@ -69,8 +50,9 @@ Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
+# 2022-08-31 Move variables to resources file, so they can be randomized for unique execution
+Variables    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/social_login_config.py
 
-Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/social_login_config.robot
 Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/test_email_ids.robot
 
 Library	        Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
@@ -103,19 +85,21 @@ Pre Condition
 
     ${DELETE_CWP_STATUS}=           Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}
     should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
-
-    [Teardown]   run keywords       logout user
-    ...                             quit browser
+    
+    # 2022-08-31 new browser library removes need to logout and back in to keep variables in scope. Trial.  Remove if no issues are seen
+    #[Teardown]   run keywords       logout user
+    #...                             quit browser
 
 Test Suite Clean Up
     [Documentation]    delete created network policies, captive web portals,ssid
 
     [Tags]      production      cleanup
-    ${result}=    Login User       ${tenant_username}     ${tenant_password}
+    # 2022-08-31 new browser library removes need to logout and back in to keep variables in scope. Trial.  Remove if no issues are seen
+    #${result}=    Login User       ${tenant_username}     ${tenant_password}
     Update Network Policy To AP    policy_name=default_network_policy    ap_serial=${ap1.serial}
-    Delete Network Polices         ${NW_POLICY_NAME1}    ${NW_POLICY_NAME2}    ${NW_POLICY_NAME3}     ${NW_POLICY_NAME4}  ${NW_POLICY_NAME5}   ${NW_POLICY_NAME6}
-    Delete ssids                   ${NW_POLICY_SSID1}    ${NW_POLICY_SSID2}     ${NW_POLICY_SSID4}    ${NW_POLICY_SSID3}   ${NP_AUTHLOG_SSID}  ${NW_POLICY_SSID5}
-    Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}  ${CWP_NAME_GOOGLE}   ${CWP_NAME_LINKEDIN}   ${CWP_NAME_FACEBOOK1}
+    Delete Network Polices         ${NW_POLICY_NAME1}
+    Delete ssids                   ${NW_POLICY_SSID1}
+    Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}
     Logout User
     Quit Browser
 
@@ -140,9 +124,9 @@ Test Case Level Cleanup
 
     ${DELETE_CWP_STATUS}=           Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}
     should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
-
-    [Teardown]   run keywords       logout user
-    ...                             quit browser
+    # 2022-08-31 new browser library removes need to logout and back in to keep variables in scope. Trial.  Remove if no issues are seen
+    #[Teardown]   run keywords       logout user
+    #...                             quit browser
      Remote_Server.Disconnect WiFi
 
 *** Test Cases ***
@@ -152,8 +136,9 @@ TCCS-11614: Social login with facebook
 
     [Tags]            production    tccs_11614
 
-    ${LOGIN_STATUS}=                        Login User          ${tenant_username}      ${tenant_password}
-    should be equal as integers             ${LOGIN_STATUS}               1
+    # 2022-08-31 new browser library removes need to logout and back in to keep variables in scope. Trial.  Remove if no issues are seen
+    #${LOGIN_STATUS}=                        Login User          ${tenant_username}      ${tenant_password}
+    #should be equal as integers             ${LOGIN_STATUS}               1
 
     ${CREATE_NW_POLICY_STATUS}=             Create Network Policy     ${NW_POLICY_NAME1}    &{OPEN_NW_1}
     should be equal as integers             ${CREATE_NW_POLICY_STATUS}               1
@@ -161,13 +146,17 @@ TCCS-11614: Social login with facebook
     ${UPDATE_NW_POLICY_STATUS}=             Update Network Policy To AP   ${NW_POLICY_NAME1}     ap_serial=${ap1.serial}
     should be equal as integers             ${UPDATE_NW_POLICY_STATUS}               1
 
-    Log to Console      Sleep for ${config_push_wait}
-    sleep                         ${config_push_wait}
+    Log to Console      Sleep for 60 seconds after push
+    sleep                         60
 
     Remote_Server.Connect Open Network    ${NW_POLICY_SSID1}
 
     Log to Console      Sleep for ${client_connect_wait}
     sleep                         ${client_connect_wait}
+
+    # Internet should attempt to go out the wifi. populate arp entries and just make everything run smooother.
+    # Pinging the AP IP, which should be on the same subnet as the MU wifi, would accomplish similar goals.
+    Remote_Server.Ping Check In Background     www.facebook.com      30
 
     open cp browser    ${mu1.ip}
     Log to Console      Sleep for ${cp_page_open_wait}

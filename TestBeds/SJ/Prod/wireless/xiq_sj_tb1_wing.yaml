@@ -18,4 +18,3 @@ wing1:
   console_port:             4002
   country:                  United Kingdom
   make:                     Controllers
-  cli_type:                 "WING-AP"
