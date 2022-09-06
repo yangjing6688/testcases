@@ -16,3 +16,7 @@
 /Tests/Robot/NonProduction/XIQ/Wired/   @extremenetworks/xiq-wired-it
 /Tests/Pytest/NonProduction/XIQ/Wired/  @extremenetworks/xiq-wired-it
 /Tests/Pytest/Functional/XIQ/Wired/     @extremenetworks/xiq-wired-it
+
+# XIQ Cloud directories
+/TestBeds/BANGALORE/Prod                @extremenetworks/autoiq-framework @shreenbanu
+/Environments/XIQ-Mainline-Sanity       @extremenetworks/autoiq-framework @shreenbanu @pdungdo

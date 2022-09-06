@@ -15,5 +15,4 @@ wing1:
   port:                     22
   country:                  United Kingdom
   make:                     Controllers
-  cli_type:                 "WING-AP"
   connection_method:        "ssh"
