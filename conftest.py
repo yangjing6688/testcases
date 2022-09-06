@@ -1092,6 +1092,17 @@ def nodes(testbed):
     return list(filter(lambda d: d is not None, [getattr(testbed, f"dut{i}", None) for i in range(1, 5)]))
 
 
+def generate_policy_config(duts):
+    dut_config = defaultdict(lambda: {})
+    pool = list(string.ascii_letters) + list(string.digits)
+
+    for dut in duts:
+        dut_config[dut.name]["policy_name"] = f"np_{''.join(random.sample(pool, k=7))}"
+        dut_config[dut.name]['template_name'] = f"template_{''.join(random.sample(pool, k=7))}"
+        dut_config[dut.name]['info'] = dut
+    return dut_config
+
+
 @pytest.fixture(scope="session")
 def onboard(request):
 
@@ -1125,13 +1136,7 @@ def onboard(request):
     check_duts_are_reachable(dut_list)
     configure_iq_agent(dut_list)
     
-    dut_config = defaultdict(lambda: {})
-    pool = list(string.ascii_letters) + list(string.digits)
-    
-    for dut in dut_list:
-        dut_config[dut.name]["policy_name"] = f"np_{''.join(random.sample(pool, k=7))}"
-        dut_config[dut.name]['template_name'] = f"template_{''.join(random.sample(pool, k=7))}"
-        dut_config[dut.name]['info'] = dut
+    dut_config = generate_policy_config(dut_list)
 
     try:
         
@@ -1140,8 +1145,9 @@ def onboard(request):
                 password=loaded_config['tenant_password'],
                 url=loaded_config['test_url']) as xiq:
 
-            change_device_management_settings(
-                xiq, option="disable", platform=dut.cli_type.upper())
+            if any(node.cli_type.upper() == "EXOS" for node in standalone_nodes + stack_nodes):
+                change_device_management_settings(
+                    xiq, option="disable", platform="EXOS")
             
             cleanup(xiq=xiq, duts=dut_list)
             create_location(xiq, onboarding_location)
@@ -1152,7 +1158,6 @@ def onboard(request):
                     location=onboarding_location)
 
             check_devices_are_onboarded(xiq, dut_list)
-            
             configure_network_policies(xiq, dut_config)
 
         yield dut_list, dut_config
