@@ -565,37 +565,47 @@ def patch_https_connection_pool(**constructor_kwargs):
     poolmanager.pool_classes_by_scheme['https'] = MyHTTPSConnectionPool
 
 
-@contextmanager
-def init_xiq_libraries_and_login(
-        username, password, capture_version=False, code="default", url="default", incognito_mode="False"):
-    
-    xiq = XiqLibrary()
-    time.sleep(5)
+@pytest.fixture(scope="session")
+def login_xiq(loaded_config, utils):
 
-    try:
-        assert xiq.login.login_user(
-            username, password, capture_version=capture_version, code=code, url=url, incognito_mode=incognito_mode)
-        yield xiq
-    except Exception as exc:
-        print(repr(exc))
-        from extauto.common.CloudDriver import CloudDriver
-        CloudDriver().close_browser()
-        raise exc
-    finally:
+    @contextmanager
+    def func(username=loaded_config['tenant_username'],
+             password=loaded_config['tenant_password'],
+             url=loaded_config['test_url'],
+             capture_version=False, code="default", incognito_mode="False"):
+
+        xiq = XiqLibrary()
+        time.sleep(5)
+
         try:
-            xiq.login.logout_user()
-            xiq.login.quit_browser()
-        except:
-            pass
+            assert xiq.login.login_user(
+                username, password, capture_version=capture_version, code=code, url=url, incognito_mode=incognito_mode)
+            yield xiq
+        except Exception as exc:
+            print(repr(exc))
+            from extauto.common.CloudDriver import CloudDriver
+            CloudDriver().close_browser()
+            raise exc
+        finally:
+            try:
+                xiq.login.logout_user()
+                xiq.login.quit_browser()
+            except:
+                pass
+    return func
 
 
-@contextmanager
-def enter_switch_cli(dut, network_manager, close_connection):
-    try:
-        network_manager.connect_to_network_element_name(dut.name)
-        yield
-    finally:
-        close_connection(dut)
+@pytest.fixture(scope="session")
+def enter_switch_cli(network_manager, close_connection):
+
+    @contextmanager
+    def func(dut):
+        try:
+            network_manager.connect_to_network_element_name(dut.name)
+            yield
+        finally:
+            close_connection(dut)
+    return func
 
 
 def change_device_management_settings(xiq, option, platform, retries=5, step=5):
@@ -632,7 +642,7 @@ def generate_template_for_given_model(platform, model, slots=""):
 
         model_list = []
         sw_model = ""
-        model_units=None
+        model_units = None
 
         for eachslot in slots:
             if "SwitchEngine" in eachslot:
@@ -726,12 +736,12 @@ def auto_actions():
 
 
 @pytest.fixture(scope="session")
-def configure_iq_agent(dev_cmd, loaded_config, network_manager, close_connection):
+def configure_iq_agent(dev_cmd, loaded_config, enter_switch_cli):
     
     def func(duts):
         
         def worker(dut):
-            with enter_switch_cli(dut, network_manager, close_connection):
+            with enter_switch_cli(dut):
                 if dut.cli_type.upper() == "EXOS":
                     dev_cmd.send_cmd_verify_output(
                         dut.name, 'show process iqagent', 'Ready', max_wait=30, interval=10)
@@ -857,7 +867,7 @@ def check_duts_are_reachable(utils):
         if any(re.search("The chosen dut is not reachable", message) for message in results):
             pytest.fail(f"Not all the duts are reachable:\n{results}")
         else:
-            utils.print_info("All the duts are reachable")
+            utils.print_info("All the duts are reachable!")
     return func
 
 
@@ -903,7 +913,7 @@ def dev_cmd():
 
 
 @pytest.fixture(scope="session")
-def check_device_is_onboarded(utils):
+def check_devices_are_onboarded(utils):
     def func(xiq, dut_list, timeout=180):
         
         xiq.xflowscommonDevices.column_picker_select("MAC Address")
@@ -1084,16 +1094,17 @@ def nodes(testbed):
 
 @pytest.fixture(scope="session")
 def onboard(request):
-    
+
     onboarding_location = request.getfixturevalue("onboarding_location")
     configure_iq_agent = request.getfixturevalue("configure_iq_agent")
-    check_device_is_onboarded = request.getfixturevalue("check_device_is_onboarded")
+    check_devices_are_onboarded = request.getfixturevalue("check_devices_are_onboarded")
     loaded_config = request.getfixturevalue("loaded_config")
     check_duts_are_reachable = request.getfixturevalue("check_duts_are_reachable")
     utils = request.getfixturevalue("utils")
     close_connection = request.getfixturevalue("close_connection")
     configure_network_policies = request.getfixturevalue("configure_network_policies")
     dut_stack_model_update = request.getfixturevalue("dut_stack_model_update")
+    login_xiq = request.getfixturevalue("login_xiq")
     nodes = request.getfixturevalue("nodes")
     standalone_nodes = [node for node in nodes if node.get("platform", "").upper() != "STACK"]
     stack_nodes = [node for node in nodes if node not in standalone_nodes]
@@ -1124,7 +1135,7 @@ def onboard(request):
 
     try:
         
-        with init_xiq_libraries_and_login(
+        with login_xiq(
                 username=loaded_config['tenant_username'],
                 password=loaded_config['tenant_password'],
                 url=loaded_config['test_url']) as xiq:
@@ -1140,14 +1151,14 @@ def onboard(request):
                     dut.serial, device_os=dut.cli_type,
                     location=onboarding_location)
 
-            check_device_is_onboarded(xiq, dut_list)
+            check_devices_are_onboarded(xiq, dut_list)
             
             configure_network_policies(xiq, dut_config)
 
         yield dut_list, dut_config
 
     finally:
-        with init_xiq_libraries_and_login(
+        with login_xiq(
                 username=loaded_config['tenant_username'],
                 password=loaded_config['tenant_password'],
                 url=loaded_config['test_url']) as xiq:
@@ -1207,15 +1218,12 @@ def dut_list(request):
  
  
 @pytest.fixture(scope="session")
-def dut_ports(request):
+def dut_ports(enter_switch_cli, dev_cmd, dut_list):
     
-    dut_list, _ = request.getfixturevalue("onboard")
-    dev_cmd = request.getfixturevalue("dev_cmd")
-
     ports = {}
     
     def worker(dut):
-        with enter_switch_cli(dut, network_manager, close_connection):
+        with enter_switch_cli(dut):
             if dut.cli_type.upper() == "VOSS":
                 dev_cmd.send_cmd(
                     dut.name, 'enable', max_wait=10, interval=2)
@@ -1244,10 +1252,7 @@ def dut_ports(request):
                     p = re.compile(r'^\d+', re.M)
                     match_port = re.findall(p, output)
 
-                if is_stack:
-                    p_notPresent = re.compile(r'^\d+:\d+.*NotPresent.*$', re.M)
-                else:
-                    p_notPresent = re.compile(r'^\d+.*NotPresent.*$', re.M)
+                p_notPresent = re.compile(r'^\d+:\d+.*NotPresent.*$', re.M) if is_stack else re.compile(r'^\d+.*NotPresent.*$', re.M)
                 parsed_info = re.findall(p_notPresent, output)
 
                 for port in parsed_info:
@@ -1268,23 +1273,29 @@ def dut_ports(request):
 
 
 @pytest.fixture(scope="session")
-def bounce_iqagent(dev_cmd, network_manager, close_connection):
+def bounce_iqagent(dev_cmd, enter_switch_cli):
     
     def func(dut, xiq=None, wait=False):
         
-        with enter_switch_cli(dut, network_manager, close_connection):
+        with enter_switch_cli(dut):
             if dut.cli_type.upper() == "EXOS":
-                dev_cmd.send_cmd(dut.name, 'disable iqagent', max_wait=10, interval=2,
-                                                    confirmation_phrases='Do you want to continue?',
-                                                    confirmation_args='Yes')
-                dev_cmd.send_cmd(dut.name, 'enable iqagent', max_wait=10, interval=2)
+                dev_cmd.send_cmd(
+                    dut.name, 'disable iqagent', max_wait=10, interval=2,
+                    confirmation_phrases='Do you want to continue?',
+                    confirmation_args='Yes')
+                dev_cmd.send_cmd(
+                    dut.name, 'enable iqagent', max_wait=10, interval=2)
         
             elif dut.cli_type.upper() == "VOSS":
                 dev_cmd.send_cmd(dut.name, 'enable', max_wait=10, interval=2)
-                dev_cmd.send_cmd(dut.name, 'configure terminal', max_wait=10, interval=2)
-                dev_cmd.send_cmd(dut.name, 'application', max_wait=10, interval=2)
-                dev_cmd.send_cmd(dut.name, 'no iqagent enable', max_wait=10, interval=2)
-                dev_cmd.send_cmd(dut.name, 'iqagent enable', max_wait=10, interval=2)
+                dev_cmd.send_cmd(
+                    dut.name, 'configure terminal', max_wait=10, interval=2)
+                dev_cmd.send_cmd(
+                    dut.name, 'application', max_wait=10, interval=2)
+                dev_cmd.send_cmd(
+                    dut.name, 'no iqagent enable', max_wait=10, interval=2)
+                dev_cmd.send_cmd(
+                    dut.name, 'iqagent enable', max_wait=10, interval=2)
         if wait is True and xiq is not None:
             xiq.xflowscommonDevices.wait_until_device_online(dut.mac)
     return func
