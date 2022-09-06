@@ -128,7 +128,6 @@ new_file_loc_map = {
     "rdu_vm_pod5_4node.yaml": "TestBeds/RDU/Prod/digital_twin",
     "rdu_vm_pod6_4node.yaml": "TestBeds/RDU/Prod/digital_twin",
     "rdu_vm_pod7_4node.yaml": "TestBeds/RDU/Prod/digital_twin",
-    "rdu_5420_rack1_2node.yaml": "TestBeds/RDU/Prod/wired",
     "rdu_x460g2_pod1_3node.yaml": "TestBeds/RDU/Prod/wired",
     "rdu_x460g2_pod2_3node.yaml": "TestBeds/RDU/Prod/wired",
     "rdu_x460g2_pod3_3node.yaml": "TestBeds/RDU/Prod/wired",

@@ -24,11 +24,13 @@ Library     xiq/flows/globalsettings/GlobalSetting.py
 Library     xiq/flows/manage/Device360.py
 Library     xiq/flows/manage/Devices.py
 Library     common/TestFlow.py
+Library     ExtremeAutomation/Keywords/Utils/NetworkUtils.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
+Variables    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/voss_config.py
 
 Force Tags   testbed_1_node
 
@@ -47,8 +49,8 @@ ${DUT_SERIAL}               ${netelem1.serial}
 ${DUT_NAME}                 ${netelem1.name}
 ${DUT_MODEL}                ${netelem1.model}
 ${DUT_MAC}                  ${netelem1.mac}
-${DUT_IP}           ${netelem1.ip}
-${DUT_PORT}         ${netelem1.port}
+${DUT_IP}                   ${netelem1.ip}
+${DUT_PORT}                 ${netelem1.port}
 ${DUT_USERNAME}             ${netelem1.username}
 ${DUT_PASSWORD}             ${netelem1.password}
 ${DUT_PLATFORM}             ${netelem1.platform}
@@ -61,9 +63,10 @@ ${STATUS_AFTER_UPDATE}      green
 ${LOCATION}                 auto_location_01, Santa Clara, building_02, floor_04
 ${LOCATION_DISPLAY}         auto_location_01 >> Santa Clara >> building_02 >> floor_04
 ${FLOOR}                    floor_04
-${POLICY_NAME}              VOSS_POLICY_AUTO
-${SSID_NAME}                VOSS_SSID_AUTO
-${TEMPLATE_NAME}            VOSS_TEMPLATE_AUTO
+# Dynamic values from Variables resources/voss_config.py file in settings
+#${POLICY_NAME}              VOSS_POLICY_AUTO  - now VOSS_POLICY_<random 1-999>
+#${SSID_NAME}                VOSS_SSID_AUTO
+#${TEMPLATE_NAME}            VOSS_TEMPLATE_AUTO
 
 
 *** Test Cases ***
@@ -195,13 +198,14 @@ TCCS-7299_Step8: Enable SSH on VOSS Switch and Confirm SSH Session Can Be Establ
     Should not be Empty     ${ip}
     Should not be Empty     ${port}
 
-    ${ssh_spawn}=                       Open pxssh Spawn    ${ip}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${port}
+    ${ssh_spawn}=                       Open Spawn   ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}
+    ...                                              ${DUT_PASSWORD}  VOSS  ${DUT_CONNECTION_METHOD}
     Should Not Be Equal As strings      '${ssh_spawn}'      '-1'
 
-    ${cmd_result}=                      Send pxssh  ${ssh_spawn}  show sys-info | include Serial
+    ${cmd_result}=                      Send   ${ssh_spawn}  show sys-info | include Serial
     Log To Console                      SSH Command Result Is ${cmd_result}
 
-    ${close_result}=                    Close pxssh Spawn  ${ssh_spawn}
+    ${close_result}=                    Close Spawn  ${ssh_spawn}
     Should Not Be Equal As strings      '${close_result}'    '-1'
 
     [Teardown]  Disable SSH and Close Device360 Window
@@ -227,6 +231,7 @@ Log Into XIQ and Set Up Test
     ${SW_SPAWN}=                        Open Spawn          ${netelem1.ip}       ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
 
     ${DOWNGRADE_IQAGENT}=               Downgrade iqagent   ${netelem1.ip}       ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
+    Should Be Equal As Integers         ${DOWNGRADE_IQAGENT}       1 
 
     Close Spawn     ${SW_SPAWN}
 
@@ -234,6 +239,7 @@ Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
 
     Clean Up Test Device and Confirm Success    ${DUT_SERIAL}
+    sleep                                       15
     Clean Up Open Policy For Switch             ${POLICY_NAME}  ${SSID_NAME}  ${TEMPLATE_NAME}
     Log Out of XIQ and Confirm Success
     [Teardown]   run keywords       quit browser
@@ -322,7 +328,7 @@ Reset VOSS Switch to Factory Defaults
     ${reset_results}=                   Send  ${spawn}  reset     confirmation_phrases=Are you sure you want to reset the switch (y/n) ?   confirmation_arg=y
     Log To Console                      Command results are ${remove_results}
 
-    sleep                   ${switch_reboot_wait}
+    wait for pingable       ${ip}   300     50   30    VOSS Switch has been reset to defaults   10
 
     [Teardown]              Close Spawn  ${spawn}
 

@@ -147,7 +147,7 @@ def update_qtest():
                     except Exception as e:
                         # endpoint returned non-json response or didn't contain status key in dict
                         # Since this is unhandled it exits with a 1 code
-                        raise Exception(f'Bad response from endpoint: {r.text}') from e
+                        print(f'Bad response from endpoint: {r.text} \nError: {e}')
 
                 print() # Add blank line between testcases
         print() # Add blank line between files

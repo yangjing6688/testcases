@@ -1,4 +1,23 @@
 *** Variables ***
+${NW_POLICY_NAME1}                     policy_fb_auto
+${NW_POLICY_NAME2}                     policy_google_auto
+${NW_POLICY_NAME3}                     policy_linkedin_auto
+${NW_POLICY_NAME4}                     social_policy_auto
+${NW_POLICY_SSID1}                     policy_fb_auto
+${NW_POLICY_SSID2}                     policy_google_auto
+${NW_POLICY_SSID3}                     policy_linkedin_auto
+${NW_POLICY_SSID4}                     test_social_login4_auto
+${NP_AUTHLOG_SSID}                     social_login_authlogs_auto
+${CWP_NAME_FACEBOOK}                   cloudcwpsocialfacebook_auto
+${CWP_NAME_GOOGLE}                     cloudcwpsocialgoogle_auto
+${CWP_NAME_LINKEDIN}                   cloudcwpsociallinkedin_auto
+${CWP_NAME_FACEBOOK1}                  cloudcwpsocialfacebook4_auto
+${NW_POLICY_NAME5}                     social_restrict_access_auto
+${NW_POLICY_SSID5}                     social_restrict_access_auto
+${NW_POLICY_NAME6}                     cache_duration_max_limit_auto
+${NW_POLICY_SSID6}                     cache_duration_max_limit_auto
+
+
 ################# Open Authentication network Profile for cloud captive web portal #####################################
 &{CONFIG_PUSH_OPEN_NW_01}    ssid_name=Openauthsocial                 network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}   auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
 &{OPEN_NW_1}                 ssid_name=automation_policy_fb           network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}   auth_profile=&{OPEN_AUTHENTICATION_PROFILE1}

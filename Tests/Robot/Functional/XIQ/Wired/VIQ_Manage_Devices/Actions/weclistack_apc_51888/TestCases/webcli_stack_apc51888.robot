@@ -11,7 +11,6 @@
 *** Variables ***
 
 ${IQAGENT}                  ${CAPWAP_URL}
-${DUT_LOCATION}             Salem,North_mdqsi,wsxmg_floor
 ${delete_vlan_flag}         False
 *** Settings ***
 Resource    Tests/Robot/Libraries/XIQ/Wired/WiredCommon.robot
@@ -30,11 +29,16 @@ TCXM-15265: Verify that WEB CLI is available for EXOS Stack
     FOR		${serialnumber}     IN    @{result}
     		Delete Device       device_serial=${serialnumber}
     END
-
+ 
+   
     create_first_organization       Extreme       broadway        new york     Romania
 
-    delete_location_building_floor              Salem      North_mdqsi     wsxmg_floor
-    create_location_building_floor              Salem      North_mdqsi     wsxmg_floor
+    delete_location_building_floor           ${location}         ${building}     ${floor}
+
+    create_location_building_floor           ${location}         ${building}     ${floor}
+    
+    ${DUT_LOCATION}      Set Variable       ${location},${building},${floor}
+    
     log to console          os  ${netelem1.cli_type}      platform ${netelem1.platform}
     run keyword if  """${netelem1.cli_type}"""== "exos" and """${netelem1.platform}""" != "Stack"
     ...  quick_onboarding_cloud_manual     ${netelem1.serial}    exos      ${DUT_LOCATION}
@@ -134,6 +138,13 @@ Pre Condition
     run keyword if  """${netelem1.platform}""" == "Stack"        Log Into XIQ and Set Up Test
     ...  ELSE   run keywords  log to console  The testbed runs on VOSS or EXOS Standalone where the feature not supported on VOSS/EXOS. Hence skipping all testcases
     ...  AND    skip
+    ${randomstring}     Generate Random String
+    ${location}=        Set variable             ${netelem1.mac}_${randomstring}
+    ${building}=        Set variable             building_${randomstring}
+    ${floor}=           Set variable               floor_${randomstring}
+    set global variable     ${location}
+    set global variable     ${building}
+    set global variable     ${floor}
 Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ and sets up the elements necessary to complete this test suite
 
@@ -158,7 +169,7 @@ Tear Down Test and Close Session
     FOR		${serialnumber}     IN    @{result}
     		Delete Device       device_serial=${serialnumber}
     END
-    delete_location_building_floor              Salem      North_mdqsi     wsxmg_floor
+    delete_location_building_floor              ${location}         ${building}     ${floor}
     clear vlans
     Log Out of XIQ and Confirm Success
     Quit Browser
