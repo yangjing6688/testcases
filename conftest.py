@@ -565,7 +565,7 @@ def patch_https_connection_pool(**constructor_kwargs):
 
 
 @pytest.fixture(scope="session")
-def login_xiq(loaded_config, utils):
+def login_xiq(loaded_config, utils, cloud_driver):
 
     @contextmanager
     def func(username=loaded_config['tenant_username'],
@@ -574,16 +574,14 @@ def login_xiq(loaded_config, utils):
              capture_version=False, code="default", incognito_mode="False"):
 
         xiq = XiqLibrary()
-        time.sleep(5)
 
         try:
             assert xiq.login.login_user(
                 username, password, capture_version=capture_version, code=code, url=url, incognito_mode=incognito_mode)
             yield xiq
         except Exception as exc:
-            print(repr(exc))
-            from extauto.common.CloudDriver import CloudDriver
-            CloudDriver().close_browser()
+            utils.print_info(repr(exc))
+            cloud_driver.close_browser()
             raise exc
         finally:
             try:
@@ -608,25 +606,23 @@ def enter_switch_cli(network_manager, close_connection, dev_cmd):
     return func
 
 
-def change_device_management_settings(xiq, option, platform, retries=5, step=5):
+@pytest.fixture(scope="session")
+def change_device_management_settings(utils):
     
-    for _ in range(retries):
-        try:
-            xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings(
-                option=option, platform=platform)
-        except Exception as exc:
-            print(repr(exc))
-            time.sleep(step)
+    def func(xiq, option, platform, retries=5, step=5):
+        for _ in range(retries):
+            try:
+                xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings(
+                    option=option, platform=platform)
+            except Exception as exc:
+                utils.print_info(repr(exc))
+                utils.wait_till(timeout=step)
+            else:
+                xiq.xflowscommonNavigator.navigate_to_devices()
+                break
         else:
-            xiq.xflowscommonNavigator.navigate_to_devices()
-            break
-    else:
-        pytest.fail("Failed to change exos device management settings")
-
-
-def deactivate_xiq_libraries_and_logout(xiq):
-    xiq.login.logout_user()
-    xiq.login.quit_browser()
+            pytest.fail("Failed to change exos device management settings")
+    return func
 
 
 def create_location(xiq, location):
@@ -732,19 +728,19 @@ def utils():
 
 
 @pytest.fixture(scope="session")
-def browser():
+def cloud_driver():
     from extauto.common.CloudDriver import CloudDriver
     return CloudDriver()
 
 
 @pytest.fixture(scope="session")
 def auto_actions():
-    from common.AutoActions import AutoActions
+    from extauto.common.AutoActions import AutoActions
     return AutoActions()
 
 
 @pytest.fixture(scope="session")
-def configure_iq_agent(loaded_config, enter_switch_cli, virtual_routers):
+def configure_iq_agent(loaded_config, enter_switch_cli, virtual_routers, utils):
     
     def func(duts):
         
@@ -761,7 +757,7 @@ def configure_iq_agent(loaded_config, enter_switch_cli, virtual_routers):
                     if len(vr_name := virtual_routers[dut.name]) > 0:
                         dev_cmd.send_cmd(dut.name, f'configure iqagent server vr {vr_name}', max_wait=10, interval=2)
                     else:    
-                        print("Did not find Virtual Router information")
+                        utils.print_info("Did not find Virtual Router information")
                 
                     dev_cmd.send_cmd(
                         dut.name, 'configure iqagent server ipaddress ' + loaded_config['sw_connection_host'],
@@ -914,6 +910,13 @@ def loaded_config():
 
 
 @pytest.fixture(scope="session")
+def update_test_name(loaded_config):
+    def func(test_name):
+        loaded_config['${TEST_NAME}'] = test_name
+    return func
+
+
+@pytest.fixture(scope="session")
 def dev_cmd():
     from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary
     defaultLibrary = DefaultLibrary()
@@ -969,25 +972,30 @@ def check_devices_are_onboarded(utils):
     return func
 
 
-def cleanup(xiq, duts=[], onboarding_location='', network_policies=[], templates_switch=[], slots=1):
+@pytest.fixture(scope="session")
+def cleanup(utils):
 
-    try:
-        for dut in duts:
+    def func(xiq, duts=[], onboarding_location='', network_policies=[], templates_switch=[], slots=1):
+        try:
             xiq.xflowscommonDevices._goto_devices()
-            xiq.xflowscommonDevices.delete_device(
-                device_mac=dut.mac)
-        if onboarding_location:
-            xiq.xflowsmanageLocation.delete_location_building_floor(
-                *onboarding_location.split(","))
-        for network_policy in network_policies:
-            xiq.xflowsconfigureNetworkPolicy.delete_network_policy(
-                network_policy)
-        for template_switch in templates_switch:
-            for _ in range(slots):
-                xiq.xflowsconfigureCommonObjects.delete_switch_template(
-                    template_switch)
-    except Exception as exc:
-        print(repr(exc))
+            
+            for dut in duts:
+                xiq.xflowscommonDevices._goto_devices()
+                xiq.xflowscommonDevices.delete_device(
+                    device_mac=dut.mac)
+            if onboarding_location:
+                xiq.xflowsmanageLocation.delete_location_building_floor(
+                    *onboarding_location.split(","))
+            for network_policy in network_policies:
+                xiq.xflowsconfigureNetworkPolicy.delete_network_policy(
+                    network_policy)
+            for template_switch in templates_switch:
+                for _ in range(slots):
+                    xiq.xflowsconfigureCommonObjects.delete_switch_template(
+                        template_switch)
+        except Exception as exc:
+            utils.print_info(repr(exc))
+    return func
 
 
 @pytest.fixture(scope="session")
@@ -1047,7 +1055,7 @@ def dut_stack_model_update(utils):
                     if slot_keys and 'model' in slot_keys:
                         if slot_keys['model'] is not None:
                             stack_units_model.append(slot_keys['model'])
-                print(f"Switch model list is {stack_units_model}")
+                utils.print_info(f"Switch model list is {stack_units_model}")
 
                 dut.model_units = ""
                 for model in stack_units_model:
@@ -1058,7 +1066,7 @@ def dut_stack_model_update(utils):
                         model_unit += model.replace('_', '-')
                     dut.model_units += model_unit + ","
                 dut.model_units = dut.model_units.strip(",")
-                print(f"Dut model units are {dut.model_units}")
+                utils.print_info(f"Dut model units are {dut.model_units}")
             utils.print_info("Conftest with Stack: ", dut.model_template, " and units: ", dut.model_units)
     return func
 
@@ -1160,7 +1168,9 @@ def onboard(request):
     policy_config = request.getfixturevalue("policy_config")
     standalone_nodes = request.getfixturevalue("standalone_nodes")
     stack_nodes = request.getfixturevalue("stack_nodes")
-    
+    change_device_management_settings = request.getfixturevalue("change_device_management_settings")
+    cleanup = request.getfixturevalue("cleanup")
+
     check_duts_are_reachable(dut_list)
     configure_iq_agent(dut_list)
 
