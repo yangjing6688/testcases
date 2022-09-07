@@ -600,6 +600,7 @@ def enter_switch_cli(network_manager, close_connection, dev_cmd):
     @contextmanager
     def func(dut):
         try:
+            close_connection(dut)
             network_manager.connect_to_network_element_name(dut.name)
             yield dev_cmd
         finally:
@@ -675,39 +676,47 @@ def generate_template_for_given_model(platform, model, slots=""):
 
 
 @pytest.fixture(scope="session")
-def close_connection(network_manager):
+def close_connection(network_manager, utils):
     def func(dut):
         try:
             network_manager.device_collection.remove_device(dut.name)
             network_manager.close_connection_to_network_element(dut.name)
         except Exception as exc:
-            print(exc)
+            utils.print_info(exc)
     return func
 
 
-def get_virtual_router(dev_cmd, dut):
+@pytest.fixture(scope="session")
+def virtual_routers(enter_switch_cli, dut_list, utils):
     
-    result = dev_cmd.send_cmd(dut.name, 'show vlan', max_wait=10, interval=2)
-    output = result[0].cmd_obj.return_text
-    pattern = f'(\w+)(\s+)(\d+)(\s+)({dut.ip})(\s+)(\/.*)(\s+)(\w+)(\s+/)(.*)(VR-\w+)'
-    match = re.search(pattern, output)
+    vrs = {}
+    
+    def worker(dut):
+        with enter_switch_cli(dut) as dev_cmd:
+            try:
+                output = dev_cmd.send_cmd(
+                    dut.name, 'show vlan', max_wait=10, interval=2)[0].return_text
+                pattern = f'(\w+)(\s+)(\d+)(\s+)({dut.ip})(\s+)(\/.*)(\s+)(\w+)(\s+/)(.*)(VR-\w+)'
+                match = re.search(pattern, output)
 
-    if match:
-        print(f"Mgmt Vlan Name : {match.group(1)}")
-        print(f"Vlan ID        : {match.group(3)}")
-        print(f"Mgmt IPaddress : {match.group(5)}")
-        print(f"Active ports   : {match.group(9)}")
-        print(f"Total ports    : {match.group(11)}")
-        print(f"Virtual router : {match.group(12)}")
-
-        if int(match.group(9)) > 0:
-            return match.group(12)
-        else:
-            print(f"There is no active port in the mgmt vlan {match.group(1)}")
-            return -1
-    else:
-        print("Pattern not found, unable to get virtual router info!")
-        return -1
+                assert match, "Pattern not found, unable to get virtual router info!"
+                assert int(match.group(9)) > 0, f"There is no active port in the mgmt vlan {match.group(1)}"
+                
+                vrs[dut.name] = match.group(12)
+            except Exception as exc:
+                utils.print_info(repr(exc))
+                vrs[dut.name] = ""
+            
+    threads = []
+    try:
+        for dut in dut_list:
+            thread = threading.Thread(target=worker, args=(dut, ))
+            threads.append(thread)
+            thread.start()
+    finally:
+        for thread in threads:
+            thread.join()
+    return vrs
 
 
 @pytest.fixture(scope="session")
@@ -735,7 +744,7 @@ def auto_actions():
 
 
 @pytest.fixture(scope="session")
-def configure_iq_agent(loaded_config, enter_switch_cli):
+def configure_iq_agent(loaded_config, enter_switch_cli, virtual_routers):
     
     def func(duts):
         
@@ -749,11 +758,10 @@ def configure_iq_agent(loaded_config, enter_switch_cli):
                         confirmation_phrases='Do you want to continue?', confirmation_args='y')
                     
                     dev_cmd.send_cmd(dut.name, 'configure iqagent server ipaddress none', max_wait=10, interval=2)
-                    vr_name = get_virtual_router(dev_cmd, dut)
-                    if vr_name == -1:
-                        print("Error: Can't extract Virtual Router information")
-                        # return -1
-                    dev_cmd.send_cmd(dut.name, f'configure iqagent server vr {vr_name}', max_wait=10, interval=2)
+                    if len(vr_name := virtual_routers[dut.name]) > 0:
+                        dev_cmd.send_cmd(dut.name, f'configure iqagent server vr {vr_name}', max_wait=10, interval=2)
+                    else:    
+                        print("Did not find Virtual Router information")
                 
                     dev_cmd.send_cmd(
                         dut.name, 'configure iqagent server ipaddress ' + loaded_config['sw_connection_host'],
@@ -782,7 +790,6 @@ def configure_iq_agent(loaded_config, enter_switch_cli):
                     dev_cmd.send_cmd(
                         dut.name, 'application start hiveagent', max_wait=10, interval=2)
                     dev_cmd.send_cmd(dut.name, "exit")
-                time.sleep(10)
         
         threads = []
         try:
@@ -833,16 +840,17 @@ def onboarding_location():
 def check_duts_are_reachable(utils):
     
     results = []
+    from platform import system
     
-    def func(duts, results=results, retries=3):
+    def func(duts, results=results, retries=3, windows=system() == "Windows"):
         def worker(dut):
             
             for _ in range(retries):
                 try:
                     ping_response = subprocess.Popen(
-                        ["ping", "-c 1", dut.ip], stdout=subprocess.PIPE).stdout.read().decode()
+                        ["ping", f"{'-n' if windows else '-c'} 1", dut.ip], stdout=subprocess.PIPE).stdout.read().decode()
                     utils.print_info(ping_response)
-                    if re.search("0% packet loss", ping_response):
+                    if re.search("0% loss" if windows else "0% packet loss" , ping_response):
                         results.append(f"({dut.ip}): Successfully verified that this dut is reachable: {dut}")
                         return
                 except:
@@ -968,12 +976,15 @@ def cleanup(xiq, duts=[], onboarding_location='', network_policies=[], templates
             xiq.xflowscommonDevices.delete_device(
                 device_mac=dut.mac)
         if onboarding_location:
-            xiq.xflowsmanageLocation.delete_location_building_floor(*onboarding_location.split(","))
+            xiq.xflowsmanageLocation.delete_location_building_floor(
+                *onboarding_location.split(","))
         for network_policy in network_policies:
-            xiq.xflowsconfigureNetworkPolicy.delete_network_policy(network_policy)
+            xiq.xflowsconfigureNetworkPolicy.delete_network_policy(
+                network_policy)
         for template_switch in templates_switch:
             for _ in range(slots):
-                xiq.xflowsconfigureCommonObjects.delete_switch_template(template_switch)
+                xiq.xflowsconfigureCommonObjects.delete_switch_template(
+                    template_switch)
     except Exception as exc:
         print(repr(exc))
 
@@ -1088,9 +1099,19 @@ def pytest_collection_modifyitems(session, items):
 
 @pytest.fixture(scope="session")
 def nodes(testbed):
-    return list(filter(lambda d: d is not None, [getattr(testbed, f"dut{i}", None) for i in range(1, 5)]))
+    return list(filter(lambda d: d is not None, [getattr(testbed, f"dut{i}", None) for i in range(1, 10)]))
 
 
+@pytest.fixture(scope="session")
+def standalone_nodes(nodes):
+    return [node for node in nodes if node.get("platform", "").upper() != "STACK"]
+
+
+@pytest.fixture(scope="session")
+def stack_nodes(nodes):
+    return [node for node in nodes if node.get("platform", "").upper() == "STACK"]
+
+    
 @pytest.fixture(scope="session")
 def policy_config(dut_list):
 
@@ -1106,10 +1127,7 @@ def policy_config(dut_list):
 
 
 @pytest.fixture(scope="session")
-def dut_list(dut_stack_model_update, nodes):
-    
-    standalone_nodes = [node for node in nodes if node.get("platform", "").upper() != "STACK"]
-    stack_nodes = [node for node in nodes if node not in standalone_nodes]
+def dut_list(dut_stack_model_update, standalone_nodes, stack_nodes):
     
     duts = []
 
@@ -1137,12 +1155,10 @@ def onboard(request):
     utils = request.getfixturevalue("utils")
     configure_network_policies = request.getfixturevalue("configure_network_policies")
     login_xiq = request.getfixturevalue("login_xiq")
-    nodes = request.getfixturevalue("nodes")
     dut_list = request.getfixturevalue("dut_list")
     policy_config = request.getfixturevalue("policy_config")
-
-    standalone_nodes = [node for node in nodes if node.get("platform", "").upper() != "STACK"]
-    stack_nodes = [node for node in nodes if node not in standalone_nodes]
+    standalone_nodes = request.getfixturevalue("standalone_nodes")
+    stack_nodes = request.getfixturevalue("stack_nodes")
     
     check_duts_are_reachable(dut_list)
     configure_iq_agent(dut_list)
