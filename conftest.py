@@ -1,6 +1,5 @@
 # Built-in imports
 from collections import defaultdict
-from dataclasses import dataclass
 from email.policy import default
 import inspect
 import logging
@@ -596,13 +595,13 @@ def login_xiq(loaded_config, utils):
 
 
 @pytest.fixture(scope="session")
-def enter_switch_cli(network_manager, close_connection):
+def enter_switch_cli(network_manager, close_connection, dev_cmd):
 
     @contextmanager
     def func(dut):
         try:
             network_manager.connect_to_network_element_name(dut.name)
-            yield
+            yield dev_cmd
         finally:
             close_connection(dut)
     return func
@@ -736,12 +735,12 @@ def auto_actions():
 
 
 @pytest.fixture(scope="session")
-def configure_iq_agent(dev_cmd, loaded_config, enter_switch_cli):
+def configure_iq_agent(loaded_config, enter_switch_cli):
     
     def func(duts):
         
         def worker(dut):
-            with enter_switch_cli(dut):
+            with enter_switch_cli(dut) as dev_cmd:
                 if dut.cli_type.upper() == "EXOS":
                     dev_cmd.send_cmd_verify_output(
                         dut.name, 'show process iqagent', 'Ready', max_wait=30, interval=10)
@@ -922,7 +921,6 @@ def check_devices_are_onboarded(utils):
         
         while time.time() - start_time < timeout:
             try:
-                
                 xiq.xflowsmanageDevices.refresh_devices_page()
                 utils.wait_till(timeout=5)
 
@@ -1012,7 +1010,8 @@ def configure_network_policies(utils):
 @pytest.fixture(scope="session")
 def dut_stack_model_update(utils):
     
-    def func(dut, stack_dict):
+    def func(dut):
+        stack_dict = dut.stack
         if ("Series Stack" in dut.model) and (dut.model_units is not None or dut.model_units != ""):
             utils.print_info("Conftest with Stack: ", dut.model, " and units: ", dut.model_units)
         else:
@@ -1092,15 +1091,39 @@ def nodes(testbed):
     return list(filter(lambda d: d is not None, [getattr(testbed, f"dut{i}", None) for i in range(1, 5)]))
 
 
-def generate_policy_config(duts):
+@pytest.fixture(scope="session")
+def policy_config(dut_list):
+
     dut_config = defaultdict(lambda: {})
     pool = list(string.ascii_letters) + list(string.digits)
 
-    for dut in duts:
+    for dut in dut_list:
         dut_config[dut.name]["policy_name"] = f"np_{''.join(random.sample(pool, k=7))}"
         dut_config[dut.name]['template_name'] = f"template_{''.join(random.sample(pool, k=7))}"
         dut_config[dut.name]['info'] = dut
+    
     return dut_config
+
+
+@pytest.fixture(scope="session")
+def dut_list(dut_stack_model_update, nodes):
+    
+    standalone_nodes = [node for node in nodes if node.get("platform", "").upper() != "STACK"]
+    stack_nodes = [node for node in nodes if node not in standalone_nodes]
+    
+    duts = []
+
+    if onboard_two_node_flag:
+        duts.extend(standalone_nodes[:2])
+    elif onboard_one_node_flag:
+        duts.append(standalone_nodes[0])
+    
+    if onboard_stack_flag:
+        stack_dut = stack_nodes[0]
+        duts.append(stack_dut)
+        dut_stack_model_update(stack_dut)
+
+    return duts
 
 
 @pytest.fixture(scope="session")
@@ -1112,31 +1135,17 @@ def onboard(request):
     loaded_config = request.getfixturevalue("loaded_config")
     check_duts_are_reachable = request.getfixturevalue("check_duts_are_reachable")
     utils = request.getfixturevalue("utils")
-    close_connection = request.getfixturevalue("close_connection")
     configure_network_policies = request.getfixturevalue("configure_network_policies")
-    dut_stack_model_update = request.getfixturevalue("dut_stack_model_update")
     login_xiq = request.getfixturevalue("login_xiq")
     nodes = request.getfixturevalue("nodes")
+    dut_list = request.getfixturevalue("dut_list")
+    policy_config = request.getfixturevalue("policy_config")
+
     standalone_nodes = [node for node in nodes if node.get("platform", "").upper() != "STACK"]
     stack_nodes = [node for node in nodes if node not in standalone_nodes]
-
-    dut_list = []
-    stack_dut = None
-
-    if onboard_two_node_flag:
-        dut_list.extend(standalone_nodes[:2])
-    elif onboard_one_node_flag:
-        dut_list.append(standalone_nodes[0])
     
-    if onboard_stack_flag:
-        stack_dut = stack_nodes[0]
-        dut_list.append(stack_dut)
-        dut_stack_model_update(stack_dut, stack_dut.stack)
-
     check_duts_are_reachable(dut_list)
     configure_iq_agent(dut_list)
-    
-    dut_config = generate_policy_config(dut_list)
 
     try:
         
@@ -1158,9 +1167,9 @@ def onboard(request):
                     location=onboarding_location)
 
             check_devices_are_onboarded(xiq, dut_list)
-            configure_network_policies(xiq, dut_config)
+            configure_network_policies(xiq, policy_config)
 
-        yield dut_list, dut_config
+        yield dut_list, policy_config
 
     finally:
         with login_xiq(
@@ -1172,12 +1181,11 @@ def onboard(request):
                 cleanup(
                     xiq=xiq, 
                     duts=dut_list, 
-                    network_policies=[dut_info['policy_name'] for dut_info in dut_config.values()],
-                    templates_switch=[dut_info['template_name'] for dut_info in dut_config.values()],
+                    network_policies=[dut_info['policy_name'] for dut_info in policy_config.values()],
+                    templates_switch=[dut_info['template_name'] for dut_info in policy_config.values()],
                     onboarding_location=onboarding_location,
-                    slots=len(stack_dut.stack) if stack_dut is not None else 1
+                    slots=len(stack_nodes[0].stack) if len(stack_nodes) > 0 else 1
                 )
-                close_connection(dut)
             except Exception as exc:
                 utils.print_info(repr(exc))
 
@@ -1205,30 +1213,14 @@ def onboarded_stack(request):
         return [dut for dut in dut_list if dut.platform.upper() == "STACK"][0]
     return
 
-
-@pytest.fixture(scope="session")
-def policy_config(request):
-    if onboard_one_node_flag or onboard_two_node_flag or onboard_stack_flag:
-        _, policy_config = request.getfixturevalue("onboard")
-        return policy_config
-    return
-
-
-@pytest.fixture(scope="session")
-def dut_list(request):
-    if onboard_one_node_flag or onboard_two_node_flag or onboard_stack_flag:
-        dut_list, _ = request.getfixturevalue("onboard")
-        return dut_list
-    return
- 
  
 @pytest.fixture(scope="session")
-def dut_ports(enter_switch_cli, dev_cmd, dut_list):
+def dut_ports(enter_switch_cli, dut_list):
     
     ports = {}
     
     def worker(dut):
-        with enter_switch_cli(dut):
+        with enter_switch_cli(dut) as dev_cmd:
             if dut.cli_type.upper() == "VOSS":
                 dev_cmd.send_cmd(
                     dut.name, 'enable', max_wait=10, interval=2)
@@ -1278,11 +1270,11 @@ def dut_ports(enter_switch_cli, dev_cmd, dut_list):
 
 
 @pytest.fixture(scope="session")
-def bounce_iqagent(dev_cmd, enter_switch_cli):
+def bounce_iqagent(enter_switch_cli):
     
     def func(dut, xiq=None, wait=False):
         
-        with enter_switch_cli(dut):
+        with enter_switch_cli(dut) as dev_cmd:
             if dut.cli_type.upper() == "EXOS":
                 dev_cmd.send_cmd(
                     dut.name, 'disable iqagent', max_wait=10, interval=2,
