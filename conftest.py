@@ -1136,7 +1136,7 @@ def policy_config(dut_list):
 
 
 @pytest.fixture(scope="session")
-def dut_list(dut_stack_model_update, standalone_nodes, stack_nodes):
+def dut_list(dut_stack_model_update, standalone_nodes, stack_nodes, check_duts_are_reachable):
     
     duts = []
 
@@ -1150,6 +1150,8 @@ def dut_list(dut_stack_model_update, standalone_nodes, stack_nodes):
         duts.append(stack_dut)
         dut_stack_model_update(stack_dut)
 
+    check_duts_are_reachable(duts)
+    
     return duts
 
 
@@ -1160,7 +1162,6 @@ def onboard(request):
     configure_iq_agent = request.getfixturevalue("configure_iq_agent")
     check_devices_are_onboarded = request.getfixturevalue("check_devices_are_onboarded")
     loaded_config = request.getfixturevalue("loaded_config")
-    check_duts_are_reachable = request.getfixturevalue("check_duts_are_reachable")
     utils = request.getfixturevalue("utils")
     configure_network_policies = request.getfixturevalue("configure_network_policies")
     login_xiq = request.getfixturevalue("login_xiq")
@@ -1170,8 +1171,7 @@ def onboard(request):
     stack_nodes = request.getfixturevalue("stack_nodes")
     change_device_management_settings = request.getfixturevalue("change_device_management_settings")
     cleanup = request.getfixturevalue("cleanup")
-
-    check_duts_are_reachable(dut_list)
+    
     configure_iq_agent(dut_list)
 
     try:
