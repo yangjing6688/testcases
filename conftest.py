@@ -716,6 +716,12 @@ def virtual_routers(enter_switch_cli, dut_list, utils):
 
 
 @pytest.fixture(scope="session")
+def screen():
+    from extauto.common.Screen import Screen
+    return Screen()
+
+
+@pytest.fixture(scope="session")
 def navigator():
     from extauto.xiq.flows.common.Navigator import Navigator
     return Navigator()
