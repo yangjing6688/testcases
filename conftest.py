@@ -832,8 +832,8 @@ def get_default_password(navigator, utils, auto_actions):
 @pytest.fixture(scope="session", autouse=True)
 def onboarding_location():
     pool = list(string.ascii_letters) + list(string.digits)
-    return f"Salem_{''.join(random.sample(pool, k=4))},Northeastern_{''.join(random.sample(pool, k=4))}," \
-           f"Floor_{''.join(random.sample(pool, k=4))}"
+    return f"Salem_{''.join(random.sample(pool, k=8))},Northeastern_{''.join(random.sample(pool, k=8))}," \
+           f"Floor_{''.join(random.sample(pool, k=8))}"
 
 
 @pytest.fixture(scope="session")
@@ -907,6 +907,7 @@ def testbed():
 def loaded_config():
     config['${TEST_NAME}'] = "onboarding"
     config['${OUTPUT DIR}'] = os.getcwd()
+    config['${MAX_CONFIG_PUSH_TIME}'] = 300
     for word in ["tenant_username", "tenant_password", "test_url"]:
         config[f"${{{word.upper()}}}"] = config[word]
     return config
@@ -1119,8 +1120,8 @@ def policy_config(dut_list):
     pool = list(string.ascii_letters) + list(string.digits)
 
     for dut in dut_list:
-        dut_config[dut.name]["policy_name"] = f"np_{''.join(random.sample(pool, k=7))}"
-        dut_config[dut.name]['template_name'] = f"template_{''.join(random.sample(pool, k=7))}"
+        dut_config[dut.name]["policy_name"] = f"np_{''.join(random.sample(pool, k=8))}"
+        dut_config[dut.name]['template_name'] = f"template_{''.join(random.sample(pool, k=8))}"
         dut_config[dut.name]['info'] = dut
     
     return dut_config
