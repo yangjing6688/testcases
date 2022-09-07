@@ -10,6 +10,7 @@ Resource    ../../../../../Libraries/XIQ/lib_license.robot
 Library     OperatingSystem
 Library     common/Utils.py
 Library     common/TestFlow.py
+Library     xiq/flows/manage/FilterManageDevices.py
 
 Variables   Environments/Config/waits.yaml
 
