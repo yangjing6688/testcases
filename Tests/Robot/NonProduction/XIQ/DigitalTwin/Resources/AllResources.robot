@@ -2,6 +2,7 @@
 Documentation  This file contains all folders containing the resources and variables to execute the tests.
 
 Library     Collections
+Library     common/TestFlow.py
 Library     xiq/flows/common/DeviceCommon.py
 
 Resource    ../../../../Libraries/XIQ/lib_devices.robot

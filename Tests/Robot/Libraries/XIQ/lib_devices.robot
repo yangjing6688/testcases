@@ -10,6 +10,7 @@
 *** Settings ***
 Library     xiq/flows/common/Navigator.py
 Library     xiq/flows/manage/Devices.py
+Library     xiq/flows/manage/DevicesActions.py
 
 
 *** Keywords ***
@@ -117,3 +118,9 @@ Confirm Device Status Icon
 
     ${status_icon}=    Get Device Status Icon   ${serial}
     Should Be Equal As Strings                  ${status_icon}      ${expected_icon}
+
+Confirm Actions Button Is Disabled
+    [Documentation]     Confirm that the 'Actions' button is disabled
+
+    ${result}=    Is Actions Button Enabled
+    Should Be Equal As Integers                ${result}     2
