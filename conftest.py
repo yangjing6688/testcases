@@ -1,9 +1,9 @@
 # Built-in imports
 from collections import defaultdict
-from email.policy import default
 import inspect
 import logging
 import queue
+import json
 import sys
 import threading
 from datetime import datetime
@@ -14,7 +14,6 @@ import re
 import string
 import random
 import subprocess
-from ExtremeAutomation.Apis.NetworkElement.GeneratedApis.CommandApis.CLI import policy
 
 
 from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
@@ -607,7 +606,7 @@ def enter_switch_cli(network_manager, close_connection, dev_cmd):
 
 
 @pytest.fixture(scope="session")
-def change_device_management_settings(utils, standalone_nodes, stack_nodes):
+def change_device_management_settings(utils, standalone_nodes, stack_nodes, screen):
     
     def func(xiq, option, retries=5, step=5):
         
@@ -616,8 +615,10 @@ def change_device_management_settings(utils, standalone_nodes, stack_nodes):
             try:
                 xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings(
                     option=option, platform=platform)
+                screen.save_screen_shot()
             except Exception as exc:
                 utils.print_info(repr(exc))
+                screen.save_screen_shot()
                 utils.wait_till(timeout=step)
             else:
                 xiq.xflowscommonNavigator.navigate_to_devices()
@@ -628,12 +629,19 @@ def change_device_management_settings(utils, standalone_nodes, stack_nodes):
 
 
 @pytest.fixture(scope="session")
-def create_location(onboarding_location):
+def create_location(onboarding_location, utils, screen):
+    
     def func(xiq, location=onboarding_location):
+        
+        utils.print_info(f"Try to delete this location: {location}")
         xiq.xflowsmanageLocation.delete_location_building_floor(*location.split(","))
+        screen.save_screen_shot()
+        
+        utils.print_info(f"Create this location: {location}")
         xiq.xflowsmanageLocation.create_location_building_floor(*location.split(","))
+        screen.save_screen_shot()
+        
     return func
-
 
 
 def generate_template_for_given_model(platform, model, slots=""):
@@ -752,10 +760,11 @@ def auto_actions():
 
 
 @pytest.fixture(scope="session")
-def configure_iq_agent(loaded_config, enter_switch_cli, virtual_routers, utils):
+def configure_iq_agent(loaded_config, enter_switch_cli, virtual_routers, utils, dut_list, screen):
     
-    def func(duts):
+    def func(duts=dut_list, ipaddress=loaded_config['sw_connection_host']):
         
+        utils.print_info(f"Configure IQAGENT with ipaddress='{ipaddress}' on these devices: {', '.join([d.name for d in dut_list])}")
         def worker(dut):
             with enter_switch_cli(dut) as dev_cmd:
                 if dut.cli_type.upper() == "EXOS":
@@ -772,7 +781,7 @@ def configure_iq_agent(loaded_config, enter_switch_cli, virtual_routers, utils):
                         utils.print_info("Did not find Virtual Router information")
                 
                     dev_cmd.send_cmd(
-                        dut.name, 'configure iqagent server ipaddress ' + loaded_config['sw_connection_host'],
+                        dut.name, f'configure iqagent server ipaddress {ipaddress}',
                         max_wait=10, interval=2)
                     dev_cmd.send_cmd(dut.name, 'enable iqagent', max_wait=10, interval=2)
                 
@@ -781,7 +790,7 @@ def configure_iq_agent(loaded_config, enter_switch_cli, virtual_routers, utils):
                     dev_cmd.send_cmd(dut.name, 'configure terminal', max_wait=10, interval=2)
                     dev_cmd.send_cmd(dut.name, 'application', max_wait=10, interval=2)
                     dev_cmd.send_cmd(dut.name, 'no iqagent enable', max_wait=10, interval=2)
-                    dev_cmd.send_cmd(dut.name, 'iqagent server ' + loaded_config['sw_connection_host'],
+                    dev_cmd.send_cmd(dut.name, f'iqagent server {ipaddress}',
                                     max_wait=10, interval=2)
                     dev_cmd.send_cmd(dut.name, 'iqagent enable', max_wait=10, interval=2)
                     dev_cmd.send_cmd_verify_output(dut.name, 'show application iqagent', 'true', max_wait=30,
@@ -794,7 +803,7 @@ def configure_iq_agent(loaded_config, enter_switch_cli, virtual_routers, utils):
                     except:
                         dev_cmd.send_cmd(dut.name, "exit")
                     dev_cmd.send_cmd(
-                        dut.name, f'hivemanager address {loaded_config["sw_connection_host"]}', max_wait=10, interval=2)
+                        dut.name, f'hivemanager address {ipaddress}', max_wait=10, interval=2)
                     dev_cmd.send_cmd(
                         dut.name, 'application start hiveagent', max_wait=10, interval=2)
                     dev_cmd.send_cmd(dut.name, "exit")
@@ -823,15 +832,18 @@ def get_default_password(navigator, utils, auto_actions):
             silent_failure=True,
             delay=4
         )
+        screen.save_screen_shot()
         assert menu, "Failed to get the device management settings menu"
         
         utils.wait_till(func=lambda: auto_actions.click(menu) == 1)
+        screen.save_screen_shot()
         
         password, _ = utils.wait_till(
             func=xiq.xflowsglobalsettingsGlobalSetting.get_device_management_settings_password,
             silent_failure=True,
             delay=4
         )
+        screen.save_screen_shot()
         assert password, "Failed to get the default device passowrd"
         return password.get_attribute('value')
     return func
@@ -850,7 +862,7 @@ def check_duts_are_reachable(utils):
     results = []
     from platform import system
     
-    def func(duts, results=results, retries=3, windows=system() == "Windows"):
+    def func(duts, results=results, retries=3, step=1, windows=system() == "Windows"):
         def worker(dut):
             
             for _ in range(retries):
@@ -858,13 +870,16 @@ def check_duts_are_reachable(utils):
                     ping_response = subprocess.Popen(
                         ["ping", f"{'-n' if windows else '-c'} 1", dut.ip], stdout=subprocess.PIPE).stdout.read().decode()
                     utils.print_info(ping_response)
-                    if re.search("0% loss" if windows else "0% packet loss" , ping_response):
-                        results.append(f"({dut.ip}): Successfully verified that this dut is reachable: {dut}")
-                        return
+                    if re.search("100% loss" if windows else "100% packet loss" , ping_response):
+                        time.sleep(1)
+                    else:
+                        results.append(f"({dut.ip}): Successfully verified that this dut is reachable: {dut.name}")
+                        break
                 except:
-                    time.sleep(1)
+                    time.sleep(step)
             else:
-                results.append(f"({dut.ip}): This dut is not reachable: {dut}\n{ping_response}")
+                results.append(f"({dut.ip}): This dut is not reachable: {dut.name}\n{ping_response}")
+                utils.print_info(f"{dut.name} is not reachabe")
 
         threads = []
         try:
@@ -879,8 +894,10 @@ def check_duts_are_reachable(utils):
         for message in results:
             utils.print_info(message)
         
-        if any(re.search("The chosen dut is not reachable", message) for message in results):
-            pytest.fail(f"Not all the duts are reachable:\n{results}")
+        if any(re.search("This dut is not reachable", message) for message in results):
+            error_msg = "Failed! Not all the duts are reachable.\n" + '\n'.join(results)
+            utils.print_error(error_msg)
+            pytest.fail(error_msg)
         else:
             utils.print_info("All the duts are reachable!")
     return func
@@ -911,7 +928,7 @@ def testbed():
     return PytestConfigHelper(config)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="session", autouse=True)
 def loaded_config():
     config['${TEST_NAME}'] = "onboarding"
     config['${OUTPUT DIR}'] = os.getcwd()
@@ -929,10 +946,14 @@ def update_test_name(loaded_config):
 
 
 @pytest.fixture(scope="session")
-def dev_cmd():
+def default_library():
     from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary
-    defaultLibrary = DefaultLibrary()
-    return defaultLibrary.deviceNetworkElement.networkElementCliSend
+    return DefaultLibrary()
+
+
+@pytest.fixture(scope="session")
+def dev_cmd(default_library):
+    return default_library.deviceNetworkElement.networkElementCliSend
 
 
 @pytest.fixture(scope="session")
@@ -985,45 +1006,63 @@ def check_devices_are_onboarded(utils, dut_list):
 
 
 @pytest.fixture(scope="session")
-def cleanup(utils):
+def cleanup(utils, screen):
 
     def func(xiq, duts=[], onboarding_location='', network_policies=[], templates_switch=[], slots=1):
         try:
             xiq.xflowscommonDevices._goto_devices()
+            screen.save_screen_shot()
             
             for dut in duts:
+                screen.save_screen_shot()
+                utils.print_info(f"Delete this device: {dut.name}, {dut.mac}")
                 xiq.xflowscommonDevices._goto_devices()
                 xiq.xflowscommonDevices.delete_device(
                     device_mac=dut.mac)
+                screen.save_screen_shot()
             if onboarding_location:
+                utils.print_info(f"Delete this location: {onboarding_location}")
                 xiq.xflowsmanageLocation.delete_location_building_floor(
                     *onboarding_location.split(","))
+                screen.save_screen_shot()
             for network_policy in network_policies:
+                screen.save_screen_shot()
+                utils.print_info(f"Delete this network policy: {network_policy}")
                 xiq.xflowsconfigureNetworkPolicy.delete_network_policy(
                     network_policy)
+                screen.save_screen_shot()
             for template_switch in templates_switch:
+                utils.print_info(f"Delete this switch template: {template_switch}")
                 for _ in range(slots):
+                    screen.save_screen_shot()
                     xiq.xflowsconfigureCommonObjects.delete_switch_template(
                         template_switch)
+                    screen.save_screen_shot()
         except Exception as exc:
-            utils.print_info(repr(exc))
+            utils.print_warning(repr(exc))
     return func
 
 
 @pytest.fixture(scope="session")
-def configure_network_policies(utils):
+def configure_network_policies(utils, dut_list, policy_config, screen):
     
-    def func(xiq, dut_config):
+    def func(xiq, dut_config=policy_config):
+        
         for dut, data in dut_config.items():
-            
+        
+            utils.print_info(f"Configuring the network policy and switch template for dut {dut}")
             network_policy = data['policy_name']
             template_switch = data['template_name']
-            dut_info = data['info']
             
+            utils.print_info(f"Create this network policy for {dut} dut: {network_policy}")
             assert xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
                 network_policy), \
                 f"Policy {network_policy} wasn't created successfully "
+            screen.save_screen_shot()
             
+            [dut_info] = [dut_iter for dut_iter in dut_list if dut_iter.name == dut]
+
+            utils.print_info(f"Create and attach this switch template to {dut} dut: {template_switch}")
             if dut_info.platform.upper() == "STACK":
                 xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(
                     dut_info.model_units, network_policy,
@@ -1031,11 +1070,16 @@ def configure_network_policies(utils):
             else:
                 sw_model_template = generate_template_for_given_model(
                     dut_info.platform, dut_info.model)
+                
                 xiq.xflowsconfigureSwitchTemplate.add_sw_template(
                     network_policy, sw_model_template, template_switch)
+                screen.save_screen_shot()
+                
                 assert xiq.xflowsmanageDevices.assign_network_policy_to_switch(
                     policy_name=network_policy, serial=dut_info.serial) == 1, \
                     f"Couldn't assign policy {network_policy} to device {dut}"
+                screen.save_screen_shot()
+            utils.print_info("Successfully configured the network policy and switch template for dut {dut}")
     return func
 
 
@@ -1142,7 +1186,6 @@ def policy_config(dut_list):
     for dut in dut_list:
         dut_config[dut.name]["policy_name"] = f"np_{''.join(random.sample(pool, k=8))}"
         dut_config[dut.name]['template_name'] = f"template_{''.join(random.sample(pool, k=8))}"
-        dut_config[dut.name]['info'] = dut
     
     return dut_config
 
@@ -1168,54 +1211,55 @@ def dut_list(dut_stack_model_update, standalone_nodes, stack_nodes, check_duts_a
 
 
 @pytest.fixture(scope="session")
-def onboard_devices(dut_list, utils, screen):
+def onboard_devices(dut_list, utils, screen, onboarding_location):
     def func(xiq, duts=dut_list):
         for dut in duts:
-            if xiq.xflowsmanageSwitch.onboard_switch(dut.serial, device_os=dut.cli_type, location=onboarding_location) == 1:
+            if xiq.xflowsmanageSwitch.onboard_switch(
+                    dut.serial, device_os=dut.cli_type, location=onboarding_location) == 1:
                 utils.print_info(f"Successfully onboarded this device: {dut}")
-                screen.save_screenshot()
+                screen.save_screen_shot()
             else:
                 error_msg = f"Failed to onboard this device: {dut}"
                 utils.print_info(error_msg)
-                screen.save_screenshot()
+                screen.save_screen_shot()
                 pytest.fail(error_msg)
     return func
+
+
+def dump_data(data):
+    return json.dumps(data, indent=4)
 
 
 @pytest.fixture(scope="session")
 def onboard(request):
 
     utils = request.getfixturevalue("utils")
-
-    onboarding_location = request.getfixturevalue("onboarding_location")
-    utils.print_info(f"This location will be used for the onboarding: {onboarding_location}")
-
-    dut_list = request.getfixturevalue("dut_list")
-    utils.print_info(f"These are the devices that will be onboarded: {dut_list}")
-
-    policy_config = request.getfixturevalue("policy_config")
-    utils.print_info(f"These are the policies and switch templates that will be applied to the onboarded devices: {policy_config}")
-
-    configure_iq_agent = request.getfixturevalue("configure_iq_agent")
-    check_devices_are_onboarded = request.getfixturevalue("check_devices_are_onboarded")
-    loaded_config = request.getfixturevalue("loaded_config")
     configure_network_policies = request.getfixturevalue("configure_network_policies")
     login_xiq = request.getfixturevalue("login_xiq")
-    
     stack_nodes = request.getfixturevalue("stack_nodes")
     change_device_management_settings = request.getfixturevalue("change_device_management_settings")
+    check_devices_are_onboarded = request.getfixturevalue("check_devices_are_onboarded")
     cleanup = request.getfixturevalue("cleanup")
     create_location = request.getfixturevalue("create_location")
     onboard_devices = request.getfixturevalue("onboard_devices")
+    configure_iq_agent = request.getfixturevalue("configure_iq_agent")
 
-    configure_iq_agent(dut_list)
+    onboarding_location = request.getfixturevalue("onboarding_location")
+    utils.print_info(f"This location will be used for the onboarding: '{onboarding_location}'")
+
+    dut_list = request.getfixturevalue("dut_list")
+    utils.print_info(f"These are the devices that will be onboarded ({len(dut_list)} devices): "
+                     f"{', '.join([dut.name for dut in dut_list])}")
+
+    policy_config = request.getfixturevalue("policy_config")
+    utils.print_info(f"These are the policies and switch templates that will be applied to the onboarded devices:"
+                     f"\n{dump_data(policy_config)}")
+    
+    configure_iq_agent()
 
     try:
-        
-        with login_xiq(
-                username=loaded_config['tenant_username'],
-                password=loaded_config['tenant_password'],
-                url=loaded_config['test_url']) as xiq:
+
+        with login_xiq() as xiq:
                 
             change_device_management_settings(xiq, option="disable")
             
@@ -1224,27 +1268,22 @@ def onboard(request):
             onboard_devices(xiq)
 
             check_devices_are_onboarded(xiq)
-            configure_network_policies(xiq, policy_config)
+            configure_network_policies(xiq)
 
         yield dut_list, policy_config
 
     finally:
-        with login_xiq(
-                username=loaded_config['tenant_username'],
-                password=loaded_config['tenant_password'],
-                url=loaded_config['test_url']) as xiq:
         
-            try:
-                cleanup(
-                    xiq=xiq, 
-                    duts=dut_list, 
-                    network_policies=[dut_info['policy_name'] for dut_info in policy_config.values()],
-                    templates_switch=[dut_info['template_name'] for dut_info in policy_config.values()],
-                    onboarding_location=onboarding_location,
-                    slots=len(stack_nodes[0].stack) if len(stack_nodes) > 0 else 1
-                )
-            except Exception as exc:
-                utils.print_info(repr(exc))
+        with login_xiq() as xiq:
+
+            cleanup(
+                xiq=xiq, 
+                duts=dut_list, 
+                network_policies=[dut_info['policy_name'] for dut_info in policy_config.values()],
+                templates_switch=[dut_info['template_name'] for dut_info in policy_config.values()],
+                onboarding_location=onboarding_location,
+                slots=len(stack_nodes[0].stack) if len(stack_nodes) > 0 else 1
+            )
 
 
 @pytest.fixture(scope="session")
@@ -1306,7 +1345,8 @@ def dut_ports(enter_switch_cli, dut_list):
                     p = re.compile(r'^\d+', re.M)
                     match_port = re.findall(p, output)
 
-                p_notPresent = re.compile(r'^\d+:\d+.*NotPresent.*$', re.M) if is_stack else re.compile(r'^\d+.*NotPresent.*$', re.M)
+                p_notPresent = re.compile(r'^\d+:\d+.*NotPresent.*$', re.M) if is_stack \
+                    else re.compile(r'^\d+.*NotPresent.*$', re.M)
                 parsed_info = re.findall(p_notPresent, output)
 
                 for port in parsed_info:
@@ -1367,7 +1407,7 @@ def bounce_iqagent(enter_switch_cli):
 
 
 @pytest.fixture(scope="session")
-def reboot_dut(dut_list, enter_switch_cli, utils):
+def reboot_device(dut_list, enter_switch_cli, utils):
     
     def func(duts=dut_list):
         
@@ -1376,10 +1416,11 @@ def reboot_dut(dut_list, enter_switch_cli, utils):
                 try:
                     
                     if dut.cli_type.upper() == "EXOS":
-                        dev_cmd.send_cmd(dut.name, 'reboot all', max_wait=10, interval=2,
-                                                confirmation_phrases='Are you sure you want to reboot the switch?',
-                                                confirmation_args='y'
-                                                )
+                        dev_cmd.send_cmd(
+                            dut.name, 'reboot all', max_wait=10, interval=2,
+                            confirmation_phrases='Are you sure you want to reboot the switch?',
+                            confirmation_args='y'
+                        )
                     elif dut.cli_type.upper() == "VOSS":
                         dev_cmd.send_cmd(dut.name, 'reset -y', max_wait=10, interval=2)
                         
@@ -1394,10 +1435,10 @@ def reboot_dut(dut_list, enter_switch_cli, utils):
                             confirmation_phrases='Would you like to save them now? (y/n)', confirmation_args='y'
                         )
                 except Exception as exc:
-                    msg = f"Failed to reboot this dut: {dut}\n{repr(exc)}"
-                    utils.print_info(msg)
+                    error_msg = f"Failed to reboot this dut: {dut.name}\n{repr(exc)}"
+                    utils.print_error(error_msg)
                     utils.wait_till(timeout=5)
-                    pytest.fail(msg)
+                    pytest.fail(error_msg)
                 else:
                     utils.wait_till(timeout=120)
     
