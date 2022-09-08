@@ -1079,7 +1079,7 @@ def configure_network_policies(utils, dut_list, policy_config, screen):
                     policy_name=network_policy, serial=dut_info.serial) == 1, \
                     f"Couldn't assign policy {network_policy} to device {dut}"
                 screen.save_screen_shot()
-            utils.print_info("Successfully configured the network policy and switch template for dut {dut}")
+            utils.print_info(f"Successfully configured the network policy and switch template for dut {dut}")
     return func
 
 
@@ -1208,6 +1208,26 @@ def dut_list(dut_stack_model_update, standalone_nodes, stack_nodes, check_duts_a
     check_duts_are_reachable(duts)
     
     return duts
+
+
+@pytest.fixture(scope="session")
+def update_and_wait_switch(utils):
+    def func(xiq, policy_name, dut):
+        utils.wait_till(timeout=5)
+        xiq.xflowscommonDevices._goto_devices()
+        utils.wait_till(timeout=5)
+
+        utils.print_info(f"Select switch row with serial {dut.mac}")
+        if not xiq.xflowscommonDevices.select_device(dut.mac):
+            error_msg = f"Switch {dut.mac} is not present in the grid"
+            utils.print_error(error_msg)
+            pytest.fail(error_msg)
+        utils.wait_till(timeout=2)
+        xiq.xflowscommonDevices._update_switch(
+            update_method="PolicyAndConfig")
+        return xiq.xflowscommonDevices._check_update_network_policy_status(
+            policy_name, dut.mac)
+    return func
 
 
 @pytest.fixture(scope="session")
