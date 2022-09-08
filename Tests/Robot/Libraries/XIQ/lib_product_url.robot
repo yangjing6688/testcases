@@ -19,15 +19,15 @@ Get XIQ Instance from URL
 
     IF  ${length} > 0
         ${XIQ_Instance}=    Get from list  ${contains}     0
-    END
-
-    IF  ${length} == 0
+    ELSE
         ${contains}=    get regexp matches  ${url}    https://(.*).extremecloudiq.com    1
 
         ${length}=  Get Length  ${contains}
 
         IF  ${length} > 0
-        ${XIQ_Instance}=    Get from list  ${contains}     0
+            ${XIQ_Instance}=    Get from list  ${contains}     0
+        ELSE
+            ${XIQ_Instance}=    Set variable    Production
         END
     END
 

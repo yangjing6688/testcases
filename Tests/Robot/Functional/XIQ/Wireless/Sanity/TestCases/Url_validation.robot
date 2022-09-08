@@ -27,10 +27,10 @@ TCCS-13221: ProductInfo URL validation
     [Tags]                  production      tccs_13221
 
     ${result}   ${length} =          Get XIQ Instance from URL   ${CLOUD_GDC_URL}
-    Should not be equal as strings  ${result}   "Unknown"
+    Should not be equal as strings  "${result}"   "Unknown" 
 
     ${product_url}  ${ENV_TYPE} =     Generate Product URL    ${result}   ${length}
-    Should not be equal as strings  ${ENV_TYPE}   "Unknown"
+    Should not be equal as strings  "${ENV_TYPE}"   "Unknown"
 
     skip if  "${ENV_TYPE}" != "Production"  and "${ENV_TYPE}" != "Unknown"
         ${complete_product_url}=    Set variable    ${product_url}/${mapping}/${serial_num}
