@@ -607,9 +607,11 @@ def enter_switch_cli(network_manager, close_connection, dev_cmd):
 
 
 @pytest.fixture(scope="session")
-def change_device_management_settings(utils):
+def change_device_management_settings(utils, standalone_nodes, stack_nodes):
     
-    def func(xiq, option, platform, retries=5, step=5):
+    def func(xiq, option, retries=5, step=5):
+        
+        platform = "EXOS" if any(node.cli_type.upper() == "EXOS" for node in standalone_nodes + stack_nodes) else "VOSS"
         for _ in range(retries):
             try:
                 xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings(
@@ -625,9 +627,13 @@ def change_device_management_settings(utils):
     return func
 
 
-def create_location(xiq, location):
-    xiq.xflowsmanageLocation.delete_location_building_floor(*location.split(","))
-    xiq.xflowsmanageLocation.create_location_building_floor(*location.split(","))
+@pytest.fixture(scope="session")
+def create_location(onboarding_location):
+    def func(xiq, location=onboarding_location):
+        xiq.xflowsmanageLocation.delete_location_building_floor(*location.split(","))
+        xiq.xflowsmanageLocation.create_location_building_floor(*location.split(","))
+    return func
+
 
 
 def generate_template_for_given_model(platform, model, slots=""):
@@ -930,8 +936,8 @@ def dev_cmd():
 
 
 @pytest.fixture(scope="session")
-def check_devices_are_onboarded(utils):
-    def func(xiq, dut_list, timeout=180):
+def check_devices_are_onboarded(utils, dut_list):
+    def func(xiq, dut_list=dut_list, timeout=180):
         
         xiq.xflowscommonDevices.column_picker_select("MAC Address")
         
@@ -1162,22 +1168,46 @@ def dut_list(dut_stack_model_update, standalone_nodes, stack_nodes, check_duts_a
 
 
 @pytest.fixture(scope="session")
+def onboard_devices(dut_list, utils, screen):
+    def func(xiq, duts=dut_list):
+        for dut in duts:
+            if xiq.xflowsmanageSwitch.onboard_switch(dut.serial, device_os=dut.cli_type, location=onboarding_location) == 1:
+                utils.print_info(f"Successfully onboarded this device: {dut}")
+                screen.save_screenshot()
+            else:
+                error_msg = f"Failed to onboard this device: {dut}"
+                utils.print_info(error_msg)
+                screen.save_screenshot()
+                pytest.fail(error_msg)
+    return func
+
+
+@pytest.fixture(scope="session")
 def onboard(request):
 
+    utils = request.getfixturevalue("utils")
+
     onboarding_location = request.getfixturevalue("onboarding_location")
+    utils.print_info(f"This location will be used for the onboarding: {onboarding_location}")
+
+    dut_list = request.getfixturevalue("dut_list")
+    utils.print_info(f"These are the devices that will be onboarded: {dut_list}")
+
+    policy_config = request.getfixturevalue("policy_config")
+    utils.print_info(f"These are the policies and switch templates that will be applied to the onboarded devices: {policy_config}")
+
     configure_iq_agent = request.getfixturevalue("configure_iq_agent")
     check_devices_are_onboarded = request.getfixturevalue("check_devices_are_onboarded")
     loaded_config = request.getfixturevalue("loaded_config")
-    utils = request.getfixturevalue("utils")
     configure_network_policies = request.getfixturevalue("configure_network_policies")
     login_xiq = request.getfixturevalue("login_xiq")
-    dut_list = request.getfixturevalue("dut_list")
-    policy_config = request.getfixturevalue("policy_config")
-    standalone_nodes = request.getfixturevalue("standalone_nodes")
+    
     stack_nodes = request.getfixturevalue("stack_nodes")
     change_device_management_settings = request.getfixturevalue("change_device_management_settings")
     cleanup = request.getfixturevalue("cleanup")
-    
+    create_location = request.getfixturevalue("create_location")
+    onboard_devices = request.getfixturevalue("onboard_devices")
+
     configure_iq_agent(dut_list)
 
     try:
@@ -1186,20 +1216,14 @@ def onboard(request):
                 username=loaded_config['tenant_username'],
                 password=loaded_config['tenant_password'],
                 url=loaded_config['test_url']) as xiq:
-
-            if any(node.cli_type.upper() == "EXOS" for node in standalone_nodes + stack_nodes):
-                change_device_management_settings(
-                    xiq, option="disable", platform="EXOS")
+                
+            change_device_management_settings(xiq, option="disable")
             
             cleanup(xiq=xiq, duts=dut_list)
-            create_location(xiq, onboarding_location)
+            create_location(xiq)
+            onboard_devices(xiq)
 
-            for dut in dut_list:
-                xiq.xflowsmanageSwitch.onboard_switch(
-                    dut.serial, device_os=dut.cli_type,
-                    location=onboarding_location)
-
-            check_devices_are_onboarded(xiq, dut_list)
+            check_devices_are_onboarded(xiq)
             configure_network_policies(xiq, policy_config)
 
         yield dut_list, policy_config
@@ -1289,6 +1313,17 @@ def dut_ports(enter_switch_cli, dut_list):
                     port_num = re.findall(p, port)
                     match_port.remove(port_num[0])
                 ports[dut.name] = match_port
+            
+            elif dut.cli_type.upper() == "AH-FASTPATH":
+                try:
+                    dev_cmd.send_cmd(dut.name, "enable")
+                except:
+                    dev_cmd.send_cmd(dut.name, "exit")
+                output = dev_cmd.send_cmd(
+                    dut.name, "show port all", max_wait=10, interval=2)[0].return_text
+                output = re.findall(r"\r\n(\d+/\d+/\d+)\s+", output)
+                ports[dut.name] = output
+                dev_cmd.send_cmd(dut.name, "exit")
 
     threads = []
     try:
@@ -1328,4 +1363,51 @@ def bounce_iqagent(enter_switch_cli):
                     dut.name, 'iqagent enable', max_wait=10, interval=2)
         if wait is True and xiq is not None:
             xiq.xflowscommonDevices.wait_until_device_online(dut.mac)
+    return func
+
+
+@pytest.fixture(scope="session")
+def reboot_dut(dut_list, enter_switch_cli, utils):
+    
+    def func(duts=dut_list):
+        
+        def worker(dut):
+            with enter_switch_cli(dut) as dev_cmd:
+                try:
+                    
+                    if dut.cli_type.upper() == "EXOS":
+                        dev_cmd.send_cmd(dut.name, 'reboot all', max_wait=10, interval=2,
+                                                confirmation_phrases='Are you sure you want to reboot the switch?',
+                                                confirmation_args='y'
+                                                )
+                    elif dut.cli_type.upper() == "VOSS":
+                        dev_cmd.send_cmd(dut.name, 'reset -y', max_wait=10, interval=2)
+                        
+                    elif dut.cli_type.upper() == "AH-FASTPATH":
+                        try:
+                            dev_cmd.send_cmd(dut.name, "enable")
+                        except:
+                            dev_cmd.send_cmd(dut.name, "exit")
+                            
+                        dev_cmd.send_cmd(
+                            dut.name, 'reload', max_wait=10, interval=2,
+                            confirmation_phrases='Would you like to save them now? (y/n)', confirmation_args='y'
+                        )
+                except Exception as exc:
+                    msg = f"Failed to reboot this dut: {dut}\n{repr(exc)}"
+                    utils.print_info(msg)
+                    utils.wait_till(timeout=5)
+                    pytest.fail(msg)
+                else:
+                    utils.wait_till(timeout=120)
+    
+        threads = []
+        try:
+            for dut in duts:
+                thread = threading.Thread(target=worker, args=(dut, ))
+                threads.append(thread)
+                thread.start()
+        finally:
+            for thread in threads:
+                thread.join()
     return func
