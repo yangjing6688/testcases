@@ -597,7 +597,6 @@ def enter_switch_cli(network_manager, close_connection, dev_cmd):
     @contextmanager
     def func(dut):
         try:
-            close_connection(dut)
             network_manager.connect_to_network_element_name(dut.name)
             yield dev_cmd
         finally:
@@ -695,7 +694,6 @@ def generate_template_for_given_model(dut):
 def close_connection(network_manager, utils):
     def func(dut):
         try:
-            network_manager.device_collection.remove_device(dut.name)
             network_manager.close_connection_to_network_element(dut.name)
         except Exception as exc:
             utils.print_info(exc)
@@ -1459,4 +1457,50 @@ def reboot_device(dut_list, enter_switch_cli, utils):
         finally:
             for thread in threads:
                 thread.join()
+    return func
+
+
+@pytest.fixture(scope="session")
+def reboot_stack_unit(utils, enter_switch_cli):
+    
+    def func(dut, slot=1, save_config='n'):
+        
+        if not (dut.platform.upper() == "STACK" and dut.cli_type.upper() == "EXOS"):
+            pytest.fail(f"Given device is not an EXOS stack: '{dut}'")
+
+        with enter_switch_cli(dut) as dev_cmd:
+            try:
+                dev_cmd.send_cmd(
+                    dut.name, f'reboot slot {slot}', max_wait=10, interval=2,
+                    confirmation_phrases='Do you want to save configuration changes to currently selected configuration',
+                    confirmation_args=save_config
+                )
+            except Exception as exc:
+                error_msg = f"Failed to reboot slot '{slot}' of dut: '{dut.name}'\n{repr(exc)}"
+                utils.print_error(error_msg)
+                utils.wait_till(timeout=5)
+                pytest.fail(error_msg)
+            else:
+                utils.wait_till(timeout=120)
+    return func
+
+
+@pytest.fixture(scope="session")
+def get_stack_slots(utils, enter_switch_cli):
+    
+    def func(dut):
+        
+        if not (dut.platform.upper() == "STACK" and dut.cli_type.upper() == "EXOS"):
+            pytest.fail(f"Given device is not an EXOS stack: '{dut}'")
+
+        slots_info = {}
+        with enter_switch_cli(dut) as dev_cmd:
+            output = dev_cmd.send_cmd(dut.name, 'show stacking', max_wait=10, interval=2)[0].return_text
+            utils.print_info(output)
+            rows = re.findall(r'((?:[0-9a-fA-F]:?){12})\s+(\d+)\s+(\w+)\s+(\w+)\s+(.*)\r\n', output, re.IGNORECASE)
+            
+            for row in rows:
+                slots_info[row[1]] = dict(zip(["Node MAC Address", "Slot", "Stack State", "Role", "Flags"], row))
+            utils.print_info(f"Found these slots on the stack device '{dut.name}': {dump_data(slots_info)}")
+            return slots_info
     return func
