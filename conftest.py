@@ -633,43 +633,49 @@ def create_location(onboarding_location, utils, screen):
     
     def func(xiq, location=onboarding_location):
         
-        utils.print_info(f"Try to delete this location: {location}")
+        utils.print_info(f"Try to delete this location: '{location}'")
         xiq.xflowsmanageLocation.delete_location_building_floor(*location.split(","))
         screen.save_screen_shot()
         
-        utils.print_info(f"Create this location: {location}")
+        utils.print_info(f"Create this location: '{location}'")
         xiq.xflowsmanageLocation.create_location_building_floor(*location.split(","))
         screen.save_screen_shot()
         
     return func
 
 
-def generate_template_for_given_model(platform, model, slots=""):
+def generate_template_for_given_model(dut):
 
+    model = dut.model
+    platform = dut.platform
+    slots = dut.get("stack")
+    
     if platform.lower() == 'stack':
         if not slots:
-            return -1
+            pytest.fail("No slots available in current stack")
 
         model_list = []
         sw_model = ""
-        model_units = None
 
-        for eachslot in slots:
-            if "SwitchEngine" in eachslot:
-                mat = re.match('(.*)(Engine)(.*)', eachslot)
+        for slot in slots.values():
+            
+            slot_model = slot.model
+            
+            if "SwitchEngine" in slot_model:
+                mat = re.match('(.*)(Engine)(.*)', slot_model)
                 model_md = mat.group(1) + ' ' + mat.group(2) + ' ' + mat.group(3).replace('_', '-')
                 switch_type=re.match('(\d+).*', mat.group(3).split('_')[0]).group(1)
                 sw_model = 'Switch Engine ' + switch_type + '-Series-Stack'
 
             else:
-                model_act = eachslot.replace('10_G4', '10G4')
+                model_act = slot_model.replace('10_G4', '10G4')
                 m = re.match(r'(X\d+)(G2)(.*)', model_act)
                 model_md = m.group(1) + '-' + m.group(2) + m.group(3).replace('_', '-')
                 sw_model = m.group(1) + '-' + m.group(2) + '-Series-Stack'
             model_list.append(model_md)
 
         model_units = ','.join(model_list)
-        return sw_model,model_units
+        return sw_model, model_units
 
     elif "Engine" in model:
         mat = re.match('(.*)(Engine)(.*)', model)
@@ -682,7 +688,7 @@ def generate_template_for_given_model(platform, model, slots=""):
 
     else:
         sw_model = model.replace('_', '-')
-    return sw_model
+    return sw_model, ""
 
 
 @pytest.fixture(scope="session")
@@ -871,7 +877,7 @@ def check_duts_are_reachable(utils):
                         ["ping", f"{'-n' if windows else '-c'} 1", dut.ip], stdout=subprocess.PIPE).stdout.read().decode()
                     utils.print_info(ping_response)
                     if re.search("100% loss" if windows else "100% packet loss" , ping_response):
-                        time.sleep(1)
+                        utils.wait_till(timeout=1)
                     else:
                         results.append(f"({dut.ip}): Successfully verified that this dut is reachable: {dut.name}")
                         break
@@ -879,7 +885,6 @@ def check_duts_are_reachable(utils):
                     time.sleep(step)
             else:
                 results.append(f"({dut.ip}): This dut is not reachable: {dut.name}\n{ping_response}")
-                utils.print_info(f"{dut.name} is not reachabe")
 
         threads = []
         try:
@@ -899,7 +904,7 @@ def check_duts_are_reachable(utils):
             utils.print_error(error_msg)
             pytest.fail(error_msg)
         else:
-            utils.print_info("All the duts are reachable!")
+            utils.print_info("The chosen devices are reachable.")
     return func
 
 
@@ -1008,31 +1013,31 @@ def check_devices_are_onboarded(utils, dut_list):
 @pytest.fixture(scope="session")
 def cleanup(utils, screen):
 
-    def func(xiq, duts=[], onboarding_location='', network_policies=[], templates_switch=[], slots=1):
+    def func(xiq, duts=[], location='', network_policies=[], templates_switch=[], slots=1):
         try:
             xiq.xflowscommonDevices._goto_devices()
             screen.save_screen_shot()
             
             for dut in duts:
                 screen.save_screen_shot()
-                utils.print_info(f"Delete this device: {dut.name}, {dut.mac}")
+                utils.print_info(f"Delete this device: '{dut.name}', '{dut.mac}'")
                 xiq.xflowscommonDevices._goto_devices()
                 xiq.xflowscommonDevices.delete_device(
                     device_mac=dut.mac)
                 screen.save_screen_shot()
-            if onboarding_location:
-                utils.print_info(f"Delete this location: {onboarding_location}")
+            if location:
+                utils.print_info(f"Delete this location: '{location}'")
                 xiq.xflowsmanageLocation.delete_location_building_floor(
-                    *onboarding_location.split(","))
+                    *location.split(","))
                 screen.save_screen_shot()
             for network_policy in network_policies:
                 screen.save_screen_shot()
-                utils.print_info(f"Delete this network policy: {network_policy}")
+                utils.print_info(f"Delete this network policy: '{network_policy}'")
                 xiq.xflowsconfigureNetworkPolicy.delete_network_policy(
                     network_policy)
                 screen.save_screen_shot()
             for template_switch in templates_switch:
-                utils.print_info(f"Delete this switch template: {template_switch}")
+                utils.print_info(f"Delete this switch template: '{template_switch}'")
                 for _ in range(slots):
                     screen.save_screen_shot()
                     xiq.xflowsconfigureCommonObjects.delete_switch_template(
@@ -1050,11 +1055,13 @@ def configure_network_policies(utils, dut_list, policy_config, screen):
         
         for dut, data in dut_config.items():
         
-            utils.print_info(f"Configuring the network policy and switch template for dut {dut}")
+            utils.print_info(f"Configuring the network policy and switch template for dut '{dut}'")
             network_policy = data['policy_name']
             template_switch = data['template_name']
-            
-            utils.print_info(f"Create this network policy for {dut} dut: {network_policy}")
+            model_template = data['dut_model_template']
+            units_model = data['units_model']
+
+            utils.print_info(f"Create this network policy for '{dut}' dut: '{network_policy}'")
             assert xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
                 network_policy), \
                 f"Policy {network_policy} wasn't created successfully "
@@ -1062,68 +1069,21 @@ def configure_network_policies(utils, dut_list, policy_config, screen):
             
             [dut_info] = [dut_iter for dut_iter in dut_list if dut_iter.name == dut]
 
-            utils.print_info(f"Create and attach this switch template to {dut} dut: {template_switch}")
+            utils.print_info(f"Create and attach this switch template to '{dut}' dut: '{template_switch}'")
             if dut_info.platform.upper() == "STACK":
                 xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(
-                    dut_info.model_units, network_policy,
-                    dut_info.model_template, template_switch)
+                    units_model, network_policy,
+                    model_template, template_switch)
             else:
-                sw_model_template = generate_template_for_given_model(
-                    dut_info.platform, dut_info.model)
-                
                 xiq.xflowsconfigureSwitchTemplate.add_sw_template(
-                    network_policy, sw_model_template, template_switch)
+                    network_policy, model_template, template_switch)
                 screen.save_screen_shot()
                 
-                assert xiq.xflowsmanageDevices.assign_network_policy_to_switch(
-                    policy_name=network_policy, serial=dut_info.serial) == 1, \
-                    f"Couldn't assign policy {network_policy} to device {dut}"
-                screen.save_screen_shot()
-            utils.print_info(f"Successfully configured the network policy and switch template for dut {dut}")
-    return func
-
-
-@pytest.fixture(scope="session")
-def dut_stack_model_update(utils):
-    
-    def func(dut):
-        stack_dict = dut.stack
-        if ("Series Stack" in dut.model) and (dut.model_units is not None or dut.model_units != ""):
-            utils.print_info("Conftest with Stack: ", dut.model, " and units: ", dut.model_units)
-        else:
-            utils.print_info("Try to update Stack Template Model and Units")
-            
-            dut.model_template = ""
-            if dut.cli_type.upper() == "EXOS":
-                dut.model_template = "Switch Engine "
-                if "Engine" in dut.model:
-                    dut.model_template += dut.model.split("Engine", 1)[1].replace('_', '-')
-                    dut.model_template = dut.model_template.split("-", 1)[0]
-                    if not dut.model_template[-1].isdigit():
-                        dut.model_template = dut.model_template[0:len(dut.model_template) - 1]
-                else:
-                    dut.model_template += dut.model.replace('_', '-')
-                dut.model_template += "-Series-Stack"
-
-                stack_units_model = []
-                for key in stack_dict.keys():
-                    slot_keys = stack_dict[key]
-                    if slot_keys and 'model' in slot_keys:
-                        if slot_keys['model'] is not None:
-                            stack_units_model.append(slot_keys['model'])
-                utils.print_info(f"Switch model list is {stack_units_model}")
-
-                dut.model_units = ""
-                for model in stack_units_model:
-                    model_unit = "Switch Engine "
-                    if "Engine" in model:
-                        model_unit += model.split("Engine", 1)[1].replace('_', '-')
-                    else:
-                        model_unit += model.replace('_', '-')
-                    dut.model_units += model_unit + ","
-                dut.model_units = dut.model_units.strip(",")
-                utils.print_info(f"Dut model units are {dut.model_units}")
-            utils.print_info("Conftest with Stack: ", dut.model_template, " and units: ", dut.model_units)
+            assert xiq.xflowsmanageDevices.assign_network_policy_to_switch(
+                policy_name=network_policy, serial=dut_info.mac) == 1, \
+                f"Couldn't assign policy {network_policy} to device '{dut}'"
+            screen.save_screen_shot()
+            utils.print_info(f"Successfully configured the network policy and switch template for dut '{dut}'")
     return func
 
 
@@ -1184,14 +1144,16 @@ def policy_config(dut_list):
     pool = list(string.ascii_letters) + list(string.digits)
 
     for dut in dut_list:
+        model, units_model = generate_template_for_given_model(dut)
         dut_config[dut.name]["policy_name"] = f"np_{''.join(random.sample(pool, k=8))}"
         dut_config[dut.name]['template_name'] = f"template_{''.join(random.sample(pool, k=8))}"
-    
+        dut_config[dut.name]['dut_model_template'] = model
+        dut_config[dut.name]['units_model'] = units_model
     return dut_config
 
 
 @pytest.fixture(scope="session")
-def dut_list(dut_stack_model_update, standalone_nodes, stack_nodes, check_duts_are_reachable):
+def dut_list(standalone_nodes, stack_nodes, check_duts_are_reachable):
     
     duts = []
 
@@ -1201,9 +1163,7 @@ def dut_list(dut_stack_model_update, standalone_nodes, stack_nodes, check_duts_a
         duts.append(standalone_nodes[0])
     
     if onboard_stack_flag:
-        stack_dut = stack_nodes[0]
-        duts.append(stack_dut)
-        dut_stack_model_update(stack_dut)
+        duts.append(stack_nodes[0])
 
     check_duts_are_reachable(duts)
     
@@ -1211,22 +1171,30 @@ def dut_list(dut_stack_model_update, standalone_nodes, stack_nodes, check_duts_a
 
 
 @pytest.fixture(scope="session")
-def update_and_wait_switch(utils):
-    def func(xiq, policy_name, dut):
+def update_devices(utils, dut_list, policy_config):
+    
+    def func(xiq, duts=dut_list):
+        
         utils.wait_till(timeout=5)
         xiq.xflowscommonDevices._goto_devices()
         utils.wait_till(timeout=5)
 
-        utils.print_info(f"Select switch row with serial {dut.mac}")
-        if not xiq.xflowscommonDevices.select_device(dut.mac):
-            error_msg = f"Switch {dut.mac} is not present in the grid"
-            utils.print_error(error_msg)
-            pytest.fail(error_msg)
-        utils.wait_till(timeout=2)
-        xiq.xflowscommonDevices._update_switch(
-            update_method="PolicyAndConfig")
-        return xiq.xflowscommonDevices._check_update_network_policy_status(
-            policy_name, dut.mac)
+        for dut in duts:
+            policy_name = policy_config[dut.name]['policy_name']
+            utils.print_info(f"Select switch row with serial '{dut.mac}'")
+            if not xiq.xflowscommonDevices.select_device(dut.mac):
+                error_msg = f"Switch '{dut.mac}' is not present in the grid"
+                utils.print_error(error_msg)
+                pytest.fail(error_msg)
+            utils.wait_till(timeout=2)
+            xiq.xflowscommonDevices._update_switch(
+                update_method="PolicyAndConfig")
+
+        for dut in duts:
+            policy_name = policy_config[dut.name]['policy_name']
+            assert xiq.xflowscommonDevices._check_update_network_policy_status(
+                policy_name, dut.mac) == 1
+
     return func
 
 
@@ -1236,10 +1204,10 @@ def onboard_devices(dut_list, utils, screen, onboarding_location):
         for dut in duts:
             if xiq.xflowsmanageSwitch.onboard_switch(
                     dut.serial, device_os=dut.cli_type, location=onboarding_location) == 1:
-                utils.print_info(f"Successfully onboarded this device: {dut}")
+                utils.print_info(f"Successfully onboarded this device: '{dut}'")
                 screen.save_screen_shot()
             else:
-                error_msg = f"Failed to onboard this device: {dut}"
+                error_msg = f"Failed to onboard this device: '{dut}'"
                 utils.print_info(error_msg)
                 screen.save_screen_shot()
                 pytest.fail(error_msg)
@@ -1263,6 +1231,7 @@ def onboard(request):
     create_location = request.getfixturevalue("create_location")
     onboard_devices = request.getfixturevalue("onboard_devices")
     configure_iq_agent = request.getfixturevalue("configure_iq_agent")
+    update_devices = request.getfixturevalue("update_devices")
 
     onboarding_location = request.getfixturevalue("onboarding_location")
     utils.print_info(f"This location will be used for the onboarding: '{onboarding_location}'")
@@ -1288,7 +1257,10 @@ def onboard(request):
             onboard_devices(xiq)
 
             check_devices_are_onboarded(xiq)
+
             configure_network_policies(xiq)
+
+            update_devices(xiq)
 
         yield dut_list, policy_config
 
@@ -1301,7 +1273,7 @@ def onboard(request):
                 duts=dut_list, 
                 network_policies=[dut_info['policy_name'] for dut_info in policy_config.values()],
                 templates_switch=[dut_info['template_name'] for dut_info in policy_config.values()],
-                onboarding_location=onboarding_location,
+                location=onboarding_location,
                 slots=len(stack_nodes[0].stack) if len(stack_nodes) > 0 else 1
             )
 
@@ -1455,7 +1427,7 @@ def reboot_device(dut_list, enter_switch_cli, utils):
                             confirmation_phrases='Would you like to save them now? (y/n)', confirmation_args='y'
                         )
                 except Exception as exc:
-                    error_msg = f"Failed to reboot this dut: {dut.name}\n{repr(exc)}"
+                    error_msg = f"Failed to reboot this dut: '{dut.name}'\n{repr(exc)}"
                     utils.print_error(error_msg)
                     utils.wait_till(timeout=5)
                     pytest.fail(error_msg)
