@@ -1014,37 +1014,53 @@ def check_devices_are_onboarded(utils, dut_list):
 def cleanup(utils, screen):
 
     def func(xiq, duts=[], location='', network_policies=[], templates_switch=[], slots=1):
-        try:
+            
             xiq.xflowscommonDevices._goto_devices()
-            screen.save_screen_shot()
             
             for dut in duts:
-                screen.save_screen_shot()
-                utils.print_info(f"Delete this device: '{dut.name}', '{dut.mac}'")
-                xiq.xflowscommonDevices._goto_devices()
-                xiq.xflowscommonDevices.delete_device(
-                    device_mac=dut.mac)
-                screen.save_screen_shot()
+                try:
+                    screen.save_screen_shot()
+                    utils.print_info(f"Delete this device: '{dut.name}', '{dut.mac}'")
+                    xiq.xflowscommonDevices._goto_devices()
+                    xiq.xflowscommonDevices.delete_device(
+                        device_mac=dut.mac)
+                    screen.save_screen_shot()
+                except Exception as exc:
+                    screen.save_screen_shot()
+                    utils.print_warning(repr(exc))
+                    
             if location:
-                utils.print_info(f"Delete this location: '{location}'")
-                xiq.xflowsmanageLocation.delete_location_building_floor(
-                    *location.split(","))
-                screen.save_screen_shot()
+                try:
+                    utils.print_info(f"Delete this location: '{location}'")
+                    xiq.xflowsmanageLocation.delete_location_building_floor(
+                        *location.split(","))
+                    screen.save_screen_shot()
+                except Exception as exc:
+                    screen.save_screen_shot()
+                    utils.print_warning(repr(exc))   
+                                    
             for network_policy in network_policies:
-                screen.save_screen_shot()
-                utils.print_info(f"Delete this network policy: '{network_policy}'")
-                xiq.xflowsconfigureNetworkPolicy.delete_network_policy(
-                    network_policy)
-                screen.save_screen_shot()
+                try:
+                    screen.save_screen_shot()
+                    utils.print_info(f"Delete this network policy: '{network_policy}'")
+                    xiq.xflowsconfigureNetworkPolicy.delete_network_policy(
+                        network_policy)
+                    screen.save_screen_shot()
+                except Exception as exc:
+                    screen.save_screen_shot()
+                    utils.print_warning(repr(exc))   
+                    
             for template_switch in templates_switch:
                 utils.print_info(f"Delete this switch template: '{template_switch}'")
                 for _ in range(slots):
-                    screen.save_screen_shot()
-                    xiq.xflowsconfigureCommonObjects.delete_switch_template(
-                        template_switch)
-                    screen.save_screen_shot()
-        except Exception as exc:
-            utils.print_warning(repr(exc))
+                    try:
+                        screen.save_screen_shot()
+                        xiq.xflowsconfigureCommonObjects.delete_switch_template(
+                            template_switch)
+                        screen.save_screen_shot()
+                    except Exception as exc:
+                        screen.save_screen_shot()
+                        utils.print_warning(repr(exc))   
     return func
 
 
