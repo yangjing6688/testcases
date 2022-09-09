@@ -123,4 +123,4 @@ Confirm Actions Button Is Disabled
     [Documentation]     Confirm that the 'Actions' button is disabled
 
     ${result}=    Is Actions Button Enabled
-    Should Be Equal As Integers                ${result}     2
+    Should Be Equal As Strings                ${result}     False
