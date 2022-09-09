@@ -126,6 +126,7 @@ Log In and Set Up Test
 
     Log Into XIQ and Confirm Success  ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
     Disable CoPilot Feature and Confirm Success
+    Refresh Page
 
 Tear Down Test and Close Session
     [Documentation]     Cleans up the components created during the test and ends the test
