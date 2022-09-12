@@ -65,7 +65,13 @@ Clean Up Device
 
 Delete and Disconnect Device From Cloud
     delete device   device_serial=${device1.serial}
-    disconnect device from cloud  ${device1.cli_type}   ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}
+    ${SPAWN_CONNECTION}=      Open Spawn    ${device1.ip}     ${device1.port}   ${device1.username}   ${device1.password}    ${device1.cli_type}
+
+    ${DISC_STATUS_RESULT}=     disconnect device from cloud     ${device1.cli_type}     ${SPAWN_CONNECTION}
+    Should Be Equal As Strings                  ${DISC_STATUS_RESULT}       1
+
+    Close Spawn       ${SPAWN_CONNECTION}
+
 
 Disable SSH and Close Device360 Window
     ${DISABLE_SSH}=                     Device360 Disable SSH Connectivity
