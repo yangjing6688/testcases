@@ -1308,7 +1308,7 @@ def onboarded_one_node(request):
     if onboard_one_node_flag or onboard_two_node_flag:
         dut_list, _ = request.getfixturevalue("onboard")
         return [dut for dut in dut_list if dut.platform.upper() != "STACK"][0]
-    return
+    pytest.fail("Testbed does not have a standalone node.")
 
 
 @pytest.fixture(scope="session")
@@ -1316,7 +1316,7 @@ def onboarded_two_node(request):
     if onboard_two_node_flag:
         dut_list, _ = request.getfixturevalue("onboard")
         return [dut for dut in dut_list if dut.platform.upper() != "STACK"][:2]
-    return
+    pytest.fail("Testbed does not have two standalone nodes.")
 
 
 @pytest.fixture(scope="session")
@@ -1324,7 +1324,7 @@ def onboarded_stack(request):
     if onboard_stack_flag:
         dut_list, _ = request.getfixturevalue("onboard")
         return [dut for dut in dut_list if dut.platform.upper() == "STACK"][0]
-    return
+    pytest.fail("Testbed does not have a stack node.")
 
  
 @pytest.fixture(scope="session")
