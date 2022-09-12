@@ -455,17 +455,20 @@ class XiqTests():
             global setup_flag_connect_fail
             setup_flag_connect_fail = 1
             if '5320' in cls.tb.dut1.model:
-                cls.xiq.Cli.configure_device_to_connect_to_cloud(cls.tb.dut1.cli_type, cls.tb.dut1.ip,
-                                                                 cls.tb.dut1.port, cls.tb.dut1.username,
-                                                                 cls.tb.dut1.password, cls.cfg['sw_connection_host'],
-                                                                 vr='VR-Default', retry_count=30)
+                spawn_connection = cls.xiq.Cli.open_spawn(cls.tb.dut1.ip, cls.tb.dut1.port, cls.tb.dut1.username,
+                                                          cls.tb.dut1.password, cls.tb.dut1.cli_type)
+                cls.xiq.Cli.configure_device_to_connect_to_cloud(cls.tb.dut1.cli_type, cls.cfg['sw_connection_host'],
+                                                                 spawn_connection, vr='VR-Default', retry_count=30)
+                cls.xiq.Cli.close_spawn(spawn_connection)
                 setup_flag_connect_fail = 0
             else:
-                cls.xiq.Cli.configure_device_to_connect_to_cloud(cls.tb.dut1.cli_type, cls.tb.dut1.ip,
-                                                                 cls.tb.dut1.port, cls.tb.dut1.username,
-                                                                 cls.tb.dut1.password, cls.cfg['sw_connection_host'],
-                                                                 vr='VR-Mgmt', retry_count=30)
+                spawn_connection = cls.xiq.Cli.open_spawn(cls.tb.dut1.ip, cls.tb.dut1.port, cls.tb.dut1.username,
+                                                          cls.tb.dut1.password, cls.tb.dut1.cli_type)
+                cls.xiq.Cli.configure_device_to_connect_to_cloud(cls.tb.dut1.cli_type, cls.cfg['sw_connection_host'],
+                                                                 spawn_connection, vr='VR-Mgmt', retry_count=30)
+                cls.xiq.Cli.close_spawn(spawn_connection)
                 setup_flag_connect_fail = 0
+
             if cls.xiq.xflowscommonDevices.wait_until_device_online(device_mac=cls.tb.dut1.mac, retry_count=30) != 1:
                 pytest.fail("Device didn't come online.")
             if cls.tb.dut1.platform == "Stack":

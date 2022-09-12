@@ -148,7 +148,12 @@ Configure Test Device
     # Downgrade the device's iqagent if needed
     Downgrade Iqagent                           ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
 
-    Configure Device To Connect To Cloud        ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${agent}
+    ${SPAWN_CONNECTION}=      Open Spawn       ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
+
+    ${CONF_STATUS_RESULT}=      Configure Device To Connect To Cloud    ${cli_type}      ${agent}     ${SPAWN_CONNECTION}
+    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    Close Spawn       ${SPAWN_CONNECTION}
 
 Onboard Device and Confirm Success
     [Documentation]     Onboards the specified device and confirms the action was successful

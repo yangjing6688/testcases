@@ -7,6 +7,10 @@ ${POLICY_01}                        dummy
 ${SSID_01}                          dummy
 ${NEW_SSID_NAME_1}                  dummy
 
+
+#Update this time because we have an ap that is taking a bit longer
+${MAX_CONFIG_PUSH_TIME}             600
+
 *** Settings ***
 Library     Collections
 Library     extauto/common/Utils.py
@@ -61,7 +65,13 @@ Clean Up Device
 
 Delete and Disconnect Device From Cloud
     delete device   device_serial=${device1.serial}
-    disconnect device from cloud  ${device1.cli_type}   ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}
+    ${SPAWN_CONNECTION}=      Open Spawn    ${device1.ip}     ${device1.port}   ${device1.username}   ${device1.password}    ${device1.cli_type}
+
+    ${DISC_STATUS_RESULT}=     disconnect device from cloud     ${device1.cli_type}     ${SPAWN_CONNECTION}
+    Should Be Equal As Strings                  ${DISC_STATUS_RESULT}       1
+
+    Close Spawn       ${SPAWN_CONNECTION}
+
 
 Disable SSH and Close Device360 Window
     ${DISABLE_SSH}=                     Device360 Disable SSH Connectivity
@@ -73,7 +83,7 @@ Disable SSH and Close Device360 Window
 Validate Device Information
     @{column_list}=    Create List    MGT IP ADDRESS    MAC
     ${DEVICE_INFOMATION}=   get_device_column_information  ${device1.serial}    ${column_list}
-    Validate Device Managment IP Information   ${DEVICE_INFOMATION}
+    Run Keyword If  '${device1.cli_type}' != 'WING-AP'    Validate Device Managment IP Information   ${DEVICE_INFOMATION}
     ${DEVICE_MAC}=                 Get From Dictionary      ${DEVICE_INFOMATION}    MAC
     Should Be Equal As Strings    '${DEVICE_MAC}'           '${device1.mac}'
 
@@ -111,8 +121,12 @@ step2: Advanced Onboard Device on XIQ
     ${ONBOARD_RESULT}=      Advance Onboard Device         ${device1.serial}    device_make=${device1.make}   dev_location=${LOCATION}  device_mac=${device1.mac}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
-    ${CONF_STATUS_RESULT}=      configure device to connect to cloud    ${device1.cli_type}   ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}    ${generic_capwap_url}
+    ${SPAWN_CONNECTION}=      Open Spawn    ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}    ${device1.cli_type}
+
+    ${CONF_STATUS_RESULT}=      Configure Device To Connect To Cloud    ${device1.cli_type}       ${generic_capwap_url}     ${SPAWN_CONNECTION}
     Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    Close Spawn       ${SPAWN_CONNECTION}
 
     ${ONLINE_STATUS_RESULT}=    wait until device online     ${device1.serial}
     Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1
@@ -144,8 +158,12 @@ Step4: Simple Onboard Device on XIQ
     ${ONBOARD_RESULT}=          onboard device      ${device1.serial}       ${device1.make}   device_mac=${device1.mac}  location=${LOCATION}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
-    ${CONF_STATUS_RESULT}=      configure device to connect to cloud    ${device1.cli_type}   ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}    ${generic_capwap_url}
+    ${SPAWN_CONNECTION}=      Open Spawn    ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}    ${device1.cli_type}
+
+    ${CONF_STATUS_RESULT}=      Configure Device To Connect To Cloud     ${device1.cli_type}       ${generic_capwap_url}     ${SPAWN_CONNECTION}
     Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    Close Spawn       ${SPAWN_CONNECTION}
 
     ${ONLINE_STATUS_RESULT}=    wait until device online     ${device1.serial}
     Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1
@@ -164,39 +182,43 @@ step5: Verify Information on Device page (Simple onboaring)
     Depends On              step4
     Validate Device Information
 
-Step6: Generate And Validate Fake Alarms (AH-AP Only)
-    [Documentation]    Chek the generation of alarms
-
-    [Tags]             verify_alarms    development
-
-    Depends On         step5
-
-    # FIXME Need to increase Support for all Devices
-    # Check to see if this test is supported on the device type
-    @{supported_cli_types}=    Create List   AH-AP
-    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
-
-    ${DEVICE_STATUS}=                   Get Device Status       device_mac=${device1.mac}
-    Should contain any                  ${DEVICE_STATUS}    green     config audit mismatch
-
-    ${CLEAR_ALARM_STATUS}=              Clear Alarm                       CRITICAL
-
-    ${SEND_CMD_STATUS}=                 Send Cmd On Device Advanced Cli    device_serial=${device1.serial}    cmd=_test trap-case alert failure
-    Should Not Be Equal As Strings      ${SEND_CMD_STATUS}          '-1'
-    sleep                               120s
-    ${ALARM_DETAILS}=                   Get Alarm Details                  CRITICAL
-    should be equal as strings          '${ALARM_DETAILS}[severity]'       'CRITICAL'
-    should be equal as strings          '${ALARM_DETAILS}[category]'       'System'
-    should be equal as strings          '${ALARM_DETAILS}[description]'    'fan failure.'
-    should be equal as strings          '${ALARM_DETAILS}[deviceMac]'      '${device1.mac}'
+# Waiting for the page to be refreshed in XIQ, this will only support AH-AP Only
+# and will need to be expanded for all other device.
+#Step6: Generate And Validate Fake Alarms (AH-AP Only)
+#    [Documentation]    Chek the generation of alarms
+#
+#    [Tags]             verify_alarms    development
+#
+#    Depends On         step5
+#
+#    # FIXME Need to increase Support for all Devices
+#    # Check to see if this test is supported on the device type
+#    @{supported_cli_types}=    Create List   AH-AP
+#    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+#
+#    ${DEVICE_STATUS}=                   Get Device Status       device_mac=${device1.mac}
+#    Should contain any                  ${DEVICE_STATUS}    green     config audit mismatch
+#
+#    ${CLEAR_ALARM_STATUS}=              Clear Alarm                       CRITICAL
+#
+#    ${SEND_CMD_STATUS}=                 Send Cmd On Device Advanced Cli    device_serial=${device1.serial}    cmd=_test trap-case alert failure
+#    Should Not Be Equal As Strings      ${SEND_CMD_STATUS}          '-1'
+#    sleep                               120s
+#    ${ALARM_DETAILS}=                   Get Alarm Details                  CRITICAL
+#    should be equal as strings          '${ALARM_DETAILS}[severity]'       'CRITICAL'
+#    should be equal as strings          '${ALARM_DETAILS}[category]'       'System'
+#    should be equal as strings          '${ALARM_DETAILS}[description]'    'fan failure.'
+#    should be equal as strings          '${ALARM_DETAILS}[deviceMac]'      '${device1.mac}'
 
 
 Step7: Enable SSH on Switch and Confirm SSH Session Can Be Established
     [Documentation]     Enables SSH for the Switch
 
-    [Tags]              ssh_switch      development
+    [Tags]              ssh     development
 
     Depends On          step5
+
+    enable ssh availability
 
     &{ip_port_info}=                    Device360 Enable SSH CLI Connectivity   ${device1.mac}  run_time=30
     ${ip}=                              Get From Dictionary  ${ip_port_info}  ip
@@ -213,9 +235,12 @@ Step7: Enable SSH on Switch and Confirm SSH Session Can Be Established
 Step8: Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Established
     [Documentation]     Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Established
 
-    [Tags]              ssh_switch      development
+    [Tags]              ssh      development
 
     Depends On           step5
+
+
+    enable ssh availability
 
     &{ip_port_info}=                    Device360 Enable SSH CLI Connectivity   ${device1.mac}  run_time=30
     ${ip}=                              Get From Dictionary  ${ip_port_info}  ip
@@ -292,7 +317,9 @@ Step10: Verification of config push delta update (AH-AP Only)
     Close Spawn        ${SPAWN}
 
 # Not sure if this should be a part of Sanity
-#Step11: IQ engine upgrade to lastest version (AH-AP Only)
+# yes, froce the upgrade
+#
+#Step11: Firmware upgrade to lastest version (AH-AP Only)
 #    [Documentation]         Verify IQ engine upgrade to lastest version ( we should just make sure it was upgraded )
 #    [Tags]			        push_config     development
 #    Depends On             step1

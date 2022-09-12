@@ -146,8 +146,8 @@ TCCS-11614: Social login with facebook
     ${UPDATE_NW_POLICY_STATUS}=             Update Network Policy To AP   ${NW_POLICY_NAME1}     ap_serial=${ap1.serial}
     should be equal as integers             ${UPDATE_NW_POLICY_STATUS}               1
 
-    Log to Console      Sleep for 60 seconds after push
-    sleep                         60
+    Log to Console      wait_until_device_update_done
+    wait_until_device_update_done   device_serial=${ap1.serial}
 
     Remote_Server.Connect Open Network    ${NW_POLICY_SSID1}
 
@@ -156,7 +156,7 @@ TCCS-11614: Social login with facebook
 
     # Internet should attempt to go out the wifi. populate arp entries and just make everything run smooother.
     # Pinging the AP IP, which should be on the same subnet as the MU wifi, would accomplish similar goals.
-    Remote_Server.Ping Check In Background     www.facebook.com      30
+    #Remote_Server.Ping Check In Background     www.facebook.com      30
 
     open cp browser    ${mu1.ip}
     Log to Console      Sleep for ${cp_page_open_wait}
