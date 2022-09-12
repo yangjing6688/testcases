@@ -1504,3 +1504,20 @@ def get_stack_slots(utils, enter_switch_cli):
             utils.print_info(f"Found these slots on the stack device '{dut.name}': {dump_data(slots_info)}")
             return slots_info
     return func
+
+
+@pytest.fixture(scope="session")
+def modify_stacking_node(enter_switch_cli, reboot_device):
+    
+    def func(dut, node_mac_address, op):
+        if not (dut.platform.upper() == "STACK" and dut.cli_type.upper() == "EXOS"):
+            pytest.fail(f"Given device is not an EXOS stack: '{dut}'")
+
+        assert op in ["enable", "disable"], "Op argument should be 'enbale' or 'disable'"
+        
+        with enter_switch_cli(dut) as dev_cmd:
+            cmd = f"{op} stacking node-address {node_mac_address}"
+            dev_cmd.send_cmd(dut.name, cmd, max_wait=10, interval=2)
+        
+        reboot_device(dut)
+    return func
