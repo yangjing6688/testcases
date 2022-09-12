@@ -16,3 +16,4 @@ acct_logs_duration_wait:          60
 max_config_push_time:             300
 xiq_device_connect_wait:          300
 voss_device_connect_wait:         180
+receive_mail:                     10
