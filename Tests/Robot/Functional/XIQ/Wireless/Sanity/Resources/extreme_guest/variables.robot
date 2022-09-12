@@ -1,5 +1,5 @@
 *** Variables ***
-${CMD_CLEAR_CLIENT_MAC}         clear auth station mac ${MU1_WIFI_MAC}
+${CMD_CLEAR_CLIENT_MAC}         clear auth station mac ${mu1.wifi_mac}
 ${CMD_CLEAR_CLIENT_SSID0}        clear auth station ssid ${SSID_NAME0}
 ${CMD_CLEAR_CLIENT_SSID1}        clear auth station ssid ${SSID_NAME1}
 ${CMD_CLEAR_CLIENT_SSID2}        clear auth station ssid ${SSID_NAME2}

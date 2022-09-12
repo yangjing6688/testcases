@@ -9,7 +9,7 @@
 Force Tags  testbed_1_node
 Variables   Environments/${TOPO}
 Variables   Environments/${ENV}
-Resource    Tests/Robot/Functional/XIQ/Wireless/Extreme_Guest/Resources/extreme_guest/settings.robot
+Resource    Tests/Robot/Functional/XIQ/Wireless/Extreme_Guest/Resources/settings.robot
 
 *** Test Cases ***
 TCCS-13022 Step1: Perform BackUp VIQ

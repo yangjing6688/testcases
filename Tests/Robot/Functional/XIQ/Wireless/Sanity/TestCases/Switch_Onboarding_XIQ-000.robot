@@ -56,9 +56,13 @@ TCCS-7748_Step2: Config Aerohive/Fastpath Switch to Report AIO
     ELSE IF     '${aerohive_sw1.cli_type}'=='AH-AP'
                     Set Test Variable   ${CAPWAP_URL}   ${capwap_url}
     END
-    ${CONFIG_RESULT}=   Configure Device to Connect to Cloud    ${aerohive_sw1.cli_type}    ${aerohive_sw1.ip}  ${aerohive_sw1.port}  ${aerohive_sw1.username}  ${aerohive_sw1.password}  ${CAPWAP_URL}
-    Should Be Equal as Integers         ${CONFIG_RESULT}        1
 
+    ${SPAWN_CONNECTION}=      Open Spawn    ${aerohive_sw1.ip}     ${aerohive_sw1.port}   ${aerohive_sw1.username}   ${aerohive_sw1.password}    ${aerohive_sw1.cli_type}
+
+    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud        ${aerohive_sw1.cli_type}       ${CAPWAP_URL}       ${SPAWN_CONNECTION}
+    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    Close Spawn        ${SPAWN_CONNECTION}
 
 TCCS-7748_Step3: Check Aerohive Switch Status On UI
     [Documentation]     Checks for switch status

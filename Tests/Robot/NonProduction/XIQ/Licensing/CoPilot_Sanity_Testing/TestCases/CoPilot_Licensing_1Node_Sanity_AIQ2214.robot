@@ -49,14 +49,14 @@ ${LOCATION}                 San Jose, building_01, floor_02
 *** Test Cases ***
 Test 1: Verify Pilot and CoPilot Baseline License Counts
     [Documentation]     Confirms license counts are at expected values in XIQ to begin with (nothing consumed)
-    [Tags]              tccs-13439    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test1
+    [Tags]              tccs-13439    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test1
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       10   0    0
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
 
 Test 2: Onboard Device and Verify Success
     [Documentation]     Onboards test device and verifies success
-    [Tags]              tccs-13439    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test2
+    [Tags]              tccs-13439    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test2
 
     Depends On          Test 1
 
@@ -76,7 +76,7 @@ Test 2: Onboard Device and Verify Success
 
 Test 3: Verify Device Consumes Pilot and CoPilot License Within Global Settings License Management
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
-    [Tags]              tccs-13439    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test3
+    [Tags]              tccs-13439    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test3
 
     Depends On          Test 1
 
@@ -85,7 +85,7 @@ Test 3: Verify Device Consumes Pilot and CoPilot License Within Global Settings 
 
 Test 4: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify device consumed the appropriate license or not
-    [Tags]              tccs-13439    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test4
+    [Tags]              tccs-13439    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test4
 
     Depends On          Test 1
 
@@ -99,7 +99,7 @@ Test 4: Verify Device License and CoPilot Column Values
 
 Test 5: Delete Device and Verify Success
     [Documentation]     Deletes the device and verifies success
-    [Tags]              tccs-13439    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test5
+    [Tags]              tccs-13439    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test5
 
     Depends On          Test 1
 
@@ -107,7 +107,7 @@ Test 5: Delete Device and Verify Success
 
 Test 6: Verify Pilot and CoPilot Licenses Revoked Within Global Settings License Management
     [Documentation]     Confirms the Pilot and CoPilot licenses are revoked
-    [Tags]              tccs-13439    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test6
+    [Tags]              tccs-13439    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test6
 
     Depends On          Test 1
 
@@ -120,13 +120,25 @@ Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ and sets up the elements necessary to complete this test suite
 
     Log Into XIQ and Confirm Success            ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
-    Enable CoPilot Feature For This VIQ
+    Enable CoPilot Feature and Confirm Success
 
 Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
 
-    Disable CoPilot Feature For This VIQ
+    Disable CoPilot Feature and Confirm Success
     Log Out of XIQ and Quit Browser
+
+Enable CoPilot Feature and Confirm Success
+    [Documentation]     Enables CoPilot feature in Global Settings -> VIQ Management and verifies success
+
+    ${result_enable}=    Enable CoPilot Feature For This VIQ
+    Should Be Equal As Integers     ${result_enable}     1
+
+Disable CoPilot Feature and Confirm Success
+    [Documentation]     Disables CoPilot feature in Global Settings -> VIQ Management and verifies success
+
+    ${result_disable}=    Disable CoPilot Feature For This VIQ
+    Should Be Equal As Integers     ${result_disable}     1
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
