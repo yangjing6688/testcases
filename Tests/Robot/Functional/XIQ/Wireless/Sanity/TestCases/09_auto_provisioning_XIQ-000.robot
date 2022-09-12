@@ -126,7 +126,12 @@ TCCS-7632: Configure AP Auto Provision Profile
     ${ONBOARD_RESULT}=      Onboard Device          ${ap1.serial}           ${ap1.make}       location=${LOCATION}      device_os=${ap1.cli_type}
     Should Be Equal As Integers                     ${ONBOARD_RESULT}          1
 
-    Configure Device To Connect To Cloud             ${ap1.cli_type}    ${ap1.ip}     ${ap1.port}    ${ap1.username}       ${ap1.password}    ${capwap_url}
+    ${SPAWN_CONNECTION}=      Open Spawn    ${ap1.ip}     ${ap1.port}   ${ap1.username}   ${ap1.password}    ${ap1.cli_type}
+
+    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud             ${ap1.cli_type}       ${capwap_url}       ${SPAWN_CONNECTION}
+    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    Close Spawn       ${SPAWN_CONNECTION}
 
     Log to Console      Waiting until the AP is online
 
@@ -137,6 +142,7 @@ TCCS-7632: Configure AP Auto Provision Profile
     Should Be Equal As Integers                     ${verify_result}        1
 
     Sleep       ${max_config_push_time}
+
 
 TCCS-7571: Configure Switch Auto Provision Profile
     [Documentation]         Configure Switch  Autoporvision Profile
@@ -165,7 +171,12 @@ TCCS-7571: Configure Switch Auto Provision Profile
     ${ONBOARD_RESULT}=      Onboard Device          ${aerohive_sw1.serial}           ${aerohive_sw1.make}       location=${LOCATION}
     Should Be Equal As Integers                     ${ONBOARD_RESULT}          1
 
-    Configure Device To Connect To Cloud             ${aerohive_sw1.cli_type}    ${aerohive_sw1.ip}    ${aerohive_sw1.port}   ${aerohive_sw1.username}       ${aerohive_sw1.password}    ${sw_capwap_url}
+    ${SPAWN_CONNECTION}=      Open Spawn    ${aerohive_sw1.ip}     ${aerohive_sw1.port}   ${aerohive_sw1.username}   ${aerohive_sw1.password}    ${aerohive_sw1.cli_type}
+
+    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud             ${aerohive_sw1.cli_type}       ${sw_capwap_url}       ${SPAWN_CONNECTION}
+    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    Close Spawn        ${SPAWN_CONNECTION}
 
     Log to Console      Waiting until the switch is online
     Sleep               ${config_push_wait}
