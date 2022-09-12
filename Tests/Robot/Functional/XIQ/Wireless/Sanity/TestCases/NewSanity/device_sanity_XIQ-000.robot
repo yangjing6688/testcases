@@ -115,8 +115,12 @@ step2: Advanced Onboard Device on XIQ
     ${ONBOARD_RESULT}=      Advance Onboard Device         ${device1.serial}    device_make=${device1.make}   dev_location=${LOCATION}  device_mac=${device1.mac}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
-    ${CONF_STATUS_RESULT}=      configure device to connect to cloud    ${device1.cli_type}   ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}    ${generic_capwap_url}
+    ${SPAWN_CONNECTION}=      Open Spawn    ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}    ${device1.cli_type}
+
+    ${CONF_STATUS_RESULT}=      Configure Device To Connect To Cloud    ${device1.cli_type}       ${generic_capwap_url}     ${SPAWN_CONNECTION}
     Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    Close Spawn       ${SPAWN_CONNECTION}
 
     ${ONLINE_STATUS_RESULT}=    wait until device online     ${device1.serial}
     Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1
@@ -148,8 +152,12 @@ Step4: Simple Onboard Device on XIQ
     ${ONBOARD_RESULT}=          onboard device      ${device1.serial}       ${device1.make}   device_mac=${device1.mac}  location=${LOCATION}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
-    ${CONF_STATUS_RESULT}=      configure device to connect to cloud    ${device1.cli_type}   ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}    ${generic_capwap_url}
+    ${SPAWN_CONNECTION}=      Open Spawn    ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}    ${device1.cli_type}
+
+    ${CONF_STATUS_RESULT}=      Configure Device To Connect To Cloud     ${device1.cli_type}       ${generic_capwap_url}     ${SPAWN_CONNECTION}
     Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    Close Spawn       ${SPAWN_CONNECTION}
 
     ${ONLINE_STATUS_RESULT}=    wait until device online     ${device1.serial}
     Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1

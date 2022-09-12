@@ -76,7 +76,14 @@ TCCS-7299_Step1: Configure VOSS Switch
     [Tags]              production      tccs_7299       tccs_7299_step1
 
     Reset VOSS Switch to Factory Defaults       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CONNECTION_METHOD}
-    configure_device_to_connect_to_cloud    ${DUT_cli_type}  ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}   ${DUT_PASSWORD}    ${sw_capwap_url}
+
+    ${SPAWN_CONNECTION}=      Open Spawn    ${DUT_IP}     ${DUT_PORT}  ${DUT_USERNAME}   ${DUT_PASSWORD}    ${DUT_cli_type}
+
+    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud             ${DUT_cli_type}      ${sw_capwap_url}      ${SPAWN_CONNECTION}
+    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    Close Spawn       ${SPAWN_CONNECTION}
+
 
 TCCS-7299_Step2: Onboard VOSS Device With Policy and Location Set Using Quick Add
     [Documentation]     Confirms a VOSS switch can be onboarded with policy and location set via the Quick Add workflow

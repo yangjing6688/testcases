@@ -137,8 +137,12 @@ Configure CAPWAP Device To Connect To Cloud
     [Documentation]     Configure the CAPWAP client with the necessary configuration on the Device to Connect to Cloud
     [Arguments]         ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${capwap_url}
 
-    ${CONFIG_RESULT}=   Configure Device To Connect To Cloud    ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${capwap_url}
-    Should Be Equal as Integers         ${CONFIG_RESULT}        1
+    ${SPAWN_CONNECTION}=      Open Spawn        ${ip}  ${port}  ${user}  ${pwd}   ${cli_type}
+
+    ${CONF_STATUS_RESULT}=      Configure Device To Connect To Cloud    ${cli_type}      ${capwap_url}     ${SPAWN_CONNECTION}
+    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    Close Spawn       ${SPAWN_CONNECTION}
 
 Configure iqagent for Aerohive Switch
     [Documentation]     Configures the iqagent for the Aerohive switch
