@@ -597,6 +597,7 @@ def enter_switch_cli(network_manager, close_connection, dev_cmd):
     @contextmanager
     def func(dut):
         try:
+            close_connection(dut)
             network_manager.connect_to_network_element_name(dut.name)
             yield dev_cmd
         finally:
@@ -749,6 +750,11 @@ def navigator():
 def utils():
     from extauto.common.Utils import Utils
     return Utils()
+
+
+@pytest.fixture(scope="session")
+def wait_till(utils):
+    return utils.wait_till
 
 
 @pytest.fixture(scope="session")
@@ -952,6 +958,11 @@ def update_test_name(loaded_config):
 def default_library():
     from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary
     return DefaultLibrary()
+
+
+@pytest.fixture(scope="session")
+def udks(default_library):
+    return default_library.apiUdks
 
 
 @pytest.fixture(scope="session")
@@ -1520,4 +1531,49 @@ def modify_stacking_node(enter_switch_cli, reboot_device):
             dev_cmd.send_cmd(dut.name, cmd, max_wait=10, interval=2)
         
         reboot_device(dut)
+    return func
+
+
+@pytest.fixture(scope="session")
+def set_lldp(enter_switch_cli):
+    
+    def func(dut, ports, action="enable"):
+        with enter_switch_cli(dut) as dev_cmd:
+            if dut.cli_type.upper() == "EXOS":
+                if action == "enable":
+                    dev_cmd.send_cmd(dut.name, 'enable cdp ports all', max_wait=10, interval=2)
+                    dev_cmd.send_cmd(dut.name, 'enable edp ports all', max_wait=10, interval=2)
+                    dev_cmd.send_cmd(dut.name, 'enable lldp ports all', max_wait=10, interval=2)
+                elif action == "disable":
+                    dev_cmd.send_cmd(dut.name, 'disable cdp ports all', max_wait=10, interval=2)
+                    dev_cmd.send_cmd(dut.name, 'disable edp ports all', max_wait=10, interval=2)
+                    dev_cmd.send_cmd(dut.name, 'disable lldp ports all', max_wait=10, interval=2)
+
+            elif dut.cli_type.upper() == "VOSS":
+                dev_cmd.send_cmd(dut.name, "enable", max_wait=10, interval=2)
+                dev_cmd.send_cmd(dut.name, "configure terminal", max_wait=10, interval=2)
+                dev_cmd.send_cmd(
+                    dut.name, f"interface gigabitEthernet {ports[0]}-{ports[-1]}", max_wait=10, interval=2)
+                cmd_action = f"lldp port {ports[0]}-{ports[-1]} cdp enable"
+                if action == "enable":
+                    dev_cmd.send_cmd(dut.name, "no auto-sense enable", max_wait=10, interval=2)
+                    dev_cmd.send_cmd(dut.name, "no fa enable", max_wait=10, interval=2)
+                    dev_cmd.send_cmd(dut.name, cmd_action, max_wait=10, interval=2)
+                    dev_cmd.send_cmd(dut.name, "fa enable", max_wait=10, interval=2)
+                    dev_cmd.send_cmd(dut.name, "auto-sense enable", max_wait=10, interval=2)
+                elif action == "disable":
+                    dev_cmd.send_cmd(dut.name, "no " + cmd_action, max_wait=10, interval=2)
+    return func
+
+
+@pytest.fixture(scope="session")
+def clear_traffic_counters(enter_switch_cli):
+    def func(dut, *ports):
+        with enter_switch_cli(dut) as dev_cmd:
+            if dut.cli_type.upper() == "EXOS":
+                    dev_cmd.send_cmd(
+                    dut.name, f"clear counters ports {','.join(ports)}", max_wait=10, interval=2)
+            elif dut.cli_type.upper() == "VOSS":
+                dev_cmd.send_cmd(
+                    dut.name, f"clear-stats port {','.join(ports)}", max_wait=10, interval=2)
     return func
