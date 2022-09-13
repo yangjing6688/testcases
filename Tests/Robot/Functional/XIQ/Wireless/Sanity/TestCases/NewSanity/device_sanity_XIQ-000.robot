@@ -47,8 +47,12 @@ Test Suite Setup
     # netelem1  => device1 (EXOS / VOSS)
     convert to generic device object   device  index=1
 
+    ${SW_SPAWN}=     Open Spawn          ${device1.ip}   ${device1.port}   ${device1.username}   ${device1.password}   ${device1.cli_type}
     # downgrade the device if needed
-    downgrade iqagent  ${device1.ip}   ${device1.port}   ${device1.username}   ${device1.password}   ${device1.cli_type}
+    ${DOWNGRADE_IQAGENT}=        downgrade iqagent      ${device1.cli_type}       ${SW_SPAWN}
+    Should Be Equal As Integers         ${DOWNGRADE_IQAGENT}       1
+
+    Close Spawn     ${SW_SPAWN}
 
     # log in the user
     Login User      ${tenant_username}      ${tenant_password}

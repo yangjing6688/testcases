@@ -79,9 +79,14 @@ Test 2: Onboard First Device and Verify Success
     Depends On          Test 1
 
     # Downgrade the device's iqagent if needed
-    Downgrade Iqagent                           ${DUT1_IP}   ${DUT1_PORT}   ${DUT1_USERNAME}   ${DUT1_PASSWORD}   ${DUT1_CLI_TYPE}
+    ${SPAWN_CONNECTION}=      Open Spawn        ${DUT1_IP}   ${DUT1_PORT}   ${DUT1_USERNAME}   ${DUT1_PASSWORD}   ${DUT1_CLI_TYPE}
+    ${DOWNGRADE_IQAGENT}=     Downgrade Iqagent              ${DUT1_CLI_TYPE}         ${SPAWN_CONNECTION}
+    Should Be Equal As Integers      ${DOWNGRADE_IQAGENT}     1
 
-    Configure Device To Connect To Cloud        ${DUT1_CLI_TYPE}  ${DUT1_IP}  ${DUT1_PORT}  ${DUT1_USERNAME}  ${DUT1_PASSWORD}  ${IQAGENT}  vr=${DUT1_VR}
+    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud        ${DUT1_CLI_TYPE}    ${IQAGENT}   ${SPAWN_CONNECTION}    vr=${DUT1_VR}
+    Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
+    Close Spawn         ${SPAWN_CONNECTION}
+
     Onboard New Test Device                     ${DUT1_SERIAL}  ${DUT1_MAKE}  ${LOCATION}
 
     ${selected}=    Column Picker Select        ${COLUMN_1}     ${COLUMN_2}    ${COLUMN_3}
@@ -108,9 +113,14 @@ Test 4: Onboard Second Test Device and Verify Success
     Depends On          Test 1
 
     # Downgrade the device's iqagent if needed
-    Downgrade Iqagent                           ${DUT2_IP}   ${DUT2_PORT}   ${DUT2_USERNAME}   ${DUT2_PASSWORD}   ${DUT2_CLI_TYPE}
+    ${SPAWN_CONNECTION}=      Open Spawn        ${DUT2_IP}   ${DUT2_PORT}   ${DUT2_USERNAME}   ${DUT2_PASSWORD}   ${DUT2_CLI_TYPE}
+    ${DOWNGRADE_IQAGENT}=     Downgrade Iqagent              ${DUT2_CLI_TYPE}         ${SPAWN_CONNECTION}
+    Should Be Equal As Integers      ${DOWNGRADE_IQAGENT}     1
 
-    Configure Device To Connect To Cloud        ${DUT2_CLI_TYPE}  ${DUT2_IP}  ${DUT2_PORT}  ${DUT2_USERNAME}  ${DUT2_PASSWORD}  ${IQAGENT}    vr=${DUT2_VR}
+    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud        ${DUT2_CLI_TYPE}    ${IQAGENT}   ${SPAWN_CONNECTION}    vr=${DUT2_VR}
+    Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
+    Close Spawn         ${SPAWN_CONNECTION}
+
     Onboard New Test Device                     ${DUT2_SERIAL}  ${DUT2_MAKE}  ${LOCATION}
 
     Refresh Devices Page
@@ -135,9 +145,14 @@ Test 6: Onboard Third Test Device and Verify Success
     Depends On          Test 1
 
     # Downgrade the device's iqagent if needed
-    Downgrade Iqagent                           ${DUT3_IP}   ${DUT3_PORT}   ${DUT3_USERNAME}   ${DUT3_PASSWORD}   ${DUT3_CLI_TYPE}
+    ${SPAWN_CONNECTION}=      Open Spawn        ${DUT3_IP}   ${DUT3_PORT}   ${DUT3_USERNAME}   ${DUT3_PASSWORD}   ${DUT3_CLI_TYPE}
+    ${DOWNGRADE_IQAGENT}=     Downgrade Iqagent              ${DUT3_CLI_TYPE}         ${SPAWN_CONNECTION}
+    Should Be Equal As Integers      ${DOWNGRADE_IQAGENT}     1
 
-    Configure Device To Connect To Cloud        ${DUT3_CLI_TYPE}  ${DUT3_IP}  ${DUT3_PORT}  ${DUT3_USERNAME}  ${DUT3_PASSWORD}  ${IQAGENT}  vr=${DUT3_VR}
+    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud        ${DUT3_CLI_TYPE}    ${IQAGENT}   ${SPAWN_CONNECTION}    vr=${DUT3_VR}
+    Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
+    Close Spawn         ${SPAWN_CONNECTION}
+
     Onboard New Test Device                     ${DUT3_SERIAL}  ${DUT3_MAKE}  ${LOCATION}
 
     Refresh Devices Page
