@@ -17,14 +17,8 @@ from ..Resources.SuiteUdks import SuiteUdk
 # Test case setup and tear down
 def test_case_one_setup_teardown_skip_test(request):
     request.instance.executionHelper.testSkipCheck()
-    # request.instance.xiq.login.login_user(request.instance.tb.config.tenant_username,
-    #                                       request.instance.tb.config.tenant_password,
-    #                                       url=request.instance.tb.config.test_url,
-    #                                       IRV=True)
     yield
     # Teardown (after yield)
-    # request.instance.xiq.login.logout_user()
-    # request.instance.xiq.login.quit_browser()
 
 @fixture()
 # Test case setup and tear down
