@@ -411,8 +411,13 @@ Set Up XIQ Components
 
     # Onboard a test device managed by XIQ
     Onboard New XIQ Device                                      ${XIQ_DUT_SERIAL}  ${XIQ_DUT_MAKE}  ${LOCATION}
-    ${CONFIG_RESULT}=   Configure Device To Connect To Cloud    ${XIQ_DUT_CLI_TYPE}  ${XIQ_DUT_IP}  ${XIQ_DUT_PORT}  ${XIQ_DUT_USERNAME}  ${XIQ_DUT_PASSWORD}  ${XIQ_CAPWAP_URL}
-    Should Be Equal as Integers                                 ${CONFIG_RESULT}        1
+
+    ${SPAWN_CONNECTION}=      Open Spawn       ${XIQ_DUT_IP}  ${XIQ_DUT_PORT}  ${XIQ_DUT_USERNAME}  ${XIQ_DUT_PASSWORD}  ${XIQ_DUT_CLI_TYPE}
+
+    ${CONF_STATUS_RESULT}=      Configure Device To Connect To Cloud    ${XIQ_DUT_CLI_TYPE}      ${XIQ_CAPWAP_URL}    ${SPAWN_CONNECTION}
+    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    Close Spawn       ${SPAWN_CONNECTION}
 
     ${conn_result}=  Wait Until Device Online   ${XIQ_DUT_SERIAL}
     Should Be Equal As Integers                 ${conn_result}     1

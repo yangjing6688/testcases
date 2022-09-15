@@ -78,8 +78,12 @@ TCCS-7279_Step2: Config AP to Report XIQ
 
     Depends On          TCCS_7279_Step1
 
-    ${CONF_STATUS_RESULT}=      configure device to connect to cloud    ${wing1.cli_type}   ${wing1.ip}    ${wing1.port}   ${wing1.username}    ${wing1.password}    ${wing_capwap_url}
+    ${SPAWN_CONNECTION}=      Open Spawn    ${wing1.ip}     ${wing1.port}   ${wing1.username}   ${wing1.password}    ${wing1.cli_type}
+
+    ${CONF_STATUS_RESULT}=      Configure Device To Connect To Cloud    ${wing1.cli_type}     ${wing_capwap_url}      ${SPAWN_CONNECTION}
     Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    [Teardown]      Close Spawn         ${SPAWN_CONNECTION}
 
 TCCS-7279_Step3: Check AP Status On UI
     [Documentation]     Checks for ap status

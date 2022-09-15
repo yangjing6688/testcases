@@ -118,7 +118,13 @@ Configure Test Device
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${agent}
 
     Boot Switch To Known Good Configuration     ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
-    Configure Device To Connect To Cloud        ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${agent}
+
+    ${SPAWN_CONNECTION}=      Open Spawn       ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
+
+    ${CONF_STATUS_RESULT}=      Configure Device To Connect To Cloud    ${cli_type}      ${agent}     ${SPAWN_CONNECTION}
+    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    Close Spawn       ${SPAWN_CONNECTION}
 
 Confirm Event Exists
     [Documentation]     Confirms the specified event exists after the specified time

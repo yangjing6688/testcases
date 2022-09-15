@@ -43,9 +43,10 @@ class onboardDeviceVSP4900UsingCsvTests():
 
             # Create the new object for the XIQ / XIQSE Libraries
             cls.xiq = XiqLibrary()
-
-            cls.xiq.Cli.downgrade_iqagent(cls.tb.dut1_ip, cls.tb.dut1_port, cls.tb.dut1_username, cls.tb.dut1_password,
-                                          cls.tb.dut1_cli_type)
+            spawn_connection = cls.xiq.Cli.open_spawn(cls.tb.dut1_ip, cls.tb.dut1_port, cls.tb.dut1_username,
+                                                      cls.tb.dut1_password, cls.tb.dut1_cli_type)
+            cls.xiq.Cli.downgrade_iqagent(cls.tb.dut1_cli_type, spawn_connection)
+            cls.xiq.Cli.close_spawn(spawn_connection)
 
             cls.xiq.login.login_user(cls.tb.config.tenant_username,
                                      cls.tb.config.tenant_password,

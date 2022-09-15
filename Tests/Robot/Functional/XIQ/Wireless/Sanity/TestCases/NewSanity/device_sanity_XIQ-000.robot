@@ -7,8 +7,7 @@ ${POLICY_01}                        dummy
 ${SSID_01}                          dummy
 ${NEW_SSID_NAME_1}                  dummy
 
-
-#Update this time because we have an ap that is taking a bit longer
+# Update this time because we have an ap that is taking a bit longer
 ${MAX_CONFIG_PUSH_TIME}             600
 
 *** Settings ***
@@ -27,6 +26,7 @@ Library     ExtremeAutomation/Imports/CommonObjectUtils.py
 Library     extauto/xiq/flows/manage/AdvanceOnboarding.py
 Library     extauto/xiq/flows/manage/Alarms.py
 Library     extauto/xiq/flows/manage/DeviceCliAccess.py
+Library     ExtremeAutomation/Keywords/UserDefinedKeywords/NetworkElements/SetupTeardown/SetupTeardownUdks.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -39,6 +39,8 @@ Force Tags   testbed_1_node
 Suite Setup     Test Suite Setup
 Suite Teardown     Test Suite Teardown
 
+
+
 *** Keywords ***
 Test Suite Setup
     # Use this method to convert the ap, wing, netelem to a generic device object
@@ -47,8 +49,12 @@ Test Suite Setup
     # netelem1  => device1 (EXOS / VOSS)
     convert to generic device object   device  index=1
 
+    # Create the connection to the device(s)
+    Base Test Suite Setup
+    Set Global Variable    ${MAIN_DEVICE_SPAWN}    ${device1.name}
+
     # downgrade the device if needed
-    downgrade iqagent  ${device1.ip}   ${device1.port}   ${device1.username}   ${device1.password}   ${device1.cli_type}
+    downgrade iqagent      ${device1.cli_type}  ${MAIN_DEVICE_SPAWN}
 
     # log in the user
     Login User      ${tenant_username}      ${tenant_password}
@@ -57,6 +63,7 @@ Test Suite Teardown
     Clean Up Device
     Logout User
     Quit Browser
+    Base Test Suite Cleanup
 
 Clean Up Device
     ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_cli_feedback=true
@@ -65,7 +72,7 @@ Clean Up Device
 
 Delete and Disconnect Device From Cloud
     delete device   device_serial=${device1.serial}
-    disconnect device from cloud  ${device1.cli_type}   ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}
+    disconnect device from cloud     ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
 
 Disable SSH and Close Device360 Window
     ${DISABLE_SSH}=                     Device360 Disable SSH Connectivity
@@ -115,8 +122,7 @@ step2: Advanced Onboard Device on XIQ
     ${ONBOARD_RESULT}=      Advance Onboard Device         ${device1.serial}    device_make=${device1.make}   dev_location=${LOCATION}  device_mac=${device1.mac}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
-    ${CONF_STATUS_RESULT}=      configure device to connect to cloud    ${device1.cli_type}   ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}    ${generic_capwap_url}
-    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+    configure device to connect to cloud    ${device1.cli_type}    ${generic_capwap_url}  ${MAIN_DEVICE_SPAWN}
 
     ${ONLINE_STATUS_RESULT}=    wait until device online     ${device1.serial}
     Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1
@@ -148,8 +154,9 @@ Step4: Simple Onboard Device on XIQ
     ${ONBOARD_RESULT}=          onboard device      ${device1.serial}       ${device1.make}   device_mac=${device1.mac}  location=${LOCATION}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
-    ${CONF_STATUS_RESULT}=      configure device to connect to cloud    ${device1.cli_type}   ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}    ${generic_capwap_url}
-    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+    configure device to connect to cloud    ${device1.cli_type}   ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    # configure device to connect to cloud    ${device1.cli_type}  ${device1.ip}     ${device1.port}   ${device1.username}   ${device1.password}   ${generic_capwap_url}
+
 
     ${ONLINE_STATUS_RESULT}=    wait until device online     ${device1.serial}
     Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1
@@ -269,11 +276,8 @@ Step9: Verification of config push complete config update (AH-AP Only)
     ${CONNECTED_STATUS}=            Wait Until Device Online                ${device1.serial}   None   30   20
     Should Be Equal as Integers     ${CONNECTED_STATUS}          1
 
-    ${SPAWN}=               Open Spawn      ${device1.ip}   ${device1.port}      ${device1.username}       ${device1.password}        ${device1.cli_type}
-    ${OUTPUT1}=             Send            ${SPAWN}                show ssid
-
+    ${OUTPUT1}=             Send           ${MAIN_DEVICE_SPAWN}                show ssid
     Should Contain                          ${OUTPUT1}                  ${SSID_01}
-    Close Spawn        ${SPAWN}
 
 
 Step10: Verification of config push delta update (AH-AP Only)
@@ -296,11 +300,8 @@ Step10: Verification of config push delta update (AH-AP Only)
     ${CONNECTED_STATUS}=    Wait Until Device Online                ${device1.serial}
     Should Be Equal as Integers             ${CONNECTED_STATUS}          1
 
-    ${SPAWN}=               Open Spawn      ${device1.ip}   ${device1.port}      ${device1.username}       ${device1.password}        ${device1.cli_type}
-    ${OUTPUT1}=             Send            ${SPAWN}                show ssid
-
+    ${OUTPUT1}=             Send            ${MAIN_DEVICE_SPAWN}              show ssid
     Should Contain                          ${OUTPUT1}                  ${NEW_SSID_NAME_1}
-    Close Spawn        ${SPAWN}
 
 # Not sure if this should be a part of Sanity
 # yes, froce the upgrade
