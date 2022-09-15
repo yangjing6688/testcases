@@ -40,7 +40,6 @@ Suite Setup     Test Suite Setup
 Suite Teardown     Test Suite Teardown
 
 
-
 *** Keywords ***
 Test Suite Setup
     # Use this method to convert the ap, wing, netelem to a generic device object
@@ -75,7 +74,7 @@ Delete and Disconnect Device From Cloud
     disconnect device from cloud     ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
 
 Disable SSH and Close Device360 Window
-    ${DISABLE_SSH}=                     Device360 Disable SSH Connectivity
+    ${DISABLE_SSH}=                     Device360 Disable SSH Connectivity   ${device1.mac}
     Should Be Equal As Integers         ${DISABLE_SSH}     1
 
     ${CLOSE_DEVICE360_WINDOW}=          Close Device360 Window
