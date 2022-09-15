@@ -1354,12 +1354,12 @@ def dut_ports(enter_switch_cli, dut_list):
                     dut.name, 'disable cli paging', max_wait=10, interval=2)
                 output = dev_cmd.send_cmd(
                     dut.name, 'show ports info', max_wait=20, interval=5)[0].return_text
-                p = re.compile(r'^\d+:\d+', re.M)
+                p = re.compile(r'^(\d+:\d+)\s+', re.M)
                 match_port = re.findall(p, output)
                 is_stack = True
                 if len(match_port) == 0:
                     is_stack = False
-                    p = re.compile(r'^\d+', re.M)
+                    p = re.compile(r'^(\d+)\s+', re.M)
                     match_port = re.findall(p, output)
 
                 p_notPresent = re.compile(r'^\d+:\d+.*NotPresent.*$', re.M) if is_stack \
