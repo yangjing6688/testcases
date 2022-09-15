@@ -14,7 +14,7 @@ import re
 import string
 import random
 import subprocess
-
+import traceback
 
 from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
 from contextlib import contextmanager
@@ -1269,10 +1269,10 @@ def onboard(request):
     utils.print_info(f"These are the policies and switch templates that will be applied to the onboarded devices:"
                      f"\n{dump_data(policy_config)}")
     
-    configure_iq_agent()
-
     try:
-
+        
+        configure_iq_agent()
+        
         with login_xiq() as xiq:
                 
             change_device_management_settings(xiq, option="disable")
@@ -1288,7 +1288,12 @@ def onboard(request):
             update_devices(xiq)
 
         yield dut_list, policy_config
-
+        
+    except Exception as exc:
+        utils.print_error(repr(exc))
+        utils.print_error(traceback.format_exc())
+        pytest.fail(f"The onboarding failed for these devices: {dut_list}\n{traceback.format_exc()}")
+    
     finally:
         
         with login_xiq() as xiq:
