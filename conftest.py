@@ -1124,13 +1124,13 @@ def pytest_collection_modifyitems(session, items):
     global onboard_stack_flag
     
     testbed = PytestConfigHelper(config)
-    nodes = list(filter(lambda d: d is not None, [getattr(testbed, f"dut{i}", None) for i in range(1, 5)]))
+    nodes = list(filter(lambda d: d is not None, [getattr(testbed, f"dut{i}", None) for i in range(1, 10)]))
     temp_items = items[:]
 
     standalone_nodes = [node for node in nodes if node.get("platform", "").upper() != "STACK"]
     stack_nodes = [node for node in nodes if node not in standalone_nodes]
 
-    onboard_stack_flag = bool(stack_nodes)
+    onboard_stack_flag = len(stack_nodes) >= 1
     if not onboard_stack_flag:
         temp_items = [
             item for item in temp_items if 'testbed_stack' not in [marker.name for marker in item.own_markers]]
@@ -1144,6 +1144,13 @@ def pytest_collection_modifyitems(session, items):
     if not onboard_one_node_flag:
         temp_items = [
             item for item in temp_items if 'testbed_1_node' not in [marker.name for marker in item.own_markers]]
+    
+    temp_items = [
+        item for item in temp_items if any(
+            [testbed_marker in [marker.name for marker in item.own_markers] for testbed_marker in [
+                "testbed_1_node", "testbed_2_node", "testbed_stack", "testbed_none"
+        ]]
+    )]
     items[:] = temp_items
 
 
