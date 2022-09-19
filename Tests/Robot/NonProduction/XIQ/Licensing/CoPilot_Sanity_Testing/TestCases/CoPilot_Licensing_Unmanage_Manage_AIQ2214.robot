@@ -62,9 +62,14 @@ Test 2: Onboard Device and Verify Success
     Depends On          Test 1
 
     # Downgrade the device's iqagent if needed
-    Downgrade Iqagent                           ${DUT_IP}   ${DUT_PORT}   ${DUT_USERNAME}   ${DUT_PASSWORD}   ${DUT_CLI_TYPE}
+    ${SPAWN_CONNECTION}=      Open Spawn        ${DUT_IP}   ${DUT_PORT}   ${DUT_USERNAME}   ${DUT_PASSWORD}   ${DUT_CLI_TYPE}
+    ${DOWNGRADE_IQAGENT}=     Downgrade Iqagent              ${DUT_CLI_TYPE}        ${SPAWN_CONNECTION}
+    Should Be Equal As Integers      ${DOWNGRADE_IQAGENT}     1
 
-    Configure Device To Connect To Cloud        ${DUT_CLI_TYPE}  ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${IQAGENT}  vr=${DUT_VR}
+    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud        ${DUT_CLI_TYPE}    ${IQAGENT}   ${SPAWN_CONNECTION}    vr=${DUT_VR}
+    Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
+    Close Spawn         ${SPAWN_CONNECTION}
+
     Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}
 
     ${selected}=    Column Picker Select        ${COLUMN_1}     ${COLUMN_2}    ${COLUMN_3}

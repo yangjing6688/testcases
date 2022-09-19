@@ -38,8 +38,6 @@
 &{AP_TEMPLATE_1_WIFI2}   radio_status=on     radio_profile=radio_ng_11ax-6g                            client_access=Enable    backhaul_mesh_link=Disable   sensor=Disable
 
 ############### Globle Variables ######################
-${ap}        ${ap4}
-${mu}        ${mu6}
 ${retry}     3
 
 *** Settings ***
@@ -70,7 +68,7 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Library	    Remote 	http://${mu.ip}:${mu.port}   WITH NAME   rem_mu
+Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   rem_mu
 
 Force Tags       testbed_1_node     testbed_2_node     testbed_3_node
 Suite Setup      Pre_condition
@@ -80,11 +78,10 @@ Suite Teardown   Post_condition
 Step0: Onboard AP
     [Documentation]    Onboard AP
     [Tags]             tcxm-18034     development     step0    steps
-    ${STATUS}                      Onboard Device    ${ap.serial}    ${ap.make}    location=${ap.location}    device_os=${ap.os}
+    ${STATUS}                      Onboard Device    ${ap1.serial}    ${ap1.make}    location=${ap1.location}
     should be equal as integers    ${STATUS}         1
 
-    ${AP_SPAWN}=        Open Spawn          ${ap.console_ip}   ${ap.console_port}      ${ap.username}       ${ap.password}        ${ap.platform}
-    Set Suite Variable  ${AP_SPAWN}
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}           ${ap1.port}      ${ap1.username}      ${ap1.password}      ${ap1}[cli_type]
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}        capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
     ${OUTPUT0}=         Send                ${AP_SPAWN}        console page 0
     ${OUTPUT0}=         Send                ${AP_SPAWN}        show version detail
@@ -95,8 +92,8 @@ Step0: Onboard AP
     Should Be Equal as Integers             ${OUTPUT1}          1
     Close Spawn         ${AP_SPAWN}
 
-    Wait Until Device Online                ${ap.serial}
-    ${AP_STATUS}=                           Get AP Status      ap_mac=${ap.mac}
+    Wait Until Device Online                ${ap1.serial}
+    ${AP_STATUS}=                           Get AP Status      ap_mac=${ap1.mac}
     Should Be Equal As Strings             '${AP_STATUS}'      'green'
 
 Step1: Create Policy - Personal SSID with CWP
@@ -112,7 +109,7 @@ Step1: Create Policy - Personal SSID with CWP
     Set To Dictionary              ${PSK_CWP_01}                   cwp_name=cwp_name_${NUM}
     Set To Dictionary              ${PERSONAL_AUTH_PROFILE_01}     cwp_config=${PSK_CWP_01}
     Set To Dictionary              ${PERSONAL_AUTH_PROFILE_03}     cwp_config=${PSK_CWP_01}
-    Set Suite Variable             ${AP_TEMP_NAME}                 ${ap.model}_${NUM}
+    Set Suite Variable             ${AP_TEMP_NAME}                 ${ap1.model}_${NUM}
     Set To Dictionary              ${WIRELESS_PESRONAL_00}         ssid_name=${SSID_00}
     Set To Dictionary              ${WIRELESS_PESRONAL_01}         ssid_name=${SSID_01}      auth_profile=${PERSONAL_AUTH_PROFILE_01}
     Set To Dictionary              ${WIRELESS_PESRONAL_02}         ssid_name=${SSID_02}
@@ -126,7 +123,7 @@ Step1: Create Policy - Personal SSID with CWP
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_PESRONAL_03}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      add ap template from common object      ${ap.model}        ${AP_TEMP_NAME}   &{AP_TEMPLATE_1}
+    ${STATUS}                      add ap template from common object      ${ap1.model}        ${AP_TEMP_NAME}   &{AP_TEMPLATE_1}
     Should Be Equal As Strings     '${STATUS}'       '1'
     ${STATUS}                      add ap template to network policy       ${AP_TEMP_NAME}    ${POLICY}
     Should Be Equal As Strings     '${STATUS}'       '1'
@@ -135,10 +132,10 @@ Step2: Assign network policy to AP
     [Documentation]     Assign network policy to AP
     [Tags]              tcxm-18034     tcxm-18035     tcxm-18036     tcxm-18037     tcxm-18038     tcxm-18039     development     step2      steps
     Depends On          Step1
-    ${UPDATE}                      Update Network Policy To Ap             ${POLICY}          ${ap.serial}      Complete
+    ${UPDATE}                      Update Network Policy To Ap             ${POLICY}          ${ap1.serial}      Complete
     should be equal as strings     '${UPDATE}'       '1'
-    Wait Until Device Online       ${ap.serial}
-    ${AP_STATUS}                   Get AP Status     ap_mac=${ap.mac}
+    Wait Until Device Online       ${ap1.serial}
+    ${AP_STATUS}                   Get AP Status     ap_mac=${ap1.mac}
     Should Be Equal As Strings    '${AP_STATUS}'    'green'
 
 Step3: MU connect to wifi0-1 - CWP disabled
@@ -155,9 +152,9 @@ Step4: Verify Client360 to wifi0_1 - CWP disabled
     [Documentation]     Verify Client360 to wifi0_1 - Personal SSID with CWP disabled
     [Tags]              tcxm-18037     tcxm-18039     development     step4    step00    steps
     Depends On          Step3
-    ${OUT}            get real time client360 details    ${mu.wifi_mac}
+    ${OUT}            get real time client360 details    ${mu1.wifi_mac}
     ${OUT}            convert to string                  ${OUT}
-    should contain    ${OUT}                             ${mu.wifi_mac}
+    should contain    ${OUT}                             ${mu1.wifi_mac}
 
 Step5: MU connect to wifi0-1 - CWP enable
     [Documentation]     MU connect to wifi0-1 - Personal SSID with CWP enable
@@ -168,7 +165,7 @@ Step5: MU connect to wifi0-1 - CWP enable
         exit for loop if        '${STATUS}'=='1'
     END
     should be equal as strings                              '${STATUS}'       '1'
-    open cp browser    ${mu.ip}                             http://198.18.32.1
+    open cp browser    ${mu1.ip}                             http://198.18.32.1
     ${STATUS}          accept user acceptance page
     should be equal as strings                              '${STATUS}'       '1'
     close cp browser
@@ -177,7 +174,7 @@ Step6: Verify Client360 to wifi0-1 - CWP enable
     [Documentation]     Verify Client360 to wifi0-1 - Personal SSID with CWP enable
     [Tags]              tcxm-18036     tcxm-18038     development     step6     step01    steps
     Depends On          Step5
-    ${OUT}             get client360 current connection status      ${mu.wifi_mac}
+    ${OUT}             get client360 current connection status      ${mu1.wifi_mac}
     should contain     ${OUT['CWP']}                     Used
 
 Step7: MU connect to wifi2 - CWP disabled
@@ -194,9 +191,9 @@ Step8: Verify Client360 to wifi2 - CWP disabled
     [Documentation]     Verify Client360 to wifi2 - Personal SSID with CWP disabled
     [Tags]              tcxm-18035     tcxm-18039     development     step8    step02    steps
     Depends On          Step7
-    ${OUT}            get real time client360 details    ${mu.wifi_mac}
+    ${OUT}            get real time client360 details    ${mu1.wifi_mac}
     ${OUT}            convert to string                  ${OUT}
-    should contain    ${OUT}                             ${mu.wifi_mac}
+    should contain    ${OUT}                             ${mu1.wifi_mac}
 
 Step9: MU connect to wifi2 - CWP enable
     [Documentation]     MU connect to wifi2 - Personal SSID with CWP enable
@@ -207,7 +204,7 @@ Step9: MU connect to wifi2 - CWP enable
          exit for loop if       '${STATUS}'=='1'
     END
     should be equal as strings                              '${STATUS}'       '1'
-    open cp browser    ${mu.ip}                             http://198.18.32.1
+    open cp browser    ${mu1.ip}                             http://198.18.32.1
     ${STATUS}          accept user acceptance page
     should be equal as strings                              '${STATUS}'       '1'
     close cp browser
@@ -216,19 +213,19 @@ Step10: Verify Client360 to wifi2 - CWP enable
     [Documentation]     Verify Client360 to wifi2 - Personal SSID with CWP enable
     [Tags]              tcxm-18034     tcxm-18038     development     step10     step03    steps
     Depends On          Step9
-    ${OUT}             get client360 current connection status      ${mu.wifi_mac}
+    ${OUT}             get client360 current connection status      ${mu1.wifi_mac}
     should contain     ${OUT['CWP']}                     Used
 
 *** Keywords ***
 Pre_condition
     ${STATUS}                           Login User    ${tenant_username}   ${tenant_password}
     should be equal as strings          '${STATUS}'   '1'
-    ${failed}     ${success}            reset device to default    ${ap.serial}
+    ${failed}     ${success}            reset device to default    ${ap1.serial}
     log to console                      Wait for 2 minutes for completing reboot....
     sleep                               2m
     delete all aps
     delete all network policies
-    delete all ssids                    ssid0
+    delete all ssids
     delete all captive web portals      GA-UA-Self-Reg-CWP-Profile,GA-UPA-CWP-Profile
     delete all ap templates
 
