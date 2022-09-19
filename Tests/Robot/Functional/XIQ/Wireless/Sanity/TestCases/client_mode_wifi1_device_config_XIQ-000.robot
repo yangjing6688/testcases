@@ -6,10 +6,6 @@
 #########################################################################################################
 
 **** Variables ***
-# Arguments passed from the command line
-${LOCATION}                  auto_location_01, Santa Clara, building_02, floor_04
-${DEVICE_MAKE_AEROHIVE}      Extreme - Aerohive
-
 ################## Policy Detail & Wireless Network ###############################
 &{WIRELESS_PESRONAL_ENT_00}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_ENT_00}      auth_profile=&{PERSONAL_AUTH_PROFILE}
 &{WIRELESS_PESRONAL_ENT_01}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_ENT_01}      auth_profile=&{PERSONAL_AUTH_PROFILE}
@@ -67,40 +63,36 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Library	    Remote 	http://${mu2.ip}:${mu2.port}   WITH NAME   mu
+Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   mu1
 
-Force Tags          testbed_1_node      testbed_2_node     testbed_3_node
-Suite Setup         Cleanup
+Force Tags       testbed_1_node      testbed_2_node     testbed_3_node
+Suite Setup      Pre_condition
+Suite Teardown   Post_condition
 
 *** Test Cases ***
 Test1: Advance Onboard AP1 and AP2 - TCXM-15120
     [Documentation]    Advance Onboard AP1 and AP2
-    [Tags]             tcxm_15120     development     test1     test
+    [Tags]             tcxm-15120     development     test1     test
     ${aps}=      Create List        ${ap1}        ${ap2}
-    ${LOGIN_STATUS}=                Login User               ${tenant_username}     ${tenant_password}
-    should be equal as strings     '${LOGIN_STATUS}'      '1'
     FOR     ${ap}   IN    @{aps}
-        ${ONBOARD_STATUS}=               Onboard Device      ${ap}[serial]    ${ap}[make]    location=${LOCATION}
-        should be equal as integers      ${ONBOARD_STATUS}       1
+        ${ONBOARD_STATUS}=               Onboard Device      ${ap}[serial]    ${ap}[make]    location=${ap}[location]
+        should be equal as integers      ${ONBOARD_STATUS}   1
     END
-    [Teardown]      run keywords     Logout User
-    ...             AND              Quit Browser
 
 Test2: Config AP1 and AP2 Capwap to Report AIO - TCXM-15120
     [Documentation]     Configure Capwap client server
-    [Tags]              tcxm_15120     development    test2      test
+    [Tags]              tcxm-15120     development    test2      test
     Depends On          Test1
     ${aps}=      Create List        ${ap1}        ${ap2}
     FOR    ${ap}    IN    @{aps}
-        ${AP_SPAWN}=        Open Spawn          ${ap}[ip]   ${ap}[port]      ${ap}[username]       ${ap}[password]        ${ap}[cli_type]
-        Set Suite Variable  ${AP_SPAWN}
-        ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
-        ${OUTPUT0}=         Send                ${AP_SPAWN}         console page 0
-        ${OUTPUT0}=         Send                ${AP_SPAWN}         show version detail
-        ${OUTPUT0}=         Send                ${AP_SPAWN}         show capwap client
-        ${OUTPUT2}=         Send                ${AP_SPAWN}         ${cmd_capwap_hm_primary_name}
-        ${OUTPUT3}=         Send                ${AP_SPAWN}         ${cmd_capwap_server_ip}
-        ${OUTPUT1}=         Wait For CLI Output                     ${AP_SPAWN}         ${cmd_capwap_client_state}          ${output_capwap_status}
+        ${AP_SPAWN}        Open Spawn          ${ap}[ip]   ${ap}[port]   ${ap}[username]   ${ap}[password]   ${ap}[cli_type]
+        ${OUTPUT0}         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
+        ${OUTPUT0}         Send                ${AP_SPAWN}         console page 0
+        ${OUTPUT0}         Send                ${AP_SPAWN}         show version detail
+        ${OUTPUT0}         Send                ${AP_SPAWN}         show capwap client
+        ${OUTPUT2}         Send                ${AP_SPAWN}         ${cmd_capwap_hm_primary_name}
+        ${OUTPUT3}         Send                ${AP_SPAWN}         ${cmd_capwap_server_ip}
+        ${OUTPUT1}         Wait For CLI Output                     ${AP_SPAWN}         ${cmd_capwap_client_state}          ${output_capwap_status}
         Should Be Equal as Integers             ${OUTPUT1}          1
         Close Spawn         ${AP_SPAWN}
     END
@@ -108,22 +100,19 @@ Test2: Config AP1 and AP2 Capwap to Report AIO - TCXM-15120
 
 Test3: Check AP1 and AP2 Status On UI - TCXM-15120
     [Documentation]     Checks for ap1 ap2 status
-    [Tags]              tcxm_15120    development     test3       test
+    [Tags]              tcxm-15120    development     test3       test
     Depends On          Test2
     ${aps}=      Create List        ${ap1}        ${ap2}
-    ${result}=          Login User          ${tenant_username}     ${tenant_password}
     FOR    ${ap}    IN    @{aps}
         Wait Until Device Reboots               ${ap}[serial]
         Wait Until Device Online                ${ap}[serial]
         ${AP_STATUS}=                           Get AP Status       ap_mac=${ap}[mac]
         Should Be Equal As Strings             '${AP_STATUS}'       'green'
     END
-    [Teardown]      run keywords     Logout User
-    ...             AND              Quit Browser
 
 Test4: Create Policy and Update Policy to AP1 and AP2 - TCXM-15120
     [Documentation]     Create policy and Update policy to AP1 and AP2
-    [Tags]              tcxm_15120    development     test4      test
+    [Tags]              tcxm-15120    development     test4      test
     Depends On          Test3
     ${NUM}=                     Generate Random String    5     0123456789
     Set Suite Variable          ${POLICY}                       BkHaul_wifi1_${NUM}
@@ -137,39 +126,35 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - TCXM-15120
     Set To Dictionary           ${WIRELESS_PESRONAL_CM}         ssid_name=${SSID_CM}
     Set Suite Variable          ${CLIENT_PROFLE_NAME_CM}        wifi1_${NUM}
 
-    ${result}=                     Login User                 ${tenant_username}     ${tenant_password}
-    Create Network Policy          policy=${POLICY}     &{WIRELESS_PESRONAL_ENT_01}
+    Create Network Policy          policy=${POLICY}          &{WIRELESS_PESRONAL_ENT_01}
     ${DHCP_STATUS}                 navigate to device config device config dhcp       ${ap1.mac}          enable
     Should Be Equal As Strings    '${DHCP_STATUS}'           '1'
-    ${CREATE_AP_TEMPLATE}=         add ap template from common object     ${ap1.model}         ${AP_TEMP_NAME}      &{AP_TEMPLATE_CONFIG_1}
+    ${CREATE_AP_TEMPLATE}          add ap template from common object     ${ap1.model}         ${AP_TEMP_NAME}      &{AP_TEMPLATE_CONFIG_1}
     Should Be Equal As Strings     '${CREATE_AP_TEMPLATE}'   '1'
-    ${SELECT_AP_TEMPLATE}=         add ap template to network policy      ${AP_TEMP_NAME}      ${POLICY}
+    ${SELECT_AP_TEMPLATE}          add ap template to network policy      ${AP_TEMP_NAME}      ${POLICY}
     Should Be Equal As Strings     '${SELECT_AP_TEMPLATE}'   '1'
 
-    Create Network Policy          policy=${POLICY_CM}     &{WIRELESS_PESRONAL_CM}
-    ${CREATE_AP_TEMPLATE}=         add ap template from common object      ${ap2.model}            ${AP_TEMP_NAME_CM}      &{AP_TEMPLATE_CONFIG_2}
+    Create Network Policy          policy=${POLICY_CM}       &{WIRELESS_PESRONAL_CM}
+    ${CREATE_AP_TEMPLATE}          add ap template from common object     ${ap2.model}            ${AP_TEMP_NAME_CM}      &{AP_TEMPLATE_CONFIG_2}
     Should Be Equal As Strings     '${CREATE_AP_TEMPLATE}'   '1'
-    ${SELECT_AP_TEMPLATE}=         add ap template to network policy       ${AP_TEMP_NAME_CM}      ${POLICY_CM}
+    ${SELECT_AP_TEMPLATE}          add ap template to network policy      ${AP_TEMP_NAME_CM}      ${POLICY_CM}
     Should Be Equal As Strings     '${SELECT_AP_TEMPLATE}'   '1'
 
-    ${UPDATE}=                     Update Network Policy To Ap    policy_name=${POLICY_CM}    ap_serial=${ap2.serial}     update_method=Complete
+    ${UPDATE}                      Update Network Policy To Ap    policy_name=${POLICY_CM}    ap_serial=${ap2.serial}     update_method=Complete
     should be equal as strings     '${UPDATE}'               '1'
     Wait Until Device Reboots      ${ap2.serial}
     Wait Until Device Online       ${ap2.serial}
-    ${AP2_STATUS}=                 Get AP Status              ap_mac=${ap2.mac}
+    ${AP2_STATUS}                  Get AP Status              ap_mac=${ap2.mac}
     Should Be Equal As Strings     '${AP2_STATUS}'            'green'
-    [Teardown]      run keywords   Logout User
-    ...             AND            Quit Browser
 
 Test5: Client mode enable in device Configuration for AP2 - TCXM-15120
     [Documentation]     Client mode enable in device Configuration for AP2
-    [Tags]              tcxm_15120    development     test5      test
+    [Tags]              tcxm-15120    development     test5      test
     Depends On          Test4
     Set To Dictionary           ${CLIENT_MODE_PROFILE_WIFI1}    client_mode_profile_name=${CLIENT_PROFLE_NAME_CM}    ssid_name=${SSID}     password=${WIRELESS_PESRONAL_ENT_01}[auth_profile][key_encryption][key_value]
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2_WIFI1}   client_mode_profile=${CLIENT_MODE_PROFILE_WIFI1}
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2}         wifi1_configuration=${AP_TEMPLATE_CONFIG_2_WIFI1}
 
-    ${result}=                           Login User                ${tenant_username}     ${tenant_password}
     ${STATUS}                            override client mode in device config    ${ap2.mac}     wifi1    &{CLIENT_MODE_PROFILE_WIFI1}
     should be equal as strings           '${STATUS}'              '1'
     sleep                                20s
@@ -185,32 +170,26 @@ Test5: Client mode enable in device Configuration for AP2 - TCXM-15120
     Wait Until Device Online             ${ap1.serial}
     ${AP1_STATUS}=                       Get AP Status              ap_mac=${ap1.mac}
     Should Be Equal As Strings           '${AP1_STATUS}'            'green'
-    [Teardown]      run keywords         Logout User
-    ...             AND                  Quit Browser
 
 Test6: Setup WIFI on STA2 and Connect to AP2 - TCXM-15120
     [Documentation]     Setup WIFI on STA2 and Connect to AP2 on Client Mode
-    [Tags]              tcxm_15120      development        test6      test
+    [Tags]              tcxm-15120      development        test6      test
     Depends On          Test5
-    ${mu}                            set variable        ${mu2}
     Setup AP in Client Mode          ${ap2}
-    ${pid}                           Start Selenium      ${mu}
-    mu.connect wpa2 ppsk network     ${SSID_CM}          aerohive
-    [Teardown]      run keyword      Stop Selenium   ${mu}   ${pid}
+    mu1.connect wpa2 ppsk network    ${SSID_CM}          aerohive
 
 Test7: Verify Connection - TCXM-15120
     [Documentation]     Setup WIFI on STA2 and Connect to AP2 on Client Mode
-    [Tags]              tcxm_15120    development    test7      test
+    [Tags]              tcxm-15120    development    test7      test
     Depends On          Test6
-    ${mu}               set variable    ${mu2}
     sleep               10s
     Verify client mode ap     ${ap2}
-    Verify station            ${mu}     ${AP_TEMPLATE_CONFIG_2}[wifi1_configuration][client_mode_profile][dhcp_server_scope]
+    Verify station            ${mu1}     ${AP_TEMPLATE_CONFIG_2}[wifi1_configuration][client_mode_profile][dhcp_server_scope]
 
 *** Keywords ***
 Setup AP in Client Mode
     [Arguments]     ${ap}
-    ${spawn}	        Open Spawn         ${ap}[ip]    ${ap}[port]    ${ap}[username]	 ${ap}[password]  ${ap}[cli_type]
+    ${spawn}	        Open Spawn         ${ap}[console_ip]    ${ap}[console_port]    ${ap}[username]	 ${ap}[password]    AH-XR    connection_method=console
     Send                ${spawn}           console page 0
     Send                ${spawn}           interface eth0 shutdown
     ${out}     Send     ${spawn}           show interface
@@ -221,27 +200,6 @@ Setup AP in Client Mode
     log        ${out}
     Close Spawn         ${spawn}
 
-Start Selenium
-    [Arguments]       ${mu}
-    ${spawn}    open pxssh spawn     ${mu}[ip]     ${mu}[username]     ${mu}[password]
-    sleep       8s
-    ${out}      Send pxssh 		     ${spawn}       ifconfig en1    10
-    ${out}      convert to string    ${out}
-    log         ${out}
-    ${out}      Send pxssh           ${spawn}       nohup java -jar /Users/admin/Downloads/selenium-server-standalone-3.5.3.jar -log /tmp/selenium.log \ \&     10
-    log         ${out}
-    ${match}    ${selenium_pid}      Should Match Regexp       ${out}       \\[\\d+\\]\\s+(\\d+)
-    log         ${selenium_pid}
-    Close pxssh Spawn    ${spawn}
-    [Return]       ${selenium_pid}
-
-Stop Selenium
-    [Arguments]      ${mu}      ${SELE_PID}
-    ${spawn}    open pxssh spawn     ${mu}[ip]     ${mu}[username]     ${mu}[password]
-    sleep       8s
-    Send pxssh  		             ${spawn}       kill -9 ${SELE_PID}     10
-    Close pxssh Spawn                ${spawn}
-
 Get Check Ping
     [Arguments]    ${output}
     ${loss}=      Get Regexp Matches  ${output}   ([\\d\\.]+)% packet loss
@@ -250,23 +208,9 @@ Get Check Ping
     ${loss}=      Set Variable If   ${status}   ${loss}    -1
     [Return]  ${loss}
 
-Cleanup
-    Login User      ${tenant_username}      ${tenant_password}
-    ${failed}     ${success}      reset device to default    ${ap1.serial}      ${ap2.serial}
-#    ${TEST_PASS}                  Set Variable If    ${failed}    ${success}    PASS
-    log to console                Wait for 2 minutes for completing reboot....
-    sleep         2m
-    delete all aps
-    delete all network policies
-    delete all ap templates
-    delete_all_client_mode_profiles
-#    Change Device Password         Aerohive123
-    Logout User
-    Quit Browser
-
 Verify client mode ap
     [Arguments]    ${ap}
-    ${spawn}	        Open Spawn         ${ap}[ip]    ${ap}[port]    ${ap}[username]	 ${ap}[password]  ${ap}[cli_type]
+    ${spawn}	        Open Spawn         ${ap}[console_ip]    ${ap}[console_port]    ${ap}[username]	 ${ap}[password]    AH-XR    connection_method=console
     ${out}     Send     ${spawn}           show interface
     log        ${out}
     ${out}     Send     ${spawn}           show l3 interface
@@ -275,15 +219,31 @@ Verify client mode ap
 
 Verify station
     [Arguments]    ${mu}    ${cm_gw_ip}
-    ${spawn}    open paramiko ssh_spawn     ${mu}[ip]     ${mu}[username]     ${mu}[password]
-    ${out}      send paramiko cmd           ${spawn}       ping -c 5 ${cm_gw_ip}           10
+    ${spawn}    Open Spawn           ${mu}[ip]      22    ${mu}[username]    ${mu}[password]   MU-MAC
+    ${out}      send                 ${spawn}       ping -c 5 ${cm_gw_ip}
     log         ${out}
     sleep       20s
-    ${out}      send paramiko cmd           ${spawn}       traceroute -m 5 www.google.com    10
+    ${out}      send                 ${spawn}       traceroute -m 5 www.google.com
     log         ${out}
-    Should Contain      ${out}              ${cm_gw_ip}
-    ${out}      send paramiko cmd           ${spawn}       ping -c 5 www.google.com          10
+    Should Contain      ${out}       ${cm_gw_ip}
+    ${out}      send                 ${spawn}       ping -c 5 www.google.com
     log         ${out}
     ${loss}     Get Check Ping       ${out}
-    Should Be Equal As Strings      '${loss}'       '0.0'
-    close paramiko spawn             ${spawn}
+    Should Be Equal As Strings       '${loss}'       '0.0'
+    close spawn                      ${spawn}
+
+Pre_condition
+    ${STATUS}                           Login User    ${tenant_username}   ${tenant_password}
+    should be equal as strings          '${STATUS}'   '1'
+    ${failed}     ${success}            reset device to default    ${ap1.serial}      ${ap2.serial}
+    log to console                      Wait for 2 minutes for completing reboot....
+    sleep                               2m
+    delete all aps
+    delete all network policies
+    delete all ssids
+    delete all ap templates
+    delete_all_client_mode_profiles
+
+Post_condition
+    Logout User
+    Quit Browser

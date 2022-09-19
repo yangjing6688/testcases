@@ -108,11 +108,15 @@ Configure Test Device
 
     Boot Switch To Known Good Configuration     ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
 
+    ${SPAWN_CONNECTION}=      Open Spawn       ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
     # Downgrade the device's iqagent if needed
-    Downgrade Iqagent                           ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
+    ${DOWNGRADE_IQAGENT}=     Downgrade Iqagent       ${cli_type}      ${SPAWN_CONNECTION}
+    Should Be Equal As Integers                 ${DOWNGRADE_IQAGENT}        1
 
-    Configure Device To Connect To Cloud        ${cli_type}  ${ip}  ${port}  ${user}  ${pwd}  ${agent}
+    ${CONF_STATUS_RESULT}=      Configure Device To Connect To Cloud    ${cli_type}      ${agent}     ${SPAWN_CONNECTION}
+    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
 
+    Close Spawn       ${SPAWN_CONNECTION}
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
     [Arguments]         ${serial}  ${make}  ${location}

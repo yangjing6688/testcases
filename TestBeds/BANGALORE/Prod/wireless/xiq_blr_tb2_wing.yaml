@@ -12,7 +12,7 @@ wing1:
   username:                 admin
   password:                 symbol
   platform:                 wing
-  ip:                       10.234.105.72
+  ip:                       10.234.105.79
   port:                     22
   console_ip:               10.234.105.230
   console_port:             7015

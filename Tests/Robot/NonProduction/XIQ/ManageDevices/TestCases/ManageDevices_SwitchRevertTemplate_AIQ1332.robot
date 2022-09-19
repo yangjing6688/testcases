@@ -89,7 +89,13 @@ Log In and Set Up Test
 
     Log Into XIQ and Confirm Success            ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
     Change Device Password and Confirm Success  ${DEFAULT_DEVICE_PWD}
-    Configure Device To Connect To Cloud        ${DUT_CLI_TYPE}  ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${IQAGENT}
+
+    ${SPAWN_CONNECTION}=      Open Spawn       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}
+
+    ${CONF_STATUS_RESULT}=      Configure Device To Connect To Cloud    ${DUT_CLI_TYPE}      ${IQAGENT}     ${SPAWN_CONNECTION}
+    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    Close Spawn       ${SPAWN_CONNECTION}
     Create Open Express Policy With Switch Template and Confirm Success  ${POLICY_NAME}  ${SSID_NAME}  ${DUT_TEST_TEMPLATE}
 
     Onboard New Test Device       ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}

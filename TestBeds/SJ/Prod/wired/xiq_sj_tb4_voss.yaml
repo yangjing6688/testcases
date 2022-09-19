@@ -1,10 +1,7 @@
----
-lab:                      "RDU"
-
 netelem1:
   name:                     "bui-flo-0609"
-  ip:                       "10.69.61.70"
-  port:                     "22"
+  ip:                       10.69.61.70
+  port:                     22
   mgmt_vlan:                "mgmt"
   username:                 "rwa"
   password:                 "Aerohive123"
@@ -21,57 +18,7 @@ netelem1:
   image_family:             "summit_arm"
   platform:                 "5420F-48T-4XE-FabricEngine"
   model:                    "Fabric Engine 5420F-48T-4XE"
-  snmp_version:             "v2c"
-  snmp_community_name:      "extreme123"
-  snmp_user_name:           "user_md5_des"
-  snmp_auth_protocol:       "md5"
-  snmp_auth_password:       "extreme123"
-  snmp_privacy_protocol:    "des"
-  snmp_privacy_password:    "extreme123"
-  tgen:
-    port_a:
-      ifname: &netelem1_tgen_port_a_ifname "1/42"
-      intnet: "link431"
-    port_b:
-      ifname: &netelem1_tgen_port_b_ifname "1/46"
-      intnet: "link432"
-    port_c:
-      ifname: &netelem1_tgen_port_c_ifname "1/41"
-      intnet: "link433"
-    port_d:
-      ifname: &netelem1_tgen_port_d_ifname "1/45"
-      intnet: "link434"
 
-tgen1:
-  name:                     &tgen1_name "JETS"
-  vendor:                   "jets"
-  chassis_type:             "jets"
-  software:                 "N/A"
-  ip:                       "10.69.61.2"
-  vm_ip:                    "N/A"
-  username:                 "root"
-  password:                 "PASprt86"
-  ssh_port:                 "22"
-  vm_port:                  "22"
-  cli_type:                 "MU-LINUX"
-  dynamic_deployment:       "False"
-  vm_location:
 
-tgen_ports:
-  netelem1:
-    port_a: &tgen_ports_netelem1_port_a
-      tgen_name: *tgen1_name
-      ifname:             "eth1"
-      intnet:             "link431"
-    port_b: &tgen_ports_netelem1_port_b
-      tgen_name: *tgen1_name
-      ifname:             "eth2"
-      intnet:             "link432"
-    port_c: &tgen_ports_netelem1_port_c
-      tgen_name: *tgen1_name
-      ifname:             "eth3"
-      intnet:             "link433"
-    port_d: &tgen_ports_netelem1_port_d
-      tgen_name: *tgen1_name
-      ifname:             "eth4"
-      intnet:             "link434"
+
+
