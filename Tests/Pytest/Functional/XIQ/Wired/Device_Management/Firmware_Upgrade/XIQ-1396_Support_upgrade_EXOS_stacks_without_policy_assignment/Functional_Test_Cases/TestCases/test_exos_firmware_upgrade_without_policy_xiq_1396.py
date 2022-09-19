@@ -172,7 +172,7 @@ class xiqTests():
                 cls.xiq.xflowscommonDevices.column_picker_unselect("Template",
                                                                    "Managed By",
                                                                    "Cloud Config Groups",
-                                                                   "MGMT IP Address",
+                                                                   "MGT IP Address",
                                                                    "Model",
                                                                    "Uptime",
                                                                    "Connected Clients",
@@ -261,7 +261,7 @@ class xiqTests():
                 pytest.fail("Could not delete the device with serial {}".format(serial))
 
         # Reseting the column selection back to it's default value.
-        cls.xiq.xflowscommonDevices.column_picker_select("MGMT IP Address",
+        cls.xiq.xflowscommonDevices.column_picker_select("MGT IP Address",
                                                          "Uptime",
                                                          "Connected Clients",
                                                          "Model",

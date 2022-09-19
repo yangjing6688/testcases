@@ -237,7 +237,7 @@ Log Into XIQ and Set Up Test
     # Reset IQAgent version to supported version
     ${SW_SPAWN}=                        Open Spawn          ${netelem1.ip}       ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
 
-    ${DOWNGRADE_IQAGENT}=               Downgrade iqagent   ${netelem1.ip}       ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
+    ${DOWNGRADE_IQAGENT}=               Downgrade iqagent        ${netelem1.cli_type}        ${SW_SPAWN}
     Should Be Equal As Integers         ${DOWNGRADE_IQAGENT}       1 
 
     Close Spawn     ${SW_SPAWN}
