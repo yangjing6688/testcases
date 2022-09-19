@@ -18,3 +18,15 @@ Change Device Password and Confirm Success
 
     ${result}=  Change Device Password  ${pwd}
     Should Be Equal As Integers         ${result}  1
+
+Enable CoPilot Feature and Confirm Success
+    [Documentation]     Enables CoPilot feature in Global Settings -> VIQ Management and verifies success
+
+    ${result_enable}=    Enable CoPilot Feature For This VIQ
+    Should Be Equal As Integers     ${result_enable}     1
+
+Disable CoPilot Feature and Confirm Success
+    [Documentation]     Disables CoPilot feature in Global Settings -> VIQ Management and verifies success
+
+    ${result_disable}=    Disable CoPilot Feature For This VIQ
+    Should Be Equal As Integers     ${result_disable}     1

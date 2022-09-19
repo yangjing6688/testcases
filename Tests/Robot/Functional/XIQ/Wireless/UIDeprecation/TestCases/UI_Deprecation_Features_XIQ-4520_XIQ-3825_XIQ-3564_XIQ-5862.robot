@@ -95,27 +95,6 @@ TCXM-17544 : Point client hyperlink to Client 360 page
 
 
 
-TCXM-19713 : Verify Navigate to VPN Services Page
-
-	[Documentation]         Verify that user is able to navigate to 'VPN Services' page under Manage
-
-    [Tags]       tcxm_19713         development
-
-    ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
-    should be equal as strings       '${result}'                    '1'
-
-    ${vpn_services_tab}        Navigate To VPN Services Tab
-
-    should be equal as strings       '${vpn_services_tab}'          '1'
-
-    Log                               ${vpn_services_tab}
-
-    [Teardown]
-    Logout User
-    Quit Browser
-
-
-
 TCXM-20275 : Enable PING for Installer user for Aerohive AP
 
 	[Documentation]         Verify that PING is enabled for Installer role for Aerohive AP
