@@ -43,10 +43,10 @@ building = "Templesteps_"+random_word()
 floor = "Fourth_"+random_word()
 DUT_LOCATION = location+","+building+","+floor
 vr_name = "VR-Mgmt"
-defaultColumns='"Template","Host Name","Network Policy","Managed By","Cloud Config Groups","MGMT IP Address","Model","IQAgent","Uptime","Connected Clients", \
+defaultColumns='"Template","Host Name","Network Policy","Managed By","Cloud Config Groups","MGT IP Address","Model","IQAgent","Uptime","Connected Clients", \
                 "Location","Feature License","Device License","WiFi0 Channel","WiFi0 Power","WiFi1 Channel","WiFi1 Power", \
-                "WiFi2 Channel","WiFi2 Power","MGT VLAN","NTP State"'
-columnsToBeSelected = '"Device Status","MAC Address","Serial #","Managed","Updated On","OS Version"'
+                "WiFi2 Channel","WiFi2 Power","MGT VLAN"'
+columnsToBeSelected = '"Status","MAC Address","Serial #","Managed","Updated On","OS Version"'
 
 @mark.testbed_1_node    # Marked all test cases as 1 node
 class xiqTests():
@@ -71,7 +71,7 @@ class xiqTests():
             if cls.tb.dut1_platform.lower() == 'stack' :
                 # Getting the list of Stack nodes serial numbers from the testbed file
                 device_serial_list = cls.tb.dut1.serial.split(",")
-                columnsToBeSelected = '"Device Status","MAC Address","Serial #","Managed","Stack Unit","Stack Role","Updated On","OS Version"'
+                columnsToBeSelected = '"Status","MAC Address","Serial #","Managed","Stack Unit","Stack Role","Updated On","OS Version"'
 
             # Suite setup, just login to the xiq client and connect all the netelements
             def suite_setup (cls):
@@ -187,7 +187,7 @@ class xiqTests():
                                                                    "Managed By",
                                                                    "Host Name",
                                                                    "Cloud Config Groups",
-                                                                   "MGMT IP Address",
+                                                                   "MGT IP Address",
                                                                    "Model",
                                                                    "Uptime",
                                                                    "Connected Clients",
@@ -200,13 +200,12 @@ class xiqTests():
                                                                    "WiFi1 Power",
                                                                    "WiFi2 Channel",
                                                                    "WiFi2 Power",
-                                                                   "MGT VLAN",
-                                                                   "NTP State")
+                                                                   "MGT VLAN")
                 time.sleep(10)
                 
                 # select the required coloumns from the device table if it is not selected.
                 # cls.xiq.xflowscommonDevices.column_picker_select(columnsToBeSelected)
-                cls.xiq.xflowscommonDevices.column_picker_select("Device Status",
+                cls.xiq.xflowscommonDevices.column_picker_select("Status",
                                                                  "Network Policy",
                                                                  "MAC Address",
                                                                  "Serial #",
@@ -286,7 +285,7 @@ class xiqTests():
         time.sleep(5)
 
         # Reseting the column selection back to it's default value.
-        cls.xiq.xflowscommonDevices.column_picker_select("MGMT IP Address",
+        cls.xiq.xflowscommonDevices.column_picker_select("MGT IP Address",
                                                          "Uptime",
                                                          "Host Name",
                                                          "Connected Clients",
@@ -300,8 +299,7 @@ class xiqTests():
                                                          "WiFi1 Power",
                                                          "WiFi2 Channel",
                                                          "WiFi2 Power",
-                                                         "MGT VLAN",
-                                                         "NTP State")
+                                                         "MGT VLAN")
         time.sleep(10)
 
         # Delete the dut1 switch if it is already onboarded in to the XIQ environment

@@ -45,10 +45,10 @@ nw_policy = "SWITCH_POLICY_"+random_word(4)
 
 sw_template_name = "SWITCH_TEMPLATE_"+random_word(4)
 
-defaultColumns=["Template","Host Name","Network Policy","Managed By","Cloud Config Groups","MGMT IP Address","Model","IQAgent","Uptime","Connected Clients", \
+defaultColumns=["Template","Host Name","Network Policy","Managed By","Cloud Config Groups","MGT IP Address","Model","IQAgent","Uptime","Connected Clients", \
                 "Location","Feature License","Device License","WiFi0 Channel","WiFi0 Power","WiFi1 Channel","WiFi1 Power", \
-                "WiFi2 Channel","WiFi2 Power","MGT VLAN","NTP State"]
-columnsToBeSelected =["Template","Host Name","Network Policy","Device Status","MAC Address","Serial #","Managed","Updated On","OS Version","Stack Unit","Stack Role"]
+                "WiFi2 Channel","WiFi2 Power","MGT VLAN"]
+columnsToBeSelected =["Template","Host Name","Network Policy","Status","MAC Address","Serial #","Managed","Updated On","OS Version","Stack Unit","Stack Role"]
 
 
 @mark.testbed_1_node  # Marked all test cases as 1 node
