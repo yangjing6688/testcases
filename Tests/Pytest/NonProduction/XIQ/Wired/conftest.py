@@ -711,6 +711,7 @@ def pytest_collection_modifyitems(session, items):
             logger_obj.info(f"This test function is unselected: '{item.nodeid}' (markers: '{[m.name for m in item.own_markers]}').")
     
     item_tcxm_mapping = defaultdict(lambda: [])
+    tcxm_item_mapping = defaultdict(lambda: [])
     items_without_tcxm_markers = []
     items_without_priority_markers = []
 
@@ -729,6 +730,8 @@ def pytest_collection_modifyitems(session, items):
         for tcxm_code in tcxm_codes:
             item_tcxm_mapping[tcxm_code].append(item.nodeid)
     
+        tcxm_item_mapping[item] = tcxm_codes
+
     if items_without_tcxm_markers:
         error = '\n' + '\n'.join(items_without_tcxm_markers)
         logger_obj.error(error)
@@ -744,7 +747,13 @@ def pytest_collection_modifyitems(session, items):
             error = f"Code '{tcxm_code}' is used as marker for more than one test function:\n" + "\n".join(functions)
             logger_obj.error(error)
             pytest.fail(error)
-    
+
+    for item, xim_tcxm_markers in tcxm_item_mapping.items():
+        if len(xim_tcxm_markers) > 1:
+            error = f"\nThis test function has more than one xim_tcxm marker: {item.nodeid} (markers: '{xim_tcxm_markers}')."
+            logger_obj.error(error)
+            pytest.fail(error)
+
     all_tcs = []
     for item in temp_items:
         [tcxm_code] = [m.name for m in item.own_markers if re.search("xim_tcxm_", m.name)]
@@ -905,18 +914,20 @@ def pytest_runtest_makereport(item, call):
 
     if result.when == 'call' and result.outcome != "passed":
         for it in item.session.items:
+            [temp_xim_tcxm_marker] = [m.name for m in it.own_markers if re.search("xim_tcxm_", m.name)]
             for mk in it.own_markers:
                 if mk.name == "dependson":
                     if len(mk.args) > 0:
-                        if current_test_marker in mk.args:
-                            it.add_marker(pytest.mark.skip(f"'{current_test_marker}' depends on '{current_test_marker}' but '{current_test_marker}' failed. '{current_test_marker}' test case will be skipped."))
+                        if current_test_marker in mk.args:                            
+                            it.add_marker(pytest.mark.skip(f"'{temp_xim_tcxm_marker}' depends on '{current_test_marker}' but '{current_test_marker}' failed. '{temp_xim_tcxm_marker}' test case will be skipped."))
 
     if "skip" in [m.name for m in item.own_markers]:
         for it in item.session.items:
+            [temp_xim_tcxm_marker] = [m.name for m in it.own_markers if re.search("xim_tcxm_", m.name)]
             for mk in it.own_markers:
                 if mk.name == "dependson":
                     if current_test_marker in mk.args:
-                        it.add_marker(pytest.mark.skip(f"'{current_test_marker}' depends on '{current_test_marker}' but '{current_test_marker}' is skipped '{current_test_marker}' test case will be skipped."))
+                        it.add_marker(pytest.mark.skip(f"'{temp_xim_tcxm_marker}' depends on '{current_test_marker}' but '{current_test_marker}' is skipped. '{temp_xim_tcxm_marker}' test case will be skipped."))
 
 
 def pytest_runtest_call(item):
@@ -925,8 +936,7 @@ def pytest_runtest_call(item):
 
 
 def pytest_itemcollected(item):
-    [current_test_marker] = [m.name for m in item.own_markers if re.search("xim_tcxm_", m.name)]
-    logger_obj.debug(f"\nCollected test function of '{current_test_marker}': '{item.nodeid}'.")
+    logger_obj.debug(f"\nCollected test function: '{item.nodeid}'.")
 
 
 @pytest.fixture(scope="session")
