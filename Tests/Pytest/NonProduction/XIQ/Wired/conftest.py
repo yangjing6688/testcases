@@ -772,10 +772,14 @@ def pytest_collection_modifyitems(session, items):
                             pytest.mark.skip(
                                 f"Please modify the order of the test cases. '{tcxm_code}' depends on '{', '.join(temp_markers)}' but the order is not correct. It will be skipped.")
                         )
-    message = "\nThese test functions will run this session:"
-    for item in temp_items:
-        message += f"\n'{item.nodeid}'"
-    logger_obj.info(message)
+    if temp_items:
+        message = "These test functions will run this session:"
+        for item in temp_items:
+            message += f"\n'{item.nodeid}'"
+        logger_obj.info(message)
+    else:
+        message = "Did not find any test function to run this session."
+        logger_obj.warning(message)
     items[:] = temp_items
 
 
