@@ -44,10 +44,12 @@ def login_xiq(loaded_config, logger, cloud_driver, debug):
 
     @contextmanager
     @debug
-    def func(username=loaded_config['tenant_username'],
-             password=loaded_config['tenant_password'],
-             url=loaded_config['test_url'],
-             capture_version=False, code="default", incognito_mode="False"):
+    def login_xiq_func(
+        username=loaded_config['tenant_username'],
+        password=loaded_config['tenant_password'],
+        url=loaded_config['test_url'],
+        capture_version=False, code="default", incognito_mode="False"
+    ):
 
         xiq = XiqLibrary()
 
@@ -65,7 +67,7 @@ def login_xiq(loaded_config, logger, cloud_driver, debug):
                 xiq.login.quit_browser()
             except:
                 pass
-    return func
+    return login_xiq_func
 
 
 @pytest.fixture(scope="session")
@@ -375,12 +377,12 @@ def check_duts_are_reachable(logger, debug, wait_till):
                     if re.search("100% loss" if windows else "100% packet loss" , ping_response):
                         wait_till(timeout=1)
                     else:
-                        results.append(f"({dut.ip}): Successfully verified that this dut is reachable: {dut.name}")
+                        results.append(f"({dut.ip}): Successfully verified that this dut is reachable: '{dut.name}'")
                         break
                 except:
                     wait_till(timeout=step)
             else:
-                results.append(f"({dut.ip}): This dut is not reachable: {dut.name}\n{ping_response}")
+                results.append(f"({dut.ip}): This dut is not reachable: '{dut.name}'\n{ping_response}")
 
         threads = []
         try:
@@ -399,8 +401,7 @@ def check_duts_are_reachable(logger, debug, wait_till):
             error_msg = "Failed! Not all the duts are reachable.\n" + '\n'.join(results)
             logger.error(error_msg)
             pytest.fail(error_msg)
-        else:
-            logger.info("The chosen devices are reachable.")
+
     return check_duts_are_reachable_func
 
 
@@ -466,44 +467,65 @@ def dev_cmd(default_library):
 def check_devices_are_onboarded(utils, logger, dut_list, debug, wait_till):
     
     @debug
-    def check_devices_are_onboarded_func(xiq, dut_list=dut_list, timeout=180):
+    def check_devices_are_onboarded_func(xiq, dut_list=dut_list, timeout=240):
         
         xiq.xflowscommonDevices.column_picker_select("MAC Address")
         
         start_time = time.time()
         
+        devices_appeared_in_xiq = False
+        devices_are_online = False
+        devices_are_managed = False
+
         while time.time() - start_time < timeout:
             try:
                 xiq.xflowsmanageDevices.refresh_devices_page()
                 wait_till(timeout=5)
 
-                devices, _ = wait_till(
-                    func=xiq.xflowscommonDeviceCommon.get_device_grid_rows,
-                    exp_func_resp=True,
-                    silent_failure=True
-                )
-                assert devices, "Did not find any onboarded devices in the XIQ"
+                if not devices_appeared_in_xiq:
+                    devices, _ = wait_till(
+                        func=xiq.xflowscommonDeviceCommon.get_device_grid_rows,
+                        exp_func_resp=True,
+                        silent_failure=True
+                    )
+                    assert devices, "Did not find any onboarded devices in the XIQ"
 
-                found = True
-                for dut in dut_list:
-                    for device in devices:
-                        if any([dut.mac.upper() in device.text, dut.mac.lower() in device.text]):
-                            logger.info(f"Successfully found device with mac='{dut.mac}'")
-                            break
-                    else:
-                        logger.info(f"Did not find device with mac='{dut.mac}'")
-                        found = False
-                assert found, 'Not all devices are found in the Devices list'
-                
-                try:
+                    found = True
                     for dut in dut_list:
-                        xiq.xflowscommonDevices.wait_until_device_online(dut.mac)
-                        res = xiq.xflowscommonDevices.get_device_status(device_serial=dut.mac)
-                        assert res == 'green', f"The device did not come up successfully in the XIQ; Device: {dut}"
-                except Exception as exc:
-                    logger.info(repr(exc))
-                else:
-                    break
+                        for device in devices:
+                            if any([dut.mac.upper() in device.text, dut.mac.lower() in device.text]):
+                                logger.info(f"Successfully found device with mac='{dut.mac}'")
+                                break
+                        else:
+                            logger.info(f"Did not find device with mac='{dut.mac}'")
+                            found = False
+                    assert found, 'Not all devices are found in the Devices list'
+              
+                    devices_appeared_in_xiq = True
+
+                if not devices_are_online:
+                    try:
+                        for dut in dut_list:
+                            xiq.xflowscommonDevices.wait_until_device_online(dut.mac)
+                            res = xiq.xflowscommonDevices.get_device_status(device_serial=dut.mac)
+                            assert res == 'green', f"The device did not come up successfully in the XIQ; Device: {dut}"
+                    except Exception as exc:
+                        logger.info(repr(exc))
+                    else:
+                        devices_are_online = True
+                        break
+                
+                if not devices_are_managed:
+                    try:
+                        for dut in dut_list:
+                            res = xiq.xflowscommonDevices.wait_until_device_managed(device_serial=dut.mac)
+                            assert res == 1, f"The device does not appear as Managed in the XIQ; Device: {dut}"
+                    except Exception as exc:
+                        logger.info(repr(exc))
+                    else:
+                        devices_are_managed = True
+                        break               
+
             except Exception as err:
                 logger.info(f"Not all the devices are up yet: {repr(err)}")
                 wait_till(timeout=10)
@@ -1075,7 +1097,7 @@ def onboard(request):
             cleanup(xiq=xiq, duts=dut_list)
             create_location(xiq)
             onboard_devices(xiq)
-
+            
             check_devices_are_onboarded(xiq)
 
             configure_network_policies(xiq)
