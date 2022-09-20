@@ -13,6 +13,7 @@ import imp
 from collections import defaultdict
 from pytest_testconfig import config
 from contextlib import contextmanager
+from functools import partial, partialmethod
 
 from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
 from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
@@ -77,6 +78,18 @@ def enter_switch_cli(network_manager, close_connection, dev_cmd):
             yield dev_cmd
         finally:
             close_connection(dut)
+    return func
+
+
+@pytest.fixture(scope="session")
+def connect_to_all_devices(network_manager, close_connection, dev_cmd):
+    @contextmanager
+    def func():
+        try:
+            network_manager.connect_to_all_network_elements()
+            yield dev_cmd
+        finally:
+            network_manager.close_connection_to_all_network_elements()
     return func
 
 
@@ -803,15 +816,30 @@ class Colors:
         DIM = '\033[2m'
         NORMAL = '\033[22m'
         RESET_ALL = '\033[0m'
+        UNDERLINE = '\033[4m'
 
 
 def _logger():
      
     logging = imp.load_module("logging1", *imp.find_module("logging"))
 
+    STEP_LOG_LEVEL = 5
+    CLI_LOG_LEVEL = 6
+
+    logging.STEP = STEP_LOG_LEVEL
+    logging.CLI = CLI_LOG_LEVEL
+    logging.addLevelName(logging.STEP, 'STEP')
+    logging.addLevelName(logging.CLI, 'CLI')
+    logging.Logger.step = partialmethod(logging.Logger.log, logging.STEP)
+    logging.Logger.cli = partialmethod(logging.Logger.log, logging.CLI)
+    logging.step = partial(logging.log, logging.STEP)
+    logging.cli = partial(logging.log, logging.CLI)
+
     ColorsLogger = {
         "reset": Colors.Fg.RESET,
-        logging.INFO: Colors.Fg.BLUE,
+        logging.STEP: Colors.Fg.CYAN,
+        logging.CLI: Colors.Fg.BLUE,
+        logging.INFO: Colors.Fg.MAGENTA,
         logging.DEBUG: Colors.Fg.GREEN,
         logging.WARNING: Colors.Fg.YELLOW,
         logging.CRITICAL: Colors.Fg.RED,
@@ -835,13 +863,12 @@ def _logger():
             self._style._fmt = f"{ColorsLogger[record.levelno]}{LOG_FORMAT}{ColorsLogger['reset']}"
             return super().format(record)
 
-    log_level = logging.DEBUG
     logger_obj = logging.getLogger(__name__)
-    logger_obj.setLevel(log_level)
+    logger_obj.setLevel(STEP_LOG_LEVEL)
 
     s_handler = logging.StreamHandler()
     s_handler.setFormatter(Formatter())
-    s_handler.setLevel(log_level)
+    s_handler.setLevel(STEP_LOG_LEVEL)
     logger_obj.addHandler(s_handler)
     return logger_obj
 
@@ -1020,7 +1047,7 @@ def onboard(request):
 
     policy_config = request.getfixturevalue("policy_config")
     logger.info(f"These are the policies and switch templates that will be applied to the onboarded devices:"
-                     f"\n{dump_data(policy_config)}")
+                f"\n{dump_data(policy_config)}")
     
     try:
         
