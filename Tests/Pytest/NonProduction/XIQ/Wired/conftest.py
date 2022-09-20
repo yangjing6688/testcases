@@ -9,6 +9,7 @@ import subprocess
 import traceback
 import pytest
 import imp
+import sys
 
 from collections import defaultdict
 from pytest_testconfig import config
@@ -870,7 +871,7 @@ def _logger():
     logger_obj = logging.getLogger(__name__)
     logger_obj.setLevel(STEP_LOG_LEVEL)
 
-    s_handler = logging.StreamHandler()
+    s_handler = logging.StreamHandler(sys.stdout)
     s_handler.setFormatter(Formatter())
     s_handler.setLevel(STEP_LOG_LEVEL)
     logger_obj.addHandler(s_handler)
