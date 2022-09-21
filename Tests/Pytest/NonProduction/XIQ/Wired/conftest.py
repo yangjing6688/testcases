@@ -19,6 +19,10 @@ from functools import partial, partialmethod
 from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
 from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
 from extauto.common.Utils import Utils
+from extauto.common.Cli import Cli
+
+
+cli_obj = Cli()
 
 
 @pytest.fixture(scope="session")
@@ -27,7 +31,7 @@ def debug(logger):
         def wrapped_func(*args, **kwargs):
             start_time = time.time()
             try:
-                logger.info(f"Calling '{func.__name__}' function with args='{args}' and kwargs='{kwargs}'")
+                logger.step(f"Calling '{func.__name__}' function with args='{args}' and kwargs='{kwargs}'")
                 result = func(*args, **kwargs)
             except Exception as exc:
                 logger.error(f"Failed during '{func.__name__}' function call with args='{args}' and kwargs='{kwargs}' after {int(time.time()-start_time)} seconds: {repr(exc)}")
@@ -58,7 +62,7 @@ def login_xiq(loaded_config, logger, cloud_driver, debug):
                 username, password, capture_version=capture_version, code=code, url=url, incognito_mode=incognito_mode)
             yield xiq
         except Exception as exc:
-            logger.info(repr(exc))
+            logger.error(repr(exc))
             cloud_driver.close_browser()
             raise exc
         finally:
@@ -68,6 +72,99 @@ def login_xiq(loaded_config, logger, cloud_driver, debug):
             except:
                 pass
     return login_xiq_func
+
+
+@pytest.fixture(scope="session")
+def logger():
+    return logger_obj
+
+
+class Colors:
+    class Fg:
+        BLACK = '\033[30m'
+        RED = '\033[31m'
+        GREEN = '\033[32m'
+        YELLOW = '\033[33m'
+        BLUE = '\033[34m'
+        MAGENTA = '\033[35m'
+        CYAN = '\033[36m'
+        WHITE = '\033[37m'
+        RESET = '\033[39m'
+
+    class Bg:
+        BLACK = '\033[40m'
+        RED = '\033[41m'
+        GREEN = '\033[42m'
+        YELLOW = '\033[43m'
+        BLUE = '\033[44m'
+        MAGENTA = '\033[45m'
+        CYAN = '\033[46m'
+        WHITE = '\033[47m'
+        RESET = '\033[49m'
+
+    class Style:
+        BRIGHT = '\033[1m'
+        DIM = '\033[2m'
+        NORMAL = '\033[22m'
+        RESET_ALL = '\033[0m'
+        UNDERLINE = '\033[4m'
+
+
+def _logger():
+     
+    logging = imp.load_module("logging1", *imp.find_module("logging"))
+
+    STEP_LOG_LEVEL = 5
+    CLI_LOG_LEVEL = 6
+
+    logging.STEP = STEP_LOG_LEVEL
+    logging.CLI = CLI_LOG_LEVEL
+    logging.addLevelName(logging.STEP, 'STEP')
+    logging.addLevelName(logging.CLI, 'CLI')
+    logging.Logger.step = partialmethod(logging.Logger.log, logging.STEP)
+    logging.Logger.cli = partialmethod(logging.Logger.log, logging.CLI)
+    logging.step = partial(logging.log, logging.STEP)
+    logging.cli = partial(logging.log, logging.CLI)
+
+    ColorsLogger = {
+        "reset": Colors.Fg.RESET,
+        logging.STEP: Colors.Fg.CYAN,
+        logging.CLI: Colors.Fg.BLUE,
+        logging.INFO: Colors.Fg.MAGENTA,
+        logging.DEBUG: Colors.Fg.GREEN,
+        logging.WARNING: Colors.Fg.YELLOW,
+        logging.CRITICAL: Colors.Fg.RED,
+        logging.ERROR: Colors.Fg.RED
+    }
+
+    old_factory = logging.getLogRecordFactory()
+
+    def record_factory(*args, **kwargs):
+        global config
+        record = old_factory(*args, **kwargs)
+        record.test_name = config.get("${TEST_NAME}", "SETUP")
+        return record
+    
+    logging.setLogRecordFactory(record_factory)
+    
+    LOG_FORMAT = '[%(asctime)s] [%(levelname)s] [%(module)s] [%(funcName)s:%(lineno)s] [%(test_name)s] %(message)s'
+
+    class Formatter(logging.Formatter):
+        def format(self, record):
+            self._style._fmt = f"{ColorsLogger[record.levelno]}{LOG_FORMAT}{ColorsLogger['reset']}"
+            return super().format(record)
+
+    logger_obj = logging.getLogger(__name__)
+    logger_obj.setLevel(STEP_LOG_LEVEL)
+
+    s_handler = logging.StreamHandler(sys.stdout)
+    s_handler.setFormatter(Formatter())
+    s_handler.setLevel(STEP_LOG_LEVEL)
+    logger_obj.addHandler(s_handler)
+    return logger_obj
+
+
+logger_obj = _logger()
 
 
 @pytest.fixture(scope="session")
@@ -85,7 +182,27 @@ def enter_switch_cli(network_manager, close_connection, dev_cmd):
 
 
 @pytest.fixture(scope="session")
-def connect_to_all_devices(network_manager, close_connection, dev_cmd):
+def cli():
+    return cli_obj
+
+
+@pytest.fixture(scope="session")
+def open_spawn(cli):
+    
+    @contextmanager
+    def func(dut):
+        try:
+            spawn_connection = cli.open_spawn(
+                dut.ip, dut.port, dut.username, dut.password, dut.cli_type)
+            yield spawn_connection
+        finally:          
+            cli.close_spawn(spawn_connection)
+    return func
+
+
+@pytest.fixture(scope="session")
+def connect_to_all_devices(network_manager, dev_cmd):
+    
     @contextmanager
     def func():
         try:
@@ -109,7 +226,7 @@ def change_device_management_settings(logger, standalone_nodes, stack_nodes, scr
                     option=option, platform=platform)
                 screen.save_screen_shot()
             except Exception as exc:
-                logger.info(repr(exc))
+                logger.warning(repr(exc))
                 screen.save_screen_shot()
                 wait_till(timeout=step)
             else:
@@ -121,16 +238,16 @@ def change_device_management_settings(logger, standalone_nodes, stack_nodes, scr
 
 
 @pytest.fixture(scope="session")
-def create_location(onboarding_location, logger, screen, debug):
+def create_location(logger, screen, debug):
     
     @debug
-    def create_location_func(xiq, location=onboarding_location):
+    def create_location_func(xiq, location):
         
-        logger.info(f"Try to delete this location: '{location}'")
+        logger.step(f"Try to delete this location: '{location}'")
         xiq.xflowsmanageLocation.delete_location_building_floor(*location.split(","))
         screen.save_screen_shot()
         
-        logger.info(f"Create this location: '{location}'")
+        logger.step(f"Create this location: '{location}'")
         xiq.xflowsmanageLocation.create_location_building_floor(*location.split(","))
         screen.save_screen_shot()
         
@@ -212,12 +329,12 @@ def virtual_routers(enter_switch_cli, dut_list, logger):
                 
                 vrs[dut.name] = match.group(12)
             except Exception as exc:
-                logger.info(repr(exc))
+                logger.warning(repr(exc))
                 vrs[dut.name] = ""
             
     threads = []
     try:
-        for dut in dut_list:
+        for dut in [d for d in dut_list if d.cli_type.upper() == "EXOS"]:
             thread = threading.Thread(target=worker, args=(dut, ))
             threads.append(thread)
             thread.start()
@@ -262,55 +379,24 @@ def auto_actions():
 
 
 @pytest.fixture(scope="session")
-def configure_iq_agent(loaded_config, enter_switch_cli, virtual_routers, logger, dut_list, screen, debug):
+def configure_iq_agent(loaded_config, virtual_routers, logger, dut_list, debug, open_spawn, cli):
     
     @debug
     def configure_iq_agent_func(duts=dut_list, ipaddress=loaded_config['sw_connection_host']):
         
-        logger.info(f"Configure IQAGENT with ipaddress='{ipaddress}' on these devices: {', '.join([d.name for d in dut_list])}")
-        def worker(dut):
-            with enter_switch_cli(dut) as dev_cmd:
-                if dut.cli_type.upper() == "EXOS":
-                    dev_cmd.send_cmd_verify_output(
-                        dut.name, 'show process iqagent', 'Ready', max_wait=30, interval=10)
-                    dev_cmd.send_cmd(
-                        dut.name, 'disable iqagent', max_wait=10, interval=2,
-                        confirmation_phrases='Do you want to continue?', confirmation_args='y')
-                    
-                    dev_cmd.send_cmd(dut.name, 'configure iqagent server ipaddress none', max_wait=10, interval=2)
-                    if len(vr_name := virtual_routers[dut.name]) > 0:
-                        dev_cmd.send_cmd(dut.name, f'configure iqagent server vr {vr_name}', max_wait=10, interval=2)
-                    else:    
-                        logger.info("Did not find Virtual Router information")
-                
-                    dev_cmd.send_cmd(
-                        dut.name, f'configure iqagent server ipaddress {ipaddress}',
-                        max_wait=10, interval=2)
-                    dev_cmd.send_cmd(dut.name, 'enable iqagent', max_wait=10, interval=2)
-                
-                elif dut.cli_type.upper() == "VOSS":
-                    dev_cmd.send_cmd(dut.name, 'enable', max_wait=10, interval=2)
-                    dev_cmd.send_cmd(dut.name, 'configure terminal', max_wait=10, interval=2)
-                    dev_cmd.send_cmd(dut.name, 'application', max_wait=10, interval=2)
-                    dev_cmd.send_cmd(dut.name, 'no iqagent enable', max_wait=10, interval=2)
-                    dev_cmd.send_cmd(dut.name, f'iqagent server {ipaddress}',
-                                    max_wait=10, interval=2)
-                    dev_cmd.send_cmd(dut.name, 'iqagent enable', max_wait=10, interval=2)
-                    dev_cmd.send_cmd_verify_output(dut.name, 'show application iqagent', 'true', max_wait=30,
-                                                    interval=10)
-                    dev_cmd.send_cmd(dut.name, 'exit', max_wait=10, interval=2)
+        logger.step(f"Configure IQAGENT with ipaddress='{ipaddress}' on these devices: {', '.join([d.name for d in dut_list])}")
 
-                elif dut.cli_type.upper() == "AH-FASTPATH":
-                    try:
-                        dev_cmd.send_cmd(dut.name, "enable")
-                    except:
-                        dev_cmd.send_cmd(dut.name, "exit")
-                    dev_cmd.send_cmd(
-                        dut.name, f'hivemanager address {ipaddress}', max_wait=10, interval=2)
-                    dev_cmd.send_cmd(
-                        dut.name, 'application start hiveagent', max_wait=10, interval=2)
-                    dev_cmd.send_cmd(dut.name, "exit")
-        
+        def worker(dut):
+            
+            with open_spawn(dut) as spawn_connection:
+                # if loaded_config.get("lab", "").upper() == "SALEM":
+                    # cli.downgrade_iqagent(dut.cli_type, spawn_connection)
+                
+                cli.configure_device_to_connect_to_cloud(
+                    dut.cli_type, loaded_config['sw_connection_host'],
+                    spawn_connection, vr=virtual_routers.get(dut.name, 'VR-Mgmt'), retry_count=30
+                )
+
         threads = []
         try:
             for dut in duts:
@@ -354,10 +440,31 @@ def get_default_password(navigator, utils, auto_actions, debug, screen, wait_til
 
 
 @pytest.fixture(scope="session", autouse=True)
-def onboarding_location():
-    pool = list(string.ascii_letters) + list(string.digits)
-    return f"Salem_{''.join(random.sample(pool, k=8))},Northeastern_{''.join(random.sample(pool, k=8))}," \
-           f"Floor_{''.join(random.sample(pool, k=8))}"
+def onboarding_locations(nodes, logger):
+    
+    ret = {}
+    
+    hardcoded_locations = [
+        "San Jose,building_01,floor_01",
+    ]
+    
+    for node in nodes:
+        locations = node.get("location", [])
+        if locations:
+            logger.info(f"Found location(s) attached to '{node.name}': {locations}.")
+            
+            logger.step("Choose one of them.")
+            found_location = random.choice(list(locations.values()))
+            logger.info(f"The chosen location for '{node.name}' is '{found_location}'")
+            ret[node.name] = found_location
+        else:
+            logger.info(f"Did not find any location attached to '{node.name}'.")
+
+            logger.step(f"Will choose a location out of these: {hardcoded_locations}.")
+            found_location = random.choice(hardcoded_locations)
+            logger.info(f"The chosen location for '{node.name}' is '{found_location}'.")
+            ret[node.name] = found_location
+    return ret
 
 
 @pytest.fixture(scope="session")
@@ -373,7 +480,7 @@ def check_duts_are_reachable(logger, debug, wait_till):
                 try:
                     ping_response = subprocess.Popen(
                         ["ping", f"{'-n' if windows else '-c'} 1", dut.ip], stdout=subprocess.PIPE).stdout.read().decode()
-                    logger.info(ping_response)
+                    logger.cli(ping_response)
                     if re.search("100% loss" if windows else "100% packet loss" , ping_response):
                         wait_till(timeout=1)
                     else:
@@ -464,7 +571,7 @@ def dev_cmd(default_library):
 
 
 @pytest.fixture(scope="session")
-def check_devices_are_onboarded(utils, logger, dut_list, debug, wait_till):
+def check_devices_are_onboarded(logger, dut_list, debug, wait_till):
     
     @debug
     def check_devices_are_onboarded_func(xiq, dut_list=dut_list, timeout=240):
@@ -488,47 +595,47 @@ def check_devices_are_onboarded(utils, logger, dut_list, debug, wait_till):
                         exp_func_resp=True,
                         silent_failure=True
                     )
-                    assert devices, "Did not find any onboarded devices in the XIQ"
+                    assert devices, "Did not find any onboarded devices in the XIQ."
 
-                    found = True
+                    found_all = True
                     for dut in dut_list:
                         for device in devices:
                             if any([dut.mac.upper() in device.text, dut.mac.lower() in device.text]):
-                                logger.info(f"Successfully found device with mac='{dut.mac}'")
+                                logger.info(f"Successfully found device with mac='{dut.mac}'.")
                                 break
                         else:
-                            logger.info(f"Did not find device with mac='{dut.mac}'")
-                            found = False
-                    assert found, 'Not all devices are found in the Devices list'
-              
+                            logger.warning(f"Did not find device with mac='{dut.mac}'.")
+                            found_all = False
+                    assert found_all, "Not all the devices were found in the Manage -> Devices menu."
                     devices_appeared_in_xiq = True
 
                 if not devices_are_online:
-                    try:
-                        for dut in dut_list:
-                            xiq.xflowscommonDevices.wait_until_device_online(dut.mac)
-                            res = xiq.xflowscommonDevices.get_device_status(device_serial=dut.mac)
-                            assert res == 'green', f"The device did not come up successfully in the XIQ; Device: {dut}"
-                    except Exception as exc:
-                        logger.info(repr(exc))
-                    else:
-                        devices_are_online = True
-                        break
+                    for dut in dut_list:
+                        
+                        device_online = xiq.xflowscommonDevices.wait_until_device_online(dut.mac)
+                        assert device_online == 1, f"This device did not come online in the XIQ: {dut}."
+                        logger.info(f"This device did come online in the XIQ: {dut}.")
+                        
+                        res = xiq.xflowscommonDevices.get_device_status(device_serial=dut.mac)
+                        assert res == 'green', f"This device does not have green status in the XIQ: {dut}."
+                        logger.info(f"This device does have green status in the XIQ: {dut}.")
+
+                    devices_are_online = True
                 
                 if not devices_are_managed:
-                    try:
-                        for dut in dut_list:
-                            res = xiq.xflowscommonDevices.wait_until_device_managed(device_serial=dut.mac)
-                            assert res == 1, f"The device does not appear as Managed in the XIQ; Device: {dut}"
-                    except Exception as exc:
-                        logger.info(repr(exc))
-                    else:
-                        devices_are_managed = True
-                        break               
+                    
+                    for dut in dut_list:
+                        res = xiq.xflowscommonDevices.wait_until_device_managed(device_serial=dut.mac)
+                        assert res == 1, f"The device does not appear as Managed in the XIQ; Device: {dut}."
+                        logger.info(f"This device does appear as Managed in the XIQ: {dut}.")
+
+                    devices_are_managed = True
 
             except Exception as err:
-                logger.info(f"Not all the devices are up yet: {repr(err)}")
+                logger.warning(f"Not all the devices are up yet: {repr(err)}")
                 wait_till(timeout=10)
+            else:
+                break
         else:
             pytest.fail("Not all the devices are up in XIQ")
 
@@ -598,13 +705,13 @@ def configure_network_policies(logger, dut_list, policy_config, screen, debug):
         
         for dut, data in dut_config.items():
         
-            logger.info(f"Configuring the network policy and switch template for dut '{dut}'")
+            logger.step(f"Configuring the network policy and switch template for dut '{dut}'")
             network_policy = data['policy_name']
             template_switch = data['template_name']
             model_template = data['dut_model_template']
             units_model = data['units_model']
 
-            logger.info(f"Create this network policy for '{dut}' dut: '{network_policy}'")
+            logger.step(f"Create this network policy for '{dut}' dut: '{network_policy}'")
             assert xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
                 network_policy), \
                 f"Policy {network_policy} wasn't created successfully "
@@ -612,7 +719,7 @@ def configure_network_policies(logger, dut_list, policy_config, screen, debug):
             
             [dut_info] = [dut_iter for dut_iter in dut_list if dut_iter.name == dut]
 
-            logger.info(f"Create and attach this switch template to '{dut}' dut: '{template_switch}'")
+            logger.step(f"Create and attach this switch template to '{dut}' dut: '{template_switch}'")
             if dut_info.platform.upper() == "STACK":
                 xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(
                     units_model, network_policy,
@@ -697,12 +804,16 @@ def pytest_collection_modifyitems(session, items):
     nodes = list(filter(lambda d: d is not None, [getattr(testbed, f"dut{i}", None) for i in range(1, 10)]))
     temp_items = items[:]
 
+    for item in items:
+        logger_obj.info(f"Collected this test function: '{item.nodeid}'.")
+
+    logger_obj.step("Check the capabilities of the testbed.")
     standalone_nodes = [node for node in nodes if node.get("platform", "").upper() != "STACK"]
     logger_obj.info(f"Found {len(standalone_nodes)} standalone node(s).")
 
     stack_nodes = [node for node in nodes if node not in standalone_nodes]
     logger_obj.info(f"Found {len(stack_nodes)} stack node(s).")
-    
+
     onboard_stack_flag = len(stack_nodes) >= 1
     if not onboard_stack_flag:
         logger_obj.warning("There is no stack device in the provided yaml file. The stack test cases will be unselected.")
@@ -805,10 +916,8 @@ def pytest_collection_modifyitems(session, items):
                                 f"Please modify the order of the test cases. '{tcxm_code}' depends on '{', '.join(temp_markers)}' but the order is not correct. It will be skipped.")
                         )
     if temp_items:
-        message = "These test functions will run this session:"
         for item in temp_items:
-            message += f"\n'{item.nodeid}'"
-        logger_obj.info(message)
+            logger_obj.info(f"This test function is selected to run this session: '{item.nodeid}' (markers: '{[m.name for m in item.own_markers]}')")
     else:
         message = "Did not find any test function to run this session."
         logger_obj.warning(message)
@@ -817,99 +926,6 @@ def pytest_collection_modifyitems(session, items):
 
 def pytest_sessionstart(session):
     session.results = dict()
-
-
-@pytest.fixture(scope="session")
-def logger():
-    return logger_obj
-
-
-class Colors:
-    class Fg:
-        BLACK = '\033[30m'
-        RED = '\033[31m'
-        GREEN = '\033[32m'
-        YELLOW = '\033[33m'
-        BLUE = '\033[34m'
-        MAGENTA = '\033[35m'
-        CYAN = '\033[36m'
-        WHITE = '\033[37m'
-        RESET = '\033[39m'
-
-    class Bg:
-        BLACK = '\033[40m'
-        RED = '\033[41m'
-        GREEN = '\033[42m'
-        YELLOW = '\033[43m'
-        BLUE = '\033[44m'
-        MAGENTA = '\033[45m'
-        CYAN = '\033[46m'
-        WHITE = '\033[47m'
-        RESET = '\033[49m'
-
-    class Style:
-        BRIGHT = '\033[1m'
-        DIM = '\033[2m'
-        NORMAL = '\033[22m'
-        RESET_ALL = '\033[0m'
-        UNDERLINE = '\033[4m'
-
-
-def _logger():
-     
-    logging = imp.load_module("logging1", *imp.find_module("logging"))
-
-    STEP_LOG_LEVEL = 5
-    CLI_LOG_LEVEL = 6
-
-    logging.STEP = STEP_LOG_LEVEL
-    logging.CLI = CLI_LOG_LEVEL
-    logging.addLevelName(logging.STEP, 'STEP')
-    logging.addLevelName(logging.CLI, 'CLI')
-    logging.Logger.step = partialmethod(logging.Logger.log, logging.STEP)
-    logging.Logger.cli = partialmethod(logging.Logger.log, logging.CLI)
-    logging.step = partial(logging.log, logging.STEP)
-    logging.cli = partial(logging.log, logging.CLI)
-
-    ColorsLogger = {
-        "reset": Colors.Fg.RESET,
-        logging.STEP: Colors.Fg.CYAN,
-        logging.CLI: Colors.Fg.BLUE,
-        logging.INFO: Colors.Fg.MAGENTA,
-        logging.DEBUG: Colors.Fg.GREEN,
-        logging.WARNING: Colors.Fg.YELLOW,
-        logging.CRITICAL: Colors.Fg.RED,
-        logging.ERROR: Colors.Fg.RED
-    }
-
-    old_factory = logging.getLogRecordFactory()
-
-    def record_factory(*args, **kwargs):
-        global config
-        record = old_factory(*args, **kwargs)
-        record.test_name = config.get("${TEST_NAME}", "SETUP")
-        return record
-    
-    logging.setLogRecordFactory(record_factory)
-    
-    LOG_FORMAT = '[%(asctime)s] [%(levelname)s] [%(module)s] [%(funcName)s:%(lineno)s] [%(test_name)s] %(message)s'
-
-    class Formatter(logging.Formatter):
-        def format(self, record):
-            self._style._fmt = f"{ColorsLogger[record.levelno]}{LOG_FORMAT}{ColorsLogger['reset']}"
-            return super().format(record)
-
-    logger_obj = logging.getLogger(__name__)
-    logger_obj.setLevel(STEP_LOG_LEVEL)
-
-    s_handler = logging.StreamHandler(sys.stdout)
-    s_handler.setFormatter(Formatter())
-    s_handler.setLevel(STEP_LOG_LEVEL)
-    logger_obj.addHandler(s_handler)
-    return logger_obj
-
-
-logger_obj = _logger()
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -953,12 +969,9 @@ def pytest_runtest_makereport(item, call):
 
 
 def pytest_runtest_call(item):
-    [current_test_marker] = [m.name for m in item.own_markers if re.search("xim_tcxm_", m.name)]              
+    [current_test_marker] = [m.name for m in item.own_markers if re.search("xim_tcxm_", m.name)]
+    config['${TEST_NAME}'] = current_test_marker
     logger_obj.info(f"\nStart test function of '{current_test_marker}': '{item.nodeid}'.")
-
-
-def pytest_itemcollected(item):
-    logger_obj.debug(f"\nCollected test function: '{item.nodeid}'.")
 
 
 @pytest.fixture(scope="session")
@@ -1010,7 +1023,7 @@ def dut_list(standalone_nodes, stack_nodes, check_duts_are_reachable):
 
 
 @pytest.fixture(scope="session")
-def update_devices(utils, logger, dut_list, policy_config, debug, wait_till):
+def update_devices(logger, dut_list, policy_config, debug, wait_till):
     
     @debug
     def update_devices_func(xiq, duts=dut_list):
@@ -1021,7 +1034,7 @@ def update_devices(utils, logger, dut_list, policy_config, debug, wait_till):
 
         for dut in duts:
             policy_name = policy_config[dut.name]['policy_name']
-            logger.info(f"Select switch row with serial '{dut.mac}'")
+            logger.step(f"Select switch row with serial '{dut.mac}'")
             if not xiq.xflowscommonDevices.select_device(dut.mac):
                 error_msg = f"Switch '{dut.mac}' is not present in the grid"
                 logger.error(error_msg)
@@ -1039,20 +1052,22 @@ def update_devices(utils, logger, dut_list, policy_config, debug, wait_till):
 
 
 @pytest.fixture(scope="session")
-def onboard_devices(dut_list, logger, screen, onboarding_location, debug):
+def onboard_devices(dut_list, logger, screen, onboarding_locations, debug):
     
     @debug
     def onboard_devices_func(xiq, duts=dut_list):
         for dut in duts:
-            if xiq.xflowsmanageSwitch.onboard_switch(
-                    dut.serial, device_os=dut.cli_type, location=onboarding_location) == 1:
+            if xiq.xflowscommonDevices.onboard_device(
+                device_serial=dut.serial, device_make=dut.cli_type,
+                    location=onboarding_locations[dut.name]) == 1:
                 logger.info(f"Successfully onboarded this device: '{dut}'")
                 screen.save_screen_shot()
             else:
                 error_msg = f"Failed to onboard this device: '{dut}'"
-                logger.info(error_msg)
+                logger.error(error_msg)
                 screen.save_screen_shot()
                 pytest.fail(error_msg)
+                
     return onboard_devices_func
 
 
@@ -1062,22 +1077,21 @@ def dump_data(data):
 
 @pytest.fixture(scope="session")
 def onboard(request):
-     
+
     configure_network_policies = request.getfixturevalue("configure_network_policies")
     login_xiq = request.getfixturevalue("login_xiq")
     stack_nodes = request.getfixturevalue("stack_nodes")
     change_device_management_settings = request.getfixturevalue("change_device_management_settings")
     check_devices_are_onboarded = request.getfixturevalue("check_devices_are_onboarded")
     cleanup = request.getfixturevalue("cleanup")
-    create_location = request.getfixturevalue("create_location")
     onboard_devices = request.getfixturevalue("onboard_devices")
     configure_iq_agent = request.getfixturevalue("configure_iq_agent")
     update_devices = request.getfixturevalue("update_devices")
     logger = request.getfixturevalue("logger")
 
-    onboarding_location = request.getfixturevalue("onboarding_location")
-    logger.info(f"This location will be used for the onboarding: '{onboarding_location}'")
-
+    onboarding_locations = request.getfixturevalue("onboarding_locations")
+    logger.info(f"These locations will be used for the onboarding:\n'{dump_data(onboarding_locations)}'")
+    
     dut_list = request.getfixturevalue("dut_list")
     logger.info(f"These are the devices that will be onboarded ({len(dut_list)} device(s)): "
                 f"{', '.join([dut.name for dut in dut_list])}")
@@ -1095,7 +1109,6 @@ def onboard(request):
             change_device_management_settings(xiq, option="disable")
             
             cleanup(xiq=xiq, duts=dut_list)
-            create_location(xiq)
             onboard_devices(xiq)
             
             check_devices_are_onboarded(xiq)
@@ -1120,7 +1133,6 @@ def onboard(request):
                 duts=dut_list, 
                 network_policies=[dut_info['policy_name'] for dut_info in policy_config.values()],
                 templates_switch=[dut_info['template_name'] for dut_info in policy_config.values()],
-                location=onboarding_location,
                 slots=len(stack_nodes[0].stack) if len(stack_nodes) > 0 else 1
             )
 
@@ -1334,7 +1346,7 @@ def get_stack_slots(logger, enter_switch_cli, debug):
         slots_info = {}
         with enter_switch_cli(dut) as dev_cmd:
             output = dev_cmd.send_cmd(dut.name, 'show stacking', max_wait=10, interval=2)[0].return_text
-            logger.info(output)
+            logger.cli(output)
             rows = re.findall(r'((?:[0-9a-fA-F]:?){12})\s+(\d+)\s+(\w+)\s+(\w+)\s+(.*)\r\n', output, re.IGNORECASE)
             
             for row in rows:
