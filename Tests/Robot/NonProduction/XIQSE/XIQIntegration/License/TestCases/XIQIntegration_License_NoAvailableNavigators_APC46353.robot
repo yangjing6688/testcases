@@ -206,6 +206,8 @@ Set Up XIQSE Components
 
     # Set the HTTP session timeout
     Set Option Web Server Session Timeout and Confirm Success  7  day(s)
+    # Enable all columns for event searches
+    Set Alarm Event Search Scope    true
 
     # Create the test sites
     XIQSE Create Site and Confirm Success  ${NAV_SITE}
@@ -531,6 +533,9 @@ Clean Up XIQ Components
     # Perform a search for the XIQSE model
     Navigate to XIQ Devices and Confirm Success
     Search XIQ Devices Table and Confirm Success  ${XIQSE_MAC}
+
+    # Disable all columns for event searches
+    Set Alarm Event Search Scope    false
 
     # Remove XIQSE from XIQ
     Remove Device By MAC From XIQ and Confirm Success  ${XIQSE_MAC}

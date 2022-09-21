@@ -19,6 +19,12 @@ Navigate to Options and Confirm Success
     ${nav_result}=  XIQSE Navigate to Admin Options Tab
     Should Be Equal As Integers         ${nav_result}     1
 
+Set Alarm Event Search Scope
+    [Documentation]     Configures the Alarm/Event Event Search Scope to include Client/Event/Source Host Name columns
+    [Arguments]         ${value}
+
+    XIQSE Set Event Search Scope And Save    ${value}
+
 Set Option Web Server Session Timeout and Confirm Success
     [Documentation]     Configures the HTTP Session Timeout option, saves the change, and confirms the action was successful
     [Arguments]         ${value}  ${units}
