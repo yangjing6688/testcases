@@ -185,13 +185,12 @@ class xiqTests():
                                                                    "WiFi1 Power",
                                                                    "WiFi2 Channel",
                                                                    "WiFi2 Power",
-                                                                   "MGT VLAN",
-                                                                   "NTP State" )
+                                                                   "MGT VLAN")
 
 
                 # select the required coloumns from the device table if it is not selected.
                 time.sleep(10)
-                cls.xiq.xflowscommonDevices.column_picker_select("Device Status",
+                cls.xiq.xflowscommonDevices.column_picker_select("Status",
                                                                  "Host Name",
                                                                  "Network Policy",
                                                                  "MAC Address",
@@ -274,8 +273,7 @@ class xiqTests():
                                                          "WiFi1 Power",
                                                          "WiFi2 Channel",
                                                          "WiFi2 Power",
-                                                         "MGT VLAN",
-                                                         "NTP State" )
+                                                         "MGT VLAN")
         time.sleep(5)
 
         floor = "Fourth_"+str(cls.tb.dut1.mac)           # Mac address is appended in floor

@@ -143,7 +143,6 @@
 ${retry}     3
 
 
-
 *** Settings ***
 # import libraries
 Library     String
@@ -191,34 +190,10 @@ Test1 - TCXM-20804 - Verify: AP Can Be Configured To Albania
 
     ${COUNTRY}          Set Variable    Albania
     ${COUNTRY_CODE}     Set Variable    8
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain Any                  ${OUTPUT0}    World   ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test2 - TCXM-20816 - Verify: AP Can Be Configured To Austria
     [Documentation]         AP's country code is changed to Austria and result it verified on UI level
@@ -229,34 +204,10 @@ Test2 - TCXM-20816 - Verify: AP Can Be Configured To Austria
 
     ${COUNTRY}          Set Variable    Austria
     ${COUNTRY_CODE}     Set Variable    40
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test3 - TCXM-20828 - Verify: AP Can Be Configured To Belgium
     [Documentation]         AP's country code is changed to Belgium and result it verified on UI level
@@ -267,34 +218,10 @@ Test3 - TCXM-20828 - Verify: AP Can Be Configured To Belgium
 
     ${COUNTRY}          Set Variable    Belgium
     ${COUNTRY_CODE}     Set Variable    56
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test4 - TCXM-20829 - Verify: AP Can Be Configured To Bulgaria
     [Documentation]         AP's country code is changed to Bulgaria and result it verified on UI level
@@ -305,34 +232,10 @@ Test4 - TCXM-20829 - Verify: AP Can Be Configured To Bulgaria
 
     ${COUNTRY}          Set Variable    Bulgaria
     ${COUNTRY_CODE}     Set Variable    100
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test5 - TCXM-20830 - Verify: AP Can Be Configured To Bosnia-Herzegovina
     [Documentation]         AP's country code is changed to Bosnia-Herzegovina and result it verified on UI level
@@ -343,34 +246,10 @@ Test5 - TCXM-20830 - Verify: AP Can Be Configured To Bosnia-Herzegovina
 
     ${COUNTRY}          Set Variable    Bosnia-Herzegovina
     ${COUNTRY_CODE}     Set Variable    70
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test6 - TCXM-20772 - Verify: AP Can Be Configured To Puerto Rico
     [Documentation]         AP's country code is changed to Puerto Rico and result it verified on UI level
@@ -379,37 +258,13 @@ Test6 - TCXM-20772 - Verify: AP Can Be Configured To Puerto Rico
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
-    ${COUNTRY}          Set Variable    Puerto Rico
-    ${COUNTRY_CODE}     Set Variable    630
-    ${SHORT_COUNTRY}     Set Variable    Puerto
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
+    ${COUNTRY}            Set Variable    Puerto Rico
+    ${COUNTRY_CODE}       Set Variable    630
+    ${SHORT_COUNTRY}      Set Variable    Puerto
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${SHORT_COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE} ${SHORT_COUNTRY}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}   ${SHORT_COUNTRY}
+    VerifyInterfacesAreUP
 
 Test7 - TCXM-20773 - Verify: AP Can Be Configured To Colombia
     [Documentation]         AP's country code is changed to Colombia and result it verified on UI level
@@ -420,34 +275,10 @@ Test7 - TCXM-20773 - Verify: AP Can Be Configured To Colombia
 
     ${COUNTRY}          Set Variable    Colombia
     ${COUNTRY_CODE}     Set Variable    170
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test8 - TCXM-20786 - Verify: AP Can Be Configured To Australia
     [Documentation]         AP's country code is changed to Australia and result it verified on UI level
@@ -458,34 +289,10 @@ Test8 - TCXM-20786 - Verify: AP Can Be Configured To Australia
 
     ${COUNTRY}          Set Variable    Australia
     ${COUNTRY_CODE}     Set Variable    36
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test9 - TCXM-20798 - Verify: AP Can Be Configured To Italy
     [Documentation]         AP's country code is changed to Italy and result it verified on UI level
@@ -496,34 +303,10 @@ Test9 - TCXM-20798 - Verify: AP Can Be Configured To Italy
 
     ${COUNTRY}          Set Variable    Italy
     ${COUNTRY_CODE}     Set Variable    380
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test10 - TCXM-20822 - Verify: AP Can Be Configured To Poland
     [Documentation]         AP's country code is changed to Poland and result it verified on UI level
@@ -534,34 +317,10 @@ Test10 - TCXM-20822 - Verify: AP Can Be Configured To Poland
 
     ${COUNTRY}          Set Variable    Poland
     ${COUNTRY_CODE}     Set Variable    616
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test11 - TCXM-20848 - Verify: AP Can Be Configured To Netherlands
     [Documentation]         AP's country code is changed to Netherlands and result it verified on UI level
@@ -572,34 +331,10 @@ Test11 - TCXM-20848 - Verify: AP Can Be Configured To Netherlands
 
     ${COUNTRY}          Set Variable    Netherlands
     ${COUNTRY_CODE}     Set Variable    528
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test12 - TCXM-20860 - Verify: AP Can Be Configured To Portugal
     [Documentation]         AP's country code is changed to Portugal and result it verified on UI level
@@ -610,34 +345,10 @@ Test12 - TCXM-20860 - Verify: AP Can Be Configured To Portugal
 
     ${COUNTRY}          Set Variable    Portugal
     ${COUNTRY_CODE}     Set Variable    620
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test13 - TCXM-20785 - Verify: AP Can Be Configured To Germany
     [Documentation]         AP's country code is changed to Germany and result it verified on UI level
@@ -648,34 +359,10 @@ Test13 - TCXM-20785 - Verify: AP Can Be Configured To Germany
 
     ${COUNTRY}          Set Variable    Germany
     ${COUNTRY_CODE}     Set Variable    276
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test14 - TCXM-20797 - Verify: AP Can Be Configured To France
     [Documentation]         AP's country code is changed to France and result it verified on UI level
@@ -686,34 +373,10 @@ Test14 - TCXM-20797 - Verify: AP Can Be Configured To France
 
     ${COUNTRY}          Set Variable    France
     ${COUNTRY_CODE}     Set Variable    250
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test15 - TCXM-20810 - Verify: AP Can Be Configured To Spain
     [Documentation]         AP's country code is changed to Spain and result it verified on UI level
@@ -724,34 +387,10 @@ Test15 - TCXM-20810 - Verify: AP Can Be Configured To Spain
 
     ${COUNTRY}          Set Variable    Spain
     ${COUNTRY_CODE}     Set Variable    724
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test16 - TCXM-20836 - Verify: AP Can Be Configured To Finland
     [Documentation]         AP's country code is changed to Finland and result it verified on UI level
@@ -762,34 +401,10 @@ Test16 - TCXM-20836 - Verify: AP Can Be Configured To Finland
 
     ${COUNTRY}          Set Variable    Finland
     ${COUNTRY_CODE}     Set Variable    246
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test17 - TCXM-20853 - Verify: AP Can Be Configured To Sweden
     [Documentation]         AP's country code is changed to Sweden and result it verified on UI level
@@ -800,34 +415,10 @@ Test17 - TCXM-20853 - Verify: AP Can Be Configured To Sweden
 
     ${COUNTRY}          Set Variable    Sweden
     ${COUNTRY_CODE}     Set Variable    752
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test18 - TCXM-20849 - Verify: AP Can Be Configured To Romania
     [Documentation]         AP's country code is changed to Romania and result it verified on UI level
@@ -838,34 +429,10 @@ Test18 - TCXM-20849 - Verify: AP Can Be Configured To Romania
 
     ${COUNTRY}          Set Variable    Romania
     ${COUNTRY_CODE}     Set Variable    642
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test19 - TCXM-20838 - Verify: AP Can Be Configured To Hungary
     [Documentation]         AP's country code is changed to Hungary and result it verified on UI level
@@ -876,34 +443,10 @@ Test19 - TCXM-20838 - Verify: AP Can Be Configured To Hungary
 
     ${COUNTRY}          Set Variable    Hungary
     ${COUNTRY_CODE}     Set Variable    348
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test20 - TCXM-20854 - Verify: AP Can Be Configured To Switzerland
     [Documentation]         AP's country code is changed to Switzerland and result it verified on UI level
@@ -914,110 +457,38 @@ Test20 - TCXM-20854 - Verify: AP Can Be Configured To Switzerland
 
     ${COUNTRY}          Set Variable    Switzerland
     ${COUNTRY_CODE}     Set Variable    756
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test21 - TCXM-20831 - Verify: AP Can Be Configured To Croatia
     [Documentation]         AP's country code is changed to Croatia and result it verified on UI level
-    [Tags]                  tcxm-20831    development     eu      eu1
+    [Tags]                  tcxm-20831    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Croatia
     ${COUNTRY_CODE}     Set Variable    191
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain Any                  ${OUTPUT0}    World   ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test22 - TCXM-20832 - Verify: AP Can Be Configured To Cyprus
     [Documentation]         AP's country code is changed to Cyprus and result it verified on UI level
-    [Tags]                  tcxm-20832    development     eu      eu1
+    [Tags]                  tcxm-20832    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Cyprus
     ${COUNTRY_CODE}     Set Variable    196
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test23 - TCXM-20833 - Verify: AP Can Be Configured To Czech Republic
     [Documentation]         AP's country code is changed to Czech Republic and result it verified on UI level
@@ -1029,418 +500,154 @@ Test23 - TCXM-20833 - Verify: AP Can Be Configured To Czech Republic
     ${COUNTRY}            Set Variable    Czech Republic
     ${COUNTRY_CODE}       Set Variable    203
     ${SHORT_COUNTRY}      Set Variable    Czech
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${SHORT_COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE} ${SHORT_COUNTRY}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}   ${SHORT_COUNTRY}
+    VerifyInterfacesAreUP
 
 Test24 - TCXM-20834 - Verify: AP Can Be Configured To Denmark
     [Documentation]         AP's country code is changed to Denmark and result it verified on UI level
-    [Tags]                  tcxm-20834    development     eu      eu1
+    [Tags]                  tcxm-20834    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Denmark
     ${COUNTRY_CODE}     Set Variable    208
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test25 - TCXM-20835 - Verify: AP Can Be Configured To Estonia
     [Documentation]         AP's country code is changed to Estonia and result it verified on UI level
-    [Tags]                  tcxm-20835    development     eu      eu1
+    [Tags]                  tcxm-20835    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Estonia
     ${COUNTRY_CODE}     Set Variable    233
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test26 - TCXM-20837 - Verify: AP Can Be Configured To Greece
     [Documentation]         AP's country code is changed to Greece and result it verified on UI level
-    [Tags]                  tcxm-20837    development     eu      eu1
+    [Tags]                  tcxm-20837    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Greece
     ${COUNTRY_CODE}     Set Variable    300
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test27 - TCXM-20839 - Verify: AP Can Be Configured To Iceland
     [Documentation]         AP's country code is changed to Iceland and result it verified on UI level
-    [Tags]                  tcxm-20839    development     eu      eu1
+    [Tags]                  tcxm-20839    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   170
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Iceland
     ${COUNTRY_CODE}     Set Variable    352
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test28 - TCXM-20840 - Verify: AP Can Be Configured To Ireland
     [Documentation]         AP's country code is changed to Ireland and result it verified on UI level
-    [Tags]                  tcxm-20840    development     eu      eu1
+    [Tags]                  tcxm-20840    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Ireland
     ${COUNTRY_CODE}     Set Variable    372
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test29 - TCXM-20841 - Verify: AP Can Be Configured To Latvia
     [Documentation]         AP's country code is changed to Latvia and result it verified on UI level
-    [Tags]                  tcxm-20841    development     eu      eu1
+    [Tags]                  tcxm-20841    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Latvia
     ${COUNTRY_CODE}     Set Variable    428
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test30 - TCXM-20842 - Verify: AP Can Be Configured To Estonia
     [Documentation]         AP's country code is changed to Estonia and result it verified on UI level
-    [Tags]                  tcxm-20842    development     eu      eu1
+    [Tags]                  tcxm-20842    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Estonia
     ${COUNTRY_CODE}     Set Variable    233
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test31 - TCXM-20843 - Verify: AP Can Be Configured To Liechtenstein
     [Documentation]         AP's country code is changed to Liechtenstein and result it verified on UI level
-    [Tags]                  tcxm-20843    development     eu      eu1
+    [Tags]                  tcxm-20843    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Liechtenstein
     ${COUNTRY_CODE}     Set Variable    438
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test32 - TCXM-20858 - Verify: AP Can Be Configured To Lithuania
     [Documentation]         AP's country code is changed to Lithuania and result it verified on UI level
-    [Tags]                  tcxm-20858    development     eu      eu1
+    [Tags]                  tcxm-20858    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Lithuania
     ${COUNTRY_CODE}     Set Variable    440
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test33 - TCXM-20844 - Verify: AP Can Be Configured To Luxembourg
     [Documentation]         AP's country code is changed to Luxembourg and result it verified on UI level
-    [Tags]                  tcxm-20844    development     eu      eu1
+    [Tags]                  tcxm-20844    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Luxembourg
     ${COUNTRY_CODE}     Set Variable    442
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test34 - TCXM-20845 - Verify: AP Can Be Configured To Macedonia
     [Documentation]         AP's country code is changed to Macedonia and result it verified on UI level
-    [Tags]                  tcxm-20845    development     eu      eu1
+    [Tags]                  tcxm-20845    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
@@ -1449,190 +656,69 @@ Test34 - TCXM-20845 - Verify: AP Can Be Configured To Macedonia
     ${COUNTRY_CODE}       Set Variable    807
     ${SHORT_COUNTRY}      Set Variable    Macedonia
 
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
-
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${SHORT_COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE} ${SHORT_COUNTRY}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}   ${SHORT_COUNTRY}
+    VerifyInterfacesAreUP
 
 Test35 - TCXM-20846 - Verify: AP Can Be Configured To Malta
     [Documentation]         AP's country code is changed to Malta and result it verified on UI level
-    [Tags]                  tcxm-20846    development     eu      eu1
+    [Tags]                  tcxm-20846    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Malta
     ${COUNTRY_CODE}     Set Variable    470
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test36 - TCXM-20847 - Verify: AP Can Be Configured To Montenegro
     [Documentation]         AP's country code is changed to Montenegro and result it verified on UI level
-    [Tags]                  tcxm-20847    development     eu      eu1
+    [Tags]                  tcxm-20847    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Montenegro
     ${COUNTRY_CODE}     Set Variable    499
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test37 - TCXM-20859 - Verify: AP Can Be Configured To Norway
     [Documentation]         AP's country code is changed to Norway and result it verified on UI level
-    [Tags]                  tcxm-20859    development     eu      eu1
+    [Tags]                  tcxm-20859    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Norway
     ${COUNTRY_CODE}     Set Variable    578
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test38 - TCXM-20850 - Verify: AP Can Be Configured To Serbia
     [Documentation]         AP's country code is changed to Serbia and result it verified on UI level
-    [Tags]                  tcxm-20850    development     eu      eu1
+    [Tags]                  tcxm-20850    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Serbia
     ${COUNTRY_CODE}     Set Variable    688
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test39 - TCXM-20851 - Verify: AP Can Be Configured To Slovakia
     [Documentation]         AP's country code is changed to Slovakia and result it verified on UI level
-    [Tags]                  tcxm-20851    development     eu      eu1
+    [Tags]                  tcxm-20851    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
@@ -1640,114 +726,43 @@ Test39 - TCXM-20851 - Verify: AP Can Be Configured To Slovakia
     ${COUNTRY}            Set Variable    Slovak Republic
     ${COUNTRY_CODE}       Set Variable    703
     ${SHORT_COUNTRY}      Set Variable    Slovak
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${SHORT_COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE} ${SHORT_COUNTRY}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}   ${SHORT_COUNTRY}
+    VerifyInterfacesAreUP
 
 Test40 - TCXM-20852 - Verify: AP Can Be Configured To Slovenia
     [Documentation]         AP's country code is changed to Slovenia and result it verified on UI level
-    [Tags]                  tcxm-20852    development     eu      eu1
+    [Tags]                  tcxm-20852    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Slovenia
     ${COUNTRY_CODE}     Set Variable    705
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test41 - TCXM-20855 - Verify: AP Can Be Configured To Turkey
     [Documentation]         AP's country code is changed to Turkey and result it verified on UI level
-    [Tags]                  tcxm-20855    development     eu      eu1
+    [Tags]                  tcxm-20855    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
 
     ${COUNTRY}          Set Variable    Turkey
     ${COUNTRY_CODE}     Set Variable    792
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
+    ${CHANNEL}          Set Variable    7
 
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}
+    VerifyInterfacesAreUP
 
 Test42 - TCXM-20779 - Verify: AP Can Be Configured To UK
     [Documentation]         AP's country code is changed to UK and result it verified on UI level
-    [Tags]                  tcxm-20779    development     eu      eu1
+    [Tags]                  tcxm-20779    development     eu
     [Teardown]   run keywords     Logout User
     ...          AND              Sleep   10
     ...          AND              Quit Browser
@@ -1756,34 +771,9 @@ Test42 - TCXM-20779 - Verify: AP Can Be Configured To UK
     ${COUNTRY_CODE}       Set Variable    826
     ${SHORT_COUNTRY}      Set Variable    Kingdom
 
-    Log                         ${COUNTRY}
-    Log to Console              ${COUNTRY}
-    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
-    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${COUNTRY}
-    Wait Until Device Reboots   ${ap1.serial}
-    refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
-    refresh devices page
-    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
-    refresh devices page
-    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
-    Save Screen Shot
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
-    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
-    Close Spawn                 ${AP_SPAWN}
-
-    Log to Console                      RESTULTS====
-    Log to Console                      BOOT_PARAM: ${OUTPUT0}
-    Should Contain                      ${OUTPUT0}              ${COUNTRY_CODE}
-    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
-    Should Contain                      ${AP_COUNTRY}           ${SHORT_COUNTRY}
-    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
-    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
-    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
-    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
-    Log to Console                      AP_STATUS2: ${AP_STATUS2}
-    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
-    Log to Console                      END_RESTULTS====
+    Log to Console              SetCountryCodeAndVerify-Parameters: ${COUNTRY} ${COUNTRY_CODE} ${SHORT_COUNTRY}
+    SetCountryCodeAndVerify     ${COUNTRY}    ${COUNTRY_CODE}   ${SHORT_COUNTRY}
+    VerifyInterfacesAreUP
 
 Test43 - TCXM-20769 - Verify: A Country Cannot Be Reconfigured To "United States (840)"
     [Documentation]    AP, in World region, is attemped to be set to FCC. It should fail.
@@ -1918,3 +908,64 @@ InitialSetup
     Logout User
     Sleep   10
     Quit Browser
+
+
+SetCountryCodeAndVerify
+    [Documentation]    AP is configured to a country provided in ${country} and it is verified that operation was successful.
+    ...                ${country} - name of the country
+    ...                ${country_code} - numeric code of the country
+    ...                ${short_name} - short name for countries with multiple words names
+    [Arguments]        ${country}     ${country_code}     ${short_name}=noName
+
+    Log                         ${country}
+    Log to Console              ${country}
+    ${result}=                  Login User          ${tenant_username}    ${tenant_password}
+    ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${country}
+    Wait Until Device Reboots   ${ap1.serial}
+    refresh devices page
+    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
+    refresh devices page
+    ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
+    refresh devices page
+    ${GET_FLAG_STATUS}=         Get AP Flag         ${ap1.serial}
+    Save Screen Shot
+    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
+    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_BOOT_PARAM}
+    Close Spawn                 ${AP_SPAWN}
+
+    Log to Console                      RESTULTS====
+    Log to Console                      BOOT_PARAM: ${OUTPUT0}
+    Should Contain                      ${OUTPUT0}              ${country_code}
+    Log to Console                      AP_COUNTRY: ${AP_COUNTRY}
+    Log to Console                      short_name: ${short_name}
+
+    Run Keyword If      "${short_name}" == "noName"    Should Contain    ${AP_COUNTRY}   ${country}
+    ...         ELSE    Should Contain    ${AP_COUNTRY}   ${short_name}
+
+    Log to Console                      GET_FLAG_STATUS: ${GET_FLAG_STATUS}
+    Should Not Be Equal as Integers     ${GET_FLAG_STATUS}      -1
+    Log to Console                      COUNTRY_STATUS: ${COUNTRY_STATUS}
+    Should Be Equal as Integers         ${COUNTRY_STATUS}       1
+    Log to Console                      AP_STATUS2: ${AP_STATUS2}
+    Should Be Equal as Strings          '${AP_STATUS2}'         'green'
+    Log to Console                      END_RESTULTS====
+
+VerifyInterfacesAreUP
+    [Documentation]    It is verified that 3 interfaces, WiFi0, WiFi1, WiFi2, are present in running-config.
+
+    ${WIFI0}  Set Variable    wifi0
+    ${WIFI1}  Set Variable    wifi1
+    ${WIFI2}  Set Variable    wifi2
+
+    Log                         AP_SPAWN in VerifyInterfacesAreUP
+    Log to Console              AP_SPAWN in VerifyInterfacesAreUP
+
+    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}
+    ${OUTPUT0}=                 Send                ${AP_SPAWN}   ${CMD_SHOW_RUN_CONF_INTRFC}
+    Close Spawn                 ${AP_SPAWN}
+
+    Log to Console                      RESTULTS====
+    Log to Console                      RUNNING_CONFIG_INTRFC: ${OUTPUT0}
+    Should Contain                      ${OUTPUT0}    ${WIFI0}
+    Should Contain                      ${OUTPUT0}    ${WIFI1}
+    Should Contain                      ${OUTPUT0}    ${WIFI2}
