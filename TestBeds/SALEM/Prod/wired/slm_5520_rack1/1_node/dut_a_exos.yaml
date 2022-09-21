@@ -17,6 +17,8 @@ netelem1:
   model:                    "SwitchEngine5520_24T"
   make:                     "exos"
   auth_mode:                "basic"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   tgen:
     port_a:
       ifname: &netelem1_tgen_port_a_ifname "1"

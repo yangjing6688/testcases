@@ -13,6 +13,8 @@ netelem1:
   password:                 ""
   connection_method:        "ssh"
   cli_type:                 "exos"
+  mgmt_vlan:                "default"
+  mgmt_vr:                  "vr-default"
   platform:                 "5320"
   model:                    "SwitchEngine5320_48T_8XE"
   make:                     "exos"

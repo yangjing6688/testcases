@@ -17,7 +17,8 @@ netelem1:
   upgrade_firmware:         "False"
   build_directory:          "release-manager/30.4.0.99/mips/cougar/cougar/release/summitX-30.4.0.99.xos"
   build:                    "30.4.0.99"
-  mgmt_vlan:                "VR-Mgmt"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
 
 #  Interswith Links and to define VM virtual links.
   isl:
@@ -62,7 +63,8 @@ netelem2:
   upgrade_firmware:         "False"
   build_directory:          "release-manager/30.4.0.99/mips/cougar/cougar/release/summitX-30.4.0.99.xos"
   build:                    "30.4.0.99"
-  mgmt_vlan:                "VR-Mgmt"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
 
 #  Interswith Links and to define VM virtual links.
   isl:
@@ -107,7 +109,8 @@ netelem3:
   upgrade_firmware:         "False"
   build_directory:          "release-manager/30.4.0.99/mips/cougar/cougar/release/summitX-30.4.0.99.xos"
   build:                    "30.4.0.99"
-  mgmt_vlan:                "VR-Mgmt"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
 
 #  Interswith Links and to define VM virtual links.
   isl:
@@ -152,7 +155,8 @@ netelem4:
   upgrade_firmware:         "False"
   build_directory:          "release-manager/30.4.0.99/mips/cougar/cougar/release/summitX-30.4.0.99.xos"
   build:                    "30.4.0.99"
-  mgmt_vlan:                "VR-Mgmt"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
 
 #  Interswith Links and to define VM virtual links.
   isl:
@@ -196,7 +200,8 @@ netelem5:
   upgrade_firmware:         "False"
   build_directory:          "release-manager/30.4.0.99/mips/cougar/cougar/release/summitX-30.4.0.99.xos"
   build:                    "30.4.0.99"
-  mgmt_vlan:                "VR-Mgmt"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
 
 #  Interswith Links and to define VM virtual links.
   isl:
@@ -240,7 +245,8 @@ netelem6:
   upgrade_firmware:         "False"
   build_directory:          "release-manager/30.4.0.99/mips/cougar/cougar/release/summitX-30.4.0.99.xos"
   build:                    "30.4.0.99"
-  mgmt_vlan:                "VR-Mgmt"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
 
 #  Interswith Links and to define VM virtual links.
   isl:

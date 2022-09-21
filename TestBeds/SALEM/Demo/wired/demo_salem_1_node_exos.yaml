@@ -3,7 +3,8 @@ lab:                        "SALEM"
 netelem1:
   name:                     "EXOS"
   cli_type:                 "EXOS"
-
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   hostname:                 ""
   serial:                   "2010G-00015"
   mac:                      "000496EDF800"
@@ -11,7 +12,6 @@ netelem1:
   port:                     "22"
   console_ip:               "10.148.35.5"
   console_port:             "5030"
-  mgmt_vlan:                "VLAN_4000"
   username:                 "admin"
   password:                 ""
   connection_method:        "ssh"

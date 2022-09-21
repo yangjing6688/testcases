@@ -17,6 +17,8 @@ netelem1:
   model:                    "SwitchEngine5320_48T_8XE"
   make:                     "exos"
   auth_mode:                "basic"
+  mgmt_vlan:                "default"
+  mgmt_vr:                  "vr-default"
 
 
 

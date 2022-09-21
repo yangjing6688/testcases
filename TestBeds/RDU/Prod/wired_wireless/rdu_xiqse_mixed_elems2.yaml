@@ -25,6 +25,8 @@ netelem1:
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
 
 netelem2:
   name:                     "10.69.61.83"
@@ -41,6 +43,8 @@ netelem2:
   connection_method:        "ssh"
   cli_type:                 "EXOS"
   platform:                 "exos"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   image_family:             ""
   template:                 "X460_G2_24p_10_G4-default-template"
   make:                     "EXOS"
