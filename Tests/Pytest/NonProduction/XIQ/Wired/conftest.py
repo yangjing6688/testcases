@@ -389,8 +389,8 @@ def configure_iq_agent(loaded_config, virtual_routers, logger, dut_list, debug, 
         def worker(dut):
             
             with open_spawn(dut) as spawn_connection:
-                # if loaded_config.get("lab", "").upper() == "SALEM":
-                    # cli.downgrade_iqagent(dut.cli_type, spawn_connection)
+                if loaded_config.get("lab", "").upper() == "SALEM":
+                    cli.downgrade_iqagent(dut.cli_type, spawn_connection)
                 
                 cli.configure_device_to_connect_to_cloud(
                     dut.cli_type, loaded_config['sw_connection_host'],
