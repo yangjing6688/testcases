@@ -100,6 +100,7 @@ Log In and Set Up Test
     Handle License Agreement If Displayed              ${XIQ_EMAIL}  ${XIQ_PASSWORD}
     Close Panels on Login If Displayed
     Set Option Web Server Session Timeout and Confirm Success  7  day(s)
+    Set Alarm Event Search Scope    true
     Set Option Device Tree Name Format and Confirm Success     IP Address
     Navigate and Set Option Status Polling Group 2 Interval and Confirm Success      2
     Navigate and Set Option SCP Login Information Anonymous and Confirm Success      false
@@ -120,6 +121,7 @@ Tear Down Test and Close Session
     Delete Device and Confirm Success             ${DUT_IP}
     Restore Web Server Options to Default and Confirm Success
     Restore Site Engine General Options to Default and Confirm Success
+    Set Alarm Event Search Scope    false
     Restore Status Polling Options to Default and Confirm Success
     XIQSE Restore Default Inventory Manager Options and Save
     Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}

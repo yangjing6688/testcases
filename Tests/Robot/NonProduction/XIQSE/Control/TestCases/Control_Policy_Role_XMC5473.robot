@@ -57,6 +57,7 @@ Log In and Set Up Test
     Handle License Agreement If Displayed              ${XIQ_EMAIL}  ${XIQ_PASSWORD}
     Close Panels on Login If Displayed
     Set Option Web Server Session Timeout and Confirm Success  7  day(s)
+    Set Alarm Event Search Scope    true
     Set Option Device Tree Name Format and Confirm Success   IP Address
     Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
     Onboard XIQSE To XIQ If In Connected Mode    ${INSTALL_MODE}  ${XIQSE_IP_ADDRESS}  ${XIQ_EMAIL}  ${XIQ_PASSWORD}

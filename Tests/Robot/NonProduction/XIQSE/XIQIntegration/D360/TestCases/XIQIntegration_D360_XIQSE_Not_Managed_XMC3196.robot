@@ -152,6 +152,9 @@ Set Up XIQSE Components
 
     Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
+    # Enable all columns for event searches
+    Set Alarm Event Search Scope    true
+
     # Confirm the serial number is correct and set the common options needed for automation
     Confirm Serial Number and Set Common Options     ${XIQSE_SERIAL}
 
@@ -243,6 +246,8 @@ Clean Up XIQSE Components
 
     Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
+    # Disable all columns for event searches
+    Set Alarm Event Search Scope    false
     # Make sure XIQ sharing is enabled
     XIQSE Enable XIQ Connection Sharing and Save
 

@@ -22,7 +22,8 @@ netelem1:
   build_directory:          "30.4.0.520/mips/cougar/cougar/release/summitX-30.4.0.520.xos"
   build:                    "30.4.0.520"
   virtual_router:           "VR-Mgmt"
-  mgmt_vlan:                "VR-Mgmt"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   #  Interswith Links and to define VM virtual links.
   isl:
     port_a:

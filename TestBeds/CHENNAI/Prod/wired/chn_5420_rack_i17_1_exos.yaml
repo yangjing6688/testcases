@@ -13,6 +13,8 @@ netelem1:
   password:                 ""
   connection_method:        "ssh"
   cli_type:                 "exos"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   platform:                 "5420"
   model:                    "5420F-24S-4XE-SwitchEngine"
   make:                     "exos"

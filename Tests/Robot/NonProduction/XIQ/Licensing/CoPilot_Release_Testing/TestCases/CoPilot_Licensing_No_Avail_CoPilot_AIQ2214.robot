@@ -199,51 +199,71 @@ Test 8: Verify Device License and CoPilot Column Values On All Devices
     ${copilot3_result}=    Get Device Details    ${DUT3_SERIAL}    COPILOT
     Should Contain         ${copilot3_result}    ${COPILOT_NONE}
 
-Test 9: Delete Third Test Device and Verify Success
-    [Documentation]     Deletes the third test device and verifies success
+Test 9: Verify CoPilot Licenses Warning Message Is Displayed
+    [Documentation]     Checks to see if 'Not Enough CoPilot Licenses' warning message is displayed
     [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test9
+
+    Depends On          Test 1
+
+    Navigate to Devices and Confirm Success
+    Refresh Page
+    Verify CoPilot Licenses Message Displayed
+
+Test 10: Delete Third Test Device and Verify Success
+    [Documentation]     Deletes the third test device and verifies success
+    [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test10
 
     Depends On          Test 1
 
     Delete Test Device and Confirm Success          ${DUT3_SERIAL}
 
-Test 10: Verify Third Device's Pilot License Revoked And CoPilot Licenses Unchanged Within Global Settings License Management
+Test 11: Verify Third Device's Pilot License Revoked And CoPilot Licenses Unchanged Within Global Settings License Management
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
-    [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test10
+    [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test11
 
     Depends On          Test 1
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       8    2    2
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     0    2    2
 
-Test 11: Delete Second Test Device and Verify Success
+Test 12: Verify CoPilot Licenses Warning Message Is Not Displayed
+    [Documentation]     Checks to see if 'Not Enough CoPilot Licenses' warning message is not displayed
+    [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test12
+
+    Depends On          Test 1
+
+    Navigate to Devices and Confirm Success
+    Refresh Page
+    Verify CoPilot Licenses Message Not Displayed
+
+Test 13: Delete Second Test Device and Verify Success
     [Documentation]     Deletes the second test device and verifies success
-    [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test11
+    [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test13
 
     Depends On          Test 1
 
     Delete Test Device and Confirm Success          ${DUT2_SERIAL}
 
-Test 12: Verify Second Device's Pilot and CoPilot Licenses Revoked Within Global Settings License Management
+Test 14: Verify Second Device's Pilot and CoPilot Licenses Revoked Within Global Settings License Management
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
-    [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test12
+    [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test14
 
     Depends On          Test 1
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       9    1    1
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    1
 
-Test 13: Delete First Test Device and Verify Success
+Test 15: Delete First Test Device and Verify Success
     [Documentation]     Deletes a test device and verifies success
-    [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test13
+    [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test15
 
     Depends On          Test 1
 
     Delete Test Device and Confirm Success          ${DUT1_SERIAL}
 
-Test 14: Verify First Device's Pilot and CoPilot Licenses Revoked Within Global Settings License Management
+Test 16: Verify First Device's Pilot and CoPilot Licenses Revoked Within Global Settings License Management
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
-    [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test14
+    [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test16
 
     Depends On          Test 1
 
@@ -336,3 +356,15 @@ Delete Device and Confirm Success
 
     ${del_result}=  Delete Device                     ${ip}
     Should Be Equal As Integers                       ${del_result}      1
+
+Verify CoPilot Licenses Message Displayed
+    [Documentation]     Verifies the "Not enough CoPilot licenses" banner message is displayed
+
+    ${banner_result}=  Confirm Not Enough CoPilot Licenses Message Displayed
+    Should Be Equal As Strings                       ${banner_result}      True
+
+Verify CoPilot Licenses Message Not Displayed
+    [Documentation]     Verifies the "Not enough CoPilot licenses" banner message is not displayed
+
+    ${banner_result}=  Confirm Not Enough CoPilot Licenses Message Displayed
+    Should Be Equal As Strings                       ${banner_result}      False
