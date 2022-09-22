@@ -10,6 +10,7 @@ import traceback
 import pytest
 import imp
 import sys
+import platform
 
 from collections import defaultdict
 from pytest_testconfig import config
@@ -379,12 +380,15 @@ def auto_actions():
 
 
 @pytest.fixture(scope="session")
-def configure_iq_agent(loaded_config, virtual_routers, logger, dut_list, debug, open_spawn, cli):
+def configure_iq_agent(loaded_config, logger, dut_list, debug, open_spawn, cli, request):
     
     @debug
     def configure_iq_agent_func(duts=dut_list, ipaddress=loaded_config['sw_connection_host']):
         
-        logger.step(f"Configure IQAGENT with ipaddress='{ipaddress}' on these devices: {', '.join([d.name for d in dut_list])}")
+        virtual_routers = request.getfixturevalue("virtual_routers")
+
+        logger.step(
+            f"Configure IQAGENT with ipaddress='{ipaddress}' on these devices: {', '.join([d.name for d in dut_list])}")
 
         def worker(dut):
             
@@ -439,7 +443,7 @@ def get_default_password(navigator, utils, auto_actions, debug, screen, wait_til
     return get_default_password_func
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def onboarding_locations(nodes, logger):
     
     ret = {}
@@ -469,27 +473,28 @@ def onboarding_locations(nodes, logger):
 
 @pytest.fixture(scope="session")
 def check_duts_are_reachable(logger, debug, wait_till):
-    results = []
-    from platform import system
+    
     
     @debug
-    def check_duts_are_reachable_func(duts, results=results, retries=3, step=1, windows=system() == "Windows"):
+    def check_duts_are_reachable_func(duts, retries=3, step=1, windows=platform.system() == "Windows"):
+        results = []
         def worker(dut):
             
             for _ in range(retries):
                 try:
                     ping_response = subprocess.Popen(
-                        ["ping", f"{'-n' if windows else '-c'} 1", dut.ip], stdout=subprocess.PIPE).stdout.read().decode()
+                        ["ping", f"{'-n' if windows else '-c'} 1", dut.ip],
+                        stdout=subprocess.PIPE).stdout.read().decode()
                     logger.cli(ping_response)
                     if re.search("100% loss" if windows else "100% packet loss" , ping_response):
                         wait_till(timeout=1)
                     else:
-                        results.append(f"({dut.ip}): Successfully verified that this dut is reachable: '{dut.name}'")
+                        results.append(f"({dut.ip}): Successfully verified that this dut is reachable: '{dut.name}'.")
                         break
                 except:
                     wait_till(timeout=step)
             else:
-                results.append(f"({dut.ip}): This dut is not reachable: '{dut.name}'\n{ping_response}")
+                results.append(f"({dut.ip}): This dut is not reachable: '{dut.name}.'\n{ping_response}")
 
         threads = []
         try:
@@ -816,19 +821,23 @@ def pytest_collection_modifyitems(session, items):
 
     onboard_stack_flag = len(stack_nodes) >= 1
     if not onboard_stack_flag:
-        logger_obj.warning("There is no stack device in the provided yaml file. The stack test cases will be unselected.")
+        logger_obj.warning(
+            "There is no stack device in the provided yaml file. The stack test cases will be unselected.")
         temp_items = [
             item for item in temp_items if 'testbed_stack' not in [marker.name for marker in item.own_markers]]
 
     onboard_two_node_flag = len(standalone_nodes) > 1
     if not onboard_two_node_flag:
-        logger_obj.warning("There are not enough standalone devices in the provided yaml file. The testbed two node test cases will be unselected.")
+        logger_obj.warning(
+            "There are not enough standalone devices in the provided yaml file. "
+            "The testbed two node test cases will be unselected.")
         temp_items = [
             item for item in temp_items if 'testbed_2_node' not in [marker.name for marker in item.own_markers]]
     
     onboard_one_node_flag = len(standalone_nodes) >= 1
     if not onboard_one_node_flag:
-        logger_obj.warning("There is no standalone device in the provided yaml file. The testbed one node test cases will be unselected.")
+        logger_obj.warning("There is no standalone device in the provided yaml file. "
+                           "The testbed one node test cases will be unselected.")
         temp_items = [
             item for item in temp_items if 'testbed_1_node' not in [marker.name for marker in item.own_markers]]
     
@@ -841,7 +850,8 @@ def pytest_collection_modifyitems(session, items):
     
     for item in items:
         if item not in temp_items:
-            logger_obj.info(f"This test function is unselected: '{item.nodeid}' (markers: '{[m.name for m in item.own_markers]}').")
+            logger_obj.info(
+                f"This test function is unselected: '{item.nodeid}' (markers: '{[m.name for m in item.own_markers]}').")
     
     item_tcxm_mapping = defaultdict(lambda: [])
     tcxm_item_mapping = defaultdict(lambda: [])
@@ -883,7 +893,8 @@ def pytest_collection_modifyitems(session, items):
 
     for item, xim_tcxm_markers in tcxm_item_mapping.items():
         if len(xim_tcxm_markers) > 1:
-            error = f"\nThis test function has more than one xim_tcxm marker: {item.nodeid} (markers: '{xim_tcxm_markers}')."
+            error = f"\nThis test function has more than one xim_tcxm marker: " \
+                    f"{item.nodeid} (markers: '{xim_tcxm_markers}')."
             logger_obj.error(error)
             pytest.fail(error)
 
@@ -902,22 +913,27 @@ def pytest_collection_modifyitems(session, items):
                 temp_markers = marker.args
                 if not len(temp_markers):
                     logger_obj.warning(
-                        f"The dependson marker of '{tcxm_code}' testcase does not have any arguments (test function: '{item.nodeid}'")
+                        f"The dependson marker of '{tcxm_code}' testcase does not have any arguments "
+                        f"(test function: '{item.nodeid}'")
                 for temp_marker in temp_markers:
                     if temp_marker == tcxm_code:
                         logger_obj.warning(f"'{tcxm_code}' is marked as depending on itself")
                     elif temp_marker not in all_tcs:
                         item.add_marker(
-                            pytest.mark.skip(f"'{tcxm_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}' is not in the current list of testcases to be run. It will be skipped.")
+                            pytest.mark.skip(f"'{tcxm_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}'"
+                                             f" is not in the current list of testcases to be run. It will be skipped.")
                         )
                     elif temp_marker not in found_tcs:
                         item.add_marker(
                             pytest.mark.skip(
-                                f"Please modify the order of the test cases. '{tcxm_code}' depends on '{', '.join(temp_markers)}' but the order is not correct. It will be skipped.")
+                                f"Please modify the order of the test cases. '{tcxm_code}' "
+                                f"depends on '{', '.join(temp_markers)}' but the order is not correct. "
+                                f"It will be skipped.")
                         )
     if temp_items:
         for item in temp_items:
-            logger_obj.info(f"This test function is selected to run this session: '{item.nodeid}' (markers: '{[m.name for m in item.own_markers]}')")
+            logger_obj.info(f"This test function is selected to run this session: '{item.nodeid}' "
+                            f"(markers: '{[m.name for m in item.own_markers]}')")
     else:
         message = "Did not find any test function to run this session."
         logger_obj.warning(message)
@@ -941,14 +957,19 @@ def pytest_runtest_makereport(item, call):
 
         if outcome := result.outcome: 
             if outcome == "passed":
-                print(f"{Colors.Bg.GREEN}\t{Colors.Style.BRIGHT} --> {current_test_marker.upper()} PASSED <-- {Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
+                print(
+                    f"{Colors.Bg.GREEN}\t{Colors.Style.BRIGHT} --> {current_test_marker.upper()} PASSED <--"
+                    f" {Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
             elif outcome == "failed":
-                print(f"{Colors.Bg.RED}\t{Colors.Style.BRIGHT} --> {current_test_marker.upper()} FAILED <-- {Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
+                print(
+                    f"{Colors.Bg.RED}\t{Colors.Style.BRIGHT} --> {current_test_marker.upper()} FAILED <-- "
+                    f"{Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
     
     elif result.when == "setup":
         
         if (outcome := result.outcome) == "skipped":
-            print(f"{Colors.Bg.BLUE}\t{Colors.Style.BRIGHT} --> {current_test_marker.upper()} SKIPPED <-- {Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
+            print(f"{Colors.Bg.BLUE}\t{Colors.Style.BRIGHT} --> {current_test_marker.upper()} SKIPPED "
+                  f"<-- {Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
 
     if result.when == 'call' and result.outcome != "passed":
         for it in item.session.items:
@@ -957,7 +978,11 @@ def pytest_runtest_makereport(item, call):
                 if mk.name == "dependson":
                     if len(mk.args) > 0:
                         if current_test_marker in mk.args:                            
-                            it.add_marker(pytest.mark.skip(f"'{temp_xim_tcxm_marker}' depends on '{current_test_marker}' but '{current_test_marker}' failed. '{temp_xim_tcxm_marker}' test case will be skipped."))
+                            it.add_marker(
+                                pytest.mark.skip(
+                                    f"'{temp_xim_tcxm_marker}' depends on '{current_test_marker}' but "
+                                    f"'{current_test_marker}' failed. '{temp_xim_tcxm_marker}' "
+                                    f"test case will be skipped."))
 
     if "skip" in [m.name for m in item.own_markers]:
         for it in item.session.items:
@@ -965,7 +990,11 @@ def pytest_runtest_makereport(item, call):
             for mk in it.own_markers:
                 if mk.name == "dependson":
                     if current_test_marker in mk.args:
-                        it.add_marker(pytest.mark.skip(f"'{temp_xim_tcxm_marker}' depends on '{current_test_marker}' but '{current_test_marker}' is skipped. '{temp_xim_tcxm_marker}' test case will be skipped."))
+                        it.add_marker(
+                            pytest.mark.skip(
+                                f"'{temp_xim_tcxm_marker}' depends on '{current_test_marker}' but "
+                                f"'{current_test_marker}' is skipped. '{temp_xim_tcxm_marker}' "
+                                f"test case will be skipped."))
 
 
 def pytest_runtest_call(item):
@@ -1005,7 +1034,7 @@ def policy_config(dut_list):
 
 
 @pytest.fixture(scope="session")
-def dut_list(standalone_nodes, stack_nodes, check_duts_are_reachable):
+def dut_list(standalone_nodes, stack_nodes):
     
     duts = []
 
@@ -1017,8 +1046,6 @@ def dut_list(standalone_nodes, stack_nodes, check_duts_are_reachable):
     if onboard_stack_flag:
         duts.append(stack_nodes[0])
 
-    check_duts_are_reachable(duts)
-    
     return duts
 
 
@@ -1052,10 +1079,11 @@ def update_devices(logger, dut_list, policy_config, debug, wait_till):
 
 
 @pytest.fixture(scope="session")
-def onboard_devices(dut_list, logger, screen, onboarding_locations, debug):
+def onboard_devices(dut_list, logger, screen, debug, request):
     
     @debug
     def onboard_devices_func(xiq, duts=dut_list):
+        onboarding_locations = request.getfixturevalue("onboarding_locations")
         for dut in duts:
             if xiq.xflowscommonDevices.onboard_device(
                 device_serial=dut.serial, device_make=dut.cli_type,
@@ -1076,8 +1104,76 @@ def dump_data(data):
 
 
 @pytest.fixture(scope="session")
+def dump_switch_logs(enter_switch_cli, check_duts_are_reachable, dut_list, logger):
+    
+    exos_cmds = [
+        "show system",
+        "show iqagent",
+        "show mgmt",
+        "show iproute",
+        "show ports info",
+        "show dns-client",
+        "show memory",
+        "show stacking",
+        "show stacking-support",
+        "show vlan",
+        "show vr",
+        "show virtual-network",
+        "show ssh2",
+        "show session",
+        "show cli journal"
+    ]
+    voss_cmds = [
+        "show sys-info | no-more",
+        "show application iqagent",
+        "show int gig int | no-more",
+        "show mgmt interface",
+        "show ip dns",
+        "show vlan members",
+        "show boot config flags",
+        "show history",
+        "show clock",
+        "show ssh session"
+    ]
+
+    def func():
+        
+        def worker(dut):
+            try:
+                check_duts_are_reachable([dut])
+            except:
+                logger.warning(f"'{dut.name}' is not reachable so won't dump any info for it.")
+                return
+        
+            with enter_switch_cli(dut) as dev_cmd:
+                
+                if dut.cli_type.upper() == "EXOS":
+                    dev_cmd.send_cmd(dut.name, "disable cli paging", max_wait=10, interval=2)
+                    cmds = exos_cmds
+                
+                elif dut.cli_type.upper() == "VOSS":
+                    dev_cmd.send_cmd(dut.name, "enable", max_wait=10, interval=2)
+                    dev_cmd.send_cmd(dut.name, "configure terminal", max_wait=10, interval=2)
+                    cmds = voss_cmds
+                    
+                for cmd in cmds:
+                    try:
+                        output = dev_cmd.send_cmd(dut.name, cmd, max_wait=10, interval=2)[0].return_text
+                        logger.cli("*" * 20 + f" {dut.name}: '{cmd.upper()}' " + "*" * 20)
+                        logger.cli(output)
+                        logger.cli("*" * 20 + f" {dut.name}: '{cmd.upper()}' " + "*" * 20)
+                    except Exception:
+                        logger.warning(f"Failed to get output of this command from '{dut.name}': '{cmd}'.")
+                        
+        for dut in dut_list:
+            worker(dut)
+    return func
+
+  
+@pytest.fixture(scope="session")
 def onboard(request):
 
+    check_duts_are_reachable = request.getfixturevalue("check_duts_are_reachable")
     configure_network_policies = request.getfixturevalue("configure_network_policies")
     login_xiq = request.getfixturevalue("login_xiq")
     stack_nodes = request.getfixturevalue("stack_nodes")
@@ -1086,23 +1182,25 @@ def onboard(request):
     cleanup = request.getfixturevalue("cleanup")
     onboard_devices = request.getfixturevalue("onboard_devices")
     configure_iq_agent = request.getfixturevalue("configure_iq_agent")
+    dump_switch_logs = request.getfixturevalue("dump_switch_logs")
     update_devices = request.getfixturevalue("update_devices")
     logger = request.getfixturevalue("logger")
+    
+    dut_list = request.getfixturevalue("dut_list")
+    logger.info(f"These are the devices that will be onboarded ({len(dut_list)} device(s)): " + "'" + '\', \''.join([dut.name for dut in dut_list]) + "'.")
+
+    check_duts_are_reachable(dut_list)
 
     onboarding_locations = request.getfixturevalue("onboarding_locations")
     logger.info(f"These locations will be used for the onboarding:\n'{dump_data(onboarding_locations)}'")
     
-    dut_list = request.getfixturevalue("dut_list")
-    logger.info(f"These are the devices that will be onboarded ({len(dut_list)} device(s)): "
-                f"{', '.join([dut.name for dut in dut_list])}")
-
     policy_config = request.getfixturevalue("policy_config")
     logger.info(f"These are the policies and switch templates that will be applied to the onboarded devices:"
                 f"\n{dump_data(policy_config)}")
     
     try:
         
-        configure_iq_agent()
+        configure_iq_agent(duts=dut_list)
         
         with login_xiq() as xiq:
                 
@@ -1121,6 +1219,7 @@ def onboard(request):
         
     except Exception as exc:
         logger.error(repr(exc))
+        dump_switch_logs()
         logger.error(traceback.format_exc())
         pytest.fail(f"The onboarding failed for these devices: {dut_list}\n{traceback.format_exc()}")
     
