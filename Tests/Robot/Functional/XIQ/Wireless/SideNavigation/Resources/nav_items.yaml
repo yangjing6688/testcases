@@ -40,39 +40,40 @@ nav:
       url:                "/devices"
       pilot_number:       3
       helpdesk_number:    1
-    clients:
-      tag:                "automation-header-nav-clients"
-      url:                "/clientsoverview"
-      pilot_number:       4
     users:
       tag:                "automation-header-nav-manage-clients"
       url:                "/activeusers"
-      pilot_number:       5
+      pilot_number:       4
     events:
       tag:                "automation-header-nav-events"
       url:                "/activeevents"
+      pilot_number:       5
+    alerts:
+      tag:                "automation-header-nav-alerts"
+      url:                "/alerts"
       pilot_number:       6
-    alarms:
-      tag:                "automation-header-nav-alarms"
-      url:                "/activealarms"
-      pilot_number:       7
+      helpdesk_number:    2
     reports:
       tag:                "automation-header-nav-reports"
       url:                "/reports"
-      pilot_number:       8
+      pilot_number:       7
     applications:
       tag:                "automation-header-nav-apps"
       url:                "/topapps"
-      pilot_number:       9
+      pilot_number:       8
     security:
       tag:                "automation-header-nav-security"
       url:                "/rogueaps"
-      pilot_number:       10
+      pilot_number:       9
     diagnosis:
       tag:                "automation-header-nav-clientmonitor-Diagnosis"
       url:                "/tools/issueList"
+      pilot_number:       10
+      helpdesk_number:    3
+    vpn:
+      tag:                "automation-header-vpnMgmt"
+      url:                "/services/keys"
       pilot_number:       11
-      helpdesk_number:    2
   insights:
     tag:                "automation-header-n360"
     icon_class:         "img-insights"
