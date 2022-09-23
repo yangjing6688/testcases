@@ -474,7 +474,6 @@ def onboarding_locations(nodes, logger):
 @pytest.fixture(scope="session")
 def check_duts_are_reachable(logger, debug, wait_till):
     
-    
     @debug
     def check_duts_are_reachable_func(duts, retries=3, step=1, windows=platform.system() == "Windows"):
         results = []
@@ -799,6 +798,20 @@ def _temporary_fix_assign_policy(xiq, policy_name, dut):
     time.sleep(10)
 
 
+@pytest.mark.xim_tcxm_xiq_onboarding
+def test_xiq_onboarding(request):
+    request.getfixturevalue("onboard")
+
+
+@pytest.mark.xim_tcxm_xiq_onboarding_cleanup
+def test_xiq_onboarding_cleanup(request):
+    request.getfixturevalue("onboard_cleanup")
+
+
+def pytest_cmdline_preparse(config, args):
+    args.append(os.path.join(os.path.dirname(__file__), "conftest.py"))
+
+
 def pytest_collection_modifyitems(session, items):
     
     global onboard_one_node_flag
@@ -811,6 +824,14 @@ def pytest_collection_modifyitems(session, items):
 
     for item in items:
         logger_obj.info(f"Collected this test function: '{item.nodeid}'.")
+
+    onboarding_test_name = "xim_tcxm_xiq_onboarding"
+    onboarding_cleanup_test_name = "xim_tcxm_xiq_onboarding_cleanup"
+    [item_onboarding] = [item for item in items if item if onboarding_test_name in [m.name for m in item.own_markers]]
+    [item_onboarding_cleanup] = [
+        item for item in items if item if onboarding_cleanup_test_name in [m.name for m in item.own_markers]]
+    items.remove(item_onboarding)
+    items.remove(item_onboarding_cleanup)
 
     logger_obj.step("Check the capabilities of the testbed.")
     standalone_nodes = [node for node in nodes if node.get("platform", "").upper() != "STACK"]
@@ -887,7 +908,7 @@ def pytest_collection_modifyitems(session, items):
     
     for tcxm_code, functions in item_tcxm_mapping.items():
         if len(functions) > 1:
-            error = f"Code '{tcxm_code}' is used as marker for more than one test function:\n" + "\n".join(functions)
+            error = f"Marker '{tcxm_code}' is used as marker for more than one test function:\n" + "\n".join(functions)
             logger_obj.error(error)
             pytest.fail(error)
 
@@ -898,12 +919,12 @@ def pytest_collection_modifyitems(session, items):
             logger_obj.error(error)
             pytest.fail(error)
 
-    all_tcs = []
+    all_tcs = [onboarding_test_name, onboarding_cleanup_test_name]
     for item in temp_items:
         [tcxm_code] = [m.name for m in item.own_markers if re.search("xim_tcxm_", m.name)]
         all_tcs.append(tcxm_code)
 
-    found_tcs = []
+    found_tcs = [onboarding_test_name, onboarding_cleanup_test_name]
     for item in temp_items:
         [tcxm_code] = [m.name for m in item.own_markers if re.search("xim_tcxm_", m.name)]
         found_tcs.append(tcxm_code)
@@ -914,10 +935,11 @@ def pytest_collection_modifyitems(session, items):
                 if not len(temp_markers):
                     logger_obj.warning(
                         f"The dependson marker of '{tcxm_code}' testcase does not have any arguments "
-                        f"(test function: '{item.nodeid}'")
+                        f"(test function: '{item.nodeid}'.")
                 for temp_marker in temp_markers:
                     if temp_marker == tcxm_code:
-                        logger_obj.warning(f"'{tcxm_code}' is marked as depending on itself")
+                        logger_obj.warning(
+                            f"'{tcxm_code}' is marked as depending on itself (test function: '{item.nodeid}'.")
                     elif temp_marker not in all_tcs:
                         item.add_marker(
                             pytest.mark.skip(f"'{tcxm_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}'"
@@ -931,6 +953,8 @@ def pytest_collection_modifyitems(session, items):
                                 f"It will be skipped.")
                         )
     if temp_items:
+        temp_items.insert(0, item_onboarding)
+        temp_items.append(item_onboarding_cleanup)
         for item in temp_items:
             logger_obj.info(f"This test function is selected to run this session: '{item.nodeid}' "
                             f"(markers: '{[m.name for m in item.own_markers]}')")
@@ -1107,33 +1131,33 @@ def dump_data(data):
 def dump_switch_logs(enter_switch_cli, check_duts_are_reachable, dut_list, logger):
     
     exos_cmds = [
+        "show mgmt",
+        "show ssh2",
+        "show iproute",
         "show system",
         "show iqagent",
-        "show mgmt",
-        "show iproute",
-        "show ports info",
-        "show dns-client",
-        "show memory",
         "show stacking",
         "show stacking-support",
         "show vlan",
         "show vr",
         "show virtual-network",
-        "show ssh2",
+        "show ports info",
+        "show dns-client",
+        "show memory",
         "show session",
         "show cli journal"
     ]
     voss_cmds = [
+        "show mgmt interface",
         "show sys-info | no-more",
         "show application iqagent",
-        "show int gig int | no-more",
-        "show mgmt interface",
-        "show ip dns",
+        "show ssh session"
         "show vlan members",
+        "show ip dns",
+        "show int gig int | no-more",
         "show boot config flags",
         "show history",
-        "show clock",
-        "show ssh session"
+        "show clock"
     ]
 
     def func():
@@ -1176,7 +1200,6 @@ def onboard(request):
     check_duts_are_reachable = request.getfixturevalue("check_duts_are_reachable")
     configure_network_policies = request.getfixturevalue("configure_network_policies")
     login_xiq = request.getfixturevalue("login_xiq")
-    stack_nodes = request.getfixturevalue("stack_nodes")
     change_device_management_settings = request.getfixturevalue("change_device_management_settings")
     check_devices_are_onboarded = request.getfixturevalue("check_devices_are_onboarded")
     cleanup = request.getfixturevalue("cleanup")
@@ -1187,7 +1210,8 @@ def onboard(request):
     logger = request.getfixturevalue("logger")
     
     dut_list = request.getfixturevalue("dut_list")
-    logger.info(f"These are the devices that will be onboarded ({len(dut_list)} device(s)): " + "'" + '\', \''.join([dut.name for dut in dut_list]) + "'.")
+    logger.info(f"These are the devices that will be onboarded ({len(dut_list)} device(s)): " + "'" +
+                '\', \''.join([dut.name for dut in dut_list]) + "'.")
 
     check_duts_are_reachable(dut_list)
 
@@ -1223,17 +1247,25 @@ def onboard(request):
         logger.error(traceback.format_exc())
         pytest.fail(f"The onboarding failed for these devices: {dut_list}\n{traceback.format_exc()}")
     
-    finally:
-        
-        with login_xiq() as xiq:
 
-            cleanup(
-                xiq=xiq, 
-                duts=dut_list, 
-                network_policies=[dut_info['policy_name'] for dut_info in policy_config.values()],
-                templates_switch=[dut_info['template_name'] for dut_info in policy_config.values()],
-                slots=len(stack_nodes[0].stack) if len(stack_nodes) > 0 else 1
-            )
+@pytest.fixture(scope="session")
+def onboard_cleanup(request):
+    
+    login_xiq = request.getfixturevalue("login_xiq")
+    stack_nodes = request.getfixturevalue("stack_nodes")
+    cleanup = request.getfixturevalue("cleanup")
+    dut_list = request.getfixturevalue("dut_list")
+    policy_config = request.getfixturevalue("policy_config")
+    
+    with login_xiq() as xiq:
+
+        cleanup(
+            xiq=xiq, 
+            duts=dut_list, 
+            network_policies=[dut_info['policy_name'] for dut_info in policy_config.values()],
+            templates_switch=[dut_info['template_name'] for dut_info in policy_config.values()],
+            slots=len(stack_nodes[0].stack) if len(stack_nodes) > 0 else 1
+        )
 
 
 @pytest.fixture(scope="session")
