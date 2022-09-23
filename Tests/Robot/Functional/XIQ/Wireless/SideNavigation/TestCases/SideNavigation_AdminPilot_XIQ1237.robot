@@ -6,7 +6,7 @@
 #
 # Author        : John Borges
 # Description   : Test Suite for testing the side navigation for an Admin user on a Pilot/Copilot account
-# Topology      : No topology needed
+# Topology      : No topology/device needed
 
 
 *** Settings ***
@@ -78,14 +78,14 @@ TCXM-18162: Confirm Manage Menu
     Confirm Side Nav Menu Item   ${nav.manage.summary.tag}   ${nav.manage.summary.pilot_number}
     Confirm Side Nav Menu Item   ${nav.manage.plan.tag}   ${nav.manage.plan.pilot_number}
     Confirm Side Nav Menu Item   ${nav.manage.devices.tag}   ${nav.manage.devices.pilot_number}
-    Confirm Side Nav Menu Item   ${nav.manage.clients.tag}   ${nav.manage.clients.pilot_number}
     Confirm Side Nav Menu Item   ${nav.manage.users.tag}   ${nav.manage.users.pilot_number}
     Confirm Side Nav Menu Item   ${nav.manage.events.tag}   ${nav.manage.events.pilot_number}
-    Confirm Side Nav Menu Item   ${nav.manage.alarms.tag}   ${nav.manage.alarms.pilot_number}
+    Confirm Side Nav Menu Item   ${nav.manage.alerts.tag}   ${nav.manage.alerts.pilot_number}
     Confirm Side Nav Menu Item   ${nav.manage.reports.tag}   ${nav.manage.reports.pilot_number}
     Confirm Side Nav Menu Item   ${nav.manage.applications.tag}   ${nav.manage.applications.pilot_number}
     Confirm Side Nav Menu Item   ${nav.manage.security.tag}   ${nav.manage.security.pilot_number}
     Confirm Side Nav Menu Item   ${nav.manage.diagnosis.tag}   ${nav.manage.diagnosis.pilot_number}
+    Confirm Side Nav Menu Item   ${nav.manage.vpn.tag}   ${nav.manage.vpn.pilot_number}
 
     # check all submenus open the correct pages
     ${nav_result}=      Navigate To Manage Summary
@@ -103,11 +103,6 @@ TCXM-18162: Confirm Manage Menu
     ${nav_url}=         Is The Expected Url   ${nav.manage.devices.url}
     Should Be Equal As Integers   ${nav_url}   1
 
-    ${nav_result}=      Navigate To Clients
-    Should Be Equal As Integers   ${nav_result}   1
-    ${nav_url}=         Is The Expected Url   ${nav.manage.clients.url}
-    Should Be Equal As Integers   ${nav_url}   1
-
     ${nav_result}=      Navigate To Manage Users
     Should Be Equal As Integers   ${nav_result}   1
     ${nav_url}=         Is The Expected Url   ${nav.manage.users.url}
@@ -118,9 +113,9 @@ TCXM-18162: Confirm Manage Menu
     ${nav_url}=         Is The Expected Url   ${nav.manage.events.url}
     Should Be Equal As Integers   ${nav_url}   1
 
-    ${nav_result}=      Navigate To Manage Alarms
+    ${nav_result}=      Navigate Manage Alerts
     Should Be Equal As Integers   ${nav_result}   1
-    ${nav_url}=         Is The Expected Url   ${nav.manage.alarms.url}
+    ${nav_url}=         Is The Expected Url   ${nav.manage.alerts.url}
     Should Be Equal As Integers   ${nav_url}   1
 
     ${nav_result}=      Navigate To Manage Reports
@@ -141,6 +136,11 @@ TCXM-18162: Confirm Manage Menu
     ${nav_result}=      Navigate To Client Monitor And Diagnosis Tab
     Should Be Equal As Integers   ${nav_result}   1
     ${nav_url}=         Is The Expected Url   ${nav.manage.diagnosis.url}
+    Should Be Equal As Integers   ${nav_url}   1
+
+    ${nav_result}=      Navigate To Vpn Management Tab
+    Should Be Equal As Integers   ${nav_result}   1
+    ${nav_url}=         Is The Expected Url   ${nav.manage.vpn.url}
     Should Be Equal As Integers   ${nav_url}   1
 
 TCXM-18163: Confirm ML Insights Menu
