@@ -113,7 +113,7 @@ class Colors:
 
 def _logger():
      
-    logging = imp.load_module("logging1", *imp.find_module("logging"))
+    logging = imp.load_module("logging_module", *imp.find_module("logging"))
 
     STEP_LOG_LEVEL = 5
     CLI_LOG_LEVEL = 6
@@ -414,7 +414,7 @@ def configure_iq_agent(loaded_config, logger, dut_list, debug, open_spawn, cli, 
 
 
 @pytest.fixture(scope="session")
-def get_default_password(navigator, utils, auto_actions, debug, screen, wait_till):
+def get_default_password(navigator, auto_actions, debug, screen, wait_till):
     
     @debug
     def get_default_password_func(xiq):
@@ -538,7 +538,7 @@ def network_manager():
 
 @pytest.fixture(scope="session")
 def testbed():
-    return PytestConfigHelper(config)
+    return _testbed
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -800,11 +800,20 @@ def _temporary_fix_assign_policy(xiq, policy_name, dut):
 
 @pytest.mark.xim_tcxm_xiq_onboarding
 def test_xiq_onboarding(request):
+    if not any([onboard_one_node_flag, onboard_two_node_flag, onboard_stack_flag]):
+        logger_obj.info(
+            "Currently there are no devices given in the yaml files so the onboarding test won't configure anything.")
+        return
     request.getfixturevalue("onboard")
 
 
 @pytest.mark.xim_tcxm_xiq_onboarding_cleanup
 def test_xiq_onboarding_cleanup(request):
+    if not any([onboard_one_node_flag, onboard_two_node_flag, onboard_stack_flag]):
+        logger_obj.info(
+            "Currently there are no devices given in the yaml files so "
+            "the onboarding cleanup test won't unconfigure anything.")
+        return
     request.getfixturevalue("onboard_cleanup")
 
 
@@ -812,42 +821,67 @@ def pytest_cmdline_preparse(config, args):
     args.append(os.path.join(os.path.dirname(__file__), "conftest.py"))
 
 
+_testbed: PytestConfigHelper = None
+_nodes = []
+_standalone_nodes = []
+_stack_nodes = []
+
+
 def pytest_collection_modifyitems(session, items):
     
     global onboard_one_node_flag
     global onboard_two_node_flag
     global onboard_stack_flag
-
-    testbed = PytestConfigHelper(config)
-    nodes = list(filter(lambda d: d is not None, [getattr(testbed, f"dut{i}", None) for i in range(1, 10)]))
-    temp_items = items[:]
-
-    for item in items:
-        logger_obj.info(f"Collected this test function: '{item.nodeid}'.")
+    global _nodes
+    global _standalone_nodes
+    global _stack_nodes
+    global _testbed
 
     onboarding_test_name = "xim_tcxm_xiq_onboarding"
     onboarding_cleanup_test_name = "xim_tcxm_xiq_onboarding_cleanup"
-    [item_onboarding] = [item for item in items if item if onboarding_test_name in [m.name for m in item.own_markers]]
+
+    collected_items = []
+    for item in items:
+        if onboarding_test_name in [m.name for m in item.own_markers]:
+            if not [it for it in collected_items if item if onboarding_test_name in [m.name for m in it.own_markers]]:
+                collected_items.append(item)
+        elif onboarding_cleanup_test_name in [m.name for m in item.own_markers]:
+            if not [it for it in collected_items if item if onboarding_cleanup_test_name in [m.name for m in it.own_markers]]:
+                collected_items.append(item)
+        else:
+            collected_items.append(item)
+
+    for item in collected_items:
+        logger_obj.info(f"Collected this test function: '{item.nodeid}'.")
+
+    [item_onboarding] = [
+        it for it in collected_items if item if onboarding_test_name in [m.name for m in it.own_markers]]
     [item_onboarding_cleanup] = [
-        item for item in items if item if onboarding_cleanup_test_name in [m.name for m in item.own_markers]]
-    items.remove(item_onboarding)
-    items.remove(item_onboarding_cleanup)
+        it for it in collected_items if item if onboarding_cleanup_test_name in [m.name for m in it.own_markers]]
+    
+    collected_items.remove(item_onboarding)
+    collected_items.remove(item_onboarding_cleanup)
+    
+    _testbed = PytestConfigHelper(config)
+    _nodes = list(filter(lambda d: d is not None, [getattr(_testbed, f"dut{i}", None) for i in range(1, 10)]))
 
     logger_obj.step("Check the capabilities of the testbed.")
-    standalone_nodes = [node for node in nodes if node.get("platform", "").upper() != "STACK"]
-    logger_obj.info(f"Found {len(standalone_nodes)} standalone node(s).")
+    _standalone_nodes = [node for node in _nodes if node.get("platform", "").upper() != "STACK"]
+    logger_obj.info(f"Found {len(_standalone_nodes)} standalone node(s).")
 
-    stack_nodes = [node for node in nodes if node not in standalone_nodes]
-    logger_obj.info(f"Found {len(stack_nodes)} stack node(s).")
+    _stack_nodes = [node for node in _nodes if node not in _standalone_nodes]
+    logger_obj.info(f"Found {len(_stack_nodes)} stack node(s).")
 
-    onboard_stack_flag = len(stack_nodes) >= 1
+    temp_items = collected_items[:]
+
+    onboard_stack_flag = len(_stack_nodes) >= 1
     if not onboard_stack_flag:
         logger_obj.warning(
             "There is no stack device in the provided yaml file. The stack test cases will be unselected.")
         temp_items = [
             item for item in temp_items if 'testbed_stack' not in [marker.name for marker in item.own_markers]]
 
-    onboard_two_node_flag = len(standalone_nodes) > 1
+    onboard_two_node_flag = len(_standalone_nodes) > 1
     if not onboard_two_node_flag:
         logger_obj.warning(
             "There are not enough standalone devices in the provided yaml file. "
@@ -855,7 +889,7 @@ def pytest_collection_modifyitems(session, items):
         temp_items = [
             item for item in temp_items if 'testbed_2_node' not in [marker.name for marker in item.own_markers]]
     
-    onboard_one_node_flag = len(standalone_nodes) >= 1
+    onboard_one_node_flag = len(_standalone_nodes) >= 1
     if not onboard_one_node_flag:
         logger_obj.warning("There is no standalone device in the provided yaml file. "
                            "The testbed one node test cases will be unselected.")
@@ -869,7 +903,7 @@ def pytest_collection_modifyitems(session, items):
         ]]
     )]
     
-    for item in items:
+    for item in collected_items:
         if item not in temp_items:
             logger_obj.info(
                 f"This test function is unselected: '{item.nodeid}' (markers: '{[m.name for m in item.own_markers]}').")
@@ -1028,18 +1062,18 @@ def pytest_runtest_call(item):
 
 
 @pytest.fixture(scope="session")
-def nodes(testbed):
-    return list(filter(lambda d: d is not None, [getattr(testbed, f"dut{i}", None) for i in range(1, 10)]))
+def nodes():
+    return _nodes
 
 
 @pytest.fixture(scope="session")
-def standalone_nodes(nodes):
-    return [node for node in nodes if node.get("platform", "").upper() != "STACK"]
+def standalone_nodes():
+    return _standalone_nodes
 
 
 @pytest.fixture(scope="session")
-def stack_nodes(nodes):
-    return [node for node in nodes if node.get("platform", "").upper() == "STACK"]
+def stack_nodes():
+    return _stack_nodes
 
     
 @pytest.fixture(scope="session")
@@ -1151,7 +1185,7 @@ def dump_switch_logs(enter_switch_cli, check_duts_are_reachable, dut_list, logge
         "show mgmt interface",
         "show sys-info | no-more",
         "show application iqagent",
-        "show ssh session"
+        "show ssh session",
         "show vlan members",
         "show ip dns",
         "show int gig int | no-more",
