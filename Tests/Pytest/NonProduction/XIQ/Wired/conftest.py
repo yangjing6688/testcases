@@ -19,8 +19,11 @@ from functools import partial, partialmethod
 
 from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
 from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
-from extauto.common.Utils import Utils
-from extauto.common.Cli import Cli
+
+
+LOG_FORMAT = '[%(asctime)s] [%(levelname)s] [%(module)s] [%(funcName)s:%(lineno)s] [%(test_name)s] %(message)s'
+STEP_LOG_LEVEL = 5
+CLI_LOG_LEVEL = 6
 
 
 @pytest.fixture(scope="session")
@@ -81,9 +84,6 @@ def _logger():
      
     logging = imp.load_module("logging_module", *imp.find_module("logging"))
 
-    STEP_LOG_LEVEL = 5
-    CLI_LOG_LEVEL = 6
-
     logging.STEP = STEP_LOG_LEVEL
     logging.CLI = CLI_LOG_LEVEL
     logging.addLevelName(logging.STEP, 'STEP')
@@ -113,8 +113,6 @@ def _logger():
         return record
     
     logging.setLogRecordFactory(record_factory)
-    
-    LOG_FORMAT = '[%(asctime)s] [%(levelname)s] [%(module)s] [%(funcName)s:%(lineno)s] [%(test_name)s] %(message)s'
 
     class Formatter(logging.Formatter):
         def format(self, record):
@@ -131,7 +129,6 @@ def _logger():
     return logger_obj
 
 
-cli_obj = Cli()
 logger_obj = _logger()
 _testbed: PytestConfigHelper = None
 _nodes = []
@@ -446,7 +443,8 @@ def enter_switch_cli(network_manager, close_connection, dev_cmd):
 
 @pytest.fixture(scope="session")
 def cli():
-    return cli_obj
+    from extauto.common.Cli import Cli
+    return Cli()
 
 
 @pytest.fixture(scope="session")
@@ -1535,6 +1533,33 @@ def get_dut(tb, os, platform=""):
 
 
 @pytest.fixture(scope="session")
+def dut1(testbed, logger):
+    try:
+        return getattr(testbed, "dut1")
+    except AttributeError as err:
+        logger.error(f"The testbed does not have the 'dut1' netelem.")
+        raise err
+
+
+@pytest.fixture(scope="session")
+def dut2(testbed, logger):
+    try:
+        return getattr(testbed, "dut2")
+    except AttributeError as err:
+        logger.error(f"The testbed does not have the 'dut2' netelem.")
+        raise err
+
+
+@pytest.fixture(scope="session")
+def dut3(testbed, logger):
+    try:
+        return getattr(testbed, "dut3")
+    except AttributeError as err:
+        logger.error(f"The testbed does not have the 'dut3' netelem.")
+        raise err
+
+
+@pytest.fixture(scope="session")
 def network_manager():
     from ExtremeAutomation.Keywords.NetworkElementKeywords.NetworkElementConnectionManager import \
         NetworkElementConnectionManager
@@ -1555,6 +1580,7 @@ def navigator():
 
 @pytest.fixture(scope="session")
 def utils():
+    from extauto.common.Utils import Utils
     return Utils()
 
 
