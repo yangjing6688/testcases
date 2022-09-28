@@ -8,22 +8,17 @@ import random
 import subprocess
 import traceback
 import pytest
-import imp
-import sys
+
 import platform
 
 from collections import defaultdict
 from pytest_testconfig import config
 from contextlib import contextmanager
-from functools import partial, partialmethod
 
 from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
 from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
-
-
-LOG_FORMAT = '[%(asctime)s] [%(levelname)s] [%(module)s] [%(funcName)s:%(lineno)s] [%(test_name)s] %(message)s'
-STEP_LOG_LEVEL = 5
-CLI_LOG_LEVEL = 6
+from ExtremeAutomation.Library.Logger.PytestLogger import PytestLogger
+from ExtremeAutomation.Library.Logger.Colors import Colors
 
 
 @pytest.fixture(scope="session")
@@ -49,87 +44,6 @@ def logger():
     return logger_obj
 
 
-class Colors:
-    class Fg:
-        BLACK = '\033[30m'
-        RED = '\033[31m'
-        GREEN = '\033[32m'
-        YELLOW = '\033[33m'
-        BLUE = '\033[34m'
-        MAGENTA = '\033[35m'
-        CYAN = '\033[36m'
-        WHITE = '\033[37m'
-        RESET = '\033[39m'
-
-    class Bg:
-        BLACK = '\033[40m'
-        RED = '\033[41m'
-        GREEN = '\033[42m'
-        YELLOW = '\033[43m'
-        BLUE = '\033[44m'
-        MAGENTA = '\033[45m'
-        CYAN = '\033[46m'
-        WHITE = '\033[47m'
-        RESET = '\033[49m'
-
-    class Style:
-        BRIGHT = '\033[1m'
-        DIM = '\033[2m'
-        NORMAL = '\033[22m'
-        RESET_ALL = '\033[0m'
-        UNDERLINE = '\033[4m'
-
-
-def _logger():
-     
-    logging = imp.load_module("logging_module", *imp.find_module("logging"))
-
-    logging.STEP = STEP_LOG_LEVEL
-    logging.CLI = CLI_LOG_LEVEL
-    logging.addLevelName(logging.STEP, 'STEP')
-    logging.addLevelName(logging.CLI, 'CLI')
-    logging.Logger.step = partialmethod(logging.Logger.log, logging.STEP)
-    logging.Logger.cli = partialmethod(logging.Logger.log, logging.CLI)
-    logging.step = partial(logging.log, logging.STEP)
-    logging.cli = partial(logging.log, logging.CLI)
-
-    ColorsLogger = {
-        "reset": Colors.Fg.RESET,
-        logging.STEP: Colors.Fg.CYAN,
-        logging.CLI: Colors.Fg.BLUE,
-        logging.INFO: Colors.Fg.MAGENTA,
-        logging.DEBUG: Colors.Fg.GREEN,
-        logging.WARNING: Colors.Fg.YELLOW,
-        logging.CRITICAL: Colors.Fg.RED,
-        logging.ERROR: Colors.Fg.RED
-    }
-
-    old_factory = logging.getLogRecordFactory()
-
-    def record_factory(*args, **kwargs):
-        global config
-        record = old_factory(*args, **kwargs)
-        record.test_name = config.get("${TEST_NAME}", "SETUP")
-        return record
-    
-    logging.setLogRecordFactory(record_factory)
-
-    class Formatter(logging.Formatter):
-        def format(self, record):
-            self._style._fmt = f"{ColorsLogger[record.levelno]}{LOG_FORMAT}{ColorsLogger['reset']}"
-            return super().format(record)
-
-    logger_obj = logging.getLogger(__name__)
-    logger_obj.setLevel(STEP_LOG_LEVEL)
-
-    s_handler = logging.StreamHandler(sys.stdout)
-    s_handler.setFormatter(Formatter())
-    s_handler.setLevel(STEP_LOG_LEVEL)
-    logger_obj.addHandler(s_handler)
-    return logger_obj
-
-
-logger_obj = _logger()
 _testbed: PytestConfigHelper = None
 _nodes = []
 _standalone_nodes = []
@@ -137,6 +51,7 @@ _stack_nodes = []
 onboard_one_node_flag = False
 onboard_two_node_flag = False
 onboard_stack_flag = False
+logger_obj = PytestLogger()
 
 
 def pytest_cmdline_preparse(config, args):
