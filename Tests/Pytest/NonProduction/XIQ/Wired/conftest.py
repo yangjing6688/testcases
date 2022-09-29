@@ -68,8 +68,8 @@ def pytest_collection_modifyitems(session, items):
     global _stack_nodes
     global _testbed
 
-    onboarding_test_name = "xim_tcxm_xiq_onboarding"
-    onboarding_cleanup_test_name = "xim_tcxm_xiq_onboarding_cleanup"
+    onboarding_test_name = "tcxm_xiq_onboarding"
+    onboarding_cleanup_test_name = "tcxm_xiq_onboarding_cleanup"
 
     collected_items = []
     for item in items:
@@ -145,16 +145,16 @@ def pytest_collection_modifyitems(session, items):
     items_without_priority_markers = []
 
     for item in temp_items:
-        tcxm_codes = [m.name for m in item.own_markers if re.search("xim_tcxm_", m.name)]
+        tcxm_codes = [m.name for m in item.own_markers if re.search("^tcxm_", m.name)]
         priority = [m.name for m in item.own_markers if str(m.name) in ["p1", "p2", "p3", "p4", "p5"]]
 
         if not priority:
             items_without_priority_markers.append(
-                f"This function does not have a priority marker: '{item.nodeid}'")
+                f"This function does not have a priority marker: '{item.nodeid}'.")
 
         if not tcxm_codes:
             items_without_tcxm_markers.append(
-                f"This function does not have a TCXM marker: '{item.nodeid}'")
+                f"This function does not have a TCXM marker: '{item.nodeid}'.")
 
         for tcxm_code in tcxm_codes:
             item_tcxm_mapping[tcxm_code].append(item.nodeid)
@@ -177,21 +177,21 @@ def pytest_collection_modifyitems(session, items):
             logger_obj.error(error)
             pytest.fail(error)
 
-    for item, xim_tcxm_markers in tcxm_item_mapping.items():
-        if len(xim_tcxm_markers) > 1:
-            error = f"\nThis test function has more than one xim_tcxm marker: " \
-                    f"{item.nodeid} (markers: '{xim_tcxm_markers}')."
+    for item, tcxm_markers in tcxm_item_mapping.items():
+        if len(tcxm_markers) > 1:
+            error = f"\nThis test function has more than one TCXM marker: " \
+                    f"{item.nodeid} (markers: '{tcxm_markers}')."
             logger_obj.error(error)
             pytest.fail(error)
 
     all_tcs = [onboarding_test_name, onboarding_cleanup_test_name]
     for item in temp_items:
-        [tcxm_code] = [m.name for m in item.own_markers if re.search("xim_tcxm_", m.name)]
+        [tcxm_code] = [m.name for m in item.own_markers if re.search("^tcxm_", m.name)]
         all_tcs.append(tcxm_code)
 
     found_tcs = [onboarding_test_name, onboarding_cleanup_test_name]
     for item in temp_items:
-        [tcxm_code] = [m.name for m in item.own_markers if re.search("xim_tcxm_", m.name)]
+        [tcxm_code] = [m.name for m in item.own_markers if re.search("^tcxm_", m.name)]
         found_tcs.append(tcxm_code)
         item_markers = item.own_markers
         for marker in item_markers:
@@ -239,7 +239,7 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     result = outcome.get_result()
 
-    [current_test_marker] = [m.name for m in item.own_markers if re.search("xim_tcxm_", m.name)]
+    [current_test_marker] = [m.name for m in item.own_markers if re.search("^tcxm_", m.name)]
 
     if result.when == 'call':
         item.session.results[item] = result
@@ -262,37 +262,37 @@ def pytest_runtest_makereport(item, call):
 
     if result.when == 'call' and result.outcome != "passed":
         for it in item.session.items:
-            [temp_xim_tcxm_marker] = [m.name for m in it.own_markers if re.search("xim_tcxm_", m.name)]
+            [temp_tcxm_marker] = [m.name for m in it.own_markers if re.search("^tcxm_", m.name)]
             for mk in it.own_markers:
                 if mk.name == "dependson":
                     if len(mk.args) > 0:
                         if current_test_marker in mk.args:                            
                             it.add_marker(
                                 pytest.mark.skip(
-                                    f"'{temp_xim_tcxm_marker}' depends on '{current_test_marker}' but "
-                                    f"'{current_test_marker}' failed. '{temp_xim_tcxm_marker}' "
+                                    f"'{temp_tcxm_marker}' depends on '{current_test_marker}' but "
+                                    f"'{current_test_marker}' failed. '{temp_tcxm_marker}' "
                                     f"test case will be skipped."))
 
     if "skip" in [m.name for m in item.own_markers]:
         for it in item.session.items:
-            [temp_xim_tcxm_marker] = [m.name for m in it.own_markers if re.search("xim_tcxm_", m.name)]
+            [temp_tcxm_marker] = [m.name for m in it.own_markers if re.search("^tcxm_", m.name)]
             for mk in it.own_markers:
                 if mk.name == "dependson":
                     if current_test_marker in mk.args:
                         it.add_marker(
                             pytest.mark.skip(
-                                f"'{temp_xim_tcxm_marker}' depends on '{current_test_marker}' but "
-                                f"'{current_test_marker}' is skipped. '{temp_xim_tcxm_marker}' "
+                                f"'{temp_tcxm_marker}' depends on '{current_test_marker}' but "
+                                f"'{current_test_marker}' is skipped. '{temp_tcxm_marker}' "
                                 f"test case will be skipped."))
 
 
 def pytest_runtest_call(item):
-    [current_test_marker] = [m.name for m in item.own_markers if re.search("xim_tcxm_", m.name)]
+    [current_test_marker] = [m.name for m in item.own_markers if re.search("^tcxm_", m.name)]
     config['${TEST_NAME}'] = current_test_marker
     logger_obj.step(f"Start test function of '{current_test_marker}': '{item.nodeid}'.")
 
 
-@pytest.mark.xim_tcxm_xiq_onboarding
+@pytest.mark.tcxm_xiq_onboarding
 def test_xiq_onboarding(request, logger):
     if not any([onboard_one_node_flag, onboard_two_node_flag, onboard_stack_flag]):
         logger.info(
@@ -301,7 +301,7 @@ def test_xiq_onboarding(request, logger):
     request.getfixturevalue("onboard")
 
 
-@pytest.mark.xim_tcxm_xiq_onboarding_cleanup
+@pytest.mark.tcxm_xiq_onboarding_cleanup
 def test_xiq_onboarding_cleanup(request, logger):
     if not any([onboard_one_node_flag, onboard_two_node_flag, onboard_stack_flag]):
         logger.info(
