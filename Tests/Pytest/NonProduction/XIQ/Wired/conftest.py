@@ -86,9 +86,9 @@ def pytest_collection_modifyitems(session, items):
         logger_obj.info(f"Collected this test function: '{item.nodeid}'.")
 
     [item_onboarding] = [
-        it for it in collected_items if item if onboarding_test_name in [m.name for m in it.own_markers]]
+        it for it in collected_items if onboarding_test_name in [m.name for m in it.own_markers]]
     [item_onboarding_cleanup] = [
-        it for it in collected_items if item if onboarding_cleanup_test_name in [m.name for m in it.own_markers]]
+        it for it in collected_items if onboarding_cleanup_test_name in [m.name for m in it.own_markers]]
     
     collected_items.remove(item_onboarding)
     collected_items.remove(item_onboarding_cleanup)
