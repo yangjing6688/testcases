@@ -140,9 +140,14 @@ jobs:
         ls ${WORK_DIR}
 
     - name: Upload Metadata
-      if: ${{ github.event.inputs.dry-run == 'false'}}
       # Only delete stale branch folders. Exclude top level files and TestBeds directory
-      run: aws s3 sync ${WORK_DIR} s3://econgit/extreme_automation_tests --delete --exclude "*" --include "*/*" --include "branches.json" --include "tags.json" --exclude "TestBeds/*"
+      run: |
+        aws_sync_options=""
+        if [[ "${{ github.event.inputs.dry-run }}" == "true" && "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          aws_sync_options="--dryrun"
+        fi
+
+        aws s3 sync ${WORK_DIR} s3://econgit/extreme_automation_tests ${aws_sync_options} --delete --exclude "*" --include "*/*" --include "branches.json" --include "tags.json" --exclude "TestBeds/*"
 
   update_ref_lists:
     name: Update List of Branches/Tags
