@@ -7,7 +7,6 @@ ap1:
   password:                 Aerohive123
   serial:                   '04102006082819'
   mac:                      BCF310707640
-
   console_ip:               10.234.217.20
   console_port:             7028
   cli_type:                 "AH-AP"
@@ -22,7 +21,7 @@ ap1:
       network_policy:           BLR_TB2_AP410C_01
       ssid:                     AP410C_01
       version:                  6.5
-      neighbour_serial:         6301908310524
+      neighbour_serial:         06301908310524
       neighbour_mac:           	3485843A54C0
 
 
@@ -33,7 +32,7 @@ ap2:
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   '6301908310524'
+  serial:                   '06301908310524'
   console_ip:               10.234.217.20
   console_port:             7029
   mac:                      3485843A54C0
