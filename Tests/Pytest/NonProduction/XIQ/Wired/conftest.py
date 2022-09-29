@@ -246,18 +246,18 @@ def pytest_runtest_makereport(item, call):
 
         if outcome := result.outcome: 
             if outcome == "passed":
-                print(
-                    f"{Colors.Bg.GREEN}\t{Colors.Style.BRIGHT} --> {current_test_marker.upper()} PASSED <--"
+                logger_obj.info(
+                    f"\n{Colors.Bg.GREEN}{Colors.Style.BRIGHT}{Colors.Fg.WHITE} --> {current_test_marker.upper()} PASSED <--"
                     f" {Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
             elif outcome == "failed":
-                print(
-                    f"{Colors.Bg.RED}\t{Colors.Style.BRIGHT} --> {current_test_marker.upper()} FAILED <-- "
+                logger_obj.info(
+                    f"\n{Colors.Bg.RED}{Colors.Style.BRIGHT}{Colors.Fg.WHITE} --> {current_test_marker.upper()} FAILED <-- "
                     f"{Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
     
     elif result.when == "setup":
         
         if (outcome := result.outcome) == "skipped":
-            print(f"{Colors.Bg.BLUE}\t{Colors.Style.BRIGHT} --> {current_test_marker.upper()} SKIPPED "
+            logger_obj.info(f"\n{Colors.Bg.BLUE}{Colors.Style.BRIGHT}{Colors.Fg.WHITE} --> {current_test_marker.upper()} SKIPPED "
                   f"<-- {Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
 
     if result.when == 'call' and result.outcome != "passed":
