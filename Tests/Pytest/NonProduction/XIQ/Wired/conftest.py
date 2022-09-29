@@ -74,16 +74,16 @@ def pytest_collection_modifyitems(session, items):
     collected_items = []
     for item in items:
         if onboarding_test_name in [m.name for m in item.own_markers]:
-            if not [it for it in collected_items if item if onboarding_test_name in [m.name for m in it.own_markers]]:
+            if not [it for it in collected_items if onboarding_test_name in [m.name for m in it.own_markers]]:
                 collected_items.append(item)
         elif onboarding_cleanup_test_name in [m.name for m in item.own_markers]:
-            if not [it for it in collected_items if item if onboarding_cleanup_test_name in [m.name for m in it.own_markers]]:
+            if not [it for it in collected_items if onboarding_cleanup_test_name in [m.name for m in it.own_markers]]:
                 collected_items.append(item)
         else:
             collected_items.append(item)
 
     for item in collected_items:
-        logger_obj.info(f"Collected this test function: '{item.nodeid}'.")
+        logger_obj.info(f"Collected: '{item.nodeid}'.")
 
     [item_onboarding] = [
         it for it in collected_items if onboarding_test_name in [m.name for m in it.own_markers]]
@@ -137,7 +137,7 @@ def pytest_collection_modifyitems(session, items):
     for item in collected_items:
         if item not in temp_items:
             logger_obj.info(
-                f"This test function is unselected: '{item.nodeid}' (markers: '{[m.name for m in item.own_markers]}').")
+                f"Unselected: '{item.nodeid}' (markers: '{[m.name for m in item.own_markers]}').")
     
     item_tcxm_mapping = defaultdict(lambda: [])
     tcxm_item_mapping = defaultdict(lambda: [])
@@ -154,7 +154,7 @@ def pytest_collection_modifyitems(session, items):
 
         if not tcxm_codes:
             items_without_tcxm_markers.append(
-                f"This function does not have a TCXM marker: '{item.nodeid}'.")
+                f"This function does not have a tcxm marker: '{item.nodeid}'.")
 
         for tcxm_code in tcxm_codes:
             item_tcxm_mapping[tcxm_code].append(item.nodeid)
@@ -221,7 +221,7 @@ def pytest_collection_modifyitems(session, items):
         temp_items.insert(0, item_onboarding)
         temp_items.append(item_onboarding_cleanup)
         for item in temp_items:
-            logger_obj.info(f"This test function is selected to run this session: '{item.nodeid}' "
+            logger_obj.info(f"Selected: '{item.nodeid}' "
                             f"(markers: '{[m.name for m in item.own_markers]}').")
     else:
         message = "Did not find any test function to run this session."
