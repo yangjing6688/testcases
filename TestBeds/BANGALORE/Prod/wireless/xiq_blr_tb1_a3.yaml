@@ -13,3 +13,4 @@ a3_server1:
   username:          sshuser
   password:          Extr_123
   port:              22
+  onboard_device_type:      Real

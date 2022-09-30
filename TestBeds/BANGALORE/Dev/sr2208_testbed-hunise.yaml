@@ -14,3 +14,4 @@ sw1:
   console_port:             7005
   test_port:
   make:                     Extreme - Aerohive
+  onboard_device_type:      Real

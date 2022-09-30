@@ -17,6 +17,7 @@ netelem1:
   model:                    "FabricEngine5320_48T_8XE"
   make:                     "voss"
   auth_mode:                "basic"
+  onboard_device_type:      "Real"
 
 
 

@@ -16,6 +16,7 @@ ap1:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
 
 
 ap2:
@@ -36,6 +37,7 @@ ap2:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
 
 
 ap3:
@@ -56,6 +58,7 @@ ap3:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
 
 
 ap4:
@@ -76,6 +79,7 @@ ap4:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
 
 
 ap5:
@@ -96,6 +100,7 @@ ap5:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
 
 
 ap6:
@@ -116,6 +121,7 @@ ap6:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
 
 
 ap7:
@@ -136,6 +142,7 @@ ap7:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
 
 
 ap8:
@@ -156,6 +163,7 @@ ap8:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
 
 
 ap9:
@@ -176,6 +184,7 @@ ap9:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
 
 
 ap10:
@@ -196,6 +205,7 @@ ap10:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
 
 
 ap11:
@@ -216,6 +226,7 @@ ap11:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
 
 
 ap12:
@@ -236,6 +247,7 @@ ap12:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
 
 
 sw1:
@@ -254,6 +266,7 @@ sw1:
   console_port:             7005
   test_port:
   make:                     Extreme - Aerohive
+  onboard_device_type:      Real
 
 
 sw2:
@@ -272,6 +285,7 @@ sw2:
   console_port:             7003
   test_port:
   make:                     VOSS
+  onboard_device_type:      Real
 
 
 router1:
@@ -290,6 +304,7 @@ router1:
   console_port:             7021
   test_port:
   make:                     Extreme - Aerohive
+  onboard_device_type:      Real
 
 
 vgva:
@@ -308,6 +323,7 @@ vgva:
   console_port:             22
   test_port:
   make:                     Extreme - Aerohive
+  onboard_device_type:      Real
 
 
 wing1:
@@ -327,6 +343,7 @@ wing1:
   console_port:
   country:                  United Kingdom
   make:                     Controllers
+  onboard_device_type:      Real
 
 
 wing2:
@@ -346,6 +363,7 @@ wing2:
   console_port:
   country:                  United Kingdom
   make:                     Controllers
+  onboard_device_type:      Real
 
 
 mu1:

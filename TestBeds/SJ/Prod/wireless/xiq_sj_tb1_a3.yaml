@@ -12,3 +12,4 @@ a3_server1:
   username:              sshuser
   password:              aerohive
   port:                  22
+  onboard_device_type:      Real

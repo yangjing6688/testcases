@@ -19,6 +19,7 @@ netelem1:
   auth_mode:                "basic"
   mgmt_vlan:                "mgmt"
   mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
   stack:
     slot1:
       console_ip:           "10.148.35.5"

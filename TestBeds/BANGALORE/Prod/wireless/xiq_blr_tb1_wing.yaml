@@ -18,3 +18,4 @@ wing1:
   console_port:             '22'
   country:                  United Kingdom
   make:                     Controllers
+  onboard_device_type:      Real

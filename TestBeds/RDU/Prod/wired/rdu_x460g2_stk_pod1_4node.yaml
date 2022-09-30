@@ -35,6 +35,7 @@ netelem1:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Real"
   stack:
     slot1:
       console_ip: "10.69.50.244"
@@ -152,6 +153,7 @@ netelem2:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Real"
   isl:
     port_a:
       ifname: &netelem2_isl_port_a_ifname "3"
@@ -257,6 +259,7 @@ netelem3:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Real"
   isl:
     port_a:
       ifname: &netelem3_isl_port_a_ifname "7"
@@ -361,6 +364,7 @@ netelem4:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Real"
   isl:
     port_a:
       ifname: &netelem4_isl_port_a_ifname "9"

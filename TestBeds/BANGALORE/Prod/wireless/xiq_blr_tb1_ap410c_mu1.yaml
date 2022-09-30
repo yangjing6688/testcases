@@ -16,6 +16,7 @@ ap1:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
   power_strip:
     ip:
     port:
@@ -44,3 +45,4 @@ mu1:
   ethernet_mac:   2CEA7F023ADB
   wifi_network:   10.234.207
   wifi_network_vlan10:    10.234.207
+  onboard_device_type:      Real

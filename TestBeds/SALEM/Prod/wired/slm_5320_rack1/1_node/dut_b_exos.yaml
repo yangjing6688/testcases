@@ -19,6 +19,7 @@ netelem1:
   auth_mode:                "basic"
   mgmt_vlan:                "default"
   mgmt_vr:                  "vr-default"
+  onboard_device_type:      "Real"
 
 
 

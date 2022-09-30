@@ -19,6 +19,7 @@ netelem1:
   auth_mode:                "basic"
   mgmt_vlan:                "mgmt"
   mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
   tgen:
     port_a:
       ifname: &netelem1_tgen_port_a_ifname "1"
@@ -64,6 +65,7 @@ netelem2:
   model:                    "FabricEngine5520_24W"
   make:                     "voss"
   auth_mode:                "basic"
+  onboard_device_type:      "Real"
   tgen:
     port_a:
       ifname: &netelem2_tgen_port_a_ifname "1/1"

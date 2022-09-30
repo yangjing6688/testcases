@@ -20,6 +20,7 @@ netelem1:
   platform:                 "5520-24T"
   auth_mode:                "basic"
   image_family:             ""
+  onboard_device_type:      "Real"
 
   tgen:
     port_a:

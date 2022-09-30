@@ -30,6 +30,7 @@ netelem1:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Digital Twin"
   extra:
     vm_info:
       vmhost:               "10.127.22.3"
@@ -116,6 +117,7 @@ netelem2:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Digital Twin"
   extra:
     vm_info:
       vmhost:               "10.127.22.3"
@@ -202,6 +204,7 @@ netelem3:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Digital Twin"
   extra:
     vm_info:
       vmhost:               "10.127.22.3"
@@ -288,6 +291,7 @@ netelem4:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Digital Twin"
   extra:
     vm_info:
       vmhost:               "10.127.22.3"

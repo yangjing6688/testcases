@@ -28,6 +28,7 @@ netelem1:
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
   upgrade_firmware:         "False"
+  onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x465_pod1_4node/rdu_x465_pod1_4node_netelem1.cfg"
   isl:
@@ -129,6 +130,7 @@ netelem2:
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
   upgrade_firmware:         "False"
+  onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x465_pod1_4node/rdu_x465_pod1_4node_netelem2.cfg"
   isl:
@@ -231,6 +233,7 @@ netelem3:
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
   upgrade_firmware:         "False"
+  onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x465_pod1_4node/rdu_x465_pod1_4node_netelem3.cfg"
   isl:
@@ -332,6 +335,7 @@ netelem4:
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
   upgrade_firmware:         "False"
+  onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x465_pod1_4node/rdu_x465_pod1_4node_netelem4.cfg"
   isl:

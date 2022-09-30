@@ -19,6 +19,7 @@ netelem1:
   build:                    "30.4.0.99"
   mgmt_vlan:                "mgmt"
   mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
 
 #  Interswith Links and to define VM virtual links.
   isl:
@@ -65,6 +66,7 @@ netelem2:
   build:                    "30.4.0.99"
   mgmt_vlan:                "mgmt"
   mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
 
 #  Interswith Links and to define VM virtual links.
   isl:
@@ -111,6 +113,7 @@ netelem3:
   build:                    "30.4.0.99"
   mgmt_vlan:                "mgmt"
   mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
 
 #  Interswith Links and to define VM virtual links.
   isl:
@@ -157,6 +160,7 @@ netelem4:
   build:                    "30.4.0.99"
   mgmt_vlan:                "mgmt"
   mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
 
 #  Interswith Links and to define VM virtual links.
   isl:
@@ -202,6 +206,7 @@ netelem5:
   build:                    "30.4.0.99"
   mgmt_vlan:                "mgmt"
   mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
 
 #  Interswith Links and to define VM virtual links.
   isl:
@@ -247,6 +252,7 @@ netelem6:
   build:                    "30.4.0.99"
   mgmt_vlan:                "mgmt"
   mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
 
 #  Interswith Links and to define VM virtual links.
   isl:

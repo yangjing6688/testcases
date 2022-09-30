@@ -21,6 +21,8 @@ netelem1:
   build:                    "30.4.0.99"
   mgmt_vlan:                "mgmt"
   mgmt_vr:                  "vr-mgmt"
+  mgmt_vlan:                "VR-Mgmt"
+  onboard_device_type:      "Real"
 #  Interswitch Links and to define VM virtual links.
   isl:
     port_a:
