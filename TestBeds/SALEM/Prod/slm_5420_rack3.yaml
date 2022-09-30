@@ -19,6 +19,7 @@ netelem1:
   model:                    "SwitchEngine5420F_16W_32P_4XE"
   make:                     "exos"
   auth_mode:                "basic"
+  onboard_device_type:      "Real"
   tgen:
     port_a:
       ifname: &netelem1_tgen_port_a_ifname "1"
@@ -63,6 +64,7 @@ netelem2:
   model:                    "FabricEngine5420F_16W_32P_4XE"
   make:                     "voss"
   auth_mode:                "basic"
+  onboard_device_type:      "Real"
   tgen:
     port_a:
       ifname: &netelem2_tgen_port_a_ifname "1/1"

@@ -17,3 +17,4 @@ netelem1:
   make:                     EXOS
   mgmt_vlan:                default
   mgmt_vr:                  vr-default
+  onboard_device_type:      Real

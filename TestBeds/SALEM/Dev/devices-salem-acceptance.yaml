@@ -26,6 +26,7 @@ netelem1:
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
   license:                  "PILOT"
+  onboard_device_type:      "Real"
 
 netelem2:
   name:                     "10.54.142.73"
@@ -55,6 +56,7 @@ netelem2:
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
   license:                  "PILOT"
+  onboard_device_type:      "Real"
 
 netelem3:
   name:                     "10.54.142.46"
@@ -82,6 +84,7 @@ netelem3:
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
   license:                  "PILOT"
+  onboard_device_type:      "Real"
 
 netelem4:
   name:                     "10.54.142.20"
@@ -109,6 +112,7 @@ netelem4:
   contact:                  "Salem NH Automation Team"
   location:                 "/Salem,NH/Automation Lab"
   license:                  "PILOT"
+  onboard_device_type:      "Real"
 
 netelem5:
   name:                     "10.54.142.28"
@@ -136,6 +140,7 @@ netelem5:
   contact:                  "Salem Automation Team"
   location:                 "Salem QA Automation Lab"
   license:                  "PILOT"
+  onboard_device_type:      "Real"
 
 netelem6:
   name:                     "10.54.142.10"
@@ -163,6 +168,7 @@ netelem6:
   contact:                  "Salem Automation Team"
   location:                 "Salem NH Automation Lab"
   license:                  "PILOT"
+  onboard_device_type:      "Real"
 
 netelem7:
   name:                     "10.54.142.50"
@@ -190,6 +196,7 @@ netelem7:
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
   license:                  "PILOT"
+  onboard_device_type:      "Real"
 
 netelem8:
   name:                     "sysName-SLX-9250"
@@ -217,6 +224,7 @@ netelem8:
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Rack"
   license:                  "PILOT"
+  onboard_device_type:      "Real"
 
 ap1:
   name:                     "bui-flo-0071"
@@ -239,3 +247,4 @@ ap1:
   product:                  "AP"
   function:                 "AP"
   ccg:                      "Model_AP_410C"
+  onboard_device_type:      "Real"

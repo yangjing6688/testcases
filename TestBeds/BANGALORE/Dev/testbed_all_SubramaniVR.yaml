@@ -21,6 +21,7 @@ ap1:
   console_ip:               10.234.221.5
   console_port:             7016
   command_list:             no capwap client enable,   no capwap client server,   no capwap client server name,  no capwap client server backup name,   no capwap client default-server-name,  capwap client server name ${capwap_url},    capwap client server backup name ${capwap_url},     capwap client default-server-name ${capwap_url},    capwap client enable
+  onboard_device_type:      Real
 
 ap2:
   name:                     AP410C
@@ -46,7 +47,7 @@ ap2:
   floor_name:               floor2
   country_code:             AUSTRALIA_36
   command_list:             no capwap client enable,   no capwap client server,   no capwap client server name,  no capwap client server backup name,   no capwap client default-server-name,  capwap client server name qa-redirector.extremecloudiq.com,    capwap client server backup name qa-redirector.extremecloudiq.com,     capwap client default-server-name qa-redirector.extremecloudiq.com,    capwap client enable
-
+  onboard_device_type:      Real
 
 sw1:
   name:                     AH-SR-2348P
@@ -65,3 +66,4 @@ sw1:
   console_ip:               10.234.221.5
   console_port:             7011
   command_list:             application stop hiveagent,   hivemanager address ${switch_connection_host_url},   application start hiveagent
+  onboard_device_type:      Real

@@ -19,6 +19,7 @@ netelem1:
   model:                    "SwitchEngine5420M-16MW-32P-4YE"
   make:                     "exos"
   auth_mode:                "basic"
+  onboard_device_type:      "Real"
   stack:
     slot1:
       console_ip:           "10.127.26.65"

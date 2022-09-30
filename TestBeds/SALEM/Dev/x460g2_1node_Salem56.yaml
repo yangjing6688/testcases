@@ -24,6 +24,7 @@ netelem1:
   virtual_router:           "VR-Mgmt"
   mgmt_vlan:                "mgmt"
   mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
   #  Interswith Links and to define VM virtual links.
   isl:
     port_a:

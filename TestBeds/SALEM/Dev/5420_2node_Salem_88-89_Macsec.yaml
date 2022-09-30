@@ -18,6 +18,7 @@ netelem1:
   build_directory:          "release-manager/31.3.0.145/aarch64/summit_arm/summit_arm/release/summit_arm-31.3.0.145.xos"
   build:                    "31.3.0.145"
   mgmt_vlan:                "VR-Mgmt"
+  onboard_device_type:      "Real"
   macsec:
     ports:
       all:                  "1-32"
@@ -76,6 +77,7 @@ netelem2:
   build:                    "31.3.0.145"
   mgmt_vlan:                "mgmt"
   mgmt_vr:                "vr-mgmt"
+  onboard_device_type:      "Real"
   macsec:
     ports:
       all:                  "1-56"

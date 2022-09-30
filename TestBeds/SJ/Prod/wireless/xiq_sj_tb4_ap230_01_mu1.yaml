@@ -15,6 +15,7 @@ ap1:
   mgmt_vlan:                10
   country:                  United States
   location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
 
   power_strip:
     ip:
@@ -46,5 +47,6 @@ mu1:
   ethernet_mac:   14C213EDA77B
   wifi_network:   10.16.169
   wifi_network_vlan10:  10.16.169.91
+  onboard_device_type:      Real
 
 

@@ -27,6 +27,7 @@ netelem1:
   location:                 "Salem NH Automation Lab"
   mgmt_vlan:                "mgmt"
   mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
 
 netelem2:
   name:                     "10.69.61.83"
@@ -54,6 +55,7 @@ netelem2:
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
+  onboard_device_type:      "Real"
 
 ap1:
   name:                     "bui-flo-0071"
@@ -75,3 +77,4 @@ ap1:
   product:                  "AP"
   function:                 "AP"
   ccg:                      "Model_AP_650X"
+  onboard_device_type:      "Real"

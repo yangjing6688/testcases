@@ -26,6 +26,7 @@ netelem1:
   product:                  "X460_G2_48t_10_G4"
   function:                 "Switch"
   license:                  "PILOT"
+  onboard_device_type:      "Real"
 
 netelem2:
   name:                     "SAPro-x440-235-200"
@@ -50,6 +51,7 @@ netelem2:
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
   license:                  "PILOT"
+  onboard_device_type:      "Real"
 
 netelem3:
   name:                     "SAPro-x440-235-201"
@@ -74,6 +76,7 @@ netelem3:
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
   license:                  "PILOT"
+  onboard_device_type:      "Real"
 
 netelem4:
   name:                     "SAPro-x440-235-202"
@@ -98,6 +101,7 @@ netelem4:
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
   license:                  "PILOT"
+  onboard_device_type:      "Real"
 
 netelem5:
   name:                     "SAPro-x440-235-203"
@@ -122,6 +126,7 @@ netelem5:
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
   license:                  "PILOT"
+  onboard_device_type:      "Real"
 
 netelem6:
   name:                     "SAPro-x440-235-204"
@@ -146,6 +151,7 @@ netelem6:
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
   license:                  "PILOT"
+  onboard_device_type:      "Real"
 
 ap1:
   name:                     "bui-flo-0071"
@@ -169,3 +175,4 @@ ap1:
   function:                 "AP"
   ccg:                      "Model_AP_410C"
   location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      "Real"

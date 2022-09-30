@@ -19,6 +19,6 @@ netelem1:
   model:                    "SwitchEngine5320_48T_8XE"
   make:                     "exos"
   auth_mode:                "basic"
-
+  onboard_device_type:      "Real"
 
 

@@ -19,6 +19,7 @@ netelem1:
   build:                    "30.6.0.67"
   mgmt_vlan:                "mgmt"
   mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
   macsec:
     gcm_aes_128:
       port_a:
@@ -69,6 +70,7 @@ netelem2:
   build:                    "30.6.0.67"
   mgmt_vlan:                "mgmt"
   mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
   macsec:
     gcm_aes_128:
       port_a:
