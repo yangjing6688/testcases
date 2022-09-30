@@ -16,15 +16,7 @@ ap1:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
-  extra:
-      country:                  United Kingdom
-      network_policy:           BLR_TB2_AP410C_01
-      ssid:                     AP410C_01
-      version:                  6.5
-      neighbour_serial:         06301908310524
-      neighbour_mac:           	3485843A54C0
-
-
+  
 ap2:
   name:                     bui-flo-0524
   connection_method:        "ssh"
@@ -43,10 +35,3 @@ ap2:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
-  extra:
-      country:                  United Kingdom
-      network_policy:           BLR_TB2_AP630_01
-      ssid:                     AP630_01
-      version:                  6.5
-      neighbour_serial:         04102006082819
-      neighbour_mac:            BCF310707640
