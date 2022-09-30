@@ -15,6 +15,7 @@ from ExtremeAutomation.Utilities.Framework.test_case_inventory import (
     PathTools,
     PytestItems)
 from ExtremeAutomation.Utilities.Framework.test_selection import CheckExecution
+from ExtremeAutomation.Library.Logger.PytestLogger import PytestLogger
 
 # 3rd party imports
 import pytest
@@ -550,3 +551,8 @@ def patch_https_connection_pool(**constructor_kwargs):
             kwargs.update(constructor_kwargs)
             super(MyHTTPSConnectionPool, self).__init__(*args,**kwargs)
     poolmanager.pool_classes_by_scheme['https'] = MyHTTPSConnectionPool
+
+
+@pytest.fixture(scope="session")
+def logger():
+    return PytestLogger()
