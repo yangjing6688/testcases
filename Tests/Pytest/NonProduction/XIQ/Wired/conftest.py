@@ -8,17 +8,41 @@ import random
 import subprocess
 import traceback
 import pytest
-
 import platform
 
 from collections import defaultdict
 from pytest_testconfig import config
 from contextlib import contextmanager
+from typing import List, Dict, AnyStr
 
 from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
 from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
 from ExtremeAutomation.Library.Logger.PytestLogger import PytestLogger
 from ExtremeAutomation.Library.Logger.Colors import Colors
+
+
+_testbed: PytestConfigHelper = None
+_nodes: List[Dict] = []
+_standalone_nodes: List[Dict] = []
+_stack_nodes: List[Dict] = []
+onboard_one_node_flag: bool = False
+onboard_two_node_flag: bool = False
+onboard_stack_flag: bool = False
+logger_obj: PytestLogger = PytestLogger()
+
+
+valid_test_markers: List[AnyStr] = [
+    "tcxm",
+    "tccs"
+]
+
+valid_priorities: List[AnyStr] = [
+    "p1",
+    "p2",
+    "p3",
+    "p4",
+    "p5"
+]
 
 
 @pytest.fixture(scope="session")
@@ -39,18 +63,16 @@ def debug(logger):
     return debug_func
 
 
-_testbed: PytestConfigHelper = None
-_nodes = []
-_standalone_nodes = []
-_stack_nodes = []
-onboard_one_node_flag = False
-onboard_two_node_flag = False
-onboard_stack_flag = False
-logger_obj = PytestLogger()
-
-
 def pytest_cmdline_preparse(config, args):
     args.append(os.path.join(os.path.dirname(__file__), "conftest.py"))
+
+
+def get_test_marker(item: pytest.Function) -> List[AnyStr]:  
+    return [m.name for m in item.own_markers if any(re.search(rf"^{test_marker}_", m.name) for test_marker in valid_test_markers)]
+
+
+def get_priority_marker(item: pytest.Function) -> List[AnyStr]:
+    return [m.name for m in item.own_markers if m.name in valid_priorities]
 
 
 def pytest_collection_modifyitems(session, items):
@@ -134,81 +156,90 @@ def pytest_collection_modifyitems(session, items):
             logger_obj.info(
                 f"Unselected: '{item.nodeid}' (markers: '{[m.name for m in item.own_markers]}').")
     
-    item_tcxm_mapping = defaultdict(lambda: [])
-    tcxm_item_mapping = defaultdict(lambda: [])
-    items_without_tcxm_markers = []
+    item_test_marker_mapping = defaultdict(lambda: [])
+    test_marker_item_mapping = defaultdict(lambda: [])
+    priority_item_mapping = defaultdict(lambda: [])
+    items_without_valid_test_markers = []
     items_without_priority_markers = []
 
     for item in temp_items:
-        tcxm_codes = [m.name for m in item.own_markers if re.search("^tcxm_", m.name)]
-        priority = [m.name for m in item.own_markers if str(m.name) in ["p1", "p2", "p3", "p4", "p5"]]
+        test_codes = get_test_marker(item)
+        priority = get_priority_marker(item)
 
         if not priority:
             items_without_priority_markers.append(
                 f"This function does not have a priority marker: '{item.nodeid}'.")
 
-        if not tcxm_codes:
-            items_without_tcxm_markers.append(
-                f"This function does not have a tcxm marker: '{item.nodeid}'.")
+        if not test_codes:
+            items_without_valid_test_markers.append(
+                f"This function does not have a valid test marker: '{item.nodeid}'.")
 
-        for tcxm_code in tcxm_codes:
-            item_tcxm_mapping[tcxm_code].append(item.nodeid)
+        for test_code in test_codes:
+            item_test_marker_mapping[test_code].append(item.nodeid)
     
-        tcxm_item_mapping[item] = tcxm_codes
+        test_marker_item_mapping[item] = test_codes
+        priority_item_mapping[item] = priority
 
-    if items_without_tcxm_markers:
-        error = '\n' + '\n'.join(items_without_tcxm_markers)
+    if items_without_valid_test_markers:
+        error = '\n' + '\n'.join(items_without_valid_test_markers)
+        error += f"\nValid test markers should begin with any of these markers - {valid_test_markers}."
         logger_obj.error(error)
         pytest.fail(error)
     
     if items_without_priority_markers:
         error = '\n' + '\n'.join(items_without_priority_markers)
+        error += f"\nValid test priorities: {valid_priorities}."
         logger_obj.error(error)
         pytest.fail(error)
     
-    for tcxm_code, functions in item_tcxm_mapping.items():
+    for test_code, functions in item_test_marker_mapping.items():
         if len(functions) > 1:
-            error = f"Marker '{tcxm_code}' is used as marker for more than one test function:\n" + "\n".join(functions)
+            error = f"Test marker '{test_code}' is used as marker for more than one test function:\n" + "\n".join(functions)
             logger_obj.error(error)
             pytest.fail(error)
 
-    for item, tcxm_markers in tcxm_item_mapping.items():
-        if len(tcxm_markers) > 1:
-            error = f"\nThis test function has more than one TCXM marker: " \
-                    f"{item.nodeid} (markers: '{tcxm_markers}')."
+    for item, test_markers in test_marker_item_mapping.items():
+        if len(test_markers) > 1:
+            error = f"\nThis test function has more than one valid test markers: " \
+                    f"{item.nodeid} (markers: '{test_markers}')."
+            logger_obj.error(error)
+            pytest.fail(error)
+
+    for item, priority in priority_item_mapping.items():
+        if len(priority) > 1:
+            error = f"\nThis test function has more than one valid priority marker: " \
+                    f"{item.nodeid} (markers: '{priority}')."
             logger_obj.error(error)
             pytest.fail(error)
 
     all_tcs = [onboarding_test_name, onboarding_cleanup_test_name]
-    for item in temp_items:
-        [tcxm_code] = [m.name for m in item.own_markers if re.search("^tcxm_", m.name)]
-        all_tcs.append(tcxm_code)
+    [all_tcs.append(get_test_marker(item)[0]) for item in temp_items]
 
     found_tcs = [onboarding_test_name, onboarding_cleanup_test_name]
     for item in temp_items:
-        [tcxm_code] = [m.name for m in item.own_markers if re.search("^tcxm_", m.name)]
-        found_tcs.append(tcxm_code)
+        [test_code] = get_test_marker(item)
+        found_tcs.append(test_code)
         item_markers = item.own_markers
         for marker in item_markers:
             if marker.name == "dependson":
                 temp_markers = marker.args
                 if not len(temp_markers):
                     logger_obj.warning(
-                        f"The dependson marker of '{tcxm_code}' testcase does not have any arguments "
+                        f"The dependson marker of '{test_code}' testcase does not have any arguments "
                         f"(test function: '{item.nodeid}'.")
                 for temp_marker in temp_markers:
-                    if temp_marker == tcxm_code:
+                    if temp_marker == test_code:
                         logger_obj.warning(
-                            f"'{tcxm_code}' is marked as depending on itself (test function: '{item.nodeid}'.")
+                            f"'{test_code}' is marked as depending on itself (test function: '{item.nodeid}'.")
                     elif temp_marker not in all_tcs:
                         item.add_marker(
-                            pytest.mark.skip(f"'{tcxm_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}'"
+                            pytest.mark.skip(f"'{test_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}'"
                                              f" is not in the current list of testcases to be run. It will be skipped.")
                         )
                     elif temp_marker not in found_tcs:
                         item.add_marker(
                             pytest.mark.skip(
-                                f"Please modify the order of the test cases. '{tcxm_code}' "
+                                f"Please modify the order of the test cases. '{test_code}' "
                                 f"depends on '{', '.join(temp_markers)}' but the order is not correct. "
                                 f"It will be skipped.")
                         )
@@ -234,7 +265,7 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     result = outcome.get_result()
 
-    [current_test_marker] = [m.name for m in item.own_markers if re.search("^tcxm_", m.name)]
+    [current_test_marker] = get_test_marker(item)
 
     if result.when == 'call':
         item.session.results[item] = result
@@ -257,32 +288,32 @@ def pytest_runtest_makereport(item, call):
 
     if result.when == 'call' and result.outcome != "passed":
         for it in item.session.items:
-            [temp_tcxm_marker] = [m.name for m in it.own_markers if re.search("^tcxm_", m.name)]
+            [temp_test_marker] = get_test_marker(it)
             for mk in it.own_markers:
                 if mk.name == "dependson":
                     if len(mk.args) > 0:
                         if current_test_marker in mk.args:                            
                             it.add_marker(
                                 pytest.mark.skip(
-                                    f"'{temp_tcxm_marker}' depends on '{current_test_marker}' but "
-                                    f"'{current_test_marker}' failed. '{temp_tcxm_marker}' "
+                                    f"'{temp_test_marker}' depends on '{current_test_marker}' but "
+                                    f"'{current_test_marker}' failed. '{temp_test_marker}' "
                                     f"test case will be skipped."))
 
     if "skip" in [m.name for m in item.own_markers]:
         for it in item.session.items:
-            [temp_tcxm_marker] = [m.name for m in it.own_markers if re.search("^tcxm_", m.name)]
+            [temp_test_marker] = get_test_marker(it)
             for mk in it.own_markers:
                 if mk.name == "dependson":
                     if current_test_marker in mk.args:
                         it.add_marker(
                             pytest.mark.skip(
-                                f"'{temp_tcxm_marker}' depends on '{current_test_marker}' but "
-                                f"'{current_test_marker}' is skipped. '{temp_tcxm_marker}' "
+                                f"'{temp_test_marker}' depends on '{current_test_marker}' but "
+                                f"'{current_test_marker}' is skipped. '{temp_test_marker}' "
                                 f"test case will be skipped."))
 
 
 def pytest_runtest_call(item):
-    [current_test_marker] = [m.name for m in item.own_markers if re.search("^tcxm_", m.name)]
+    [current_test_marker] = get_test_marker(item)
     config['${TEST_NAME}'] = current_test_marker
     logger_obj.step(f"Start test function of '{current_test_marker}': '{item.nodeid}'.")
 
@@ -1268,7 +1299,9 @@ def reboot_stack_unit(wait_till, enter_switch_cli, debug, logger):
     def reboot_stack_unit_func(dut, slot=1, save_config='n'):
         
         if not (dut.platform.upper() == "STACK" and dut.cli_type.upper() == "EXOS"):
-            pytest.fail(f"Given device is not an EXOS stack: '{dut}'")
+            error = f"Given device is not an EXOS stack: '{dut}'"
+            logger.error(error)
+            pytest.fail(error)
 
         with enter_switch_cli(dut) as dev_cmd:
             try:
@@ -1280,7 +1313,6 @@ def reboot_stack_unit(wait_till, enter_switch_cli, debug, logger):
             except Exception as exc:
                 error_msg = f"Failed to reboot slot '{slot}' of dut: '{dut.name}'\n{repr(exc)}"
                 logger.error(error_msg)
-                wait_till(timeout=5)
                 pytest.fail(error_msg)
             else:
                 wait_till(timeout=120)
@@ -1294,7 +1326,9 @@ def get_stack_slots(logger, enter_switch_cli, debug):
     def get_stack_slots_func(dut):
         
         if not (dut.platform.upper() == "STACK" and dut.cli_type.upper() == "EXOS"):
-            pytest.fail(f"Given device is not an EXOS stack: '{dut}'")
+            error = f"Given device is not an EXOS stack: '{dut}'"
+            logger.error(error)
+            pytest.fail(error)
 
         slots_info = {}
         with enter_switch_cli(dut) as dev_cmd:
@@ -1310,12 +1344,14 @@ def get_stack_slots(logger, enter_switch_cli, debug):
 
 
 @pytest.fixture(scope="session")
-def modify_stacking_node(enter_switch_cli, reboot_device, debug):
+def modify_stacking_node(enter_switch_cli, reboot_device, debug, logger):
     
     @debug
     def modify_stacking_node_func(dut, node_mac_address, op):
         if not (dut.platform.upper() == "STACK" and dut.cli_type.upper() == "EXOS"):
-            pytest.fail(f"Given device is not an EXOS stack: '{dut}'")
+            error = f"Given device is not an EXOS stack: '{dut}'"
+            logger.error(error)
+            pytest.fail(error)
 
         assert op in ["enable", "disable"], "Op argument should be 'enbale' or 'disable'"
         
