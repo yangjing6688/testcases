@@ -35,3 +35,15 @@ ap2:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  
+mu1:
+  ip:                       10.234.132.101
+  port:                     8270
+  username:                 extreme
+  password:                 Extreme@123
+  platform:                 windows
+  interface:                wlan0
+  wifi_mac:                 2CDB073D8024
+  ethernet_mac:             8C47BE4E0317
+  wifi_network:             10.234.132
+  wifi_network_vlan10:      10.234.132
