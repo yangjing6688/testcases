@@ -71,21 +71,22 @@ Pre Condition
     ${DEVICE_STATUS}=       Get Device Status       device_mac=${ap1.mac}
     Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
 
-    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          default_network_policy                 &{CONFIG_PUSH_OPEN_NW_01}
+    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          ${NW_DEFAULT_POLICY}                 &{CONFIG_PUSH_OPEN_NW_01}
     should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
 
-    ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap    policy_name=default_network_policy     ap_serial=${ap1.serial}
+    ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap If Needed   policy_name=${NW_DEFAULT_POLICY}   ap_serial=${ap1.serial}
     should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
 
-    ${DELETE_STATUS}=               Delete Network Policy           ${NW_POLICY_NAME1}
-    should be equal as integers     ${DELETE_STATUS}                1
+    ${DELETE_STATUS}=               delete network policy          ${NW_POLICY_NAME1}
+    should be equal as integers     ${DELETE_STATUS}               1
 
-    ${SSID_DLT_STATUS}=             Delete ssid                     ${NW_POLICY_SSID1}
-    should be equal as integers     ${SSID_DLT_STATUS}              1
+    ${SSID_DLT_STATUS}=             Delete ssid                    ${NW_POLICY_SSID1}
+    should be equal as integers     ${SSID_DLT_STATUS}             1
 
     ${DELETE_CWP_STATUS}=           Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}
     should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
-    
+
+    Remote_Server.Disconnect WiFi
     # 2022-08-31 new browser library removes need to logout and back in to keep variables in scope. Trial.  Remove if no issues are seen
     #[Teardown]   run keywords       logout user
     #...                             quit browser
@@ -96,7 +97,7 @@ Test Suite Clean Up
     [Tags]      production      cleanup
     # 2022-08-31 new browser library removes need to logout and back in to keep variables in scope. Trial.  Remove if no issues are seen
     #${result}=    Login User       ${tenant_username}     ${tenant_password}
-    Update Network Policy To AP    policy_name=default_network_policy    ap_serial=${ap1.serial}
+    Update Network Policy To AP    policy_name=${NW_DEFAULT_POLICY}    ap_serial=${ap1.serial}
     Delete Network Polices         ${NW_POLICY_NAME1}
     Delete ssids                   ${NW_POLICY_SSID1}
     Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}
@@ -113,7 +114,7 @@ Negative Internet connectivity check
     should be equal as strings   '${FLAG}'   '-1'
 
 Test Case Level Cleanup
-    ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap    policy_name=default_network_policy     ap_serial=${ap1.serial}
+    ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap    policy_name=${NW_DEFAULT_POLICY}     ap_serial=${ap1.serial}
     should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
 
     ${DELETE_STATUS}=               Delete Network Policy           ${NW_POLICY_NAME1}
@@ -122,12 +123,12 @@ Test Case Level Cleanup
     ${SSID_DLT_STATUS}=             Delete ssid                     ${NW_POLICY_SSID1}
     should be equal as integers     ${SSID_DLT_STATUS}              1
 
-    ${DELETE_CWP_STATUS}=           Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}
-    should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
+    ${DELETE_CWP_STATUS}=           Delete Captive Web Portals      ${CWP_NAME_FACEBOOK}
+    should be equal as integers     ${UPDATE_NW_POLICY_STATUS}      1
     # 2022-08-31 new browser library removes need to logout and back in to keep variables in scope. Trial.  Remove if no issues are seen
     #[Teardown]   run keywords       logout user
     #...                             quit browser
-     Remote_Server.Disconnect WiFi
+    Remote_Server.Disconnect WiFi
 
 *** Test Cases ***
 TCCS-11614: Social login with facebook
@@ -146,29 +147,33 @@ TCCS-11614: Social login with facebook
     ${UPDATE_NW_POLICY_STATUS}=             Update Network Policy To AP   ${NW_POLICY_NAME1}     ap_serial=${ap1.serial}
     should be equal as integers             ${UPDATE_NW_POLICY_STATUS}               1
 
-    Log to Console      wait_until_device_update_done
-    wait_until_device_update_done   device_serial=${ap1.serial}
+    #Log to Console                  wait_until_device_update_done
+    #wait_until_device_update_done   device_serial=${ap1.serial}
+    # update shows green at end of update policy to ap.  Though still takes some tome to bcast and client to see ssid.
+    sleep                                   30
 
     Remote_Server.Connect Open Network    ${NW_POLICY_SSID1}
 
-    Log to Console      Sleep for ${client_connect_wait}
-    sleep                         ${client_connect_wait}
+    Log to Console     Sleep for ${client_connect_wait}
+    sleep              ${client_connect_wait}
 
-    # Internet should attempt to go out the wifi. populate arp entries and just make everything run smooother.
-    # Pinging the AP IP, which should be on the same subnet as the MU wifi, would accomplish similar goals.
-    #Remote_Server.Ping Check In Background     www.facebook.com      30
+    run keyword if     "${mu1.platform}" == "mac"       Remote_Server.Kill Native Captive
+    IF                 "${mu1.platform}" == "mac"
+                       open cp browser    ${mu1.ip}     incognito=True
+    ELSE
+                       open cp browser    ${mu1.ip}
+    END
 
-    open cp browser    ${mu1.ip}
-    Log to Console      Sleep for ${cp_page_open_wait}
-    sleep  ${cp_page_open_wait}
+    Log to Console     Sleep for ${cp_page_open_wait}
+    sleep              ${cp_page_open_wait}
 
-    ${SOCIAL_AUTH_STATUS}=                  Validate CWP Social Login With Facebook     ${MAIL_ID3}      ${MAIL_ID3_PASS}
-    Should Be Equal As Strings              '${SOCIAL_AUTH_STATUS}'  '1'
+    ${SOCIAL_AUTH_STATUS}=            Validate CWP Social Login With Facebook   ${MAIL_ID3}   ${MAIL_ID3_PASS}
+    Should Be Equal As Strings        '${SOCIAL_AUTH_STATUS}'  '1'
 
     ${CURRENT_DATE_TIME}=                   Get Current Date Time
 
     Log to Console      Sleep for ${auth_logs_duration_wait}
-    sleep  ${auth_logs_duration_wait}
+    sleep               ${auth_logs_duration_wait}
 
     ${AUTH_LOGS}=                Get Authentication Logs Details       ${CURRENT_DATE_TIME}     ${MAIL_ID3}
     ${TIME_STAMP}=               Get From Dictionary     ${AUTH_LOGS}    authdate
