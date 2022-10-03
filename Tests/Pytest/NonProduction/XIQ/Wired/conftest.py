@@ -39,11 +39,6 @@ def debug(logger):
     return debug_func
 
 
-@pytest.fixture(scope="session")
-def logger():
-    return logger_obj
-
-
 _testbed: PytestConfigHelper = None
 _nodes = []
 _standalone_nodes = []
