@@ -22,9 +22,9 @@ Suite Teardown   Log Out and Close Session
 
 
 *** Variables ***
-${XIQ_URL}          ${xiq.test_url}
-${XIQ_USER}         ${xiq.tenant_username}
-${XIQ_PASSWORD}     ${xiq.tenant_password}
+${XIQ_URL}          ${test_url}
+${XIQ_USER}         ${tenant_username}
+${XIQ_PASSWORD}     ${tenant_password}
 
 
 *** Test Cases ***
