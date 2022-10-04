@@ -1,3 +1,4 @@
+from ast import Call
 import json
 import threading
 import time
@@ -10,33 +11,222 @@ import traceback
 import pytest
 import platform
 
+from _pytest import mark, fixtures
 from collections import defaultdict
 from pytest_testconfig import config
 from contextlib import contextmanager
-from typing import List, Dict, AnyStr
+from typing import (
+    List,
+    Dict,
+    DefaultDict,
+    Callable,
+    Tuple,
+    Iterator,
+    Protocol,
+    NewType
+)
 
 from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
 from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
 from ExtremeAutomation.Library.Logger.PytestLogger import PytestLogger
 from ExtremeAutomation.Library.Logger.Colors import Colors
+from ExtremeAutomation.Keywords.NetworkElementKeywords.NetworkElementConnectionManager import NetworkElementConnectionManager
+from ExtremeAutomation.Keywords.NetworkElementKeywords.Utils.NetworkElementCliSend import NetworkElementCliSend
+from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary
+from ExtremeAutomation.Imports.Udks import Udks
+from extauto.common.Screen import Screen
+from extauto.xiq.flows.common.Navigator import Navigator
+from extauto.common.Utils import Utils
+from extauto.common.CloudDriver import CloudDriver
+from extauto.common.AutoActions import AutoActions
+from extauto.common.Cli import Cli
 
+
+Node = NewType("Node", Dict[str, str])
+PolicyConfig = NewType("PolicyConfig", DefaultDict[str, Dict[str, str]])
+TestCaseMarker = NewType("TestCaseMarker", str)
+Priority = NewType("Priority", str)
 
 _testbed: PytestConfigHelper = None
-_nodes: List[Dict] = []
-_standalone_nodes: List[Dict] = []
-_stack_nodes: List[Dict] = []
+_nodes: List[Node] = []
+_standalone_nodes: List[Node] = []
+_stack_nodes: List[Node] = []
 onboard_one_node_flag: bool = False
 onboard_two_node_flag: bool = False
 onboard_stack_flag: bool = False
 logger_obj: PytestLogger = PytestLogger()
 
 
-valid_test_markers: List[AnyStr] = [
+class EnterSwitchCli(Protocol):
+    def __call__(
+        self,
+        dut: Node
+        ) -> Iterator[None]: ...
+
+
+class OpenSpawn(Protocol):
+    def __call__(self, dut: Node) -> Iterator[None]: ...
+
+
+class LoginXiq(Protocol):
+    def __call__(
+        self,
+        username: str,
+        password: str,
+        url: str,
+        capture_version: bool,
+        code: str,
+        incognito_mode: str
+        ) -> Iterator[None]: ...
+
+
+class BounceIqagent(Protocol):
+    def __call__(
+        self,
+        dut: Node,
+        xiq: XiqLibrary,
+        wait: bool
+        ) -> None: ...
+
+
+class CloseConnection(Protocol):
+    def __call__(
+        self,
+        dut: Node
+        ) -> None: ...
+
+
+class CreateLocation(Protocol):
+    def __call__(
+        self,
+        xiq: XiqLibrary,
+        location: str
+        ) -> None: ...
+
+
+class ConfigureIqAgent(Protocol):
+    def __call__(
+        self,
+        duts: List[Node], 
+        ipaddress: str
+        ) -> None: ...
+
+
+class CheckDutsAreReachable(Protocol):
+    def __call__(
+        self, 
+        duts: List[Node],
+        retries: int,
+        step: int
+        ) -> None: ...
+
+
+class CheckDevicesAreOnboarded(Protocol):
+    def __call__(
+        self,
+        xiq: XiqLibrary,
+        dut_list: List[Node],
+        timeout: int
+        ) -> None: ...
+
+
+class Cleanup(Protocol):
+    def __call__(
+        self, 
+        duts: List[Node], 
+        location: str, 
+        network_policies: List[str],
+        templates_switch: List[str],
+        slots: int
+        ) -> None: ...
+
+
+class ConfigureNetworkPolicies(Protocol):
+    def __call__(
+        self,
+        xiq: XiqLibrary,
+        dut_config: PolicyConfig
+        ) -> None: ...
+
+
+class UpdateDevices(Protocol):
+    def __call__(
+        self,
+        xiq: XiqLibrary,
+        duts: List[Node]
+        ) -> None: ...
+
+
+class OnboardDevices(Protocol):
+    def __call__(
+        self,
+        xiq: XiqLibrary,
+        duts: List[Node]
+        ) -> None: ...
+
+
+class DumpSwitchLogs(Protocol):
+    def __call__(
+        self,
+        duts: List[Node]
+        ) -> None: ...
+
+
+class RebootDevice(Protocol):
+    def __call__(
+        self,
+        duts: List[Node]
+        ) -> None: ...
+
+
+class RebootStackUnit(Protocol):
+    def __call__(
+        self,
+        dut: Node,
+        slot: int,
+        save_config: str
+        ) -> None: ...
+
+
+class GetStackSlots(Protocol):
+    def __call__(
+        self,
+        dut: Node
+        ) -> Dict[str, Dict[str, str]]: ...
+
+
+class ModifyStackingNode(Protocol):
+    def __call__(
+        self, 
+        dut: Node,
+        node_mac_address: str, 
+        op: str
+        ) -> None: ...
+
+
+class SetLldp(Protocol):
+    def __call__(
+        self, 
+        dut: Node, 
+        ports: List[str],
+        action: str
+        ) -> None: ...
+
+
+class ClearTrafficCounters(Protocol):
+    def __call__(
+        self,
+        dut: Node,
+        *ports: List[str]
+        ) -> None: ...
+
+
+valid_test_markers: List[TestCaseMarker] = [
     "tcxm",
     "tccs"
 ]
 
-valid_priorities: List[AnyStr] = [
+valid_priorities: List[Priority] = [
     "p1",
     "p2",
     "p3",
@@ -46,7 +236,7 @@ valid_priorities: List[AnyStr] = [
 
 
 @pytest.fixture(scope="session")
-def debug(logger):
+def debug(logger: PytestLogger) -> Callable:
     def debug_func(func):
         def wrapped_func(*args, **kwargs):
             start_time = time.time()
@@ -67,11 +257,11 @@ def pytest_cmdline_preparse(config, args):
     args.append(os.path.join(os.path.dirname(__file__), "conftest.py"))
 
 
-def get_test_marker(item: pytest.Function) -> List[AnyStr]:  
+def get_test_marker(item: pytest.Function) -> List[TestCaseMarker]:  
     return [m.name for m in item.own_markers if any(re.search(rf"^{test_marker}_", m.name) for test_marker in valid_test_markers)]
 
 
-def get_priority_marker(item: pytest.Function) -> List[AnyStr]:
+def get_priority_marker(item: pytest.Function) -> List[Priority]:
     return [m.name for m in item.own_markers if m.name in valid_priorities]
 
 
@@ -88,7 +278,7 @@ def pytest_collection_modifyitems(session, items):
     onboarding_test_name = "tcxm_xiq_onboarding"
     onboarding_cleanup_test_name = "tcxm_xiq_onboarding_cleanup"
 
-    collected_items = []
+    collected_items: List[pytest.Function] = []
     for item in items:
         if onboarding_test_name in [m.name for m in item.own_markers]:
             if not [it for it in collected_items if onboarding_test_name in [m.name for m in it.own_markers]]:
@@ -120,7 +310,7 @@ def pytest_collection_modifyitems(session, items):
     _stack_nodes = [node for node in _nodes if node not in _standalone_nodes]
     logger_obj.info(f"Found {len(_stack_nodes)} stack node(s).")
 
-    temp_items = collected_items[:]
+    temp_items: List[pytest.Function] = collected_items[:]
 
     onboard_stack_flag = len(_stack_nodes) >= 1
     if not onboard_stack_flag:
@@ -150,23 +340,27 @@ def pytest_collection_modifyitems(session, items):
                 "testbed_1_node", "testbed_2_node", "testbed_stack", "testbed_none"
         ]]
     )]
-    
+
     for item in collected_items:
         if item not in temp_items:
             logger_obj.info(
                 f"Unselected: '{item.nodeid}' (markers: '{[m.name for m in item.own_markers]}').")
     
-    item_test_marker_mapping = defaultdict(lambda: [])
-    test_marker_item_mapping = defaultdict(lambda: [])
-    priority_item_mapping = defaultdict(lambda: [])
-    items_without_valid_test_markers = []
-    items_without_priority_markers = []
+    item_test_marker_mapping: DefaultDict[str, List[str]] = defaultdict(lambda: [])
+    test_marker_item_mapping: DefaultDict[pytest.Function, List[str]] = defaultdict(lambda: [])
+    priority_item_mapping: DefaultDict[pytest.Function, List[str]] = defaultdict(lambda: [])
+    items_without_valid_test_markers: List[str] = []
+    items_without_priority_markers: List[str] = []
 
+    test_codes: List[TestCaseMarker]
+    test_code: TestCaseMarker
+    priorities: List[Priority]
+    
     for item in temp_items:
         test_codes = get_test_marker(item)
-        priority = get_priority_marker(item)
+        priorities = get_priority_marker(item)
 
-        if not priority:
+        if not priorities:
             items_without_priority_markers.append(
                 f"This function does not have a priority marker: '{item.nodeid}'.")
 
@@ -178,7 +372,7 @@ def pytest_collection_modifyitems(session, items):
             item_test_marker_mapping[test_code].append(item.nodeid)
     
         test_marker_item_mapping[item] = test_codes
-        priority_item_mapping[item] = priority
+        priority_item_mapping[item] = priorities
 
     if items_without_valid_test_markers:
         error = '\n' + '\n'.join(items_without_valid_test_markers)
@@ -212,30 +406,40 @@ def pytest_collection_modifyitems(session, items):
             logger_obj.error(error)
             pytest.fail(error)
 
-    all_tcs = [onboarding_test_name, onboarding_cleanup_test_name]
+    all_tcs: List[TestCaseMarker] = [onboarding_test_name, onboarding_cleanup_test_name]
     [all_tcs.append(get_test_marker(item)[0]) for item in temp_items]
 
-    found_tcs = [onboarding_test_name, onboarding_cleanup_test_name]
+    found_tcs: List[TestCaseMarker] = [onboarding_test_name, onboarding_cleanup_test_name]
+
+    test_code: TestCaseMarker
+
     for item in temp_items:
+        
         [test_code] = get_test_marker(item)
+        
         found_tcs.append(test_code)
-        item_markers = item.own_markers
+        item_markers: List[mark.structures.Mark] = item.own_markers
+        
         for marker in item_markers:
             if marker.name == "dependson":
-                temp_markers = marker.args
+                temp_markers: Tuple[str] = marker.args
+
                 if not len(temp_markers):
                     logger_obj.warning(
                         f"The dependson marker of '{test_code}' testcase does not have any arguments "
                         f"(test function: '{item.nodeid}'.")
+                    
                 for temp_marker in temp_markers:
                     if temp_marker == test_code:
                         logger_obj.warning(
                             f"'{test_code}' is marked as depending on itself (test function: '{item.nodeid}'.")
+                        
                     elif temp_marker not in all_tcs:
                         item.add_marker(
                             pytest.mark.skip(f"'{test_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}'"
                                              f" is not in the current list of testcases to be run. It will be skipped.")
                         )
+                        
                     elif temp_marker not in found_tcs:
                         item.add_marker(
                             pytest.mark.skip(
@@ -265,6 +469,8 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     result = outcome.get_result()
 
+    current_test_marker: TestCaseMarker
+    temp_test_marker: TestCaseMarker
     [current_test_marker] = get_test_marker(item)
 
     if result.when == 'call':
@@ -309,17 +515,22 @@ def pytest_runtest_makereport(item, call):
                             pytest.mark.skip(
                                 f"'{temp_test_marker}' depends on '{current_test_marker}' but "
                                 f"'{current_test_marker}' is skipped. '{temp_test_marker}' "
-                                f"test case will be skipped."))
+                                f"test case will be skipped.")
+                            )
 
 
 def pytest_runtest_call(item):
+    current_test_marker: TestCaseMarker
     [current_test_marker] = get_test_marker(item)
     config['${TEST_NAME}'] = current_test_marker
     logger_obj.step(f"Start test function of '{current_test_marker}': '{item.nodeid}'.")
 
 
 @pytest.mark.tcxm_xiq_onboarding
-def test_xiq_onboarding(request, logger):
+def test_xiq_onboarding(
+    request: fixtures.SubRequest,
+    logger: PytestLogger
+    ) -> None:
     if not any([onboard_one_node_flag, onboard_two_node_flag, onboard_stack_flag]):
         logger.info(
             "Currently there are no devices given in the yaml files so the onboarding test won't configure anything.")
@@ -328,8 +539,12 @@ def test_xiq_onboarding(request, logger):
 
 
 @pytest.mark.tcxm_xiq_onboarding_cleanup
-def test_xiq_onboarding_cleanup(request, logger):
-    if not any([onboard_one_node_flag, onboard_two_node_flag, onboard_stack_flag]):
+def test_xiq_onboarding_cleanup(
+    request: fixtures.SubRequest,
+    logger: PytestLogger
+    ) -> None:
+    if not any(
+        [onboard_one_node_flag, onboard_two_node_flag, onboard_stack_flag]):
         logger.info(
             "Currently there are no devices given in the yaml files so "
             "the onboarding cleanup test won't unconfigure anything.")
@@ -338,22 +553,32 @@ def test_xiq_onboarding_cleanup(request, logger):
 
 
 @pytest.fixture(scope="session")
-def login_xiq(loaded_config, logger, cloud_driver, debug):
+def login_xiq(
+    loaded_config: Dict[str, str],
+    logger: PytestLogger, 
+    cloud_driver: CloudDriver,
+    debug: Callable
+    ) -> LoginXiq:
 
     @contextmanager
     @debug
     def login_xiq_func(
-        username=loaded_config['tenant_username'],
-        password=loaded_config['tenant_password'],
-        url=loaded_config['test_url'],
-        capture_version=False, code="default", incognito_mode="False"
-    ):
+        username: str=loaded_config['tenant_username'],
+        password: str=loaded_config['tenant_password'],
+        url: str=loaded_config['test_url'],
+        capture_version: bool=False, code: str="default", incognito_mode: str="False"
+    ) -> Iterator[None]:
 
         xiq = XiqLibrary()
 
         try:
             assert xiq.login.login_user(
-                username, password, capture_version=capture_version, code=code, url=url, incognito_mode=incognito_mode)
+                username,
+                password,
+                capture_version=capture_version,
+                code=code, url=url,
+                incognito_mode=incognito_mode
+            )
             yield xiq
         except Exception as exc:
             logger.error(repr(exc))
@@ -369,10 +594,14 @@ def login_xiq(loaded_config, logger, cloud_driver, debug):
 
 
 @pytest.fixture(scope="session")
-def enter_switch_cli(network_manager, close_connection, dev_cmd):
+def enter_switch_cli(
+    network_manager: NetworkElementConnectionManager,
+    close_connection: CloseConnection,
+    dev_cmd: NetworkElementCliSend
+    ) -> EnterSwitchCli:
 
     @contextmanager
-    def func(dut):
+    def func(dut: Node) -> Iterator[None]:
         try:
             close_connection(dut)
             network_manager.connect_to_network_element_name(dut.name)
@@ -383,16 +612,15 @@ def enter_switch_cli(network_manager, close_connection, dev_cmd):
 
 
 @pytest.fixture(scope="session")
-def cli():
-    from extauto.common.Cli import Cli
+def cli() -> Cli:
     return Cli()
 
 
 @pytest.fixture(scope="session")
-def open_spawn(cli):
+def open_spawn(cli: Cli) -> OpenSpawn:
     
     @contextmanager
-    def func(dut):
+    def func(dut: Node) -> Iterator[None]:
         try:
             spawn_connection = cli.open_spawn(
                 dut.ip, dut.port, dut.username, dut.password, dut.cli_type)
@@ -403,10 +631,13 @@ def open_spawn(cli):
 
 
 @pytest.fixture(scope="session")
-def connect_to_all_devices(network_manager, dev_cmd):
+def connect_to_all_devices(
+    network_manager: NetworkElementConnectionManager,
+    dev_cmd: NetworkElementCliSend
+    ) -> Callable[[], Iterator[None]]:
     
     @contextmanager
-    def func():
+    def func() -> Iterator[None]:
         try:
             network_manager.connect_to_all_network_elements()
             yield dev_cmd
@@ -416,10 +647,17 @@ def connect_to_all_devices(network_manager, dev_cmd):
 
 
 @pytest.fixture(scope="session")
-def create_location(logger, screen, debug):
+def create_location(
+    logger: PytestLogger,
+    screen: Screen,
+    debug: Callable
+    ) -> CreateLocation:
     
     @debug
-    def create_location_func(xiq, location):
+    def create_location_func(
+        xiq: XiqLibrary,
+        location: str
+        ) -> None:
         
         logger.step(f"Try to delete this location: '{location}'.")
         xiq.xflowsmanageLocation.delete_location_building_floor(*location.split(","))
@@ -432,7 +670,9 @@ def create_location(logger, screen, debug):
     return create_location_func
 
 
-def generate_template_for_given_model(dut):
+def generate_template_for_given_model(
+    dut: Node
+    ) -> List[str]:
 
     model = dut.model
     platform = dut.platform
@@ -480,8 +720,11 @@ def generate_template_for_given_model(dut):
 
 
 @pytest.fixture(scope="session")
-def close_connection(network_manager, logger):
-    def func(dut):
+def close_connection(
+    network_manager: NetworkElementConnectionManager,
+    logger: PytestLogger
+    ) -> CloseConnection:
+    def func(dut: Node) -> None:
         try:
             network_manager.close_connection_to_network_element(dut.name)
         except Exception as exc:
@@ -490,11 +733,15 @@ def close_connection(network_manager, logger):
 
 
 @pytest.fixture(scope="session")
-def virtual_routers(enter_switch_cli, dut_list, logger):
+def virtual_routers(
+    enter_switch_cli: EnterSwitchCli,
+    dut_list: List[Node],
+    logger: PytestLogger
+    ) -> Dict[str, str]:
     
     vrs = {}
-    
-    def worker(dut):
+
+    def worker(dut: Node):
         with enter_switch_cli(dut) as dev_cmd:
             try:
                 output = dev_cmd.send_cmd(
@@ -510,7 +757,7 @@ def virtual_routers(enter_switch_cli, dut_list, logger):
                 logger.warning(repr(exc))
                 vrs[dut.name] = ""
             
-    threads = []
+    threads: List[threading.Thread] = []
     try:
         for dut in [d for d in dut_list if d.cli_type.upper() == "EXOS"]:
             thread = threading.Thread(target=worker, args=(dut, ))
@@ -523,17 +770,28 @@ def virtual_routers(enter_switch_cli, dut_list, logger):
 
 
 @pytest.fixture(scope="session")
-def configure_iq_agent(loaded_config, logger, dut_list, debug, open_spawn, cli, request):
+def configure_iq_agent(
+    loaded_config: Dict[str, str],
+    logger: PytestLogger,
+    dut_list: List[Node],
+    debug: Callable,
+    open_spawn: OpenSpawn,
+    cli: Cli,
+    request: fixtures.SubRequest
+    ) -> ConfigureIqAgent:
     
     @debug
-    def configure_iq_agent_func(duts=dut_list, ipaddress=loaded_config['sw_connection_host']):
+    def configure_iq_agent_func(
+        duts: List[Node]=dut_list,
+        ipaddress: str=loaded_config['sw_connection_host']
+        ) -> None:
         
-        virtual_routers = request.getfixturevalue("virtual_routers")
+        virtual_routers: Dict[str, str] = request.getfixturevalue("virtual_routers")
 
         logger.step(
             f"Configure IQAGENT with ipaddress='{ipaddress}' on these devices: {', '.join([d.name for d in dut_list])}.")
 
-        def worker(dut):
+        def worker(dut: Node):
             
             with open_spawn(dut) as spawn_connection:
                 if loaded_config.get("lab", "").upper() == "SALEM":
@@ -544,7 +802,7 @@ def configure_iq_agent(loaded_config, logger, dut_list, debug, open_spawn, cli, 
                     spawn_connection, vr=virtual_routers.get(dut.name, 'VR-Mgmt'), retry_count=30
                 )
 
-        threads = []
+        threads: List[threading.Thread] = []
         try:
             for dut in duts:
                 thread = threading.Thread(target=worker, args=(dut, ))
@@ -557,7 +815,10 @@ def configure_iq_agent(loaded_config, logger, dut_list, debug, open_spawn, cli, 
 
 
 @pytest.fixture(scope="session")
-def onboarding_locations(nodes, logger):
+def onboarding_locations(
+    nodes: List[Node],
+    logger: PytestLogger
+    ) -> Dict[str, str]:
     
     ret = {}
     
@@ -585,10 +846,20 @@ def onboarding_locations(nodes, logger):
 
 
 @pytest.fixture(scope="session")
-def check_duts_are_reachable(logger, debug, wait_till):
+def check_duts_are_reachable(
+    logger: PytestLogger,
+    debug: Callable,
+    wait_till: Callable
+    ) -> CheckDutsAreReachable:
+
+    windows = platform.system() == "Windows"
     
     @debug
-    def check_duts_are_reachable_func(duts, retries=3, step=1, windows=platform.system() == "Windows"):
+    def check_duts_are_reachable_func(
+        duts: List[Node], 
+        retries: int=3, 
+        step: int=1
+        ) -> None:
         results = []
         def worker(dut):
             
@@ -608,7 +879,7 @@ def check_duts_are_reachable(logger, debug, wait_till):
             else:
                 results.append(f"({dut.ip}): This dut is not reachable: '{dut.name}.'\n{ping_response}")
 
-        threads = []
+        threads: List[threading.Thread] = []
         try:
             for dut in duts:
                 thread = threading.Thread(target=worker, args=(dut, ))
@@ -630,12 +901,12 @@ def check_duts_are_reachable(logger, debug, wait_till):
 
 
 @pytest.fixture(scope="session")
-def testbed():
+def testbed() -> PytestConfigHelper:
     return _testbed
 
 
 @pytest.fixture(scope="session", autouse=True)
-def loaded_config():
+def loaded_config() -> Dict[str, str]:
     
     config['${TEST_NAME}'] = "onboarding"
     config['${OUTPUT DIR}'] = os.getcwd()
@@ -649,15 +920,24 @@ def loaded_config():
 
 
 @pytest.fixture(scope="session")
-def dev_cmd(default_library):
-    return default_library.deviceNetworkElement.networkElementCliSend
+def dev_cmd() -> NetworkElementCliSend:
+    return NetworkElementCliSend()
 
 
 @pytest.fixture(scope="session")
-def check_devices_are_onboarded(logger, dut_list, debug, wait_till):
+def check_devices_are_onboarded(
+    logger: PytestLogger,
+    dut_list: List[Node],
+    debug: Callable,
+    wait_till: Callable
+    ) -> CheckDevicesAreOnboarded:
     
     @debug
-    def check_devices_are_onboarded_func(xiq, dut_list=dut_list, timeout=240):
+    def check_devices_are_onboarded_func(
+        xiq: XiqLibrary,
+        dut_list: List[Node]=dut_list,
+        timeout: int=240
+        ) -> None:
         
         xiq.xflowscommonDevices.column_picker_select("MAC Address")
         
@@ -726,10 +1006,21 @@ def check_devices_are_onboarded(logger, dut_list, debug, wait_till):
 
 
 @pytest.fixture(scope="session")
-def cleanup(logger, screen, debug):
+def cleanup(
+    logger: PytestLogger,
+    screen: Screen, 
+    debug: Callable
+    ) -> Cleanup:
 
     @debug
-    def cleanup_func(xiq, duts=[], location='', network_policies=[], templates_switch=[], slots=1):
+    def cleanup_func(
+        xiq: XiqLibrary,
+        duts: List[Node]=[],
+        location: str='', 
+        network_policies: List[str]=[],
+        templates_switch: List[str]=[],
+        slots: int=1
+        ) -> None:
             
             xiq.xflowscommonDevices._goto_devices()
             
@@ -781,10 +1072,19 @@ def cleanup(logger, screen, debug):
 
 
 @pytest.fixture(scope="session")
-def configure_network_policies(logger, dut_list, policy_config, screen, debug):
+def configure_network_policies(
+    logger: PytestLogger, 
+    dut_list: List[Node],
+    policy_config: PolicyConfig,
+    screen: Screen,
+    debug: Callable
+    ) -> ConfigureNetworkPolicies:
     
     @debug
-    def configure_network_policies_func(xiq, dut_config=policy_config):
+    def configure_network_policies_func(
+        xiq: XiqLibrary,
+        dut_config: PolicyConfig=policy_config
+        ) -> None:
         
         for dut, data in dut_config.items():
         
@@ -873,22 +1173,24 @@ def _temporary_fix_assign_policy(xiq, policy_name, dut):
 
 
 @pytest.fixture(scope="session")
-def nodes():
+def nodes() -> List[Node]:
     return _nodes
 
 
 @pytest.fixture(scope="session")
-def standalone_nodes():
+def standalone_nodes() -> List[Node]:
     return _standalone_nodes
 
 
 @pytest.fixture(scope="session")
-def stack_nodes():
+def stack_nodes() -> List[Node]:
     return _stack_nodes
 
     
 @pytest.fixture(scope="session")
-def policy_config(dut_list):
+def policy_config(
+    dut_list: List[Node]
+    ) -> PolicyConfig:
 
     dut_config = defaultdict(lambda: {})
     pool = list(string.ascii_letters) + list(string.digits)
@@ -903,7 +1205,10 @@ def policy_config(dut_list):
 
 
 @pytest.fixture(scope="session")
-def dut_list(standalone_nodes, stack_nodes):
+def dut_list(
+    standalone_nodes: List[Node],
+    stack_nodes: List[Node]
+    ) -> List[Node]:
     
     duts = []
 
@@ -919,10 +1224,19 @@ def dut_list(standalone_nodes, stack_nodes):
 
 
 @pytest.fixture(scope="session")
-def update_devices(logger, dut_list, policy_config, debug, wait_till):
+def update_devices(
+    logger: PytestLogger,
+    dut_list: List[Node],
+    policy_config: PolicyConfig,
+    debug: Callable,
+    wait_till: Callable
+    ) -> UpdateDevices:
     
     @debug
-    def update_devices_func(xiq, duts=dut_list):
+    def update_devices_func(
+        xiq: XiqLibrary,
+        duts: List[Node]=dut_list
+        ) -> None:
         
         wait_till(timeout=5)
         xiq.xflowscommonDevices._goto_devices()
@@ -956,11 +1270,20 @@ def update_devices(logger, dut_list, policy_config, debug, wait_till):
 
 
 @pytest.fixture(scope="session")
-def onboard_devices(dut_list, logger, screen, debug, request):
+def onboard_devices(
+    dut_list: List[Node],
+    logger: PytestLogger,
+    screen: Screen,
+    debug: Callable,
+    request: fixtures.SubRequest
+    ) -> OnboardDevices:
     
     @debug
-    def onboard_devices_func(xiq, duts=dut_list):
-        onboarding_locations = request.getfixturevalue("onboarding_locations")
+    def onboard_devices_func(
+        xiq: XiqLibrary, 
+        duts: List[Node]=dut_list
+        ) -> None:
+        onboarding_locations: Dict[str, str] = request.getfixturevalue("onboarding_locations")
         for dut in duts:
             if xiq.xflowscommonDevices.onboard_device(
                 device_serial=dut.serial, device_make=dut.cli_type,
@@ -976,12 +1299,17 @@ def onboard_devices(dut_list, logger, screen, debug, request):
     return onboard_devices_func
 
 
-def dump_data(data):
+def dump_data(data) -> str:
     return json.dumps(data, indent=4)
 
 
 @pytest.fixture(scope="session")
-def dump_switch_logs(enter_switch_cli, check_duts_are_reachable, dut_list, logger):
+def dump_switch_logs(
+    enter_switch_cli: EnterSwitchCli,
+    check_duts_are_reachable: CheckDutsAreReachable,
+    dut_list: List[Node],
+    logger: PytestLogger
+    ) -> DumpSwitchLogs:
     
     exos_cmds = [
         "show mgmt",
@@ -1013,7 +1341,7 @@ def dump_switch_logs(enter_switch_cli, check_duts_are_reachable, dut_list, logge
         "show clock"
     ]
 
-    def func():
+    def func(duts=dut_list) -> None:
         
         def worker(dut):
             try:
@@ -1042,39 +1370,41 @@ def dump_switch_logs(enter_switch_cli, check_duts_are_reachable, dut_list, logge
                     except Exception:
                         logger.warning(f"Failed to get output of this command from '{dut.name}': '{cmd}'.")
                         
-        for dut in dut_list:
+        for dut in duts:
             worker(dut)
     return func
 
-  
-@pytest.fixture(scope="session")
-def onboard(request):
 
-    check_duts_are_reachable = request.getfixturevalue("check_duts_are_reachable")
-    configure_network_policies = request.getfixturevalue("configure_network_policies")
-    login_xiq = request.getfixturevalue("login_xiq")
-    change_device_management_settings = request.getfixturevalue("change_device_management_settings")
-    check_devices_are_onboarded = request.getfixturevalue("check_devices_are_onboarded")
-    cleanup = request.getfixturevalue("cleanup")
-    onboard_devices = request.getfixturevalue("onboard_devices")
-    configure_iq_agent = request.getfixturevalue("configure_iq_agent")
-    dump_switch_logs = request.getfixturevalue("dump_switch_logs")
-    update_devices = request.getfixturevalue("update_devices")
-    logger = request.getfixturevalue("logger")
+@pytest.fixture(scope="session")
+def onboard(
+    request: fixtures.SubRequest
+    ) -> None:
+
+    check_duts_are_reachable: CheckDutsAreReachable = request.getfixturevalue("check_duts_are_reachable")
+    configure_network_policies: ConfigureNetworkPolicies = request.getfixturevalue("configure_network_policies")
+    login_xiq: LoginXiq = request.getfixturevalue("login_xiq")
+    change_device_management_settings: ChangeDeviceManagementSettings = request.getfixturevalue("change_device_management_settings")
+    check_devices_are_onboarded: CheckDevicesAreOnboarded = request.getfixturevalue("check_devices_are_onboarded")
+    cleanup: Cleanup = request.getfixturevalue("cleanup")
+    onboard_devices: OnboardDevices = request.getfixturevalue("onboard_devices")
+    configure_iq_agent: ConfigureIqAgent = request.getfixturevalue("configure_iq_agent")
+    dump_switch_logs: DumpSwitchLogs = request.getfixturevalue("dump_switch_logs")
+    update_devices: UpdateDevices = request.getfixturevalue("update_devices")
+    logger: PytestLogger = request.getfixturevalue("logger")
     
-    dut_list = request.getfixturevalue("dut_list")
+    dut_list: List[Node] = request.getfixturevalue("dut_list")
     logger.info(f"These are the devices that will be onboarded ({len(dut_list)} device(s)): " + "'" +
                 '\', \''.join([dut.name for dut in dut_list]) + "'.")
 
     check_duts_are_reachable(dut_list)
 
-    onboarding_locations = request.getfixturevalue("onboarding_locations")
+    onboarding_locations: Dict[str, str] = request.getfixturevalue("onboarding_locations")
     logger.info(f"These locations will be used for the onboarding:\n'{dump_data(onboarding_locations)}'")
     
-    policy_config = request.getfixturevalue("policy_config")
+    policy_config: PolicyConfig = request.getfixturevalue("policy_config")
     logger.info(f"These are the policies and switch templates that will be applied to the onboarded devices:"
                 f"\n{dump_data(policy_config)}")
-    
+
     try:
         
         configure_iq_agent(duts=dut_list)
@@ -1092,8 +1422,6 @@ def onboard(request):
 
             update_devices(xiq)
 
-        yield dut_list, policy_config
-        
     except Exception as exc:
         logger.error(repr(exc))
         dump_switch_logs()
@@ -1102,13 +1430,15 @@ def onboard(request):
     
 
 @pytest.fixture(scope="session")
-def onboard_cleanup(request):
+def onboard_cleanup(
+    request: fixtures.SubRequest
+    ) -> None:
     
-    login_xiq = request.getfixturevalue("login_xiq")
-    stack_nodes = request.getfixturevalue("stack_nodes")
-    cleanup = request.getfixturevalue("cleanup")
-    dut_list = request.getfixturevalue("dut_list")
-    policy_config = request.getfixturevalue("policy_config")
+    login_xiq: LoginXiq = request.getfixturevalue("login_xiq")
+    stack_nodes: List[Node] = request.getfixturevalue("stack_nodes")
+    cleanup: Cleanup = request.getfixturevalue("cleanup")
+    dut_list: List[Node] = request.getfixturevalue("dut_list")
+    policy_config: PolicyConfig = request.getfixturevalue("policy_config")
     
     with login_xiq() as xiq:
 
@@ -1122,36 +1452,46 @@ def onboard_cleanup(request):
 
 
 @pytest.fixture(scope="session")
-def onboarded_one_node(request):
+def onboarded_one_node(
+    request: fixtures.SubRequest
+    ) -> Node:
     if onboard_one_node_flag or onboard_two_node_flag:
-        dut_list, _ = request.getfixturevalue("onboard")
+        dut_list: List[Node] = request.getfixturevalue("dut_list")
         return [dut for dut in dut_list if dut.platform.upper() != "STACK"][0]
     pytest.fail("Testbed does not have a standalone node.")
 
 
 @pytest.fixture(scope="session")
-def onboarded_two_node(request):
+def onboarded_two_node(
+    request: fixtures.SubRequest
+    ) -> List[Node]:
     if onboard_two_node_flag:
-        dut_list, _ = request.getfixturevalue("onboard")
+        dut_list: List[Node] = request.getfixturevalue("dut_list")
         return [dut for dut in dut_list if dut.platform.upper() != "STACK"][:2]
     pytest.fail("Testbed does not have two standalone nodes.")
 
 
 @pytest.fixture(scope="session")
-def onboarded_stack(request):
+def onboarded_stack(
+    request: fixtures.SubRequest
+    ) -> Node:
     if onboard_stack_flag:
-        dut_list, _ = request.getfixturevalue("onboard")
+        dut_list: List[Node] = request.getfixturevalue("dut_list")
         return [dut for dut in dut_list if dut.platform.upper() == "STACK"][0]
     pytest.fail("Testbed does not have a stack node.")
 
  
 @pytest.fixture(scope="session")
-def dut_ports(enter_switch_cli, dut_list, debug):
+def dut_ports(
+    enter_switch_cli: EnterSwitchCli, 
+    dut_list: List[Node], 
+    debug: Callable
+    ) -> Dict[str, List[str]]:
     
     ports = {}
     
     @debug
-    def dut_ports_worker(dut):
+    def dut_ports_worker(dut: Node):
         with enter_switch_cli(dut) as dev_cmd:
             if dut.cli_type.upper() == "VOSS":
                 dev_cmd.send_cmd(
@@ -1201,7 +1541,7 @@ def dut_ports(enter_switch_cli, dut_list, debug):
                 ports[dut.name] = output
                 dev_cmd.send_cmd(dut.name, "exit")
 
-    threads = []
+    threads: List[threading.Thread] = []
     try:
         for dut in dut_list:
             thread = threading.Thread(target=dut_ports_worker, args=(dut, ))
@@ -1214,10 +1554,17 @@ def dut_ports(enter_switch_cli, dut_list, debug):
 
 
 @pytest.fixture(scope="session")
-def bounce_iqagent(enter_switch_cli, debug):
-    
+def bounce_iqagent(
+    enter_switch_cli: EnterSwitchCli,
+    debug: Callable
+    ) -> BounceIqagent:
+
     @debug
-    def bounce_iqagent_func(dut, xiq=None, wait=False):
+    def bounce_iqagent_func(
+        dut: Node,
+        xiq: XiqLibrary=None,
+        wait: bool=False
+        ) -> None:
         
         with enter_switch_cli(dut) as dev_cmd:
             if dut.cli_type.upper() == "EXOS":
@@ -1244,10 +1591,18 @@ def bounce_iqagent(enter_switch_cli, debug):
 
 
 @pytest.fixture(scope="session")
-def reboot_device(dut_list, enter_switch_cli, logger, debug, wait_till):
-    
+def reboot_device(
+    dut_list: List[Node],
+    enter_switch_cli: EnterSwitchCli,
+    logger: PytestLogger,
+    debug: Callable,
+    wait_till: Callable
+    ) -> RebootDevice:
+
     @debug
-    def reboot_device_func(duts=dut_list):
+    def reboot_device_func(
+        duts: List[Node]=dut_list
+        ) -> None:
         
         def worker(dut):
             with enter_switch_cli(dut) as dev_cmd:
@@ -1280,7 +1635,7 @@ def reboot_device(dut_list, enter_switch_cli, logger, debug, wait_till):
                 else:
                     wait_till(timeout=120)
     
-        threads = []
+        threads: List[threading.Thread] = []
         try:
             for dut in duts:
                 thread = threading.Thread(target=worker, args=(dut, ))
@@ -1293,10 +1648,19 @@ def reboot_device(dut_list, enter_switch_cli, logger, debug, wait_till):
 
 
 @pytest.fixture(scope="session")
-def reboot_stack_unit(wait_till, enter_switch_cli, debug, logger):
+def reboot_stack_unit(
+    wait_till: Callable,
+    enter_switch_cli: EnterSwitchCli,
+    debug: Callable,
+    logger: PytestLogger
+    ) -> RebootStackUnit:
     
     @debug
-    def reboot_stack_unit_func(dut, slot=1, save_config='n'):
+    def reboot_stack_unit_func(
+        dut: Node,
+        slot: int=1,
+        save_config: str='n'
+        ) -> None:
         
         if not (dut.platform.upper() == "STACK" and dut.cli_type.upper() == "EXOS"):
             error = f"Given device is not an EXOS stack: '{dut}'"
@@ -1320,10 +1684,16 @@ def reboot_stack_unit(wait_till, enter_switch_cli, debug, logger):
 
 
 @pytest.fixture(scope="session")
-def get_stack_slots(logger, enter_switch_cli, debug):
+def get_stack_slots(
+    logger: PytestLogger,
+    enter_switch_cli: EnterSwitchCli,
+    debug: Callable
+    ) -> GetStackSlots:
     
     @debug
-    def get_stack_slots_func(dut):
+    def get_stack_slots_func(
+        dut: Node
+        ) -> Dict[str, Dict[str, str]]:
         
         if not (dut.platform.upper() == "STACK" and dut.cli_type.upper() == "EXOS"):
             error = f"Given device is not an EXOS stack: '{dut}'"
@@ -1344,16 +1714,25 @@ def get_stack_slots(logger, enter_switch_cli, debug):
 
 
 @pytest.fixture(scope="session")
-def modify_stacking_node(enter_switch_cli, reboot_device, debug, logger):
+def modify_stacking_node(
+    enter_switch_cli: EnterSwitchCli,
+    reboot_device: RebootDevice,
+    debug: Callable,
+    logger: PytestLogger
+    ) -> ModifyStackingNode:
     
     @debug
-    def modify_stacking_node_func(dut, node_mac_address, op):
+    def modify_stacking_node_func(
+        dut: Node,
+        node_mac_address: str,
+        op: str
+        ) -> None:
         if not (dut.platform.upper() == "STACK" and dut.cli_type.upper() == "EXOS"):
             error = f"Given device is not an EXOS stack: '{dut}'"
             logger.error(error)
             pytest.fail(error)
 
-        assert op in ["enable", "disable"], "Op argument should be 'enbale' or 'disable'"
+        assert op in ["enable", "disable"], "Op argument should be 'enable' or 'disable'"
         
         with enter_switch_cli(dut) as dev_cmd:
             cmd = f"{op} stacking node-address {node_mac_address}"
@@ -1364,10 +1743,18 @@ def modify_stacking_node(enter_switch_cli, reboot_device, debug, logger):
 
 
 @pytest.fixture(scope="session")
-def set_lldp(enter_switch_cli, debug):
+def set_lldp(
+    enter_switch_cli: EnterSwitchCli,
+    debug: Callable
+    ) -> SetLldp:
     
     @debug
-    def set_lldp_func(dut, ports, action="enable"):
+    def set_lldp_func(
+        dut: Node,
+        ports: List[str],
+        action: str="enable"
+        ) -> None:
+        
         with enter_switch_cli(dut) as dev_cmd:
             if dut.cli_type.upper() == "EXOS":
                 if action == "enable":
@@ -1397,10 +1784,16 @@ def set_lldp(enter_switch_cli, debug):
 
 
 @pytest.fixture(scope="session")
-def clear_traffic_counters(enter_switch_cli, debug):
+def clear_traffic_counters(
+    enter_switch_cli: EnterSwitchCli,
+    debug: Callable
+    ) -> ClearTrafficCounters:
     
     @debug
-    def clear_traffic_counters_func(dut, *ports):
+    def clear_traffic_counters_func(
+        dut: Node,
+        *ports: List[str]
+        ) -> None:
         with enter_switch_cli(dut) as dev_cmd:
             if dut.cli_type.upper() == "EXOS":
                     dev_cmd.send_cmd(
@@ -1411,11 +1804,27 @@ def clear_traffic_counters(enter_switch_cli, debug):
     return clear_traffic_counters_func
 
 
+class ChangeDeviceManagementSettings(Protocol):
+    def __class__(self, xiq: XiqLibrary, option: str, retries: int=5, step: int=5) -> None: ...
+
+
 @pytest.fixture(scope="session")
-def change_device_management_settings(logger, standalone_nodes, stack_nodes, screen, debug, wait_till):
+def change_device_management_settings(
+    logger: PytestLogger, 
+    standalone_nodes: List[Node], 
+    stack_nodes: List[Node], 
+    screen: Screen, 
+    debug: Callable, 
+    wait_till: Callable
+    ) -> ChangeDeviceManagementSettings:
     
     @debug
-    def change_device_management_settings_func(xiq, option, retries=5, step=5):
+    def change_device_management_settings_func(
+        xiq: XiqLibrary,
+        option: str,
+        retries: int=5,
+        step: int=5
+        ) -> None:
         
         platform = "EXOS" if any(node.cli_type.upper() == "EXOS" for node in standalone_nodes + stack_nodes) else "VOSS"
         for _ in range(retries):
@@ -1436,10 +1845,18 @@ def change_device_management_settings(logger, standalone_nodes, stack_nodes, scr
 
 
 @pytest.fixture(scope="session")
-def get_default_password(navigator, auto_actions, debug, screen, wait_till):
+def get_default_password(
+    navigator: Navigator,
+    auto_actions: AutoActions,
+    debug: Callable,
+    screen: Screen,
+    wait_till: Callable
+    ) -> Callable[[XiqLibrary], None]:
     
     @debug
-    def get_default_password_func(xiq):
+    def get_default_password_func(
+        xiq: XiqLibrary
+        ) -> None:
         xiq.xflowscommonDevices._goto_devices()
         navigator.navigate_to_global_settings_page()
         
@@ -1465,8 +1882,12 @@ def get_default_password(navigator, auto_actions, debug, screen, wait_till):
     return get_default_password_func
 
 
-def get_dut(tb, os, platform=""):
-    for dut_index in [f"dut{i}" for i in range(3)]:
+def get_dut(
+    tb: PytestConfigHelper,
+    os: str,
+    platform: str=""
+    ) -> Node:
+    for dut_index in [f"dut{i}" for i in range(10)]:
         if getattr(tb, dut_index, {}).get("cli_type", "").upper() == os.upper():
             current_platform = getattr(tb, dut_index).get("platform", "").upper()
             
@@ -1479,7 +1900,10 @@ def get_dut(tb, os, platform=""):
 
 
 @pytest.fixture(scope="session")
-def dut1(testbed, logger):
+def dut1(
+    testbed: PytestConfigHelper,
+    logger: PytestLogger
+    ) -> Node:
     try:
         return getattr(testbed, "dut1")
     except AttributeError as err:
@@ -1488,7 +1912,10 @@ def dut1(testbed, logger):
 
 
 @pytest.fixture(scope="session")
-def dut2(testbed, logger):
+def dut2(
+    testbed: PytestConfigHelper,
+    logger: PytestLogger
+    ) -> Node:
     try:
         return getattr(testbed, "dut2")
     except AttributeError as err:
@@ -1497,69 +1924,64 @@ def dut2(testbed, logger):
 
 
 @pytest.fixture(scope="session")
-def dut3(testbed, logger):
+def dut3(
+    testbed: PytestConfigHelper, 
+    logger: PytestLogger
+    ) -> Node:
     try:
         return getattr(testbed, "dut3")
     except AttributeError as err:
         logger.error(f"The testbed does not have the 'dut3' netelem.")
         raise err
-
+    
 
 @pytest.fixture(scope="session")
-def network_manager():
-    from ExtremeAutomation.Keywords.NetworkElementKeywords.NetworkElementConnectionManager import \
-        NetworkElementConnectionManager
+def network_manager() -> NetworkElementConnectionManager:
     return NetworkElementConnectionManager()
 
 
 @pytest.fixture(scope="session")
-def screen():
-    from extauto.common.Screen import Screen
+def screen() -> Screen:
     return Screen()
 
 
 @pytest.fixture(scope="session")
-def navigator():
-    from extauto.xiq.flows.common.Navigator import Navigator
+def navigator() -> Navigator:
     return Navigator()
 
 
 @pytest.fixture(scope="session")
-def utils():
-    from extauto.common.Utils import Utils
+def utils() -> Utils:
     return Utils()
 
 
 @pytest.fixture(scope="session")
-def wait_till(utils):
+def wait_till(utils: Utils) -> Callable:
     return utils.wait_till
 
 
 @pytest.fixture(scope="session")
-def cloud_driver():
-    from extauto.common.CloudDriver import CloudDriver
+def cloud_driver() -> CloudDriver:
     return CloudDriver()
 
 
 @pytest.fixture(scope="session")
-def auto_actions():
-    from extauto.common.AutoActions import AutoActions
+def auto_actions() -> AutoActions:
     return AutoActions()
 
 
 @pytest.fixture(scope="session")
-def update_test_name(loaded_config):
-    def func(test_name):
+def update_test_name(loaded_config: Dict[str, str]) -> Callable:
+    def func(test_name: str):
         loaded_config['${TEST_NAME}'] = test_name
     return func
 
 
 @pytest.fixture(scope="session")
-def default_library():
-    from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary
+def default_library() -> DefaultLibrary:
     return DefaultLibrary()
 
 
 @pytest.fixture(scope="session")
-def udks(default_library):
-    return default_library.apiUdks
+def udks() -> Udks:
+    return Udks()
