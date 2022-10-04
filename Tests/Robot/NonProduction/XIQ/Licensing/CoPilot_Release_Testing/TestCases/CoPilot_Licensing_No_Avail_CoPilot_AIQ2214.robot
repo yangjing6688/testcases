@@ -26,6 +26,7 @@ ${IQAGENT}                  ${sw_connection_host}
 
 ${DUT1_SERIAL}              ${netelem1.serial}
 ${DUT1_MAKE}                ${netelem1.make}
+${DUT1_MAC}                 ${netelem1.mac}
 ${DUT1_CLI_TYPE}            ${netelem1.cli_type}
 ${DUT1_IP}                  ${netelem1.ip}
 ${DUT1_PORT}                ${netelem1.port}
@@ -35,6 +36,7 @@ ${DUT1_VR}                  ${netelem1.vr}
 
 ${DUT2_SERIAL}              ${netelem2.serial}
 ${DUT2_MAKE}                ${netelem2.make}
+${DUT2_MAC}                 ${netelem2.mac}
 ${DUT2_CLI_TYPE}            ${netelem2.cli_type}
 ${DUT2_IP}                  ${netelem2.ip}
 ${DUT2_PORT}                ${netelem2.port}
@@ -44,6 +46,7 @@ ${DUT2_VR}                  ${netelem2.vr}
 
 ${DUT3_SERIAL}              ${netelem3.serial}
 ${DUT3_MAKE}                ${netelem3.make}
+${DUT3_MAC}                 ${netelem3.mac}
 ${DUT3_CLI_TYPE}            ${netelem3.cli_type}
 ${DUT3_IP}                  ${netelem3.ip}
 ${DUT3_PORT}                ${netelem3.port}
@@ -69,7 +72,7 @@ Test 1: Verify Pilot and CoPilot Baseline License Counts
     [Documentation]     Confirms license counts are at expected values in XIQ to begin with (nothing consumed)
     [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       10   0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
 
 Test 2: Onboard First Device and Verify Success
@@ -87,14 +90,14 @@ Test 2: Onboard First Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT1_SERIAL}  ${DUT1_MAKE}  ${LOCATION}
+    Onboard New Test Device                     ${DUT1_SERIAL}  ${DUT1_MAKE}  ${LOCATION}  ${DUT1_MAC}
 
     ${selected}=    Column Picker Select        ${COLUMN_1}     ${COLUMN_2}    ${COLUMN_3}
     Should Be Equal As Integers                 ${selected}     1
 
     Refresh Devices Page
-    Verify Device Online                        ${DUT1_SERIAL}
-    Verify Device Managed                       ${DUT1_SERIAL}
+    Verify and Wait Until Device Online         ${DUT1_SERIAL}
+    Verify and Wait Until Device Managed        ${DUT1_SERIAL}
     Verify Device Status Green                  ${DUT1_SERIAL}
 
 Test 3: Verify First Device Consumes Pilot and CoPilot License Within Global Settings License Management
@@ -103,7 +106,7 @@ Test 3: Verify First Device Consumes Pilot and CoPilot License Within Global Set
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       9    1    1
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    1
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    1
 
 Test 4: Onboard Second Test Device and Verify Success
@@ -121,11 +124,11 @@ Test 4: Onboard Second Test Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT2_SERIAL}  ${DUT2_MAKE}  ${LOCATION}
+    Onboard New Test Device                     ${DUT2_SERIAL}  ${DUT2_MAKE}  ${LOCATION}  ${DUT2_MAC}
 
     Refresh Devices Page
-    Verify Device Online                        ${DUT2_SERIAL}
-    Verify Device Managed                       ${DUT2_SERIAL}
+    Verify and Wait Until Device Online         ${DUT2_SERIAL}
+    Verify and Wait Until Device Managed        ${DUT2_SERIAL}
     Verify Device Status Green                  ${DUT2_SERIAL}
 
 Test 5: Verify Second Device Consumes Pilot and CoPilot License Within Global Settings License Management
@@ -134,9 +137,8 @@ Test 5: Verify Second Device Consumes Pilot and CoPilot License Within Global Se
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       8    2    2
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       1    2    2
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     0    2    2
-
 
 Test 6: Onboard Third Test Device and Verify Success
     [Documentation]     Onboards a third test device and verifies success
@@ -153,11 +155,11 @@ Test 6: Onboard Third Test Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT3_SERIAL}  ${DUT3_MAKE}  ${LOCATION}
+    Onboard New Test Device                     ${DUT3_SERIAL}  ${DUT3_MAKE}  ${LOCATION}  ${DUT3_MAC}
 
     Refresh Devices Page
-    Verify Device Online                        ${DUT3_SERIAL}
-    Verify Device Managed                       ${DUT3_SERIAL}
+    Verify and Wait Until Device Online         ${DUT3_SERIAL}
+    Verify and Wait Until Device Managed        ${DUT3_SERIAL}
     Verify Device Status Green                  ${DUT3_SERIAL}
 
 Test 7: Verify Third Device Consumes Pilot License But Not CoPilot License Within Global Settings License Management
@@ -166,7 +168,7 @@ Test 7: Verify Third Device Consumes Pilot License But Not CoPilot License Withi
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       7    3    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       0    3    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     0    2    2
 
 Test 8: Verify Device License and CoPilot Column Values On All Devices
@@ -223,7 +225,7 @@ Test 11: Verify Third Device's Pilot License Revoked And CoPilot Licenses Unchan
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       8    2    2
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       1    2    2
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     0    2    2
 
 Test 12: Verify CoPilot Licenses Warning Message Is Not Displayed
@@ -250,7 +252,7 @@ Test 14: Verify Second Device's Pilot and CoPilot Licenses Revoked Within Global
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       9    1    1
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    1
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    1
 
 Test 15: Delete First Test Device and Verify Success
@@ -267,13 +269,19 @@ Test 16: Verify First Device's Pilot and CoPilot Licenses Revoked Within Global 
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       10   0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
 
 
 *** Keywords ***
 Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ and sets up the elements necessary to complete this test suite
+
+    # Use this method to convert the ap, wing, netelem to a generic device object
+    # ap1       => device1
+    # wing1     => device1
+    # netelem1  => device1 (EXOS / VOSS)
+    convert to generic device object            device  index=1
 
     Log Into XIQ and Confirm Success            ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
     Enable CoPilot Feature and Confirm Success
@@ -298,7 +306,7 @@ Disable CoPilot Feature and Confirm Success
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${location}
+    [Arguments]         ${serial}  ${make}  ${location}  ${mac}
 
     Navigate to Devices and Confirm Success
 
@@ -307,18 +315,18 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    Onboard Device    ${serial}  ${make}  location=${location}
+    Onboard Device    ${serial}  ${make}  location=${location}  device_mac=${mac}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 
-Verify Device Online
+Verify and Wait Until Device Online
     [Documentation]     Confirms that the device is online in XIQ
     [Arguments]         ${serial}
 
     ${online}=    Wait Until Device Online          ${serial}
     Should Be Equal As Integers                     ${online}     1
 
-Verify Device Managed
+Verify and Wait Until Device Managed
     [Documentation]     Confirms that the device is managed by XIQ
     [Arguments]         ${serial}
 
