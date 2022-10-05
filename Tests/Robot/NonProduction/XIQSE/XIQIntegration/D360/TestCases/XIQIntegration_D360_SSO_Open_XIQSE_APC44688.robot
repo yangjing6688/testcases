@@ -67,16 +67,14 @@ Log In and Set Up Test
     [Documentation]     Logs in and sets up the components for the test
 
     XIQSE Log In and Set Window Index
-    Set Up XIQSE Components
 
     XIQ Log In and Set Window Index
     XIQ Navigate to Devices and Confirm Success
-
-    # Onboard the XIQ Site Engine
     Onboard XIQ Site Engine and Confirm Success
 
-    # Log out of XIQSE
+    # Set Up XIQSE Components and Log out of XIQSE
     Switch To Window                                ${XIQSE_WINDOW_INDEX}
+    Set Up XIQSE Components
     Log Out of XIQSE and Confirm Success
 
     # Wait until the device added in XIQSE is onboarded to XIQ
