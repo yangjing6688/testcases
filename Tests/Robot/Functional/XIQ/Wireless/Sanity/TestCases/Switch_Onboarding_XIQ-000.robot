@@ -24,7 +24,7 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Force Tags   testbed_1_node
+Force Tags      testbed_1_node
 Suite Setup     Suite Setup
 Suite Teardown  Suite Teardown
 
@@ -38,6 +38,11 @@ Suite Teardown
     Run Keywords        logout user
     ...                 quit browser
 
+Test Case Teardown
+    ${DELETE_STATUS}=   Delete Device   ${aerohive_sw1.serial}
+    Should Be Equal as Integers         ${DELETE_STATUS}        1
+
+
 *** Test Cases ***
 TCCS-7748_Step1: Onboard Aerohive Switch
     [Documentation]         Checks for Aerohive switch onboarding is success in case of valid scenario
@@ -50,7 +55,10 @@ TCCS-7748_Step1: Onboard Aerohive Switch
 TCCS-7748_Step2: Config Aerohive/Fastpath Switch to Report AIO
     [Documentation]     Config Aerohive Switch to Report AIO
 
+    [teardown]          Close Spawn        ${SPAWN_CONNECTION}
+
     [Tags]              production         tccs_7748    tccs_7748_step2
+
     IF          '${aerohive_sw1.cli_type}'=='AH-FASTPATH'
                     Set Test Variable   ${CAPWAP_URL}   ${sw_capwap_url}
     ELSE IF     '${aerohive_sw1.cli_type}'=='AH-AP'
@@ -60,25 +68,26 @@ TCCS-7748_Step2: Config Aerohive/Fastpath Switch to Report AIO
     ${SPAWN_CONNECTION}=      Open Spawn    ${aerohive_sw1.ip}     ${aerohive_sw1.port}   ${aerohive_sw1.username}   ${aerohive_sw1.password}    ${aerohive_sw1.cli_type}
 
     ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud        ${aerohive_sw1.cli_type}       ${CAPWAP_URL}       ${SPAWN_CONNECTION}
-    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+    Should Be Equal As Strings              ${CONF_STATUS_RESULT}       1
 
-    Close Spawn        ${SPAWN_CONNECTION}
 
 TCCS-7748_Step3: Check Aerohive Switch Status On UI
     [Documentation]     Checks for switch status
 
+    [teardown]  Test Case Teardown
+
     [Tags]              production          tccs_7748   tccs_7748_step3
+
     ${ONLINE_STATUS}=   Wait Until Device Online    device_serial=${aerohive_sw1.serial}
     Should Be Equal as Integers         ${ONLINE_STATUS}        1
     ${SW_STATUS}=       Get Device Status           device_serial=${aerohive_sw1.serial}
-    Should contain any  ${SW_STATUS}    green     config audit mismatch
-
-    ${DELETE_STATUS}=   Delete Device   ${aerohive_sw1.serial} 
-    Should Be Equal as Integers         ${DELETE_STATUS}        1
+    Should contain any  ${SW_STATUS}    green       config audit mismatch
 
 
 TCCS-7748_Step4: Onboard Aerohive Switch via advanced Onboarding
     [Documentation]         Checks for Aerohive switch(SR23XX) onboarding via advanced onboard
+
+    [teardown]  Test Case Teardown
 
     [Tags]                  production  tccs_7748   tccs_7748_step4
     ${ONBOARD_RESULT}=      Advance Onboard Device              ${aerohive_sw1.serial}  device_make=${aerohive_sw1.cli_type}    dev_location=${LOCATION}
@@ -89,6 +98,3 @@ TCCS-7748_Step4: Onboard Aerohive Switch via advanced Onboarding
     Should Be Equal as Integers         ${ONLINE_STATUS}        1
     ${SW_STATUS}=           Get Device Status                   device_serial=${aerohive_sw1.serial}
     Should Be Equal As Strings          ${SW_STATUS}            green
-
-    ${DELETE_STATUS}=   Delete Device   ${aerohive_sw1.serial}
-    Should Be Equal as Integers         ${DELETE_STATUS}        1

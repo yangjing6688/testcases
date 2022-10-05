@@ -14,6 +14,7 @@ ap1:
   make:                     Extreme - Aerohive
   mgmt_vlan:                1
   country:                  India
+  onboard_device_type:      Real
 
 ap2:
   name:                     AP305CX
@@ -31,6 +32,7 @@ ap2:
   make:                     aerohive
   mgmt_vlan:                1
   country:                  India
+  onboard_device_type:      Real
 
 mu1:
   ip:                       10.234.62.102

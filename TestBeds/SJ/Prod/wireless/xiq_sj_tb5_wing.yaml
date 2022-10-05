@@ -16,4 +16,4 @@ wing1:
   port:                     22
   country:                  United Kingdom
   make:                     Controllers
-  
+  onboard_device_type:      Real

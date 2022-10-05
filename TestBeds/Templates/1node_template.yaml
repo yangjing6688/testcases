@@ -20,6 +20,14 @@ netelem1:
   username:                 #(REQUIRED)                         netelem1 username
   password:                 #(REQUIRED)                         netelem1 password
   connection_method:        #(REQUIRED)                         telnet/ssh/snmp/rest
+  mgmt_vr:                  #(REQUIRED EXOS)                    "vr-mgmt"        # Virtual-Router of mgmt functionality.
+                                                                                 #  vr-mgmt (mgmt vlan) vr-default (any
+                                                                                 #  front panel port vlan not part of a
+                                                                                 #  user-vr).  If mgmt_vlan: = mgmt or
+                                                                                 #  default and mgmt_vr is not specified.
+  mgmt_vlan:                #(OPTIONAL)                         "mgmt"           # The netelem VLAN that provides
+                                                                                 #  connectivity outside of the test
+                                                                                 #  environment (i.e. lab network) - "VLAN_123"
 
   snmp_version:             #(SNMP REQUIREMENT)                 "v2c"            # The snmp version to use (v1, v2c, or v3).
   snmp_community_name:      #(SNMP REQUIREMENT)                 "extreme123"     # The community security name for v1 or v2c.
@@ -30,7 +38,6 @@ netelem1:
   snmp_privacy_password:    #(SNMP REQUIREMENT)                 "extreme123"     # The clear text password for the privacy_protocol.
 
   port:                     #(OPTIONAL)                         rewrite L4 port for static port forwarding
-  mgmt_vlan:                #(OPTIONAL)                         The netelem VLAN that provides connectivity outside of the test environment (i.e. lab network) - "VLAN_123"
   console_ip:               #(OPTIONAL)                         The console IP
   console_port:             #(OPTIONAL)                         The console port
   auth_mode:                #(OPTIONAL)                         "basic"

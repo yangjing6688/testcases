@@ -15,6 +15,7 @@ ap1:
   mgmt_vlan:                10
   country:                  United States
   location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
 
   power_strip:
     ip:

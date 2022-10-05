@@ -18,3 +18,4 @@ netelem1:
   console_port:             7046
   country:                  United Kingdom
   make:                     VOSS
+  onboard_device_type:      Real

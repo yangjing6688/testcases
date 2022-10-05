@@ -13,10 +13,13 @@ netelem1:
   password:                 ""
   connection_method:        "ssh"
   cli_type:                 "exos"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   platform:                 "Stack"
   model:                    "SwitchEngine5420F_16W_32P_4XE"
   make:                     "exos"
   auth_mode:                "basic"
+  onboard_device_type:      "Real"
   stack:
     slot1:
       console_ip: "10.148.35.5"

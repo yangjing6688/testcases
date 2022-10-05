@@ -105,9 +105,9 @@ Test 7: Confirm Events - Restart Collector on DUT Engine
     [Tags]              nightly1    tcxe_872    xmc_5451    development    xiqse    acceptance    analytics    test7
 
     Navigate to Events and Confirm Success
-    Set Event Search String and Confirm Success     Application Analytics Engine Collector Restart
+    Set Event Search String and Confirm Success     Restart Collector
 
-    Confirm Event Row Contains Text                 ${DUT_IP}
+    Confirm Event Row Contains Text                 ${DUT_NAME}
 
 Test 8: Create DUT2 Analytics Engine and Confirm Success
     [Documentation]     Creates an analytics engine
@@ -165,6 +165,7 @@ Log In and Set Up Test
     Handle License Agreement If Displayed              ${XIQ_EMAIL}  ${XIQ_PASSWORD}
     Close Panels on Login If Displayed
     Set Option Web Server Session Timeout and Confirm Success  7  day(s)
+    Set Alarm Event Search Scope    true
     Set Option Device Tree Name Format and Confirm Success   IP Address
     Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
     Create Analytics Engine CLI Credentials    ${TEST_CLI_NAME}  ${TEST_CLI_USER}  ${TEST_CLI_TYPE}
@@ -178,6 +179,7 @@ Tear Down Test and Close Session
 
     Restore Web Server Options to Default and Confirm Success
     Restore Site Engine General Options to Default and Confirm Success
+    Set Alarm Event Search Scope    false
     Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
     Log Out of XIQSE and Quit Browser
     Remove XIQSE From XIQ If In Connected Mode        ${INSTALL_MODE}  ${XIQ_EMAIL}  ${XIQ_PASSWORD}  ${XIQ_URL}  ${XIQSE_MAC}

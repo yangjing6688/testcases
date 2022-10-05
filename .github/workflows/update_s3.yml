@@ -1,6 +1,11 @@
 name: Update Test Infomation in S3 for the UI
 on:
   workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'Dry run? (Only accepts "true" or "false")'
+        required: false
+        default: true
   # Only the clean up job runs on this trigger
   schedule:
       - cron: '* 0 * * *'   # Run once at the beginning of every day
@@ -86,6 +91,24 @@ jobs:
         # Get tags and put in json array
         git tag | jq -ncR '[inputs]' > ${WORK_DIR}/tags.json
 
+        process_files () {
+          # Get sorted Topologies for branch
+          find ./Environments/ -type f -name "*topo.*" -printf "%P\n" | jq -ncR "[inputs] | sort_by(.)" > $1/topo.json
+
+          # Get sorted Environments for branch
+          find ./Environments/ -type f -name "environment.*" -printf "%P\n" | jq -ncR "[inputs] | sort_by(.)" > $1/env.json
+
+          # Get sorted list of Pytest files and dirs
+          pytest_dirs=$( find -type d -path './Tests/Pytest/*' -name "TestCases" )
+          pytest_files=$( find -type f -path './Tests/Pytest/*TestCases*' -name "test_*.py" )
+          echo "$pytest_dirs $pytest_files" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > $1/pytest_test_cases.json
+
+          # Get sorted list of Robot files and dirs
+          robot_dirs=$( find -type d -path './Tests/Robot/*' -name "TestCases" )
+          robot_files=$( find -type f -path './Tests/Robot/*TestCases*' -name "*.robot" )
+          echo "$robot_dirs $robot_files" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > $1/robot_test_cases.json
+        }
+
         for branch in $(jq -r '.[]' ${WORK_DIR}/branches.json); do
           # Make directory for branch info
           echo "[*] Working on branch: ${branch}"
@@ -96,27 +119,35 @@ jobs:
           # Checkout remote branch for inspection
           git checkout origin/${branch}
 
-          # Get sorted Topologies for branch
-          find ./Environments/ -type f -name "*topo.*" -printf "%P\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/topo.json
-
-          # Get sorted Environments for branch
-          find ./Environments/ -type f -name "environment.*" -printf "%P\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/env.json
-
-          # Get sorted list of Pytest files and dirs
-          pytest_dirs=$( find -type d -path './Tests/Pytest/*' -name "TestCases" )
-          pytest_files=$( find -type f -path './Tests/Pytest/*TestCases*' -name "test_*.py" )
-          echo "$pytest_dirs $pytest_files" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/pytest_test_cases.json
-
-          # Get sorted list of Robot files and dirs
-          robot_dirs=$( find -type d -path './Tests/Robot/*' -name "TestCases" )
-          robot_files=$( find -type f -path './Tests/Robot/*TestCases*' -name "*.robot" )
-          echo "$robot_dirs $robot_files" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/robot_test_cases.json
+          process_files ${branch_work_dir}
 
         done
 
+        for tag in $(jq -r '.[]' ${WORK_DIR}/tags.json); do
+          # Make directory for tag info
+          echo "[*] Working on tag: ${tag}"
+          tag_safe=$( echo ${tag} | sed -e "s/\///g") # Remove invalid filename chars before we use the tags to create folders
+          tag_work_dir="${WORK_DIR}/${tag_safe}"
+          mkdir ${tag_work_dir}
+
+          # Checkout remote branch for inspection
+          git checkout tags/${tag}
+
+          process_files ${tag_work_dir}
+
+        done
+
+        ls ${WORK_DIR}
+
     - name: Upload Metadata
       # Only delete stale branch folders. Exclude top level files and TestBeds directory
-      run: aws s3 sync ${WORK_DIR} s3://econgit/extreme_automation_tests --delete --exclude "*" --include "*/*" --include "branches.json" --include "tags.json" --exclude "TestBeds/*"
+      run: |
+        aws_sync_options=""
+        if [[ "${{ github.event.inputs.dry-run }}" == "true" && "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          aws_sync_options="--dryrun"
+        fi
+
+        aws s3 sync ${WORK_DIR} s3://econgit/extreme_automation_tests ${aws_sync_options} --delete --exclude "*" --include "*/*" --include "branches.json" --include "tags.json" --exclude "TestBeds/*"
 
   update_ref_lists:
     name: Update List of Branches/Tags
@@ -178,27 +209,27 @@ jobs:
         # Make clean directory that we can use to sync with S3
         mkdir ${WORK_DIR}
 
-        # Make directory for branch info
-        echo "[*] Working on branch: ${{ github.ref_name }}"
-        branch_safe=$( echo ${{ github.ref_name }} | sed -e "s/\///g") # Remove invalid filename chars before we use the branches to create folders
-        branch_work_dir="${WORK_DIR}/${branch_safe}"
-        mkdir ${branch_work_dir}
+        # Make directory for branch/tag info
+        echo "[*] Working on branch/tag: ${{ github.ref_name }}"
+        ref_safe=$( echo ${{ github.ref_name }} | sed -e "s/\///g") # Remove invalid filename chars before we use the ref to create folders
+        ref_work_dir="${WORK_DIR}/${ref_safe}"
+        mkdir ${ref_work_dir}
 
-        # Get sorted Topologies for branch
-        find ./Environments/ -type f -name "*topo.*" -printf "%P\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/topo.json
+        # Get sorted Topologies for branch/tag
+        find ./Environments/ -type f -name "*topo.*" -printf "%P\n" | jq -ncR "[inputs] | sort_by(.)" > ${ref_work_dir}/topo.json
 
-        # Get sorted Environments for branch
-        find ./Environments/ -type f -name "environment.*" -printf "%P\n" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/env.json
+        # Get sorted Environments for branch/tag
+        find ./Environments/ -type f -name "environment.*" -printf "%P\n" | jq -ncR "[inputs] | sort_by(.)" > ${ref_work_dir}/env.json
 
         # Get sorted list of Pytest files and dirs
           pytest_dirs=$( find -type d -path './Tests/Pytest/*' -name "TestCases" )
           pytest_files=$( find -type f -path './Tests/Pytest/*TestCases*' -name "test_*.py" )
-          echo "$pytest_dirs $pytest_files" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/pytest_test_cases.json
+          echo "$pytest_dirs $pytest_files" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${ref_work_dir}/pytest_test_cases.json
 
           # Get sorted list of Robot files and dirs
           robot_dirs=$( find -type d -path './Tests/Robot/*' -name "TestCases" )
           robot_files=$( find -type f -path './Tests/Robot/*TestCases*' -name "*.robot" )
-          echo "$robot_dirs $robot_files" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${branch_work_dir}/robot_test_cases.json
+          echo "$robot_dirs $robot_files" | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${ref_work_dir}/robot_test_cases.json
 
     - name: Upload Metadata
       run: aws s3 sync ${WORK_DIR} s3://econgit/extreme_automation_tests

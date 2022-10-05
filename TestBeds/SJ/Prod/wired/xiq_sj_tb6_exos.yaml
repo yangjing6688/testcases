@@ -13,5 +13,8 @@ netelem1:
   console_port:             7043
   network_policy:           Test_np
   device_template:          X465-48W-default-template
-  cli_type:                 "EXOS"
+  cli_type:                 EXOS
   make:                     EXOS
+  mgmt_vlan:                default
+  mgmt_vr:                  vr-default
+  onboard_device_type:      Real

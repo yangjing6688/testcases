@@ -18,6 +18,7 @@ netelem1:
   model:                    "X460G2-48t-10G4"
   product:                  "X460_G2_48t_10_G4"
   function:                 "Switch"
+  onboard_device_type:      "Real"
 
 netelem2:
   name:                     "SAPro-x440-235-200"
@@ -37,6 +38,7 @@ netelem2:
   model:                    "X440G2-24t-G4"
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
+  onboard_device_type:      "Real"
 
 netelem3:
   name:                     "XA1480"
@@ -60,6 +62,7 @@ netelem3:
   function:                 "Switch"
   test_port:                "1/3"
   test_port_num:            "3"
+  onboard_device_type:      "Real"
   nos:
     dir:
       min:                  "8.1.60.0.GA"
@@ -89,6 +92,7 @@ aerohive_sw1:
   console_ip:               "10.54.7.2"
   console_port:             "7012"
   test_port:                "1/0/2"
+  onboard_device_type:      "Real"
 
 ap1:
   name:                     "bui-flo-0019"
@@ -109,6 +113,7 @@ ap1:
   product:                  "AP"
   function:                 "AP"
   ccg:                      "Model_AP_410C"
+  onboard_device_type:      "Real"
 
 ap2:
   name:                     "bui-flo-0071"
@@ -129,6 +134,7 @@ ap2:
   product:                  "AP"
   function:                 "AP"
   ccg:                      "Model_AP_410C"
+  onboard_device_type:      "Real"
 
 ap3:
   name:                     "bui-flo-0004"
@@ -149,6 +155,7 @@ ap3:
   product:                  "AP"
   function:                 "AP"
   ccg:                      "Model_AP_410C"
+  onboard_device_type:      "Real"
 
 ap4:
   name:                     "bui-flo-0006"
@@ -169,3 +176,4 @@ ap4:
   product:                  "AP"
   function:                 "AP"
   ccg:                      "Model_AP_410C"
+  onboard_device_type:      "Real"

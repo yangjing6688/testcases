@@ -16,6 +16,7 @@ ap1:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
   extra:
       country:                  United Kingdom
       network_policy:           BLR_TB2_AP410C_01
@@ -42,6 +43,7 @@ ap2:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
   extra:
       country:                  United Kingdom
       network_policy:           BLR_TB2_AP305C_01

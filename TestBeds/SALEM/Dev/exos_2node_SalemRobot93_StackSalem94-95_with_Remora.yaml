@@ -17,7 +17,9 @@ netelem1:
   upgrade_firmware:         "False"
   build_directory:          "30.6.0.364/mips/cougar/cougar/release/summitX-30.6.0.364.xos"
   build:                    "30.6.0.364"
-  mgmt_vlan:                "VR-Mgmt"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
   macsec:
     gcm_aes_128:
       port_a:
@@ -73,7 +75,9 @@ netelem2:
   upgrade_firmware:         "False"
   build_directory:          "30.6.0.364/mips/cougar/cougar/release/summitX-30.6.0.364.xos"
   build:                    "30.6.0.364"
-  mgmt_vlan:                "VR-Mgmt"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
   macsec:
     gcm_aes_128:
       port_a:

@@ -8,12 +8,13 @@ netelem1:
   term_server:              "10.69.1.244 2029"
   pdu_ip:                   "10.69.11.2"
   pdu_port:                 "17"
-  mgmt_vlan:                "mgmt"
   username:                 "admin"
   password:                 ""
   connection_method:        "telnet"
-  os:                       "exos"
-  image_family:                   "summitx"
+  cli_type:                 "exos"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
+  image_family:             "summitx"
   platform:                 "X440G2-24t-10G4"
   host_mac:                 "00-04-96-9a-e1-43"
   primary_test_target:      "True"
@@ -24,6 +25,7 @@ netelem1:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/cit_x460g2_2node_1/cit_x460g2_2node_1_netelem1.cfg"
   isl:
@@ -68,7 +70,9 @@ netelem2:
   username:                 "admin"
   password:                 ""
   connection_method:        "telnet"
-  os:                       "exos"
+  cli_type:                  "exos"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   image_family:                   "i386"
   platform:                 "EXOS-VM"
   host_mac:                 "00-04-96-aa-d0-01"
@@ -80,6 +84,7 @@ netelem2:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/cit_x460g2_2node_1/cit_x460g2_2node_1_netelem2.cfg"
   isl:

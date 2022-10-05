@@ -17,6 +17,7 @@ netelem1:
   model:                    "FABRIC ENGINE 5320-48P-8XE"
   make:                     "voss"
   auth_mode:                "basic"
+  onboard_device_type:      "Real"
 
 
 

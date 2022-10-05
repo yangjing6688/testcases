@@ -13,7 +13,7 @@ netelem1:
   username:                 "admin"
   password:                 ""
   connection_method:        "rest"
-  cli_type:                       "exos"
+  cli_type:                 "exos"
   make:                     "EXOS"
   image_family:             "onie_x86"
   platform:                 "X590-24x-1q-2c"
@@ -27,6 +27,7 @@ netelem1:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x590_pod3_3node/rdu_x590_pod3_3node_netelem1.cfg"
   isl:
@@ -98,10 +99,11 @@ netelem2:
   pdu_ip:                   "10.69.50.252"
   pdu_port:                 "9"
   mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   username:                 "admin"
   password:                 ""
   connection_method:        "rest"
-  cli_type:                       "exos"
+  cli_type:                 "exos"
   make:                     "EXOS"
   image_family:             "onie_x86"
   platform:                 "X590-24x-1q-2c"
@@ -115,6 +117,7 @@ netelem2:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x590_pod3_3node/rdu_x590_pod3_3node_netelem2.cfg"
   isl:
@@ -187,10 +190,11 @@ netelem3:
   pdu_ip:                   "10.69.50.252"
   pdu_port:                 "10"
   mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   username:                 "admin"
   password:                 ""
   connection_method:        "rest"
-  cli_type:                       "exos"
+  cli_type:                 "exos"
   make:                     "EXOS"
   image_family:             "onie_x86"
   platform:                 "X590-24x-1q-2c"
@@ -204,6 +208,7 @@ netelem3:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x590_pod3_3node/rdu_x590_pod3_3node_netelem3.cfg"
   isl:

@@ -6,12 +6,13 @@ netelem1:
   name:                     "digiTwin_DUT1"
   ip:                       "10.127.22.133"
   port:                     "22"
-  mgmt_vlan:                "mgmt"
   username:                 "admin"
   password:                 ""
   connection_method:        "console"
   make:                     "exos"
-  cli_type:                       "exos"
+  cli_type:                 "exos"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   hostname:                 "10.127.22.133"
   serial:                   "SIMBFBF-4001-1,SIMBFBF-4001-2,SIMBFBF-4001-3,SIMBFBF-4001-4,Empty,Empty,Empty,Empty"
   console_ip:               "10.127.22.4"
@@ -31,6 +32,7 @@ netelem1:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Digital Twin"
   extra:
     vm_info:
       vmhost:               "10.127.22.4"

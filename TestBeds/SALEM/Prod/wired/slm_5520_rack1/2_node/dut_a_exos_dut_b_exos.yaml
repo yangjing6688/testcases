@@ -17,6 +17,9 @@ netelem1:
   model:                    "SwitchEngine5520_24T"
   make:                     "exos"
   auth_mode:                "basic"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
   tgen:
     port_a:
       ifname: &netelem1_tgen_port_a_ifname "1"
@@ -53,7 +56,6 @@ netelem2:
   port:                     "22"
   console_ip:               "10.148.35.5"
   console_port:             "5026"
-  mgmt_vlan:                "VLAN_4000"
   username:                 "admin"
   password:                 ""
   connection_method:        "ssh"
@@ -62,6 +64,9 @@ netelem2:
   model:                    "SwitchEngine5520_24T"
   make:                     "exos"
   auth_mode:                "basic"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
+  onboard_device_type:      "Real"
   tgen:
     port_a:
       ifname: &netelem2_tgen_port_a_ifname "1"

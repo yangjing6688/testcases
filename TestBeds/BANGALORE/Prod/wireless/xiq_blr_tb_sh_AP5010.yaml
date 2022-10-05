@@ -1,0 +1,75 @@
+### AP Details
+ap1:
+  name:                     Bui-flo-0019
+  connection_method:        "ssh"
+  ip:                       10.234.107.186
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   'WM012146W-30019'
+  console_ip:               10.234.107.186
+  console_port:             22
+  mac:                      B027CF79CD40
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP5010U
+  template:                 AP_5010U-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                1
+  country:                  United States
+  image:                 10.5r2
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           BLR_TB1_AP230_01
+      ssid:                     AP230_01
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            3485843A5CC0
+
+###### AP2 deatials ####
+ap2:
+  name:                     bui-flo-0620
+  connection_method:        "telnet"
+  ip:                       10.234.107.186
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '24602005230620'
+  console_ip:               10.234.107.230
+  console_port:             7016
+  mac:                      bcf31065a100
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP460C
+  template:                 AP_460C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                1
+  country:                  United States
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+
+
+
+
+
+
+
+
+
+
+
+                                                         

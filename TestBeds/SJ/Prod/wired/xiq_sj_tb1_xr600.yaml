@@ -15,6 +15,7 @@ router1:
   console_ip:               10.16.166.228
   console_port:             4001
   make:                     Extreme - Aerohive
+  onboard_device_type:      Real
 
 
 

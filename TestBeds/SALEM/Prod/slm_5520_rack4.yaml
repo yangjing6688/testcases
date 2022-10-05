@@ -7,6 +7,8 @@ netelem1:
   mac:                      "F06426905400"
   ip:                       "10.148.35.131"
   port:                     "22"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   console_ip:               "10.148.35.5"
   console_port:             "5043"
   username:                 "admin"
@@ -17,6 +19,7 @@ netelem1:
   model:                    "FabricEngine5520_24W"
   make:                     "exos"
   auth_mode:                "basic"
+  onboard_device_type:      "Real"
   tgen:
     port_a:
       ifname: &netelem1_tgen_port_a_ifname "1"
@@ -53,7 +56,8 @@ netelem2:
   port:                     "22"
   console_ip:               "10.148.35.5"
   console_port:             "5044"
-  mgmt_vlan:                "VLAN_4000"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   username:                 "admin"
   password:                 ""
   connection_method:        "ssh"
@@ -62,6 +66,7 @@ netelem2:
   model:                    "SwitchEngine5520_24W"
   make:                     "exos"
   auth_mode:                "basic"
+  onboard_device_type:      "Real"
   tgen:
     port_a:
       ifname: &netelem2_tgen_port_a_ifname "1"
