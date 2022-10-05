@@ -1,4 +1,3 @@
-from ast import Call
 import json
 import threading
 import time
@@ -432,7 +431,7 @@ def pytest_collection_modifyitems(session, items):
                 for temp_marker in temp_markers:
                     if temp_marker == test_code:
                         logger_obj.warning(
-                            f"'{test_code}' is marked as depending on itself (test function: '{item.nodeid}'.")
+                            f"'{test_code}' is marked as depending on itself (test function: '{item.nodeid}').")
                         
                     elif temp_marker not in all_tcs:
                         item.add_marker(
@@ -445,7 +444,8 @@ def pytest_collection_modifyitems(session, items):
                             pytest.mark.skip(
                                 f"Please modify the order of the test cases. '{test_code}' "
                                 f"depends on '{', '.join(temp_markers)}' but the order is not correct. "
-                                f"It will be skipped.")
+                                f"'{temp_marker}' should run before '{test_code}'."
+                                f"'{test_code}' will be skipped.")
                         )
     if temp_items:
         temp_items.insert(0, item_onboarding)
