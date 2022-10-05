@@ -436,7 +436,7 @@ def pytest_collection_modifyitems(session, items):
                     elif temp_marker not in all_tcs:
                         item.add_marker(
                             pytest.mark.skip(f"'{test_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}'"
-                                             f" is not in the current list of testcases to be run. It will be skipped.")
+                                             f" is not in the current list of testcases to be run. '{test_code}' will be skipped.")
                         )
                         
                     elif temp_marker not in found_tcs:
@@ -447,6 +447,19 @@ def pytest_collection_modifyitems(session, items):
                                 f"'{temp_marker}' should run before '{test_code}'."
                                 f"'{test_code}' will be skipped.")
                         )
+
+    for item in temp_items:
+        dependson_marker = [marker for marker in item.own_markers if marker.name == "dependson"]
+        if dependson_marker:
+            temp = item.own_markers.pop(item.own_markers.index(dependson_marker[0]))
+            item.add_marker(
+                pytest.mark.dependson(*set(list(temp.args) + [onboarding_test_name]))
+            )
+        else:
+            item.add_marker(
+                pytest.mark.dependson(onboarding_test_name)
+            )
+
     if temp_items:
         temp_items.insert(0, item_onboarding)
         temp_items.append(item_onboarding_cleanup)
@@ -456,6 +469,7 @@ def pytest_collection_modifyitems(session, items):
     else:
         message = "Did not find any test function to run this session."
         logger_obj.warning(message)
+        
     items[:] = temp_items
 
 
