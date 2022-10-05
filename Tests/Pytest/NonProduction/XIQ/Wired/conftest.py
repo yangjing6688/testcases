@@ -566,7 +566,9 @@ def login_xiq(
         username: str=loaded_config['tenant_username'],
         password: str=loaded_config['tenant_password'],
         url: str=loaded_config['test_url'],
-        capture_version: bool=False, code: str="default", incognito_mode: str="False"
+        capture_version: bool=False,
+        code: str="default",
+        incognito_mode: str="False"
     ) -> Iterator[None]:
 
         xiq = XiqLibrary()
@@ -601,7 +603,9 @@ def enter_switch_cli(
     ) -> EnterSwitchCli:
 
     @contextmanager
-    def func(dut: Node) -> Iterator[None]:
+    def func(
+        dut: Node
+        ) -> Iterator[None]:
         try:
             close_connection(dut)
             network_manager.connect_to_network_element_name(dut.name)
@@ -617,10 +621,14 @@ def cli() -> Cli:
 
 
 @pytest.fixture(scope="session")
-def open_spawn(cli: Cli) -> OpenSpawn:
+def open_spawn(
+    cli: Cli
+    ) -> OpenSpawn:
     
     @contextmanager
-    def func(dut: Node) -> Iterator[None]:
+    def func(
+        dut: Node
+        ) -> Iterator[None]:
         try:
             spawn_connection = cli.open_spawn(
                 dut.ip, dut.port, dut.username, dut.password, dut.cli_type)
@@ -682,8 +690,8 @@ def generate_template_for_given_model(
         if not slots:
             pytest.fail("No slots available in current stack")
 
-        model_list = []
-        sw_model = ""
+        model_list: List[str] = []
+        sw_model: str = ""
 
         for slot in slots.values():
             
@@ -860,8 +868,9 @@ def check_duts_are_reachable(
         retries: int=3, 
         step: int=1
         ) -> None:
-        results = []
-        def worker(dut):
+        results: List[str] = []
+        
+        def worker(dut: Node):
             
             for _ in range(retries):
                 try:
@@ -1192,7 +1201,7 @@ def policy_config(
     dut_list: List[Node]
     ) -> PolicyConfig:
 
-    dut_config = defaultdict(lambda: {})
+    dut_config: PolicyConfig = defaultdict(lambda: {})
     pool = list(string.ascii_letters) + list(string.digits)
 
     for dut in dut_list:
@@ -1210,7 +1219,7 @@ def dut_list(
     stack_nodes: List[Node]
     ) -> List[Node]:
     
-    duts = []
+    duts: List[Node] = []
 
     if onboard_two_node_flag:
         duts.extend(standalone_nodes[:2])
@@ -1341,9 +1350,11 @@ def dump_switch_logs(
         "show clock"
     ]
 
-    def func(duts=dut_list) -> None:
+    def func(
+        duts: List[Node]=dut_list
+        ) -> None:
         
-        def worker(dut):
+        def worker(dut: Node):
             try:
                 check_duts_are_reachable([dut])
             except:
@@ -1391,7 +1402,7 @@ def onboard(
     dump_switch_logs: DumpSwitchLogs = request.getfixturevalue("dump_switch_logs")
     update_devices: UpdateDevices = request.getfixturevalue("update_devices")
     logger: PytestLogger = request.getfixturevalue("logger")
-    
+
     dut_list: List[Node] = request.getfixturevalue("dut_list")
     logger.info(f"These are the devices that will be onboarded ({len(dut_list)} device(s)): " + "'" +
                 '\', \''.join([dut.name for dut in dut_list]) + "'.")
@@ -1408,7 +1419,7 @@ def onboard(
     try:
         
         configure_iq_agent(duts=dut_list)
-        
+
         with login_xiq() as xiq:
                 
             change_device_management_settings(xiq, option="disable")
@@ -1604,7 +1615,7 @@ def reboot_device(
         duts: List[Node]=dut_list
         ) -> None:
         
-        def worker(dut):
+        def worker(dut: Node):
             with enter_switch_cli(dut) as dev_cmd:
                 try:
                     
