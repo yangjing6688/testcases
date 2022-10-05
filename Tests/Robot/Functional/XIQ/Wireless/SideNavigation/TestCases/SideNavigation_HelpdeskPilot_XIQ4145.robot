@@ -24,7 +24,7 @@ Suite Teardown   Log Out and Close Session
 
 
 *** Variables ***
-${XIQ_URL}          ${xiq.test_url}
+${XIQ_URL}          ${test_url}
 
 
 *** Test Cases ***
