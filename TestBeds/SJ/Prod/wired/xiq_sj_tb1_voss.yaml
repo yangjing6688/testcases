@@ -12,7 +12,7 @@ netelem1:
   username:                 rwa
   password:                 rwa
   platform:                 voss
-  ip:                       10.16.148.82
+  ip:                       10.16.145.232
   port:                     "22"
   console_ip:               10.16.128.22
   console_port:             7046
