@@ -10,6 +10,7 @@ import traceback
 import pytest
 import platform
 
+from pexpect.pxssh import pxssh
 from _pytest import mark, fixtures
 from collections import defaultdict
 from pytest_testconfig import config
@@ -22,7 +23,8 @@ from typing import (
     Tuple,
     Iterator,
     Protocol,
-    NewType
+    NewType,
+    Union
 )
 
 from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
@@ -41,7 +43,7 @@ from extauto.common.AutoActions import AutoActions
 from extauto.common.Cli import Cli
 
 
-Node = NewType("Node", Dict[str, str])
+Node = NewType("Node", Dict[str, Union[str, Dict[str, str]]])
 PolicyConfig = NewType("PolicyConfig", DefaultDict[str, Dict[str, str]])
 TestCaseMarker = NewType("TestCaseMarker", str)
 Priority = NewType("Priority", str)
@@ -60,11 +62,14 @@ class EnterSwitchCli(Protocol):
     def __call__(
         self,
         dut: Node
-        ) -> Iterator[None]: ...
+        ) -> Iterator[NetworkElementCliSend]: ...
 
 
 class OpenSpawn(Protocol):
-    def __call__(self, dut: Node) -> Iterator[None]: ...
+    def __call__(
+        self, 
+        dut: Node
+        ) -> Iterator[pxssh]: ...
 
 
 class LoginXiq(Protocol):
@@ -76,7 +81,7 @@ class LoginXiq(Protocol):
         capture_version: bool,
         code: str,
         incognito_mode: str
-        ) -> Iterator[None]: ...
+        ) -> Iterator[XiqLibrary]: ...
 
 
 class BounceIqagent(Protocol):
@@ -583,7 +588,7 @@ def login_xiq(
         capture_version: bool=False,
         code: str="default",
         incognito_mode: str="False"
-    ) -> Iterator[None]:
+    ) -> Iterator[XiqLibrary]:
 
         xiq = XiqLibrary()
 
@@ -619,7 +624,7 @@ def enter_switch_cli(
     @contextmanager
     def func(
         dut: Node
-        ) -> Iterator[None]:
+        ) -> Iterator[NetworkElementCliSend]:
         try:
             close_connection(dut)
             network_manager.connect_to_network_element_name(dut.name)
@@ -642,7 +647,7 @@ def open_spawn(
     @contextmanager
     def func(
         dut: Node
-        ) -> Iterator[None]:
+        ) -> Iterator[pxssh]:
         try:
             spawn_connection = cli.open_spawn(
                 dut.ip, dut.port, dut.username, dut.password, dut.cli_type)
@@ -656,10 +661,10 @@ def open_spawn(
 def connect_to_all_devices(
     network_manager: NetworkElementConnectionManager,
     dev_cmd: NetworkElementCliSend
-    ) -> Callable[[], Iterator[None]]:
+    ) -> Callable[[], Iterator[NetworkElementCliSend]]:
     
     @contextmanager
-    def func() -> Iterator[None]:
+    def func() -> Iterator[NetworkElementCliSend]:
         try:
             network_manager.connect_to_all_network_elements()
             yield dev_cmd
