@@ -1,0 +1,49 @@
+ap1:
+  name:                     bui-flo-2819
+  connection_method:        "ssh"
+  ip:                       10.234.132.98
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '04102006082819'
+  mac:                      BCF310707640
+  console_ip:               10.234.217.20
+  console_port:             7028
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP410C
+  template:                 AP_410C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  
+ap2:
+  name:                     bui-flo-0524
+  connection_method:        "ssh"
+  ip:                       10.234.132.91
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '06301908310524'
+  console_ip:               10.234.217.20
+  console_port:             7029
+  mac:                      3485843A54C0
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP630
+  template:                 AP_630-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  
+mu1:
+  ip:                       10.234.132.101
+  port:                     8270
+  username:                 extreme
+  password:                 Extreme@123
+  platform:                 windows
+  interface:                wlan0
+  wifi_mac:                 2CDB073D8024
+  ethernet_mac:             8C47BE4E0317
+  wifi_network:             10.234.132
+  wifi_network_vlan10:      10.234.132

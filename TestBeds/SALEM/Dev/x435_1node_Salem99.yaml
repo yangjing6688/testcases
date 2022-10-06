@@ -19,7 +19,9 @@ netelem1:
   upgrade_firmware:         "False"
   build_directory:          "release-manager/30.4.0.99/mips/cougar/cougar/release/summitX-30.4.0.99.xos"
   build:                    "30.4.0.99"
-  mgmt_vlan:                "VR-Default"
+  mgmt_vlan:                "default"
+  mgmt_vr:                  "vr-default"
+  onboard_device_type:      "Real"
 #  Interswith Links and to define VM virtual links.
   isl:
     port_a:

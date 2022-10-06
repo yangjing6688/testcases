@@ -10,8 +10,8 @@ except:
 
 RANDOM_INT = random.randint(0, 999)
 
-OPEN_POLICY = f"PPSK_OPEN_POLICY"
-OPEN_SSID = f"PPSK_OPEN_SSID"
+OPEN_POLICY = f"default_open_policy"
+OPEN_SSID = f"default_open_ssid"
 
 BULK_CLOUD_NW_POLICY = f"AUTO_CLOUD_BULK_NW_{RANDOM_INT}"
 BULK_CLOUD_NW_SSID = f"AUTO_CLOUD_BULK_SSID_{RANDOM_INT}"
@@ -58,7 +58,7 @@ bulk_users_info3 = {'user-type': 'bulk', 'username_prefix': 'user100_', 'no_of_a
 
 single_user1_info = {'user-type': 'single', 'name': 'Symbol', 'organization': 'ExtremeNetworks', 'purpose_of_visit': 'guest',
                         'email_address': MAIL_ID1, 'phone_number': '+91 India-8971766359', 'user_name_type': 'Name',
-                        'password': 'extremextreme', 'pass-generate': 'Enable', 
+                        'password': 'extremextreme', 'pass-generate': 'Disable',
                         'description': 'single user username password verification', 'deliver_pass': MAIL_ID1}
 
 

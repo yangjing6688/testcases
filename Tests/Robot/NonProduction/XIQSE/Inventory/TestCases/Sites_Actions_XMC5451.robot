@@ -243,6 +243,7 @@ Log In and Set Up Test
     Handle License Agreement If Displayed              ${XIQ_EMAIL}  ${XIQ_PASSWORD}
     Close Panels on Login If Displayed
     Set Option Web Server Session Timeout and Confirm Success  7  day(s)
+    Set Alarm Event Search Scope    true
     Set Option Device Tree Name Format and Confirm Success     IP Address
     Navigate and Create Site                         ${TEST_SITE}
     Select Site and Confirm Success                  ${TEST_SITE}
@@ -253,6 +254,7 @@ Tear Down Test and Close Session
 
     Restore Web Server Options to Default and Confirm Success
     Restore Site Engine General Options to Default and Confirm Success
+    Set Alarm Event Search Scope    false
     Navigate to Site Devices and Confirm Success                ${TEST_SITE}
     Navigate and Delete Site                                    ${TEST_SITE}
     Log Out of XIQSE and Quit Browser

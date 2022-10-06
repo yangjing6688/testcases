@@ -45,3 +45,10 @@ Confirm Entitlement Activated Count for Feature Matches Expected
     # Wait until the "Activated" entitlement value matches what we expect.
     ${result}=  Wait Until Entitlement Activated Count for Feature Matches  ${expected}  feature=${feature}   ${retry_interval}  ${retry_count}
     Should Be Equal As Integers  ${result}  1
+
+Confirm CoPilot Entitlement Available
+    [Documentation]     Confirm that there is at least one available CoPilot entitlement
+
+    &{entitlement}=   Navigate And Get Entitlement Counts For Feature       feature=PRD-XIQ-COPILOT-S-C
+    ${feature}=       Get From Dictionary               ${entitlement}      feature
+    Should Contain                                      ${feature}          PRD-XIQ-COPILOT-S-C

@@ -17,3 +17,4 @@ router1:
   ip:                       10.234.178.230
   port:                     7012
   make:                     Extreme - Aerohive
+  onboard_device_type:      Real

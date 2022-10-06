@@ -13,10 +13,13 @@ netelem1:
   password:                 ""
   connection_method:        "ssh"
   cli_type:                 "exos"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   platform:                 "5520"
   model:                    "SwitchEngine5520_24W"
   make:                     "exos"
   auth_mode:                "basic"
+  onboard_device_type:      "Real"
   tgen:
     port_a:
       ifname: &netelem1_tgen_port_a_ifname "1/1"

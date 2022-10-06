@@ -12,6 +12,7 @@ netelem1:
   pdu_ip:                   "10.69.50.246"
   pdu_port:                 "9 10 11"
   mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   username:                 "admin"
   password:                 ""
   connection_method:        "ssh"
@@ -29,6 +30,7 @@ netelem1:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x690_stk_pod2_3node/rdu_x690_stk_pod2_3node_netelem1.cfg"
   stack:
@@ -108,6 +110,7 @@ netelem2:
   pdu_ip:                   "10.69.50.246"
   pdu_port:                 "12"
   mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   username:                 "admin"
   password:                 ""
   connection_method:        "ssh"
@@ -125,6 +128,7 @@ netelem2:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x690_stk_pod2_3node/rdu_x690_stk_pod2_3node_netelem2.cfg"
   isl:
@@ -198,6 +202,7 @@ netelem3:
   pdu_ip:                   "10.69.50.246"
   pdu_port:                 "13"
   mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   username:                 "admin"
   password:                 ""
   connection_method:        "ssh"
@@ -215,6 +220,7 @@ netelem3:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x690_stk_pod2_3node/rdu_x690_stk_pod2_3node_netelem3.cfg"
   isl:

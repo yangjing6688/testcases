@@ -26,3 +26,4 @@ netelem1:
   nos_version_new:       8.6.0.1
   iqagent_version_old:   0.3.5
   iqagent_version_new:   0.5.9
+  onboard_device_type:      Real

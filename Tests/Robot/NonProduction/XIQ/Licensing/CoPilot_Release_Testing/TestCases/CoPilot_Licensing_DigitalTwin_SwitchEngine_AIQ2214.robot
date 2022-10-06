@@ -48,7 +48,7 @@ Test 1: Verify Pilot and CoPilot Baseline License Counts
     [Documentation]     Confirms license counts are at expected values in XIQ to begin with (nothing consumed)
     [Tags]              tccs-13504    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    digital_twin    test1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       10   0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
 
 Test 2: Onboard Digital Twin Switch Engine Device
@@ -87,7 +87,7 @@ Test 3: Verify Device Does Not Consume Pilot or CoPilot License Within Global Se
     Log To Console  Sleeping for 10 minutes to wait for the maximum 10 minute license update to come in
     Count Down in Minutes  10
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       10   0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
 
 Test 4: Verify Device License and CoPilot Column Values On Device

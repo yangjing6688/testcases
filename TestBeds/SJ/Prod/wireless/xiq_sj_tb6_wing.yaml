@@ -16,3 +16,4 @@ wing1:
   country:                  United Kingdom
   make:                     Controllers
   connection_method:        "ssh"
+  onboard_device_type:      Real

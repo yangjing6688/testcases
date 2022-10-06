@@ -89,6 +89,9 @@ TCCS-7292_Step1: Onboard EXOS Switch on XIQ
     ${CONNECTED_STATUS}=                Wait Until Device Online                ${netelem1.serial}
     Should Be Equal as Integers         ${CONNECTED_STATUS}          1
 
+    ${device_managed_result}=    WAIT UNTIL DEVICE MANAGED       ${netelem1.serial}
+    Should Be Equal As Integers                 ${device_managed_result}       1
+
     ${DEVICE_STATUS}=                   Get Device Status       device_mac=${netelem1.mac}
     Should contain any                  ${DEVICE_STATUS}    green     config audit mismatch
 
@@ -100,8 +103,6 @@ TCCS-7292_Step2: Verify EXOS Switch Information on Device 360 page
     Depends On              TCCS-7292_Step1
 
     ${SYS_INFO_360_PAGE}=          Get Device 360 Information  ${netelem1.cli_type}     device_mac=${netelem1.mac}
-    ${HOST_NAME}=                  Get From Dictionary      ${SYS_INFO_360_PAGE}    host_name
-    Should Be Equal As Strings    '${HOST_NAME}'            '${netelem1.name}'
     ${DEVICE_MODEL}=               Get From Dictionary      ${SYS_INFO_360_PAGE}    device_model
     Should Be Equal As Strings    '${DEVICE_MODEL}'         '${netelem1.model}'
     ${DEVICE_IP}=                  Get From Dictionary      ${SYS_INFO_360_PAGE}    ip_address

@@ -6,8 +6,9 @@
 #
 # Author        : John Borges
 # Description   : Test Suite for testing the side navigation for a Helpdesk user on a Pilot/Copilot account
-# Topology      : No topology needed
-#               : A helpdesk user will have to be pre-configured before running these tests
+# Topology      : No topology/devices needed
+#               : A helpdesk user (helpdesk@cust001.com) will have to be pre-configured before running these tests
+#               : Role based accounts listed on ../../../../../Libraries/XIQ/lib_rbac_config.robot
 
 
 *** Settings ***
@@ -23,7 +24,7 @@ Suite Teardown   Log Out and Close Session
 
 
 *** Variables ***
-${XIQ_URL}          ${xiq.test_url}
+${XIQ_URL}          ${test_url}
 
 
 *** Test Cases ***
@@ -45,22 +46,27 @@ TCXM-19756: Confirm Manage Menu Is The Only One
 
     # check all submenus are available and in order
     Confirm Side Nav Menu Item   ${nav.manage.devices.tag}   ${nav.manage.devices.helpdesk_number}
+    Confirm Side Nav Menu Item   ${nav.manage.alerts.tag}   ${nav.manage.alerts.helpdesk_number}
     Confirm Side Nav Menu Item   ${nav.manage.diagnosis.tag}   ${nav.manage.diagnosis.helpdesk_number}
 
     # check all other submenus are not available
     Confirm Side Nav Menu Item Is Not There   ${nav.manage.summary.tag}
     Confirm Side Nav Menu Item Is Not There   ${nav.manage.plan.tag}
-    Confirm Side Nav Menu Item Is Not There   ${nav.manage.clients.tag}
     Confirm Side Nav Menu Item Is Not There   ${nav.manage.users.tag}
     Confirm Side Nav Menu Item Is Not There   ${nav.manage.events.tag}
-    Confirm Side Nav Menu Item Is Not There   ${nav.manage.alarms.tag}
     Confirm Side Nav Menu Item Is Not There   ${nav.manage.reports.tag}
     Confirm Side Nav Menu Item Is Not There   ${nav.manage.applications.tag}
     Confirm Side Nav Menu Item Is Not There   ${nav.manage.security.tag}
+    Confirm Side Nav Menu Item Is Not There   ${nav.manage.vpn.tag}
 
     ${nav_result}=      Navigate To Devices
     Should Be Equal As Integers   ${nav_result}   1
     ${nav_url}=         Is The Expected Url   ${nav.manage.devices.url}
+    Should Be Equal As Integers   ${nav_url}   1
+
+    ${nav_result}=      Navigate Manage Alerts
+    Should Be Equal As Integers   ${nav_result}   1
+    ${nav_url}=         Is The Expected Url   ${nav.manage.alerts.url}
     Should Be Equal As Integers   ${nav_url}   1
 
     ${nav_result}=      Navigate To Client Monitor And Diagnosis Tab

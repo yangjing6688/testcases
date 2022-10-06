@@ -16,6 +16,7 @@ ap1:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
 
 
 ap2:
@@ -36,6 +37,7 @@ ap2:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
 
 
 mu1:

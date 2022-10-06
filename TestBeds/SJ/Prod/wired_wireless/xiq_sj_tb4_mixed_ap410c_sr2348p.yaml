@@ -16,6 +16,7 @@ ap1:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  onboard_device_type:      Real
   power_strip:
     ip:
     port:
@@ -41,6 +42,7 @@ mu1:
   platform:       mac
   mac_wifi_port:  en1
   wifi_mac:       F018988C2173
+  onboard_device_type:      Real
 
 aerohive_sw1:
   name:               AH-Switch
@@ -58,3 +60,4 @@ aerohive_sw1:
   platform:           aerohive-fastpath
   test_port:
   make:               Extreme - Aerohive
+  onboard_device_type:      Real

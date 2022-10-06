@@ -15,3 +15,6 @@ netelem1:
   device_template:          X440G2-default-template
   cli_type:                 "EXOS"
   make:                     EXOS
+  mgmt_vlan:                default
+  mgmt_vr:                  vr-default
+  onboard_device_type:      Real

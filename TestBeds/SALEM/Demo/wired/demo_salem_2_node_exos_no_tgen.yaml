@@ -13,6 +13,7 @@ netelem1:
   make:                     "voss"
   host_mac:                 "00:04:96:f1:75:00"
   image_family:             ""
+  onboard_device_type:      "Real"
   isl:
     port_a:
       ifname: &netelem1_isl_port_a_ifname "1/10"
@@ -22,7 +23,8 @@ netelem2:
   name:                     "EXOS"
   ip:                       "10.148.35.202"
   port:                     "22"
-  mgmt_vlan:                "VLAN_4000"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   username:                 "admin"
   password:                 ""
   host_mac:                 "00:04:96:ed:f8:00"
@@ -32,6 +34,7 @@ netelem2:
   platform:                 "5520-24T"
   make:                     "exos"
   image_family:             ""
+  onboard_device_type:      "Real"
   isl:
     port_a:
       ifname: &netelem2_isl_port_a_ifname "10"

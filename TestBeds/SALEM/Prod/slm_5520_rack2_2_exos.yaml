@@ -9,15 +9,17 @@ netelem1:
   port:                     "22"
   console_ip:               "10.148.35.5"
   console_port:             "5038"
-  mgmt_vlan:                "VLAN_4000"
   username:                 "admin"
   password:                 ""
   connection_method:        "ssh"
   cli_type:                 "exos"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   platform:                 "Stack"
   model:                    "SwitchEngine5520_48SE"
   make:                     "exos"
   auth_mode:                "basic"
+  onboard_device_type:      "Real"
   stack:
     slot1:
       console_ip: "10.148.35.5"

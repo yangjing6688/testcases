@@ -2,6 +2,8 @@ import random
 
 RANDOM_INT = random.randint(0, 9999)
 
+NW_DEFAULT_POLICY = f"default_open_policy"
+NW_DEFAULT_SSID = f"default_open_ssid"
 NW_POLICY_NAME1 = f"policy_fb_{RANDOM_INT}"
 NW_POLICY_NAME2 = f"policy_google_{RANDOM_INT}"
 NW_POLICY_NAME3 = f"policy_linkedin_{RANDOM_INT}"
@@ -60,7 +62,7 @@ OPEN_AUTHENTICATION_PROFILE6 = {'auth_type': 'Open', 'cwp_profile': OPEN_CWP_6}
 
 BROADCAST_SSID_DEFAULT = {'WIFI0': 'Enable', 'WIFI1': 'Enable'}
 ################# Open Authentication network Profile for cloud captive web portal #####################################
-CONFIG_PUSH_OPEN_NW_01 = {'ssid_name': 'Openauthsocial', 'network_type': 'standard',
+CONFIG_PUSH_OPEN_NW_01 = {'ssid_name': NW_DEFAULT_SSID, 'network_type': 'standard',
                            'ssid_profile': BROADCAST_SSID_DEFAULT, 'auth_profile': OPEN_AUTHENTICATION_PROFILE0}
 OPEN_NW_1 = {'ssid_name': NW_POLICY_SSID1, 'network_type': 'standard',
                            'ssid_profile': BROADCAST_SSID_DEFAULT, 'auth_profile': OPEN_AUTHENTICATION_PROFILE1}

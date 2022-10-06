@@ -82,7 +82,7 @@ Pre Condition
     ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          ${OPEN_POLICY}            &{CONFIG_PUSH_OPEN_NW_01}
     should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
 
-    ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap    policy_name=${OPEN_POLICY}   ap_serial=${ap1.serial}
+    ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap If Needed   policy_name=${OPEN_POLICY}   ap_serial=${ap1.serial}
     should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
 
     ${DELETE_STATUS}=               Delete network polices      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
@@ -97,7 +97,8 @@ Pre Condition
     ${DELETE_UGS}=                  Delete user groups              ${BULK_CLOUD_USER_GROUP}    ${BULK_LOCAL_USER_GROUP}
     should be equal as integers     ${DELETE_UGS}               1
 
-    [Teardown]   run keywords      logout user
+    [Teardown]   run keywords      mu1.disconnect_wifi
+    ...                            logout user
     ...                            quit browser
 
 Test Suite Clean Up
@@ -112,6 +113,8 @@ Test Suite Clean Up
 
     ${DELETE_DEVICE_STATUS}=        Delete Device       device_serial=${ap1.serial}
     should be equal as integers         ${DELETE_DEVICE_STATUS}               1
+    # delete policy is showing 'in use' error. Even though device was successfully deleted. Table cleanup assumed.
+    sleep                          5
 
     ${DELETE_STATUS}=              delete network polices    ${BULK_CLOUD_NW_POLICY}  ${BULK_LOCAL_NW_POLICY}
     should be equal as strings    '${DELETE_STATUS}'           '1'     ppsk network policy assigned to other AP,disassociate it or issue with deleting policy

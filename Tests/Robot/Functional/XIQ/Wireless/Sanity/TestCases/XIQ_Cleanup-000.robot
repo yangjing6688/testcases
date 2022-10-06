@@ -13,7 +13,6 @@ Library     common/TestFlow.py
 Library     common/Cli.py
 Library     xiq/flows/mlinsights/Network360Plan.py
 
-Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 

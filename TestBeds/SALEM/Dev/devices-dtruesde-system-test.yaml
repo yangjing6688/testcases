@@ -22,6 +22,7 @@ netelem1:
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem Automation Team"
   location:                 "Salem QA Automation Rack"
+  onboard_device_type:      "Real"
 
 netelem2:
   name:                     "10.54.142.46"
@@ -47,6 +48,7 @@ netelem2:
   ccg:                      "Model_VSP_SWITCH"
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
+  onboard_device_type:      "Real"
 
 netelem3:
   name:                     "10.54.142.65"
@@ -72,6 +74,7 @@ netelem3:
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem Automation Team"
   location:                 "Salem QA Automation Rack"
+  onboard_device_type:      "Real"
 
 netelem4:
   name:                     "10.54.142.47"
@@ -97,6 +100,7 @@ netelem4:
   ccg:                      "Model_VSP_SWITCH"
   contact:                  "Salem NH Automation Team"
   location:                 "Salem NH Automation Lab"
+  onboard_device_type:      "Real"
 
 netelem5:
   name:                     "10.54.142.20"
@@ -122,6 +126,7 @@ netelem5:
   ccg:                      ""
   contact:                  "Salem Automation Team"
   location:                 "/Salem,NH/Automation Lab"
+  onboard_device_type:      "Real"
 
 netelem6:
   name:                     "10.54.142.11"
@@ -147,3 +152,4 @@ netelem6:
   ccg:                      ""
   contact:                  "Salem Automation Team"
   location:                 "Salem NH Automation Lab"
+  onboard_device_type:      "Real"

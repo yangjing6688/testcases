@@ -17,6 +17,7 @@ netelem1:
   platform:                 "5520-48T"
   host_mac:                 "00:04:96:f1:75:00"
   image_family:             ""
+  onboard_device_type:      "Real"
   tgen:
     port_a:
       ifname: &netelem1_tgen_port_a_ifname "1/1"
@@ -43,7 +44,8 @@ netelem2:
   port:                     "22"
   console_ip:               "10.148.35.5"
   console_port:             "5030"
-  mgmt_vlan:                "VLAN_4000"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
   username:                 "admin"
   password:                 ""
   host_mac:                 "00:04:96:ed:f8:00"
@@ -53,6 +55,7 @@ netelem2:
   model:                    "FabricEngine5520_48T"
   platform:                 "5520-48T"
   image_family:             ""
+  onboard_device_type:      "Real"
   tgen:
     port_a:
       ifname: &netelem2_tgen_port_a_ifname "1"

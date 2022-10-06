@@ -32,6 +32,7 @@ netelem3:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Digital Twin"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod10_4node/rdu_vm_pod10_4node_netelem3.cfg"
   isl:
@@ -93,6 +94,7 @@ netelem2:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  onboard_device_type:      "Digital Twin"
   isl:
     port_a:
       ifname: &netelem2_isl_port_a_ifname "9"

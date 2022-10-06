@@ -18,6 +18,7 @@ ap1:
   mgmt_vlan:                10
   country:                  United States
   location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
   power_strip:
     ip:
     port:
@@ -46,6 +47,7 @@ mu1:
   ethernet_mac:   080027AE858D
   wifi_network:   20.1.1
   wifi_network_vlan10:    10.69.61
+  onboard_device_type:      Real
 
 mu2:
   ip:             10.69.61.109
@@ -58,6 +60,7 @@ mu2:
   ethernet_mac:   0800279c0584
   wifi_network:   20.1.1
   wifi_network_vlan10:    10.69.61
+  onboard_device_type:      Real
 
 mails:
   - id: sjtb1tenant1@gmail.com

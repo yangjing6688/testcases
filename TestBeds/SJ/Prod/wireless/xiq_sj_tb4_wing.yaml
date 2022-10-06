@@ -18,3 +18,4 @@ wing1:
   connection_method:        "ssh"
   console_ip:               10.16.169.37
   console_port:             4004
+  onboard_device_type:      Real

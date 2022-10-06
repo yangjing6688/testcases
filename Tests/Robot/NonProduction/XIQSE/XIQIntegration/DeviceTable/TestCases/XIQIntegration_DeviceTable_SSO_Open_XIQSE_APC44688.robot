@@ -118,17 +118,14 @@ Log In and Set Up Test
     [Documentation]     Logs in and sets up the components for the test
 
     XIQSE Log In and Set Window Index
-    Set Up XIQSE Components
 
     XIQ Log In and Set Window Index
-    # Set Up XIQ Components
     XIQ Navigate to Devices and Confirm Success
-
-    # Onboard the XIQ Site Engine
     Onboard XIQ Site Engine and Confirm Success
 
-    # Log out of XIQSE
+    # Set Up XIQSE Components and Log out of XIQSE
     Switch To Window                                ${XIQSE_WINDOW_INDEX}
+    Set Up XIQSE Components
     Log Out of XIQSE and Confirm Success
 
     # Wait until the device added in XIQSE is onboarded to XIQ
@@ -169,6 +166,9 @@ Set Up XIQSE Components
     [Documentation]     Sets up the XIQ Site Engine components for the test
 
     Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
+
+    # Enable all columns for event searches
+    Set Alarm Event Search Scope    true
 
     # Confirm the serial number is correct and set the common options needed for automation
     Confirm Serial Number and Set Common Options    ${XIQSE_SERIAL}
@@ -234,6 +234,9 @@ Clean Up XIQSE Components
 
     Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
+    # Disable all columns for event searches
+    Set Alarm Event Search Scope    false
+
     # Delete all the devices
     Navigate and Delete All Devices
 
@@ -273,8 +276,8 @@ Confirm XIQ Maximum Site Engine Message
     [Documentation]     Confirm the 'Maximum 5 Site Engine > Device Views...' message is displayed
 
     Switch To Window                                ${XIQ_WINDOW_INDEX}
-    ${displayed}=  Actions XIQSE Maximum Site Engine Message
-    Should Be Equal As Strings          ${displayed}    1
+    ${displayed}=  Is XIQSE Maximum Site Engine Message Displayed
+    Should Be Equal As Strings          ${displayed}    True
 
 XIQSE Delete the Authorized User
     [Documentation]     Delete the Authorized User from XIQ Site Engine Administration > Users
