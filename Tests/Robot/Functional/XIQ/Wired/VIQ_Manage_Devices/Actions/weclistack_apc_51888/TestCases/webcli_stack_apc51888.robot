@@ -44,10 +44,9 @@ TCXM-15265: Verify that WEB CLI is available for EXOS Stack
     ...  quick_onboarding_cloud_manual     ${netelem1.serial}    exos      ${DUT_LOCATION}
     #Configure IQAgent
 
-    ${onboard_result}=          run keyword if  """${netelem1.cli_type}"""== "exos" and """${netelem1.platform}""" == "Stack"
+    run keyword if  """${netelem1.cli_type}"""== "exos" and """${netelem1.platform}""" == "Stack"
     ...    quick_onboarding_cloud_manual     ${netelem1.serial}    exos      ${DUT_LOCATION}
     #Configure IQAgent
-    Should Be Equal As Integers                 ${onboard_result}       1
     Configure IQAgent for EXOS Switch
 
     #Check Status:
@@ -56,6 +55,9 @@ TCXM-15265: Verify that WEB CLI is available for EXOS Stack
 
     #Check Managed status:
     column picker select    Managed
+    
+    ${onboard_result} =   Wait Until Device Online   device_mac=${netelem1.mac}
+    Should Be Equal As Integers                 ${onboard_result}       1
 
     sleep  2s
     Navigate to Devices and Confirm Success
