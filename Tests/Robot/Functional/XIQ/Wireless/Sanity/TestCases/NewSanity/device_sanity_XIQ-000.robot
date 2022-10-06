@@ -408,37 +408,17 @@ step5: Verify Information on Device page (Simple onboaring)
 #    should be equal as strings          '${ALARM_DETAILS}[deviceMac]'      '${device1.mac}'
 
 
-Step7: Enable SSH on Switch and Confirm SSH Session Can Be Established
-    [Documentation]     Enables SSH for the Switch
-
-    [Tags]              ssh     development
-
-    Depends On          step5
-
-    enable ssh availability
-
-    &{ip_port_info}=                    Device360 Enable SSH CLI Connectivity   ${device1.mac}  run_time=30
-    ${ip}=                              Get From Dictionary  ${ip_port_info}  ip
-    ${port}=                            Get From Dictionary  ${ip_port_info}  port
-
-    Should not be Empty     ${ip}
-    Should not be Empty     ${port}
-    ${ssh_spawn}=                       Open Spawn    ${ip}  ${port}  ${device1.username}  ${device1.password}  ${device1.cli_type}  pxssh=True
-    ${close_result}=                    Close Spawn  ${ssh_spawn}  pxssh=True
-
-    [Teardown]  Disable SSH and Close Device360 Window
-
-
-Step8: Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Established
+Step7: Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Established
     [Documentation]     Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Established
 
     [Tags]              ssh      development
 
     Depends On           step5
 
-
+    # make sure the feature is enabled
     enable ssh availability
 
+    # Create the SSH connection
     &{ip_port_info}=                    Device360 Enable SSH CLI Connectivity   ${device1.mac}  run_time=30
     ${ip}=                              Get From Dictionary  ${ip_port_info}  ip
     ${port}=                            Get From Dictionary  ${ip_port_info}  port
@@ -455,7 +435,7 @@ Step8: Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Establi
     [Teardown]  Disable SSH and Close Device360 Window
 
 
-Step9: Verification of config push complete config update (AH-AP Only)
+Step8: Verification of config push complete config update (AH-AP Only)
     [Documentation]             Verification of config push complete config update
     [Tags]                      push_config     development
     Depends On                  step5
@@ -479,7 +459,7 @@ Step9: Verification of config push complete config update (AH-AP Only)
     Should Contain                          ${OUTPUT1}                  ${PUSH_CONFIG_SSID_01}
 
 
-Step10: Verification of config push delta update (AH-AP Only)
+Step9: Verification of config push delta update (AH-AP Only)
     [Documentation]         Verification of config push delta update
     [Tags]                  push_config     development
     Depends On              step5
