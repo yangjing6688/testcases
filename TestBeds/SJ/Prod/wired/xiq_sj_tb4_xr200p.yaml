@@ -10,7 +10,7 @@ router1:
   mac:                      F09CE9C71D00
   network_policy:           Test_np
   username:                 admin
-  password:                 aerohive
+  password:                 Aerohive123
   platform:                 aerohive
   console_ip:               10.16.166.228
   console_port:             4011
