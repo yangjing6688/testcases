@@ -9,12 +9,14 @@ import subprocess
 import traceback
 import pytest
 import platform
+import yaml
 
 from pexpect.pxssh import pxssh
 from _pytest import mark, fixtures
 from collections import defaultdict
 from pytest_testconfig import config
 from contextlib import contextmanager
+from dataclasses import dataclass
 from typing import (
     List,
     Dict,
@@ -27,6 +29,7 @@ from typing import (
     Union
 )
 
+from ExtremeAutomation.Library.Utils.Singleton import Singleton
 from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
 from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
 from ExtremeAutomation.Library.Logger.PytestLogger import PytestLogger
@@ -44,11 +47,12 @@ from extauto.common.Cli import Cli
 
 
 Node = NewType("Node", Dict[str, Union[str, Dict[str, str]]])
+OnboardingOption = NewType("OnboardingOption", Dict[str, Union[str, Dict[str, str]]])
 PolicyConfig = NewType("PolicyConfig", DefaultDict[str, Dict[str, str]])
 TestCaseMarker = NewType("TestCaseMarker", str)
 Priority = NewType("Priority", str)
 
-_testbed: PytestConfigHelper = None
+_config_helper: PytestConfigHelper = None
 _nodes: List[Node] = []
 _standalone_nodes: List[Node] = []
 _stack_nodes: List[Node] = []
@@ -217,6 +221,16 @@ class SetLldp(Protocol):
         ) -> None: ...
 
 
+class ChangeDeviceManagementSettings(Protocol):
+    def __class__(
+        self,
+        xiq: XiqLibrary,
+        option: str,
+        retries: int=5,
+        step: int=5
+        ) -> None: ...
+
+
 class ClearTrafficCounters(Protocol):
     def __call__(
         self,
@@ -261,12 +275,33 @@ def pytest_cmdline_preparse(config, args):
     args.append(os.path.join(os.path.dirname(__file__), "conftest.py"))
 
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--runlist",
+        action="store",
+        help="The path to the runlist", 
+        default=""
+    )
+
+
 def get_test_marker(item: pytest.Function) -> List[TestCaseMarker]:  
     return [m.name for m in item.own_markers if any(re.search(rf"^{test_marker}_", m.name) for test_marker in valid_test_markers)]
 
 
 def get_priority_marker(item: pytest.Function) -> List[Priority]:
     return [m.name for m in item.own_markers if m.name in valid_priorities]
+
+
+def get_item_markers(item: pytest.Function) -> List[mark.structures.Mark]: return item.own_markers
+def get_node_markers(item: pytest.Function) -> List[mark.structures.Mark]: return list(item.iter_markers())
+
+
+def get_item_dependson_markers(item: pytest.Function) -> List[mark.structures.Mark]:
+    return [marker for marker in get_item_markers(item) if marker.name == "dependson"]
+
+
+def get_node_dependson_markers(item: pytest.Function) -> List[mark.structures.Mark]:
+    return [marker for marker in get_node_markers(item) if marker.name == "dependson"]
 
 
 def pytest_collection_modifyitems(session, items):
@@ -277,12 +312,24 @@ def pytest_collection_modifyitems(session, items):
     global _nodes
     global _standalone_nodes
     global _stack_nodes
-    global _testbed
+    global _config_helper
+    global runlist_tests
 
     onboarding_test_name = "tcxm_xiq_onboarding"
     onboarding_cleanup_test_name = "tcxm_xiq_onboarding_cleanup"
 
+    for item in items:
+        if (callspec := getattr(item, "callspec", None)) is not None:
+            test_data = callspec.params["test_data"]
+            test_marker_from_test_data = test_data["tc"]
+            tc_markers = get_test_marker(item)
+            for marker in tc_markers:
+                if marker != test_marker_from_test_data:
+                    [marker_obj] = [mk for mk in item.own_markers if mk.name == marker]
+                    item.own_markers.pop(item.own_markers.index(marker_obj))
+
     collected_items: List[pytest.Function] = []
+        
     for item in items:
         if onboarding_test_name in [m.name for m in item.own_markers]:
             if not [it for it in collected_items if onboarding_test_name in [m.name for m in it.own_markers]]:
@@ -304,8 +351,8 @@ def pytest_collection_modifyitems(session, items):
     collected_items.remove(item_onboarding)
     collected_items.remove(item_onboarding_cleanup)
     
-    _testbed = PytestConfigHelper(config)
-    _nodes = list(filter(lambda d: d is not None, [getattr(_testbed, f"dut{i}", None) for i in range(1, 10)]))
+    _config_helper = PytestConfigHelper(config)
+    _nodes = list(filter(lambda d: d is not None, [getattr(_config_helper, f"dut{i}", None) for i in range(1, 10)]))
 
     logger_obj.step("Check the capabilities of the testbed.")
     _standalone_nodes = [node for node in _nodes if node.get("platform", "").upper() != "STACK"]
@@ -413,73 +460,163 @@ def pytest_collection_modifyitems(session, items):
     all_tcs: List[TestCaseMarker] = [onboarding_test_name, onboarding_cleanup_test_name]
     [all_tcs.append(get_test_marker(item)[0]) for item in temp_items]
 
-    found_tcs: List[TestCaseMarker] = [onboarding_test_name, onboarding_cleanup_test_name]
+    found_tcs: List[TestCaseMarker] = []
 
     test_code: TestCaseMarker
 
-    for item in temp_items:
-        
-        [test_code] = get_test_marker(item)
-        
-        found_tcs.append(test_code)
-        item_markers: List[mark.structures.Mark] = item.own_markers
-        
-        for marker in item_markers:
-            if marker.name == "dependson":
-                temp_markers: Tuple[str] = marker.args
-
-                if not len(temp_markers):
-                    logger_obj.warning(
-                        f"The dependson marker of '{test_code}' testcase does not have any arguments "
-                        f"(test function: '{item.nodeid}'.")
-                    
-                for temp_marker in temp_markers:
-                    if temp_marker == test_code:
-                        logger_obj.warning(
-                            f"'{test_code}' is marked as depending on itself (test function: '{item.nodeid}').")
-                        
-                    elif temp_marker not in all_tcs:
-                        item.add_marker(
-                            pytest.mark.skip(f"'{test_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}'"
-                                             f" is not in the current list of testcases to be run. '{test_code}' will be skipped.")
-                        )
-                        
-                    elif temp_marker not in found_tcs:
-                        item.add_marker(
-                            pytest.mark.skip(
-                                f"Please modify the order of the test cases. '{test_code}' "
-                                f"depends on '{', '.join(temp_markers)}' but the order is not correct. "
-                                f"'{temp_marker}' should run before '{test_code}'."
-                                f"'{test_code}' will be skipped.")
-                        )
-
-    for item in temp_items:
-        dependson_marker = [marker for marker in item.own_markers if marker.name == "dependson"]
-        if dependson_marker:
-            temp = item.own_markers.pop(item.own_markers.index(dependson_marker[0]))
-            item.add_marker(
-                pytest.mark.dependson(*set(list(temp.args) + [onboarding_test_name]))
-            )
-        else:
-            item.add_marker(
-                pytest.mark.dependson(onboarding_test_name)
-            )
+    ordered_items: List[pytest.Function] = []
 
     if temp_items:
-        temp_items.insert(0, item_onboarding)
-        temp_items.append(item_onboarding_cleanup)
+        
         for item in temp_items:
+            
+            if (cls_markers := getattr(item.cls, "pytestmark", None)) is not None:
+                item_markers = get_item_dependson_markers(item)
+                
+                for marker in cls_markers:
+                    if not any(marker.name == m.name and marker.args == m.args for m in item_markers):
+                        item.add_marker(
+                            pytest.mark.dependson(*marker.args)
+                        )
+
+        temp_items.extend([item_onboarding, item_onboarding_cleanup])
+        
+        suitemap_tcs = []
+        for test_identifier, test_info in suitemap_tests.items():
+            if (tc := test_info.get("tc")) is not None:
+                suitemap_tcs.append(tc)
+            elif (tcs := test_info.get("tests")) is not None:
+                for tc in tcs:
+                    suitemap_tcs.append(tc['tc'])
+
+        for test in runlist_tests:
+            for item in temp_items:
+                [test_code] = get_test_marker(item)
+                if test_code == test:
+                    if not test_code in suitemap_tcs:
+                        logger_obj.warning(f"'{test_code}' is not defined in given suitemap.")
+                    else:
+                        ordered_items.append(item)
+        
+        for item in ordered_items:
+            
+            [test_code] = get_test_marker(item)
+            
+            found_tcs.append(test_code)
+            item_markers: List[mark.structures.Mark] = item.own_markers
+            
+            for marker in item_markers:
+                if marker.name == "dependson":
+                    temp_markers: Tuple[str] = marker.args
+
+                    if not temp_markers:
+                        logger_obj.warning(
+                            f"The dependson marker of '{test_code}' testcase does not have any arguments "
+                            f"(test function: '{item.nodeid}'.")
+                        
+                    for temp_marker in temp_markers:
+                        if temp_marker == test_code:
+                            logger_obj.warning(
+                                f"'{test_code}' is marked as depending on itself (test function: '{item.nodeid}').")
+                            
+                        elif temp_marker not in all_tcs:
+                            item.add_marker(
+                                pytest.mark.skip(f"'{test_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}'"
+                                                f" is not in the current list of testcases to be run. '{test_code}' will be skipped.")
+                            )
+                            
+                        elif temp_marker not in found_tcs:
+                            item.add_marker(
+                                pytest.mark.skip(
+                                    f"Please modify the order of the test cases. '{test_code}' "
+                                    f"depends on '{', '.join(temp_markers)}' but the order is not correct. "
+                                    f"'{temp_marker}' should run before '{test_code}'."
+                                    f"'{test_code}' will be skipped.")
+                            )
+
+        for item in ordered_items:
             logger_obj.info(f"Selected: '{item.nodeid}' "
                             f"(markers: '{[m.name for m in item.own_markers]}').")
     else:
         message = "Did not find any test function to run this session."
         logger_obj.warning(message)
         
-    items[:] = temp_items
+    items[:] = ordered_items
+
+    
+runlist_name: str = ""
+runlist_path: str = ""
+suitemaps_name = []
+runlist_tests = []
+suitemap_tests = {}
+suitemap_data = {}
+onboarding_options = {}
 
 
 def pytest_sessionstart(session):
+    
     session.results = dict()
+
+    global runlist_name
+    global runlist_path
+    global runlist_tests
+    global suitemaps_name
+    global suitemap_tests
+    global suitemap_data
+    global onboarding_options
+
+    runlist_path = session.config.option.runlist
+
+    with open(runlist_path, "r") as run_list:
+        output_runlist = run_list.read()
+    
+    runlist = yaml.safe_load(output_runlist)
+    runlist_name = list(runlist)[0]
+
+    runlist_tests = runlist[runlist_name]['tests']
+    suitemaps_name = runlist[runlist_name]['suitemap']
+    
+    for suitemap in suitemaps_name:
+        with open(suitemap, "r") as run_list:
+            output_suitemap = run_list.read()
+        suitemap_tests_dict = yaml.safe_load(output_suitemap)['tests']
+        suitemap_data_dict = yaml.safe_load(output_suitemap)['data']
+        suitemap_tests = {**suitemap_tests, ** suitemap_tests_dict}
+        suitemap_data = {**suitemap_data, **suitemap_data_dict}
+    
+    onboarding_options = runlist[runlist_name]['onboarding_options']
+
+
+def pytest_generate_tests(metafunc):
+    
+    global runlist_name
+    global runlist_tests
+    global suitemaps_name
+    global suitemap_tests
+    
+    test_identifier = metafunc.definition.function.__qualname__.replace(".", "::")
+            
+    try:
+        test_data = suitemap_tests[test_identifier]
+    except KeyError:
+        logger_obj.warning(
+                f"This test does not have a definition in the suitemap files: '{metafunc.definition.nodeid}'.")
+    else:
+        parameteterized_test_data = []
+        
+        if "tests" in test_data:
+            base_data = {k: v for k, v in test_data.items() if k != "tests"}
+            for data in test_data["tests"]:
+                parameteterized_test_data.append({**base_data, **data})
+            test_data = parameteterized_test_data
+
+        else:
+            test_data = [test_data]
+            
+        if "test_data" in metafunc.fixturenames:
+            metafunc.parametrize("test_data", test_data)
+        if "suite_data" in metafunc.fixturenames:
+            metafunc.parametrize("suite_data", [suitemap_data])
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -539,36 +676,66 @@ def pytest_runtest_makereport(item, call):
 
 
 def pytest_runtest_call(item):
+    
     current_test_marker: TestCaseMarker
     [current_test_marker] = get_test_marker(item)
     config['${TEST_NAME}'] = current_test_marker
+    
     logger_obj.step(f"Start test function of '{current_test_marker}': '{item.nodeid}'.")
 
+    test_identifier = f"{item.cls.__name__}::{item.originalname}"
+        
+    output = ""
+    test_data = {}
+    
+    if (callspec := getattr(item, "callspec", None)) is not None:
+        if (data := callspec.params.get("test_data")) is not None:
+            test_data = data
+    else:
+        test_data = suitemap_tests[test_identifier]
+        
+    for field in ["author", "tc", "description", "title"]:
+        if (field_value := test_data.get(field)) is not None:
+            output += f"\n{field.capitalize()}: '{field_value}'"
+            
+    if (steps := test_data.get("steps")) is not None:
+        output += "\nSteps:"
+        for index, step in enumerate(steps):
+            output += f"\n  Step {(index + 1)}: '{step}'"
+    
+    for k, v in test_data.items():
+        if k not in ["author", "tc", "description", "steps", "title"]:
+            output += f"\n{k}: '{v}'"
+    output and logger_obj.step(output)
 
-@pytest.mark.tcxm_xiq_onboarding
-def test_xiq_onboarding(
-    request: fixtures.SubRequest,
-    logger: PytestLogger
-    ) -> None:
-    if not any([onboard_one_node_flag, onboard_two_node_flag, onboard_stack_flag]):
-        logger.info(
-            "Currently there are no devices given in the yaml files so the onboarding test won't configure anything.")
-        return
-    request.getfixturevalue("onboard")
+
+class OnboardingTests:
+    @pytest.mark.tcxm_xiq_onboarding
+    def test_xiq_onboarding(
+        self,
+        request: fixtures.SubRequest,
+        logger: PytestLogger
+        ) -> None:
+        if not any([onboard_one_node_flag, onboard_two_node_flag, onboard_stack_flag]):
+            logger.info(
+                "Currently there are no devices given in the yaml files so the onboarding test won't configure anything.")
+            return
+        request.getfixturevalue("onboard")
 
 
-@pytest.mark.tcxm_xiq_onboarding_cleanup
-def test_xiq_onboarding_cleanup(
-    request: fixtures.SubRequest,
-    logger: PytestLogger
-    ) -> None:
-    if not any(
-        [onboard_one_node_flag, onboard_two_node_flag, onboard_stack_flag]):
-        logger.info(
-            "Currently there are no devices given in the yaml files so "
-            "the onboarding cleanup test won't unconfigure anything.")
-        return
-    request.getfixturevalue("onboard_cleanup")
+    @pytest.mark.tcxm_xiq_onboarding_cleanup
+    def test_xiq_onboarding_cleanup(
+        self,
+        request: fixtures.SubRequest,
+        logger: PytestLogger
+        ) -> None:
+        if not any(
+            [onboard_one_node_flag, onboard_two_node_flag, onboard_stack_flag]):
+            logger.info(
+                "Currently there are no devices given in the yaml files so "
+                "the onboarding cleanup test won't unconfigure anything.")
+            return
+        request.getfixturevalue("onboard_cleanup")
 
 
 @pytest.fixture(scope="session")
@@ -929,8 +1096,8 @@ def check_duts_are_reachable(
 
 
 @pytest.fixture(scope="session")
-def testbed() -> PytestConfigHelper:
-    return _testbed
+def config_helper() -> PytestConfigHelper:
+    return _config_helper
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -1105,49 +1272,58 @@ def configure_network_policies(
     dut_list: List[Node],
     policy_config: PolicyConfig,
     screen: Screen,
-    debug: Callable
+    debug: Callable,
+    request
     ) -> ConfigureNetworkPolicies:
     
     @debug
     def configure_network_policies_func(
         xiq: XiqLibrary,
-        dut_config: PolicyConfig=policy_config
+        dut_config: PolicyConfig=policy_config,
         ) -> None:
         
         for dut, data in dut_config.items():
-        
-            logger.step(f"Configuring the network policy and switch template for dut '{dut}'.")
+     
+            [dut_info] = [dut_iter for dut_iter in dut_list if dut_iter.name == dut]
+            node_name = dut_info.node_name
+            onb_options = request.getfixturevalue(f"{node_name}_onboarding_options")
+            
+            logger.step(f"Configuring the network policy and switch template for dut '{dut}' (node: '{node_name}').")
             network_policy = data['policy_name']
             template_switch = data['template_name']
             model_template = data['dut_model_template']
             units_model = data['units_model']
 
-            logger.step(f"Create this network policy for '{dut}' dut: '{network_policy}'.")
-            assert xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
-                network_policy), \
-                f"Policy {network_policy} wasn't created successfully "
-            screen.save_screen_shot()
-            
-            [dut_info] = [dut_iter for dut_iter in dut_list if dut_iter.name == dut]
-
-            logger.step(f"Create and attach this switch template to '{dut}' dut: '{template_switch}'.")
-            if dut_info.platform.upper() == "STACK":
-                xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(
-                    units_model, network_policy,
-                    model_template, template_switch)
-            else:
-                xiq.xflowsconfigureSwitchTemplate.add_sw_template(
-                    network_policy, model_template, template_switch)
-                screen.save_screen_shot()
+            if onb_options.get('create_network_policy'):
                 
-            # assert xiq.xflowsmanageDevices.assign_network_policy_to_switch(
-            #     policy_name=network_policy, serial=dut_info.mac) == 1, \
-            #     f"Couldn't assign policy {network_policy} to device '{dut}'"
-            
-            _temporary_fix_assign_policy(xiq, network_policy, dut_info)
-            
-            screen.save_screen_shot()
-            logger.info(f"Successfully configured the network policy and switch template for dut '{dut}'.")
+                logger.step(f"Create this network policy for '{dut}' dut (node: '{node_name}'): '{network_policy}'.")
+                assert xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
+                    network_policy), \
+                    f"Policy {network_policy} wasn't created successfully "
+                screen.save_screen_shot()
+                logger.info(f"Successfully created the network policy '{network_policy}' for dut '{dut}' (node: '{node_name}').")
+                
+                if onb_options.get('create_switch_template'):
+                    logger.step(f"Create and attach this switch template to '{dut}' dut (node: '{node_name}'): '{template_switch}'.")
+                    if dut_info.platform.upper() == "STACK":
+                        xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(
+                            units_model, network_policy,
+                            model_template, template_switch)
+                    else:
+                        xiq.xflowsconfigureSwitchTemplate.add_sw_template(
+                            network_policy, model_template, template_switch)
+                        screen.save_screen_shot()
+                    logger.info(f"Successfully created and attached this switch template to the network policy '{network_policy}' of dut '{dut}' (node: '{node_name}').")
+
+                if onb_options.get('assign_network_policy_to_device'):
+                    # assert xiq.xflowsmanageDevices.assign_network_policy_to_switch(
+                    #     policy_name=network_policy, serial=dut_info.mac) == 1, \
+                    #     f"Couldn't assign policy {network_policy} to device '{dut}'"
+                    
+                    _temporary_fix_assign_policy(xiq, network_policy, dut_info)
+                    screen.save_screen_shot()
+                    logger.info(f"Successfully assigned the network policy '{network_policy}' to dut '{dut}' (node: '{node_name}').")
+                    
     return configure_network_policies_func
 
 
@@ -1235,19 +1411,81 @@ def policy_config(
 @pytest.fixture(scope="session")
 def dut_list(
     standalone_nodes: List[Node],
-    stack_nodes: List[Node]
+    stack_nodes: List[Node],
+    node_1_onboarding_options,
+    node_2_onboarding_options,
+    node_stack_onboarding_options
     ) -> List[Node]:
     
     duts: List[Node] = []
 
     if onboard_two_node_flag:
-        duts.extend(standalone_nodes[:2])
-    elif onboard_one_node_flag:
-        duts.append(standalone_nodes[0])
+        runos_node_1 = node_1_onboarding_options.get('run_os', [])
+        platform_node_1 = node_1_onboarding_options.get('platform', "")
+        runos_node_2 = node_2_onboarding_options.get('run_os', "")
+        platform_node_2 = node_2_onboarding_options.get('platform', "")
+        
+        for node in standalone_nodes:
+            if runos_node_1:
+                if any(node.cli_type.upper() == os.upper() for os in runos_node_1):
+                    if platform_node_1 != "standalone":
+                        if node.platform.upper() == platform_node_1.upper():
+                            break
+                    else:
+                        break
+            else:
+                break
+        else:
+            assert False
+        node.node_name = "node_1"
+        duts.append(node)
     
-    if onboard_stack_flag:
-        duts.append(stack_nodes[0])
+        for node in standalone_nodes:
+            if node not in duts:
+                if runos_node_2:
+                  if any(node.cli_type.upper() == os.upper() for os in runos_node_2):
+                        if platform_node_2 != "standalone":
+                            if node.platform.upper() == platform_node_1.upper():
+                                break
+                        else:
+                            break
+                else:
+                    break     
+        else:
+            assert False
+        node.node_name = "node_2"
+        duts.append(node)
 
+    elif onboard_one_node_flag:
+        runos_node_1 = node_1_onboarding_options.get('run_os', [])
+        platform_node_1 = node_1_onboarding_options.get('platform', "")
+        for node in standalone_nodes:
+            if runos_node_1:
+                if any(node.cli_type.upper() == os.upper() for os in runos_node_1):
+                    if platform_node_1 != "standalone":
+                        if node.platform.upper() == platform_node_1.upper():
+                            break
+                    else:
+                        break
+            else:
+                break
+        else:
+            assert False
+        node.node_name = "node_1"
+        duts.append(node)   
+
+    if onboard_stack_flag:
+        runos_node_stack = node_stack_onboarding_options.get('run_os', [])
+        for node in stack_nodes:
+            if runos_node_stack:
+                if any(node.cli_type.upper() == os.upper() for os in runos_node_stack):
+                    break
+            else:
+                break
+        else:
+            assert False
+        node.node_name = "node_stack"
+        duts.append(node)   
     return duts
 
 
@@ -1257,7 +1495,8 @@ def update_devices(
     dut_list: List[Node],
     policy_config: PolicyConfig,
     debug: Callable,
-    wait_till: Callable
+    wait_till: Callable,
+    request
     ) -> UpdateDevices:
     
     @debug
@@ -1271,28 +1510,38 @@ def update_devices(
         wait_till(timeout=5)
 
         for dut in duts:
+            onb_options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
             policy_name = policy_config[dut.name]['policy_name']
             
-            logger.step(f"Select switch row with serial '{dut.mac}'.")
-            if not xiq.xflowscommonDevices.select_device(dut.mac):
-                error_msg = f"Switch '{dut.mac}' is not present in the grid."
-                logger.error(error_msg)
-                pytest.fail(error_msg)
-            wait_till(timeout=2)
-            
-            logger.step(f"Update the switch: '{dut.mac}'.")
-            if xiq.xflowscommonDevices._update_switch(update_method="PolicyAndConfig") != 1:
-                error_msg = f"Failed to push the update to this switch: '{dut.mac}'."
-                logger.error(error_msg)
-                pytest.fail(error_msg)
-            wait_till(timeout=2)
+            if all(
+                [
+                    onb_options.get('initial_network_policy_push'),
+                    onb_options.get('assign_network_policy_to_device'),
+                    onb_options.get('create_network_policy')
+                ]
+            ):
+                logger.step(f"Select switch row with serial '{dut.mac}'.")
+                if not xiq.xflowscommonDevices.select_device(dut.mac):
+                    error_msg = f"Switch '{dut.mac}' is not present in the grid."
+                    logger.error(error_msg)
+                    pytest.fail(error_msg)
+                wait_till(timeout=2)
+                
+                logger.step(f"Update the switch: '{dut.mac}'.")
+                if xiq.xflowscommonDevices._update_switch(update_method="PolicyAndConfig") != 1:
+                    error_msg = f"Failed to push the update to this switch: '{dut.mac}'."
+                    logger.error(error_msg)
+                    pytest.fail(error_msg)
+                wait_till(timeout=2)
 
         for dut in duts:
+            onb_options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
             policy_name = policy_config[dut.name]['policy_name']
-            if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac) != 1:
-                error_msg = f"It look like the update failed this switch: '{dut.mac}'."
-                logger.error(error_msg)
-                pytest.fail(error_msg) 
+            if onb_options.get('initial_network_policy_push'):
+                if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac) != 1:
+                    error_msg = f"It look like the update failed this switch: '{dut.mac}'."
+                    logger.error(error_msg)
+                    pytest.fail(error_msg) 
 
     return update_devices_func
 
@@ -1406,6 +1655,14 @@ def dump_switch_logs(
 
 
 @pytest.fixture(scope="session")
+def log_onboarding_options(request, logger):
+    for node_name in ["node_1", "node_2", "node_stack"]:
+        fxt = request.getfixturevalue(f"{node_name}_onboarding_options")
+        if fxt:
+            logger.info(f"The onboarding options for '{node_name}':\n{json.dumps(fxt, indent=4)}")
+
+
+@pytest.fixture(scope="session")
 def onboard(
     request: fixtures.SubRequest
     ) -> None:
@@ -1421,6 +1678,8 @@ def onboard(
     dump_switch_logs: DumpSwitchLogs = request.getfixturevalue("dump_switch_logs")
     update_devices: UpdateDevices = request.getfixturevalue("update_devices")
     logger: PytestLogger = request.getfixturevalue("logger")
+
+    request.getfixturevalue("log_onboarding_options")
 
     dut_list: List[Node] = request.getfixturevalue("dut_list")
     logger.info(f"These are the devices that will be onboarded ({len(dut_list)} device(s)): " + "'" +
@@ -1452,6 +1711,8 @@ def onboard(
 
             update_devices(xiq)
 
+            # request.getfixturevalue("test_bed")
+
     except Exception as exc:
         logger.error(repr(exc))
         dump_switch_logs()
@@ -1482,33 +1743,54 @@ def onboard_cleanup(
 
 
 @pytest.fixture(scope="session")
-def onboarded_one_node(
-    request: fixtures.SubRequest
+def node_1(
+    request: fixtures.SubRequest,
+    logger
     ) -> Node:
     if onboard_one_node_flag or onboard_two_node_flag:
         dut_list: List[Node] = request.getfixturevalue("dut_list")
-        return [dut for dut in dut_list if dut.platform.upper() != "STACK"][0]
-    pytest.fail("Testbed does not have a standalone node.")
+        return [dut for dut in dut_list if dut.node_name == "node_1"][0]
+    logger.warning("Testbed does not have a standalone node.")
+    return {}
 
 
 @pytest.fixture(scope="session")
-def onboarded_two_node(
-    request: fixtures.SubRequest
+def node_1_onboarding_options():
+    return onboarding_options.get("standalone").get("node_1", {})
+
+
+@pytest.fixture(scope="session")
+def node_2_onboarding_options():
+    return onboarding_options.get("standalone").get("node_2", {})
+
+
+@pytest.fixture(scope="session")
+def node_stack_onboarding_options():
+    return onboarding_options.get("node_stack")
+
+
+@pytest.fixture(scope="session")
+def node_2(
+    request: fixtures.SubRequest,
+    logger
     ) -> List[Node]:
     if onboard_two_node_flag:
         dut_list: List[Node] = request.getfixturevalue("dut_list")
-        return [dut for dut in dut_list if dut.platform.upper() != "STACK"][:2]
-    pytest.fail("Testbed does not have two standalone nodes.")
+        return [dut for dut in dut_list if dut.node_name == "node_2"][0]
+    logger.warning("Testbed does not have two standalone nodes.")
+    return {}
 
 
 @pytest.fixture(scope="session")
-def onboarded_stack(
-    request: fixtures.SubRequest
+def node_stack(
+    request: fixtures.SubRequest,
+    logger
     ) -> Node:
     if onboard_stack_flag:
         dut_list: List[Node] = request.getfixturevalue("dut_list")
-        return [dut for dut in dut_list if dut.platform.upper() == "STACK"][0]
-    pytest.fail("Testbed does not have a stack node.")
+        return [dut for dut in dut_list if dut.node_name == "node_stack"][0]
+    logger.warning("Testbed does not have a stack node.")
+    return {}
 
  
 @pytest.fixture(scope="session")
@@ -1834,10 +2116,6 @@ def clear_traffic_counters(
     return clear_traffic_counters_func
 
 
-class ChangeDeviceManagementSettings(Protocol):
-    def __class__(self, xiq: XiqLibrary, option: str, retries: int=5, step: int=5) -> None: ...
-
-
 @pytest.fixture(scope="session")
 def change_device_management_settings(
     logger: PytestLogger, 
@@ -1931,11 +2209,11 @@ def get_dut(
 
 @pytest.fixture(scope="session")
 def dut1(
-    testbed: PytestConfigHelper,
+    config_helper: PytestConfigHelper,
     logger: PytestLogger
     ) -> Node:
     try:
-        return getattr(testbed, "dut1")
+        return getattr(config_helper, "dut1")
     except AttributeError as err:
         logger.error(f"The testbed does not have the 'dut1' netelem.")
         raise err
@@ -1943,11 +2221,11 @@ def dut1(
 
 @pytest.fixture(scope="session")
 def dut2(
-    testbed: PytestConfigHelper,
+    config_helper: PytestConfigHelper,
     logger: PytestLogger
     ) -> Node:
     try:
-        return getattr(testbed, "dut2")
+        return getattr(config_helper, "dut2")
     except AttributeError as err:
         logger.error(f"The testbed does not have the 'dut2' netelem.")
         raise err
@@ -1955,11 +2233,11 @@ def dut2(
 
 @pytest.fixture(scope="session")
 def dut3(
-    testbed: PytestConfigHelper, 
+    config_helper: PytestConfigHelper, 
     logger: PytestLogger
     ) -> Node:
     try:
-        return getattr(testbed, "dut3")
+        return getattr(config_helper, "dut3")
     except AttributeError as err:
         logger.error(f"The testbed does not have the 'dut3' netelem.")
         raise err
