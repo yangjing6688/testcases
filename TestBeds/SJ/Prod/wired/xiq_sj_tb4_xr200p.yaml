@@ -3,8 +3,8 @@ router1:
   model:                    XR200P
   device_template:          XR200P_test_automation
   serial:                   "20316031100565"
-  ip:                       10.16.169.55
-  port:                     22
+  ip:                       10.16.166.228
+  port:                     4011
   cli_type:                 "AH-XR"
   connection_method:        "console"
   mac:                      F09CE9C71D00
@@ -12,7 +12,7 @@ router1:
   username:                 admin
   password:                 aerohive
   platform:                 aerohive
-  console_ip:               10.16.169.37
-  console_port:             4003
+  console_ip:               10.16.166.228
+  console_port:             4011
   make:                     Extreme - Aerohive
   onboard_device_type:      Real

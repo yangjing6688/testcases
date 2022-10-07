@@ -3,16 +3,16 @@ router1:
   model:                    XR600P
   device_template:          XR600P_test_automation
   serial:                   "60018082400393"
-  ip:                       10.16.171.37  #10.16.171.73
-  port:                     4001    #22
-  connect_method:           console
+  ip:                       10.16.166.228
+  port:                     4005
+  connect_method:           "console"
   cli_type:                 "AH-XR"
   mac:                      F4EAB52DCE00
   network_policy:           Test_np
   username:                 admin
   password:                 Aerohive123
   platform:                 aerohive
-  console_ip:               10.16.171.37
-  console_port:             4001
+  console_ip:               10.16.166.228
+  console_port:             4005
   make:                     Extreme - Aerohive
   onboard_device_type:      Real
