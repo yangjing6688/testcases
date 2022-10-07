@@ -207,6 +207,9 @@ class xiqTests():
                     # Verify the iqagent status is connected within the time intervel of 300 seconds
                     cls.devCmd.send_cmd_verify_output_regex(dutName, 'show iqagent', 'Status*.*CONNECTED TO XIQ', max_wait=300, interval=10)
                 elif cls.tb.dut1_make.upper() == "VOSS":
+                    cls.devCmd.send_cmd(dutName, 'configure terminal', max_wait=10, interval=2)
+                    cls.devCmd.send_cmd(dutName, 'application', max_wait=10, interval=2)
+                    cls.devCmd.send_cmd(dutName, 'no iqagent enable', max_wait=10, interval=2)
                     cls.devCmd.send_cmd(dutName, 'iqagent server ' + iqagentServer, max_wait=10, interval=2)
                     cls.devCmd.send_cmd(dutName, 'iqagent enable', max_wait=10, interval=2)
                     cls.devCmd.send_cmd_verify_output(dutName, 'show application iqagent', 'true', max_wait=30, interval=10)

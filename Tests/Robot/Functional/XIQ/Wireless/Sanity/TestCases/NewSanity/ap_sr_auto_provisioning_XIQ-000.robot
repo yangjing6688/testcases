@@ -175,6 +175,7 @@ TCCS-7571: Configure Switch Auto Provision Profile
     should be equal as integers             ${POLICY_STATUS}                1
 
     IF  '${aerohive_sw1.cli_type}'=='AH-FASTPATH'
+        &{SW_SR22_SR23_01}=    Create Dictionary      device_function=Extreme Networks SR22xx / SR23xx Switches       device_model=${aerohive_sw1.model}     service_tags=Disable   ip_subnetworks=Disable      network_policy=${POLICY_NAME_02}
         ${APP_BASIC_STGS_STATUS}=     Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR22_SR23_01}
         should be equal as integers             ${APP_BASIC_STGS_STATUS}        1
     ELSE IF     '${aerohive_sw1.cli_type}'=='AH-AP'
