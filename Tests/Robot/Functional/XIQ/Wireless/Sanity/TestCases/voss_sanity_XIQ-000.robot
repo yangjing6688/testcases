@@ -252,7 +252,9 @@ Tear Down Test and Close Session
     [Teardown]   run keywords       quit browser
 
 Disable SSH and Close Device360 Window
-    ${DISABLE_SSH}=                     Device360 Disable SSH Connectivity
+    [Documentation]     Disable SSH connectivity from device360 window
+
+    ${DISABLE_SSH}=                     Device360 Disable SSH Connectivity      device_mac=${DUT_MAC}
     Should Be Equal As Integers         ${DISABLE_SSH}     1
 
     ${CLOSE_DEVICE360_WINDOW}=          Close Device360 Window

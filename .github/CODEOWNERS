@@ -12,10 +12,10 @@
 
 
 # XIQ wired team directories
-/Tests/Robot/Functional/XIQ/Wired/      @extremenetworks/xiq-wired-it
-/Tests/Robot/NonProduction/XIQ/Wired/   @extremenetworks/xiq-wired-it
-/Tests/Pytest/NonProduction/XIQ/Wired/  @extremenetworks/xiq-wired-it
-/Tests/Pytest/Functional/XIQ/Wired/     @extremenetworks/xiq-wired-it
+/Tests/Robot/Functional/XIQ/Wired/      @extremenetworks/xiq-wired-it @jsubler93
+/Tests/Robot/NonProduction/XIQ/Wired/   @extremenetworks/xiq-wired-it @jsubler93
+/Tests/Pytest/NonProduction/XIQ/Wired/  @extremenetworks/xiq-wired-it @jsubler93
+/Tests/Pytest/Functional/XIQ/Wired/     @extremenetworks/xiq-wired-it @jsubler93
 
 # XIQ Cloud directories
 /TestBeds/BANGALORE/Prod                @extremenetworks/autoiq-framework @shreenbanu

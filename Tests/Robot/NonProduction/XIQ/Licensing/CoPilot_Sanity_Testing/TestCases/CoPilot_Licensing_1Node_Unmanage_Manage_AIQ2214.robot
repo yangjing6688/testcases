@@ -58,7 +58,7 @@ Test 1: Verify Pilot and CoPilot Baseline License Counts
 
 Test 2: Onboard Device and Verify Success
     [Documentation]     Onboards test device and verifies success
-    [Tags]              tccs-13493    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test2
+    [Tags]              tccs-13493    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test2
 
     Depends On          Test 1
 
@@ -83,7 +83,7 @@ Test 2: Onboard Device and Verify Success
 
 Test 3: Verify Device Consumes Pilot and CoPilot License Within Global Settings License Management
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
-    [Tags]              tccs-13493    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test3
+    [Tags]              tccs-13493    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test3
 
     Depends On          Test 1
 
@@ -92,7 +92,7 @@ Test 3: Verify Device Consumes Pilot and CoPilot License Within Global Settings 
 
 Test 4: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify device consumed the appropriate license or not
-    [Tags]              tccs-13493    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test4
+    [Tags]              tccs-13493    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test4
 
     Depends On          Test 1
 
@@ -106,14 +106,14 @@ Test 4: Verify Device License and CoPilot Column Values
 
 Test 5: Unmanage Device and Confirm Success
     [Documentation]     Sets MANAGED state to UNMANAGE and verifies success
-    [Tags]              tccs-13493    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test5
+    [Tags]              tccs-13493    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test5
 
     Navigate to Devices and Confirm Success
     Unmanage Device and Confirm Success         UNMANAGE    ${DUT_SERIAL}
 
 Test 6: Verify Unmanaged Device Revokes Both CoPilot and Pilot Licenses in Global Settings License Management
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
-    [Tags]              tccs-13493    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test6
+    [Tags]              tccs-13493    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test6
 
     Depends On          Test 1
 
@@ -122,7 +122,7 @@ Test 6: Verify Unmanaged Device Revokes Both CoPilot and Pilot Licenses in Globa
 
 Test 7: Verify Unmanaged Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns for unmanaged device to verify device revoked the copilot and pilot licenses
-    [Tags]              tccs-13493    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test7
+    [Tags]              tccs-13493    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test7
 
     Depends On          Test 1
 
@@ -136,14 +136,14 @@ Test 7: Verify Unmanaged Device License and CoPilot Column Values
 
 Test 8: Manage Device and Confirm Success
     [Documentation]     Sets MANAGED state to MANAGE and verifies success
-    [Tags]              tccs-13493    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test8
+    [Tags]              tccs-13493    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test8
 
     Navigate to Devices and Confirm Success
     Manage Device and Confirm Success         MANAGE    ${DUT_SERIAL}
 
 Test 9: Verify Newly Managed Device Consumes CoPilot and Pilot Licenses in Global Settings License Management
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
-    [Tags]              tccs-13493    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test9
+    [Tags]              tccs-13493    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test9
 
     Depends On          Test 1
 
@@ -152,7 +152,7 @@ Test 9: Verify Newly Managed Device Consumes CoPilot and Pilot Licenses in Globa
 
 Test 10: Verify Newly Managed Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns for managed device to verify device consumed the copilot and pilot licenses
-    [Tags]              tccs-13493    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test10
+    [Tags]              tccs-13493    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test10
 
     Depends On          Test 1
 
@@ -166,7 +166,7 @@ Test 10: Verify Newly Managed Device License and CoPilot Column Values
 
 Test 11: Delete Device and Verify Success
     [Documentation]     Deletes the device and verifies success
-    [Tags]              tccs-13493    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test11
+    [Tags]              tccs-13493    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test11
 
     Depends On          Test 1
 
@@ -174,7 +174,7 @@ Test 11: Delete Device and Verify Success
 
 Test 12: Verify Pilot and CoPilot Licenses Revoked Within Global Settings License Management
     [Documentation]     Confirms the Pilot and CoPilot licenses are revoked
-    [Tags]              tccs-13493    sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test12
+    [Tags]              tccs-13493    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test12
 
     Depends On          Test 1
 

@@ -1,24 +1,24 @@
 ap1:
-  name:                     bui-flo-0049
-  connection_method:        "telnet"
-  ip:                       10.69.61.136
-  port:                     22
+  name:                     "bui-flo-0071"
+  hostname:                 "bui-flo-0071"
+  serial:                   "16501811280071"
+  mac:                      "348584148A80"
+  ip:                       "10.69.61.132"
+  port:                     "22"
+  console_ip:               "10.69.1.244"
+  console_port:             "2017"
+  username:                 "admin"
+  password:                 "Aerohive123"
   connection_method:        "ssh"
-  username:                 admin
-  password:                 Aerohive123
-  serial:                   "16501811280049"
-  console_ip:               10.69.1.112
-  console_port:             2007
-  mac:                      348584148500
   cli_type:                 "AH-AP"
-  platform:                 aerohive
-  model:                    AP650X
-  template:                 AP650X-default-template
-  make:                     Extreme - Aerohive
-  mgmt_vlan:                10
-  country:                  United States
-  location:                 auto_location_01, Santa Clara, building_02, floor_04
-  onboard_device_type:      Real
+  platform:                 "aerohive"
+  template:                 "AP650-default-template"
+  make:                     "Extreme - Aerohive"
+  model:                    "AP650X"
+  product:                  "AP"
+  function:                 "AP"
+  ccg:                      "Model_AP_650X"
+  onboard_device_type:      "Real"
   power_strip:
     ip:
     port:
