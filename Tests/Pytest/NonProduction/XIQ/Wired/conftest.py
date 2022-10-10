@@ -49,7 +49,8 @@ Node = NewType("Node", Dict[str, Union[str, Dict[str, str]]])
 OnboardingOption = NewType("OnboardingOption", Dict[str, Union[str, Dict[str, str]]])
 PolicyConfig = NewType("PolicyConfig", DefaultDict[str, Dict[str, str]])
 TestCaseMarker = NewType("TestCaseMarker", str)
-Priority = NewType("Priority", str)
+PriorityMarker = NewType("PriorityMarker", str)
+TestbedMarker = NewType("TestbedMarker", str)
 logger_obj: PytestLogger = PytestLogger()
 
 
@@ -235,12 +236,21 @@ valid_test_markers: List[TestCaseMarker] = [
     "tccs"
 ]
 
-valid_priorities: List[Priority] = [
+
+valid_priority_markers: List[PriorityMarker] = [
     "p1",
     "p2",
     "p3",
     "p4",
     "p5"
+]
+
+
+valid_testbed_markers: List[TestbedMarker] = [
+    "testbed_1_node",
+    "testbed_2_node",
+    "testbed_stack",
+    "testbed_none"
 ]
 
 
@@ -279,8 +289,12 @@ def get_test_marker(item: pytest.Function) -> List[TestCaseMarker]:
     return [m.name for m in item.own_markers if any(re.search(rf"^{test_marker}_", m.name) for test_marker in valid_test_markers)]
 
 
-def get_priority_marker(item: pytest.Function) -> List[Priority]:
-    return [m.name for m in item.own_markers if m.name in valid_priorities]
+def get_priority_marker(item: pytest.Function) -> List[PriorityMarker]:
+    return [m.name for m in item.own_markers if m.name in valid_priority_markers]
+
+
+def get_testbed_markers(item: pytest.Function) -> List[TestbedMarker]:
+    return [m.name for m in item.own_markers if m.name in valid_test_markers]
 
 
 def get_item_markers(
@@ -327,7 +341,18 @@ def pytest_configure(config):
 
 
 def pytest_collection_modifyitems(session, items):
-    
+        
+    for item in items:
+        if (cls_markers := getattr(item.cls, "pytestmark", None)) is not None:
+            item_markers = get_testbed_markers(item)
+            cls_testbed_marker = [m for m in cls_markers if m.name in valid_testbed_markers]
+            if cls_testbed_marker:
+                marker = cls_testbed_marker[0]
+                if not any(marker.name == m.name and marker.args == m.args for m in item_markers):
+                    item.add_marker(
+                        getattr(pytest.mark, marker.name)
+                    )
+
     for item in items:
         if (callspec := getattr(item, "callspec", None)) is not None:
             test_data = callspec.params["test_data"]
@@ -409,21 +434,14 @@ def pytest_collection_modifyitems(session, items):
       
     item_test_marker_mapping: DefaultDict[str, List[str]] = defaultdict(lambda: [])
     test_marker_item_mapping: DefaultDict[pytest.Function, List[str]] = defaultdict(lambda: [])
-    priority_item_mapping: DefaultDict[pytest.Function, List[str]] = defaultdict(lambda: [])
     items_without_valid_test_markers: List[str] = []
-    items_without_priority_markers: List[str] = []
 
     test_codes: List[TestCaseMarker]
     test_code: TestCaseMarker
-    priorities: List[Priority]
+    priorities: List[PriorityMarker]
     
     for item in temp_items:
         test_codes = get_test_marker(item)
-        priorities = get_priority_marker(item)
-
-        if not priorities:
-            items_without_priority_markers.append(
-                f"This function does not have a priority marker: '{item.nodeid}'.")
 
         if not test_codes:
             items_without_valid_test_markers.append(
@@ -433,20 +451,13 @@ def pytest_collection_modifyitems(session, items):
             item_test_marker_mapping[test_code].append(item.nodeid)
     
         test_marker_item_mapping[item] = test_codes
-        priority_item_mapping[item] = priorities
 
     if items_without_valid_test_markers:
         error = '\n' + '\n'.join(items_without_valid_test_markers)
         error += f"\nValid test markers should begin with any of these markers - {valid_test_markers}."
         logger_obj.error(error)
         pytest.fail(error)
-    
-    if items_without_priority_markers:
-        error = '\n' + '\n'.join(items_without_priority_markers)
-        error += f"\nValid test priorities: {valid_priorities}."
-        logger_obj.error(error)
-        pytest.fail(error)
-    
+
     for test_code, functions in item_test_marker_mapping.items():
         if len(functions) > 1:
             error = f"Test marker '{test_code}' is used as marker for more than one test function:\n" + "\n".join(functions)
@@ -460,13 +471,6 @@ def pytest_collection_modifyitems(session, items):
             logger_obj.error(error)
             pytest.fail(error)
 
-    for item, priority in priority_item_mapping.items():
-        if len(priority) > 1:
-            error = f"\nThis test function has more than one valid priority marker: " \
-                    f"{item.nodeid} (markers: '{priority}')."
-            logger_obj.error(error)
-            pytest.fail(error)
-
     all_tcs: List[TestCaseMarker] = [pytest.onboarding_test_name, pytest.onboarding_cleanup_test_name]
     [all_tcs.append(get_test_marker(item)[0]) for item in temp_items]
 
@@ -477,17 +481,52 @@ def pytest_collection_modifyitems(session, items):
     ordered_items: List[pytest.Function] = []
 
     if temp_items:
-        
+                
         for item in temp_items:
             
             if (cls_markers := getattr(item.cls, "pytestmark", None)) is not None:
-                item_markers = get_item_dependson_markers(item)
                 
-                for marker in cls_markers:
+                item_markers = get_item_dependson_markers(item)
+                cls_dependson_markers = [m for m in cls_markers if m.name == "dependson"]
+                for marker in cls_dependson_markers:
                     if not any(marker.name == m.name and marker.args == m.args for m in item_markers):
                         item.add_marker(
                             pytest.mark.dependson(*marker.args)
                         )
+                        
+                priority_markers: List[PriorityMarker] = get_priority_marker(item)
+
+                if not priority_markers:
+                    cls_priority_marker = [m for m in cls_markers if m.name in valid_priority_markers]
+                    if cls_priority_marker:
+                        item.add_marker(
+                            getattr(pytest.mark, cls_priority_marker[0].name)
+                        )
+
+        priority_item_mapping: DefaultDict[pytest.Function, List[str]] = defaultdict(lambda: [])
+        items_without_priority_markers: List[str] = []
+
+        for item in temp_items:
+            priorities = get_priority_marker(item)
+
+            if not priorities:
+                items_without_priority_markers.append(
+                    f"This function does not have a priority marker: '{item.nodeid}'.")
+
+            priority_item_mapping[item] = priorities
+
+        if items_without_priority_markers:
+            error = '\n' + '\n'.join(items_without_priority_markers)
+            error += f"\nValid test priorities: {valid_priority_markers}."
+            logger_obj.error(error)
+            pytest.fail(error)
+                    
+        for item, priority in priority_item_mapping.items():
+            if len(priority) > 1:
+                error = f"\nThis test function has more than one valid priority marker: " \
+                        f"{item.nodeid} (markers: '{priority}')."
+                logger_obj.error(error)
+                pytest.fail(error)
 
         temp_items.extend([item_onboarding, item_onboarding_cleanup])
         
@@ -552,9 +591,6 @@ def pytest_collection_modifyitems(session, items):
         logger_obj.warning(message)
     
     items[:] = ordered_items
-
-    for item in items:
-        item.own_markers
 
 
 def pytest_sessionstart(session):
@@ -1723,7 +1759,7 @@ def onboard(
 
             update_devices(xiq)
 
-            # request.getfixturevalue("test_bed")
+            request.getfixturevalue("test_bed")
 
     except Exception as exc:
         logger.error(repr(exc))
@@ -2228,6 +2264,7 @@ def dut1(
         return getattr(config_helper, "dut1")
     except AttributeError as err:
         logger.error(f"The testbed does not have the 'dut1' netelem.")
+        logger.error(err)
         return {}
 
 
@@ -2240,6 +2277,7 @@ def dut2(
         return getattr(config_helper, "dut2")
     except AttributeError as err:
         logger.error(f"The testbed does not have the 'dut2' netelem.")
+        logger.error(err)
         return {}
 
 
@@ -2252,6 +2290,7 @@ def dut3(
         return getattr(config_helper, "dut3")
     except AttributeError as err:
         logger.error(f"The testbed does not have the 'dut3' netelem.")
+        logger.error(err)
         return {}
     
 
@@ -2264,6 +2303,7 @@ def dut4(
         return getattr(config_helper, "dut4")
     except AttributeError as err:
         logger.error(f"The testbed does not have the 'dut4' netelem.")
+        logger.error(err)
         return {}
 
 
@@ -2322,6 +2362,7 @@ def udks() -> Udks:
 class Testbed(metaclass=Singleton):
     
     def __init__(self, request) -> None:
+        self.config: Dict[str, Union[str, Dict[str]]] = request.getfixturevalue("loaded_config")
         self.nodes: List[Node] = request.getfixturevalue("nodes")
         self.standalone_nodes: List[Node] = request.getfixturevalue("standalone_nodes")
         self.stack_nodes: List[Node] = request.getfixturevalue("stack_nodes")
@@ -2333,12 +2374,14 @@ class Testbed(metaclass=Singleton):
         self.dut_3: Node = request.getfixturevalue("dut3")
         self.dut_4: Node = request.getfixturevalue("dut4")
         self.dut_list: List[Node] = request.getfixturevalue("dut_list")
+        self.onboarding_locations: Dict[str, str] = request.getfixturevalue("onboarding_locations")
         self.logger: PytestLogger = request.getfixturevalue("logger")
         self.screen: Screen = request.getfixturevalue("screen")
         self.navigator: Navigator = request.getfixturevalue("navigator")
         self.utils: Utils = request.getfixturevalue("utils")
         self.default_library: DefaultLibrary = request.getfixturevalue("default_library")
         self.udks: Udks = request.getfixturevalue("udks")
+        self.dump_data: Callable[[Union[str, List, Dict]], str] = dump_data
         self.update_test_name: Callable[[str], None] = request.getfixturevalue("update_test_name")
         self.cloud_driver: CloudDriver = request.getfixturevalue("cloud_driver")
         self.node_1_policy_config: Dict[str, str] = request.getfixturevalue("node_1_policy_config")
@@ -2354,7 +2397,7 @@ class Testbed(metaclass=Singleton):
         self.enter_switch_cli: EnterSwitchCli = request.getfixturevalue("enter_switch_cli")
         self.open_spawn: OpenSpawn = request.getfixturevalue("open_spawn")
         self.connect_to_all_devices: Callable[[], Iterator[NetworkElementCliSend]] = request.getfixturevalue("connect_to_all_devices")
-        self.close_connection = request.getfixturevalue("close_connection")
+        self.close_connection: CloseConnection = request.getfixturevalue("close_connection")
         self.virtual_routers: Dict[str, str] = request.getfixturevalue("virtual_routers")
         self.configure_iq_agent: ConfigureIqAgent = request.getfixturevalue("configure_iq_agent")
         self.check_devices_are_reachable: CheckDevicesAreReachable = request.getfixturevalue("check_devices_are_reachable")
@@ -2368,6 +2411,8 @@ class Testbed(metaclass=Singleton):
         self.policy_config: PolicyConfig = request.getfixturevalue("policy_config")
         self.cli: Cli = request.getfixturevalue("cli")
         self.dev_cmd: NetworkElementCliSend = request.getfixturevalue("dev_cmd")
+        self.debug: Callable = request.getfixturevalue("debug")
+        self.create_location: CreateLocation = request.getfixturevalue("create_location")
 
 
 @pytest.fixture(scope="session")
