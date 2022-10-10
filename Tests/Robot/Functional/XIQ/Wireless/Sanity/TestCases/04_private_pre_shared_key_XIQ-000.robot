@@ -76,7 +76,7 @@ Pre Condition
     ${LOGIN_STATUS}=                Login User                 ${tenant_username}     ${tenant_password}    check_warning_msg=True
     should be equal as integers     ${LOGIN_STATUS}               1
 
-    ${DEVICE_STATUS}=               Get Device Status       device_mac=${ap1.mac}
+    ${DEVICE_STATUS}=               Get Device Status       device_mac=${ap1.serial}
     Should contain any              ${DEVICE_STATUS}        green     config audit mismatch
 
     ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          ${OPEN_POLICY}            &{CONFIG_PUSH_OPEN_NW_01}

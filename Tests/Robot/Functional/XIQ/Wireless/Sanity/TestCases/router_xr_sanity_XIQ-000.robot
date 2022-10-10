@@ -147,7 +147,7 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     ${CONNECTED_STATUS}=    Wait Until Device Online                ${router1.serial}
     Should Be Equal as Integers             ${CONNECTED_STATUS}          1
 
-    ${DEVICE_STATUS}=       Get Device Status       device_mac=${router1.mac}
+    ${DEVICE_STATUS}=       Get Device Status       device_mac=${router1.serial}
     Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
 
     ${CAPWAP_STATUS}=       Send            ${ROUTER_SPAWN}         ${cmd_capwap_client_state}

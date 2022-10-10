@@ -92,7 +92,7 @@ TCCS-7292_Step1: Onboard EXOS Switch on XIQ
     ${device_managed_result}=    WAIT UNTIL DEVICE MANAGED       ${netelem1.serial}
     Should Be Equal As Integers                 ${device_managed_result}       1
 
-    ${DEVICE_STATUS}=                   Get Device Status       device_mac=${netelem1.mac}
+    ${DEVICE_STATUS}=                   Get Device Status       device_mac=${netelem1.serial}
     Should contain any                  ${DEVICE_STATUS}    green     config audit mismatch
 
 TCCS-7292_Step2: Verify EXOS Switch Information on Device 360 page
