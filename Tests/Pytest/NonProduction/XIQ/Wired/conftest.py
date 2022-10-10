@@ -16,7 +16,6 @@ from _pytest import mark, fixtures
 from collections import defaultdict
 from pytest_testconfig import config
 from contextlib import contextmanager
-from dataclasses import dataclass
 from typing import (
     List,
     Dict,
@@ -51,14 +50,6 @@ OnboardingOption = NewType("OnboardingOption", Dict[str, Union[str, Dict[str, st
 PolicyConfig = NewType("PolicyConfig", DefaultDict[str, Dict[str, str]])
 TestCaseMarker = NewType("TestCaseMarker", str)
 Priority = NewType("Priority", str)
-
-_config_helper: PytestConfigHelper = None
-_nodes: List[Node] = []
-_standalone_nodes: List[Node] = []
-_stack_nodes: List[Node] = []
-onboard_one_node_flag: bool = False
-onboard_two_node_flag: bool = False
-onboard_stack_flag: bool = False
 logger_obj: PytestLogger = PytestLogger()
 
 
@@ -120,7 +111,7 @@ class ConfigureIqAgent(Protocol):
         ) -> None: ...
 
 
-class CheckDutsAreReachable(Protocol):
+class CheckDevicesAreReachable(Protocol):
     def __call__(
         self, 
         duts: List[Node],
@@ -292,32 +283,51 @@ def get_priority_marker(item: pytest.Function) -> List[Priority]:
     return [m.name for m in item.own_markers if m.name in valid_priorities]
 
 
-def get_item_markers(item: pytest.Function) -> List[mark.structures.Mark]: return item.own_markers
-def get_node_markers(item: pytest.Function) -> List[mark.structures.Mark]: return list(item.iter_markers())
+def get_item_markers(
+    item: pytest.Function
+    ) -> List[mark.structures.Mark]:
+    return item.own_markers
 
 
-def get_item_dependson_markers(item: pytest.Function) -> List[mark.structures.Mark]:
+def get_node_markers(
+    item: pytest.Function
+    ) -> List[mark.structures.Mark]:
+    return list(item.iter_markers())
+
+
+def get_item_dependson_markers(
+    item: pytest.Function
+    ) -> List[mark.structures.Mark]:
     return [marker for marker in get_item_markers(item) if marker.name == "dependson"]
 
 
-def get_node_dependson_markers(item: pytest.Function) -> List[mark.structures.Mark]:
+def get_node_dependson_markers(
+    item: pytest.Function
+    ) -> List[mark.structures.Mark]:
     return [marker for marker in get_node_markers(item) if marker.name == "dependson"]
+
+
+def pytest_configure(config):
+    pytest.runlist_name: str = ""
+    pytest.runlist_path: str = ""
+    pytest.suitemaps_name: List[str] = []
+    pytest.runlist_tests: List[TestCaseMarker] = []
+    pytest.suitemap_tests: Dict[str, Union[str, Dict[str, str]]] = {}
+    pytest.suitemap_data: Dict[str, Union[str, Dict[str, str]]] = {}
+    pytest.onboarding_options: OnboardingOption = {}
+    pytest.onboard_one_node_flag: bool = False 
+    pytest.onboard_two_node_flag: bool = False 
+    pytest.onboard_stack_flag: bool = False 
+    pytest.nodes: List[Node] = []
+    pytest.standalone_nodes: List[Node] = []
+    pytest.stack_nodes: List[Node] = []
+    pytest.config_helper: PytestConfigHelper = PytestConfigHelper(config)
+    pytest.onboarding_test_name: str = "tcxm_xiq_onboarding"
+    pytest.onboarding_cleanup_test_name: str = "tcxm_xiq_onboarding_cleanup"
 
 
 def pytest_collection_modifyitems(session, items):
     
-    global onboard_one_node_flag
-    global onboard_two_node_flag
-    global onboard_stack_flag
-    global _nodes
-    global _standalone_nodes
-    global _stack_nodes
-    global _config_helper
-    global runlist_tests
-
-    onboarding_test_name = "tcxm_xiq_onboarding"
-    onboarding_cleanup_test_name = "tcxm_xiq_onboarding_cleanup"
-
     for item in items:
         if (callspec := getattr(item, "callspec", None)) is not None:
             test_data = callspec.params["test_data"]
@@ -331,11 +341,11 @@ def pytest_collection_modifyitems(session, items):
     collected_items: List[pytest.Function] = []
         
     for item in items:
-        if onboarding_test_name in [m.name for m in item.own_markers]:
-            if not [it for it in collected_items if onboarding_test_name in [m.name for m in it.own_markers]]:
+        if pytest.onboarding_test_name in [m.name for m in item.own_markers]:
+            if not [it for it in collected_items if pytest.onboarding_test_name in [m.name for m in it.own_markers]]:
                 collected_items.append(item)
-        elif onboarding_cleanup_test_name in [m.name for m in item.own_markers]:
-            if not [it for it in collected_items if onboarding_cleanup_test_name in [m.name for m in it.own_markers]]:
+        elif pytest.onboarding_cleanup_test_name in [m.name for m in item.own_markers]:
+            if not [it for it in collected_items if pytest.onboarding_cleanup_test_name in [m.name for m in it.own_markers]]:
                 collected_items.append(item)
         else:
             collected_items.append(item)
@@ -344,42 +354,42 @@ def pytest_collection_modifyitems(session, items):
         logger_obj.info(f"Collected: '{item.nodeid}'.")
 
     [item_onboarding] = [
-        it for it in collected_items if onboarding_test_name in [m.name for m in it.own_markers]]
+        it for it in collected_items if pytest.onboarding_test_name in [m.name for m in it.own_markers]]
     [item_onboarding_cleanup] = [
-        it for it in collected_items if onboarding_cleanup_test_name in [m.name for m in it.own_markers]]
+        it for it in collected_items if pytest.onboarding_cleanup_test_name in [m.name for m in it.own_markers]]
     
     collected_items.remove(item_onboarding)
     collected_items.remove(item_onboarding_cleanup)
     
-    _config_helper = PytestConfigHelper(config)
-    _nodes = list(filter(lambda d: d is not None, [getattr(_config_helper, f"dut{i}", None) for i in range(1, 10)]))
+    pytest.config_helper = PytestConfigHelper(config)
+    pytest.nodes = list(filter(lambda d: d is not None, [getattr(pytest.config_helper, f"dut{i}", None) for i in range(1, 10)]))
 
     logger_obj.step("Check the capabilities of the testbed.")
-    _standalone_nodes = [node for node in _nodes if node.get("platform", "").upper() != "STACK"]
-    logger_obj.info(f"Found {len(_standalone_nodes)} standalone node(s).")
+    pytest.standalone_nodes = [node for node in pytest.nodes if node.get("platform", "").upper() != "STACK"]
+    logger_obj.info(f"Found {len(pytest.standalone_nodes)} standalone node(s).")
 
-    _stack_nodes = [node for node in _nodes if node not in _standalone_nodes]
-    logger_obj.info(f"Found {len(_stack_nodes)} stack node(s).")
+    pytest.stack_nodes = [node for node in pytest.nodes if node not in pytest.standalone_nodes]
+    logger_obj.info(f"Found {len(pytest.stack_nodes)} stack node(s).")
 
     temp_items: List[pytest.Function] = collected_items[:]
 
-    onboard_stack_flag = len(_stack_nodes) >= 1
-    if not onboard_stack_flag:
+    pytest.onboard_stack_flag = len(pytest.stack_nodes) >= 1
+    if not pytest.onboard_stack_flag:
         logger_obj.warning(
             "There is no stack device in the provided yaml file. The stack test cases will be unselected.")
         temp_items = [
             item for item in temp_items if 'testbed_stack' not in [marker.name for marker in item.own_markers]]
 
-    onboard_two_node_flag = len(_standalone_nodes) > 1
-    if not onboard_two_node_flag:
+    pytest.onboard_two_node_flag = len(pytest.standalone_nodes) > 1
+    if not pytest.onboard_two_node_flag:
         logger_obj.warning(
             "There are not enough standalone devices in the provided yaml file. "
             "The testbed two node test cases will be unselected.")
         temp_items = [
             item for item in temp_items if 'testbed_2_node' not in [marker.name for marker in item.own_markers]]
     
-    onboard_one_node_flag = len(_standalone_nodes) >= 1
-    if not onboard_one_node_flag:
+    pytest.onboard_one_node_flag = len(pytest.standalone_nodes) >= 1
+    if not pytest.onboard_one_node_flag:
         logger_obj.warning("There is no standalone device in the provided yaml file. "
                            "The testbed one node test cases will be unselected.")
         temp_items = [
@@ -396,7 +406,7 @@ def pytest_collection_modifyitems(session, items):
         if item not in temp_items:
             logger_obj.info(
                 f"Unselected: '{item.nodeid}' (markers: '{[m.name for m in item.own_markers]}').")
-    
+      
     item_test_marker_mapping: DefaultDict[str, List[str]] = defaultdict(lambda: [])
     test_marker_item_mapping: DefaultDict[pytest.Function, List[str]] = defaultdict(lambda: [])
     priority_item_mapping: DefaultDict[pytest.Function, List[str]] = defaultdict(lambda: [])
@@ -457,7 +467,7 @@ def pytest_collection_modifyitems(session, items):
             logger_obj.error(error)
             pytest.fail(error)
 
-    all_tcs: List[TestCaseMarker] = [onboarding_test_name, onboarding_cleanup_test_name]
+    all_tcs: List[TestCaseMarker] = [pytest.onboarding_test_name, pytest.onboarding_cleanup_test_name]
     [all_tcs.append(get_test_marker(item)[0]) for item in temp_items]
 
     found_tcs: List[TestCaseMarker] = []
@@ -482,14 +492,14 @@ def pytest_collection_modifyitems(session, items):
         temp_items.extend([item_onboarding, item_onboarding_cleanup])
         
         suitemap_tcs = []
-        for test_identifier, test_info in suitemap_tests.items():
+        for test_identifier, test_info in pytest.suitemap_tests.items():
             if (tc := test_info.get("tc")) is not None:
                 suitemap_tcs.append(tc)
             elif (tcs := test_info.get("tests")) is not None:
                 for tc in tcs:
                     suitemap_tcs.append(tc['tc'])
 
-        for test in runlist_tests:
+        for test in pytest.runlist_tests:
             for item in temp_items:
                 [test_code] = get_test_marker(item)
                 if test_code == test:
@@ -540,64 +550,48 @@ def pytest_collection_modifyitems(session, items):
     else:
         message = "Did not find any test function to run this session."
         logger_obj.warning(message)
-        
+    
     items[:] = ordered_items
 
-    
-runlist_name: str = ""
-runlist_path: str = ""
-suitemaps_name = []
-runlist_tests = []
-suitemap_tests = {}
-suitemap_data = {}
-onboarding_options = {}
+    for item in items:
+        item.own_markers
 
 
 def pytest_sessionstart(session):
     
     session.results = dict()
 
-    global runlist_name
-    global runlist_path
-    global runlist_tests
-    global suitemaps_name
-    global suitemap_tests
-    global suitemap_data
-    global onboarding_options
-
-    runlist_path = session.config.option.runlist
-
-    with open(runlist_path, "r") as run_list:
+    pytest.runlist_path = session.config.option.runlist
+    
+    with open(pytest.runlist_path, "r") as run_list:
         output_runlist = run_list.read()
     
     runlist = yaml.safe_load(output_runlist)
-    runlist_name = list(runlist)[0]
-
-    runlist_tests = runlist[runlist_name]['tests']
-    suitemaps_name = runlist[runlist_name]['suitemap']
+    pytest.runlist_name = list(runlist)[0]
+    logger_obj.info(f"Current runlist ('{pytest.runlist_name}') is located in this yaml file: '{pytest.runlist_path}'.")
     
-    for suitemap in suitemaps_name:
+    pytest.runlist_tests = runlist[pytest.runlist_name]['tests']
+    logger_obj.info(f"Found {len(pytest.runlist_name)} tests in given runlist: {pytest.runlist_tests}")
+    
+    pytest.suitemaps_name = runlist[pytest.runlist_name]['suitemap']
+    
+    for suitemap in pytest.suitemaps_name:
         with open(suitemap, "r") as run_list:
             output_suitemap = run_list.read()
         suitemap_tests_dict = yaml.safe_load(output_suitemap)['tests']
         suitemap_data_dict = yaml.safe_load(output_suitemap)['data']
-        suitemap_tests = {**suitemap_tests, ** suitemap_tests_dict}
-        suitemap_data = {**suitemap_data, **suitemap_data_dict}
+        pytest.suitemap_tests = {**pytest.suitemap_tests, ** suitemap_tests_dict}
+        pytest.suitemap_data = {**pytest.suitemap_data, **suitemap_data_dict}
     
-    onboarding_options = runlist[runlist_name]['onboarding_options']
+    pytest.onboarding_options = runlist[pytest.runlist_name]['onboarding_options']
 
 
 def pytest_generate_tests(metafunc):
     
-    global runlist_name
-    global runlist_tests
-    global suitemaps_name
-    global suitemap_tests
-    
     test_identifier = metafunc.definition.function.__qualname__.replace(".", "::")
             
     try:
-        test_data = suitemap_tests[test_identifier]
+        test_data = pytest.suitemap_tests[test_identifier]
     except KeyError:
         logger_obj.warning(
                 f"This test does not have a definition in the suitemap files: '{metafunc.definition.nodeid}'.")
@@ -615,8 +609,9 @@ def pytest_generate_tests(metafunc):
             
         if "test_data" in metafunc.fixturenames:
             metafunc.parametrize("test_data", test_data)
+            
         if "suite_data" in metafunc.fixturenames:
-            metafunc.parametrize("suite_data", [suitemap_data])
+            metafunc.parametrize("suite_data", [pytest.suitemap_data])
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -692,7 +687,7 @@ def pytest_runtest_call(item):
         if (data := callspec.params.get("test_data")) is not None:
             test_data = data
     else:
-        test_data = suitemap_tests[test_identifier]
+        test_data = pytest.suitemap_tests[test_identifier]
         
     for field in ["author", "tc", "description", "title"]:
         if (field_value := test_data.get(field)) is not None:
@@ -716,7 +711,8 @@ class OnboardingTests:
         request: fixtures.SubRequest,
         logger: PytestLogger
         ) -> None:
-        if not any([onboard_one_node_flag, onboard_two_node_flag, onboard_stack_flag]):
+        return
+        if not any([pytest.onboard_one_node_flag, pytest.onboard_two_node_flag, pytest.onboard_stack_flag]):
             logger.info(
                 "Currently there are no devices given in the yaml files so the onboarding test won't configure anything.")
             return
@@ -729,8 +725,9 @@ class OnboardingTests:
         request: fixtures.SubRequest,
         logger: PytestLogger
         ) -> None:
+        return
         if not any(
-            [onboard_one_node_flag, onboard_two_node_flag, onboard_stack_flag]):
+            [pytest.onboard_one_node_flag, pytest.onboard_two_node_flag, pytest.onboard_stack_flag]):
             logger.info(
                 "Currently there are no devices given in the yaml files so "
                 "the onboarding cleanup test won't unconfigure anything.")
@@ -1040,16 +1037,16 @@ def onboarding_locations(
 
 
 @pytest.fixture(scope="session")
-def check_duts_are_reachable(
+def check_devices_are_reachable(
     logger: PytestLogger,
     debug: Callable,
     wait_till: Callable
-    ) -> CheckDutsAreReachable:
+    ) -> CheckDevicesAreReachable:
 
     windows = platform.system() == "Windows"
     
     @debug
-    def check_duts_are_reachable_func(
+    def check_devices_are_reachable_func(
         duts: List[Node], 
         retries: int=3, 
         step: int=1
@@ -1092,12 +1089,12 @@ def check_duts_are_reachable(
             logger.error(error_msg)
             pytest.fail(error_msg)
 
-    return check_duts_are_reachable_func
+    return check_devices_are_reachable_func
 
 
 @pytest.fixture(scope="session")
 def config_helper() -> PytestConfigHelper:
-    return _config_helper
+    return pytest.config_helper
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -1378,17 +1375,17 @@ def _temporary_fix_assign_policy(xiq, policy_name, dut):
 
 @pytest.fixture(scope="session")
 def nodes() -> List[Node]:
-    return _nodes
+    return pytest.nodes
 
 
 @pytest.fixture(scope="session")
 def standalone_nodes() -> List[Node]:
-    return _standalone_nodes
+    return pytest.standalone_nodes
 
 
 @pytest.fixture(scope="session")
 def stack_nodes() -> List[Node]:
-    return _stack_nodes
+    return pytest.stack_nodes
 
     
 @pytest.fixture(scope="session")
@@ -1409,6 +1406,21 @@ def policy_config(
 
 
 @pytest.fixture(scope="session")
+def node_1_policy_config(policy_config, node_1):
+    return policy_config.get(node_1.get("name"), {})
+
+
+@pytest.fixture(scope="session")
+def node_2_policy_config(policy_config, node_2):
+    return policy_config.get(node_2.get("name"), {})
+
+
+@pytest.fixture(scope="session")
+def node_stack_policy_config(policy_config, node_stack):
+    return policy_config.get(node_stack.get("name"), {})
+
+
+@pytest.fixture(scope="session")
 def dut_list(
     standalone_nodes: List[Node],
     stack_nodes: List[Node],
@@ -1419,7 +1431,7 @@ def dut_list(
     
     duts: List[Node] = []
 
-    if onboard_two_node_flag:
+    if pytest.onboard_two_node_flag:
         runos_node_1 = node_1_onboarding_options.get('run_os', [])
         platform_node_1 = node_1_onboarding_options.get('platform', "")
         runos_node_2 = node_2_onboarding_options.get('run_os', "")
@@ -1456,7 +1468,7 @@ def dut_list(
         node.node_name = "node_2"
         duts.append(node)
 
-    elif onboard_one_node_flag:
+    elif pytest.onboard_one_node_flag:
         runos_node_1 = node_1_onboarding_options.get('run_os', [])
         platform_node_1 = node_1_onboarding_options.get('platform', "")
         for node in standalone_nodes:
@@ -1474,7 +1486,7 @@ def dut_list(
         node.node_name = "node_1"
         duts.append(node)   
 
-    if onboard_stack_flag:
+    if pytest.onboard_stack_flag:
         runos_node_stack = node_stack_onboarding_options.get('run_os', [])
         for node in stack_nodes:
             if runos_node_stack:
@@ -1583,7 +1595,7 @@ def dump_data(data) -> str:
 @pytest.fixture(scope="session")
 def dump_switch_logs(
     enter_switch_cli: EnterSwitchCli,
-    check_duts_are_reachable: CheckDutsAreReachable,
+    check_devices_are_reachable: CheckDevicesAreReachable,
     dut_list: List[Node],
     logger: PytestLogger
     ) -> DumpSwitchLogs:
@@ -1624,7 +1636,7 @@ def dump_switch_logs(
         
         def worker(dut: Node):
             try:
-                check_duts_are_reachable([dut])
+                check_devices_are_reachable([dut])
             except:
                 logger.warning(f"'{dut.name}' is not reachable so won't dump any info for it.")
                 return
@@ -1667,7 +1679,7 @@ def onboard(
     request: fixtures.SubRequest
     ) -> None:
 
-    check_duts_are_reachable: CheckDutsAreReachable = request.getfixturevalue("check_duts_are_reachable")
+    check_devices_are_reachable: CheckDevicesAreReachable = request.getfixturevalue("check_devices_are_reachable")
     configure_network_policies: ConfigureNetworkPolicies = request.getfixturevalue("configure_network_policies")
     login_xiq: LoginXiq = request.getfixturevalue("login_xiq")
     change_device_management_settings: ChangeDeviceManagementSettings = request.getfixturevalue("change_device_management_settings")
@@ -1685,7 +1697,7 @@ def onboard(
     logger.info(f"These are the devices that will be onboarded ({len(dut_list)} device(s)): " + "'" +
                 '\', \''.join([dut.name for dut in dut_list]) + "'.")
 
-    check_duts_are_reachable(dut_list)
+    check_devices_are_reachable(dut_list)
 
     onboarding_locations: Dict[str, str] = request.getfixturevalue("onboarding_locations")
     logger.info(f"These locations will be used for the onboarding:\n'{dump_data(onboarding_locations)}'")
@@ -1747,7 +1759,7 @@ def node_1(
     request: fixtures.SubRequest,
     logger
     ) -> Node:
-    if onboard_one_node_flag or onboard_two_node_flag:
+    if pytest.onboard_one_node_flag or pytest.onboard_two_node_flag:
         dut_list: List[Node] = request.getfixturevalue("dut_list")
         return [dut for dut in dut_list if dut.node_name == "node_1"][0]
     logger.warning("Testbed does not have a standalone node.")
@@ -1756,17 +1768,17 @@ def node_1(
 
 @pytest.fixture(scope="session")
 def node_1_onboarding_options():
-    return onboarding_options.get("standalone").get("node_1", {})
+    return pytest.onboarding_options.get("standalone").get("node_1", {})
 
 
 @pytest.fixture(scope="session")
 def node_2_onboarding_options():
-    return onboarding_options.get("standalone").get("node_2", {})
+    return pytest.onboarding_options.get("standalone").get("node_2", {})
 
 
 @pytest.fixture(scope="session")
 def node_stack_onboarding_options():
-    return onboarding_options.get("node_stack")
+    return pytest.onboarding_options.get("node_stack")
 
 
 @pytest.fixture(scope="session")
@@ -1774,7 +1786,7 @@ def node_2(
     request: fixtures.SubRequest,
     logger
     ) -> List[Node]:
-    if onboard_two_node_flag:
+    if pytest.onboard_two_node_flag:
         dut_list: List[Node] = request.getfixturevalue("dut_list")
         return [dut for dut in dut_list if dut.node_name == "node_2"][0]
     logger.warning("Testbed does not have two standalone nodes.")
@@ -1786,7 +1798,7 @@ def node_stack(
     request: fixtures.SubRequest,
     logger
     ) -> Node:
-    if onboard_stack_flag:
+    if pytest.onboard_stack_flag:
         dut_list: List[Node] = request.getfixturevalue("dut_list")
         return [dut for dut in dut_list if dut.node_name == "node_stack"][0]
     logger.warning("Testbed does not have a stack node.")
@@ -2216,7 +2228,7 @@ def dut1(
         return getattr(config_helper, "dut1")
     except AttributeError as err:
         logger.error(f"The testbed does not have the 'dut1' netelem.")
-        raise err
+        return {}
 
 
 @pytest.fixture(scope="session")
@@ -2228,7 +2240,7 @@ def dut2(
         return getattr(config_helper, "dut2")
     except AttributeError as err:
         logger.error(f"The testbed does not have the 'dut2' netelem.")
-        raise err
+        return {}
 
 
 @pytest.fixture(scope="session")
@@ -2240,8 +2252,20 @@ def dut3(
         return getattr(config_helper, "dut3")
     except AttributeError as err:
         logger.error(f"The testbed does not have the 'dut3' netelem.")
-        raise err
+        return {}
     
+
+@pytest.fixture(scope="session")
+def dut4(
+    config_helper: PytestConfigHelper, 
+    logger: PytestLogger
+    ) -> Node:
+    try:
+        return getattr(config_helper, "dut4")
+    except AttributeError as err:
+        logger.error(f"The testbed does not have the 'dut4' netelem.")
+        return {}
+
 
 @pytest.fixture(scope="session")
 def network_manager() -> NetworkElementConnectionManager:
@@ -2279,7 +2303,7 @@ def auto_actions() -> AutoActions:
 
 
 @pytest.fixture(scope="session")
-def update_test_name(loaded_config: Dict[str, str]) -> Callable:
+def update_test_name(loaded_config: Dict[str, str]) -> Callable[[str], None]:
     def func(test_name: str):
         loaded_config['${TEST_NAME}'] = test_name
     return func
@@ -2293,3 +2317,59 @@ def default_library() -> DefaultLibrary:
 @pytest.fixture(scope="session")
 def udks() -> Udks:
     return Udks()
+
+
+class Testbed(metaclass=Singleton):
+    
+    def __init__(self, request) -> None:
+        self.nodes: List[Node] = request.getfixturevalue("nodes")
+        self.standalone_nodes: List[Node] = request.getfixturevalue("standalone_nodes")
+        self.stack_nodes: List[Node] = request.getfixturevalue("stack_nodes")
+        self.node_1: Node = request.getfixturevalue("node_1")
+        self.node_2: Node = request.getfixturevalue("node_2")
+        self.node_stack: Node = request.getfixturevalue("node_stack")
+        self.dut_1: Node = request.getfixturevalue("dut1")
+        self.dut_2: Node = request.getfixturevalue("dut2")
+        self.dut_3: Node = request.getfixturevalue("dut3")
+        self.dut_4: Node = request.getfixturevalue("dut4")
+        self.dut_list: List[Node] = request.getfixturevalue("dut_list")
+        self.logger: PytestLogger = request.getfixturevalue("logger")
+        self.screen: Screen = request.getfixturevalue("screen")
+        self.navigator: Navigator = request.getfixturevalue("navigator")
+        self.utils: Utils = request.getfixturevalue("utils")
+        self.default_library: DefaultLibrary = request.getfixturevalue("default_library")
+        self.udks: Udks = request.getfixturevalue("udks")
+        self.update_test_name: Callable[[str], None] = request.getfixturevalue("update_test_name")
+        self.cloud_driver: CloudDriver = request.getfixturevalue("cloud_driver")
+        self.node_1_policy_config: Dict[str, str] = request.getfixturevalue("node_1_policy_config")
+        self.node_2_policy_config: Dict[str, str] = request.getfixturevalue("node_2_policy_config")
+        self.node_stack_policy_config: Dict[str, str] = request.getfixturevalue("node_stack_policy_config")
+        self.network_manager: NetworkElementConnectionManager = request.getfixturevalue("network_manager")
+        self.node_1_onboarding_options: Dict[str, Union[str, Dict[str]]] = request.getfixturevalue("node_1_onboarding_options")
+        self.node_2_onboarding_options: Dict[str, Union[str, Dict[str]]] = request.getfixturevalue("node_2_onboarding_options")
+        self.node_stack_onboarding_options: Dict[str, Union[str, Dict[str]]] = request.getfixturevalue("node_stack_onboarding_options")
+        self.bounce_iqagent: BounceIqagent = request.getfixturevalue("bounce_iqagent")
+        self.dut_ports: Dict[str, List[str]] = request.getfixturevalue("dut_ports")
+        self.login_xiq: LoginXiq = request.getfixturevalue("login_xiq")
+        self.enter_switch_cli: EnterSwitchCli = request.getfixturevalue("enter_switch_cli")
+        self.open_spawn: OpenSpawn = request.getfixturevalue("open_spawn")
+        self.connect_to_all_devices: Callable[[], Iterator[NetworkElementCliSend]] = request.getfixturevalue("connect_to_all_devices")
+        self.close_connection = request.getfixturevalue("close_connection")
+        self.virtual_routers: Dict[str, str] = request.getfixturevalue("virtual_routers")
+        self.configure_iq_agent: ConfigureIqAgent = request.getfixturevalue("configure_iq_agent")
+        self.check_devices_are_reachable: CheckDevicesAreReachable = request.getfixturevalue("check_devices_are_reachable")
+        self.dump_switch_logs: DumpSwitchLogs = request.getfixturevalue("dump_switch_logs")
+        self.check_devices_are_onboarded: CheckDevicesAreOnboarded = request.getfixturevalue("check_devices_are_onboarded")
+        self.modify_stacking_node: ModifyStackingNode = request.getfixturevalue("modify_stacking_node")
+        self.reboot_device: RebootDevice = request.getfixturevalue("reboot_device")
+        self.reboot_stack_unit: RebootStackUnit = request.getfixturevalue("reboot_stack_unit")
+        self.get_stack_slots: GetStackSlots = request.getfixturevalue("get_stack_slots")
+        self.clear_traffic_counters: ClearTrafficCounters = request.getfixturevalue("clear_traffic_counters")
+        self.policy_config: PolicyConfig = request.getfixturevalue("policy_config")
+        self.cli: Cli = request.getfixturevalue("cli")
+        self.dev_cmd: NetworkElementCliSend = request.getfixturevalue("dev_cmd")
+
+
+@pytest.fixture(scope="session")
+def testbed(request):
+    return Testbed(request)
