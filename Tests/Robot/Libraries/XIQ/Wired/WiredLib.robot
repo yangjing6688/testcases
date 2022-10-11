@@ -59,7 +59,7 @@ Create Org
 
     ${randomstring}     Generate Random String
 
-    ${location}=        Set variable             ${netelem1.mac}_${randomstring}
+    ${location}=        Set variable             xapi_loc_${randomstring}
     ${building}=        Set variable             building_${randomstring}
     ${floor}=           Set variable               floor_${randomstring}
 
