@@ -1524,26 +1524,24 @@ def node_list(
     if pytest.onboard_two_node or pytest.onboard_one_node:
         
         runos_node_1 = node_1_onboarding_options.get('run_os', [])
-        platform_node_1 = node_1_onboarding_options.get('platform', "")
-        runos_node_2 = node_2_onboarding_options.get('run_os', "")
-        platform_node_2 = node_2_onboarding_options.get('platform', "")
-        
+        platform_node_1 = node_1_onboarding_options.get('platform', "standalone")
+        runos_node_2 = node_2_onboarding_options.get('run_os', [])
+        platform_node_2 = node_2_onboarding_options.get('platform', "standalone")
+                
         for node in standalone_nodes:
             if runos_node_1:
                 if any(node.cli_type.upper() == os.upper() for os in runos_node_1):
-                    if platform_node_1 != "standalone":
-                        if node.platform.upper() == platform_node_1.upper():
-                            break
-                    else:
+                    if (platform_node_1.lower() == "standalone") or (node.platform.lower() == platform_node_1.lower()):
                         break
             else:
-                break
+                if (platform_node_1.lower() == "standalone") or (node.platform.lower() == platform_node_1.lower()):
+                    break
         else:
             error_msg = f"Failed to find a standalone node in the testbed yaml that satisfy these requirements: run_os={runos_node_1}, platform='{platform_node_1}'."
             logger.error(error_msg)
             pytest.fail(error_msg)
 
-        logger.info(f"Successfuly chose this dut as 'node_1': '{node.name}'.")
+        logger.info(f"Successfuly chose this dut as 'node_1': '{node.name}' (cli_type='{node.cli_type}', run_os={runos_node_1}, platform='{platform_node_1}').")
 
         node.node_name = "node_1"
         duts.append(node)
@@ -1553,20 +1551,18 @@ def node_list(
                 if node not in duts:
                     if runos_node_2:
                         if any(node.cli_type.upper() == os.upper() for os in runos_node_2):
-                                if platform_node_2 != "standalone":
-                                    if node.platform.upper() == platform_node_2.upper():
-                                        break
-                                else:
+                                if (platform_node_2.lower() == "standalone") or (node.platform.lower() == platform_node_2.lower()):
                                     break
                     else:
-                        break     
+                        if (platform_node_2.lower() == "standalone") or (node.platform.lower() == platform_node_2.lower()):
+                            break  
             else:
-                error_msg = f"Failed to find a standalone node in the testbed yaml that satisfy these requirements: run_os={runos_node_2}, platform='{platform_node_2}'."\
+                error_msg = f"Failed to find a standalone node in the testbed yaml that satisfy these requirements: run_os={runos_node_2}, platform='{platform_node_2}'. "\
                             f"Already used node: '{duts[0].name}'."
                 logger.error(error_msg)
                 pytest.fail(error_msg)
 
-            logger.info(f"Successfuly chose this dut as 'node_2': '{node.name}'.")
+            logger.info(f"Successfuly chose this dut as 'node_2': '{node.name}' (cli_type='{node.cli_type}', run_os={runos_node_2}, platform='{platform_node_2}').")
             
             node.node_name = "node_2"
             duts.append(node)
@@ -1584,7 +1580,7 @@ def node_list(
             logger.error(error_msg)
             pytest.fail(error_msg)
 
-        logger.info(f"Successfuly chose this dut as 'node_stack': '{node.name}'.")
+        logger.info(f"Successfuly chose this dut as 'node_stack': '{node.name}' (cli_type='{node.cli_type}', run_os={runos_node_stack}).")
         
         node.node_name = "node_stack"
         duts.append(node)   
