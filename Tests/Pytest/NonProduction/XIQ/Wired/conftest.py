@@ -1472,6 +1472,21 @@ def node_stack_policy_config(
 
 
 @pytest.fixture(scope="session")
+def node_1_onboarding_location(onboarding_locations, node_1):
+    return onboarding_locations.get(node_1.get("name", ""), "")
+
+
+@pytest.fixture(scope="session")
+def node_2_onboarding_location(onboarding_locations, node_2):
+    return onboarding_locations.get(node_2.get("name", ""), "")
+
+
+@pytest.fixture(scope="session")
+def node_stack_onboarding_location(onboarding_locations, node_stack):
+    return onboarding_locations.get(node_stack.get("name", ""), "")
+
+
+@pytest.fixture(scope="session")
 def node_list(
     standalone_nodes: List[Node],
     stack_nodes: List[Node],
@@ -2416,6 +2431,9 @@ class Testbed(metaclass=Singleton):
         self.dut_4: Node = request.getfixturevalue("dut4")
         self.node_list: List[Node] = request.getfixturevalue("node_list")
         self.onboarding_locations: Dict[str, str] = request.getfixturevalue("onboarding_locations")
+        self.node_1_onboarding_location: str = request.getfixturevalue("node_1_onboarding_location")
+        self.node_2_onboarding_location: str = request.getfixturevalue("node_2_onboarding_location")
+        self.node_stack_onboarding_location: str = request.getfixturevalue("node_stack_onboarding_location")
         self.logger: PytestLogger = request.getfixturevalue("logger")
         self.screen: Screen = request.getfixturevalue("screen")
         self.navigator: Navigator = request.getfixturevalue("navigator")
