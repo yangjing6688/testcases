@@ -46,7 +46,7 @@ from extauto.common.Cli import Cli
 
 
 Node = NewType("Node", Dict[str, Union[str, Dict[str, str]]])
-OnboardingOption = NewType("OnboardingOption", Dict[str, Union[str, Dict[str, str]]])
+OnboardingOptions = NewType("OnboardingOptions", Dict[str, Union[str, Dict[str, str]]])
 PolicyConfig = NewType("PolicyConfig", DefaultDict[str, Dict[str, str]])
 TestCaseMarker = NewType("TestCaseMarker", str)
 PriorityMarker = NewType("PriorityMarker", str)
@@ -334,7 +334,7 @@ def pytest_configure(config):
     pytest.runlist_tests: List[TestCaseMarker] = []
     pytest.suitemap_tests: Dict[str, Union[str, Dict[str, str]]] = {}
     pytest.suitemap_data: Dict[str, Union[str, Dict[str, str]]] = {}
-    pytest.onboarding_options: OnboardingOption = {}
+    pytest.onboarding_options: OnboardingOptions = {}
     pytest.onboard_one_node: bool = False 
     pytest.onboard_two_node: bool = False 
     pytest.onboard_stack: bool = False 
@@ -347,7 +347,10 @@ def pytest_configure(config):
 
 
 def pytest_collection_modifyitems(session, items):
-        
+
+    logger_obj.info(f"Current runlist ('{pytest.runlist_name}') is located in this yaml file: '{pytest.runlist_path}'.")
+    logger_obj.info(f"Found {len(pytest.runlist_name)} tests in given runlist: " + "'" + "', '".join(pytest.runlist_tests) + "'.")
+    
     for item in items:
         if (cls_markers := getattr(item.cls, "pytestmark", None)) is not None:
             item_markers = get_testbed_markers(item)
@@ -492,8 +495,8 @@ def pytest_collection_modifyitems(session, items):
             
             if (cls_markers := getattr(item.cls, "pytestmark", None)) is not None:
                 
-                item_markers = get_item_dependson_markers(item)
-                cls_dependson_markers = [m for m in cls_markers if m.name == "dependson"]
+                item_markers: List[mark.structures.Mark] = get_item_dependson_markers(item)
+                cls_dependson_markers: List[mark.structures.Mark] = [m for m in cls_markers if m.name == "dependson"]
                 for marker in cls_dependson_markers:
                     if not any(marker.name == m.name and marker.args == m.args for m in item_markers):
                         item.add_marker(
@@ -503,17 +506,20 @@ def pytest_collection_modifyitems(session, items):
                 priority_markers: List[PriorityMarker] = get_priority_marker(item)
 
                 if not priority_markers:
+                    
+                    cls_priority_marker: mark.structures.Mark
                     cls_priority_marker = [m for m in cls_markers if m.name in valid_priority_markers]
+                    
                     if cls_priority_marker:
                         item.add_marker(
                             getattr(pytest.mark, cls_priority_marker[0].name)
                         )
 
-        priority_item_mapping: DefaultDict[pytest.Function, List[str]] = defaultdict(lambda: [])
+        priority_item_mapping: DefaultDict[pytest.Function, List[PriorityMarker]] = defaultdict(lambda: [])
         items_without_priority_markers: List[str] = []
 
         for item in temp_items:
-            priorities = get_priority_marker(item)
+            priorities: List[PriorityMarker] = get_priority_marker(item)
 
             if not priorities:
                 items_without_priority_markers.append(
@@ -610,11 +616,7 @@ def pytest_sessionstart(session):
     
     runlist = yaml.safe_load(output_runlist)
     pytest.runlist_name = list(runlist)[0]
-    logger_obj.info(f"Current runlist ('{pytest.runlist_name}') is located in this yaml file: '{pytest.runlist_path}'.")
-    
     pytest.runlist_tests = runlist[pytest.runlist_name]['tests']
-    logger_obj.info(f"Found {len(pytest.runlist_name)} tests in given runlist: {pytest.runlist_tests}")
-    
     pytest.suitemaps_name = runlist[pytest.runlist_name]['suitemap']
     
     for suitemap in pytest.suitemaps_name:
@@ -753,7 +755,6 @@ class OnboardingTests:
         request: fixtures.SubRequest,
         logger: PytestLogger
         ) -> None:
-        return
         if not any([pytest.onboard_one_node, pytest.onboard_two_node, pytest.onboard_stack]):
             logger.info(
                 "Currently there are no devices given in the yaml files so the onboarding test won't configure anything.")
@@ -767,7 +768,6 @@ class OnboardingTests:
         request: fixtures.SubRequest,
         logger: PytestLogger
         ) -> None:
-        return
         if not any(
             [pytest.onboard_one_node, pytest.onboard_two_node, pytest.onboard_stack]):
             logger.info(
@@ -1333,7 +1333,7 @@ def configure_network_policies(
             model_template = data['dut_model_template']
             units_model = data['units_model']
 
-            if onb_options.get('create_network_policy'):
+            if onb_options.get('create_network_policy', True):
                 
                 logger.step(f"Create this network policy for '{dut}' dut (node: '{node_name}'): '{network_policy}'.")
                 assert xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
@@ -1342,7 +1342,7 @@ def configure_network_policies(
                 screen.save_screen_shot()
                 logger.info(f"Successfully created the network policy '{network_policy}' for dut '{dut}' (node: '{node_name}').")
                 
-                if onb_options.get('create_switch_template'):
+                if onb_options.get('create_switch_template', True):
                     logger.step(f"Create and attach this switch template to '{dut}' dut (node: '{node_name}'): '{template_switch}'.")
                     if dut_info.platform.upper() == "STACK":
                         xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(
@@ -1354,7 +1354,7 @@ def configure_network_policies(
                         screen.save_screen_shot()
                     logger.info(f"Successfully created and attached this switch template to the network policy '{network_policy}' of dut '{dut}' (node: '{node_name}').")
 
-                if onb_options.get('assign_network_policy_to_device'):
+                if onb_options.get('assign_network_policy_to_device', True):
                     # assert xiq.xflowsmanageDevices.assign_network_policy_to_switch(
                     #     policy_name=network_policy, serial=dut_info.mac) == 1, \
                     #     f"Couldn't assign policy {network_policy} to device '{dut}'"
@@ -1591,9 +1591,9 @@ def update_devices(
             
             if all(
                 [
-                    onb_options.get('initial_network_policy_push'),
-                    onb_options.get('assign_network_policy_to_device'),
-                    onb_options.get('create_network_policy')
+                    onb_options.get('initial_network_policy_push', True),
+                    onb_options.get('assign_network_policy_to_device', True),
+                    onb_options.get('create_network_policy', True)
                 ]
             ):
                 logger.step(f"Select switch row with serial '{dut.mac}'.")
@@ -1613,7 +1613,7 @@ def update_devices(
         for dut in duts:
             onb_options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
             policy_name = policy_config[dut.name]['policy_name']
-            if onb_options.get('initial_network_policy_push'):
+            if onb_options.get('initial_network_policy_push', True):
                 if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac) != 1:
                     error_msg = f"It look like the update failed this switch: '{dut.mac}'."
                     logger.error(error_msg)
@@ -1832,20 +1832,20 @@ def node_1(
 
 @pytest.fixture(scope="session")
 def node_1_onboarding_options(
-    ) -> Dict[str, Union[str, Dict[str, str]]]:
-    return pytest.onboarding_options.get("standalone").get("node_1", {})
+    ) -> OnboardingOptions:
+    return pytest.onboarding_options.get("standalone", {}).get("node_1", {})
 
 
 @pytest.fixture(scope="session")
 def node_2_onboarding_options(
-    ) -> Dict[str, Union[str, Dict[str, str]]]:
-    return pytest.onboarding_options.get("standalone").get("node_2", {})
+    ) -> OnboardingOptions:
+    return pytest.onboarding_options.get("standalone", {}).get("node_2", {})
 
 
 @pytest.fixture(scope="session")
 def node_stack_onboarding_options(
-    ) -> Dict[str, Union[str, Dict[str, str]]]:
-    return pytest.onboarding_options.get("node_stack")
+    ) -> OnboardingOptions:
+    return pytest.onboarding_options.get("node_stack", {})
 
 
 @pytest.fixture(scope="session")
@@ -2429,9 +2429,9 @@ class Testbed(metaclass=Singleton):
         self.node_2_policy_config: Dict[str, str] = request.getfixturevalue("node_2_policy_config")
         self.node_stack_policy_config: Dict[str, str] = request.getfixturevalue("node_stack_policy_config")
         self.network_manager: NetworkElementConnectionManager = request.getfixturevalue("network_manager")
-        self.node_1_onboarding_options: Dict[str, Union[str, Dict[str, str]]] = request.getfixturevalue("node_1_onboarding_options")
-        self.node_2_onboarding_options: Dict[str, Union[str, Dict[str, str]]] = request.getfixturevalue("node_2_onboarding_options")
-        self.node_stack_onboarding_options: Dict[str, Union[str, Dict[str, str]]] = request.getfixturevalue("node_stack_onboarding_options")
+        self.node_1_onboarding_options: OnboardingOptions = request.getfixturevalue("node_1_onboarding_options")
+        self.node_2_onboarding_options: OnboardingOptions = request.getfixturevalue("node_2_onboarding_options")
+        self.node_stack_onboarding_options: OnboardingOptions = request.getfixturevalue("node_stack_onboarding_options")
         self.bounce_iqagent: BounceIqagent = request.getfixturevalue("bounce_iqagent")
         self.dut_ports: Dict[str, List[str]] = request.getfixturevalue("dut_ports")
         self.login_xiq: LoginXiq = request.getfixturevalue("login_xiq")
