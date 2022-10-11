@@ -479,10 +479,10 @@ def pytest_collection_modifyitems(session, items):
 
     for item, test_markers in test_marker_item_mapping.items():
         if len(test_markers) > 1:
-            error = f"\nThis test function has more than one valid test markers: " \
-                    f"{item.nodeid} (markers: '{test_markers}')."
-            logger_obj.error(error)
-            pytest.fail(error)
+            warning = f"\nThis test function has more than one valid test markers: " \
+                      f"{item.nodeid} (markers: '{test_markers}')."
+            logger_obj.warning(warning)
+            temp_items.pop(temp_items.index(item))
 
     all_tcs: List[TestCaseMarker] = [pytest.onboarding_test_name, pytest.onboarding_cleanup_test_name]
     [all_tcs.append(get_test_marker(item)[0]) for item in temp_items]
