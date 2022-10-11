@@ -235,10 +235,11 @@ Test Suite Setup
     # netelem1  => device1 (EXOS / VOSS)
     convert to generic device object   device  index=1
 
+    # Create a random string with a known string, so we track if things are not cleaned up
     ${random_string}=               Get Random String
-    ${PUSH_CONFIG_SSID_01}=     Catenate    PUSH_CONFIG_SSID_    ${random_string}
-    ${PUSH_CONFIG_POLICY_01}=   Catenate    PUSH_CONFIG_POLICY_     ${random_string}
-    ${NEW_SSID_NAME_1}=         Catenate    PUSH_CONFIG_NEW_SSID_NAME_    ${random_string}
+    ${PUSH_CONFIG_SSID_01}=     Catenate    PUSH_CONFIG_SSID_${random_string}
+    ${PUSH_CONFIG_POLICY_01}=   Catenate    PUSH_CONFIG_POLICY_${random_string}
+    ${NEW_SSID_NAME_1}=         Catenate    PUSH_CONFIG_NEW_${random_string}
 
     Set Global Variable          ${NEW_SSID_NAME_1}
     Set Global Variable          ${PUSH_CONFIG_SSID_01}
