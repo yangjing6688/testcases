@@ -917,11 +917,11 @@ class XiqTests():
                 self.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan_stack(
                                                                                   port_numbers=port_numbers, slot=slot)
         else:
-            self.xiq.xflowsmanageDevice360.device360_configure_port_trunk_vlan(device_mac=self.tb.dut1.mac,
-                                                                               port_number=new_trunk_port,
+            self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(self.tb.dut1.mac)
+            self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
+            self.xiq.xflowsmanageDevice360.device360_configure_ports_trunk_vlan(port_numbers=new_trunk_port,
                                                                                trunk_native_vlan="1",
-                                                                               trunk_vlan_id=vlan_range,
-                                                                               port_type="Trunk Port")
+                                                                               trunk_vlan_id=vlan_range)
 
             self.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan(device_mac=self.tb.dut1.mac,
                                                                                  port_numbers=port_numbers,
