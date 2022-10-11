@@ -38,6 +38,10 @@ from ExtremeAutomation.Keywords.NetworkElementKeywords.Utils.NetworkElementCliSe
 from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary
 from ExtremeAutomation.Imports.Udks import Udks
 from extauto.common.Screen import Screen
+from extauto.common.Rest import Rest
+from extauto.common.WebElementHandler import WebElementHandler
+from extauto.common.Tshark import Tshark
+from extauto.common.WebElementController import WebElementController
 from extauto.xiq.flows.common.Navigator import Navigator
 from extauto.common.Utils import Utils
 from extauto.common.CloudDriver import CloudDriver
@@ -595,6 +599,16 @@ def pytest_collection_modifyitems(session, items):
                                     f"'{test_code}' will be skipped.")
                             )
 
+        if all(
+            [
+                item_onboarding in ordered_items,
+                item_onboarding_cleanup in ordered_items,
+                len(ordered_items) == 2
+            ]
+        ):
+            logger_obj.warning(f"There are no test cases selected to run for this session.")
+            ordered_items = []
+
         for item in ordered_items:
             logger_obj.info(f"Selected: '{item.nodeid}' "
                             f"(markers: '{[m.name for m in item.own_markers]}').")
@@ -611,23 +625,32 @@ def pytest_sessionstart(session):
 
     pytest.runlist_path = session.config.option.runlist
     
-    with open(pytest.runlist_path, "r") as run_list:
-        output_runlist = run_list.read()
-    
+    try:
+        with open(pytest.runlist_path, "r") as run_list:
+            output_runlist = run_list.read()
+    except FileNotFoundError:
+        error = f"Did not find this runlist file: '{pytest.runlist_path}'."
+        logger_obj.error(error)
+        pytest.fail(error)
+
     runlist = yaml.safe_load(output_runlist)
     pytest.runlist_name = list(runlist)[0]
     pytest.runlist_tests = runlist[pytest.runlist_name]['tests']
     pytest.suitemaps_name = runlist[pytest.runlist_name]['suitemap']
     
     for suitemap in pytest.suitemaps_name:
-        with open(suitemap, "r") as run_list:
-            output_suitemap = run_list.read()
-        suitemap_tests_dict = yaml.safe_load(output_suitemap)['tests']
-        suitemap_data_dict = yaml.safe_load(output_suitemap)['data']
-        pytest.suitemap_tests = {**pytest.suitemap_tests, ** suitemap_tests_dict}
-        pytest.suitemap_data = {**pytest.suitemap_data, **suitemap_data_dict}
+        try:
+            with open(suitemap, "r") as run_list:
+                output_suitemap = run_list.read()
+        except FileNotFoundError:
+            logger_obj.warning(f"Did not find this suitemap file: '{suitemap}'")
+        else:
+            suitemap_tests_dict = yaml.safe_load(output_suitemap)['tests']
+            suitemap_data_dict = yaml.safe_load(output_suitemap)['data']
+            pytest.suitemap_tests = {**pytest.suitemap_tests, ** suitemap_tests_dict}
+            pytest.suitemap_data = {**pytest.suitemap_data, **suitemap_data_dict}
     
-    pytest.onboarding_options = runlist[pytest.runlist_name]['onboarding_options']
+    pytest.onboarding_options = runlist[pytest.runlist_name].get('onboarding_options', {})
 
 
 def pytest_generate_tests(metafunc):
@@ -1498,7 +1521,8 @@ def node_list(
     
     duts: List[Node] = []
 
-    if pytest.onboard_two_node:
+    if pytest.onboard_two_node or pytest.onboard_one_node:
+        
         runos_node_1 = node_1_onboarding_options.get('run_os', [])
         platform_node_1 = node_1_onboarding_options.get('platform', "")
         runos_node_2 = node_2_onboarding_options.get('run_os', "")
@@ -1515,52 +1539,37 @@ def node_list(
             else:
                 break
         else:
-            error_msg = f"Failed to find a standalone node in the testbed yaml that satisfy these requirements: run_os='{runos_node_1}', platform='{platform_node_1}'."
+            error_msg = f"Failed to find a standalone node in the testbed yaml that satisfy these requirements: run_os={runos_node_1}, platform='{platform_node_1}'."
             logger.error(error_msg)
             pytest.fail(error_msg)
+
+        logger.info(f"Successfuly chose this dut as 'node_1': '{node.name}'.")
 
         node.node_name = "node_1"
         duts.append(node)
     
-        for node in standalone_nodes:
-            if node not in duts:
-                if runos_node_2:
-                  if any(node.cli_type.upper() == os.upper() for os in runos_node_2):
-                        if platform_node_2 != "standalone":
-                            if node.platform.upper() == platform_node_1.upper():
-                                break
-                        else:
-                            break
-                else:
-                    break     
-        else:
-            error_msg = f"Failed to find a standalone node in the testbed yaml that satisfy these requirements: run_os='{runos_node_2}', platform='{platform_node_2}'.  Already used nodes: {duts}."
-            logger.error(error_msg)
-            pytest.fail(error_msg)
-
-        node.node_name = "node_2"
-        duts.append(node)
-
-    elif pytest.onboard_one_node:
-        runos_node_1 = node_1_onboarding_options.get('run_os', [])
-        platform_node_1 = node_1_onboarding_options.get('platform', "")
-        for node in standalone_nodes:
-            if runos_node_1:
-                if any(node.cli_type.upper() == os.upper() for os in runos_node_1):
-                    if platform_node_1 != "standalone":
-                        if node.platform.upper() == platform_node_1.upper():
-                            break
+        if pytest.onboard_two_node:
+            for node in standalone_nodes:
+                if node not in duts:
+                    if runos_node_2:
+                        if any(node.cli_type.upper() == os.upper() for os in runos_node_2):
+                                if platform_node_2 != "standalone":
+                                    if node.platform.upper() == platform_node_2.upper():
+                                        break
+                                else:
+                                    break
                     else:
-                        break
+                        break     
             else:
-                break
-        else:
-            error_msg = f"Failed to find a standalone node in the testbed yaml that satisfy these requirements: run_os='{runos_node_1}', platform='{platform_node_1}'."
-            logger.error(error_msg)
-            pytest.fail(error_msg)
+                error_msg = f"Failed to find a standalone node in the testbed yaml that satisfy these requirements: run_os={runos_node_2}, platform='{platform_node_2}'."\
+                            f"Already used node: '{duts[0].name}'."
+                logger.error(error_msg)
+                pytest.fail(error_msg)
 
-        node.node_name = "node_1"
-        duts.append(node)   
+            logger.info(f"Successfuly chose this dut as 'node_2': '{node.name}'.")
+            
+            node.node_name = "node_2"
+            duts.append(node)
 
     if pytest.onboard_stack:
         runos_node_stack = node_stack_onboarding_options.get('run_os', [])
@@ -1571,12 +1580,15 @@ def node_list(
             else:
                 break
         else:
-            error_msg = f"Failed to find a stack node in the testbed yaml that satisfy these requirements: run_os='{runos_node_stack}'."
+            error_msg = f"Failed to find a stack node in the testbed yaml that satisfy these requirements: run_os={runos_node_stack}."
             logger.error(error_msg)
             pytest.fail(error_msg)
 
+        logger.info(f"Successfuly chose this dut as 'node_stack': '{node.name}'.")
+        
         node.node_name = "node_stack"
         duts.append(node)   
+
     return duts
 
 
@@ -1843,6 +1855,12 @@ def node_1(
         return [dut for dut in node_list if dut.node_name == "node_1"][0]
     logger.warning("Testbed does not have a standalone node.")
     return {}
+
+
+@pytest.fixture(scope="session")
+def standalone_onboarding_options(
+    ) -> OnboardingOptions:
+    return pytest.onboarding_options.get("standalone", {})
 
 
 @pytest.fixture(scope="session")
@@ -2377,6 +2395,26 @@ def navigator() -> Navigator:
 
 
 @pytest.fixture(scope="session")
+def rest() -> Rest:
+    return Rest()
+
+
+@pytest.fixture(scope="session")
+def weh() -> WebElementHandler:
+    return WebElementHandler()
+
+
+@pytest.fixture(scope="session")
+def wec() -> WebElementController:
+    return WebElementController()
+
+
+@pytest.fixture(scope="session")
+def tshark() -> Tshark:
+    return Tshark()
+
+
+@pytest.fixture(scope="session")
 def utils() -> Utils:
     return Utils()
 
@@ -2418,38 +2456,54 @@ def udks() -> Udks:
 class Testbed(metaclass=Singleton):
     
     def __init__(self, request) -> None:
+        
+        self.logger: PytestLogger = request.getfixturevalue("logger")
         self.config: Dict[str, Union[str, Dict[str]]] = request.getfixturevalue("loaded_config")
+        
         self.all_nodes: List[Node] = request.getfixturevalue("all_nodes")
         self.standalone_nodes: List[Node] = request.getfixturevalue("standalone_nodes")
         self.stack_nodes: List[Node] = request.getfixturevalue("stack_nodes")
         self.node_1: Node = request.getfixturevalue("node_1")
         self.node_2: Node = request.getfixturevalue("node_2")
         self.node_stack: Node = request.getfixturevalue("node_stack")
+        self.node_list: List[Node] = request.getfixturevalue("node_list")
+        
         self.dut_1: Node = request.getfixturevalue("dut1")
         self.dut_2: Node = request.getfixturevalue("dut2")
         self.dut_3: Node = request.getfixturevalue("dut3")
         self.dut_4: Node = request.getfixturevalue("dut4")
-        self.node_list: List[Node] = request.getfixturevalue("node_list")
+
+        self.node_1_onboarding_options: OnboardingOptions = request.getfixturevalue("node_1_onboarding_options")
+        self.node_2_onboarding_options: OnboardingOptions = request.getfixturevalue("node_2_onboarding_options")
+        self.node_stack_onboarding_options: OnboardingOptions = request.getfixturevalue("node_stack_onboarding_options")
+        self.standalone_onboarding_options: OnboardingOptions = request.getfixturevalue("standalone_onboarding_options")
+
         self.onboarding_locations: Dict[str, str] = request.getfixturevalue("onboarding_locations")
         self.node_1_onboarding_location: str = request.getfixturevalue("node_1_onboarding_location")
         self.node_2_onboarding_location: str = request.getfixturevalue("node_2_onboarding_location")
         self.node_stack_onboarding_location: str = request.getfixturevalue("node_stack_onboarding_location")
-        self.logger: PytestLogger = request.getfixturevalue("logger")
+        
+        self.policy_config: PolicyConfig = request.getfixturevalue("policy_config")
+        self.node_1_policy_config: Dict[str, str] = request.getfixturevalue("node_1_policy_config")
+        self.node_2_policy_config: Dict[str, str] = request.getfixturevalue("node_2_policy_config")
+        self.node_stack_policy_config: Dict[str, str] = request.getfixturevalue("node_stack_policy_config")
+        
+        self.network_manager: NetworkElementConnectionManager = request.getfixturevalue("network_manager")
+        self.cli: Cli = request.getfixturevalue("cli")
         self.screen: Screen = request.getfixturevalue("screen")
         self.navigator: Navigator = request.getfixturevalue("navigator")
         self.utils: Utils = request.getfixturevalue("utils")
         self.default_library: DefaultLibrary = request.getfixturevalue("default_library")
         self.udks: Udks = request.getfixturevalue("udks")
+        self.cloud_driver: CloudDriver = request.getfixturevalue("cloud_driver")
+        self.weh: WebElementHandler = request.getfixturevalue("weh")
+        self.wec: WebElementController = request.getfixturevalue("wec")
+        self.tshark: Tshark = request.getfixturevalue("tshark")
+        self.rest: Rest = request.getfixturevalue("rest")
+        
         self.dump_data: Callable[[Union[str, List, Dict]], str] = dump_data
         self.update_test_name: Callable[[str], None] = request.getfixturevalue("update_test_name")
-        self.cloud_driver: CloudDriver = request.getfixturevalue("cloud_driver")
-        self.node_1_policy_config: Dict[str, str] = request.getfixturevalue("node_1_policy_config")
-        self.node_2_policy_config: Dict[str, str] = request.getfixturevalue("node_2_policy_config")
-        self.node_stack_policy_config: Dict[str, str] = request.getfixturevalue("node_stack_policy_config")
-        self.network_manager: NetworkElementConnectionManager = request.getfixturevalue("network_manager")
-        self.node_1_onboarding_options: OnboardingOptions = request.getfixturevalue("node_1_onboarding_options")
-        self.node_2_onboarding_options: OnboardingOptions = request.getfixturevalue("node_2_onboarding_options")
-        self.node_stack_onboarding_options: OnboardingOptions = request.getfixturevalue("node_stack_onboarding_options")
+
         self.bounce_iqagent: BounceIqagent = request.getfixturevalue("bounce_iqagent")
         self.dut_ports: Dict[str, List[str]] = request.getfixturevalue("dut_ports")
         self.login_xiq: LoginXiq = request.getfixturevalue("login_xiq")
@@ -2467,8 +2521,6 @@ class Testbed(metaclass=Singleton):
         self.reboot_stack_unit: RebootStackUnit = request.getfixturevalue("reboot_stack_unit")
         self.get_stack_slots: GetStackSlots = request.getfixturevalue("get_stack_slots")
         self.clear_traffic_counters: ClearTrafficCounters = request.getfixturevalue("clear_traffic_counters")
-        self.policy_config: PolicyConfig = request.getfixturevalue("policy_config")
-        self.cli: Cli = request.getfixturevalue("cli")
         self.dev_cmd: NetworkElementCliSend = request.getfixturevalue("dev_cmd")
         self.debug: Callable = request.getfixturevalue("debug")
         self.create_location: CreateLocation = request.getfixturevalue("create_location")
