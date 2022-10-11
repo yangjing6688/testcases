@@ -9,6 +9,7 @@ netelem1:
   platform:              voss
   make:                  VOSS
   model:                 VSP 7400-48Y
+  location:              auto_location_01, Santa Clara, building_02, floor_04
   product:               VSP_7400-48Y
   cli_type:              "VOSS"
   default_template:      VSP_7400_48Y_8C-default-template

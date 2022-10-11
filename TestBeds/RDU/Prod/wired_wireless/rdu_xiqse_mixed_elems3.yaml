@@ -23,7 +23,7 @@ netelem1:
   function:                 "Switch"
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
-  location:                 "Salem NH Automation Lab"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"
 
 netelem2:
@@ -48,7 +48,7 @@ netelem2:
   function:                 "Switch"
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
-  location:                 "Salem NH Automation Lab"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"
 
 ap1:
@@ -71,4 +71,5 @@ ap1:
   product:                  "AP"
   function:                 "AP"
   ccg:                      "Model_AP_650X"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"

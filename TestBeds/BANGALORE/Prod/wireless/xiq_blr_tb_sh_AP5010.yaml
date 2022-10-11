@@ -16,6 +16,8 @@ ap1:
   make:                     Extreme - Aerohive
   mgmt_vlan:                1
   country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
   image:                 10.5r2
   power_strip:
     ip:
@@ -52,6 +54,8 @@ ap2:
   make:                     Extreme - Aerohive
   mgmt_vlan:                1
   country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
   power_strip:
     ip:
     port:

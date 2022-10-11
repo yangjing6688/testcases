@@ -17,4 +17,5 @@ netelem1:
   make:                     EXOS
   mgmt_vlan:                default
   mgmt_vr:                  vr-default
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
   onboard_device_type:      Real
