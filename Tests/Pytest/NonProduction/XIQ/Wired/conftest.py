@@ -479,10 +479,8 @@ def pytest_collection_modifyitems(session, items):
 
     for item, test_markers in test_marker_item_mapping.items():
         if len(test_markers) > 1:
-            warning = f"\nThis test function has more than one valid test markers: " \
-                      f"{item.nodeid} (markers: '{test_markers}')."
-            logger_obj.warning(warning)
             temp_items.pop(temp_items.index(item))
+            logger_obj.info(f"Unselected: '{item.nodeid}'.")
 
     all_tcs: List[TestCaseMarker] = [pytest.onboarding_test_name, pytest.onboarding_cleanup_test_name]
     [all_tcs.append(get_test_marker(item)[0]) for item in temp_items]
@@ -555,14 +553,20 @@ def pytest_collection_modifyitems(session, items):
                     suitemap_tcs.append(tc['tc'])
 
         for test in pytest.runlist_tests:
-            for item in temp_items:
-                [test_code] = get_test_marker(item)
-                if test_code == test:
-                    if not test_code in suitemap_tcs:
-                        logger_obj.warning(f"'{test_code}' is not defined in given suitemap.")
-                    else:
-                        ordered_items.append(item)
-        
+            test_found_in_suitemap = test in suitemap_tcs
+            found_item = [item for item in temp_items if test == get_test_marker(item)[0]]
+            
+            if not test_found_in_suitemap:
+                logger_obj.warning(f"'{test}' test is given in runlist but it is not found in specified suitemap files.")
+            
+            if not found_item:
+                logger_obj.warning(
+                    f"'{test}' test is given in runlist but it is not found in the collected tests "
+                    f"(it might have been removed because of its testbed marker or simply the test is not in the selected tests directory).")
+
+            if test_found_in_suitemap and found_item:
+                ordered_items.append(found_item[0])
+
         for item in ordered_items:
             
             [test_code] = get_test_marker(item)
@@ -606,7 +610,7 @@ def pytest_collection_modifyitems(session, items):
                 len(ordered_items) == 2
             ]
         ):
-            logger_obj.warning(f"There are no test cases selected to run for this session.")
+            logger_obj.warning(f"There are no test cases left selected to run for this session.")
             ordered_items = []
 
         for item in ordered_items:
@@ -778,6 +782,7 @@ class OnboardingTests:
         request: fixtures.SubRequest,
         logger: PytestLogger
         ) -> None:
+        return
         if not any([pytest.onboard_one_node, pytest.onboard_two_node, pytest.onboard_stack]):
             logger.info(
                 "Currently there are no devices given in the yaml files so the onboarding test won't configure anything.")
@@ -791,6 +796,7 @@ class OnboardingTests:
         request: fixtures.SubRequest,
         logger: PytestLogger
         ) -> None:
+        return
         if not any(
             [pytest.onboard_one_node, pytest.onboard_two_node, pytest.onboard_stack]):
             logger.info(
