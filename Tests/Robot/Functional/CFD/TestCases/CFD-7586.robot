@@ -80,6 +80,7 @@ Resource    ../Resources/location_config.robot
 Resource    ../Resources/wireless_networks_related_config.robot
 Force Tags      testbed_none
 Suite Setup      Pre Condition
+Suite Teardown   Suite Clean Up
 
 *** Keywords ***
 Pre Condition
@@ -129,6 +130,22 @@ Pre Condition
 ### Enable WAN access
     enable_device_wan_access        ${SERIAL}
 
+Suite Clean Up
+    [Documentation]    Delete all devices, all ssids, Network Policy, location user groups and quit web browser
+    [Tags]             cfd-7586         cleanup     development          tcxm-21566
+    Log To Console      ================================
+    Log To Console      Login AP and reset it
+    Log To Console      ================================
+    ${AP_SPAWN}=        Open Spawn          ${CONSOLE_IP}       ${CONSOLE_PORT}      ${AP_USERNAME}       ${AP_PASSWORD}        ${CLI_TYPE}
+    Send                ${AP_SPAWN}         reset config no-prompt
+    Close Spawn    ${AP_SPAWN}
+    Delete All devices
+    Sleep    5
+    delete_all_ssid_in_policy   ${NW_POLICY_NAME1}
+    Delete Network Policy    ${NW_POLICY_NAME1}
+    Delete Location Building Floor  ${1st_LOCATION_CITY_STATE}      ${1st_LOCATION_STREET}     Floor 1
+    XIQ Quit Browser
+
 *** Test Cases ***
 CFD-7586_case: AP150W as Router: Wireless client gets IP address from WAN port DHCP server, NOT from its internal DHCP server
     [Documentation]     Make sure AP150W(Router) wireless client get IP address from internal DHCP server
@@ -168,19 +185,3 @@ CFD-7586_case: AP150W as Router: Wireless client gets IP address from WAN port D
         Log To Console         The Mgt0 of AP150W IP Address is: ${MGT0_IP}
         Should Contain         ${MGT0_IP}      ${WIFI_CLIENT_IPV4_24_NET_PREFIX[0].group(0)}
     END
-
-Test Suite Clean Up
-    [Documentation]    Delete all devices, all ssids, Network Policy, location user groups and quit web browser
-    [Tags]             cfd-7586         cleanup     development          tcxm-21566
-    Log To Console      ================================
-    Log To Console      Login AP and reset it
-    Log To Console      ================================
-    ${AP_SPAWN}=        Open Spawn          ${CONSOLE_IP}       ${CONSOLE_PORT}      ${AP_USERNAME}       ${AP_PASSWORD}        ${CLI_TYPE}
-    Send                ${AP_SPAWN}         reset config no-prompt
-    Close Spawn    ${AP_SPAWN}
-    Delete All devices
-    Sleep    5
-    delete_all_ssid_in_policy   ${NW_POLICY_NAME1}
-    Delete Network Policy    ${NW_POLICY_NAME1}
-    Delete Location Building Floor  ${1st_LOCATION_CITY_STATE}      ${1st_LOCATION_STREET}     Floor 1
-    XIQ Quit Browser
