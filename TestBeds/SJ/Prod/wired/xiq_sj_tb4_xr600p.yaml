@@ -7,7 +7,7 @@ router1:
   port:                     4007
   cli_type:                 "AH-XR"
   connection_method:        "console"
-  mac:                      F4EAB52DB200
+  mac:                      F4EAB52D1FC0
   network_policy:           Test_np
   username:                 admin
   password:                 Aerohive123

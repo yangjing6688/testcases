@@ -189,6 +189,40 @@ ${LOCATION}                 auto_location_01, Santa Clara, building_02, floor_04
 &{WIPS_OPEN_NW_03}          ssid_name=Openwips_ssid_automation3                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
 ...                         auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
 
+${XR_NW_POLICY_NAME}           test_automation_network_policy
+###Network Policy Config##
+&{XR_ROUTER_NW_01}                ssid_name=Router_XR_template                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
+...                               auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
+&{BORADCAST_SSID_DEFAULT}=        WIFI0=Enable        WIFI1=Enable
+&{OPEN_AUTHENTICATION_PROFILE0}   auth_type=Open    cwp_profile=&{OPEN_CWP}
+&{OPEN_CWP}                       enable_cwp=Disable
+
+&{CONFIG_PUSH_OPEN_NW_01}    ssid_name=Openauthsocial                 network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}   auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
+
+####Router Template Config###
+${XR_SSID_NAME}                Router_XR_template
+${XR_INTERFACE_NAME}           eth2
+${XR_CMD_SHOW_TRUNK_VLANS}     show interface ${XR_INTERFACE_NAME} allowed-vlan
+${XR_EXPECTED_TRUNK_VLANS}     10-20
+${XR_CMD_SHOW_CONFIG}          show running-config
+${PORT_TYPE_NAME}           test_trunk_xr
+${SUB_NETWORK_NAME}         test_subnetwork
+${VLAN_NAME}                test_router_vlan
+&{PORT_TYPE_CONFIG1}             port_type_name=test_trunk_xr   description=Trunk  port_status=Enable   port_usage_config=&{PORT_USAGE_CONFIG1}    mac_authentication=Disable  traffic_filter_settings=&{TRAFFIC_FILTER_DEFAULT}
+&{NETWORK_ALLOCATION_CONFIG1}    vlan_object_config=&{VLAN_OBJECT_CONFIG1}  sub_network_config=&{SUB_NETWORK_CONFIG1}
+&{VLAN_OBJECT_CONFIG1}           vlan_name=test_router_vlan   vlan_id=98
+&{SUB_NETWORK_CONFIG1}           basic_config=&{BASIC_CONFIG}    advance_config=None
+&{BASIC_CONFIG}                  sub_network_name=test_subnetwork   sub_network_description=test_subnetwork  network_type=Internal Use  unique_subnetwork=Enable  local_ip_address_space=30.1.1.0/24   gateway_options=firstip
+&{SUB_NETWORK_ADVANCED_CONFIG1}  dhcp_status=enable  dhcp_server_as_branch_router=enable  lease_time=90400
+
+&{PORT_USAGE_CONFIG1}       port_usage_type=Trunk   allowed_vlans=10-20
+&{PORT_USAGE_CONFIG2}       port_usage_type=Access
+&{PORT_USAGE_CONFIG3}       port_usage_type=Wan
+
+&{TRAFFIC_FILTER_DEFAULT}   ssh=Enable    telnet=Disable   ping=Enable   snmp=Disable
+
+${STATUS_BEFORE_UPDATE}     config audit mismatch
+${STATUS_AFTER_UPDATE}      green
 
 # Update this time because we have an ap that is taking a bit longer
 ${MAX_CONFIG_PUSH_TIME}             600
@@ -215,6 +249,8 @@ Library     extauto/xiq/flows/common/Navigator.py
 Library     extauto/xiq/flows/configure/AutoProvisioning.py
 Library     extauto/xiq/flows/configure/CommonObjects.py
 Library     extauto/xiq/flows/configure/ExpressNetworkPolicies.py
+Library     extauto/xiq/flows/configure/RouterTemplate.py
+Variables   Resources/voss_config.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -251,7 +287,6 @@ Test Suite Setup
     Set Global Variable          &{CONFIG_PUSH_OPEN_NW_01}
     Set Global Variable          &{CONFIG_PUSH_OPEN_NW_02}
 
-
     # Create the connection to the device(s)
     Base Test Suite Setup
     Set Global Variable    ${MAIN_DEVICE_SPAWN}    ${device1.name}
@@ -264,8 +299,8 @@ Test Suite Setup
 
 Test Suite Teardown
     Clean Up Device
-    Delete Network Polices                  ${PUSH_CONFIG_POLICY_01}      ignore_cli_feedback=true
-    Delete SSIDs                            ${PUSH_CONFIG_SSID_01}        ${NEW_SSID_NAME_1}     ignore_cli_feedback=true
+    Delete Network Polices                  ${PUSH_CONFIG_POLICY_01}  ${VOSS_POLICY_NAME}    ignore_cli_feedback=true
+    Delete SSIDs                            ${PUSH_CONFIG_SSID_01}        ${NEW_SSID_NAME_1}  ${VOSS_SSID_NAME}     ignore_cli_feedback=true
     Logout User
     Quit Browser
     Base Test Suite Cleanup
@@ -289,7 +324,7 @@ Disable SSH and Close Device360 Window
 Validate Device Information
     @{column_list}=    Create List    MGT IP ADDRESS    MAC
     ${DEVICE_INFOMATION}=   get_device_column_information  ${device1.serial}    ${column_list}
-    Run Keyword If  '${device1.cli_type}' != 'WING-AP'    Validate Device Managment IP Information   ${DEVICE_INFOMATION}
+    Run Keyword If  '${device1.cli_type}' != 'WING-AP' and '${device1.cli_type}' != 'AH-XR'  Validate Device Managment IP Information   ${DEVICE_INFOMATION}
     ${DEVICE_MAC}=                 Get From Dictionary      ${DEVICE_INFOMATION}    MAC
     Should Be Equal As Strings    '${DEVICE_MAC}'           '${device1.mac}'
 
@@ -302,25 +337,32 @@ clean up auto provisioning
     ${DLT_ALL_AUTOPROV_POLICIES}=       Delete All Auto Provision Policies
     should be equal as integers         ${DLT_ALL_AUTOPROV_POLICIES}               1
 
-    ${DLT_NW_POLICIES}=             Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}
+    ${DLT_NW_POLICIES}=             Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}    ${XR_NW_POLICY_NAME}  ${VOSS_POLICY_NAME}
     should be equal as integers     ${DLT_NW_POLICIES}          1
 
     ${DELETE_SSIDS}=                Delete SSIDs                            ${SSID_NAME_01}             ${SSID_NAME_02}
     should be equal as integers     ${DELETE_SSIDS}             1
 
+Confirm Device Status
+    [Documentation]     Checks the status of the specified device and confirms it matches the expected value
+    [Arguments]         ${serial}  ${expected_status}
+
+    ${device_status}=       Get Device Status       device_serial=${serial}
+    Should Contain          ${device_status}   ${expected_status}
+
+Clean Up Test Device and Confirm Success
+    [Documentation]     Deletes the specified device and confirms the action was successful
+    [Arguments]         ${serial}
+
+    Navigate to Devices and Confirm Success
+    ${del_result}=  Delete Device   ${serial}
+    Should Be Equal As Integers     ${del_result}  1
+
 *** Test Cases ***
-step1: ssh_test
-    [Documentation]     Log into Device
-
-    [Tags]              onboard        development
-
-    ${SPAWN}=        Open Spawn          ${device1.ip}   ${device1.port}      ${device1.username}       ${device1.password}        ${device1.cli_type}
-    Close Spawn      ${SPAWN}
-
-step2: Advanced Onboard Device on XIQ
+step1: Advanced Onboard Device on XIQ
     [Documentation]         Checks for Advanced Device onboarding on XIQ
 
-    [Tags]                  onboard      development
+    [Tags]                  advanced_onboard      development
 
     Depends On              step1
 
@@ -341,15 +383,15 @@ step2: Advanced Onboard Device on XIQ
     Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
 
 
-step3: Verify Information on Device page (Advanced onboarding)
+step2: Verify Information on Device page (Advanced onboarding)
     [Documentation]         Verify Information on Device page
 
-    [Tags]                  onboard     development
+    [Tags]                  advanced_onboard     development
 
     Depends On              step2
     Validate Device Information
 
-Step4: Simple Onboard Device on XIQ
+Step3: Simple Onboard Device on XIQ
     [Documentation]         Checks for Device onboarding on XIQ
 
     [Tags]                  onboard      development   onboard-fast
@@ -372,7 +414,7 @@ Step4: Simple Onboard Device on XIQ
     ${DEVICE_STATUS_RESULT}=    get device status      ${device1.serial}
     Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
 
-step5: Verify Information on Device page (Simple onboaring)
+step4: Verify Information on Device page (Simple onboaring)
     [Documentation]         Verify Information on Device page
 
     [Tags]                  onboard      development
@@ -382,7 +424,7 @@ step5: Verify Information on Device page (Simple onboaring)
 
 # Waiting for the page to be refreshed in XIQ, this will only support AH-AP Only
 # and will need to be expanded for all other device.
-#Step6: Generate And Validate Fake Alarms (AH-AP Only)
+#Step5: Generate And Validate Fake Alarms (AH-AP Only)
 #    [Documentation]    Chek the generation of alarms
 #
 #    [Tags]             verify_alarms    development
@@ -409,7 +451,7 @@ step5: Verify Information on Device page (Simple onboaring)
 #    should be equal as strings          '${ALARM_DETAILS}[deviceMac]'      '${device1.mac}'
 
 
-Step7: Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Established
+Step6: Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Established
     [Documentation]     Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Established
 
     [Tags]              ssh      development
@@ -436,7 +478,7 @@ Step7: Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Establi
     [Teardown]  Disable SSH and Close Device360 Window
 
 
-Step8: Verification of config push complete config update (AH-AP Only)
+Step7: Verification of config push complete config update (AH-AP Only)
     [Documentation]             Verification of config push complete config update
     [Tags]                      push_config     development
     Depends On                  step5
@@ -460,7 +502,7 @@ Step8: Verification of config push complete config update (AH-AP Only)
     Should Contain                          ${OUTPUT1}                  ${PUSH_CONFIG_SSID_01}
 
 
-Step9: Verification of config push delta update (AH-AP Only)
+Step8: Verification of config push delta update (AH-AP Only)
     [Documentation]         Verification of config push delta update
     [Tags]                  push_config     development
     Depends On              step5
@@ -483,7 +525,7 @@ Step9: Verification of config push delta update (AH-AP Only)
 # Not sure if this should be a part of Sanity
 # yes, froce the upgrade
 #
-#Step11: Firmware upgrade to lastest version (AH-AP Only)
+#Step9: Firmware upgrade to lastest version (AH-AP Only)
 #    [Documentation]         Verify IQ engine upgrade to lastest version ( we should just make sure it was upgraded )
 #    [Tags]			        push_config     development
 #    Depends On             step1
@@ -538,4 +580,141 @@ Step9: Verification of config push delta update (AH-AP Only)
 #
 #    Close Spawn        ${SPAWN2}
 
-
+#Step10: Perform Device Update on VOSS Switch (VOSS ONLY)
+#    [Documentation]     Performs a device update on the VOSS switch
+#    [Tags]              production      tccs_7299       tccs_7299_step5   development
+#
+#    Depends On          onboard
+#
+#    @{supported_cli_types}=    Create List   VOSS-skipped
+#    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+#
+#    ${assign_policy_result}=        Assign network policy to switch  policy_name=${VOSS_POLICY_NAME}  serial=${device1.serial}
+#    Should Be Equal As Integers     ${assign_policy_result}  1
+#
+#    ${result}=  Update Switch Policy and Configuration    ${device1.serial}
+#    Should Be Equal As Integers     ${result}     1
+#
+#
+#
+#Step11: Confirm VOSS Device Values After Update (VOSS ONLY)
+#    [Documentation]     Confirms the device table contains expected values for the VOSS switch after an update
+#
+#    [Tags]              production      tccs_7299       tccs_7299_step6    development
+#
+#    Depends On          onboard
+#
+#    @{supported_cli_types}=    Create List   VOSS-skipped
+#    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+#
+#    Refresh Devices Page
+#    Confirm Device Status  ${device1.serial}  ${STATUS_AFTER_UPDATE}
+#
+#    &{device_info}=     Get Device Row Values  ${device1.serial}  POLICY,LOCATION,SERIAL,MODEL
+#
+#    ${policy_result}=   Get From Dictionary     ${device_info}  POLICY
+#    Should Be Equal     ${policy_result}        ${VOSS_POLICY_NAME}
+#
+#    ${loc_result}=      Get From Dictionary     ${device_info}  LOCATION
+#    Should Be Equal     ${loc_result}           ${LOCATION_DISPLAY}
+#
+#    ${serial_result}=   Get From Dictionary     ${device_info}  SERIAL
+#    Should Be Equal     ${serial_result}        ${device1.serial}
+#
+#    ${model_result}=    Get From Dictionary     ${device_info}  MODEL
+#    Should Be Equal     ${model_result}         ${device1.model}
+#
+#step12: Confirm Device360 View Values for VOSS Switch (VOSS ONLY)
+#    [Documentation]     Confirms the Device360 view contains correct values for the VOSS Switch
+#
+#    [Tags]              production      tccs_7299       tccs_7299_step7    development
+#
+#    Depends On          onboard
+#
+#    @{supported_cli_types}=    Create List   VOSS-skipped
+#    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+#
+#    Refresh Devices Page
+#    &{overview_info}=           Get VOSS Device360 Overview Information                 ${device1.mac}
+#
+#    Refresh Devices Page
+#    &{device_config_info}=      Get VOSS Device360 Device Configuration Information     ${device1.mac}
+#
+#    ${overview_serial}=         Get From Dictionary  ${overview_info}  serial_number
+#    Should Be Equal             ${overview_serial}  ${device1.serial}
+#
+#    ${overview_model}=          Get From Dictionary  ${overview_info}  device_model
+#    Should Be Equal             ${overview_model}   ${device1.serial}
+#
+#    ${overview_policy}=         Get From Dictionary  ${overview_info}  network_policy
+#    Should Be Equal             ${overview_policy}  ${VOSS_POLICY_NAME}
+#
+#    ${config_policy}=           Get From Dictionary  ${device_config_info}  network_policy
+#    Should Be Equal             ${config_policy}  ${VOSS_POLICY_NAME}
+#
+#    ${config_template}=         Get From Dictionary  ${device_config_info}  device_template
+#    Should Be Equal             ${config_template}  ${VOSS_TEMPLATE_NAME}
+#
+#
+#step 13: Create Router XR Template (XR ONLY)
+#    [Documentation]         Create Router XR Template
+#
+#    [Tags]                  production      tccs_12330    development
+#
+#    Depends On              onboard
+#
+#    @{supported_cli_types}=    Create List   AH-XR-skipped
+#    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+#
+#    # XR ONLY
+#    &{ROUTER_TEMPLATE_CONFIG1}=  Create Dictionary   router_model=${device1.model}  template_name=${device1.device_template}  interface_name=ETH2    new_port_type_config=&{PORT_TYPE_CONFIG1}   network_allocation_config=&{NETWORK_ALLOCATION_CONFIG1}
+#    Set Global Variable          &{ROUTER_TEMPLATE_CONFIG1}
+#
+#    ${CREATE_NW_POLICY}=    Create Network Policy   ${XR_NW_POLICY_NAME}       &{XR_ROUTER_NW_01}
+#    Should Be Equal As Strings                      '${CREATE_NW_POLICY}'   '1'
+#
+#    ${CREATE_AP_TEMPLATE}=      Add Router Template     ${XR_NW_POLICY_NAME}     &{ROUTER_TEMPLATE_CONFIG1}
+#
+#    ${DEVICE_UPDATE_CONFIG}=    Update Network Policy To Router    policy_name=${XR_NW_POLICY_NAME}    router_serial=${router1.serial}
+#    Should Be Equal As Strings                      '${DEVICE_UPDATE_CONFIG}'       '1'
+#
+#    Log to Console          Sleep for ${config_push_wait}
+#    sleep                   ${config_push_wait}
+#
+#    ${DEVICE_UPDATE_STATUS}=    Wait Until Device Update Done   device_serial=${router1.serial}
+#    Should Be Equal As Strings                      '${DEVICE_UPDATE_STATUS}'       '1'
+#
+#    ${SHOW_TRUNK_VLANS}=    Send                    ${MAIN_DEVICE_SPAWN}         ${XR_CMD_SHOW_TRUNK_VLANS}
+#    Should Contain          ${SHOW_TRUNK_VLANS}     ${XR_EXPECTED_TRUNK_VLANS}
+#
+#    ${SHOW_RUN_CONFIG}=     Send                    ${MAIN_DEVICE_SPAWN}         ${XR_CMD_SHOW_CONFIG}
+#    Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  mode bridge-802.1q
+#    Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  allowed-vlan ${XR_EXPECTED_TRUNK_VLANS}
+#
+#
+#step 14: Upgrade Latest IQ Engine Router Firmware (XR ONLY)
+#    [Documentation]     Upgrate latest IQ Engine Router Firmware
+#
+#    [Tags]              production      tccs_7351    development
+#
+#    Depends On              onboard
+#
+#    @{supported_cli_types}=    Create List   AH-XR-skipped
+#    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+#
+#    ${LATEST_VERSION}=      Upgrade Device To Latest Version         ${router1.serial}
+#
+#    Sleep                   ${config_push_wait}
+#    Sleep                   ${router_reboot_wait}
+#    Sleep                   ${router_reboot_wait}
+#
+#    ${ROUTER_FM_VER}=       Send           ${MAIN_DEVICE_SPAWN}            show version | include Version
+#    should contain          ${ROUTER_FM_VER}        ${LATEST_VERSION}
+#
+#    ${SHOW_RUN_CONFIG}=     Send           ${MAIN_DEVICE_SPAWN}            ${XR_CMD_SHOW_CONFIG}
+#    Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  mode bridge-802.1q
+#    Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  allowed-vlan ${XR_EXPECTED_TRUNK_VLANS}
+#
+#    [Teardown]
+#
+#    Close Spawn     ${ROUTER_SPAWN}
