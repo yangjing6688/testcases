@@ -484,7 +484,7 @@ class XiqTests():
                 cls.xiq.xflowscommonDevices.column_picker_select('Template')
                 if cls.xiq.xflowsmanageDevices.create_stack_auto_template(device_mac=cls.tb.dut1.mac,
                                                                           name_stack_template=sw_template_name) == 1:
-                    cls.xiq.xflowsconfigureSwitchTemplate.save_stack_template()
+                    cls.xiq.xflowsconfigureSwitchTemplate.save_stack_template(sw_template_name)
                 else:
                     pytest.fail("Failed to create template for the stack!")
 
