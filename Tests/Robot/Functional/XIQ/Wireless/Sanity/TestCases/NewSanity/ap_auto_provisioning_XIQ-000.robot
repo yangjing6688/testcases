@@ -21,14 +21,11 @@
 ${POLICY_NAME_01}       auto_provisioning_app_np_01
 ${SSID_NAME_01}         auto_provisioning_app_ssid_01
 
-${POLICY_NAME_02}       auto_provisioning_app_np_02
-${SSID_NAME_02}         auto_provisioning_app_ssid_02
 ${DEFAULT_POLICY_NAME}              auto_provisioning_default_network_policy
 
 ${DEFAULT_POLICY_NAME}              auto_provisioning_default_network_policy
 ${DEFAULT_SSID_NAME}                auto_provisioning_default_ssid
 ${APP_POLICY_NAME_AP_01}            auto_provisioning_app_policy_01
-${APP_POLICY_NAME_SW_01}            auto_provisioning_app_policy_02
 ${LOCATION}                         auto_location_01, Santa Clara, building_02, floor_04
 
 *** Settings ***
@@ -49,7 +46,7 @@ Variables    Environments/${ENV}
 Variables    Environments/Config//waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/auto_provisioning_config.robot
+Resource     Resources/ap_auto_provisioning_config.robot
 Force Tags   testbed_1_node
 
 
@@ -62,9 +59,6 @@ Test Suite Setup
     ${SPAWN_AP}=  open spawn  ${ap1.ip}  ${ap1.port}  ${ap1.username}  ${ap1.password}  ${ap1.cli_type}
     Set Global Variable    ${MAIN_DEVICE_SPAWN_AP}    ${SPAWN_AP}
 
-    ${SPAWN_SW}=  open spawn  ${aerohive_sw1.ip}  ${aerohive_sw1.port}  ${aerohive_sw1.username}  ${aerohive_sw1.password}  ${aerohive_sw1.cli_type}
-    Set Global Variable    ${MAIN_DEVICE_SPAWN_SW}    ${SPAWN_SW}
-
     # log in the user
     Login User      ${tenant_username}      ${tenant_password}
 
@@ -72,16 +66,12 @@ Test Suite Setup
     # Disconnect from Extreme Cloud IQ
     Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud  ${ap1}  ${MAIN_DEVICE_SPAWN_AP}
 
-    ${search_result}=   Search Device       device_serial=${aerohive_sw1.serial}    ignore_cli_feedback=true
-    # Disconnect from Extreme Cloud IQ
-    Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud  ${aerohive_sw1}  ${MAIN_DEVICE_SPAWN_SW}
-
      # Clean up
     ${DLT_ALL_AUTOPROV_POLICIES}=       Delete All Auto Provision Policies
     should be equal as integers         ${DLT_ALL_AUTOPROV_POLICIES}               1
 
-    Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}   ignore_cli_feedback=true
-    Delete SSIDs                            ${SSID_NAME_01}             ${SSID_NAME_02}     ignore_cli_feedback=true
+    Delete Network Polices                  ${POLICY_NAME_01}           ignore_cli_feedback=true
+    Delete SSIDs                            ${SSID_NAME_01}             ignore_cli_feedback=true
 
 Test Suite Teardown
     Navigate To Devices
@@ -91,18 +81,13 @@ Test Suite Teardown
     # Disconnect from Extreme Cloud IQ
     Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud  ${ap1}  ${MAIN_DEVICE_SPAWN_AP}
 
-    ${search_result}=   Search Device       device_serial=${aerohive_sw1.serial}    ignore_cli_feedback=true
-    # Disconnect from Extreme Cloud IQ
-    Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud  ${aerohive_sw1}  ${MAIN_DEVICE_SPAWN_SW}
-
     ${DLT_ALL_AUTOPROV_POLICIES}=       Delete All Auto Provision Policies
     should be equal as integers         ${DLT_ALL_AUTOPROV_POLICIES}               1
 
-    Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}   ignore_cli_feedback=true
-    Delete SSIDs                            ${SSID_NAME_01}             ${SSID_NAME_02}     ignore_cli_feedback=true
+    Delete Network Polices                  ${POLICY_NAME_01}           ignore_cli_feedback=true
+    Delete SSIDs                            ${SSID_NAME_01}             ignore_cli_feedback=true
 
     close spawn  ${MAIN_DEVICE_SPAWN_AP}
-    close spawn  ${MAIN_DEVICE_SPAWN_SW}
 
     [Teardown]   run keywords               logout user
     ...                                     quit browser
@@ -162,41 +147,5 @@ TCCS-7632: Configure AP Auto Provision Profile
 
     ${verify_result}=   Verify Auto Provision Policy Update     ${ap1.serial}     ${ap1.country}     &{APP_AP_01}
     Should Be Equal As Integers                     ${verify_result}        1
-
-    Sleep       ${max_config_push_time}
-
-
-TCCS-7571: Configure Switch Auto Provision Profile
-    [Documentation]         Configure Switch  Autoporvision Profile
-
-    [Tags]                  production      tccs_7571
-
-    ${POLICY_STATUS}=           Create Open Auth Express Network Policy     ${POLICY_NAME_02}      ${SSID_NAME_02}
-    should be equal as integers             ${POLICY_STATUS}                1
-
-    IF  '${aerohive_sw1.cli_type}'=='AH-FASTPATH'
-        &{SW_SR22_SR23_01}=    Create Dictionary      device_function=Extreme Networks SR22xx / SR23xx Switches       device_model=${aerohive_sw1.model}     service_tags=Disable   ip_subnetworks=Disable      network_policy=${POLICY_NAME_02}
-        ${APP_BASIC_STGS_STATUS}=     Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR22_SR23_01}
-        should be equal as integers             ${APP_BASIC_STGS_STATUS}        1
-    ELSE IF     '${aerohive_sw1.cli_type}'=='AH-AP'
-        ${APP_BASIC_STGS_STATUS}=   Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR20_SR21_01}
-        should be equal as integers             ${APP_BASIC_STGS_STATUS}        1
-    END
-
-    Auto Provision Advanced Settings                &{SW_ADVANCED_SETTINGS_03}
-
-    Auto Provision Device Credential                &{DEVICE_CREDENTIAL_01}
-
-    Auto Provision Capwap Configurations            &{CAPWAP_CONFIGURATION_01}
-
-    Save and Enable Auto Provision Policy           ${APP_POLICY_NAME_SW_01}
-
-    Device Onboard   ${aerohive_sw1}  ${MAIN_DEVICE_SPAWN_SW}  ${sw_capwap_url}
-
-    ${verify_result}=   Verify Auto Provision Policy Update     serial=${aerohive_sw1.serial}       country_code=NA    &{SW_SR22_SR23_01}
-    Should Be Equal As Integers                     ${verify_result}        1
-
-    ${update_result}=   Wait Until device update done   device_serial=${aerohive_sw1.serial}
-    Should Be Equal As Integers                     ${update_result}        1
 
     Sleep       ${max_config_push_time}
