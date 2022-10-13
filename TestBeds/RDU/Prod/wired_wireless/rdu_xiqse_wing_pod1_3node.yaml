@@ -1,0 +1,77 @@
+---
+lab:                      "RDU"
+
+netelem1:
+  name:                     vx9000-BA74ED
+  model:                    VX9000
+  device_template:
+  serial:                   7E815B4E27D253ED
+  os_version:               5.9.8.3-003R
+  mac:                      005056BA74ED
+  cli_type:                 "WING-AP"
+  bssid:
+  network_policy:
+  username:                 admin
+  password:                 admin123456
+  platform:                 wing
+  ip:                       10.69.70.201
+  port:                     22
+  connection_method:        "ssh"
+  console_ip:
+  console_port:
+  country:                  United States
+  make:                     Controllers
+  onboard_device_type:      Real
+  vr:                       "VR-Default"
+  license:                  "Navigator"
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+
+netelem2:
+  name:                     vx9000-BA5B17
+  model:                    VX9000
+  device_template:
+  serial:                   1CA3CCC9ECADBF16
+  os_version:               5.9.8.3-003R
+  mac:                      005056BA5B17
+  cli_type:                 "WING-AP"
+  bssid:
+  network_policy:
+  username:                 admin
+  password:                 admin123456
+  platform:                 wing
+  ip:                       10.69.70.202
+  port:                     22
+  connection_method:        "ssh"
+  console_ip:
+  console_port:
+  country:                  United States
+  make:                     Controllers
+  onboard_device_type:      Real
+  vr:                       "VR-Default"
+  license:                  "Navigator"
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+
+netelem3:
+  name:                     vx9000-BA6D39
+  model:                    VX9000
+  device_template:
+  serial:                   11E85639377BD2C6
+  os_version:               5.9.8.3-003R
+  mac:                      005056BA6D39
+  cli_type:                 "WING-AP"
+  bssid:
+  network_policy:
+  username:                 admin
+  password:                 admin123456
+  platform:                 wing
+  ip:                       10.69.70.203
+  port:                     22
+  connection_method:        "ssh"
+  console_ip:
+  console_port:
+  country:                  United States
+  make:                     Controllers
+  onboard_device_type:      Real
+  vr:                       "VR-Default"
+  license:                  "Navigator"
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
