@@ -1,14 +1,14 @@
 xiqse:
-  ip:                      "10.69.70.10"
-  url:                     "https://10.69.70.10:8443"
+  ip:                      "10.139.33.91"
+  url:                     "https://10.139.33.91:8443"
   license_suffix:          "/xiqLicenseSetup.jsp?setupMode=xiq"
   user:                    "root"
   password:                "n7830466"
   version:                 "23"
   os_version:              "23"
-  name:                    "auto-xiqse-1.extremenetworks.com"
-  serial:                  "XIQSE-7FCB83CF88DF4C239CC8444D7A0AB106"
-  mac:                     "000C2941316B"
+  name:                    "extauto-xiqse-91.extremenetworks.com"
+  serial:                  "XIQSE-C67F3E721CA54A1D80903B37853F9B07"
+  mac:                     "000C295E0CEE"
   profile:                 "snmp_v3_profile"
   platform:                "xiqse"
   make:                    "XIQSE"
@@ -25,16 +25,16 @@ appliance:
   profile:                 "AnalyticsEngine_v3_Profile"
 
 purview:
-  ip:                      "10.69.70.11"
-  name:                    "extauto-purview"
+  ip:                      "10.139.33.93"
+  name:                    "extauto-purview-93"
 
 nextgen:
-  ip:                      "10.69.70.12"
-  name:                    "extauto-nextgen"
+  ip:                      "10.139.33.94"
+  name:                    "extauto-nextgen-94"
 
 nac:
-  ip:                      "10.69.70.13"
-  name:                    "extauto-nac"
+  ip:                      "10.139.33.92"
+  name:                    "extauto-nac-92"
 
 xiq:
   test_url:                "https://g2r1.qa.xcloudiq.com"
@@ -61,27 +61,24 @@ xiq2:
 #     vim-cmd vmsvc/get.snapshotinfo <vmid>
 upgrades:
   install_mode:                "CONNECTED"
-  nsrelease_version:           "21.11.10.58"
+  nsrelease_version:           "22.6.10.70"
   esx:
-    esx_ip:                    "10.69.60.10"
+    esx_ip:                    "10.139.33.16"
     esx_user:                  "root"
-    esx_password:              "extrvmware"
+    esx_password:              "no-boneheads"
   xmc:
     version:                   "8.5.5.32"
-    xiqse_vm_id:               "3"
-    xiqse_snapshot_id:         "12"
-    nac_vm_id:                 "10"
-    nac_snapshot_id:           "5"
-    purview_vm_id:             "9"
-    purview_snapshot_id:       "5"
-    ng_analytics_vm_id:        "11"
+    xiqse_vm_id:               "300"
+    nac_vm_id:                 "301"
+    purview_vm_id:             "302"
+    ng_analytics_vm_id:        "303"
   xiqse:
-    version:                   "21.11.10.58"
-    xiqse_vm_id:               "3"
-    xiqse_snapshot_id:         "15"
-    nac_vm_id:                 "10"
-    nac_snapshot_id:           "7"
-    purview_vm_id:             "9"
-    purview_snapshot_id:       "7"
-    ng_analytics_vm_id:        "11"
-    ng_analytics_snapshot_id:  "3"
+    version:                   "22.6.10.70"
+    xiqse_vm_id:               "10"
+    xiqse_snapshot_id:         "1"
+    nac_vm_id:                 "2"
+    nac_snapshot_id:           "2"
+    purview_vm_id:             "4"
+    purview_snapshot_id:       "2"
+    ng_analytics_vm_id:        "3"
+    ng_analytics_snapshot_id:  "2"

@@ -440,9 +440,6 @@ Clean Up XIQ Components
     Navigate to XIQ Devices and Confirm Success
     Search XIQ Devices Table and Confirm Success  ${XIQSE_MAC}
 
-    # Disable all columns for event searches
-    Set Alarm Event Search Scope    false
-
     # Delete the Site Engine from XIQ if it is still onboarded (last test case removes it)
     Remove Device By MAC From XIQ and Confirm Success  ${XIQSE_MAC}
 
@@ -465,6 +462,9 @@ Clean Up XIQSE Components
     Switch To Window    ${XIQSE_WINDOW_INDEX}
 
     Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
+
+    # Disable all columns for event searches
+    Set Alarm Event Search Scope    false
 
     # Delete all the discovered devices from the sites
     XIQSE Delete All Site Devices and Confirm Success   ${PILOT_SITE}
