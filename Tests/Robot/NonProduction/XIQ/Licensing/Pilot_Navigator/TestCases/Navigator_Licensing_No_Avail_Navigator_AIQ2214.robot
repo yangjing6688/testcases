@@ -74,14 +74,14 @@ ${LOCATION}                  San Jose, building_01, floor_02
 *** Test Cases ***
 Test 1: Verify Navigator and Pilot Baseline License Counts
     [Documentation]     Confirms Pilot and Navigator license counts are at expected value in XIQ to begin with (nothing consumed)
-    [Tags]              tccs-13550    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test1
+    [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test1
 
     Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       2    0    0
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}     3    0    0
 
 Test 2: Onboard First Device and Verify Success
     [Documentation]     Onboards first test device and verifies success
-    [Tags]              tccs-13550    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test2
+    [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test2
 
     Depends On          Test 1
 
@@ -106,7 +106,7 @@ Test 2: Onboard First Device and Verify Success
 
 Test 3: Verify First Device Consumes Navigator License Within Global Settings License Management
     [Documentation]     Confirms the license count for Navigator and Pilot within Global Settings->License Management
-    [Tags]              tccs-13550    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test3
+    [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test3
 
     Depends On          Test 1
 
@@ -115,7 +115,7 @@ Test 3: Verify First Device Consumes Navigator License Within Global Settings Li
 
 Test 4: Onboard Second Device and Verify Success
     [Documentation]     Onboards second test device and verifies success
-    [Tags]              tccs-13550    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test4
+    [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test4
 
     Depends On          Test 1
 
@@ -140,7 +140,7 @@ Test 4: Onboard Second Device and Verify Success
 
 Test 5: Verify Second Device Consumes Navigator License Within Global Settings License Management
     [Documentation]     Confirms the license count for Navigator and Pilot within Global Settings->License Management
-    [Tags]              tccs-13550    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test5
+    [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test5
 
     Depends On          Test 1
 
@@ -149,7 +149,7 @@ Test 5: Verify Second Device Consumes Navigator License Within Global Settings L
 
 Test 6: Verify Device License Column Value
     [Documentation]     Checks the Device License column to verify devices consumed the appropriate license or not
-    [Tags]              tccs-13550    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test6
+    [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test6
 
     Depends On          Test 1
 
@@ -162,7 +162,7 @@ Test 6: Verify Device License Column Value
 
 Test 7: Onboard Third Test Device and Verify Device Consumes Pilot License Since Navigator Licenses Exceeded
     [Documentation]     Onboard a third test device and verifies it was onboarded but consumed pilot license due to navigator license limit exceeded
-    [Tags]              tccs-13492    pilot_release_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test7
+    [Tags]              tccs-13492    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    pilot    test7
 
     Depends On          Test 1
 
@@ -184,7 +184,7 @@ Test 7: Onboard Third Test Device and Verify Device Consumes Pilot License Since
 
 Test 8: Verify Third Device Consumes Pilot License Within Global Settings License Management
     [Documentation]     Confirms the license count for Navigator and Pilot within Global Settings->License Management
-    [Tags]              tccs-13550    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test8
+    [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test8
 
     Depends On          Test 1
 
@@ -193,7 +193,7 @@ Test 8: Verify Third Device Consumes Pilot License Within Global Settings Licens
 
 Test 9: Verify Device License Column Value
     [Documentation]     Checks the Device License column to verify devices consumed the appropriate license or not
-    [Tags]              tccs-13550    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test9
+    [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test9
 
     Depends On          Test 1
 
@@ -209,7 +209,7 @@ Test 9: Verify Device License Column Value
 
 Test 10: Delete All Devices and Verify Success
     [Documentation]     Deletes all devices and verifies success
-    [Tags]              tccs-13550    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test10
+    [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test10
 
     Depends On          Test 1
 
@@ -217,7 +217,7 @@ Test 10: Delete All Devices and Verify Success
 
 Test 11: Verify Navigator License Revoked Within Global Settings License Management
     [Documentation]     Confirms the Navigator and Pilot licenses was revoked
-    [Tags]              tccs-13550    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test11
+    [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test11
 
     Depends On          Test 1
 
