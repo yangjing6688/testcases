@@ -59,7 +59,7 @@ TCCS-11616_Step1: Generate And Validate Fake Alarms
     ${LOGIN_STATUS}=                    Login User      ${tenant_username}      ${tenant_password}      check_warning_msg=True
     should be equal as integers         ${LOGIN_STATUS}               1
 
-    ${DEVICE_STATUS}=                   Get Device Status       device_mac=${ap1.mac}
+    ${DEVICE_STATUS}=                   Get Device Status       device_mac=${ap1.serial}
     Should contain any                  ${DEVICE_STATUS}    green     config audit mismatch
 
     ${CLEAR_ALARM_STATUS}=              Clear Alarm                       CRITICAL
