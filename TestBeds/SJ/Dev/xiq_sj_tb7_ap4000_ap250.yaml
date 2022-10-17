@@ -1,6 +1,6 @@
 ap1:
   name:                     bui-flo-0019
-  connection_method:        ssh
+  connection_method:        "ssh"
   ip:                       10.254.160.112
   port:                     22
   username:                 admin
@@ -9,7 +9,7 @@ ap1:
   console_ip:               10.254.160.120
   console_port:             10007
   mac:                      F06426728180
-  cli_type:                 AH-AP
+  cli_type:                 "AH-AP"
   os:                       Cloud IQ Engine
   platform:                 aerohive
   model:                    AP4000
@@ -17,8 +17,6 @@ ap1:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
-  location:                 auto_location_01, Santa Clara, building_02, floor_04
-  onboard_device_type:      Real
   power_strip:
     ip:
     port:
@@ -47,8 +45,6 @@ ap2:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
-  location:                 auto_location_01, Santa Clara, building_02, floor_04
-  onboard_device_type:      Real
   power_strip:
     ip:
     port:
