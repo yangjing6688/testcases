@@ -64,6 +64,9 @@ TCCS-7651_Step2: Config AP to Report AIO and Check status
     ${WAIT_STATUS_RESULT}=      Wait for Configure Device to Connect to Cloud       ${ap1.cli_type}         ${capwap_url}       ${AP_SPAWN}
     Should Be Equal As Strings                  ${WAIT_STATUS_RESULT}       1
 
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${ap1.serial}
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
+    
     ${DEVICE_STATUS}=       Get Device Status       device_mac=${ap1.serial}
     Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
 
