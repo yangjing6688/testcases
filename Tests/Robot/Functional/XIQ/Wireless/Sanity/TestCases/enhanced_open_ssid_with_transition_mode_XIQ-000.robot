@@ -75,7 +75,7 @@ Step0: Onboard AP
     ${STATUS}                      Onboard Device    ${ap1.serial}    ${ap1.make}    location=${ap1.location}
     should be equal as integers    ${STATUS}         1
 
-    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}           ${ap1.port}      ${ap1.username}      ${ap1.password}     ${ap1}[cli_type]
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}           ${ap1.port}      ${ap1.username}      ${ap1.password}     ${ap1.cli_type}
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}        capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
     ${OUTPUT0}=         Send                ${AP_SPAWN}        console page 0
     ${OUTPUT0}=         Send                ${AP_SPAWN}        show version detail
@@ -189,7 +189,7 @@ Step9: Verify cli in wifi0-1 - Transition mode enable
     [Documentation]     Verify cli in wifi0-1 - Enhanced Open SSID with transition mode anable
     [Tags]              tcxm-12175   tcxm-12176   tcxm-12180   development     step9    steps
     Depends On          Step8
-    ${AP_SPAWN}         Open Spawn       ${ap1.ip}      ${ap1.port}    ${ap1.username}    ${ap1.password}    ${ap1}[cli_type]
+    ${AP_SPAWN}         Open Spawn       ${ap1.ip}      ${ap1.port}    ${ap1.username}    ${ap1.password}    ${ap1.cli_type}
     ${OUT}              Send             ${AP_SPAWN}    show run | inc OWE
     Close Spawn         ${AP_SPAWN}
     should contain      ${OUT}    ssid OWE-${SSID_01}
@@ -200,7 +200,7 @@ Step10: Verify cli in wifi2 - Transition mode disable
     [Documentation]     Verify cli in wifi2 - Enhanced Open SSID with transition mode disable
     [Tags]              tcxm-12164    development     step10     steps
     Depends On          Step8
-    ${AP_SPAWN}         Open Spawn       ${ap1.ip}      ${ap1.port}    ${ap1.username}    ${ap1.password}    ${ap1}[cli_type]
+    ${AP_SPAWN}         Open Spawn       ${ap1.ip}      ${ap1.port}    ${ap1.username}    ${ap1.password}    ${ap1.cli_type}
     ${OUT}              Send             ${AP_SPAWN}    show run | inc ${SSID_02}
     Close Spawn         ${AP_SPAWN}
     should contain      ${OUT}    security-object ${SSID_02}
