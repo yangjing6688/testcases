@@ -115,7 +115,7 @@ CFD-7020_case: AP in CCG profile with "(Does Not Contain)" should NOT have SSID,
     [Tags]                      cfd-7020   pnc  development    cfd-7020_case     tcxm-21566
     ${AP_Serials}=        Get Device Serial Numbers     ${DEVICE_TYPE}
     FOR     ${ap_sn}       IN      @{AP_Serials}
-        ${hostname}=   get_ap_hostname     ${ap_sn}
+        ${hostname}=   get_hostname     ${ap_sn}
         ${ssid_lists}=       Get Ap Wifi0and1 Configured Ssids     ${hostname}
         ${match_count}=      Get Match Count    ${AP_SERIAL_IN_CCG}        ${ap_sn}
         IF  ${match_count} > 0
