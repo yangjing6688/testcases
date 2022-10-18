@@ -98,8 +98,8 @@ Test Suite Clean Up
     # 2022-08-31 new browser library removes need to logout and back in to keep variables in scope. Trial.  Remove if no issues are seen
     #${result}=    Login User       ${tenant_username}     ${tenant_password}
     Update Network Policy To AP    policy_name=${NW_DEFAULT_POLICY}    ap_serial=${ap1.serial}
-    Delete Network Polices         ${NW_POLICY_NAME1}
-    Delete ssids                   ${NW_POLICY_SSID1}
+    Delete Network Polices         ${NW_POLICY_NAME1}   ${NW_DEFAULT_POLICY}
+    Delete ssids                   ${NW_POLICY_SSID1}   ${NW_DEFAULT_SSID}
     Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}
     Logout User
     Quit Browser
