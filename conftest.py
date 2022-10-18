@@ -99,7 +99,6 @@ def pytest_addoption(parser):
     parser.addoption("--get_test_info", action="store", default=None, help="Dump checkdb or insert mod info")
     parser.addoption("--customReportDate", action="store_true", default=False, help="Adds a report date to the report_<date>.html file")
     parser.addoption("--customReportTitle", action="store", default=None, help="Adds a Custom title to the report htmls file")
-    parser.addoption("--runlist", action="store", help="The path of the runlist we want to run", default="")
 
 def pytest_html_report_title(report):
     # Update title on web page
