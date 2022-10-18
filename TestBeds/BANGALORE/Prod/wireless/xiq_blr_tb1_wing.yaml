@@ -18,4 +18,5 @@ wing1:
   console_port:             '22'
   country:                  United Kingdom
   make:                     Controllers
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
   onboard_device_type:      Real

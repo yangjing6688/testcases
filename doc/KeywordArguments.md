@@ -49,6 +49,10 @@ Various features and utilities have been implemented via kwargs (Keyword Argumen
 
                 Send_CMD(netelem1.name, 'clear log', ignore_error=Error)
 
+* `wait_for_sleep_override`: This will override the default value of wait_for_sleep (in milli-seconds) used gather information from the cli.
+
+                Send_CMD(netelem1.name, 'clear log', wait_for_sleep_override=1000)
+
 * `ignore_cli_feedback`: If set to True CLI feedback is ignored. This is set to False by default. This will ignore any errors that may be returned from running this keyword. This could be used to make sure the device is in a clean state before a test will begin. In some cases the keyword would execute with and without errors but the user doesn't want to report on the errors that may be returned.
 
                 Remove_FDB_Entry(netelem1.name, dst_mac_a, vlan_a, ignore_cli_feedback=True)

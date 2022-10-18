@@ -45,7 +45,7 @@ TCCS-7651_Step1: Onboard Aerohive AP
     ${CHANGE_PASSWORD_STATUS}=      Change Device Password                  Aerohive123
     should be equal as integers     ${CHANGE_PASSWORD_STATUS}               1
 
-    ${ONBOARD_RESULT}=              Onboard Device      ${ap1.serial}           ${ap1.make}       location=${LOCATION}
+    ${ONBOARD_RESULT}=              onboard device quick      ${ap1}
     should be equal as integers     ${ONBOARD_RESULT}       1
 
     ${search_result}=               Search AP Serial    ${ap1.serial}
@@ -64,7 +64,10 @@ TCCS-7651_Step2: Config AP to Report AIO and Check status
     ${WAIT_STATUS_RESULT}=      Wait for Configure Device to Connect to Cloud       ${ap1.cli_type}         ${capwap_url}       ${AP_SPAWN}
     Should Be Equal As Strings                  ${WAIT_STATUS_RESULT}       1
 
-    ${DEVICE_STATUS}=       Get Device Status       device_mac=${ap1.mac}
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${ap1.serial}
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
+    
+    ${DEVICE_STATUS}=       Get Device Status       device_serial=${ap1.serial}
     Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
 
     [Teardown]    Close Spawn    ${AP_SPAWN}

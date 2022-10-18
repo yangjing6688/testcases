@@ -53,6 +53,7 @@ Resource    ../Resources/location_config.robot
 Resource    ../Resources/wireless_networks_related_config.robot
 Force Tags      testbed_none
 Suite Setup      Pre Condition
+Suite Teardown   Suite Clean Up
 
 *** Keywords ***
 Pre Condition
@@ -76,16 +77,7 @@ Pre Condition
 # Assign Network Policy to all devices
     Assign Network Policy To All Devices     ${NW_POLICY_NAME1}
 
-*** Test Cases ***
-#######  IP NETWORK  ####################################################################################################
-cfd-7548_case: XIQ pushing out commands that are not configured. ppsk
-    [Documentation]     Check complete config to make sure there is no "security additional-auth-method captive-web-portal" CLI, when configure local and cloud PPSK group in one PPSK SSID
-    [Tags]                      cfd-7548   pnc  development    cfd-7548_case     tcxm-21595
-    ${full_config}=       get_device_config_audit_delta_complete        ${ONBOARD_AP_SERIAL}        complete
-    Log To Console    Testing!!!!!!!
-    Should Not Contain    ${full_config}    ${CWP_CLI}
-
-Test Suite Clean Up
+Suite Clean Up
     [Documentation]    Delete all devices, all ssids, Network Policy, location user groups and quit web browser
     [Tags]             cfd-7548         cleanup     development          tcxm-21566
     Delete All devices
@@ -94,6 +86,15 @@ Test Suite Clean Up
     Delete User Groups    ${BULK_CLOUD_USER_GROUP}      ${BULK_LOCAL_USER_GROUP}
     Delete Location Building Floor  ${1st_LOCATION_CITY_STATE}      ${1st_LOCATION_STREET}     Floor 1
     XIQ Quit Browser
+
+*** Test Cases ***
+#######  IP NETWORK  ####################################################################################################
+cfd-7548_case: XIQ pushing out commands that are not configured. ppsk
+    [Documentation]     Check complete config to make sure there is no "security additional-auth-method captive-web-portal" CLI, when configure local and cloud PPSK group in one PPSK SSID
+    [Tags]                      cfd-7548   pnc  development    cfd-7548_case     tcxm-21595
+    ${full_config}=       get_device_config_audit_delta_complete        ${ONBOARD_AP_SERIAL}        complete
+    Log To Console    Testing!!!!!!!
+    Should Not Contain    ${full_config}    ${CWP_CLI}
 
 
 

@@ -484,7 +484,7 @@ class XiqTests():
                 cls.xiq.xflowscommonDevices.column_picker_select('Template')
                 if cls.xiq.xflowsmanageDevices.create_stack_auto_template(device_mac=cls.tb.dut1.mac,
                                                                           name_stack_template=sw_template_name) == 1:
-                    cls.xiq.xflowsconfigureSwitchTemplate.save_stack_template()
+                    cls.xiq.xflowsconfigureSwitchTemplate.save_stack_template(sw_template_name)
                 else:
                     pytest.fail("Failed to create template for the stack!")
 
@@ -917,11 +917,11 @@ class XiqTests():
                 self.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan_stack(
                                                                                   port_numbers=port_numbers, slot=slot)
         else:
-            self.xiq.xflowsmanageDevice360.device360_configure_port_trunk_vlan(device_mac=self.tb.dut1.mac,
-                                                                               port_number=new_trunk_port,
+            self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(self.tb.dut1.mac)
+            self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
+            self.xiq.xflowsmanageDevice360.device360_configure_ports_trunk_vlan(port_numbers=new_trunk_port,
                                                                                trunk_native_vlan="1",
-                                                                               trunk_vlan_id=vlan_range,
-                                                                               port_type="Trunk Port")
+                                                                               trunk_vlan_id=vlan_range)
 
             self.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan(device_mac=self.tb.dut1.mac,
                                                                                  port_numbers=port_numbers,

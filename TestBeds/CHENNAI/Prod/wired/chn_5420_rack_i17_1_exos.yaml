@@ -19,4 +19,5 @@ netelem1:
   model:                    "5420F-24S-4XE-SwitchEngine"
   make:                     "exos"
   auth_mode:                "basic"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"

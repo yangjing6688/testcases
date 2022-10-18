@@ -207,6 +207,7 @@ class xiqTests():
                 return '2'
 
     def get_sw_model(self):
+        self.xiq.xflowscommonDevices.column_picker_select('Model')
         sw_model = self.xiq.xflowsmanageDevices.get_device_model(self.tb.dut1.mac)
         if not sw_model:
             pytest.fail("Fail on getting the device's model")
@@ -231,7 +232,7 @@ class xiqTests():
         check_stack_template = self.xiq.xflowscommonDevices.create_stack_auto_template(device_mac=mac,
                                                                                        name_stack_template=generic_name)
         time.sleep(10)
-        self.xiq.xflowsconfigureSwitchTemplate.save_stack_template()
+        self.xiq.xflowsconfigureSwitchTemplate.save_stack_template(generic_name)
 
     def delete_port_type_local(self, delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name):
         self.xiq.xflowsmanageDevice360.close_device360_window()

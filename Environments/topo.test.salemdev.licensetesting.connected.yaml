@@ -1,0 +1,84 @@
+xiqse:
+  ip:                      "10.139.33.87"
+  url:                     "https://10.139.33.87:8443"
+  license_suffix:          "/xiqLicenseSetup.jsp?setupMode=xiq"
+  user:                    "root"
+  password:                "n7830466"
+  version:                 "23"
+  os_version:              "23"
+  name:                    "extauto-xiqse-87.extremenetworks.com"
+  serial:                  "XIQSE-2E44CB10D77C4F0EAB3424D98813C91E"
+  mac:                     "000C299D4101"
+  profile:                 "snmp_v3_profile"
+  platform:                "xiqse"
+  make:                    "XIQSE"
+  model:                   "XIQSE"
+  product:                 "XIQ_SE"
+  function:                "XIQSE"
+  xiq_os:                  "XIQSE"
+  log_dir:                 "/usr/local/Extreme_Networks/NetSight/appdata/logs"
+  server_log:              "server.log"
+
+appliance:
+  user:                    "root"
+  password:                "n7830466"
+  profile:                 "AnalyticsEngine_v3_Profile"
+
+purview:
+  ip:                      "10.139.33.89"
+  name:                    "extauto-purview-89"
+
+nextgen:
+  ip:                      "10.139.33.90"
+  name:                    "extauto-nextgen-90"
+
+nac:
+  ip:                      "10.139.33.88"
+  name:                    "extauto-nac-88"
+
+xiq:
+  test_url:                "https://g2r1.qa.xcloudiq.com"
+  capwap_url:              "g2r1-cwpm-01.qa.xcloudiq.com"
+  sw_connection_host:      "g2r1.qa.xcloudiq.com"
+  tenant_username:         "xiqse1+automationC@gmail.com"
+  tenant_password:         "Aerohive123"
+  pilot_entitlements:      "10"
+  navigator_entitlements:  "2"
+
+xiq2:
+  test_url:                "https://g2r1.qa.xcloudiq.com"
+  capwap_url:              "g2r1-cwpm-01.qa.xcloudiq.com"
+  sw_connection_host:      "g2r1.qa.xcloudiq.com"
+  tenant_username:         "xiqse1+automationG2@gmail.com"
+  tenant_password:         "Aerohive123"
+  pilot_entitlements:      "10"
+  navigator_entitlements:  "2"
+
+# SSH into ESX and issue the following commands to identify the VM ID and Snapshot ID
+# List all VMs to find your vmId
+#     vim-cmd vmsvc/getall
+# List all snapshots of a VM
+#     vim-cmd vmsvc/get.snapshotinfo <vmid>
+upgrades:
+  install_mode:                "CONNECTED"
+  nsrelease_version:           "22.6.10.70"
+  esx:
+    esx_ip:                    "10.139.33.16"
+    esx_user:                  "root"
+    esx_password:              "no-boneheads"
+  xmc:
+    version:                   "8.5.5.32"
+    xiqse_vm_id:               "300"
+    nac_vm_id:                 "301"
+    purview_vm_id:             "302"
+    ng_analytics_vm_id:        "303"
+  xiqse:
+    version:                   "22.6.10.70"
+    xiqse_vm_id:               "11"
+    xiqse_snapshot_id:         "1"
+    nac_vm_id:                 "6"
+    nac_snapshot_id:           "2"
+    purview_vm_id:             "7"
+    purview_snapshot_id:       "2"
+    ng_analytics_vm_id:        "8"
+    ng_analytics_snapshot_id:  "2"

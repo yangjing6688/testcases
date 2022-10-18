@@ -19,6 +19,7 @@ netelem1:
   model:                    "SwitchEngine5420F_16W_32P_4XE"
   make:                     "exos"
   auth_mode:                "basic"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"
 
 

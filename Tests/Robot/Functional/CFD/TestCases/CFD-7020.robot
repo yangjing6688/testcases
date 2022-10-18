@@ -56,6 +56,7 @@ Resource    ../Resources/location_config.robot
 Resource    ../Resources/wireless_networks_related_config.robot
 Force Tags      testbed_none
 Suite Setup      Pre Condition
+Suite Teardown   Suite Clean Up
 
 *** Keywords ***
 Pre Condition
@@ -96,6 +97,17 @@ Pre Condition
 # Assign Network Policy to all devices
     Assign Network Policy To All Devices     ${NW_POLICY_NAME1}
 
+Suite Clean Up
+    [Documentation]    Delete all devices, all ssids, Network Policy, classification rule, ccg, location and quit web browser
+    [Tags]             cfd-7020         cleanup     development          tcxm-21566
+    Delete All devices
+    delete_all_ssid_in_policy   ${NW_POLICY_NAME1}
+    Delete Network Policy    ${NW_POLICY_NAME1}
+    Delete Single Classification rule      ${RULE_NAME}
+    Delete Cloud Config Group      ${CCG_NAME}
+    Delete Location Building Floor  ${1st_LOCATION_CITY_STATE}      ${1st_LOCATION_STREET}     Floor 1
+    XIQ Quit Browser
+
 *** Test Cases ***
 ######  IP NETWORK  ####################################################################################################
 CFD-7020_case: AP in CCG profile with "(Does Not Contain)" should NOT have SSID, or AP should have the SSID
@@ -118,17 +130,6 @@ CFD-7020_case: AP in CCG profile with "(Does Not Contain)" should NOT have SSID,
             List Should Contain Value       ${ssid_lists}[wifi1]        ${WIRELESS_PESRONAL_WPA2CCMP_1}[ssid_name]
         END
     END
-
-Test Suite Clean Up
-    [Documentation]    Delete all devices, all ssids, Network Policy, classification rule, ccg, location and quit web browser
-    [Tags]             cfd-7020         cleanup     development          tcxm-21566
-    Delete All devices
-    delete_all_ssid_in_policy   ${NW_POLICY_NAME1}
-    Delete Network Policy    ${NW_POLICY_NAME1}
-    Delete Single Classification rule      ${RULE_NAME}
-    Delete Cloud Config Group      ${CCG_NAME}
-    Delete Location Building Floor  ${1st_LOCATION_CITY_STATE}      ${1st_LOCATION_STREET}     Floor 1
-    XIQ Quit Browser
 
 
 

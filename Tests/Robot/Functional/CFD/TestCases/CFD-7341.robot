@@ -47,6 +47,7 @@ Resource    ../Resources/location_config.robot
 Resource    ../Resources/ip_and_subnet_resource.robot
 Force Tags      testbed_none
 Suite Setup      Pre Condition
+Suite Teardown   Suite Clean Up
 
 *** Keywords ***
 Pre Condition
@@ -67,6 +68,21 @@ Pre Condition
         Add Classification Rule with Location       cls_rule_location_${index}      cls_rule_location_${index}      &{LOC_TEST_${index}}
     END
 
+Suite Clean Up
+    [Documentation]    delete IP Object profile, classification rules, and MAPs
+    [Tags]             cfd-7341         cleanup     development          tcxm-21454
+    @{PROFILES}    Create List      ${IP_OBJECT_NAME}       ${IP_NETWORKS_OBJECT_NAME}      ${HOSTNAME_OBJECT_NAME}         ${WILDCARD_HOSTNAME_OBJECT_NAME}        ${WILDCARD_NETWORK_OBJECT_NAME}         ${IP_RANGE_OBJECT_NAME}
+
+    FOR     ${PROFILE}  IN  @{PROFILES}
+        IP Object Hostname Delete Object Profile        ${PROFILE}
+    END
+
+    FOR     ${index}    IN RANGE    ${RANGE_START}       ${RANGE_END}
+        Delete Classification rules   cls_rule_location_${index}
+        Delete Location Building Floor      ${LOCATION_${index}}   ${BUILDING_${index}}    ${FLOOR_${index}}
+    END
+    Delete Location Building Floor  ${1st_LOCATION_CITY_STATE}      ${1st_LOCATION_STREET}     Floor 1
+    XIQ Quit Browser
 
 *** Test Cases ***
 ######  IP NETWORK  ####################################################################################################
@@ -142,19 +158,4 @@ CFD-7341_Network_Step3: Check the count of network items in the profile
 #    ${Get_Items_Of_Object_Profile}=        IP Object Hostname List All Objects in Profile      ${IP_RANGE_OBJECT_NAME}
 #    Lists Should Be Equal       ${Configured_Items_for_Object_Profile}      ${Get_Items_Of_Object_Profile}
 
-Test Suite Clean Up
-    [Documentation]    delete IP Object profile, classification rules, and MAPs
-    [Tags]             cfd-7341         cleanup     development          tcxm-21454
-    @{PROFILES}    Create List      ${IP_OBJECT_NAME}       ${IP_NETWORKS_OBJECT_NAME}      ${HOSTNAME_OBJECT_NAME}         ${WILDCARD_HOSTNAME_OBJECT_NAME}        ${WILDCARD_NETWORK_OBJECT_NAME}         ${IP_RANGE_OBJECT_NAME}
-
-    FOR     ${PROFILE}  IN  @{PROFILES}
-        IP Object Hostname Delete Object Profile        ${PROFILE}
-    END
-
-    FOR     ${index}    IN RANGE    ${RANGE_START}       ${RANGE_END}
-        Delete Classification rules   cls_rule_location_${index}
-        Delete Location Building Floor      ${LOCATION_${index}}   ${BUILDING_${index}}    ${FLOOR_${index}}
-    END
-    Delete Location Building Floor  ${1st_LOCATION_CITY_STATE}      ${1st_LOCATION_STREET}     Floor 1
-    XIQ Quit Browser
 
