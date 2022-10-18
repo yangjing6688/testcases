@@ -276,15 +276,6 @@ def debug(logger: PytestLogger) -> Callable:
     return debug_func
 
 
-def pytest_addoption(parser):
-    parser.addoption(
-        "--runlist",
-        action="store",
-        help="The path to the runlist", 
-        default=""
-    )
-
-
 def pytest_cmdline_preparse(config, args):
     args.append(os.path.join(os.path.dirname(__file__), "conftest.py"))
 
