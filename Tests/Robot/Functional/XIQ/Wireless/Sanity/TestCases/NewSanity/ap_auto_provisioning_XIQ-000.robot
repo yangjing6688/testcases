@@ -108,7 +108,7 @@ Device Onboard
     # onboard the device
     Clean Up Device     ${device}  ${SPAWN}
 
-    ${ONBOARD_RESULT}=          onboard device      ${device.serial}       ${device.make}   device_mac=${device.mac}  location=${LOCATION}
+    ${ONBOARD_RESULT}=          onboard device quick      ${device}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
     configure device to connect to cloud    ${device.cli_type}   ${generic_capwap_url}   ${SPAWN}

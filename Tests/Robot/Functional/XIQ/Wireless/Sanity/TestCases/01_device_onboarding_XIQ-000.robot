@@ -45,7 +45,7 @@ TCCS-7651_Step1: Onboard Aerohive AP
     ${CHANGE_PASSWORD_STATUS}=      Change Device Password                  Aerohive123
     should be equal as integers     ${CHANGE_PASSWORD_STATUS}               1
 
-    ${ONBOARD_RESULT}=              Onboard Device      ${ap1.serial}           ${ap1.make}       location=${LOCATION}
+    ${ONBOARD_RESULT}=              onboard device quick      ${ap1}
     should be equal as integers     ${ONBOARD_RESULT}       1
 
     ${search_result}=               Search AP Serial    ${ap1.serial}

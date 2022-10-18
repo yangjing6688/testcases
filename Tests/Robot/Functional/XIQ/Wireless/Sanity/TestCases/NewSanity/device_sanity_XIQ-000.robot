@@ -175,7 +175,7 @@ TCCS-13512-Testcase3: Simple Onboard Device on XIQ
 
     Clean Up Device
 
-    ${ONBOARD_RESULT}=          onboard device      ${device1.serial}       ${device1.make}   device_mac=${device1.mac}  location=${LOCATION}
+    ${ONBOARD_RESULT}=          onboard device quick      ${device1}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
     configure device to connect to cloud    ${device1.cli_type}   ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
