@@ -68,12 +68,6 @@ def xiq_teardown_template(request):
                 request.instance.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan_stack(
                                                                                   port_numbers=port_numbers2, slot=slot)
             request.instance.xiq.xflowsmanageDevices.refresh_devices_page()
-            # request.instance.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(policy_name=network_policy_name,
-            #                                                                             option="disable",
-            #                                                                             device_mac=request.instance.tb.
-            #                                                                             dut1.mac)
-            # request.instance.xiq.xflowsmanageDevices.check_device_update_status_by_using_mac(
-            #                                                                                request.instance.tb.dut1.mac)
             def _check_device_update():
                 return request.instance.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(
                                                                                        policy_name=network_policy_name,
@@ -95,13 +89,11 @@ def xiq_teardown_template(request):
                                                                                 port_numbers=port_numbers2,
                                                                                 access_vlan_id="1")
             request.instance.xiq.xflowsmanageDevices.refresh_devices_page()
-            # request.instance.xiq.xflowsmanageDevices.update_override_configuration_to_device(
-            #                                                               device_serial=request.instance.tb.dut1.serial)
-            # request.instance.xiq.xflowsmanageDevices.check_device_update_status_by_using_mac(
-            #                                                                                request.instance.tb.dut1.mac)
             def _check_device_update():
-                return request.instance.xiq.xflowsmanageDevices.update_override_configuration_to_device(
-                                                                          device_serial=request.instance.tb.dut1.serial)
+                return request.instance.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(
+                                                                                       policy_name=network_policy_name,
+                                                                                       option="disable",
+                                                                                       device_mac=request.instance.tb.dut1.mac)
 
             request.instance.xiq.Utils.wait_till(_check_device_update, timeout=60, delay=3, msg='Checking the '
                                                                                                 'initialization of the '
@@ -249,6 +241,7 @@ class XiqTests():
     def get_device_vlan_configuration(self, ports):
         configuration_list = []
         self.xiq.xflowsmanageDevices.refresh_devices_page()
+
         def _check_device_update():
             return self.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(policy_name=network_policy_name,
                                                                                    option="disable",
@@ -494,13 +487,12 @@ class XiqTests():
 
                 cls.xiq.Utils.wait_till(_check_device_update, timeout=60, delay=3, msg='Checking the initialization of '
                                                                                        'the update')
-                # cls.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(policy_name=network_policy_name,
-                #                                                                option="disable",
-                #                                                                device_mac=cls.tb.dut1.mac)
             else:
                 def _check_device_update():
-                    return cls.xiq.xflowsmanageDevices.update_override_configuration_to_device(
-                        device_serial=cls.tb.dut1.serial)
+                    return cls.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(
+                                                                                       policy_name=network_policy_name,
+                                                                                       option="disable",
+                                                                                       device_mac=cls.tb.dut1.mac)
 
                 cls.xiq.Utils.wait_till(_check_device_update, timeout=60, delay=3, msg='Checking the initialization of '
                                                                                        'the update')
@@ -572,13 +564,11 @@ class XiqTests():
                 cls.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan_stack(port_numbers=port_numbers,
                                                                                           slot=slot)
             cls.xiq.xflowsmanageDevices.refresh_devices_page()
-            # cls.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(policy_name=network_policy_name,
-            #                                                                option="disable", device_mac=cls.tb.dut1.mac)
-            # cls.xiq.xflowsmanageDevices.check_device_update_status_by_using_mac(cls.tb.dut1.mac)
+
             def _check_device_update():
                 return cls.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(policy_name=network_policy_name,
-                                                                                       option="disable",
-                                                                                       device_mac=cls.tb.dut1.mac)
+                                                                                      option="disable",
+                                                                                      device_mac=cls.tb.dut1.mac)
 
             cls.xiq.Utils.wait_till(_check_device_update, timeout=60, delay=3, msg='Checking the initialization of the '
                                                                                    'update')
@@ -608,8 +598,9 @@ class XiqTests():
             # cls.xiq.xflowsmanageDevices.update_override_configuration_to_device(device_serial=cls.tb.dut1.serial)
             # cls.xiq.xflowsmanageDevices.check_device_update_status_by_using_mac(cls.tb.dut1.mac)
             def _check_device_update():
-                return cls.xiq.xflowsmanageDevices.update_override_configuration_to_device(device_serial=
-                                                                                           cls.tb.dut1.serial)
+                return cls.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(policy_name=network_policy_name,
+                                                                                      option="disable",
+                                                                                      device_mac=cls.tb.dut1.mac)
 
             cls.xiq.Utils.wait_till(_check_device_update, timeout=60, delay=3,
                                      msg='Checking the initialization of the '
