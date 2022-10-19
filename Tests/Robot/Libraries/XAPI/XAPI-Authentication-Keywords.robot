@@ -7,9 +7,17 @@ Library     common/Utils.py
 
 Variables   Environments/Config/waits.yaml
 
-
-
 *** Keywords ***
+
+#### Generate new Access Token #####
+xapi login
+    [Documentation]             Generate the Access Token
+    [Arguments]                 ${login_name}      ${password}
+    ${ACCESS_TOKEN} =           generate_access_token    ${login_name}      ${password}      login
+    log                         generated access token -- ${ACCESS_TOKEN}
+    [Return]                    ${ACCESS_TOKEN}
+
+
 #####  Revoke Access Token  #####
 xapi logout
     [Documentation]  Revoke current Access Token
