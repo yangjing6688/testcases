@@ -18,6 +18,8 @@ netelem1:
   image_family:             "summit_arm"
   platform:                 "5420F-48T-4XE-FabricEngine"
   model:                    "Fabric Engine 5420F-48T-4XE"
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
 
 
 

@@ -18,6 +18,7 @@ netelem1:
   platform:                 "5520"
   model:                    "SwitchEngine5520_48SE"
   make:                     "exos"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   auth_mode:                "basic"
   onboard_device_type:      "Real"
   tgen:

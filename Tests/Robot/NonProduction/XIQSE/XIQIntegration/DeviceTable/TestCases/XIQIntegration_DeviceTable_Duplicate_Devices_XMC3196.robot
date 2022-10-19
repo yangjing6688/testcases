@@ -56,6 +56,9 @@ Test 1: TC-52234 - Device Onboarded to XIQ & Subsequently Onboarded to XIQSE
 
     # Onboard Device to XIQ
     Switch To Window  ${XIQ_WINDOW_INDEX}
+    XIQ Navigate to Devices and Confirm Success
+    Delete XIQ Test Device and Confirm Success    ${DUT_SERIAL}
+
     Navigate and Onboard Switch to XIQ   ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}
 
     # Add Device to XIQSE and make sure a system message appears that it is already onboarded

@@ -123,7 +123,7 @@ TCCS-7632: Configure AP Auto Provision Profile
 
     Save and Enable Auto Provision Policy           ${APP_POLICY_NAME_AP_01}
 
-    ${ONBOARD_RESULT}=      Onboard Device          ${ap1.serial}           ${ap1.make}       location=${LOCATION}      device_os=${ap1.cli_type}
+    ${ONBOARD_RESULT}=     onboard device quick           ${ap1}
     Should Be Equal As Integers                     ${ONBOARD_RESULT}          1
 
     ${SPAWN_CONNECTION}=      Open Spawn    ${ap1.ip}     ${ap1.port}   ${ap1.username}   ${ap1.password}    ${ap1.cli_type}
@@ -168,7 +168,7 @@ TCCS-7571: Configure Switch Auto Provision Profile
 
     Save and Enable Auto Provision Policy           ${APP_POLICY_NAME_SW_01}
 
-    ${ONBOARD_RESULT}=      Onboard Device          ${aerohive_sw1.serial}           ${aerohive_sw1.make}       location=${LOCATION}
+    ${ONBOARD_RESULT}=        onboard device quick      ${aerohive_sw1}
     Should Be Equal As Integers                     ${ONBOARD_RESULT}          1
 
     ${SPAWN_CONNECTION}=      Open Spawn    ${aerohive_sw1.ip}     ${aerohive_sw1.port}   ${aerohive_sw1.username}   ${aerohive_sw1.password}    ${aerohive_sw1.cli_type}

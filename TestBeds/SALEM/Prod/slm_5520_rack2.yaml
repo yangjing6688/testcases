@@ -19,6 +19,7 @@ netelem1:
   model:                    "SwitchEngine5520_48SE"
   make:                     "exos"
   auth_mode:                "basic"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"
   tgen:
     port_a:
@@ -66,6 +67,7 @@ netelem2:
   model:                    "SwitchEngine5520_48SE"
   make:                     "exos"
   auth_mode:                "basic"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"
   stack:
     slot1:

@@ -1,0 +1,34 @@
+ap1:
+  name:                     bui-flo-0090
+  connection_method:        "ssh"
+  ip:                       10.16.171.75
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "04101912120090"
+  mac:                      BCF3101EB300
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP410C
+  template:                 AP410C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           BLR_TB2_AP410C_01
+      ssid:                     AP410C_01
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            3485843A5CC0

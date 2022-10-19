@@ -43,9 +43,9 @@ Cleanup-Delete Device
     ...                             quit browser
 
 *** Test Cases ***
-XIQ-10313 XIQ Measure time taken to login and traverse to Manage device Page
+XIQ-10313 - TCXM-25834 - Automation: XIQ Measure time taken to login and traverse to Manage device Page
     [Documentation]         XIQ Measure time taken to login and traverse to Manage device Page
-    [Tags]                  production      XIQ-10313    login  devicespage
+    [Tags]                  development      tcxm-25834    client-experience
 
     ${START_TIME}=          Get Current Date Time   time_format=${TIME_FORMAT}
 
@@ -86,9 +86,9 @@ XIQ-10313 XIQ Measure time taken to login and traverse to Manage device Page
     [Teardown]  Run Keywords   Logout User
     ...                        Quit Browser
 
-XIQ-10314 XIQ Measure time taken to Onboard device
+XIQ-10314 - TCXM-25835 - Automation: XIQ Measure time taken to Onboard device
     [Documentation]         XIQ Measure time taken to login and traverse to Manage device Page
-    [Tags]                  production      XIQ-10314   onboard
+    [Tags]                  development       tcxm-25835   client-experience
 
     ${LOGIN_STATUS}=         Login User          ${tenant_username}      ${tenant_password}
     Should Be Equal As Integers             ${LOGIN_STATUS}               1

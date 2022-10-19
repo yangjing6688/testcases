@@ -48,5 +48,3 @@ mu1:
   ethernet_mac:   D067E541F504
   wifi_network:   10.234.105
   wifi_network_vlan10:    10.234.105
-  onboard_device_type:      Real
-

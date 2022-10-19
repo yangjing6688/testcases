@@ -207,6 +207,7 @@ class xiqTests():
                 return '2'
 
     def get_sw_model(self):
+        self.xiq.xflowscommonDevices.column_picker_select('Model')
         sw_model = self.xiq.xflowsmanageDevices.get_device_model(self.tb.dut1.mac)
         if not sw_model:
             pytest.fail("Fail on getting the device's model")
@@ -231,7 +232,7 @@ class xiqTests():
         check_stack_template = self.xiq.xflowscommonDevices.create_stack_auto_template(device_mac=mac,
                                                                                        name_stack_template=generic_name)
         time.sleep(10)
-        self.xiq.xflowsconfigureSwitchTemplate.save_stack_template()
+        self.xiq.xflowsconfigureSwitchTemplate.save_stack_template(generic_name)
 
     def delete_port_type_local(self, delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name):
         self.xiq.xflowsmanageDevice360.close_device360_window()
@@ -392,7 +393,7 @@ class xiqTests():
     @classmethod
     def setup_class(cls):
         try:
-            cls.executionHelper = PytestExecutionHelper()
+            cls.executionHelper = PytestExecutionHelper(defaultAction="fail")
             # Create an instance of the helper class that will read in the test bed yaml file and provide basic methods and variable access.
             # The user can also get to the test bed yaml by using the config dictionary
             cls.tb = PytestConfigHelper(config)
@@ -483,9 +484,8 @@ class xiqTests():
         # Logout
         cls.deactivate_xiq_libaries_and_logout(cls)
 
-    @mark.xim_tcxm_18417
-    @mark.xim_tcxm_18419
-    @mark.development
+    @mark.tcxm_18417
+    @mark.tcxm_18419
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18417_tcxm_18419_add_port_name_and_usage_in_d360(self):
@@ -561,9 +561,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18420
-    @mark.xim_tcxm_18422
-    @mark.development
+    @mark.tcxm_18420
+    @mark.tcxm_18422
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18420_tcxm_18422_add_vlan_in_vlan_tab_in_d360(self):
@@ -639,9 +638,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18423
-    @mark.xim_tcxm_18425
-    @mark.development
+    @mark.tcxm_18423
+    @mark.tcxm_18425
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18423_tcxm_18425_add_transmission_settings_in_d360(self):
@@ -727,9 +725,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18426
-    @mark.xim_tcxm_18428
-    @mark.development
+    @mark.tcxm_18426
+    @mark.tcxm_18428
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18426_tcxm_18428_add_stp_settings_in_d360(self):
@@ -814,9 +811,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18429
-    @mark.xim_tcxm_18431
-    @mark.development
+    @mark.tcxm_18429
+    @mark.tcxm_18431
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18429_tcxm_18431_add_storm_control_settings_in_d360(self):
@@ -906,9 +902,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18432
-    @mark.xim_tcxm_18434
-    @mark.development
+    @mark.tcxm_18432
+    @mark.tcxm_18434
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18432_tcxm_18434_add_pse_settings_in_d360(self):
@@ -1011,8 +1006,7 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18440
-    @mark.development
+    @mark.tcxm_18440
     @mark.p2
     @mark.testbed_1_node
     def test_tcxm_18440_create_port_type_and_toggle_auto_sense_button_in_d360(self):
@@ -1065,9 +1059,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_on_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18473
-    @mark.xim_tcxm_18475
-    @mark.development
+    @mark.tcxm_18473
+    @mark.tcxm_18475
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18473_tcxm_18475_add_port_name_and_usage_configuration_in_policy_template(self):
@@ -1148,9 +1141,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18476
-    @mark.xim_tcxm_18478
-    @mark.development
+    @mark.tcxm_18476
+    @mark.tcxm_18478
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18476_tcxm_18478_add_vlan_in_vlan_tab_in_policy_template(self):
@@ -1232,9 +1224,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18479
-    @mark.xim_tcxm_18481
-    @mark.development
+    @mark.tcxm_18479
+    @mark.tcxm_18481
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18479_tcxm_18481_add_transmission_settings_in_policy_template(self):
@@ -1328,9 +1319,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18482
-    @mark.xim_tcxm_18484
-    @mark.development
+    @mark.tcxm_18482
+    @mark.tcxm_18484
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18482_tcxm_18484_add_stp_settings_in_policy_template(self):
@@ -1423,9 +1413,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18485
-    @mark.xim_tcxm_18487
-    @mark.development
+    @mark.tcxm_18485
+    @mark.tcxm_18487
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18485_tcxm_18487_add_storm_control_settings_in_policy_template(self):
@@ -1518,9 +1507,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18488
-    @mark.xim_tcxm_18490
-    @mark.development
+    @mark.tcxm_18488
+    @mark.tcxm_18490
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18488_tcxm_18490_add_pse_settings_in_policy_template(self):
@@ -1628,8 +1616,7 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18561
-    @mark.development
+    @mark.tcxm_18561
     @mark.p2
     @mark.testbed_1_node
     def test_tcxm_18561_create_port_type_and_toggle_auto_sense_button_in_policy_template(self):
@@ -1694,8 +1681,7 @@ class xiqTests():
 
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_on_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18493
-    @mark.development
+    @mark.tcxm_18493
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18493_edit_port_name_and_usage_in_policy_template(self):
@@ -1809,9 +1795,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18494
-    @mark.xim_tcxm_18496
-    @mark.development
+    @mark.tcxm_18494
+    @mark.tcxm_18496
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18494_tcxm_18496_edit_vlan_in_vlan_tab_in_policy_template(self):
@@ -1919,9 +1904,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18497
-    @mark.xim_tcxm_18499
-    @mark.development
+    @mark.tcxm_18497
+    @mark.tcxm_18499
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18497_tcxm_18499_edit_transmission_settings_in_policy_template(self):
@@ -2047,9 +2031,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18500
-    @mark.xim_tcxm_18502
-    @mark.development
+    @mark.tcxm_18500
+    @mark.tcxm_18502
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18500_tcxm_18502_edit_stp_settings_in_policy_template(self):
@@ -2177,9 +2160,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18503
-    @mark.xim_tcxm_18505
-    @mark.development
+    @mark.tcxm_18503
+    @mark.tcxm_18505
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18503_tcxm_18505_edit_storm_control_settings_in_policy_template(self):
@@ -2305,9 +2287,8 @@ class xiqTests():
         # Delete port type
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
-    @mark.xim_tcxm_18506
-    @mark.xim_tcxm_18508
-    @mark.development
+    @mark.tcxm_18506
+    @mark.tcxm_18508
     @mark.p1
     @mark.testbed_1_node
     def test_tcxm_18506_tcxm_18508_edit_pse_settings_in_policy_template(self):

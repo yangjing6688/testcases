@@ -32,6 +32,9 @@ netelem1:
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
   onboard_device_type:      "Digital Twin"
+  digital_twin_persona:     "SwitchEngine"
+  digital_twin_version:     "32.1.1.6"
+
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod9_4node/rdu_vm_pod9_4node_netelem1.cfg"
   isl:
@@ -137,6 +140,9 @@ netelem2:
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
   onboard_device_type:      "Digital Twin"
+  digital_twin_persona:     "SwitchEngine"
+  digital_twin_version:     "32.1.1.6"
+
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod9_4node/rdu_vm_pod9_4node_netelem2.cfg"
   isl:
@@ -243,6 +249,9 @@ netelem3:
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
   onboard_device_type:      "Digital Twin"
+  digital_twin_persona:     "SwitchEngine"
+  digital_twin_version:     "32.1.1.6"
+
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod9_4node/rdu_vm_pod9_4node_netelem3.cfg"
   isl:
@@ -348,6 +357,9 @@ netelem4:
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
   onboard_device_type:      "Digital Twin"
+  digital_twin_persona:     "SwitchEngine"
+  digital_twin_version:     "32.1.1.6"
+
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod9_4node/rdu_vm_pod9_4node_netelem4.cfg"
   isl:

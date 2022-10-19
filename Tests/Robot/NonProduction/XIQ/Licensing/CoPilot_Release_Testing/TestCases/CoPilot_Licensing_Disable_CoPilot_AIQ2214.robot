@@ -145,7 +145,7 @@ Test 5: Verify Device License and CoPilot Column Values On All Devices
 
 Test 6: Diable CoPilot Feature and Verify Success
     [Documentation]     Disables CoPilot feature in Global Settings -> VIQ Management and verifies success
-    [Tags]              tccs-13493    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test6
+    [Tags]              tccs-13494    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test6
     
     Depends On          Test 1
     

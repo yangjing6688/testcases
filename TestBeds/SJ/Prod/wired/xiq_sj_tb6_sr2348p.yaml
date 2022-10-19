@@ -1,0 +1,20 @@
+aerohive_sw1:
+  name:               bui-flo-0026
+  model:              SR2208P
+  device_template:    SR2208P-default-template
+  serial:             '22081811231256'
+  cli_type:           "AH-FASTPATH"
+  mac:                B87cF20242A0
+  ip:                 10.16.152.228
+  port:               22
+  connection_method:  "ssh"
+  network_policy:
+  username:           admin
+  password:           Aerohive123
+  platform:           aerohive-fastpath
+  console_ip:         10.16.128.23
+  console_port:       7027
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+  test_port:
+  make:               Extreme - Aerohive

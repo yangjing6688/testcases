@@ -52,4 +52,4 @@ upgrades:
   xiqse:
     version:                   "22.6.12.13"
     xiqse_vm_id:               "17"
-    xiqse_snapshot_id:         "1"
+    xiqse_snapshot_id:         "2"

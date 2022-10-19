@@ -1,0 +1,55 @@
+xiqse:
+  ip:                      "10.69.70.131"
+  url:                     "https://10.69.70.131:8443"
+  license_suffix:          "/xiqLicenseSetup.jsp?setupMode=xiq"
+  user:                    "root"
+  password:                "n7830466"
+  version:                 "22.6.12"
+  os_version:              "22.6.12"
+  name:                    "xiqse-22-6-12-staging.extremenetworks.com"
+  serial:                  "XIQSE-A970BEE3CE114EDAAA31F98EB2EBA252"
+  mac:                     "005056BAEC13"
+  profile:                 "snmp_v3_profile"
+  platform:                "xiqse"
+  make:                    "XIQSE"
+  model:                   "XIQSE"
+  product:                 "XIQ_SE"
+  function:                "XIQSE"
+  xiq_os:                  "XIQSE"
+  log_dir:                 "/usr/local/Extreme_Networks/NetSight/appdata/logs"
+  server_log:              "server.log"
+
+xiq:
+  test_url:                "https://a-cloud.extremecloudiq.com"
+  capwap_url:              "stage-cwpm-01.extremecloudiq.com"
+  sw_connection_host:      "stage.extremecloudiq.com"
+  tenant_username:         "hwhite@extremenetworks.com"
+  tenant_password:         "Hwhite@123"
+  pilot_entitlements:      "10"
+  navigator_entitlements:  "2"
+
+xiq2:
+  test_url:                "https://g2r1.qa.xcloudiq.com"
+  capwap_url:              "stage-cwpm-01.extremecloudiq.com"
+  sw_connection_host:      "stage.extremecloudiq.com"
+  tenant_username:         "xiqse1+staging01@extremenetworks.com"
+  tenant_password:         "Extreme@123"
+  pilot_entitlements:      "10"
+  navigator_entitlements:  "2"
+
+# SSH into ESX and issue the following commands to identify the VM ID and Snapshot ID
+# List all VMs to find your vmId
+#     vim-cmd vmsvc/getall
+# List all snapshots of a VM
+#     vim-cmd vmsvc/get.snapshotinfo <vmid>
+upgrades:
+  install_mode:                "CONNECTED"
+  nsrelease_version:           "22.6.12.13"
+  esx:
+    esx_ip:                    "10.69.60.12"
+    esx_user:                  "root"
+    esx_password:              "extrvmware"
+  xiqse:
+    version:                   "22.6.12.13"
+    xiqse_vm_id:               "18"
+    xiqse_snapshot_id:         "2"
