@@ -1099,7 +1099,7 @@ def onboarding_locations(
         if isinstance(locations, str):
             ret[node.name] = locations
             
-        elif isinstance(locations, list):
+        elif isinstance(locations, dict):
             logger.step("Choose one of them.")
             found_location = random.choice(list(locations.values()))
             logger.info(f"The chosen location for '{node.name}' is '{found_location}'.")
