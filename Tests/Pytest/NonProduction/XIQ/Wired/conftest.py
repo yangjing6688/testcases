@@ -1090,10 +1090,16 @@ def onboarding_locations(
     ]
     
     for node in all_nodes:
-        locations = node.get("location", [])
+        
+        locations = node.get("location")
+        
         if locations:
             logger.info(f"Found location(s) attached to '{node.name}': {locations}.")
+        
+        if isinstance(locations, str):
+            ret[node.name] = locations
             
+        elif isinstance(locations, list):
             logger.step("Choose one of them.")
             found_location = random.choice(list(locations.values()))
             logger.info(f"The chosen location for '{node.name}' is '{found_location}'.")
