@@ -4,6 +4,8 @@ lab:                      "RDU"
 netelem1:
   name:                     "x590_DUT1"
   model:                    "X590_24x_1q_2c"
+  serial:                   "1914N-40642"
+  mac:                      "000496CEDBE2"
   ip:                       "10.69.50.150"
   term_server:              "10.69.50.250 2005"
   pdu_ip:                   "10.69.50.234"
@@ -27,6 +29,7 @@ netelem1:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x590_pod2_4node/rdu_x590_pod2_4node_netelem1.cfg"
@@ -105,6 +108,8 @@ netelem1:
 netelem2:
   name:                     "x590_DUT2"
   model:                    "X590_24x_1q_2c"
+  mac:                      "000496CEDD38"
+  serial:                   "1914N-40651"
   ip:                       "10.69.50.151"
   term_server:              "10.69.50.250 2006"
   pdu_ip:                   "10.69.50.234"
@@ -128,6 +133,7 @@ netelem2:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x590_pod2_4node/rdu_x590_pod2_4node_netelem2.cfg"
@@ -207,6 +213,8 @@ netelem2:
 netelem3:
   name:                     "x590_DUT3"
   model:                    "X590_24x_1q_2c"
+  mac:                      "000496CEDB4A"
+  serial:                   "1914N-40638"
   ip:                       "10.69.50.152"
   term_server:              "10.69.50.250 2007"
   pdu_ip:                   "10.69.50.234"
@@ -230,6 +238,7 @@ netelem3:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x590_pod2_4node/rdu_x590_pod2_4node_netelem3.cfg"
@@ -308,6 +317,8 @@ netelem3:
 netelem4:
   name:                     "x590_DUT4"
   model:                    "X590_24x_1q_2c"
+  mac:                      "000496CEDC7A"
+  serial:                   "1914N-40646"
   ip:                       "10.69.50.153"
   term_server:              "10.69.50.250 2008"
   pdu_ip:                   "10.69.50.234"
@@ -331,6 +342,7 @@ netelem4:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x590_pod2_4node/rdu_x590_pod2_4node_netelem4.cfg"

@@ -15,7 +15,7 @@ ${EKEY}                     None
 ${SFDC_USER_TYPE}           partner
 ${SFDC_PARTNER_EMAIL}       ahqalabpw1+part11@gmail.com
 ${SFDC_PARTNER_PWD}         Aerohive123
-${SHARED_CUID}              FJtHxWDlE
+${SHARED_CUID}              6GZPdMrOZ 
 ${SFDC_CUST_EMAIL}          ahqalabwp+cust1@gmail.com
 ${SFDC_CUST_PWD}            Aerohive123
 *** Settings ***
@@ -37,16 +37,18 @@ Library     xiq/flows/configure/NetworkPolicy.py
 Library     xiq/flows/configure/ExpressNetworkPolicies.py
 Library     xiq/elements/NetworkPolicyWebElements.py
 Library	    xiq/flows/globalsettings/LicenseManagement.py
-Variables    TestBeds/${TESTBED}
-Variables    Environments/${TOPO}
-Variables    Environments/${ENV}
+#Variables    TestBeds/${TESTBED}
+#Variables    Environments/${TOPO}
+#Variables    Environments/${ENV}
+Variables    Environments/topo.license.g2r1.yaml
+Variables    Environments/environment.remote.win10.chrome.yaml
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 Force Tags   testbed_none
 *** Test Cases ***
 TCCS-11519: Welcome Page TRIAL User login to XIQ
     [Documentation]  Trial customer login to XIQ and verify link to extr portal is available
-    [Tags]   sanity   gemaltolicense   development   tccs-11519
+    [Tags]   development   tccs-11519
     welcome page login  ${tenant_username}     ${tenant_password}   trial
     ${result1}=  navigate to license mgmt
     should be equal as strings  '${result1}'  '1'
@@ -56,7 +58,7 @@ TCCS-11519: Welcome Page TRIAL User login to XIQ
     Quit Browser
 TCCS-6614: Welcome Page CONNECT User login to XIQ
     [Documentation]  Connect customer login to XIQ and verify link to extr portal is available
-    [Tags]   sanity  gemaltolicense   development   tccs-6614
+    [Tags]   development   tccs-6614
     welcome page login   ${tenant_username}     ${tenant_password}   connect
     ${result1}=  verify upgrade option for connect user
     should be equal as strings  '${result1}'  '1'
@@ -66,8 +68,8 @@ TCCS-6614: Welcome Page CONNECT User login to XIQ
     Quit Browser
 TCCS-6657: Customer Links XIQ to extreme portal from welcome page
     [Documentation]  ExtremeCloud IQ option customer linking flow
-    [Tags]   sanity  gemaltolicense   development   tccs-6657
-    ${result1}=  welcome page login  ${tenant_username}   ${tenant_password}   extremecloudiqlicense     ${EKEY}    customer  ${SFDC_CUST_EMAIL}  ${SFDC_CUST_PWD}
+    [Tags]   development   tccs-6657
+    ${result1}=  welcome page login  ${tenant_username}   ${tenant_password}   extremecloudiqlicense     ${EKEY}    customer     ${SFDC_CUST_EMAIL}    ${SFDC_CUST_PWD}
     should be equal as strings  '${result1}'  '1'
     ${result2}=  navigate to license mgmt
     should be equal as strings  '${result2}'  '1'
@@ -81,7 +83,7 @@ TCCS-6657: Customer Links XIQ to extreme portal from welcome page
     Quit Browser
 TCCS-6597: Partner Links XIQ to extreme portal from welcome page
     [Documentation]  ExtremeCloud IQ option partner linking flow
-    [Tags]   sanity  gemaltolicense   development   tccs-6597
+    [Tags]   development   tccs-6597
     ${result1}=  welcome page login   ${tenant_username}   ${tenant_password}   extremecloudiqlicense   ${EKEY}    partner   ${SFDC_PARTNER_EMAIL}  ${SFDC_PARTNER_PWD}  ${SHARED_CUID}
     should be equal as strings  '${result1}'  '1'
     ${result2}=  navigate to license mgmt
@@ -96,7 +98,7 @@ TCCS-6597: Partner Links XIQ to extreme portal from welcome page
     Quit Browser
 TCCS-10206: Trial Account - Customer links to Extreme Portal from License Mgt UI
     [Documentation]  Trial Account - customer links to extr portal from lic mgt
-    [Tags]   sanity  gemaltolicense   development   tccs-10206
+    [Tags]   development   tccs-10206
     welcome page login    ${tenant_username}    ${tenant_password}   trial
     ${result1}=  navigate to license mgmt
     should be equal as strings  '${result1}'  '1'
@@ -112,7 +114,7 @@ TCCS-10206: Trial Account - Customer links to Extreme Portal from License Mgt UI
     Quit Browser
 TCCS-10207: Trial Account - Partner links to Extreme Portal from License Mgt UI
     [Documentation]  Trial Account - partner links to extr portal from lic mgt
-    [Tags]   sanity  gemaltolicense   development   tccs-10207
+    [Tags]   development   tccs-10207
     welcome page login  ${tenant_username}   ${tenant_password}   trial
     ${result1}=  navigate to license mgmt
     should be equal as strings  '${result1}'  '1'
@@ -121,8 +123,10 @@ TCCS-10207: Trial Account - Partner links to Extreme Portal from License Mgt UI
     ${result2}=  initiate link xiq to extr portal from lic mgt
     should be equal as strings  '${result2}'  '1'
     ${result3}=  link xiq to extreme portal  partner  ${SFDC_PARTNER_EMAIL}  ${SFDC_PARTNER_PWD}  ${SHARED_CUID}
+    sleep   60s
     should be equal as strings  '${result3}'  '1'
     ${result5}=  unlink xiq from extr portal
+    sleep   60s
     should be equal as strings  '${result5}'  '1'
     Logout User
     Quit Browser

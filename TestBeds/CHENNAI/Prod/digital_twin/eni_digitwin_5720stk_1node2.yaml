@@ -31,6 +31,8 @@ netelem1:
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
   onboard_device_type:      "Digital Twin"
+  digital_twin_persona:     "SwitchEngine"
+  digital_twin_version:     "32.1.1.6"
   extra:
     vm_info:
       vmhost:               "10.127.22.4"

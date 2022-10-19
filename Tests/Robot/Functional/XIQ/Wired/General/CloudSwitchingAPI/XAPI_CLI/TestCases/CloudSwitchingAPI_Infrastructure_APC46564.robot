@@ -38,7 +38,12 @@ ${EXOSDevice}             -1
 TCXM-14733: Login to a VIQ via XAPI
     [Documentation]     Generates the access token for logging into XIQ
     [Tags]              tcxm_14733    p1   
-    [Setup]  Delete Device      ${netelem1.serial}
+    [Setup]    Navigate to Devices and Confirm Success
+
+    # Sleep of 10s added as a temporary fix for XIQ-9267. Sleep needs be removed once the defect is fixed.
+    sleep    10s 
+
+    Delete Device      ${netelem1.serial}
 
     @{result} =    Split String    ${netelem1.serial}    ,
     FOR         ${serialnumber}     IN    @{result}
@@ -81,7 +86,7 @@ TCXM-14738 : Get List of Devices
 
     skip if   ${onboard_flag} == -1   msg="onboarding failed"
     
-    ${output}=             rest api get             /devices
+    ${output}=             rest api get             /devices?page=1&limit=100&deviceTypes=REAL&async=false
     ${deviceList}=         get json value           ${output}       data
     Log                    ${deviceList}
 

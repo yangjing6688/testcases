@@ -2,8 +2,8 @@ import random
 
 RANDOM_INT = random.randint(0, 9999)
 
-NW_DEFAULT_POLICY = f"default_open_policy"
-NW_DEFAULT_SSID = f"default_open_ssid"
+NW_DEFAULT_POLICY = f"default_open_policy_{RANDOM_INT}"
+NW_DEFAULT_SSID = f"default_open_ssid_{RANDOM_INT}"
 NW_POLICY_NAME1 = f"policy_fb_{RANDOM_INT}"
 NW_POLICY_NAME2 = f"policy_google_{RANDOM_INT}"
 NW_POLICY_NAME3 = f"policy_linkedin_{RANDOM_INT}"

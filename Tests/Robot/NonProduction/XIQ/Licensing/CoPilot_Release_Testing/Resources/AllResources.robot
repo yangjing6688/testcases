@@ -13,6 +13,7 @@ Library     common/Utils.py
 Library     common/TestFlow.py
 Library     xiq/flows/manage/FilterManageDevices.py
 Library     ExtremeAutomation/Imports/CommonObjectUtils.py
+Library     xiq/flows/copilot/Copilot.py
 
 Variables   Environments/Config/waits.yaml
 
