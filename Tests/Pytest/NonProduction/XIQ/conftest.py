@@ -2476,10 +2476,13 @@ def udks() -> Udks:
 
 class Testbed(metaclass=Singleton):
     
-    def __init__(self, request) -> None:
+    def __init__(
+        self, 
+        request: fixtures.SubRequest
+    ) -> None:
         
         self.logger: PytestLogger = request.getfixturevalue("logger")
-        self.config: Dict[str, Union[str, Dict[str]]] = request.getfixturevalue("loaded_config")
+        self.config: Dict[str, Union[str, Dict[str, str]]] = request.getfixturevalue("loaded_config")
         
         self.all_nodes: List[Node] = request.getfixturevalue("all_nodes")
         self.standalone_nodes: List[Node] = request.getfixturevalue("standalone_nodes")
