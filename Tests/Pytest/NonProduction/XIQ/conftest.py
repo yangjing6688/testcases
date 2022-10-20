@@ -343,275 +343,290 @@ def pytest_configure(config):
 
 def pytest_collection_modifyitems(session, items):
 
-    logger_obj.info(f"Current runlist ('{pytest.runlist_name}') is located in this yaml file: '{pytest.runlist_path}'.")
-    logger_obj.info(f"Found {len(pytest.runlist_name)} tests in given runlist: " + "'" + "', '".join(pytest.runlist_tests) + "'.")
-    
-    for item in items:
-        if (cls_markers := getattr(item.cls, "pytestmark", None)) is not None:
-            item_markers = get_testbed_markers(item)
-            cls_testbed_marker = [m for m in cls_markers if m.name in valid_testbed_markers]
-            if cls_testbed_marker:
-                marker = cls_testbed_marker[0]
-                if not any(marker.name == m.name and marker.args == m.args for m in item_markers):
-                    item.add_marker(
-                        getattr(pytest.mark, marker.name)
-                    )
-
-    for item in items:
-        if (callspec := getattr(item, "callspec", None)) is not None:
-            test_data = callspec.params["test_data"]
-            test_marker_from_test_data = test_data["tc"]
-            tc_markers = get_test_marker(item)
-            for marker in tc_markers:
-                if marker != test_marker_from_test_data:
-                    [marker_obj] = [mk for mk in item.own_markers if mk.name == marker]
-                    item.own_markers.pop(item.own_markers.index(marker_obj))
-
-    collected_items: List[pytest.Function] = []
+    if pytest.runlist_path != "default":
+        logger_obj.info(f"Current runlist ('{pytest.runlist_name}') is located in this yaml file: '{pytest.runlist_path}'.")
+        logger_obj.info(f"Found {len(pytest.runlist_name)} tests in given runlist: " + "'" + "', '".join(pytest.runlist_tests) + "'.")
         
-    for item in items:
-        if pytest.onboarding_test_name in [m.name for m in item.own_markers]:
-            if not [it for it in collected_items if pytest.onboarding_test_name in [m.name for m in it.own_markers]]:
-                collected_items.append(item)
-        elif pytest.onboarding_cleanup_test_name in [m.name for m in item.own_markers]:
-            if not [it for it in collected_items if pytest.onboarding_cleanup_test_name in [m.name for m in it.own_markers]]:
-                collected_items.append(item)
-        else:
-            collected_items.append(item)
-
-    for item in collected_items:
-        logger_obj.info(f"Collected: '{item.nodeid}'.")
-
-    [item_onboarding] = [
-        it for it in collected_items if pytest.onboarding_test_name in [m.name for m in it.own_markers]]
-    [item_onboarding_cleanup] = [
-        it for it in collected_items if pytest.onboarding_cleanup_test_name in [m.name for m in it.own_markers]]
-    
-    collected_items.remove(item_onboarding)
-    collected_items.remove(item_onboarding_cleanup)
-    
-    pytest.config_helper = PytestConfigHelper(config)
-    pytest.all_nodes = list(filter(lambda d: d is not None, [getattr(pytest.config_helper, f"dut{i}", None) for i in range(1, 10)]))
-
-    logger_obj.step("Check the capabilities of the testbed.")
-    pytest.standalone_nodes = [node for node in pytest.all_nodes if node.get("platform", "").upper() != "STACK"]
-    logger_obj.info(f"Found {len(pytest.standalone_nodes)} standalone node(s).")
-
-    pytest.stack_nodes = [node for node in pytest.all_nodes if node not in pytest.standalone_nodes]
-    logger_obj.info(f"Found {len(pytest.stack_nodes)} stack node(s).")
-
-    temp_items: List[pytest.Function] = collected_items[:]
-
-    pytest.onboard_stack = len(pytest.stack_nodes) >= 1
-    if not pytest.onboard_stack:
-        logger_obj.warning(
-            "There is no stack device in the provided yaml file. The stack test cases will be unselected.")
-        temp_items = [
-            item for item in temp_items if 'testbed_stack' not in [marker.name for marker in item.own_markers]]
-
-    pytest.onboard_two_node = len(pytest.standalone_nodes) > 1
-    if not pytest.onboard_two_node:
-        logger_obj.warning(
-            "There are not enough standalone devices in the provided yaml file. "
-            "The testbed two node test cases will be unselected.")
-        temp_items = [
-            item for item in temp_items if 'testbed_2_node' not in [marker.name for marker in item.own_markers]]
-    
-    pytest.onboard_one_node = len(pytest.standalone_nodes) >= 1
-    if not pytest.onboard_one_node:
-        logger_obj.warning("There is no standalone device in the provided yaml file. "
-                           "The testbed one node test cases will be unselected.")
-        temp_items = [
-            item for item in temp_items if 'testbed_1_node' not in [marker.name for marker in item.own_markers]]
-    
-    temp_items = [
-        item for item in temp_items if any(
-            [testbed_marker in [marker.name for marker in item.own_markers] for testbed_marker in [
-                "testbed_1_node", "testbed_2_node", "testbed_stack", "testbed_none"
-        ]]
-    )]
-
-    for item in collected_items:
-        if item not in temp_items:
-            logger_obj.info(
-                f"Unselected: '{item.nodeid}' (markers: '{[m.name for m in item.own_markers]}').")
-      
-    item_test_marker_mapping: DefaultDict[str, List[str]] = defaultdict(lambda: [])
-    test_marker_item_mapping: DefaultDict[pytest.Function, List[str]] = defaultdict(lambda: [])
-    items_without_valid_test_markers: List[str] = []
-
-    test_codes: List[TestCaseMarker]
-    test_code: TestCaseMarker
-    priorities: List[PriorityMarker]
-    
-    for item in temp_items:
-        test_codes = get_test_marker(item)
-
-        if not test_codes:
-            items_without_valid_test_markers.append(
-                f"This function does not have a valid test marker: '{item.nodeid}'.")
-
-        for test_code in test_codes:
-            item_test_marker_mapping[test_code].append(item.nodeid)
-    
-        test_marker_item_mapping[item] = test_codes
-
-    if items_without_valid_test_markers:
-        error = '\n' + '\n'.join(items_without_valid_test_markers)
-        error += f"\nValid test markers should begin with any of these markers - {valid_test_markers}."
-        logger_obj.error(error)
-        pytest.fail(error)
-
-    for test_code, functions in item_test_marker_mapping.items():
-        if len(functions) > 1:
-            error = f"Test marker '{test_code}' is used as marker for more than one test function:\n" + "\n".join(functions)
-            logger_obj.error(error)
-            pytest.fail(error)
-
-    for item, test_markers in test_marker_item_mapping.items():
-        if len(test_markers) > 1:
-            temp_items.pop(temp_items.index(item))
-            logger_obj.info(f"Unselected: '{item.nodeid}'.")
-
-    all_tcs: List[TestCaseMarker] = [pytest.onboarding_test_name, pytest.onboarding_cleanup_test_name]
-    [all_tcs.append(get_test_marker(item)[0]) for item in temp_items]
-
-    found_tcs: List[TestCaseMarker] = []
-
-    test_code: TestCaseMarker
-
-    ordered_items: List[pytest.Function] = []
-
-    if temp_items:
-                
-        for item in temp_items:
-            
+        for item in items:
             if (cls_markers := getattr(item.cls, "pytestmark", None)) is not None:
-                
-                item_markers: List[mark.structures.Mark] = get_item_dependson_markers(item)
-                cls_dependson_markers: List[mark.structures.Mark] = [m for m in cls_markers if m.name == "dependson"]
-                for marker in cls_dependson_markers:
+                item_markers = get_testbed_markers(item)
+                cls_testbed_marker = [m for m in cls_markers if m.name in valid_testbed_markers]
+                if cls_testbed_marker:
+                    marker = cls_testbed_marker[0]
                     if not any(marker.name == m.name and marker.args == m.args for m in item_markers):
                         item.add_marker(
-                            pytest.mark.dependson(*marker.args)
-                        )
-                        
-                priority_markers: List[PriorityMarker] = get_priority_marker(item)
-
-                if not priority_markers:
-                    
-                    cls_priority_marker: mark.structures.Mark
-                    cls_priority_marker = [m for m in cls_markers if m.name in valid_priority_markers]
-                    
-                    if cls_priority_marker:
-                        item.add_marker(
-                            getattr(pytest.mark, cls_priority_marker[0].name)
+                            getattr(pytest.mark, marker.name)
                         )
 
-        priority_item_mapping: DefaultDict[pytest.Function, List[PriorityMarker]] = defaultdict(lambda: [])
-        items_without_priority_markers: List[str] = []
+        for item in items:
+            if (callspec := getattr(item, "callspec", None)) is not None:
+                test_data = callspec.params["test_data"]
+                test_marker_from_test_data = test_data["tc"]
+                tc_markers = get_test_marker(item)
+                for marker in tc_markers:
+                    if marker != test_marker_from_test_data:
+                        [marker_obj] = [mk for mk in item.own_markers if mk.name == marker]
+                        item.own_markers.pop(item.own_markers.index(marker_obj))
 
+        collected_items: List[pytest.Function] = []
+            
+        for item in items:
+            if pytest.onboarding_test_name in [m.name for m in item.own_markers]:
+                if not [it for it in collected_items if pytest.onboarding_test_name in [m.name for m in it.own_markers]]:
+                    collected_items.append(item)
+            elif pytest.onboarding_cleanup_test_name in [m.name for m in item.own_markers]:
+                if not [it for it in collected_items if pytest.onboarding_cleanup_test_name in [m.name for m in it.own_markers]]:
+                    collected_items.append(item)
+            else:
+                collected_items.append(item)
+
+        for item in collected_items:
+            logger_obj.info(f"Collected: '{item.nodeid}'.")
+
+        [item_onboarding] = [
+            it for it in collected_items if pytest.onboarding_test_name in [m.name for m in it.own_markers]]
+        [item_onboarding_cleanup] = [
+            it for it in collected_items if pytest.onboarding_cleanup_test_name in [m.name for m in it.own_markers]]
+        
+        collected_items.remove(item_onboarding)
+        collected_items.remove(item_onboarding_cleanup)
+        
+        pytest.config_helper = PytestConfigHelper(config)
+        pytest.all_nodes = list(filter(lambda d: d is not None, [getattr(pytest.config_helper, f"dut{i}", None) for i in range(1, 10)]))
+
+        logger_obj.step("Check the capabilities of the testbed.")
+        pytest.standalone_nodes = [node for node in pytest.all_nodes if node.get("platform", "").upper() != "STACK"]
+        logger_obj.info(f"Found {len(pytest.standalone_nodes)} standalone node(s).")
+
+        pytest.stack_nodes = [node for node in pytest.all_nodes if node not in pytest.standalone_nodes]
+        logger_obj.info(f"Found {len(pytest.stack_nodes)} stack node(s).")
+
+        temp_items: List[pytest.Function] = collected_items[:]
+
+        pytest.onboard_stack = len(pytest.stack_nodes) >= 1
+        if not pytest.onboard_stack:
+            logger_obj.warning(
+                "There is no stack device in the provided yaml file. The stack test cases will be unselected.")
+            temp_items = [
+                item for item in temp_items if 'testbed_stack' not in [marker.name for marker in item.own_markers]]
+
+        pytest.onboard_two_node = len(pytest.standalone_nodes) > 1
+        if not pytest.onboard_two_node:
+            logger_obj.warning(
+                "There are not enough standalone devices in the provided yaml file. "
+                "The testbed two node test cases will be unselected.")
+            temp_items = [
+                item for item in temp_items if 'testbed_2_node' not in [marker.name for marker in item.own_markers]]
+        
+        pytest.onboard_one_node = len(pytest.standalone_nodes) >= 1
+        if not pytest.onboard_one_node:
+            logger_obj.warning("There is no standalone device in the provided yaml file. "
+                            "The testbed one node test cases will be unselected.")
+            temp_items = [
+                item for item in temp_items if 'testbed_1_node' not in [marker.name for marker in item.own_markers]]
+        
+        temp_items = [
+            item for item in temp_items if any(
+                [testbed_marker in [marker.name for marker in item.own_markers] for testbed_marker in [
+                    "testbed_1_node", "testbed_2_node", "testbed_stack", "testbed_none"
+            ]]
+        )]
+
+        for item in collected_items:
+            if item not in temp_items:
+                logger_obj.info(
+                    f"Unselected: '{item.nodeid}' (markers: '{[m.name for m in item.own_markers]}').")
+        
+        item_test_marker_mapping: DefaultDict[str, List[str]] = defaultdict(lambda: [])
+        test_marker_item_mapping: DefaultDict[pytest.Function, List[str]] = defaultdict(lambda: [])
+        items_without_valid_test_markers: List[str] = []
+
+        test_codes: List[TestCaseMarker]
+        test_code: TestCaseMarker
+        priorities: List[PriorityMarker]
+        
         for item in temp_items:
-            priorities: List[PriorityMarker] = get_priority_marker(item)
+            test_codes = get_test_marker(item)
 
-            if not priorities:
-                items_without_priority_markers.append(
-                    f"This function does not have a priority marker: '{item.nodeid}'.")
+            if not test_codes:
+                items_without_valid_test_markers.append(
+                    f"This function does not have a valid test marker: '{item.nodeid}'.")
 
-            priority_item_mapping[item] = priorities
+            for test_code in test_codes:
+                item_test_marker_mapping[test_code].append(item.nodeid)
+        
+            test_marker_item_mapping[item] = test_codes
 
-        if items_without_priority_markers:
-            error = '\n' + '\n'.join(items_without_priority_markers)
-            error += f"\nValid test priorities: {valid_priority_markers}."
+        if items_without_valid_test_markers:
+            error = '\n' + '\n'.join(items_without_valid_test_markers)
+            error += f"\nValid test markers should begin with any of these markers - {valid_test_markers}."
             logger_obj.error(error)
             pytest.fail(error)
-                    
-        for item, priority in priority_item_mapping.items():
-            if len(priority) > 1:
-                error = f"\nThis test function has more than one valid priority marker: " \
-                        f"{item.nodeid} (markers: '{priority}')."
+
+        for test_code, functions in item_test_marker_mapping.items():
+            if len(functions) > 1:
+                error = f"Test marker '{test_code}' is used as marker for more than one test function:\n" + "\n".join(functions)
                 logger_obj.error(error)
                 pytest.fail(error)
 
-        temp_items.extend([item_onboarding, item_onboarding_cleanup])
-        
-        suitemap_tcs = []
-        for test_identifier, test_info in pytest.suitemap_tests.items():
-            if (tc := test_info.get("tc")) is not None:
-                suitemap_tcs.append(tc)
-            elif (tcs := test_info.get("tests")) is not None:
-                for tc in tcs:
-                    suitemap_tcs.append(tc['tc'])
+        for item, test_markers in test_marker_item_mapping.items():
+            if len(test_markers) > 1:
+                temp_items.pop(temp_items.index(item))
+                logger_obj.info(f"Unselected: '{item.nodeid}'.")
 
-        for test in pytest.runlist_tests:
-            test_found_in_suitemap = test in suitemap_tcs
-            found_item = [item for item in temp_items if test == get_test_marker(item)[0]]
-            
-            if not test_found_in_suitemap:
-                logger_obj.warning(f"'{test}' test is given in runlist but it is not found in specified suitemap files.")
-            
-            if not found_item:
-                logger_obj.warning(
-                    f"'{test}' test is given in runlist but it is not found in the collected tests "
-                    f"(it might have been removed because of its testbed marker or simply the test is not in the selected tests directory).")
+        all_tcs: List[TestCaseMarker] = [pytest.onboarding_test_name, pytest.onboarding_cleanup_test_name]
+        [all_tcs.append(get_test_marker(item)[0]) for item in temp_items]
 
-            if test_found_in_suitemap and found_item:
-                ordered_items.append(found_item[0])
+        found_tcs: List[TestCaseMarker] = []
 
-        for item in ordered_items:
-            
-            [test_code] = get_test_marker(item)
-            
-            found_tcs.append(test_code)
-            item_markers: List[mark.structures.Mark] = item.own_markers
-            
-            for marker in item_markers:
-                if marker.name == "dependson":
-                    temp_markers: Tuple[str] = marker.args
+        test_code: TestCaseMarker
 
-                    if not temp_markers:
-                        logger_obj.warning(
-                            f"The dependson marker of '{test_code}' testcase does not have any arguments "
-                            f"(test function: '{item.nodeid}'.")
+        ordered_items: List[pytest.Function] = []
+
+        if temp_items:
+                    
+            for item in temp_items:
+                
+                if (cls_markers := getattr(item.cls, "pytestmark", None)) is not None:
+                    
+                    item_markers: List[mark.structures.Mark] = get_item_dependson_markers(item)
+                    cls_dependson_markers: List[mark.structures.Mark] = [m for m in cls_markers if m.name == "dependson"]
+                    for marker in cls_dependson_markers:
+                        if not any(marker.name == m.name and marker.args == m.args for m in item_markers):
+                            item.add_marker(
+                                pytest.mark.dependson(*marker.args)
+                            )
+                            
+                    priority_markers: List[PriorityMarker] = get_priority_marker(item)
+
+                    if not priority_markers:
                         
-                    for temp_marker in temp_markers:
-                        if temp_marker == test_code:
+                        cls_priority_marker: mark.structures.Mark
+                        cls_priority_marker = [m for m in cls_markers if m.name in valid_priority_markers]
+                        
+                        if cls_priority_marker:
+                            item.add_marker(
+                                getattr(pytest.mark, cls_priority_marker[0].name)
+                            )
+
+            priority_item_mapping: DefaultDict[pytest.Function, List[PriorityMarker]] = defaultdict(lambda: [])
+            items_without_priority_markers: List[str] = []
+
+            for item in temp_items:
+                priorities: List[PriorityMarker] = get_priority_marker(item)
+
+                if not priorities:
+                    items_without_priority_markers.append(
+                        f"This function does not have a priority marker: '{item.nodeid}'.")
+
+                priority_item_mapping[item] = priorities
+
+            if items_without_priority_markers:
+                error = '\n' + '\n'.join(items_without_priority_markers)
+                error += f"\nValid test priorities: {valid_priority_markers}."
+                logger_obj.error(error)
+                pytest.fail(error)
+                        
+            for item, priority in priority_item_mapping.items():
+                if len(priority) > 1:
+                    error = f"\nThis test function has more than one valid priority marker: " \
+                            f"{item.nodeid} (markers: '{priority}')."
+                    logger_obj.error(error)
+                    pytest.fail(error)
+
+            temp_items.extend([item_onboarding, item_onboarding_cleanup])
+            
+            suitemap_tcs = []
+            for test_identifier, test_info in pytest.suitemap_tests.items():
+                if (tc := test_info.get("tc")) is not None:
+                    suitemap_tcs.append(tc)
+                elif (tcs := test_info.get("tests")) is not None:
+                    for tc in tcs:
+                        suitemap_tcs.append(tc['tc'])
+
+            for test in pytest.runlist_tests:
+                test_found_in_suitemap = test in suitemap_tcs
+                found_item = [item for item in temp_items if test == get_test_marker(item)[0]]
+                
+                if not test_found_in_suitemap:
+                    logger_obj.warning(f"'{test}' test is given in runlist but it is not found in specified suitemap files.")
+                
+                if not found_item:
+                    logger_obj.warning(
+                        f"'{test}' test is given in runlist but it is not found in the collected tests "
+                        f"(it might have been removed because of its testbed marker or simply the test is not in the selected tests directory).")
+
+                if test_found_in_suitemap and found_item:
+                    ordered_items.append(found_item[0])
+
+            for item in ordered_items:
+                
+                [test_code] = get_test_marker(item)
+                
+                found_tcs.append(test_code)
+                item_markers: List[mark.structures.Mark] = item.own_markers
+                
+                for marker in item_markers:
+                    if marker.name == "dependson":
+                        temp_markers: Tuple[str] = marker.args
+
+                        if not temp_markers:
                             logger_obj.warning(
-                                f"'{test_code}' is marked as depending on itself (test function: '{item.nodeid}').")
+                                f"The dependson marker of '{test_code}' testcase does not have any arguments "
+                                f"(test function: '{item.nodeid}'.")
                             
-                        elif temp_marker not in all_tcs:
-                            item.add_marker(
-                                pytest.mark.skip(f"'{test_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}'"
-                                                f" is not in the current list of testcases to be run. '{test_code}' will be skipped.")
-                            )
-                            
-                        elif temp_marker not in found_tcs:
-                            item.add_marker(
-                                pytest.mark.skip(
-                                    f"Please modify the order of the test cases. '{test_code}' "
-                                    f"depends on '{', '.join(temp_markers)}' but the order is not correct. "
-                                    f"'{temp_marker}' should run before '{test_code}'."
-                                    f"'{test_code}' will be skipped.")
-                            )
+                        for temp_marker in temp_markers:
+                            if temp_marker == test_code:
+                                logger_obj.warning(
+                                    f"'{test_code}' is marked as depending on itself (test function: '{item.nodeid}').")
+                                
+                            elif temp_marker not in all_tcs:
+                                item.add_marker(
+                                    pytest.mark.skip(f"'{test_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}'"
+                                                    f" is not in the current list of testcases to be run. '{test_code}' will be skipped.")
+                                )
+                                
+                            elif temp_marker not in found_tcs:
+                                item.add_marker(
+                                    pytest.mark.skip(
+                                        f"Please modify the order of the test cases. '{test_code}' "
+                                        f"depends on '{', '.join(temp_markers)}' but the order is not correct. "
+                                        f"'{temp_marker}' should run before '{test_code}'."
+                                        f"'{test_code}' will be skipped.")
+                                )
 
-        if all(
-            [
-                item_onboarding in ordered_items,
-                item_onboarding_cleanup in ordered_items,
-                len(ordered_items) == 2
-            ]
-        ):
-            logger_obj.warning(f"There are no test cases left selected to run for this session.")
-            ordered_items = []
+            if all(
+                [
+                    item_onboarding in ordered_items,
+                    item_onboarding_cleanup in ordered_items,
+                    len(ordered_items) == 2
+                ]
+            ):
+                logger_obj.warning(f"There are no test cases left selected to run for this session.")
+                ordered_items = []
 
-        for item in ordered_items:
-            logger_obj.info(f"Selected: '{item.nodeid}' "
-                            f"(markers: '{[m.name for m in item.own_markers]}').")
+            for item in ordered_items:
+                logger_obj.info(f"Selected: '{item.nodeid}' "
+                                f"(markers: '{[m.name for m in item.own_markers]}').")
+        else:
+            message = "Did not find any test function to run this session."
+            logger_obj.warning(message)
+        
+        items[:] = ordered_items
+
     else:
-        message = "Did not find any test function to run this session."
-        logger_obj.warning(message)
-    
-    items[:] = ordered_items
+        
+        # Remove the onboarding test cases if they are included as items for this run
+        # The onboarding tests should be used only when a runlist yaml file is provided as input
+        temp_items: List[pytest.Function]
+        
+        temp_items = [
+            item for item in items if
+            not any(m.name in [pytest.onboarding_test_name, pytest.onboarding_cleanup_test_name]
+                for m in get_item_markers(item))
+        ]
+
+        items[:] = temp_items
 
 
 def pytest_sessionstart(session):
@@ -620,150 +635,161 @@ def pytest_sessionstart(session):
 
     pytest.runlist_path = session.config.option.runlist
     
-    try:
-        with open(pytest.runlist_path, "r") as run_list:
-            output_runlist = run_list.read()
-    except FileNotFoundError:
-        error = f"Did not find this runlist file: '{pytest.runlist_path}'."
-        logger_obj.error(error)
-        pytest.fail(error)
-
-    runlist = yaml.safe_load(output_runlist)
-    pytest.runlist_name = list(runlist)[0]
-    pytest.runlist_tests = runlist[pytest.runlist_name]['tests']
-    pytest.suitemaps_name = runlist[pytest.runlist_name]['suitemap']
-    
-    for suitemap in pytest.suitemaps_name:
+    if pytest.runlist_path != "default":
         try:
-            with open(suitemap, "r") as run_list:
-                output_suitemap = run_list.read()
+            with open(pytest.runlist_path, "r") as run_list:
+                output_runlist = run_list.read()
         except FileNotFoundError:
-            logger_obj.warning(f"Did not find this suitemap file: '{suitemap}'")
-        else:
-            suitemap_tests_dict = yaml.safe_load(output_suitemap)['tests']
-            suitemap_data_dict = yaml.safe_load(output_suitemap)['data']
-            pytest.suitemap_tests = {**pytest.suitemap_tests, ** suitemap_tests_dict}
-            pytest.suitemap_data = {**pytest.suitemap_data, **suitemap_data_dict}
-    
-    pytest.onboarding_options = runlist[pytest.runlist_name].get('onboarding_options', {})
+            error = f"Did not find this runlist file: '{pytest.runlist_path}'."
+            logger_obj.error(error)
+            pytest.fail(error)
+
+        runlist = yaml.safe_load(output_runlist)
+        pytest.runlist_name = list(runlist)[0]
+        pytest.runlist_tests = runlist[pytest.runlist_name]['tests']
+        pytest.suitemaps_name = runlist[pytest.runlist_name]['suitemap']
+        
+        for suitemap in pytest.suitemaps_name:
+            try:
+                with open(suitemap, "r") as run_list:
+                    output_suitemap = run_list.read()
+            except FileNotFoundError:
+                logger_obj.warning(f"Did not find this suitemap file: '{suitemap}'")
+            else:
+                suitemap_tests_dict = yaml.safe_load(output_suitemap)['tests']
+                suitemap_data_dict = yaml.safe_load(output_suitemap)['data']
+                pytest.suitemap_tests = {**pytest.suitemap_tests, ** suitemap_tests_dict}
+                pytest.suitemap_data = {**pytest.suitemap_data, **suitemap_data_dict}
+        
+        pytest.onboarding_options = runlist[pytest.runlist_name].get('onboarding_options', {})
 
 
 def pytest_generate_tests(metafunc):
     
-    test_identifier = metafunc.definition.function.__qualname__.replace(".", "::")
-            
-    try:
-        test_data = pytest.suitemap_tests[test_identifier]
-    except KeyError:
-        logger_obj.warning(
-                f"This test does not have a definition in the suitemap files: '{metafunc.definition.nodeid}'.")
-    else:
-        parameteterized_test_data = []
+    if pytest.runlist_path != "default":
         
-        if "tests" in test_data:
-            base_data = {k: v for k, v in test_data.items() if k != "tests"}
-            for data in test_data["tests"]:
-                parameteterized_test_data.append({**base_data, **data})
-            test_data = parameteterized_test_data
-
+        try:
+            test_identifier = f"{metafunc.definition.cls.__name__}::{metafunc.definition.originalname}"
+        except AttributeError:
+            logger_obj.warning(
+                f"This test is not placed in a test class: '{metafunc.definition.nodeid}'.")
         else:
-            test_data = [test_data]
-            
-        if "test_data" in metafunc.fixturenames:
-            metafunc.parametrize("test_data", test_data)
-            
-        if "suite_data" in metafunc.fixturenames:
-            metafunc.parametrize("suite_data", [pytest.suitemap_data])
+            try:
+                test_data = pytest.suitemap_tests[test_identifier]
+            except KeyError:
+                logger_obj.warning(
+                        f"This test does not have a definition in the suitemap files: '{metafunc.definition.nodeid}'.")
+            else:
+                parameteterized_test_data = []
+                
+                if "tests" in test_data:
+                    base_data = {k: v for k, v in test_data.items() if k != "tests"}
+                    for data in test_data["tests"]:
+                        parameteterized_test_data.append({**base_data, **data})
+                    test_data = parameteterized_test_data
+
+                else:
+                    test_data = [test_data]
+                    
+                if "test_data" in metafunc.fixturenames:
+                    metafunc.parametrize("test_data", test_data)
+                    
+                if "suite_data" in metafunc.fixturenames:
+                    metafunc.parametrize("suite_data", [pytest.suitemap_data])
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     
     outcome = yield
-    result = outcome.get_result()
-
-    current_test_marker: TestCaseMarker
-    temp_test_marker: TestCaseMarker
-    [current_test_marker] = get_test_marker(item)
-
-    if result.when == 'call':
-        item.session.results[item] = result
-
-        if outcome := result.outcome: 
-            if outcome == "passed":
-                logger_obj.info(
-                    f"\n{Colors.Bg.GREEN}{Colors.Style.BRIGHT}{Colors.Fg.WHITE} --> {current_test_marker.upper()} PASSED <--"
-                    f" {Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
-            elif outcome == "failed":
-                logger_obj.info(
-                    f"\n{Colors.Bg.RED}{Colors.Style.BRIGHT}{Colors.Fg.WHITE} --> {current_test_marker.upper()} FAILED <-- "
-                    f"{Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
     
-    elif result.when == "setup":
+    if pytest.runlist_path != "default":
         
-        if (outcome := result.outcome) == "skipped":
-            logger_obj.info(f"\n{Colors.Bg.BLUE}{Colors.Style.BRIGHT}{Colors.Fg.WHITE} --> {current_test_marker.upper()} SKIPPED "
-                  f"<-- {Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
+        result = outcome.get_result()
 
-    if result.when == 'call' and result.outcome != "passed":
-        for it in item.session.items:
-            [temp_test_marker] = get_test_marker(it)
-            for mk in it.own_markers:
-                if mk.name == "dependson":
-                    if len(mk.args) > 0:
-                        if current_test_marker in mk.args:                            
+        current_test_marker: TestCaseMarker
+        temp_test_marker: TestCaseMarker
+        [current_test_marker] = get_test_marker(item)
+
+        if result.when == 'call':
+            item.session.results[item] = result
+
+            if outcome := result.outcome: 
+                if outcome == "passed":
+                    logger_obj.info(
+                        f"\n{Colors.Bg.GREEN}{Colors.Style.BRIGHT}{Colors.Fg.WHITE} --> {current_test_marker.upper()} PASSED <--"
+                        f" {Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
+                elif outcome == "failed":
+                    logger_obj.info(
+                        f"\n{Colors.Bg.RED}{Colors.Style.BRIGHT}{Colors.Fg.WHITE} --> {current_test_marker.upper()} FAILED <-- "
+                        f"{Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
+        
+        elif result.when == "setup":
+            
+            if (outcome := result.outcome) == "skipped":
+                logger_obj.info(f"\n{Colors.Bg.BLUE}{Colors.Style.BRIGHT}{Colors.Fg.WHITE} --> {current_test_marker.upper()} SKIPPED "
+                    f"<-- {Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
+
+        if result.when == 'call' and result.outcome != "passed":
+            for it in item.session.items:
+                [temp_test_marker] = get_test_marker(it)
+                for mk in it.own_markers:
+                    if mk.name == "dependson":
+                        if len(mk.args) > 0:
+                            if current_test_marker in mk.args:                            
+                                it.add_marker(
+                                    pytest.mark.skip(
+                                        f"'{temp_test_marker}' depends on '{current_test_marker}' but "
+                                        f"'{current_test_marker}' failed. '{temp_test_marker}' "
+                                        f"test case will be skipped."))
+
+        if "skip" in [m.name for m in item.own_markers]:
+            for it in item.session.items:
+                [temp_test_marker] = get_test_marker(it)
+                for mk in it.own_markers:
+                    if mk.name == "dependson":
+                        if current_test_marker in mk.args:
                             it.add_marker(
                                 pytest.mark.skip(
                                     f"'{temp_test_marker}' depends on '{current_test_marker}' but "
-                                    f"'{current_test_marker}' failed. '{temp_test_marker}' "
-                                    f"test case will be skipped."))
-
-    if "skip" in [m.name for m in item.own_markers]:
-        for it in item.session.items:
-            [temp_test_marker] = get_test_marker(it)
-            for mk in it.own_markers:
-                if mk.name == "dependson":
-                    if current_test_marker in mk.args:
-                        it.add_marker(
-                            pytest.mark.skip(
-                                f"'{temp_test_marker}' depends on '{current_test_marker}' but "
-                                f"'{current_test_marker}' is skipped. '{temp_test_marker}' "
-                                f"test case will be skipped.")
-                            )
+                                    f"'{current_test_marker}' is skipped. '{temp_test_marker}' "
+                                    f"test case will be skipped.")
+                                )
 
 
 def pytest_runtest_call(item):
     
-    current_test_marker: TestCaseMarker
-    [current_test_marker] = get_test_marker(item)
-    config['${TEST_NAME}'] = current_test_marker
-    
-    logger_obj.step(f"Start test function of '{current_test_marker}': '{item.nodeid}'.")
+    if pytest.runlist_path != "default":
+        current_test_marker: TestCaseMarker
+        [current_test_marker] = get_test_marker(item)
+        config['${TEST_NAME}'] = current_test_marker
+        
+        logger_obj.step(f"Start test function of '{current_test_marker}': '{item.nodeid}'.")
 
-    test_identifier = f"{item.cls.__name__}::{item.originalname}"
-        
-    output = ""
-    test_data = {}
-    
-    if (callspec := getattr(item, "callspec", None)) is not None:
-        if (data := callspec.params.get("test_data")) is not None:
-            test_data = data
-    else:
-        test_data = pytest.suitemap_tests[test_identifier]
-        
-    for field in ["author", "tc", "description", "title"]:
-        if (field_value := test_data.get(field)) is not None:
-            output += f"\n{field.capitalize()}: '{field_value}'"
+        test_identifier = f"{item.cls.__name__}::{item.originalname}"
             
-    if (steps := test_data.get("steps")) is not None:
-        output += "\nSteps:"
-        for index, step in enumerate(steps):
-            output += f"\n  Step {(index + 1)}: '{step}'"
-    
-    for k, v in test_data.items():
-        if k not in ["author", "tc", "description", "steps", "title"]:
-            output += f"\n{k}: '{v}'"
-    output and logger_obj.step(output)
+        output = ""
+        test_data = {}
+        
+        if (callspec := getattr(item, "callspec", None)) is not None:
+            if (data := callspec.params.get("test_data")) is not None:
+                test_data = data
+        else:
+            test_data = pytest.suitemap_tests[test_identifier]
+            
+        for field in ["author", "tc", "description", "title"]:
+            if (field_value := test_data.get(field)) is not None:
+                output += f"\n{field.capitalize()}: '{field_value}'"
+                
+        if (steps := test_data.get("steps")) is not None:
+            output += "\nSteps:"
+            for index, step in enumerate(steps):
+                output += f"\n  Step {(index + 1)}: '{step}'"
+        
+        for k, v in test_data.items():
+            if k not in ["author", "tc", "description", "steps", "title"]:
+                output += f"\n{k}: '{v}'"
+        output and logger_obj.step(output)
 
 
 class OnboardingTests:
