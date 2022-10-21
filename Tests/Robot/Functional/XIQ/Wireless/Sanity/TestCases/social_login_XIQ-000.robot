@@ -97,10 +97,16 @@ Test Suite Clean Up
     [Tags]      production      cleanup
     # 2022-08-31 new browser library removes need to logout and back in to keep variables in scope. Trial.  Remove if no issues are seen
     #${result}=    Login User       ${tenant_username}     ${tenant_password}
-    Update Network Policy To AP    policy_name=${NW_DEFAULT_POLICY}    ap_serial=${ap1.serial}
-    Delete Network Polices         ${NW_POLICY_NAME1}   ${NW_DEFAULT_POLICY}
-    Delete ssids                   ${NW_POLICY_SSID1}   ${NW_DEFAULT_SSID}
-    Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}
+    ${DELETE_DEVICE_STATUS}=        Delete Device       device_serial=${ap1.serial}
+    should be equal as integers         ${DELETE_DEVICE_STATUS}               1
+
+    ${DELETE_STATUS}=               Delete Network Polices         ${NW_POLICY_NAME1}   ${NW_DEFAULT_POLICY}
+    should be equal as strings     '${DELETE_STATUS}'           '1'
+    ${SSID_DLT_STATUS}=             Delete ssids                   ${NW_POLICY_SSID1}   ${NW_DEFAULT_SSID}
+    should be equal as strings      '1'                        '${SSID_DLT_STATUS}'
+    ${DELETE_CWP_STATUS}=           Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}
+    should be equal as integers     ${DELETE_CWP_STATUS}               1
+
     Logout User
     Quit Browser
 
@@ -114,20 +120,7 @@ Negative Internet connectivity check
     should be equal as strings   '${FLAG}'   '-1'
 
 Test Case Level Cleanup
-    ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap    policy_name=${NW_DEFAULT_POLICY}     ap_serial=${ap1.serial}
-    should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
-
-    ${DELETE_STATUS}=               Delete Network Policy           ${NW_POLICY_NAME1}
-    should be equal as integers     ${DELETE_STATUS}                1
-
-    ${SSID_DLT_STATUS}=             Delete ssid                     ${NW_POLICY_SSID1}
-    should be equal as integers     ${SSID_DLT_STATUS}              1
-
-    ${DELETE_CWP_STATUS}=           Delete Captive Web Portals      ${CWP_NAME_FACEBOOK}
-    should be equal as integers     ${UPDATE_NW_POLICY_STATUS}      1
-    # 2022-08-31 new browser library removes need to logout and back in to keep variables in scope. Trial.  Remove if no issues are seen
-    #[Teardown]   run keywords       logout user
-    #...                             quit browser
+    Close CP Browser
     Remote_Server.Disconnect WiFi
 
 *** Test Cases ***
@@ -220,4 +213,3 @@ TCCS-11614: Social login with facebook
     Should Not Contain              ${SHOW_STATION}          ${mu1.wifi_mac}
 
     [Teardown]   run keywords    Test Case Level Cleanup
-    ...                          Close CP Browser
