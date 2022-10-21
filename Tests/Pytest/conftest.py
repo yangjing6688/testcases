@@ -33,6 +33,7 @@ from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
 from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
 from ExtremeAutomation.Library.Logger.PytestLogger import PytestLogger
 from ExtremeAutomation.Library.Logger.Colors import Colors
+from selenium.webdriver.common.action_chains import ActionChains
 from ExtremeAutomation.Keywords.NetworkElementKeywords.NetworkElementConnectionManager import NetworkElementConnectionManager
 from ExtremeAutomation.Keywords.NetworkElementKeywords.Utils.NetworkElementCliSend import NetworkElementCliSend
 from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary
@@ -190,6 +191,25 @@ class RebootStackUnit(Protocol):
         slot: int,
         save_config: str
         ) -> None: ...
+
+
+class DeactivateXiqLibrary(Protocol):
+    def __call__(
+        self,
+        xiq: XiqLibrary
+        ) -> None: ...
+
+
+class GetXiqLibrary(Protocol):
+    def __call__(
+        self,
+        username: str,
+        password: str,
+        url: str,
+        capture_version: bool,
+        code: str,
+        incognito_mode: str
+        ) -> XiqLibrary: ...
 
 
 class GetStackSlots(Protocol):
@@ -834,23 +854,46 @@ class OnboardingTests:
 
 @pytest.fixture(scope="session")
 def login_xiq(
-        loaded_config: Dict[str, str],
-        logger: PytestLogger, 
-        cloud_driver: CloudDriver,
-        debug: Callable
+        debug: Callable,
+        get_xiq_library,
+        deactivate_xiq_library
 ) -> LoginXiq:
 
     @contextmanager
     @debug
     def login_xiq_func(
+    ) -> Iterator[XiqLibrary]:
+
+        xiq: XiqLibrary = None
+        
+        try:
+            xiq = get_xiq_library()
+            yield xiq
+        finally:
+            deactivate_xiq_library(xiq)
+
+    return login_xiq_func
+
+
+@pytest.fixture(scope="session")
+def get_xiq_library(
+    loaded_config: Dict[str, str],
+    logger: PytestLogger,
+    cloud_driver: CloudDriver,
+    debug: Callable
+) -> GetXiqLibrary:
+
+
+    @debug
+    def get_xiq_library_func(
         username: str = loaded_config['tenant_username'],
         password: str = loaded_config['tenant_password'],
         url: str = loaded_config['test_url'],
         capture_version: bool = False,
         code: str = "default",
         incognito_mode: str = "False"
-    ) -> Iterator[XiqLibrary]:
-
+    ) -> XiqLibrary:
+        
         xiq = XiqLibrary()
 
         try:
@@ -861,18 +904,31 @@ def login_xiq(
                 code=code, url=url,
                 incognito_mode=incognito_mode
             )
-            yield xiq
         except Exception as exc:
             logger.error(repr(exc))
             cloud_driver.close_browser()
             raise exc
-        finally:
-            try:
-                xiq.login.logout_user()
-                xiq.login.quit_browser()
-            except:
-                pass
-    return login_xiq_func
+        else:
+            return xiq
+    return get_xiq_library_func
+
+
+@pytest.fixture(scope="session")
+def deactivate_xiq_library(
+    debug: Callable
+) -> DeactivateXiqLibrary:
+    
+    @debug
+    def deactivate_xiq_library_func(
+        xiq: XiqLibrary
+    ) -> None:
+        
+        try:
+            xiq.login.logout_user()
+            xiq.login.quit_browser()
+        except:
+            pass
+    return deactivate_xiq_library_func
 
 
 @pytest.fixture(scope="session")
@@ -1813,6 +1869,19 @@ def log_onboarding_options(
 
 
 @pytest.fixture(scope="session")
+def action_chains() -> type:
+    return ActionChains
+
+
+@pytest.fixture(scope="session")
+def get_new_action_chains(
+    cloud_driver: CloudDriver,
+    action_chains: type
+) -> Callable[[], ActionChains]:
+    return lambda: action_chains(cloud_driver.cloud_driver)
+
+
+@pytest.fixture(scope="session")
 def onboard(
         request: fixtures.SubRequest
 ) -> None:
@@ -2507,6 +2576,7 @@ class Testbed(metaclass=Singleton):
         request: fixtures.SubRequest
     ) -> None:
         
+        self.request: fixtures.SubRequest = request
         self.logger: PytestLogger = request.getfixturevalue("logger")
         self.config: Dict[str, Union[str, Dict[str, str]]] = request.getfixturevalue("loaded_config")
         
@@ -2550,10 +2620,12 @@ class Testbed(metaclass=Singleton):
         self.wec: WebElementController = request.getfixturevalue("wec")
         self.tshark: Tshark = request.getfixturevalue("tshark")
         self.rest: Rest = request.getfixturevalue("rest")
-        
+        self.action_chains: type = request.getfixturevalue("action_chains")
         self.dump_data: Callable[[Union[str, List, Dict]], str] = dump_data
         self.update_test_name: Callable[[str], None] = request.getfixturevalue("update_test_name")
 
+        self.get_xiq_library: GetXiqLibrary = request.getfixturevalue("get_xiq_library")
+        self.deactivate_xiq_library: DeactivateXiqLibrary = request.getfixturevalue("deactivate_xiq_library")
         self.bounce_iqagent: BounceIqagent = request.getfixturevalue("bounce_iqagent")
         self.dut_ports: Dict[str, List[str]] = request.getfixturevalue("dut_ports")
         self.login_xiq: LoginXiq = request.getfixturevalue("login_xiq")
@@ -2574,6 +2646,9 @@ class Testbed(metaclass=Singleton):
         self.dev_cmd: NetworkElementCliSend = request.getfixturevalue("dev_cmd")
         self.debug: Callable = request.getfixturevalue("debug")
         self.create_location: CreateLocation = request.getfixturevalue("create_location")
+        self.get_new_action_chains: Callable[[], ActionChains] = request.getfixturevalue("get_new_action_chains")
+        self.cleanup: Cleanup = request.getfixturevalue("cleanup")
+        self.generate_template_for_given_model: Callable[[Node], Tuple[str]] = generate_template_for_given_model
 
 
 @pytest.fixture(scope="session")
