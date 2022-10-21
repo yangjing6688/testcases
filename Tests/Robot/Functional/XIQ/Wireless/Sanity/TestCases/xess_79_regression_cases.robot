@@ -26,12 +26,8 @@ ${uuid}                     475f2a85-c938-46de-b2b1-da36b8114e43
 ${uuid1}                    952f2a85-c938-46de-b2b1-da36b8114e43
 
 
-#${WEB_DRIVER_LOC}           local
-${TESTBED}          BANGALORE/Dev/guest_blr_tb_1/testbed_2.yaml
-${TOPO}             Extreme_Guest/topo.updated_auto.g2r1.yaml
-${ENV}              Extreme_Guest/environment.remote.chrome.windows.guest2.yaml
-
 *** Settings ***
+Force Tags      testbed_1_node
 Library     Collections
 Library     String
 Library     Dialogs
@@ -75,10 +71,7 @@ Pre Condition
     [Documentation]   AP Should be onboarded  and it is online
     
     ${result}=                       Login User          ${TENANT_USERNAME}     ${TENANT_PASSWORD}   url=${TEST_URL}    map_override=${MAP_FILE_NAME}
-    
-    # ${IMPORT_MAP}=                Import Map In Network360Plan  ${MAP_FILE_NAME}
-    # Should Be Equal As Strings    ${IMPORT_MAP}       1
-    
+
     Onboard AP          ${ap1.serial}       ${ap1.make}        ${LOCATION}
     
     ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
@@ -122,7 +115,7 @@ TCEL-3046: Create ibeacon with long name upto 32 characters
 
     [Documentation]         Create ibeacon with long name upto 32 characters
 
-    [Tags]                  development    tcel-3046
+    [Tags]                  development    tcel_3046
     
     ${result}=                      Login User          ${TENANT_USERNAME}     ${TENANT_PASSWORD}   url=${TEST_URL}        
     
@@ -138,7 +131,7 @@ TCEL-3047: Create ibeacon with uuid and leave blank for major and minor
     
     [Documentation]         Create ibeacon with uuid and leave blank for major and minor
 
-    [Tags]                  development    tcel-3047
+    [Tags]                  development    tcel_3047
 
     ${CREATE_BECON}=           Create XLOC Third Party Ibeacon   ${IBEACON_NAME_32}    ${uuid}   ${XLOC_SITE_NAME}   ${AS_CATEGORY_NAME}   ${IBEACON_MAC_ADDRESS1}
 
@@ -152,7 +145,7 @@ TCEL-3048: Create ibeacon with uuid, major and leave blank for minor
 
     [Documentation]         Create ibeacon with uuid, major and leave blank for minor
 
-    [Tags]                  development    tcel-3048
+    [Tags]                  development    tcel_3048
 
     ${CREATE_BECON}=           Create XLOC Third Party Ibeacon   ${IBEACON_NAME_32}    ${uuid}   ${XLOC_SITE_NAME}   ${AS_CATEGORY_NAME}   ${IBEACON_MAC_ADDRESS1}    major_version=1
     
@@ -166,7 +159,7 @@ TCEL-3049: Create ibeacon with uuid, minor and leave blank for major
 
     [Documentation]         Create ibeacon with uuid, minor and leave blank for major
 
-    [Tags]                  development    tcel-3049
+    [Tags]                  development    tcel_3049
 
     ${CREATE_BECON}=           Create XLOC Third Party Ibeacon   ${IBEACON_NAME_32}    ${uuid}   ${XLOC_SITE_NAME}   ${AS_CATEGORY_NAME}   ${IBEACON_MAC_ADDRESS1}    minor_version=0
     
@@ -180,7 +173,7 @@ TCEL-3050: Create ibeacon with uuid, major and minor number
 
     [Documentation]         Create ibeacon with uuid, major and minor number
 
-    [Tags]                  development    tcel-3050
+    [Tags]                  development    tcel_3050
 
     ${CREATE_BECON}=           Create XLOC Third Party Ibeacon   ${IBEACON_NAME_1}    ${uuid}   ${XLOC_SITE_NAME}   ${AS_CATEGORY_NAME}   ${IBEACON_MAC_ADDRESS1}    major_version=1    minor_version=1
 
@@ -192,7 +185,7 @@ TCEL-3052: Check editing of ibeacon
 
     [Documentation]         Check editing of ibeacon
 
-    [Tags]                  development    tcel-3052
+    [Tags]                  development    tcel_3052
 
     Edit Ibeacon in XLOC    ${IBEACON_MAC_ADDRESS1}    ${uuid1}    major_version=2    minor_version=2
 
@@ -205,7 +198,7 @@ TCEL-3053: Check deleting of ibeacon
     
     [Documentation]         Check deleting of ibeacon
 
-    [Tags]                  development    tcel-3053
+    [Tags]                  development    tcel_3053
 
     ${DELETE_IBEACON}=                      Delete ibeacon in xloc    ${IBEACON_MAC_ADDRESS1}
 
@@ -220,7 +213,7 @@ TCEL-3054: Create ibeacon with mac, uuid, major and minor and check status as "o
     
     [Documentation]         Create ibeacon with mac, uuid, major and minor and check status as "online"
 
-    [Tags]                  development    tcel-3054
+    [Tags]                  development    tcel_3054
 
     ${CREATE_BECON}=           Create XLOC Third Party Ibeacon   ${IBEACON_NAME_WORK}    ${UUID_WORK}   ${XLOC_SITE_NAME}   ${AS_CATEGORY_NAME}   ${BEACON_MAC_ADDRESS_WORK}    major_version=1    minor_version=1
 
@@ -236,7 +229,7 @@ TCEL-3055: Create ibeacon with incorrect mac, uuid, major and minor and check st
 	
     [Documentation]         Create ibeacon with incorrect mac, uuid, major and minor and check status as "offline"
     
-    [Tags]                  development    tcel-3055
+    [Tags]                  development    tcel_3055
     
     ${CREATE_BECON}=           Create XLOC Third Party Ibeacon   ${IBEACON_NAME_32}    ${uuid}   ${XLOC_SITE_NAME}   ${AS_CATEGORY_NAME}   ${IBEACON_MAC_ADDRESS3}    major_version=1    minor_version=1
 
@@ -251,7 +244,7 @@ TCEL-3056: Check downloading ibeacon page in CSV format
 
     [Documentation]         Create ibeacon with incorrect mac, uuid, major and minor and check status as "offline"
 
-    [Tags]                  development    tcel-3046
+    [Tags]                  development    tcel_3046
     
     ${DOWNLOAD_REPORT}=           Download Ibeacon Report
     Should Be Equal As Strings      '${DOWNLOAD_REPORT}'       '1'
