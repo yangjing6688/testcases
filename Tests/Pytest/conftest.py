@@ -51,7 +51,7 @@ from extauto.common.Cli import Cli
 
 
 Node = NewType("Node", Dict[str, Union[str, Dict[str, str]]])
-OnboardingOptions = NewType("OnboardingOptions", Dict[str, Union[str, Dict[str, str]]])
+Options = NewType("Options", Dict[str, Union[str, Dict[str, str]]])
 PolicyConfig = NewType("PolicyConfig", DefaultDict[str, Dict[str, str]])
 TestCaseMarker = NewType("TestCaseMarker", str)
 PriorityMarker = NewType("PriorityMarker", str)
@@ -349,7 +349,8 @@ def pytest_configure(config):
     pytest.runlist_tests: List[TestCaseMarker] = []
     pytest.suitemap_tests: Dict[str, Union[str, Dict[str, str]]] = {}
     pytest.suitemap_data: Dict[str, Union[str, Dict[str, str]]] = {}
-    pytest.onboarding_options: OnboardingOptions = {}
+    pytest.onboarding_options: Options = {}
+    pytest.run_options: Options = {}
     pytest.onboard_one_node: bool = False 
     pytest.onboard_two_node: bool = False 
     pytest.onboard_stack: bool = False 
@@ -359,6 +360,7 @@ def pytest_configure(config):
     pytest.config_helper: PytestConfigHelper = PytestConfigHelper(config)
     pytest.onboarding_test_name: str = "tcxm_xiq_onboarding"
     pytest.onboarding_cleanup_test_name: str = "tcxm_xiq_onboarding_cleanup"
+    pytest.created_onboarding_locations: List[str] = []
 
 
 def pytest_collection_modifyitems(session, items):
@@ -631,13 +633,15 @@ def pytest_collection_modifyitems(session, items):
         else:
             message = "Did not find any test function to run this session."
             logger_obj.warning(message)
-        
+
         items[:] = ordered_items
 
     else:
         
+        # Pytest enters this branch when the runlist is not specified as argument.
         # Remove the onboarding test cases if they are included as items for this run
         # The onboarding tests should be used only when a runlist yaml file is provided as input
+
         temp_items: List[pytest.Function]
         
         temp_items = [
@@ -664,11 +668,11 @@ def pytest_sessionstart(session):
             logger_obj.error(error)
             pytest.fail(error)
 
-        runlist = yaml.safe_load(output_runlist)
-        pytest.runlist_name = list(runlist)[0]
-        pytest.runlist_tests = runlist[pytest.runlist_name]['tests']
-        pytest.suitemaps_name = runlist[pytest.runlist_name]['suitemap']
-        
+        pytest.runlist = yaml.safe_load(output_runlist)
+        pytest.runlist_name = list(pytest.runlist)[0]
+        pytest.runlist_tests = pytest.runlist[pytest.runlist_name]['tests']
+        pytest.suitemaps_name = pytest.runlist[pytest.runlist_name]['suitemap']
+
         for suitemap in pytest.suitemaps_name:
             try:
                 with open(suitemap, "r") as run_list:
@@ -681,7 +685,8 @@ def pytest_sessionstart(session):
                 pytest.suitemap_tests = {**pytest.suitemap_tests, ** suitemap_tests_dict}
                 pytest.suitemap_data = {**pytest.suitemap_data, **suitemap_data_dict}
         
-        pytest.onboarding_options = runlist[pytest.runlist_name].get('onboarding_options', {})
+        pytest.onboarding_options: Options = pytest.runlist[pytest.runlist_name].get('onboarding_options', {})
+        pytest.run_options: Options = pytest.runlist[pytest.runlist_name].get("run_options", {}) or {}
 
 
 def pytest_generate_tests(metafunc):
@@ -829,6 +834,11 @@ class OnboardingTests:
             logger.info(
                 "Currently there are no devices given in the yaml files so the onboarding test won't configure anything.")
             return
+        
+        if pytest.run_options.get("skip_setup"):
+            logger_obj.info(
+                "The 'skip_setup' option is given in runlist. The onboarding is skipped.")
+            return
         request.getfixturevalue("onboard")
 
 
@@ -848,6 +858,10 @@ class OnboardingTests:
             logger.info(
                 "Currently there are no devices given in the yaml files so "
                 "the onboarding cleanup test won't unconfigure anything.")
+            return
+        if pytest.run_options.get("skip_teardown"):
+            logger_obj.info(
+                "The 'skip_teardown' option is given in runlist. The onboarding cleanup is skipped.")
             return
         request.getfixturevalue("onboard_cleanup")
 
@@ -1162,7 +1176,9 @@ def configure_iq_agent(
 @pytest.fixture(scope="session")
 def onboarding_locations(
         all_nodes: List[Node],
-        logger: PytestLogger
+        logger: PytestLogger,
+        request: fixtures.SubRequest,
+        
 ) -> Dict[str, str]:
     
     ret = {}
@@ -1173,26 +1189,39 @@ def onboarding_locations(
     
     for node in all_nodes:
         
-        locations = node.get("location")
-        
-        if locations:
-            logger.info(f"Found location(s) attached to '{node.name}': {locations}.")
-        
-        if isinstance(locations, str):
-            ret[node.name] = locations
-            
-        elif isinstance(locations, dict):
-            logger.step("Choose one of them.")
-            found_location = random.choice(list(locations.values()))
-            logger.info(f"The chosen location for '{node.name}' is '{found_location}'.")
-            ret[node.name] = found_location
-        else:
-            logger.info(f"Did not find any location attached to '{node.name}'.")
+        onboarding_options: Options = request.getfixturevalue(f"{node.node_name}_onboarding_options")
+        onboarding_location: str = onboarding_options.get("onboarding_location")
+        create_onboarding_location: bool = onboarding_options.get("create_onboarding_location")
 
-            logger.step(f"Will choose a location out of these: {hardcoded_locations}.")
-            found_location = random.choice(hardcoded_locations)
-            logger.info(f"The chosen location for '{node.name}' is '{found_location}'.")
-            ret[node.name] = found_location
+        if onboarding_location:
+            
+            logger.info(f"Successfully found this location in the runlist for node '{node.name}': '{onboarding_location}'")
+            ret[node.name] = onboarding_location
+            
+            if create_onboarding_location:
+                pytest.created_onboarding_locations.append(onboarding_location)
+
+        else:
+            locations = node.get("location")
+            
+            if locations:
+                logger.info(f"Found location(s) attached to '{node.name}': {locations}.")
+            
+            if isinstance(locations, str):
+                ret[node.name] = locations
+                
+            elif isinstance(locations, dict):
+                logger.step("Choose one of them.")
+                found_location = random.choice(list(locations.values()))
+                logger.info(f"The chosen location for '{node.name}' is '{found_location}'.")
+                ret[node.name] = found_location
+            else:
+                logger.info(f"Did not find any location attached to '{node.name}'.")
+
+                logger.step(f"Will choose a location out of these: {hardcoded_locations}.")
+                found_location = random.choice(hardcoded_locations)
+                logger.info(f"The chosen location for '{node.name}' is '{found_location}'.")
+                ret[node.name] = found_location
     return ret
 
 
@@ -1368,7 +1397,7 @@ def cleanup(
     def cleanup_func(
             xiq: XiqLibrary,
             duts: List[Node]=[],
-            location: str='', 
+            locations: List[str]=[], 
             network_policies: List[str]=[],
             templates_switch: List[str]=[],
             slots: int=1
@@ -1388,7 +1417,7 @@ def cleanup(
                     screen.save_screen_shot()
                     logger.warning(repr(exc))
                     
-            if location:
+            for location in locations:
                 try:
                     logger.info(f"Delete this location: '{location}'.")
                     xiq.xflowsmanageLocation.delete_location_building_floor(
@@ -1443,7 +1472,7 @@ def configure_network_policies(
      
             [dut_info] = [dut_iter for dut_iter in node_list if dut_iter.name == dut]
             node_name = dut_info.node_name
-            onb_options = request.getfixturevalue(f"{node_name}_onboarding_options")
+            onb_options: Options = request.getfixturevalue(f"{node_name}_onboarding_options")
             
             logger.step(f"Configuring the network policy and switch template for dut '{dut}' (node: '{node_name}').")
             network_policy = data['policy_name']
@@ -1473,64 +1502,14 @@ def configure_network_policies(
                     logger.info(f"Successfully created and attached this switch template to the network policy '{network_policy}' of dut '{dut}' (node: '{node_name}').")
 
                 if onb_options.get('assign_network_policy_to_device', True):
-                    # assert xiq.xflowsmanageDevices.assign_network_policy_to_switch(
-                    #     policy_name=network_policy, serial=dut_info.mac) == 1, \
-                    #     f"Couldn't assign policy {network_policy} to device '{dut}'"
+                    assert xiq.xflowsmanageDevices.assign_network_policy_to_switch_mac(
+                        policy_name=network_policy, mac=dut_info.mac) == 1, \
+                        f"Couldn't assign policy {network_policy} to device '{dut}' (node: '{node_name}')."
                     
-                    _temporary_fix_assign_policy(xiq, network_policy, dut_info)
                     screen.save_screen_shot()
                     logger.info(f"Successfully assigned the network policy '{network_policy}' to dut '{dut}' (node: '{node_name}').")
                     
     return configure_network_policies_func
-
-
-def _temporary_fix_assign_policy(xiq, policy_name, dut):
-    
-    import selenium
-    from extauto.common.AutoActions import AutoActions
-
-    devices = xiq.xflowscommonDevices
-    auto_actions = AutoActions()
-
-    time.sleep(10)
-    xiq.xflowscommonDevices._goto_devices()
-    time.sleep(10)
-
-    assert devices.select_device(dut.mac)
-    time.sleep(2)
-
-    auto_actions.click(devices.devices_web_elements.get_manage_device_actions_button())
-    time.sleep(3)
-
-    logger_obj.info("Click on Assign Network policy action for selected switch.")
-    auto_actions.click(devices.devices_web_elements.get_actions_assign_network_policy_combo_switch())
-    time.sleep(4)
-
-    logger_obj.info("Click on network policy drop down.")
-    try:
-        drop_down_button = devices.devices_web_elements.get_actions_assign_network_policy_drop_down()
-        drop_down_button.click()
-    except selenium.common.exceptions.ElementNotInteractableException as exc:
-        logger_obj.warning(repr(exc))
-        [drop_down_button] = [btn for btn in devices.devices_web_elements.weh.get_elements(
-            {"XPATH": '//tbody[@role="presentation"]'}) if btn.text == '--Select--']
-
-        auto_actions.click(drop_down_button)
-        time.sleep(5)
-
-    network_policy_items = devices.devices_web_elements.get_actions_network_policy_drop_down_items()
-    time.sleep(2)
-
-    if auto_actions.select_drop_down_options(network_policy_items, policy_name):
-        logger_obj.info(f"Selected Network policy from drop down: '{policy_name}'.")
-    else:
-        logger_obj.info("Network policy is not present in drop down.")
-
-    time.sleep(5)
-
-    logger_obj.info("Click on network policy assign button.")
-    auto_actions.click(devices.devices_web_elements.get_actions_network_policy_assign_button())
-    time.sleep(10)
 
 
 @pytest.fixture(scope="session")
@@ -1550,18 +1529,26 @@ def stack_nodes() -> List[Node]:
     
 @pytest.fixture(scope="session")
 def policy_config(
-        node_list: List[Node]
+        node_list: List[Node],
+        request: fixtures.SubRequest
 ) -> PolicyConfig:
 
     dut_config: PolicyConfig = defaultdict(lambda: {})
     pool = list(string.ascii_letters) + list(string.digits)
 
     for dut in node_list:
+        
         model, units_model = generate_template_for_given_model(dut)
-        dut_config[dut.name]["policy_name"] = f"np_{''.join(random.sample(pool, k=8))}"
-        dut_config[dut.name]['template_name'] = f"template_{''.join(random.sample(pool, k=8))}"
+        
+        onboarding_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
+        policy_name: str = onboarding_options.get("policy_name", f"np_{''.join(random.sample(pool, k=8))}")
+        template_name: str = onboarding_options.get("template_name", f"template_{''.join(random.sample(pool, k=8))}")
+        
+        dut_config[dut.name]["policy_name"] = policy_name
+        dut_config[dut.name]['template_name'] = template_name
         dut_config[dut.name]['dut_model_template'] = model
         dut_config[dut.name]['units_model'] = units_model
+
     return dut_config
 
 
@@ -1713,8 +1700,8 @@ def update_devices(
         wait_till(timeout=5)
 
         for dut in duts:
-            onb_options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
-            policy_name = policy_config[dut.name]['policy_name']
+            onb_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
+            policy_name: str = policy_config[dut.name]['policy_name']
             
             if all(
                 [
@@ -1738,7 +1725,7 @@ def update_devices(
                 wait_till(timeout=2)
 
         for dut in duts:
-            onb_options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
+            onb_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
             policy_name = policy_config[dut.name]['policy_name']
             if onb_options.get('initial_network_policy_push', True):
                 if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac) != 1:
@@ -1763,8 +1750,18 @@ def onboard_devices(
         xiq: XiqLibrary, 
         duts: List[Node]=node_list
         ) -> None:
+        
         onboarding_locations: Dict[str, str] = request.getfixturevalue("onboarding_locations")
+        
         for dut in duts:
+            
+            onboarding_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
+            create_onboarding_location: bool = onboarding_options.get("create_onboarding_location", False)
+            
+            if create_onboarding_location:
+                create_location: CreateLocation = request.getfixturevalue("create_location")
+                create_location(xiq, onboarding_locations[dut.name])
+
             if xiq.xflowscommonDevices.onboard_device(
                 device_serial=dut.serial, device_make=dut.cli_type,
                     location=onboarding_locations[dut.name]) == 1:
@@ -1919,9 +1916,19 @@ def onboard(
 
         with login_xiq() as xiq:
                 
-            change_device_management_settings(xiq, option="disable")
+            change_device_management_settings(
+                xiq,
+                option="disable"
+            )
             
-            cleanup(xiq=xiq, duts=node_list)
+            cleanup(
+                xiq=xiq,
+                duts=node_list,
+                locations=pytest.created_onboarding_locations # by default pytest.created_onboarding_locations is an empty list
+                                                              # it has elements only if there are locations specified to be created
+                                                              # in the runlist file
+            )
+            
             onboard_devices(xiq)
             
             check_devices_are_onboarded(xiq)
@@ -1957,8 +1964,19 @@ def onboard_cleanup(
             duts=node_list, 
             network_policies=[dut_info['policy_name'] for dut_info in policy_config.values()],
             templates_switch=[dut_info['template_name'] for dut_info in policy_config.values()],
-            slots=len(stack_nodes[0].stack) if len(stack_nodes) > 0 else 1
+            slots=len(stack_nodes[0].stack) if len(stack_nodes) > 0 else 1,
+            locations=pytest.created_onboarding_locations
         )
+
+
+@pytest.fixture(scope="session")
+def created_onboarding_locations() -> List[str]:
+    return pytest.created_onboarding_locations
+
+
+@pytest.fixture(scope="session")
+def run_options() -> Options:
+    return pytest.run_options
 
 
 @pytest.fixture(scope="session")
@@ -1975,25 +1993,25 @@ def node_1(
 
 @pytest.fixture(scope="session")
 def standalone_onboarding_options(
-) -> OnboardingOptions:
+) -> Options:
     return pytest.onboarding_options.get("standalone", {})
 
 
 @pytest.fixture(scope="session")
 def node_1_onboarding_options(
-) -> OnboardingOptions:
+) -> Options:
     return pytest.onboarding_options.get("standalone", {}).get("node_1", {})
 
 
 @pytest.fixture(scope="session")
 def node_2_onboarding_options(
-) -> OnboardingOptions:
+) -> Options:
     return pytest.onboarding_options.get("standalone", {}).get("node_2", {})
 
 
 @pytest.fixture(scope="session")
 def node_stack_onboarding_options(
-) -> OnboardingOptions:
+) -> Options:
     return pytest.onboarding_options.get("node_stack", {})
 
 
@@ -2579,6 +2597,7 @@ class Testbed(metaclass=Singleton):
         self.request: fixtures.SubRequest = request
         self.logger: PytestLogger = request.getfixturevalue("logger")
         self.config: Dict[str, Union[str, Dict[str, str]]] = request.getfixturevalue("loaded_config")
+        self.run_options: Options = request.getfixturevalue("run_options")
         
         self.all_nodes: List[Node] = request.getfixturevalue("all_nodes")
         self.standalone_nodes: List[Node] = request.getfixturevalue("standalone_nodes")
@@ -2593,16 +2612,17 @@ class Testbed(metaclass=Singleton):
         self.dut_3: Node = request.getfixturevalue("dut3")
         self.dut_4: Node = request.getfixturevalue("dut4")
 
-        self.node_1_onboarding_options: OnboardingOptions = request.getfixturevalue("node_1_onboarding_options")
-        self.node_2_onboarding_options: OnboardingOptions = request.getfixturevalue("node_2_onboarding_options")
-        self.node_stack_onboarding_options: OnboardingOptions = request.getfixturevalue("node_stack_onboarding_options")
-        self.standalone_onboarding_options: OnboardingOptions = request.getfixturevalue("standalone_onboarding_options")
+        self.node_1_onboarding_options: Options = request.getfixturevalue("node_1_onboarding_options")
+        self.node_2_onboarding_options: Options = request.getfixturevalue("node_2_onboarding_options")
+        self.node_stack_onboarding_options: Options = request.getfixturevalue("node_stack_onboarding_options")
+        self.standalone_onboarding_options: Options = request.getfixturevalue("standalone_onboarding_options")
 
         self.onboarding_locations: Dict[str, str] = request.getfixturevalue("onboarding_locations")
         self.node_1_onboarding_location: str = request.getfixturevalue("node_1_onboarding_location")
         self.node_2_onboarding_location: str = request.getfixturevalue("node_2_onboarding_location")
         self.node_stack_onboarding_location: str = request.getfixturevalue("node_stack_onboarding_location")
-        
+        self.created_onboarding_locations: List[str] = request.getfixturevalue("created_onboarding_locations")
+   
         self.policy_config: PolicyConfig = request.getfixturevalue("policy_config")
         self.node_1_policy_config: Dict[str, str] = request.getfixturevalue("node_1_policy_config")
         self.node_2_policy_config: Dict[str, str] = request.getfixturevalue("node_2_policy_config")
