@@ -73,9 +73,9 @@ Suite Teardown   Post_condition
 Test1: Advance Onboard AP1 and AP2 - TCXM-15115
     [Documentation]    Advance Onboard AP1 and AP2
     [Tags]             tcxm-15115     development     test1     test
-    ${aps}=      Create List        ${ap1}        ${ap2}
+    ${aps}       Create List        ${ap1}        ${ap2}
     FOR     ${ap}   IN    @{aps}
-        ${ONBOARD_STATUS}=               Onboard Device      ${ap}[serial]    ${ap}[make]    location=${ap}[location]
+        ${ONBOARD_STATUS}                Onboard Device      ${ap}[serial]    ${ap}[make]    location=${ap}[location]
         should be equal as integers      ${ONBOARD_STATUS}   1
     END
 
@@ -83,16 +83,16 @@ Test2: Config AP1 and AP2 Capwap to Report AIO - TCXM-15115
     [Documentation]     Configure Capwap client server
     [Tags]              tcxm-15115     development    test2      test
     Depends On          Test1
-    ${aps}=      Create List        ${ap1}        ${ap2}
+    ${aps}       Create List        ${ap1}        ${ap2}
     FOR    ${ap}    IN    @{aps}
-        ${AP_SPAWN}=        Open Spawn          ${ap}[ip]   ${ap}[port]      ${ap}[username]       ${ap}[password]        ${ap}[cli_type]
-        ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
-        ${OUTPUT0}=         Send                ${AP_SPAWN}         console page 0
-        ${OUTPUT0}=         Send                ${AP_SPAWN}         show version detail
-        ${OUTPUT0}=         Send                ${AP_SPAWN}         show capwap client
-        ${OUTPUT2}=         Send                ${AP_SPAWN}         ${cmd_capwap_hm_primary_name}
-        ${OUTPUT3}=         Send                ${AP_SPAWN}         ${cmd_capwap_server_ip}
-        ${OUTPUT1}=         Wait For CLI Output                     ${AP_SPAWN}         ${cmd_capwap_client_state}          ${output_capwap_status}
+        ${AP_SPAWN}        Open Spawn          ${ap}[ip]   ${ap}[port]   ${ap}[username]   ${ap}[password]   ${ap}[cli_type]
+        ${OUTPUT0}         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
+        ${OUTPUT0}         Send                ${AP_SPAWN}         console page 0
+        ${OUTPUT0}         Send                ${AP_SPAWN}         show version detail
+        ${OUTPUT0}         Send                ${AP_SPAWN}         show capwap client
+        ${OUTPUT2}         Send                ${AP_SPAWN}         ${cmd_capwap_hm_primary_name}
+        ${OUTPUT3}         Send                ${AP_SPAWN}         ${cmd_capwap_server_ip}
+        ${OUTPUT1}         Wait For CLI Output                     ${AP_SPAWN}         ${cmd_capwap_client_state}          ${output_capwap_status}
         Should Be Equal as Integers             ${OUTPUT1}          1
         Close Spawn         ${AP_SPAWN}
     END
@@ -106,7 +106,7 @@ Test3: Check AP1 and AP2 Status On UI - TCXM-15115
     FOR    ${ap}    IN    @{aps}
         Wait Until Device Reboots               ${ap}[serial]
         Wait Until Device Online                ${ap}[serial]
-        ${AP_STATUS}=                           Get AP Status       ap_mac=${ap}[mac]
+        ${AP_STATUS}                            Get AP Status       ap_mac=${ap}[mac]
         Should Be Equal As Strings             '${AP_STATUS}'       'green'
     END
 
@@ -114,7 +114,7 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15115
     [Documentation]     Create policy and Update policy to AP1 and AP2
     [Tags]              tcxm-15115     development     test4      test
     Depends On          Test3
-    ${NUM}=                     Generate Random String    5     0123456789
+    ${NUM}                      Generate Random String    5     0123456789
     Set Suite Variable          ${POLICY}                       BkHaul_wifi0_${NUM}
     Set Suite Variable          ${SSID}                         bk_0_${NUM}
     Set Suite Variable          ${AP_TEMP_NAME}                 ${ap1.model}_${NUM}
@@ -135,9 +135,9 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15115
     Should Be Equal As Strings     '${SELECT_AP_TEMPLATE}'   '1'
 
     Create Network Policy          policy=${POLICY_CM}       &{WIRELESS_PESRONAL_CM}
-    ${CREATE_AP_TEMPLATE}          add ap template from common object      ${ap2.model}            ${AP_TEMP_NAME_CM}      &{AP_TEMPLATE_CONFIG_2}
+    ${CREATE_AP_TEMPLATE}          add ap template from common object     ${ap2.model}            ${AP_TEMP_NAME_CM}      &{AP_TEMPLATE_CONFIG_2}
     Should Be Equal As Strings     '${CREATE_AP_TEMPLATE}'   '1'
-    ${SELECT_AP_TEMPLATE}          add ap template to network policy       ${AP_TEMP_NAME_CM}      ${POLICY_CM}
+    ${SELECT_AP_TEMPLATE}          add ap template to network policy      ${AP_TEMP_NAME_CM}      ${POLICY_CM}
     Should Be Equal As Strings     '${SELECT_AP_TEMPLATE}'   '1'
 
     ${UPDATE}                      Update Network Policy To Ap    policy_name=${POLICY_CM}    ap_serial=${ap2.serial}     update_method=Complete
@@ -161,14 +161,14 @@ Test5: Client mode enable in device Configuration for AP2 - TCXM-15115
     update device delta configuration    ${ap2.serial}             update_method=Complete
     Wait Until Device Reboots            ${ap2.serial}
     Wait Until Device Online             ${ap2.serial}
-    ${AP2_STATUS}=                       Get AP Status             ap_mac=${ap2.mac}
+    ${AP2_STATUS}                        Get AP Status             ap_mac=${ap2.mac}
     Should Be Equal As Strings           '${AP2_STATUS}'           'green'
 
-    ${UPDATE}=                           Update Network Policy To Ap    policy_name=${POLICY}       ap_serial=${ap1.serial}     update_method=Complete
+    ${UPDATE}                            Update Network Policy To Ap    policy_name=${POLICY}       ap_serial=${ap1.serial}     update_method=Complete
     should be equal as strings           '${UPDATE}'               '1'
     Wait Until Device Reboots            ${ap1.serial}
     Wait Until Device Online             ${ap1.serial}
-    ${AP1_STATUS}=                       Get AP Status              ap_mac=${ap1.mac}
+    ${AP1_STATUS}                        Get AP Status              ap_mac=${ap1.mac}
     Should Be Equal As Strings           '${AP1_STATUS}'            'green'
 
 Test6: Setup WIFI on STA2 and Connect to AP2 - TCXM-15115
@@ -182,7 +182,7 @@ Test7: Verify Connection - TCXM-15115
     [Documentation]     Setup WIFI on STA2 and Connect to AP2 on Client Mode
     [Tags]              tcxm-15115     development    test7      test
     Depends On          Test6
-    sleep               10s
+    sleep               20s
     Verify client mode ap     ${ap2}
     Verify station            ${mu1}     ${AP_TEMPLATE_CONFIG_2}[wifi0_configuration][client_mode_profile][dhcp_server_scope]
 
@@ -202,10 +202,10 @@ Setup AP in Client Mode
 
 Get Check Ping
     [Arguments]    ${output}
-    ${loss}=      Get Regexp Matches  ${output}   ([\\d\\.]+)% packet loss
-    ${status}=    Run Keyword And Return Status   Should Not Be Empty   ${loss}
-    ${loss}=      Run Keyword If    ${status}    Remove String    ${loss[0]}   % packet loss
-    ${loss}=      Set Variable If   ${status}   ${loss}    -1
+    ${loss}       Utils.Get Regexp Matches  ${output}   ([\\d\\.]+)% packet loss
+    ${status}     Run Keyword And Return Status   Should Not Be Empty   ${loss}
+    ${loss}       Run Keyword If    ${status}    Remove String    ${loss[0]}   % packet loss
+    ${loss}       Set Variable If   ${status}   ${loss}    -1
     [Return]  ${loss}
 
 Verify client mode ap
@@ -219,18 +219,22 @@ Verify client mode ap
 
 Verify station
     [Arguments]    ${mu}    ${cm_gw_ip}
-    ${spawn}    Open Spawn           ${mu}[ip]      22    ${mu}[username]    ${mu}[password]   MU-MAC
-    ${out}      send                 ${spawn}       ping -c 5 ${cm_gw_ip}
-    log         ${out}
-    sleep       20s
-    ${out}      send                 ${spawn}       traceroute -m 5 www.google.com
-    log         ${out}
-    Should Contain      ${out}       ${cm_gw_ip}
-    ${out}      send                 ${spawn}       ping -c 5 www.google.com
-    log         ${out}
-    ${loss}     Get Check Ping       ${out}
-    Should Be Equal As Strings       '${loss}'       '0.0'
-    close spawn                      ${spawn}
+    ${spawn}        open paramiko ssh_spawn     ${mu}[ip]     ${mu}[username]    ${mu}[password]
+    ${out}          send paramiko cmd           ${spawn}       ping -c 5 ${cm_gw_ip}
+    log             ${out}
+    ${out}          send paramiko cmd           ${spawn}       traceroute -m 5 www.google.com
+    log             ${out}
+    Should Contain  ${out}                      ${cm_gw_ip}
+    ${out}          send paramiko cmd           ${spawn}        ping -c 5 www.google.com
+    log             ${out}
+    ${loss}         Get Check Ping              ${out}
+    ${loss}         convert to number           ${loss}
+    run keyword if                              ${loss} > 50    FAIL
+    close paramiko spawn                        ${spawn}
+
+    ${spawn}	    Open Spawn     ${ap2.console_ip}    ${ap2.console_port}    ${ap2.username}	 ${ap2.password}    AH-XR    connection_method=console
+    Send            ${spawn}       no interface eth0 shutdown
+    Close Spawn     ${spawn}
 
 Pre_condition
     ${STATUS}                           Login User    ${tenant_username}   ${tenant_password}

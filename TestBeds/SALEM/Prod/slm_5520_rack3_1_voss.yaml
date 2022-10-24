@@ -17,6 +17,7 @@ netelem1:
   model:                    "FabricEngine5520_24W"
   make:                     "voss"
   auth_mode:                "basic"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"
   tgen:
     port_a:

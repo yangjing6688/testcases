@@ -51,4 +51,5 @@ aerohive_sw1:
   platform:           aerohive-fastpath
   test_port:
   make:               Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
   onboard_device_type:      Real

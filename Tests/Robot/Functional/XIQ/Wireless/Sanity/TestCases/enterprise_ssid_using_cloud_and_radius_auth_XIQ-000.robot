@@ -102,7 +102,7 @@ Step0: Onboard AP
     ${STATUS}                      Onboard Device    ${ap1.serial}    ${ap1.make}    location=${ap1.location}
     should be equal as integers    ${STATUS}         1
 
-    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}           ${ap1.port}      ${ap1.username}      ${ap1.password}      ${ap1}[cli_type]
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}           ${ap1.port}      ${ap1.username}      ${ap1.password}      ${ap1.cli_type}
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}        capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
     ${OUTPUT0}=         Send                ${AP_SPAWN}        console page 0
     ${OUTPUT0}=         Send                ${AP_SPAWN}        show version detail
@@ -170,8 +170,8 @@ Step4: Verify Client360 to wifi0-1 - Cloud Auth service
     [Documentation]     Verify Client360 to wifi0-1 - Enterprise SSID using cloud Auth service
     [Tags]              tcxm-17746     tcxm-17748     development     step4      steps
     Depends On          Step3
-    ${OUT}             get client360 current connection status      8EB0511639C6
-    should contain     ${OUT['USER']}                               user4
+    ${OUT}             get client360 current connection status      ${mu1.wifi_mac}
+    should contain     ${OUT['USER']}                               ${SINGLE_USER_INFO_00}[name]
 
 Step5: MU connect to wifi0-1 - Radius Auth service
     [Documentation]     MU connect to wifi0-1 - Enterprise SSID using radius Auth service
@@ -187,8 +187,8 @@ Step6: Verify Client360 to wifi0-1 - Radius Auth service
     [Documentation]     Verify Client360 to wifi0-1 - Enterprise SSID using radius Auth service
     [Tags]              tcxm-17747     tcxm-17750     development     step6      steps
     Depends On          Step5
-    ${OUT}             get client360 current connection status      CA7BCBD1A44E
-    should contain     ${OUT['USER']}                               user4
+    ${OUT}             get client360 current connection status      ${mu1.wifi_mac}
+    should contain     ${OUT['USER']}                               ${SINGLE_USER_INFO_00}[name]
 
 Step7: MU connect to wifi2 - Cloud Auth service
     [Documentation]     MU connect to wifi0-1 - Enterprise SSID using cloud Auth service
@@ -204,8 +204,8 @@ Step8: Verify Client360 to wifi2- Cloud Auth service
     [Documentation]     Verify Client360 to wifi0-1 - Enterprise SSID using cloud Auth service
     [Tags]              tcxm-17744     tcxm-17746     development     step8      steps
     Depends On          Step7
-    ${OUT}             get client360 current connection status      0EAE738F5906
-    should contain     ${OUT['USER']}                               user4
+    ${OUT}             get client360 current connection status      ${mu1.wifi_mac}
+    should contain     ${OUT['USER']}                               ${SINGLE_USER_INFO_00}[name]
 
 Step9: MU connect to wifi2 - Radius Auth service
     [Documentation]     MU connect to wifi0-1 - Enterprise SSID using radius Auth service
@@ -221,8 +221,8 @@ Step10: Verify Client360 to wifi2 - Radius Auth service
     [Documentation]     Verify Client360 to wifi0-1 - Enterprise SSID using radius Auth service
     [Tags]              tcxm-17745     tcxm-17747     development     step10      steps
     Depends On          Step9
-    ${OUT}             get client360 current connection status      3A9A55246C38
-    should contain     ${OUT['USER']}                               user4
+    ${OUT}             get client360 current connection status      ${mu1.wifi_mac}
+    should contain     ${OUT['USER']}                               ${SINGLE_USER_INFO_00}[name]
 
 *** Keywords ***
 Pre_condition

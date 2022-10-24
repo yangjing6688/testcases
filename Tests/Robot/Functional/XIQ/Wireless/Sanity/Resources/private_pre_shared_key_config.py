@@ -10,8 +10,8 @@ except:
 
 RANDOM_INT = random.randint(0, 999)
 
-OPEN_POLICY = f"default_open_policy"
-OPEN_SSID = f"default_open_ssid"
+OPEN_POLICY = f"default_open_policy_{RANDOM_INT}"
+OPEN_SSID = f"default_default_open_ssid_{RANDOM_INT}"
 
 BULK_CLOUD_NW_POLICY = f"AUTO_CLOUD_BULK_NW_{RANDOM_INT}"
 BULK_CLOUD_NW_SSID = f"AUTO_CLOUD_BULK_SSID_{RANDOM_INT}"

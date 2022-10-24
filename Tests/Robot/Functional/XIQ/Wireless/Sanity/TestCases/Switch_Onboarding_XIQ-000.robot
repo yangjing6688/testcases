@@ -48,7 +48,7 @@ TCCS-7748_Step1: Onboard Aerohive Switch
     [Documentation]         Checks for Aerohive switch onboarding is success in case of valid scenario
 
     [Tags]                  production      tccs_7748   tccs_7748_step1
-    ${ONBOARD_RESULT}=  Onboard Device  ${aerohive_sw1.serial}  ${aerohive_sw1.cli_type}    location=${LOCATION}
+    ${ONBOARD_RESULT}=      onboard device quick         ${aerohive_sw1}
     Should Be Equal as Integers         ${ONBOARD_RESULT}       1
 
 

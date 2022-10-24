@@ -41,7 +41,7 @@ ${XIQSE_MAC}            ${xiqse.mac}
 ${XIQSE_NAME}           ${xiqse.name}
 ${XIQSE_MAKE}           ${xiqse.make}
 ${XIQSE_MODEL}          ${xiqse.model}
-${XIQSE_OS}             ${xiqse.os}
+${XIQSE_OS}             ${xiqse.xiq_os}
 ${XIQSE_VERSION}        ${xiqse.version}
 ${XIQSE_PRODUCT}        ${xiqse.product}
 
@@ -150,8 +150,9 @@ Test 4: Confirm XIQSE-Managed Device Values After Onboard
 
 Test 5: Confirm Device360 View Values for XIQ Site Engine
     [Documentation]     Confirms the Device360 view contains correct values for the XIQ Site Engine
-    [Tags]              nightly2    release_testing    staging_testing    tccs_10796    xmc_3196    development    xiqse    xiq_integration    test5
+    [Tags]              known_issue    nightly2    release_testing    staging_testing    tccs_10796    xmc_3196    development    xiqse    xiq_integration    test5
 
+    Log To Console      "KNOWN ISSUE: XIQ-8873    Potential fix in 22r7"
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
     Refresh Devices Page
@@ -242,6 +243,8 @@ XIQSE Log In and Set Window Index
     # Close any banner messages (Connection Lost with XIQ, License Expiration, etc.) and the Help panel, if displayed
     Close Panels on Login If Displayed
 
+    Onboard XIQSE To XIQ If In Connected Mode    "CONNECTED"    ${XIQSE_IP}  ${XIQ_USER}  ${XIQ_PASSWORD}
+
     # Store the window index so we can switch between XIQSE and XIQ
     ${xiqse_win}=  XIQSE Get Window Index
     Log To Console  Setting XIQSE Window Index to ${xiqse_win}
@@ -280,9 +283,6 @@ Set Up XIQ Components
     Navigate to XIQ Devices and Confirm Success
 
     Column Picker Select  @{COLUMNS}
-
-    # Remove XIQSE if it is already present
-    Navigate and Remove Device by MAC From XIQ  ${XIQSE_MAC}
 
 Confirm XIQ Site Engine Onboarded to XIQ
     [Documentation]     Confirms the XIQ Site Engine has been onboarded to XIQ successfully and has connected status

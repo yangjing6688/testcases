@@ -1,197 +1,5 @@
 
 *** Variables ***
-${LOCATION}                 auto_location_01, Santa Clara, building_02, floor_04
-################# Open Authentication network Profile for cloud captive web portal #####################################
-&{OPEN_NW_1}                 ssid_name=test_social_login_fb           network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}   auth_profile=&{OPEN_AUTHENTICATION_PROFILE1}
-&{OPEN_NW_2}                 ssid_name=test_social_login_google       network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}   auth_profile=&{OPEN_AUTHENTICATION_PROFILE2}
-&{OPEN_NW_3}                 ssid_name=test_social_login_linkedin     network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}   auth_profile=&{OPEN_AUTHENTICATION_PROFILE3}
-&{OPEN_NW_4}                 ssid_name=test_social_login4             network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}   auth_profile=&{OPEN_AUTHENTICATION_PROFILE4}
-&{OPEN_NW_5}                 ssid_name=social_login_authlogs          network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}   auth_profile=&{OPEN_AUTHENTICATION_PROFILE4}
-
-&{BORADCAST_SSID_DEFAULT}=       WIFI0=Enable        WIFI1=Enable
-&{BORADCAST_SSID_01}=            WIFI0=Enable        WIFI1=Enable
-&{BORADCAST_SSID_02}=            WIFI0=Enable        WIFI1=Disable
-&{BORADCAST_SSID_03}=            WIFI0=Disable       WIFI1=Enable
-
-&{OPEN_AUTHENTICATION_PROFILE0}     auth_type=Open    cwp_profile=&{OPEN_CWP}
-&{OPEN_AUTHENTICATION_PROFILE1}     auth_type=Open    cwp_profile=&{OPEN_CWP_1}
-&{OPEN_AUTHENTICATION_PROFILE2}     auth_type=Open    cwp_profile=&{OPEN_CWP_2}
-&{OPEN_AUTHENTICATION_PROFILE3}     auth_type=Open    cwp_profile=&{OPEN_CWP_3}
-&{OPEN_AUTHENTICATION_PROFILE4}     auth_type=Open    cwp_profile=&{OPEN_CWP_4}
-
-
-&{OPEN_CWP}        enable_cwp=Disable
-&{OPEN_CWP_1}      enable_cwp=Enable   cloud_captive_web_portal=Enable  social_login=Enable   request_pin=Disable   open_cwp_config=&{OPEN_CWP_CONFIG_1}
-&{OPEN_CWP_2}      enable_cwp=Enable   cloud_captive_web_portal=Enable  social_login=Enable   request_pin=Disable   open_cwp_config=&{OPEN_CWP_CONFIG_2}
-&{OPEN_CWP_3}      enable_cwp=Enable   cloud_captive_web_portal=Enable  social_login=Enable   request_pin=Disable   open_cwp_config=&{OPEN_CWP_CONFIG_3}
-&{OPEN_CWP_4}      enable_cwp=Enable   cloud_captive_web_portal=Enable  social_login=Enable   request_pin=Disable   open_cwp_config=&{OPEN_CWP_CONFIG_4}
-
-&{OPEN_CWP_CONFIG_1}     social_cwp_config=&{SOCIAL_CWP_CONFIG_1}    cloud_cwp_name=cloudcwpsocialfacebook
-&{OPEN_CWP_CONFIG_2}     social_cwp_config=&{SOCIAL_CWP_CONFIG_2}    cloud_cwp_name=cloudcwpsocialgoogle
-&{OPEN_CWP_CONFIG_3}     social_cwp_config=&{SOCIAL_CWP_CONFIG_3}    cloud_cwp_name=cloudcwpsociallinkedin
-&{OPEN_CWP_CONFIG_4}     social_cwp_config=&{SOCIAL_CWP_CONFIG_4}    cloud_cwp_name=cloudcwpsocialfacebook4
-
-&{SOCIAL_CWP_CONFIG_1}    social_login_type=Facebook   restrict_access=default    auth_cache_duration=2
-&{SOCIAL_CWP_CONFIG_2}    social_login_type=Google     restrict_access=default    auth_cache_duration=2
-&{SOCIAL_CWP_CONFIG_3}    social_login_type=Linkedin   restrict_access=default    auth_cache_duration=2
-&{SOCIAL_CWP_CONFIG_4}    social_login_type=Facebook   restrict_access=default    auth_cache_duration=2
-&{SOCIAL_CWP_CONFIG_5}    social_login_type=Google     restrict_access=asjJ       auth_cache_duration=2
-&{SOCIAL_CWP_CONFIG_6}    social_login_type=Linkedin   restrict_access=asjJ       auth_cache_duration=2
-
-
-&{SOCIAL_CWP_TEMP_CONFIG}    cwp_name=cloudcwpsocialfacebook1   social_login_type_fb=Enable     social_login_type_google=Disable  social_login_type_linkedin=Disable    restrict_access=default    auth_cache_duration=1
-
-##############################Enterprise Wireless Network Profile creation #############################################
-&{WIRELESS_ENTERPRISE_NW1}    ssid_name=AutoEnterpriseradius          network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}      auth_profile=&{ENTERPRISE_AUTH_PROFILE_1}
-&{WIRELESS_ENTERPRISE_NW2}    ssid_name=AutoEnterprisegroup           network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}      auth_profile=&{ENTERPRISE_AUTH_PROFILE_2}
-&{WIRELESS_ENTERPRISE_NW3}    ssid_name=AutoEnterprisedot1x           network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}      auth_profile=&{ENTERPRISE_AUTH_PROFILE_3}
-&{WIRELESS_ENTERPRISE_NW4}    ssid_name=AutoEnterpriseacctlogs        network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}      auth_profile=&{ENTERPRISE_AUTH_PROFILE_4}
-&{WIRELESS_ENTERPRISE_NW5}    ssid_name=AutoEnterprisedot1x           network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}      auth_profile=&{ENTERPRISE_AUTH_PROFILE_5}
-&{WIRELESS_ENTERPRISE_NW6}    ssid_name=dot1xwpa3wronguser            network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}      auth_profile=&{ENTERPRISE_AUTH_PROFILE_6}
-&{WIRELESS_ENTERPRISE_NW7}    ssid_name=Autodot1xexternalradius       network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}      auth_profile=&{ENTERPRISE_AUTH_PROFILE_7}
-&{WIRELESS_ENTERPRISE_NW8}    ssid_name=externalradiuswronguser       network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}      auth_profile=&{ENTERPRISE_AUTH_PROFILE_7}
-&{WIRELESS_ENTERPRISE_NW9}    ssid_name=externalradiuswpa3            network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}      auth_profile=&{ENTERPRISE_AUTH_PROFILE_8}
-&{WIRELESS_ENTERPRISE_NW10}   ssid_name=AutoEnterprisedot1xwpa3       network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}      auth_profile=&{ENTERPRISE_AUTH_PROFILE_5}
-&{WIRELESS_ENTERPRISE_NW11}   ssid_name=externalradiuswpa3wronguser   network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}      auth_profile=&{ENTERPRISE_AUTH_PROFILE_8}
-&{WIRELESS_ENTERPRISE_NW12}   ssid_name=test_ap_radius_server         network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}      auth_profile=&{ENTERPRISE_AUTH_PROFILE_9}
-&{WIRELESS_ENTERPRISE_NW13}   ssid_name=test_ap_radius_server_wpa3    network_type=Standard   ssid_profile=&{BORADCAST_SSID_DEFAULT}      auth_profile=&{ENTERPRISE_AUTH_PROFILE_8}
-
-##################################
-&{ENTERPRISE_AUTH_PROFILE_1}   auth_type=enterprise    key_encryption=&{KEY_ENCRYPTION_1}   cwp_profile=&{ENTERPRISE_CWP_2}  auth_settings_profile=&{AUTHENTICATION_SETTINGS1}   user_access_settings=None   additional_settings=None
-&{ENTERPRISE_AUTH_PROFILE_2}   auth_type=enterprise    key_encryption=&{KEY_ENCRYPTION_1}   cwp_profile=&{ENTERPRISE_CWP_2}  auth_settings_profile=&{AUTHENTICATION_SETTINGS2}   user_access_settings=None   additional_settings=None
-&{ENTERPRISE_AUTH_PROFILE_3}   auth_type=enterprise    key_encryption=&{KEY_ENCRYPTION_1}   cwp_profile=&{ENTERPRISE_CWP_1}  auth_settings_profile=&{AUTHENTICATION_SETTINGS3}   user_access_settings=None   additional_settings=None
-&{ENTERPRISE_AUTH_PROFILE_4}   auth_type=enterprise    key_encryption=&{KEY_ENCRYPTION_1}   cwp_profile=&{ENTERPRISE_CWP_1}  auth_settings_profile=&{AUTHENTICATION_SETTINGS4}   user_access_settings=None   additional_settings=None
-&{ENTERPRISE_AUTH_PROFILE_5}   auth_type=enterprise    key_encryption=&{KEY_ENCRYPTION_5}   cwp_profile=&{ENTERPRISE_CWP_1}  auth_settings_profile=&{AUTHENTICATION_SETTINGS3}   user_access_settings=None   additional_settings=None
-&{ENTERPRISE_AUTH_PROFILE_6}   auth_type=enterprise    key_encryption=&{KEY_ENCRYPTION_5}   cwp_profile=&{ENTERPRISE_CWP_1}  auth_settings_profile=&{AUTHENTICATION_SETTINGS3}   user_access_settings=None   additional_settings=None
-&{ENTERPRISE_AUTH_PROFILE_7}   auth_type=enterprise    key_encryption=&{KEY_ENCRYPTION_1}   cwp_profile=&{ENTERPRISE_CWP_1}  auth_settings_profile=&{AUTHENTICATION_SETTINGS5}   user_access_settings=None   additional_settings=None
-&{ENTERPRISE_AUTH_PROFILE_8}   auth_type=enterprise    key_encryption=&{KEY_ENCRYPTION_5}   cwp_profile=&{ENTERPRISE_CWP_1}  auth_settings_profile=&{AUTHENTICATION_SETTINGS5}   user_access_settings=None   additional_settings=None
-&{ENTERPRISE_AUTH_PROFILE_9}   auth_type=enterprise    key_encryption=&{KEY_ENCRYPTION_1}   cwp_profile=&{ENTERPRISE_CWP_1}  auth_settings_profile=&{AUTHENTICATION_SETTINGS6}   user_access_settings=None   additional_settings=None
-
-################### Key and Encryption Method Options for eneterprise network
-&{KEY_ENCRYPTION_1}   key_management=WPA2-802.1X    encryption_method=CCMP (AES)
-&{KEY_ENCRYPTION_2}   key_management=WPA2-802.1X    encryption_method=TKIP
-
-&{KEY_ENCRYPTION_3}   key_management=WPA-802.1X    encryption_method=CCMP (AES)
-&{KEY_ENCRYPTION_4}   key_management=WPA-802.1X    encryption_method=TKIP
-
-&{KEY_ENCRYPTION_4}   key_management=Auto (WPA or WPA2) 802.1X    encryption_method=Auto-TKIP or CCMP (AES)
-&{KEY_ENCRYPTION_5}   key_management=WPA3-802.1X    encryption_method=None
-
-################# Enterprise Captive Web Portal Profile
-&{ENTERPRISE_CWP_1}   cwp=Disable
-&{ENTERPRISE_CWP_2}   enable_cwp=Enable    cwp_name=enterprisecwp
-&{ENTERPRISE_CWP_3}   enable_cwp=Enable    cwp_name=enterprisecwp
-&{ENTERPRISE_CWP_3}   enable_cwp=Enable    different_cwp_per_clients=Enable
-
-
-################### AUthentication configuration pofile
-&{AUTHENTICATION_SETTINGS1}   auth_with_extcldiq_service=Disable   radius_server_group_config=&{RADIUS_SERVER_GROUP_CONFIG_1}
-&{AUTHENTICATION_SETTINGS2}   auth_with_extcldiq_service=Enable    user_group=&{Enterprise_User_Group_Cfg3}
-
-&{AUTHENTICATION_SETTINGS3}   auth_with_extcldiq_service=Enable    user_group_config=&{Enterprise_User_Group_Cfg1}
-&{AUTHENTICATION_SETTINGS4}   auth_with_extcldiq_service=Enable    user_group=&{Enterprise_User_Group_Cfg2}
-&{AUTHENTICATION_SETTINGS5}   auth_with_extcldiq_service=Disable   radius_server_group_config=&{RADIUS_SERVER_GROUP_CONFIG_1}
-&{AUTHENTICATION_SETTINGS6}   auth_with_extcldiq_service=Disable   radius_server_group_config=&{RADIUS_SERVER_GROUP_CONFIG_3}
-
-## User Group Config
-&{Enterprise_User_Group_Cfg1}      group_name=AutoEnterprisedot1x     user_group_profile=None
-&{Enterprise_User_Group_Cfg2}      group_name=AutoEnterpriseacctlogs     user_group_profile=None
-&{Enterprise_User_Group_Cfg3}      group_name=AutoEnterprisegroup     user_group_profile=None
-
-################ Creating Radius Server group profile
-&{RADIUS_SERVER_GROUP_CONFIG_1}     radius_server_group_name=AutoRadiusGroup      radius_server_config=&{RADIUS_SERVER_CONFIG_1}
-&{RADIUS_SERVER_GROUP_CONFIG_3}     radius_server_group_name=Testing_ap_radius    radius_server_config=&{RADIUS_SERVER_CONFIG_2}
-
-############### Configuring the Extreneal Radius Server
-&{RADIUS_SERVER_CONFIG_1}    radius_server_group_name=AutoRadiusGroup      radius_server_group_desc=Radius server group    server_type=EXTERNAL RADIUS SERVER          external_radius_server_config=&{EXTRENAL_RADIUS_SERVER_CONFIG_1}
-&{RADIUS_SERVER_CONFIG_2}    radius_server_group_name=Testing_ap_radius    radius_server_group_desc=Radius server group    server_type=EXTREME NETWORKS RADIUS SERVER  extreme_radius_server_config=&{EXTREME_RADIUS_SERVER_CONFIG_2}
-
-############## Extrenal radius Server config variables
-&{EXTRENAL_RADIUS_SERVER_CONFIG_1}   radius_server_name=AutoRadiusServer   ip_or_host_type=IP Address   radius_server_ip_host_name=FreeRadiusServer   radius_server_ip_address=10.234.106.231    shared_secret=Secret@123
-
-## Extreme Network Radius Server Config variables
-&{EXTREME_RADIUS_SERVER_CONFIG_2}   radius_server_name=AH-0f6a80   aaa_profile_name=Test_AAA_profile  user_db_type=Local Database  user_group=AutoEnterprisedot1x  radius_server_ip_host_name=APVlan20Network  host_ip_type_opt=IP Address    radius_server_ip_address=20.1.1.109   shared_secret=Secret@123
-
-#################################################### Guest Access Network Configuration #############################################
-## Unsecure Network
-&{GUEST_ACCESS_NW1}        ssid_name=AutoGuestAccess1     network_type=GuestAccess    guest_auth_type=Unsecure   guest_auth_config=&{UNSECURE_GUEST_ACCESS_CONFIG1}
-&{GUEST_ACCESS_NW2}        ssid_name=AutoGuestAccess2     network_type=GuestAccess    guest_auth_type=Unsecure   guest_auth_config=&{UNSECURE_GUEST_ACCESS_CONFIG2}
-&{GUEST_ACCESS_NW3}        ssid_name=AutoGuestAccess3     network_type=GuestAccess    guest_auth_type=Unsecure   guest_auth_config=&{UNSECURE_GUEST_ACCESS_CONFIG3}
-
-######Guests can access the network without logging in.
-&{UNSECURE_GUEST_ACCESS_CONFIG1}      guest_access_nw_without_login=Enable
-
-###### Guests accept the use policy before accessing the network.
-&{UNSECURE_GUEST_ACCESS_CONFIG2}      guest_accept_user_policy_bf_access_nw=Enable     cwp_config=&{UNSECURE_CWP_CONFIG1}
-&{UNSECURE_CWP_CONFIG1}               cwp_name=Accept    upa=Select
-
-##### Guests can self-register, then sign in.
-&{UNSECURE_GUEST_ACCESS_CONFIG3}      guest_self_register_sign_in=Enable   cwp_config=&{UNSECURE_CWP_CONFIG2}   user_groups=&{GROUP_CONFIG1}   empl_approval_domain=gmail.com
-
-&{UNSECURE_CWP_CONFIG2}              cwp_name=selfcwp         landing_page=Select
-&{GROUP_CONFIG1}                     group_name=GuestGroup    passwd_settings=&{GUEST_PASSWD_SETTING_CONFIG1}
-
-&{GUEST_PASSWD_SETTING_CONFIG1}      letters=Enable   numbers=Enable   special_characters=Disable   enforce_use_of=Any selected character types    gen_passwd_len=10
-
-############### Secure Network
-&{GUEST_ACCESS_SECURE_NW1}        ssid_name=AutoGuestSecure1     network_type=GuestAccess    guest_auth_type=Secure   guest_auth_config=&{GUEST_ACCESS_SECURE_CONFIG1}
-&{GUEST_ACCESS_SECURE_NW2}        ssid_name=AutoGuestSecure2     network_type=GuestAccess    guest_auth_type=Secure   guest_auth_config=&{GUEST_ACCESS_SECURE_CONFIG2}
-&{GUEST_ACCESS_SECURE_NW3}        ssid_name=AutoGuestSecure3     network_type=GuestAccess    guest_auth_type=Secure   guest_auth_config=&{GUEST_ACCESS_SECURE_CONFIG3}
-
-#################  Create credentials for guests to log in to your network.
-&{GUEST_ACCESS_SECURE_CONFIG1}              create_guest_credentials_to_login=Enable      create_guest_credentials_to_login_config=&{GUEST_CREDENTIAL_TO_LOGIN_CONFIG1}
-
-&{GUEST_CREDENTIAL_TO_LOGIN_CONFIG1}        max_num_clients_per_ppsk=Disable   mac_binding_num_per_ppsk=Disable    auth_db=Cloud    user_groups=&{SECURE_USER_GROUPS1}
-&{SECURE_USER_GROUPS1}                      group_name=SecureGuestCred         guest_user_prefix=guest01_    num_guest=2
-
-################## Guests can self-register, then sign in. As an option, an employee can approve.
-&{GUEST_ACCESS_SECURE_CONFIG2}              guest_self_reg_signin=Enable        cwp_config=&{SECURE_CWP_CONFIG1}      guest_self_reg_ssid=AutoGuestOpen
-...                                         max_num_clients_per_ppsk=Disable    user_groups=&{SECURE_USER_GROUPS2}    empl_approval_domain=gmail.com
-
-&{SECURE_CWP_CONFIG1}                       cwp_name=SecureGuestSelf        landing_page=Select
-&{SECURE_USER_GROUPS2}                      group_name=SelfRegGroup         passwd_settings=&{GUEST_SECURE_PASS_SETTING_CONFIG1}
-
-&{GUEST_SECURE_PASS_SETTING_CONFIG1}        letters=Enable   numbers=Enable   special_characters=Disable    enforce_use_of=Any selected character types    gen_passwd_len=10
-
-############## Create global password (PSK) credentials for your guests to log in to your network.
-&{GUEST_ACCESS_SECURE_CONFIG3}             global_passwd_credentials_to_guests=Enable   enable_cwp=Enable    cwp_config=&{SECURE_CWP_CONFIG2}   password=ExtremExtreme@123
-&{SECURE_CWP_CONFIG2}                      cwp_name=SecureGlobalCWP    upa=Select
-
-############################ AP Template Config#################
-&{AP_TEMPLATE_CONFIG}            wifi0_configuration=&{AP_TEMPLATE_CONFIG_1_WIFI0}   wifi1_configuration=&{AP_TEMPLATE_CONFIG_1_WIFI1}
-
-&{AP_TEMPLATE_CONFIG_1_WIFI0}    client_access=Disable    backhaul_mesh_link=Disable   sensor=Enable
-
-&{AP_TEMPLATE_CONFIG_1_WIFI1}    client_access=Disable    backhaul_mesh_link=Disable   sensor=Enable
-
-#######WIPS Configuartion#######################
-
-&{WIPS_CONFIG_OPTIONS}          rougue_ap_detection=Enable           detect_ap_wired=Enable                detect_ap_mac_oui_basis=Enable    detect_ap_ssid_basis=Disable
-...                             detect_client_form_adhoc=Enable      rougue_client_reporting=Enable        mitigation_mode=manual
-
-&{WIPS_CONFIG_OPTIONS1}         rougue_ap_detection=Enable           detect_ap_wired=Enable               detect_ap_mac_oui_basis=Disable   detect_ap_ssid_basis=Disable
-...                             detect_client_form_adhoc=Disable     rougue_client_reporting=Disable      mitigation_mode=manual
-
-&{WIPS_CONFIG_OPTIONS2}         rougue_ap_detection=Enable           detect_ap_wired=Enable               detect_ap_mac_oui_basis=Enable    detect_ap_ssid_basis=Disable
-...                             detect_client_form_adhoc=Disable     rougue_client_reporting=Disable      mitigation_mode=manual
-
-&{WIPS_CONFIG_OPTIONS3}         rougue_ap_detection=Enable           detect_ap_wired=Enable               detect_ap_mac_oui_basis=Disable   detect_ap_ssid_basis=Enable
-...                             detect_client_form_adhoc=Disable     rougue_client_reporting=Disable      mitigation_mode=manual
-
-####WIPS WLAN CONFIG####
-&{WIPS_OPEN_NW_01}          ssid_name=Openwips_ssid_automation1                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
-...                         auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
-
-&{WIPS_OPEN_NW_02}          ssid_name=Openwips_ssid_automation2                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
-...                         auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
-
-
-&{WIPS_OPEN_NW_03}          ssid_name=Openwips_ssid_automation3                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
-...                         auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
-
-
-# Update this time because we have an ap that is taking a bit longer
-${MAX_CONFIG_PUSH_TIME}             600
 
 *** Settings ***
 Library     Collections
@@ -215,6 +23,9 @@ Library     extauto/xiq/flows/common/Navigator.py
 Library     extauto/xiq/flows/configure/AutoProvisioning.py
 Library     extauto/xiq/flows/configure/CommonObjects.py
 Library     extauto/xiq/flows/configure/ExpressNetworkPolicies.py
+Library     extauto/xiq/flows/configure/RouterTemplate.py
+Variables   Resources/voss_config.py
+Resource    Resources/device_sanity_XIQ_config.robot
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -251,7 +62,6 @@ Test Suite Setup
     Set Global Variable          &{CONFIG_PUSH_OPEN_NW_01}
     Set Global Variable          &{CONFIG_PUSH_OPEN_NW_02}
 
-
     # Create the connection to the device(s)
     Base Test Suite Setup
     Set Global Variable    ${MAIN_DEVICE_SPAWN}    ${device1.name}
@@ -264,8 +74,12 @@ Test Suite Setup
 
 Test Suite Teardown
     Clean Up Device
-    Delete Network Polices                  ${PUSH_CONFIG_POLICY_01}      ignore_cli_feedback=true
-    Delete SSIDs                            ${PUSH_CONFIG_SSID_01}        ${NEW_SSID_NAME_1}     ignore_cli_feedback=true
+    ${DLT_NW_POLICIES}=             Delete Network Polices      ${PUSH_CONFIG_POLICY_01}        ${VOSS_POLICY_NAME}    ignore_cli_feedback=true
+    should be equal as integers     ${DLT_NW_POLICIES}          1
+
+    ${DELETE_SSIDS}=                Delete SSIDs                ${PUSH_CONFIG_SSID_01}        ${NEW_SSID_NAME_1}  ${VOSS_SSID_NAME}     ignore_cli_feedback=true
+    should be equal as integers     ${DELETE_SSIDS}             1
+
     Logout User
     Quit Browser
     Base Test Suite Cleanup
@@ -289,7 +103,7 @@ Disable SSH and Close Device360 Window
 Validate Device Information
     @{column_list}=    Create List    MGT IP ADDRESS    MAC
     ${DEVICE_INFOMATION}=   get_device_column_information  ${device1.serial}    ${column_list}
-    Run Keyword If  '${device1.cli_type}' != 'WING-AP'    Validate Device Managment IP Information   ${DEVICE_INFOMATION}
+    Run Keyword If  '${device1.cli_type}' != 'WING-AP' and '${device1.cli_type}' != 'AH-XR'  Validate Device Managment IP Information   ${DEVICE_INFOMATION}
     ${DEVICE_MAC}=                 Get From Dictionary      ${DEVICE_INFOMATION}    MAC
     Should Be Equal As Strings    '${DEVICE_MAC}'           '${device1.mac}'
 
@@ -302,27 +116,32 @@ clean up auto provisioning
     ${DLT_ALL_AUTOPROV_POLICIES}=       Delete All Auto Provision Policies
     should be equal as integers         ${DLT_ALL_AUTOPROV_POLICIES}               1
 
-    ${DLT_NW_POLICIES}=             Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}
+    ${DLT_NW_POLICIES}=             Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}    ${XR_NW_POLICY_NAME}  ${VOSS_POLICY_NAME}
     should be equal as integers     ${DLT_NW_POLICIES}          1
 
     ${DELETE_SSIDS}=                Delete SSIDs                            ${SSID_NAME_01}             ${SSID_NAME_02}
     should be equal as integers     ${DELETE_SSIDS}             1
 
+Confirm Device Status
+    [Documentation]     Checks the status of the specified device and confirms it matches the expected value
+    [Arguments]         ${serial}  ${expected_status}
+
+    ${device_status}=       Get Device Status       device_serial=${serial}
+    Should Contain          ${device_status}   ${expected_status}
+
+Clean Up Test Device and Confirm Success
+    [Documentation]     Deletes the specified device and confirms the action was successful
+    [Arguments]         ${serial}
+
+    Navigate to Devices and Confirm Success
+    ${del_result}=  Delete Device   ${serial}
+    Should Be Equal As Integers     ${del_result}  1
+
 *** Test Cases ***
-step1: ssh_test
-    [Documentation]     Log into Device
-
-    [Tags]              onboard        development
-
-    ${SPAWN}=        Open Spawn          ${device1.ip}   ${device1.port}      ${device1.username}       ${device1.password}        ${device1.cli_type}
-    Close Spawn      ${SPAWN}
-
-step2: Advanced Onboard Device on XIQ
+TCCS-13512-Testcase1: Advanced Onboard Device on XIQ
     [Documentation]         Checks for Advanced Device onboarding on XIQ
 
-    [Tags]                  onboard      development
-
-    Depends On              step1
+    [Tags]                  advanced_onboard      development   tccs_13512     tccs_13512_testcase1   tccs_13512_testcase2
 
     Clean Up Device
 
@@ -341,24 +160,22 @@ step2: Advanced Onboard Device on XIQ
     Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
 
 
-step3: Verify Information on Device page (Advanced onboarding)
+TCCS-13512-Testcase2: Verify Information on Device page (Advanced onboarding)
     [Documentation]         Verify Information on Device page
 
-    [Tags]                  onboard     development
+    [Tags]                  advanced_onboard     development    tccs_13512     tccs_13512_testcase2
 
-    Depends On              step2
+    Depends On              TCCS-13512-Testcase1
     Validate Device Information
 
-Step4: Simple Onboard Device on XIQ
+TCCS-13512-Testcase3: Simple Onboard Device on XIQ
     [Documentation]         Checks for Device onboarding on XIQ
 
-    [Tags]                  onboard      development   onboard-fast
-
-    Depends On              step3
+    [Tags]                  onboard      development   onboard-fast     tccs_13512     tccs_13512_testcase3   tccs_13512_testcase4   tccs_13512_testcase5   tccs_13512_testcase6   tccs_13512_testcase7
 
     Clean Up Device
 
-    ${ONBOARD_RESULT}=          onboard device      ${device1.serial}       ${device1.make}   device_mac=${device1.mac}  location=${LOCATION}
+    ${ONBOARD_RESULT}=          onboard device quick      ${device1}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
     configure device to connect to cloud    ${device1.cli_type}   ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
@@ -372,49 +189,20 @@ Step4: Simple Onboard Device on XIQ
     ${DEVICE_STATUS_RESULT}=    get device status      ${device1.serial}
     Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
 
-step5: Verify Information on Device page (Simple onboaring)
+TCCS-13512-Testcase4: Verify Information on Device page (Simple onboaring)
     [Documentation]         Verify Information on Device page
 
-    [Tags]                  onboard      development
+    [Tags]                  onboard      development    tccs_13512     tccs_13512_testcase4
 
-    Depends On              step4
+    Depends On              TCCS-13512-Testcase3
     Validate Device Information
 
-# Waiting for the page to be refreshed in XIQ, this will only support AH-AP Only
-# and will need to be expanded for all other device.
-#Step6: Generate And Validate Fake Alarms (AH-AP Only)
-#    [Documentation]    Chek the generation of alarms
-#
-#    [Tags]             verify_alarms    development
-#
-#    Depends On         step5
-#
-#    # FIXME Need to increase Support for all Devices
-#    # Check to see if this test is supported on the device type
-#    @{supported_cli_types}=    Create List   AH-AP
-#    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
-#
-#    ${DEVICE_STATUS}=                   Get Device Status       device_mac=${device1.mac}
-#    Should contain any                  ${DEVICE_STATUS}    green     config audit mismatch
-#
-#    ${CLEAR_ALARM_STATUS}=              Clear Alarm                       CRITICAL
-#
-#    ${SEND_CMD_STATUS}=                 Send Cmd On Device Advanced Cli    device_serial=${device1.serial}    cmd=_test trap-case alert failure
-#    Should Not Be Equal As Strings      ${SEND_CMD_STATUS}          '-1'
-#    sleep                               120s
-#    ${ALARM_DETAILS}=                   Get Alarm Details                  CRITICAL
-#    should be equal as strings          '${ALARM_DETAILS}[severity]'       'CRITICAL'
-#    should be equal as strings          '${ALARM_DETAILS}[category]'       'System'
-#    should be equal as strings          '${ALARM_DETAILS}[description]'    'fan failure.'
-#    should be equal as strings          '${ALARM_DETAILS}[deviceMac]'      '${device1.mac}'
-
-
-Step7: Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Established
+TCCS-13512-Testcase5: Enable SSH on Device and Confirm Only a Single SSH Session Can Be Established
     [Documentation]     Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Established
 
-    [Tags]              ssh      development
+    [Tags]              ssh      development    tccs_13512     tccs_13512_testcase5
 
-    Depends On           step5
+    Depends On           TCCS-13512-Testcase3
 
     # make sure the feature is enabled
     enable ssh availability
@@ -436,10 +224,12 @@ Step7: Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Establi
     [Teardown]  Disable SSH and Close Device360 Window
 
 
-Step8: Verification of config push complete config update (AH-AP Only)
+TCCS-13512-Testcase6: Verification of config push complete config update (AH-AP Only)
     [Documentation]             Verification of config push complete config update
-    [Tags]                      push_config     development
-    Depends On                  step5
+
+    [Tags]                      push_config     development     tccs_13512     tccs_13512_testcase6   tccs_13512_testcase7
+
+    Depends On                  TCCS-13512-Testcase3
 
     @{supported_cli_types}=    Create List   AH-AP
     check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
@@ -460,10 +250,12 @@ Step8: Verification of config push complete config update (AH-AP Only)
     Should Contain                          ${OUTPUT1}                  ${PUSH_CONFIG_SSID_01}
 
 
-Step9: Verification of config push delta update (AH-AP Only)
+TCCS-13512-Testcase7: Verification of config push delta update (AH-AP Only)
     [Documentation]         Verification of config push delta update
-    [Tags]                  push_config     development
-    Depends On              step5
+
+    [Tags]                  push_config     development     tccs_13512     tccs_13512_testcase7
+
+    Depends On              TCCS-13512-Testcase6
 
     @{supported_cli_types}=    Create List   AH-AP
     check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
@@ -483,7 +275,7 @@ Step9: Verification of config push delta update (AH-AP Only)
 # Not sure if this should be a part of Sanity
 # yes, froce the upgrade
 #
-#Step11: Firmware upgrade to lastest version (AH-AP Only)
+#Step9: Firmware upgrade to lastest version (AH-AP Only)
 #    [Documentation]         Verify IQ engine upgrade to lastest version ( we should just make sure it was upgraded )
 #    [Tags]			        push_config     development
 #    Depends On             step1
@@ -538,4 +330,141 @@ Step9: Verification of config push delta update (AH-AP Only)
 #
 #    Close Spawn        ${SPAWN2}
 
-
+#Step10: Perform Device Update on VOSS Switch (VOSS ONLY)
+#    [Documentation]     Performs a device update on the VOSS switch
+#    [Tags]              production      tccs_7299       tccs_7299_step5   development
+#
+#    Depends On          onboard
+#
+#    @{supported_cli_types}=    Create List   VOSS-skipped
+#    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+#
+#    ${assign_policy_result}=        Assign network policy to switch  policy_name=${VOSS_POLICY_NAME}  serial=${device1.serial}
+#    Should Be Equal As Integers     ${assign_policy_result}  1
+#
+#    ${result}=  Update Switch Policy and Configuration    ${device1.serial}
+#    Should Be Equal As Integers     ${result}     1
+#
+#
+#
+#Step11: Confirm VOSS Device Values After Update (VOSS ONLY)
+#    [Documentation]     Confirms the device table contains expected values for the VOSS switch after an update
+#
+#    [Tags]              production      tccs_7299       tccs_7299_step6    development
+#
+#    Depends On          onboard
+#
+#    @{supported_cli_types}=    Create List   VOSS-skipped
+#    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+#
+#    Refresh Devices Page
+#    Confirm Device Status  ${device1.serial}  ${STATUS_AFTER_UPDATE}
+#
+#    &{device_info}=     Get Device Row Values  ${device1.serial}  POLICY,LOCATION,SERIAL,MODEL
+#
+#    ${policy_result}=   Get From Dictionary     ${device_info}  POLICY
+#    Should Be Equal     ${policy_result}        ${VOSS_POLICY_NAME}
+#
+#    ${loc_result}=      Get From Dictionary     ${device_info}  LOCATION
+#    Should Be Equal     ${loc_result}           ${LOCATION_DISPLAY}
+#
+#    ${serial_result}=   Get From Dictionary     ${device_info}  SERIAL
+#    Should Be Equal     ${serial_result}        ${device1.serial}
+#
+#    ${model_result}=    Get From Dictionary     ${device_info}  MODEL
+#    Should Be Equal     ${model_result}         ${device1.model}
+#
+#step12: Confirm Device360 View Values for VOSS Switch (VOSS ONLY)
+#    [Documentation]     Confirms the Device360 view contains correct values for the VOSS Switch
+#
+#    [Tags]              production      tccs_7299       tccs_7299_step7    development
+#
+#    Depends On          onboard
+#
+#    @{supported_cli_types}=    Create List   VOSS-skipped
+#    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+#
+#    Refresh Devices Page
+#    &{overview_info}=           Get VOSS Device360 Overview Information                 ${device1.mac}
+#
+#    Refresh Devices Page
+#    &{device_config_info}=      Get VOSS Device360 Device Configuration Information     ${device1.mac}
+#
+#    ${overview_serial}=         Get From Dictionary  ${overview_info}  serial_number
+#    Should Be Equal             ${overview_serial}  ${device1.serial}
+#
+#    ${overview_model}=          Get From Dictionary  ${overview_info}  device_model
+#    Should Be Equal             ${overview_model}   ${device1.serial}
+#
+#    ${overview_policy}=         Get From Dictionary  ${overview_info}  network_policy
+#    Should Be Equal             ${overview_policy}  ${VOSS_POLICY_NAME}
+#
+#    ${config_policy}=           Get From Dictionary  ${device_config_info}  network_policy
+#    Should Be Equal             ${config_policy}  ${VOSS_POLICY_NAME}
+#
+#    ${config_template}=         Get From Dictionary  ${device_config_info}  device_template
+#    Should Be Equal             ${config_template}  ${VOSS_TEMPLATE_NAME}
+#
+#
+#step 13: Create Router XR Template (XR ONLY)
+#    [Documentation]         Create Router XR Template
+#
+#    [Tags]                  production      tccs_12330    development
+#
+#    Depends On              onboard
+#
+#    @{supported_cli_types}=    Create List   AH-XR-skipped
+#    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+#
+#    # XR ONLY
+#    &{ROUTER_TEMPLATE_CONFIG1}=  Create Dictionary   router_model=${device1.model}  template_name=${device1.device_template}  interface_name=ETH2    new_port_type_config=&{PORT_TYPE_CONFIG1}   network_allocation_config=&{NETWORK_ALLOCATION_CONFIG1}
+#    Set Global Variable          &{ROUTER_TEMPLATE_CONFIG1}
+#
+#    ${CREATE_NW_POLICY}=    Create Network Policy   ${XR_NW_POLICY_NAME}       &{XR_ROUTER_NW_01}
+#    Should Be Equal As Strings                      '${CREATE_NW_POLICY}'   '1'
+#
+#    ${CREATE_AP_TEMPLATE}=      Add Router Template     ${XR_NW_POLICY_NAME}     &{ROUTER_TEMPLATE_CONFIG1}
+#
+#    ${DEVICE_UPDATE_CONFIG}=    Update Network Policy To Router    policy_name=${XR_NW_POLICY_NAME}    router_serial=${router1.serial}
+#    Should Be Equal As Strings                      '${DEVICE_UPDATE_CONFIG}'       '1'
+#
+#    Log to Console          Sleep for ${config_push_wait}
+#    sleep                   ${config_push_wait}
+#
+#    ${DEVICE_UPDATE_STATUS}=    Wait Until Device Update Done   device_serial=${router1.serial}
+#    Should Be Equal As Strings                      '${DEVICE_UPDATE_STATUS}'       '1'
+#
+#    ${SHOW_TRUNK_VLANS}=    Send                    ${MAIN_DEVICE_SPAWN}         ${XR_CMD_SHOW_TRUNK_VLANS}
+#    Should Contain          ${SHOW_TRUNK_VLANS}     ${XR_EXPECTED_TRUNK_VLANS}
+#
+#    ${SHOW_RUN_CONFIG}=     Send                    ${MAIN_DEVICE_SPAWN}         ${XR_CMD_SHOW_CONFIG}
+#    Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  mode bridge-802.1q
+#    Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  allowed-vlan ${XR_EXPECTED_TRUNK_VLANS}
+#
+#
+#step 14: Upgrade Latest IQ Engine Router Firmware (XR ONLY)
+#    [Documentation]     Upgrate latest IQ Engine Router Firmware
+#
+#    [Tags]              production      tccs_7351    development
+#
+#    Depends On              onboard
+#
+#    @{supported_cli_types}=    Create List   AH-XR-skipped
+#    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+#
+#    ${LATEST_VERSION}=      Upgrade Device To Latest Version         ${router1.serial}
+#
+#    Sleep                   ${config_push_wait}
+#    Sleep                   ${router_reboot_wait}
+#    Sleep                   ${router_reboot_wait}
+#
+#    ${ROUTER_FM_VER}=       Send           ${MAIN_DEVICE_SPAWN}            show version | include Version
+#    should contain          ${ROUTER_FM_VER}        ${LATEST_VERSION}
+#
+#    ${SHOW_RUN_CONFIG}=     Send           ${MAIN_DEVICE_SPAWN}            ${XR_CMD_SHOW_CONFIG}
+#    Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  mode bridge-802.1q
+#    Should Contain          ${SHOW_RUN_CONFIG}      interface ${INTERFACE_NAME}  allowed-vlan ${XR_EXPECTED_TRUNK_VLANS}
+#
+#    [Teardown]
+#
+#    Close Spawn     ${ROUTER_SPAWN}

@@ -1,4 +1,3 @@
----
 lab:                      "RDU"
 
 netelem1:
@@ -178,8 +177,8 @@ netelem2:
     port_a:
       ifname:
       intnet:
-      
-      
+
+
 netelem3:
   name:                     "x465_DUT3"
   model:                    "X46524MU"
@@ -269,7 +268,7 @@ netelem3:
       ifname:
       intnet:
 
- 
+
 tgen1:
   name:                     &tgen1_name "JETS"
   vendor:                   "jets"
@@ -355,7 +354,7 @@ endsys1:
     mask:         "24"
     source_mac:   ""
     intnet:       ""
-    
+
 endsys2:
   name:                 "inband_server2"
   ip:                   "172.16.251.1"
@@ -391,4 +390,3 @@ endsys3:
     mask:         "24"
     source_mac:   ""
     intnet:       ""
-
