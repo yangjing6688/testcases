@@ -602,7 +602,7 @@ def pytest_collection_modifyitems(session, items):
                                 logger_obj.warning(
                                     f"'{test_code}' is marked as depending on itself (test function: '{item.nodeid}').")
                                 
-                            elif temp_marker not in all_tcs:
+                            elif (temp_marker not in all_tcs) or (temp_marker not in pytest.runlist_tests):
                                 item.add_marker(
                                     pytest.mark.skip(f"'{test_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}'"
                                                     f" is not in the current list of testcases to be run. '{test_code}' will be skipped.")
@@ -680,8 +680,9 @@ def pytest_sessionstart(session):
             except FileNotFoundError:
                 logger_obj.warning(f"Did not find this suitemap file: '{suitemap}'")
             else:
-                suitemap_tests_dict = yaml.safe_load(output_suitemap)['tests']
-                suitemap_data_dict = yaml.safe_load(output_suitemap)['data']
+                suitemap_dict = yaml.safe_load(output_suitemap)
+                suitemap_tests_dict = suitemap_dict['tests']
+                suitemap_data_dict = suitemap_dict.get('data', {})
                 pytest.suitemap_tests = {**pytest.suitemap_tests, ** suitemap_tests_dict}
                 pytest.suitemap_data = {**pytest.suitemap_data, **suitemap_data_dict}
         
