@@ -52,7 +52,7 @@ xapi assign network policy to a device
     [Documentation]  Assign Network Policy to a Device
     [Arguments]  ${DEVICE_ID}   ${NETWORK_POLICY_ID}
 
-    ${RESP}=  rest api post    /devices/:${DEVICE_ID}/network-policy?networkPolicyId=${NETWORK_POLICY_ID}        result_code=200
+    ${RESP}=  rest api post    /devices/network-policy/:assign      post_data='{"devices": {"ids": [${DEVICE_ID}]},"network_policy_id": ${NETWORK_POLICY_ID}}'     result_code=200
     log                             ${RESP}
     [Return]                        ${RESP}
 	

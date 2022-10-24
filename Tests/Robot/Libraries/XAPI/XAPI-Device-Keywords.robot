@@ -126,3 +126,24 @@ xapi wait until device online
     Log     ${DEVICE_CONNECTED_STATE}
     Log    Exiting as Device is Conneceted
     [Return]    ${DEVICE_CONNECTED_STATE}
+
+
+#####  Get iBeacon Settings By Device ID #####
+xapi Get iBeacon Settings
+    [Documentation]     get iBeacon settings by device id
+    [Arguments]         ${ID}
+    log                 get device iBeacon URL : /devices/${ID}/ibeacon
+    ${RESP} =           rest api get     /devices/${ID}/ibeacon
+    log                 get device iBeacon resp: ${RESP}
+    [Return]            ${RESP}
+
+
+#####  Update iBeacon Settings By multiple device IDs  #####
+xapi Update iBeacon Settings
+    [Documentation]     update iBeacon settings by multiple device IDs
+    [Arguments]         ${DATA}
+    log                 update multiple iBeacon settings URL: /devices/ibeacon
+    log                 update multiple iBeacon settings DATA: ${DATA}
+    ${RESP} =           rest api put v1   /devices/ibeacon    ${DATA}
+    log                 update multiple iBeacon settings resp: ${RESP}
+    [Return]            ${RESP}
