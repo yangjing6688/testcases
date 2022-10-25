@@ -6,7 +6,7 @@ xiqse:
   password:                "n7830466"
   version:                 "22.9.10"
   os_version:              "22.9.10"
-  name:                    "xiqse-22-6-12-staging.extremenetworks.com"
+  name:                    "xiqse-22-9-10-staging.extremenetworks.com"
   serial:                  "XIQSE-616006A8106B4FE1A6BF714A1FF0BEFE"
   mac:                     "005056BAE176"
   profile:                 "snmp_v3_profile"
