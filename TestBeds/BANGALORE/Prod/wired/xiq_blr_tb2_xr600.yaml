@@ -15,4 +15,5 @@ router1:
   console_ip:               10.234.105.230
   console_port:             7026
   make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
   onboard_device_type:      Real

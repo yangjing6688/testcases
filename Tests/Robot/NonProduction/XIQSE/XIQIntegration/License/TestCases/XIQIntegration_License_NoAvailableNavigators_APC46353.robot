@@ -441,14 +441,14 @@ XIQ Confirm Devices Not Onboarded
 XIQSE Confirm User Informed License Limit Exceeded
     [Documentation]     Confirms the user is informed that the device license limit has been exceeded
 
-    Run Keyword If  '22.' in '${XIQSE_OS_VERSION}'
+    Run Keyword If  '23.' in '${XIQSE_OS_VERSION}'
     ...  Confirm Operations Panel Message For Type  Device Added  No licenses available
 # The banner message closes too fast for automation to check so we will check the operations panel instead
 #    ...      Confirm Licensed Device Limit Exceeded Message Displayed
 #    ...      AND
 #    ...      Close Licensed Device Limit Exceeded Message
 
-    Run Keyword If  '22.' not in '${XIQSE_OS_VERSION}'
+    Run Keyword If  '23.' not in '${XIQSE_OS_VERSION}'
     ...  Run Keywords
     ...      Confirm License Limit Warning Message Displayed
     ...      AND
@@ -534,9 +534,6 @@ Clean Up XIQ Components
     Navigate to XIQ Devices and Confirm Success
     Search XIQ Devices Table and Confirm Success  ${XIQSE_MAC}
 
-    # Disable all columns for event searches
-    Set Alarm Event Search Scope    false
-
     # Remove XIQSE from XIQ
     Remove Device By MAC From XIQ and Confirm Success  ${XIQSE_MAC}
 
@@ -559,6 +556,9 @@ Clean Up XIQSE Components
     Switch To Window    ${XIQSE_WINDOW_INDEX}
 
     Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
+
+    # Disable all columns for event searches
+    Set Alarm Event Search Scope    false
 
     # Delete all the discovered devices from the sites
     XIQSE Delete All Site Devices and Confirm Success   ${PILOT_SITE}

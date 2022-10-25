@@ -47,7 +47,6 @@ mu1:
   ethernet_mac:   080027010d0c
   wifi_network:   20.1.1
   wifi_network_vlan10:    10.69.61
-  onboard_device_type:      Real
 
 mu2:
   ip:             10.69.61.110
@@ -60,7 +59,6 @@ mu2:
   ethernet_mac:   080027802629
   wifi_network:   20.1.1
   wifi_network_vlan10:    10.69.61
-  onboard_device_type:      Real
 
 mails:
   - id: sjtb1tenant1@gmail.com

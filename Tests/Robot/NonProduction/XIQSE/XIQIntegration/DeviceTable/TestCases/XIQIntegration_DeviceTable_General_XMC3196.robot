@@ -36,7 +36,7 @@ ${XIQSE_PROFILE}        ${xiqse.profile}
 ${XIQSE_NAME}           ${xiqse.name}
 ${XIQSE_MAKE}           ${xiqse.make}
 ${XIQSE_MODEL}          ${xiqse.model}
-${XIQSE_OS}             ${xiqse.os}
+${XIQSE_OS}             ${xiqse.xiq_os}
 ${XIQSE_VERSION}        ${xiqse.version}
 ${XIQSE_PRODUCT}        ${xiqse.product}
 
@@ -51,7 +51,7 @@ ${DUT1_MAC}             ${netelem1.mac}
 ${DUT1_NAME}            ${netelem1.name}
 ${DUT1_MODEL}           ${netelem1.model}
 ${DUT1_MAKE}            ${netelem1.make}
-${DUT1_OS}              ${netelem1.os}
+${DUT1_OS}              ${netelem1.xiq_os}
 
 #${DUT2_SERIAL}          ${ap1.serial}
 #${DUT2_IP}              ${ap1.ip}

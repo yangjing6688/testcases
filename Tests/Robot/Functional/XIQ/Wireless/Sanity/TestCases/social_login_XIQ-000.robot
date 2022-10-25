@@ -68,7 +68,7 @@ Pre Condition
     ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}    check_warning_msg=True
     should be equal as integers             ${LOGIN_STATUS}               1
 
-    ${DEVICE_STATUS}=       Get Device Status       device_mac=${ap1.serial}
+    ${DEVICE_STATUS}=       Get Device Status       device_serial=${ap1.serial}
     Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
 
     ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          ${NW_DEFAULT_POLICY}                 &{CONFIG_PUSH_OPEN_NW_01}
@@ -98,8 +98,8 @@ Test Suite Clean Up
     # 2022-08-31 new browser library removes need to logout and back in to keep variables in scope. Trial.  Remove if no issues are seen
     #${result}=    Login User       ${tenant_username}     ${tenant_password}
     Update Network Policy To AP    policy_name=${NW_DEFAULT_POLICY}    ap_serial=${ap1.serial}
-    Delete Network Polices         ${NW_POLICY_NAME1}
-    Delete ssids                   ${NW_POLICY_SSID1}
+    Delete Network Polices         ${NW_POLICY_NAME1}   ${NW_DEFAULT_POLICY}
+    Delete ssids                   ${NW_POLICY_SSID1}   ${NW_DEFAULT_SSID}
     Delete Captive Web Portals     ${CWP_NAME_FACEBOOK}
     Logout User
     Quit Browser

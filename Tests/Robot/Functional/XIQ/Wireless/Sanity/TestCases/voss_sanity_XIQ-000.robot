@@ -293,7 +293,7 @@ Onboard New Test Device
     ${search_result}=  Search Device    device_serial=${serial}
 
     # Onboard the device
-    ${ONBOARD_RESULT}=      Onboard Device          ${serial}         device_make=${DUT_TYPE}       location=${location}
+    ${ONBOARD_RESULT}=      onboard device quick        ${netelem1}
     Should Be Equal As Integers                     ${ONBOARD_RESULT}           1
 
     ${voss_result}=  Wait Until Device Online        ${serial}

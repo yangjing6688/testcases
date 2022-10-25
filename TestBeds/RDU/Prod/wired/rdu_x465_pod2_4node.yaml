@@ -4,6 +4,8 @@ lab:                      "RDU"
 netelem1:
   name:                     "x465_DUT1"
   model:                    "X46524MU"
+  mac:                      "000496BA02F0"
+  serial:                   "1922F-10346"
   ip:                       "10.69.50.190"
   term_server:              "10.69.50.250 2013"
   pdu_ip:                   "10.69.50.249"
@@ -27,6 +29,7 @@ netelem1:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x465_pod2_4node/rdu_x465_pod2_4node_netelem1.cfg"
@@ -105,6 +108,8 @@ netelem1:
 netelem2:
   name:                     "x465_DUT2"
   model:                    "X46524MU"
+  mac:                      "000496BA06CC"
+  serial:                   "1922F-10407"
   ip:                       "10.69.50.191"
   term_server:              "10.69.50.250 2014"
   pdu_ip:                   "10.69.50.249"
@@ -128,6 +133,7 @@ netelem2:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x465_pod2_4node/rdu_x465_pod2_4node_netelem2.cfg"
@@ -207,6 +213,8 @@ netelem2:
 netelem3:
   name:                     "x465_DUT3"
   model:                    "X46524MU"
+  mac:                      "000496BA059C"
+  serial:                   "1922F-10399"
   ip:                       "10.69.50.192"
   term_server:              "10.69.50.250 2015"
   pdu_ip:                   "10.69.50.249"
@@ -230,6 +238,7 @@ netelem3:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x465_pod2_4node/rdu_x465_pod2_4node_netelem3.cfg"
@@ -308,6 +317,8 @@ netelem3:
 netelem4:
   name:                     "x465_DUT4"
   model:                    "X46524MU"
+  mac:                      "000496BA0090"
+  serial:                   "1920F-10236"
   ip:                       "10.69.50.193"
   term_server:              "10.69.50.250 2016"
   pdu_ip:                   "10.69.50.249"
@@ -331,6 +342,7 @@ netelem4:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
   onboard_device_type:      "Real"
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_x465_pod2_4node/rdu_x465_pod2_4node_netelem4.cfg"
