@@ -15,15 +15,11 @@
 
 # Execution Command:
 # ------------------
-# robot  -v TOPO:topo.test.cp1r1.yaml -v TESTBED:SJ/Dev/xiq_sj_tb_sample.yaml New_API_7_XIQ-3323.robot
+# robot  -v TOPO:topo.test.cp1r1.yaml -v TESTBED:SJ/Dev/testbed_XIQ-3323-iBeacon.yaml New_API_7_XIQ-3323.robot
 #
 
 
 *** Variables ***
-
-# Currently enabling of iBeacon on network policies is not supported from XAPI.
-# Obtain the network policy Id with iBeacon enabled manually is a pre-step.
-${NETWORK_POLICY_ID}            4350801972114
 
 ${MAJOR_}                       -1
 ${MINOR_}                       -1
@@ -68,7 +64,7 @@ Pre Condition
     set suite variable          ${DEVICE_ID}
 
 #Assign device network policy
-    ${ASSIGN_NW_POLICY}=        xapi assign network policy to a device      ${DEVICE_ID}    ${NETWORK_POLICY_ID}
+    ${ASSIGN_NW_POLICY}=        xapi assign network policy to a device      ${DEVICE_ID}    ${ap1.nw_policy_id}
     Should Be Equal As Integers          ${ASSIGN_NW_POLICY}      1
 
 
