@@ -58,7 +58,7 @@ Pre Condition
 
 TC-18193: Assign Country Code to an AH-AP
     [Documentation]         Assign Country Code to an AP
-    [Tags]                  xim_tcxm_18193     development
+    [Tags]                  tcxm_18193     development
     Depends On              tcxm_16480
     ${RESP}=                xapi assign country code   ${DEVICE_ID}    ${ap1.country_code}
     Should Be Equal As Strings      '${RESP}'       '1'
