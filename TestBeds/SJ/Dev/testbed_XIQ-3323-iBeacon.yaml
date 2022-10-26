@@ -1,0 +1,28 @@
+ap1:
+  name:                     AP305C
+  connection_method:        "ssh"
+  username:                 admin
+  password:                 aerohive
+  default_password:         aerohive
+  serial:                   '03051907020094'
+  ip:                       10.234.152.99
+  port:                     22
+  mac:                      bcf3100048c0
+  platform:                 aerohive
+  model:                    AP305C
+  template:                 AP_305C-default-template
+  make:                     Extreme - Aerohive
+  location:                 Bangalore, EcoSpace-Bellandur, Floor-1
+  nw_policy:                test_nw_01
+  nw_policy_id:             4350801972114
+  location_name:            BLR1
+  building_name:            EcoSpace1
+  building_address:         ORR
+  floor_name:               floor2
+  console_ip:               10.234.221.5
+  console_port:             7016
+  server_name:              qa-redirector.extremecloudiq.com
+  capwap_production:        redirector.aerohive.com
+  cli_type:                 AH-AP
+  command_list:             no capwap client enable,   no capwap client server,   no capwap client server name,  no capwap client server backup name,   no capwap client default-server-name,  capwap client server name ${capwap_url},    capwap client server backup name ${capwap_url},     capwap client default-server-name ${capwap_url},    capwap client enable
+
