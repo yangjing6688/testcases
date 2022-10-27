@@ -8,9 +8,11 @@
 #      |________
 #      |        |
 #     Cloud     AP
+
 # Pre-config:
 # -----------
-#
+#Network policy with ibeacon enabled has to be manually created, and get the network policy id via list network policy. 
+#Provide the same in the testbed yaml file.
 #
 
 # Execution Command:
