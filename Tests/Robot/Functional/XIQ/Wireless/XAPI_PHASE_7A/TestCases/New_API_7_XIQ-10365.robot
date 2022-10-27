@@ -79,4 +79,4 @@ TC-10734: Delete a VLAN profile by Id
     [Documentation]         Delete a VLAN profile by Id
     [Tags]                  tcxm_10734     development
     ${RECODE}=  XAPI Delete VLAN profile  ${VLAN_PROFILE_ID}
-    should be equal as strings     '${RECODE}'     '200'
+    should be equal as strings     '${RECODE}'     '1'
