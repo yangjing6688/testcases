@@ -50,7 +50,7 @@ xapi Delete VLAN profile
     [Documentation]  delete VLAN profile by id
     [Arguments]  ${ID}
     log  ${ID}
-    ${RECODE}=  rest api delete v2  ${VLAN_PROFILE_URL}    ${ID}
+    ${RECODE}=  rest api delete  ${VLAN_PROFILE_URL}    ${ID}
     [Return]  ${RECODE}
 
 #####  Delete VLAN profiles By IDs  #####
