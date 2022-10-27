@@ -47,7 +47,7 @@ Pre Condition-User-Login
 
 TC-10730: List VLAN Profiles
     [Documentation]         List VLAN Profiles
-    [Tags]                  tcxm_10730 development
+    [Tags]                  tcxm_10730      development
     ${RESP}=  XAPI List VLAN Profiles
     ${count}=  get json values  ${RESP}  key=total_count
     should be true  ${count} > 0
