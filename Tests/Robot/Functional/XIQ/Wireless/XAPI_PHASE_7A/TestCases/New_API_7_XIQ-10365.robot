@@ -47,7 +47,7 @@ Pre Condition-User-Login
 
 TC-10730: List VLAN Profiles
     [Documentation]         List VLAN Profiles
-    [Tags]                  tcxm-10730 development
+    [Tags]                  tcxm_10730 development
     ${RESP}=  XAPI List VLAN Profiles
     ${count}=  get json values  ${RESP}  key=total_count
     should be true  ${count} > 0
@@ -63,7 +63,7 @@ TC-10732: Create VLAN profile
 
 TC-10733: Update a VLAN profile by id
     [Documentation]         Update a vlan profile by id
-    [Tags]                  tcxm-10733     development
+    [Tags]                  tcxm_10733     development
     ${RESP}= XAPI Update VLAN profile  ${VLAN_PROFILE_ID}   '{"name" : "vlan-auto-update", "default_vlan_id" : 2, "enable_classification" : false}'
     ${default_vlan_id}=  get json values  ${RESP}  key=default_vlan_id
     should be equal as strings  '${default_vlan_id}'   '2'
