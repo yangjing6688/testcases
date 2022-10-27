@@ -128,7 +128,26 @@ xapi wait until device online
     [Return]    ${DEVICE_CONNECTED_STATE}
 
 
-xapi assign country code
+xapi Get iBeacon Settings
+    [Documentation]     get iBeacon settings by device id
+    [Arguments]         ${ID}
+    log                 get device iBeacon URL : /devices/${ID}/ibeacon
+    ${RESP} =           rest api get     /devices/${ID}/ibeacon
+    log                 get device iBeacon resp: ${RESP}
+    [Return]            ${RESP}
+
+
+xapi Update iBeacon Settings
+    [Documentation]     update iBeacon settings by multiple device IDs
+    [Arguments]         ${DATA}
+    log                 update multiple iBeacon settings URL: /devices/ibeacon
+    log                 update multiple iBeacon settings DATA: ${DATA}
+    ${RESP} =           rest api put v1   /devices/ibeacon    ${DATA}
+    log                 update multiple iBeacon settings resp: ${RESP}
+    [Return]            ${RESP}
+
+
+xapi Assign country code
     [Documentation]  assign country code
     [Arguments]  ${DEVICE_ID}   ${COUNTRY_CODE}
     log     assigning device:${DEVICE_ID} country code:${COUNTRY_CODE}
