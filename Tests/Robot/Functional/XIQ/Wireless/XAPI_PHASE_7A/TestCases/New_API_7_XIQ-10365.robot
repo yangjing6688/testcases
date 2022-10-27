@@ -55,7 +55,7 @@ TC-10730: List VLAN Profiles
 TC-10732: Create VLAN profile
     [Documentation]         Create VLAN profile
     [Tags]                  tcxm_10732    development
-    ${RESP}= XAPI Create VLAN profile  '{"name" : "vlan-auto-create", "default_vlan_id" : "1", "enable_classification" : false}'
+    ${RESP}=  XAPI Create VLAN profile  '{"name" : "vlan-auto-create", "default_vlan_id" : "1", "enable_classification" : false}'
     ${VLAN_PROFILE_ID}=  get json values  ${RESP}  key=id
     log  ${VLAN_PROFILE_ID}
     should be true  ${VLAN_PROFILE_ID}>0
