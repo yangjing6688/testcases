@@ -46,7 +46,7 @@ ${WIN_2}                    ${WINDOWS10_2}
 ${VIEW_TYPE}                Default View
 
 # The following columns are unselected by default
-${COLUMN_1}                 Zone
+${COLUMN_1}                 Template
 ${COLUMN_2}                 Branch ID
 # The following columns are selected by default
 ${COLUMN_3}                 Uptime

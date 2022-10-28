@@ -90,7 +90,7 @@ class xiqTests():
         if res != 1:
             pytest.fail('Could not locate serial {}'.format(self.tb.dut1.serial))
 
-        connhost = self.xiq.xflowsmanageSwitch.capture_xiq_switch_connection_host()
+        connhost = self.xiq.login.get_switch_connection_host()
         if connhost == '':
             pytest.fail('Could not locate Switch Connection Host')
 
@@ -117,7 +117,7 @@ class xiqTests():
         if res != 1:
             pytest.fail('Could not locate serial {}'.format(self.tb.dut1.serial))
 
-        connhost = self.xiq.xflowsmanageSwitch.capture_xiq_switch_connection_host()
+        connhost = self.xiq.login.get_switch_connection_host()
         if connhost == '':
             pytest.fail('Could not locate Switch Connection Host')
 

@@ -75,7 +75,8 @@ Onboard Switch to XIQ and Confirm Success
     [Documentation]     Onboards the specified switch to XIQ and confirms it was added
     [Arguments]         ${serial}  ${make}  ${location}
 
-    ${onboard_result}=  Onboard Switch  ${serial}  ${make}  location=${location}
+
+    ${onboard_result}=  Onboard Device  ${serial}  ${make}  location=${location}
     Should Be Equal As Integers         ${onboard_result}  1
 
     Confirm Device Serial Present       ${serial}
