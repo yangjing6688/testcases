@@ -25,11 +25,12 @@ from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
 from ExtremeAutomation.Imports.XiqLibraryHelper import XiqLibraryHelper
 from extauto.common.Utils import Utils
 from extauto.common.AutoActions import AutoActions
+from extauto.common.Screen import Screen
 from ..Resources.SuiteUdks import SuiteUdk
 # Function to generate random word of 12 characters
 
 def random_word():
-    randword = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(12))
+    randword = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(5))
     return randword
 current_exos_port = 2
 # Global Vars
@@ -42,6 +43,8 @@ dut_location = ""
 nw_policy = "voippolicy_"+random_word()
 sw_template_name = "voip_switch_template_"+random_word()
 vr_name ="VR-Mgmt"
+local_portType = "testing_"+random_word()
+
 @mark.testbed_1_node
 class xiqTests():
 
@@ -153,6 +156,7 @@ class xiqTests():
             # The user can also get to the test bed yaml by using the config dictionary
             cls.tb = PytestConfigHelper(config)
             cls.cfg = config
+            cls.screen = Screen()
             cls.cfg['${OUTPUT DIR}'] = os.getcwd()
             cls.cfg['${TEST_NAME}'] = 'SETUP'
             cls.defaultLibrary = DefaultLibrary()
@@ -197,10 +201,11 @@ class xiqTests():
     @classmethod
     def teardown_class(cls):
         cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
+        cls.screen.save_screen_shot()
         cls.xiq.xflowsmanageLocation.delete_location_building_floor(org, location, building)
         cls.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(nw_policy)
         cls.xiq.xflowsconfigureCommonObjects.delete_switch_template(sw_template_name)
-        cls.xiq.xflowsconfigureCommonObjects.delete_port_type_profile("testing")
+        cls.xiq.xflowsconfigureCommonObjects.delete_port_type_profile(local_portType)
 
         cls.xiq.login.logout_user()
         cls.xiq.login.quit_browser()
@@ -210,12 +215,12 @@ class xiqTests():
         current_exos_port += 1
         return current_exos_port
 
-    @mark.p1
+
+    @mark.p2
     @mark.testbed_1_node
-    @mark.development
-    @mark.tcxm_19208
-    def test_Create_VOIP_Port_type_at_template_Level(self):
-        """Test Objective: Create VOIP Port type at template Level"""
+    @mark.tcxm_19507
+    def test_verify_voice_vlan_data_vlan_cannot_be_same(self):
+        """ Text Box validation - Voice and Data vlan should not be same	"""
         self.executionHelper.testSkipCheck()
 
         model_act = []
@@ -242,211 +247,19 @@ class xiqTests():
         self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
         sleep(3)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
+        sleep(10)
         self.xiq.xflowsmanageDevice360.create_voice_port(
-                port="2", port_type_name="testing", voice_vlan ="77", data_vlan="78", lldp_voice_options_flag=False,
+                port="2", port_type_name=local_portType, voice_vlan ="77", data_vlan="78", lldp_voice_options_flag=False,
                 cdp_voice_options_flag=False)
-        sleep(2)
+        sleep(10)
         self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
         self.xiq.xflowscommonNavigator.navigate_to_devices()
-
+        self.xiq.xflowsmanageDevices.refresh_devices_page()
+        # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
+        sleep(10)
         assign = self.xiq.xflowsmanageDevices.assign_network_policy_to_switch_mac(nw_policy,self.tb.dut1.mac)
         if not assign:
             pytest.fail("testcase has failed")
-    @mark.p1
-    @mark.testbed_1_node
-    @mark.tcxm_19433
-    @mark.development
-    def test_In_new_port_type_editor_Phone_with_Data_Port_should_present(self):
-        """In new port type editor - "Phone with a Data Port" should present"""
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowscommonDevices.revert_device_to_template_but_donot_update(self.tb.dut1.mac)
-        self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
-        sleep(5)
-        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
-        sleep(3)
-        self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name="testing",
-                                                                           lldp_voice_options_flag=False,
-                                                                           cdp_voice_options_flag=False)
-        sleep(2)
-        editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-                port_type_name="testing", lldp_voice_options_flag=True,
-                lldp_voice_vlan_dscp=10, lldp_voice_signaling_dscp=10,
-                lldp_advertisment_of_med_voice_vlan_flag=True,
-                lldp_advertisment_of_med_signaling_vlan_flag=True,
-                cdp_voice_options_flag=True)
-        if editPorttype !=1:
-            pytest.fail("the testcase has failed")
-        self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-    @mark.p1
-    @mark.testbed_1_node
-    @mark.tcxm_19476
-    @mark.development
-    def test_verify_template_voice_view_when_lldp_cdp_advertisements_are_disabled(self):
-        """Verify Template voice view - when lldp and cdp advertisements are disabled"""
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        sleep(20)
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        deltaconfigs = self.xiq.xflowsmanageDeviceConfig.get_device_config_audit_delta(self.tb.dut1.mac)
-        expectedCli = self.generate_cli_locally([0, 1, 2, 3, 4, 5, 8], 2, 77, 78, "VLAN_0077")
-        print(expectedCli)
-        for eachcli in expectedCli:
-            if eachcli not in deltaconfigs:
-                pytest.fail("Expected CLI: %s Not present in Delta"%( eachcli))
-
-    @mark.p1
-    @mark.testbed_1_node
-    @mark.tcxm_19489
-    @mark.development
-    def test_verify_template_voice_view_when_lldp_disabled_cdp_advertisements_are_enabled(self):
-        """ Verify Template voice view - when lldp advertisement - disabled & cdp advertisements - enabled"""
-
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
-        # sleep(10)
-        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
-        sleep(3)
-        self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name="testing",
-                                                                           lldp_voice_options_flag=False,
-                                                                           cdp_voice_options_flag=False)
-        sleep(2)
-        editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-                port_type_name="testing", lldp_voice_options_flag=False, cdp_voice_options_flag=True)
-        if editPorttype !=1:
-            pytest.fail("the testcase has failed")
-        self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        sleep(10)
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        deltaconfigs = self.xiq.xflowsmanageDeviceConfig.get_device_config_audit_delta(self.tb.dut1.mac)
-        expectedCli = self.generate_cli_locally([0, 1, 8, 9], 2, 77, 78, "VLAN_0077")
-        print("expected cli ==>>>>", expectedCli)
-        for eachcli in expectedCli:
-            print("expected cli ==>>>>", eachcli)
-            if eachcli not in deltaconfigs:
-                pytest.fail("Expected CLI: %s Not present in Delta"%( eachcli))
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-    @mark.p1
-    @mark.testbed_1_node
-    @mark.tcxm_19491
-    @mark.development
-    def test_verify_template_voice_view_when_lldp_enabled_med_voice_vlan_enabled_cdp_advertisements_are_disabled(self):
-        """ Verify Template voice view - when lldp advertisement - enabled and MED  Voice VLAN/DSCP	"""
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
-        # sleep(10)
-        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
-        sleep(3)
-        self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name="testing",
-                                                                           lldp_voice_options_flag=False,
-                                                                           cdp_voice_options_flag=False)
-        sleep(2)
-        editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name="testing",
-            lldp_voice_options_flag=True,voice_vlan=77,data_vlan=78, dot1_vlan_id_flag=True, lldp_advertisment_of_med_voice_vlan_flag=True,
-            lldp_voice_vlan_dscp=10, cdp_voice_options_flag=False)
-
-        sleep(10)
-        editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name="testing",
-            lldp_voice_options_flag=None, dot1_vlan_id_flag=False, lldp_advertisment_of_med_voice_vlan_flag=None,
-            cdp_voice_options_flag=None)
-        if editPorttype !=1:
-            pytest.fail("the testcase has failed")
-
-        self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        sleep(20)
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        deltaconfigs = self.xiq.xflowsmanageDeviceConfig.get_device_config_audit_delta(self.tb.dut1.mac)
-
-        expectedCli = self.generate_cli_locally([0, 1, 2, 6], 2, 77, 78, "VLAN_0077")
-        print("expectedCli==>",expectedCli)
-
-        for eachcli in expectedCli:
-            if eachcli not in deltaconfigs:
-                print("each cli -->",eachcli)
-                pytest.fail("Expected CLI: %s Not present in Delta", eachcli)
-            print("Expected CLI %s present in Delta"%(eachcli))
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-    @mark.p1
-    @mark.testbed_1_node
-    @mark.tcxm_19494
-    @mark.development
-    def test_verify_template_voice_view_when_lldp_disabled_cdp_advertisements_are_enabled_voice_vlan_enabled(self):
-        """ Verify Template voice view - cdp advertisements - enabled and Enable CDP advertisement of Voice VLAN"""
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
-        # sleep(10)
-        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
-        sleep(3)
-        self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-
-        #Resetting to disable
-        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name="testing", lldp_voice_options_flag=False,
-                                                            cdp_voice_options_flag=True)
-        sleep(10)
-        editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-                port_type_name="testing", cdp_voice_options_flag=None,cdp_advertisment_of_power_available_flag=False)
-
-        if editPorttype !=1:
-            pytest.fail("the testcase has failed")
-
-        self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        sleep(20)
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        deltaconfigs = self.xiq.xflowsmanageDeviceConfig.get_device_config_audit_delta(self.tb.dut1.mac)
-
-        expectedCli = self.generate_cli_locally([0, 1, 8], 2, 77, 78, "VLAN_0077")
-        print(expectedCli)
-
-        for eachcli in expectedCli:
-            if eachcli not in deltaconfigs:
-                pytest.fail("Expected CLI: %s Not present in Delta", eachcli)
-
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-
-    @mark.p2
-    @mark.testbed_1_node
-    @mark.tcxm_19434
-    @mark.development
-    def test_verify_voice_vlan_and_data_vlan_is_visible_on_selection_phone_with_a_data_port(self):
-        """ Check Voice VLAN and Data VLAN can be created"""
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
-        # sleep(10)
-        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
-        sleep(3)
-        self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name="testing",
-                                                                           lldp_voice_options_flag=False,
-                                                                           cdp_voice_options_flag=False)
-        sleep(2)
-        editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-                port_type_name="testing", data_vlan=30, voice_vlan=40,lldp_voice_options_flag=False,cdp_voice_options_flag=False)
-
-        if editPorttype !=1:
-            pytest.fail("the testcase has failed")
-
-        self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-
-    @mark.p2
-    @mark.testbed_1_node
-    @mark.tcxm_19507
-    @mark.development
-    def test_verify_voice_vlan_data_vlan_cannot_be_same(self):
-        """ Text Box validation - Voice and Data vlan should not be same	"""
-        self.executionHelper.testSkipCheck()
-
         exos_port = 6
         port_type_name = self.suite_udk.generate_port_type_name()
 
@@ -478,18 +291,20 @@ class xiqTests():
             if cancel_port_type_editor_button:
                 self.auto_actions.click(cancel_port_type_editor_button)
             self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
+
     @mark.p2
     @mark.testbed_1_node
     @mark.tcxm_19562
-    @mark.development
     def test_verify_switch_between_voip_and_access_port(self):
         """ Switching between VOIP and Access port and making sure that the CLI is updated right"""
         self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
         self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
         # sleep(10)
         self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
+        self.screen.save_screen_shot()
         sleep(3)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
+        sleep(10)
         existingport = self.xiq.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type("2","Access Port")
         if existingport !=1:
             pytest.fail("the testcase has failed")
@@ -511,30 +326,35 @@ class xiqTests():
         self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
         # sleep(10)
         self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
+        self.screen.save_screen_shot()
         sleep(3)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-        existingport = self.xiq.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type("2","testing")
+        sleep(10)
+        existingport = self.xiq.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type("2",local_portType)
         self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
         self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
+
     @mark.p2
     @mark.testbed_1_node
     @mark.tcxm_19579
-    @mark.development
     def test_verify_revert_of_lldp_advertisement_enabled_med_voice_enabled_disabled(self):
         """ Verify revert of lldp advertisement - when lldp advertisement - enabled and MED  Voice Signaling/DSCP is enabled and disabled	"""
         self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
         self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
         # sleep(10)
         self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
+        self.screen.save_screen_shot()
         sleep(3)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name="testing",
+        sleep(10)
+        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name=local_portType,
                                                                            lldp_voice_options_flag=False,
                                                                            cdp_voice_options_flag=False)
         sleep(2)
         editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-            port_type_name="testing", lldp_voice_options_flag=True,dot1_vlan_id_flag=True, data_vlan=78, voice_vlan=77,
+            port_type_name=local_portType, lldp_voice_options_flag=True,dot1_vlan_id_flag=True, data_vlan=78, voice_vlan=77,
             lldp_advertisment_of_med_voice_vlan_flag=True, lldp_voice_vlan_dscp=10,cdp_voice_options_flag=False)
+        sleep(5)
 
         if editPorttype != 1:
             pytest.fail("the testcase has failed")
@@ -556,14 +376,17 @@ class xiqTests():
         self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
         # sleep(10)
         self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
+        self.screen.save_screen_shot()
+
         sleep(3)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name="testing",
+        sleep(10)
+        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name=local_portType,
                                                                            lldp_voice_options_flag=False,
                                                                            cdp_voice_options_flag=False)
         sleep(2)
         editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-            port_type_name="testing", lldp_voice_options_flag=None, dot1_vlan_id_flag=None,
+            port_type_name=local_portType, lldp_voice_options_flag=None, dot1_vlan_id_flag=None,
             lldp_advertisment_of_med_voice_vlan_flag=False, cdp_voice_options_flag=None)
         self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
         self.xiq.xflowscommonNavigator.navigate_to_devices()
@@ -580,25 +403,28 @@ class xiqTests():
     @mark.p1
     @mark.testbed_1_node
     @mark.tcxm_19477
-    @mark.development
     def test_verify_template_voice_view_when_lldp_disabled_cdp_advertisements_are_disabled(self):
         """Verify Template voice view - when lldp advertisement - disabled & cdp advertisements - enabled"""
         self.xiq.xflowscommonNavigator.navigate_to_devices()
         self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
         sleep(10)
         self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
+        self.screen.save_screen_shot()
         sleep(3)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name="testing",
+        sleep(10)
+        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name=local_portType,
                                                                            lldp_voice_options_flag=False,
                                                                            cdp_voice_options_flag=False)
         sleep(2)
         editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-            port_type_name="testing", lldp_voice_options_flag=True, dot1_vlan_id_flag=True,
+            port_type_name=local_portType, lldp_voice_options_flag=True, dot1_vlan_id_flag=True,
             lldp_advertisment_of_med_voice_vlan_flag=True,lldp_advertisment_of_med_signaling_vlan_flag=True,
             lldp_voice_vlan_dscp=10,lldp_voice_signaling_dscp=10,cdp_voice_options_flag=None)
         if editPorttype !=1:
             pytest.fail("the testcase has failed")
+        sleep(5)
+
         self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
         self.xiq.xflowscommonNavigator.navigate_to_devices()
         sleep(10)
@@ -611,10 +437,10 @@ class xiqTests():
             if eachcli not in deltaconfigs:
                 pytest.fail("Expected CLI: %s Not present in Delta", eachcli)
         self.xiq.xflowscommonNavigator.navigate_to_devices()
+
     @mark.p2
     @mark.testbed_1_node
     @mark.tcxm_19490
-    @mark.development
     def test_verify_template_voice_view_when_lldp_advertisement_enabled_802_1_vlan_enabled(self):
         """Verify Template voice view - when lldp advertisement - enabled - 801.2 vlan - enabled"""
         self.xiq.xflowscommonNavigator.navigate_to_devices()
@@ -623,16 +449,18 @@ class xiqTests():
         self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
         sleep(3)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name="testing",
+        sleep(10)
+        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name=local_portType,
                                                                            lldp_voice_options_flag=False,
                                                                            cdp_voice_options_flag=False)
         sleep(2)
         editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-            port_type_name="testing", lldp_voice_options_flag=True, dot1_vlan_id_flag=True,
+            port_type_name=local_portType, lldp_voice_options_flag=True, dot1_vlan_id_flag=True,
             lldp_advertisment_of_med_voice_vlan_flag=False, lldp_advertisment_of_med_signaling_vlan_flag=False,
                  cdp_voice_options_flag=False)
         if editPorttype != 1:
             pytest.fail("the testcase has failed")
+        sleep(5)
         self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
         self.xiq.xflowscommonNavigator.navigate_to_devices()
         sleep(10)
@@ -645,27 +473,30 @@ class xiqTests():
             if eachcli not in deltaconfigs:
                 pytest.fail("Expected CLI: %s Not present in Delta", eachcli)
         self.xiq.xflowscommonNavigator.navigate_to_devices()
+
     @mark.p2
     @mark.testbed_1_node
     @mark.tcxm_19630
-    @mark.development
     def test_verify_revert_of_lldp_advertisement_disabled_cdp_enabled_disabled(self):
         """ Verify revert of CDP advertisement - Voice VLAN enabled/disabled	"""
         self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
+        self.xiq.xflowscommonDevices.revert_device_to_template_but_donot_update(self.tb.dut1.mac)
         self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
         # sleep(10)
         self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
         sleep(3)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name="testing",
+        sleep(10)
+        self.xiq.xflowsmanageDevice360.edit_voice_port_type(port_type_name=local_portType,
                                                                            lldp_voice_options_flag=False,
                                                                            cdp_voice_options_flag=False)
         sleep(2)
         editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-            port_type_name="testing", lldp_voice_options_flag=False, cdp_voice_options_flag=True)
+            port_type_name=local_portType, lldp_voice_options_flag=False, cdp_voice_options_flag=True)
 
         if editPorttype != 1:
             pytest.fail("the testcase has failed")
+        sleep(5)
 
         self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
         self.xiq.xflowscommonNavigator.navigate_to_devices()
@@ -686,9 +517,10 @@ class xiqTests():
         self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
         sleep(3)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-
+        sleep(10)
         editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-            port_type_name="testing",lldp_voice_options_flag=None, cdp_voice_options_flag=None,cdp_advertisment_of_voice_vlan_flag=False)
+            port_type_name=local_portType,lldp_voice_options_flag=None, cdp_voice_options_flag=None,cdp_advertisment_of_voice_vlan_flag=False)
+        sleep(5)
         self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
         self.xiq.xflowscommonNavigator.navigate_to_devices()
         self.xiq.xflowscommonDevices.refresh_devices_page()
@@ -700,10 +532,10 @@ class xiqTests():
             print("checking %s cli not present in Delta config"%(eachcli))
             if eachcli in deltaconfigs:
                 pytest.fail("UnExpected CLI: %s  present in Delta", eachcli)
+
     @mark.p2
     @mark.testbed_1_node
     @mark.tcxm_19681
-    @mark.development
     def test_verify_revert_of_lldp_cdp_advertisement_enabled_disabled(self):
         """ Verify revert of lldp and cdp advertisements are enabled/disabled"""
         self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
@@ -712,17 +544,18 @@ class xiqTests():
         self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
         sleep(3)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-
-        editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-            port_type_name="testing", lldp_voice_options_flag=False, cdp_voice_options_flag=False)
         sleep(10)
         editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-            port_type_name="testing", lldp_voice_options_flag=True, cdp_voice_options_flag=True,
+            port_type_name=local_portType, lldp_voice_options_flag=False, cdp_voice_options_flag=False)
+        sleep(10)
+        editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
+            port_type_name=local_portType, lldp_voice_options_flag=True, cdp_voice_options_flag=True,
             lldp_advertisment_of_med_voice_vlan_flag = True, lldp_advertisment_of_med_signaling_vlan_flag = True,
                 lldp_voice_vlan_dscp=10, lldp_voice_signaling_dscp=10)
 
         if editPorttype != 1:
             pytest.fail("the testcase has failed")
+        sleep(5)
 
         self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
         self.xiq.xflowscommonNavigator.navigate_to_devices()
@@ -743,9 +576,10 @@ class xiqTests():
         self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
         sleep(3)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-
+        sleep(10)
         editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-            port_type_name="testing",lldp_voice_options_flag=False, cdp_voice_options_flag=False)
+            port_type_name=local_portType,lldp_voice_options_flag=False, cdp_voice_options_flag=False)
+        sleep(5)
         self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
         self.xiq.xflowscommonNavigator.navigate_to_devices()
         self.xiq.xflowscommonDevices.refresh_devices_page()
@@ -757,10 +591,10 @@ class xiqTests():
             print("checking %s cli not present in Delta config"%(eachcli))
             if eachcli in deltaconfigs:
                 pytest.fail("UnExpected CLI: %s  present in Delta", eachcli)
+
     @mark.p2
     @mark.testbed_1_node
     @mark.tcxm_19688
-    @mark.development
     def test_verify_revert_of_lldp_advertisement_enabled_802_1_vlan_enabled_disabled(self):
         """ Device360 - Verify revert of lldp advertisement - when lldp advertisement is enabled - 801.2 vlan - enabled/disabled"""
         self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
@@ -812,319 +646,3 @@ class xiqTests():
             if eachcli in deltaconfigs:
                 pytest.fail("UnExpected CLI: %s present in Delta", eachcli)
 
-
-    @mark.p2
-    @mark.testbed_1_node
-    @mark.tcxm_19690
-    @mark.development
-    def test_lldp_cdp_advertisments_are_enabled(self):
-        """ Verify Device360 voice view - when lldp and cdp advertisements are enabled"""
-        self.executionHelper.testSkipCheck()
-
-        dut = self.dut
-        exos_port = "3"
-        port_type_name = self.suite_udk.generate_port_type_name()
-
-        self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
-
-        try:
-
-            self.suite_udk.go_to_device_360_port_config(dut)
-            assert self.xiq.xflowsmanageDevice360.create_voice_port(
-                port=exos_port, port_type_name=port_type_name, device_360=True) == 1, \
-                f"Failed to create a voice port type named {port_type_name}"
-
-            self.suite_udk.save_device_360_port_config()
-            self.suite_udk.verify_port_type_is_created_in_device360(port=exos_port, port_type_name=port_type_name)
-
-        finally:
-            self.suite_udk.revert_port_configuration(exos_port, port_type_name)
-            self.suite_udk.save_device_360_port_config()
-            self.xiq.xflowsmanageDevice360.close_device360_window()
-            self.xiq.xflowsconfigureCommonObjects.delete_port_type_profile(port_type_name)
-            self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
-
-
-
-    @mark.testbed_1_node
-    @mark.development
-    @mark.tcxm_19697
-    @mark.p1
-    def test_verify_revert_of_cdp_advertisment_voice_vlan_enabled_disabled(self):
-        """ Verify Device360 voice view - cdp advertisements - enabled and Enable CDP advertisement of Voice VLAN	"""
-        self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
-        dut = self.dut
-        self.suite_udk.go_to_device_360_port_config(dut)
-
-        sleep(2)
-
-        self.xiq.xflowsmanageDevice360.edit_voip_in_d360("2", lldp_voice_options_flag=False, cdp_voice_options_flag=True,
-                                                         cdp_advertisment_of_power_available_flag=False,
-                                                         en_cdp_adv_of_voice_vlan_checkbox_name=True
-                                                         )
-        self.suite_udk.save_device_360_port_config()
-        self.xiq.xflowsmanageDevice360.close_device360_window()
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        sleep(10)
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        deltaconfigs = self.xiq.xflowsmanageDeviceConfig.get_device_config_audit_delta(self.tb.dut1.mac)
-        expectedCli = self.generate_cli_locally([0, 1, 8], 2, 77, 78, "VLAN_0077")
-        print(expectedCli)
-        sleep(3)
-        for eachcli in expectedCli:
-            if eachcli not in deltaconfigs:
-                pytest.fail("Expected CLI: %s Not present in Delta", eachcli)
-
-        self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
-        self.suite_udk.go_to_device_360_port_config(dut)
-        self.xiq.xflowsmanageDevice360.edit_voip_in_d360("2", cdp_voice_options_flag=True,
-                                                         en_cdp_adv_of_voice_vlan_checkbox_name=False
-                                                         )
-
-        self.suite_udk.save_device_360_port_config()
-        self.xiq.xflowsmanageDevice360.close_device360_window()
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        sleep(10)
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        deltaconfigs = self.xiq.xflowsmanageDeviceConfig.get_device_config_audit_delta(self.tb.dut1.mac)
-        expectedCli = self.suite_udk.generate_cli_locally([9], 2, 77, 78, "VLAN_0077")
-        print(expectedCli)
-
-        for eachcli in expectedCli:
-            if eachcli in deltaconfigs:
-                pytest.fail("UnExpected CLI: %s present in Delta", eachcli)
-    @mark.development
-    @mark.testbed_1_node
-    @mark.tcxm_19699
-    @mark.p1
-    def test_verify_lldp_advertisment_disabled_cdp_advertisment_enabled(self):
-        """ Verify Device360 Summary view - when lldp advertisement - disabled & cdp advertisements - enabled	"""
-        self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
-        dut = self.dut
-        self.suite_udk.go_to_device_360_port_config(dut)
-        self.xiq.xflowsmanageDevice360.edit_voip_in_d360("2", lldp_voice_options_flag=False,
-                                                         cdp_voice_options_flag=False)
-        sleep(2)
-        self.xiq.xflowsmanageDevice360.edit_voip_in_d360("2", lldp_voice_options_flag=False,
-                                                         cdp_voice_options_flag=True,
-                                                         cdp_advertisment_of_power_available_flag=True,
-                                                         en_cdp_adv_of_voice_vlan_checkbox_name=True
-                                                         )
-        self.suite_udk.save_device_360_port_config()
-        self.xiq.xflowsmanageDevice360.close_device360_window()
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        sleep(10)
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        deltaconfigs = self.xiq.xflowsmanageDeviceConfig.get_device_config_audit_delta(self.tb.dut1.mac)
-        expectedCli = self.generate_cli_locally([0, 1, 8, 9], 2, 77, 78, "VLAN_0077")
-        print(expectedCli)
-        sleep(50)
-        for eachcli in expectedCli:
-            if eachcli not in deltaconfigs:
-                pytest.fail("Expected CLI: %s Not present in Delta", eachcli)
-    @mark.testbed_1_node
-    @mark.development
-    @mark.tcxm_19705
-    @mark.p1
-    def test_verify_voice_vlan_data_vlan_visible_on_voip_port(self):
-        """ "Voice Vlan" and "Data Vlan" should be visible on selection of "Phone with a Data Port"	"""
-        self.executionHelper.testSkipCheck()
-
-        dut = self.dut
-        exos_port = str(self.inc_port())
-        port_type_name = self.suite_udk.generate_port_type_name()
-
-        self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
-
-        try:
-            self.suite_udk.go_to_device_360_port_config(dut)
-
-            self.suite_udk.open_new_port_type_editor(exos_port, device_360=True)
-            self.suite_udk.configure_port_name_usage_tab(port_type_name=port_type_name)
-            self.suite_udk.go_to_next_editor_tab()
-
-            default_voice_vlan = self.suite_udk.get_voice_vlan()
-            assert default_voice_vlan.get_attribute("value") == "", "Expected voice vlan to be empty by default"
-            default_data_vlan = self.suite_udk.get_data_vlan()
-            assert default_data_vlan.get_attribute("value") == "1", "Expected data vlan to be 1 by default"
-
-            self.suite_udk.set_voice_vlan(voice_vlan="100")
-            self.suite_udk.set_data_vlan(data_vlan="2")
-
-            default_voice_vlan = self.suite_udk.get_voice_vlan()
-            assert default_voice_vlan.get_attribute("value") == "100", "Expected voice vlan to be 100"
-            default_data_vlan = self.suite_udk.get_data_vlan()
-            assert default_data_vlan.get_attribute("value") == "2", "Expected data vlan to be 2"
-
-
-        finally:
-            cancel_port_type_editor_button = self.xiq.xflowsmanageDevice360.get_cancel_port_type_editor()
-            if cancel_port_type_editor_button:
-                self.auto_actions.click(cancel_port_type_editor_button)
-            self.xiq.xflowsmanageDevice360.close_device360_window()
-    @mark.p1
-    @mark.testbed_1_node
-    @mark.tcxm_19735
-    @mark.development
-    def test_verify_voip_enabled_at_template_level_disabled_at_device_level(self):
-        """ Hierarchical configuration - VOIP lldp enabled at Template level and disabled at device level	"""
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        dut = self.dut
-
-        self.xiq.xflowscommonDevices.revert_device_to_template_but_donot_update(self.tb.dut1.mac)
-
-        self.suite_udk.go_to_device_360_port_config(dut)
-        self.xiq.xflowsmanageDevice360.d360_assign_port_type("Access Port", "2")
-        sleep(5)
-        print("second check")
-        self.xiq.xflowsmanageDevice360.d360_assign_port_type("testing", "2")
-        sleep(5)
-        self.suite_udk.save_device_360_port_config()
-        sleep(5)
-        self.xiq.xflowsmanageDevice360.close_device360_window()
-        sleep(5)
-        self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
-        sleep(10)
-
-        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
-        sleep(3)
-        self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-        editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-            port_type_name="testing", lldp_voice_options_flag=True, dot1_vlan_id_flag=True,
-            lldp_advertisment_of_med_voice_vlan_flag=True,lldp_advertisment_of_med_signaling_vlan_flag=True,
-            lldp_voice_vlan_dscp=10,lldp_voice_signaling_dscp=10,cdp_voice_options_flag=None)
-        if editPorttype !=1:
-            pytest.fail("the testcase has failed")
-        self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        sleep(10)
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        self.suite_udk.go_to_device_360_port_config(dut)
-
-        self.xiq.xflowsmanageDevice360.edit_voip_in_d360("2", lldp_voice_options_flag=False,
-                                                         cdp_voice_options_flag=False)
-        self.suite_udk.save_device_360_port_config()
-        sleep(5)
-        self.xiq.xflowsmanageDevice360.close_device360_window()
-        sleep(5)
-        deltaconfigs = self.xiq.xflowsmanageDeviceConfig.get_device_config_audit_delta(self.tb.dut1.mac)
-        expectedCli = self.generate_cli_locally([2, 3, 4, 5, 6, 7], 2, 77, 78, "VLAN_0077")
-        print("expected cli ==>>>>", expectedCli)
-        for eachcli in expectedCli:
-            print("unexpected cli ==>>>>", eachcli)
-            if eachcli in deltaconfigs:
-                pytest.fail("unExpected CLI: %s Not present in Delta", eachcli)
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-
-    @mark.p1
-    @mark.testbed_1_node
-    @mark.tcxm_19736
-    @mark.development
-    def test_verify_cdp_enabled_at_template_level_disabled_at_device_level(self):
-        """ Hierarchical configuration - VOIP CDP enabled at Template level and disabled at device level	"""
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        dut = self.dut
-        self.suite_udk.go_to_device_360_port_config(dut)
-        self.xiq.xflowsmanageDevice360.d360_assign_port_type("Access Port", "2")
-        sleep(5)
-        self.xiq.xflowsmanageDevice360.d360_assign_port_type("testing", "2")
-        sleep(2)
-        self.suite_udk.save_device_360_port_config()
-        sleep(2)
-        self.xiq.xflowsmanageDevice360.close_device360_window()
-        sleep(2)
-        self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
-        sleep(10)
-
-        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
-        sleep(3)
-        self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-        editPorttype = self.xiq.xflowsmanageDevice360.edit_voice_port_type(
-            port_type_name="testing",
-            lldp_voice_options_flag=False,
-            dot1_vlan_id_flag=None,
-            lldp_advertisment_of_med_voice_vlan_flag=None,
-            lldp_advertisment_of_med_signaling_vlan_flag=None,
-            lldp_voice_vlan_dscp=None,lldp_voice_signaling_dscp=None,
-            cdp_voice_options_flag=True,
-            cdp_advertisment_of_voice_vlan_flag=True,
-            cdp_advertisment_of_power_available_flag=True
-        )
-        if editPorttype !=1:
-            pytest.fail("the testcase has failed")
-        self.xiq.xflowsconfigureSwitchTemplate.switch_template_save()
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        sleep(10)
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        self.suite_udk.go_to_device_360_port_config(dut)
-
-        self.xiq.xflowsmanageDevice360.edit_voip_in_d360("2", lldp_voice_options_flag=None,
-                                                         cdp_voice_options_flag=False)
-        self.suite_udk.save_device_360_port_config()
-        sleep(5)
-        self.xiq.xflowsmanageDevice360.close_device360_window()
-        sleep(5)
-        deltaconfigs = self.xiq.xflowsmanageDeviceConfig.get_device_config_audit_delta(self.tb.dut1.mac)
-        expectedCli = self.generate_cli_locally([8,9], 2, 77, 78, "VLAN_0077")
-        print("expected cli ==>>>>", expectedCli)
-        for eachcli in expectedCli:
-            print("unexpected cli ==>>>>", eachcli)
-            if eachcli in deltaconfigs:
-                pytest.fail("unExpected CLI: %s Not present in Delta", eachcli)
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-
-    @mark.testbed_1_node
-    @mark.development
-    @mark.tcxm_19695
-    @mark.p1
-    def test_verify_revert_of_lldp_advertisement_enabled_med_voice_signalling_dscp_enabled_disabled(self):
-        """ Device 360 Verify revert of lldp advertisement - when lldp advertisement - enabled and MED  Voice Signaling/DSCP is enabled and disabled"""
-        self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
-        dut = self.dut
-        self.suite_udk.go_to_device_360_port_config(dut)
-        self.xiq.xflowsmanageDevice360.edit_voip_in_d360("2", lldp_voice_options_flag=False,
-                                                         cdp_voice_options_flag=False )
-        sleep(2)
-
-        self.xiq.xflowsmanageDevice360.edit_voip_in_d360("2", lldp_voice_options_flag=True, cdp_voice_options_flag=False,
-                                                         dot1_vlan_id_flag=False,lldp_voice_vlan_dscp=False,
-                                                         lldp_voice_signaling_dscp=10,
-                                                         lldp_advertisment_of_med_signaling_vlan_flag =True,
-                                                         cdp_advertisment_of_power_available_flag=None,
-                                                         en_cdp_adv_of_voice_vlan_checkbox_name=None
-                                                         )
-
-        self.suite_udk.save_device_360_port_config()
-        self.xiq.xflowsmanageDevice360.close_device360_window()
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        sleep(10)
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        deltaconfigs = self.xiq.xflowsmanageDeviceConfig.get_device_config_audit_delta(self.tb.dut1.mac)
-        expectedCli = self.suite_udk.generate_cli_locally([0, 1, 7], 2, 77, 78, "VLAN_0077")
-        print(expectedCli)
-
-        for eachcli in expectedCli:
-            if eachcli not in deltaconfigs:
-                pytest.fail("Expected CLI: %s Not present in Delta", eachcli)
-
-        self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
-        self.suite_udk.go_to_device_360_port_config(dut)
-        self.xiq.xflowsmanageDevice360.edit_voip_in_d360("2", lldp_voice_options_flag=False)
-
-        self.suite_udk.save_device_360_port_config()
-        self.xiq.xflowsmanageDevice360.close_device360_window()
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        sleep(10)
-        self.xiq.xflowscommonDevices.refresh_devices_page()
-        deltaconfigs = self.xiq.xflowsmanageDeviceConfig.get_device_config_audit_delta(self.tb.dut1.mac)
-        expectedCli = self.suite_udk.generate_cli_locally([7], 2, 77, 78, "VLAN_0077")
-        print(expectedCli)
-
-        for eachcli in expectedCli:
-            if eachcli in deltaconfigs:
-                pytest.fail("UnExpected CLI: %s present in Delta", eachcli)
