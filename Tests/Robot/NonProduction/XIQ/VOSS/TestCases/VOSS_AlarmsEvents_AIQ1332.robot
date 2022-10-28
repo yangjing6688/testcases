@@ -52,7 +52,9 @@ Test1: Confirm Link Down Event
 
     Refresh Devices Page
     Navigate to Device360 Page with MAC     ${DUT_MAC}
+    Device360 Refresh Page
     Device360 Select Events View
+    Device360 Refresh Page
 #    Confirm Event Exists                    Link down detected on interface ${DUT_TEST_PORT}  ${TEST_TIME}
     Log To Console                          NOTE: ignoring time stamp (${TEST_TIME}) until APC-41429 is fixed
     Confirm Event Exists                    Link down detected on interface ${DUT_TEST_PORT}  ${EMPTY}
@@ -67,7 +69,9 @@ Test2: Confirm Link Up Event
 
     Refresh Devices Page
     Navigate to Device360 Page with MAC     ${DUT_MAC}
+    Device360 Refresh Page
     Device360 Select Events View
+    Device360 Refresh Page
 #    Confirm Event Exists                    Link up detected on interface ${DUT_TEST_PORT}  ${TEST_TIME}
     Log To Console                          NOTE: ignoring time stamp (${TEST_TIME}) until APC-41429 is fixed
     Confirm Event Exists                    Link up detected on interface ${DUT_TEST_PORT}  ${EMPTY}
@@ -82,7 +86,9 @@ Test3: Confirm Device Disconnected Alarm
 
     Refresh Devices Page
     Navigate to Device360 Page with MAC     ${DUT_MAC}
+    Device360 Refresh Page
     Device360 Select Alarms View
+    Device360 Refresh Page
 #    Confirm Alarm Exists                    Device Disconnected  ${TEST_TIME}
     Log To Console                          NOTE: ignoring time stamp (${TEST_TIME}) until APC-41429 is fixed
     Confirm Alarm Exists                    Device Disconnected  ${EMPTY}
@@ -95,7 +101,6 @@ Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ and sets up the elements necessary to complete this test suite
 
     Log Into XIQ and Confirm Success            ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
-    Change XIQ Account Time Zone                (GMT) UTC
 
     Configure Test Device                       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}
 

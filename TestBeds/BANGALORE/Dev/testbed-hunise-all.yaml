@@ -1,13 +1,13 @@
 ap1:
   name:                     AP460C
   connection_method:        "telnet"
-  ip:                       10.234.213.1
-  port:                     7028
+  ip:                       10.234.153.95
+  port:                     22
   username:                 admin
-  password:                 aerohive
+  password:                 Aerohive123
   serial:                   '24602005230062'
-  console_ip:               10.234.213.1
-  console_port:             7028
+  console_ip:               10.234.221.5
+  console_port:             "7022"
   mac:                      BCF310651580
   os:                       Cloud IQ Engine
   platform:                 aerohive
@@ -16,19 +16,20 @@ ap1:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  cli_type:                 "AH-AP"
   onboard_device_type:      Real
 
 
 ap2:
   name:                     AP4000U-WW
   connection_method:        "telnet"
-  ip:                       10.234.221.5
-  port:                     7028
+  ip:                       10.234.153.98
+  port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '64002107010069'
   console_ip:               10.234.221.5
-  console_port:             7028
+  console_port:             "7028"
   mac:                      B027CF6EF600
   os:                       Cloud IQ Engine
   platform:                 aerohive
@@ -37,19 +38,20 @@ ap2:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  cli_type:                 "AH-AP"
   onboard_device_type:      Real
 
 
 ap3:
   name:                     AP305C
   connection_method:        "telnet"
-  ip:                       10.234.221.5
-  port:                     7026
+  ip:                       172.168.17.1
+  port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '03051907020068'
   console_ip:               10.234.221.5
-  console_port:             7026
+  console_port:             "7026"
   mac:                      BCF310004240
   os:                       Cloud IQ Engine
   platform:                 aerohive
@@ -58,19 +60,20 @@ ap3:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  cli_type:                 "AH-AP"
   onboard_device_type:      Real
 
 
 ap4:
   name:                     AP305CX
   connection_method:        "telnet"
-  ip:                       10.234.221.5
-  port:                     7027
+  ip:                       10.234.153.93
+  port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '13051907040023'
   console_ip:               10.234.221.5
-  console_port:             7027
+  console_port:             "7027"
   mac:                      BCF310005140
   os:                       Cloud IQ Engine
   platform:                 aerohive
@@ -79,19 +82,20 @@ ap4:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  cli_type:                 "AH-AP"
   onboard_device_type:      Real
 
 
 ap5:
   name:                     AP302W_DUT1
   connection_method:        "telnet"
-  ip:                       10.234.221.5
-  port:                     7025
+  ip:                       10.234.153.94
+  port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '03022012080071'
   console_ip:               10.234.221.5
-  console_port:             7025
+  console_port:             "7025"
   mac:                      40882F57C540
   os:                       Cloud IQ Engine
   platform:                 aerohive
@@ -100,19 +104,20 @@ ap5:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  cli_type:                 "AH-AP"
   onboard_device_type:      Real
 
 
 ap6:
   name:                     AP302W_DUT2
   connection_method:        "telnet"
-  ip:                       10.234.221.5
-  port:                     7024
+  ip:                       10.234.153.92
+  port:                     22
   username:                 admin
   password:                 symbol
   serial:                   '03022012080216'
   console_ip:               10.234.221.5
-  console_port:             7024
+  console_port:             "7024"
   mac:                      40882F57E980
   os:                       Cloud IQ Engine
   platform:                 aerohive
@@ -121,19 +126,20 @@ ap6:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  cli_type:                 "WING"
   onboard_device_type:      Real
 
 
 ap7:
   name:                     AP302W_DUT3
   connection_method:        "telnet"
-  ip:                       10.234.221.5
-  port:                     7023
+  ip:                       10.234.153.99
+  port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '03022012080115'
   console_ip:               10.234.221.5
-  console_port:             7023
+  console_port:             "7023"
   mac:                      40882F57D040
   os:                       Cloud IQ Engine
   platform:                 aerohive
@@ -142,6 +148,7 @@ ap7:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  cli_type:                 "AH-AP"
   onboard_device_type:      Real
 
 
@@ -169,13 +176,13 @@ ap8:
 ap9:
   name:                     AP550
   connection_method:        "telnet"
-  ip:                       10.234.221.5
-  port:                     7020
+  ip:                       10.234.153.100
+  port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '05501808101509'
   console_ip:               10.234.221.5
-  console_port:             7020
+  console_port:             "7020"
   mac:                      B87CF26B93C0
   os:                       Cloud IQ Engine
   platform:                 aerohive
@@ -184,6 +191,7 @@ ap9:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
+  cli_type:                 "AH-AP"
   onboard_device_type:      Real
 
 
@@ -281,6 +289,8 @@ sw2:
   password:                 rwa
   platform:                 VOSS
   connection_method:        "telnet"
+  ip:                       10.234.153.12
+  port:                     22
   console_ip:               10.234.221.5
   console_port:             7003
   test_port:

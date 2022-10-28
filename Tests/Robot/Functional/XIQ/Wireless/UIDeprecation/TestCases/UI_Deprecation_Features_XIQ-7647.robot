@@ -77,7 +77,10 @@ TCXM-21577: Unhide Country Code - AP templates
     ${assign_np}=                     Assign Network Policy To All Devices    ${xiq.nw_policy_name}
     should be equal as integers       ${assign_np}                   1
 
-    ${connect_cloud}=                 Configure Device To Connect To Cloud     ${ap1.cli_type}   ${ap1.ip}       ${ap1.port}     ${ap1.username}      ${ap1.password}       ${xiq.capwap_url}
+    ${AP_SPAWN}=                      Open Spawn                               ${ap1.ip}                       ${ap1.port}           ${ap1.username}        ${ap1.password}     ${ap1.cli_type}
+    Should not be equal as Strings    '${AP_SPAWN}'                 '-1'
+
+    ${connect_cloud}=                 Configure Device To Connect To Cloud     ${ap1.cli_type}                 ${xiq.capwap_url}     ${AP_SPAWN}
     should be equal as integers       ${connect_cloud}                1
 
     ${wait_till_online}=              Wait Until Device Online                 ${ap1.serial}

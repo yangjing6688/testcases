@@ -500,18 +500,13 @@ XIQSE Confirm Devices Not Present in Discovered Table
 XIQSE Confirm User Informed License Limit Exceeded
     [Documentation]     Confirms the user is informed that the device license limit has been exceeded
 
-    Run Keyword If  '23.' in '${XIQSE_OS_VERSION}'
-    ...  Confirm Operations Panel Message For Type  Device Added  No licenses available
-# The banner message closes too fast for automation to check so we will check the operations panel instead
-#    ...      Confirm Licensed Device Limit Exceeded Message Displayed
-#    ...      AND
-#    ...      Close Licensed Device Limit Exceeded Message
-
-    Run Keyword If  '23.' not in '${XIQSE_OS_VERSION}'
+    Run Keyword If  '21.' in '${XIQSE_OS_VERSION}'
     ...  Run Keywords
     ...      Confirm License Limit Warning Message Displayed
     ...      AND
     ...      Close License Limit Warning Message
+    ...      ELSE
+    ...      Confirm Operations Panel Message For Type  Device Added  No licenses available
 
 XIQSE Confirm Banner Message Reports License Limit Exceeded
     [Documentation]     Confirms a banner message is displayed stating the license limit has been exceeded and closes it

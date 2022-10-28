@@ -68,13 +68,13 @@ TCCS-7292_Step1: Onboard EXOS Switch on XIQ
 
     [Tags]                  production      tccs_7292       tccs_7292_step1
 
-    ${ONBOARD_RESULT}=                  Onboard Switch      ${netelem1.serial}       ${netelem1.make}    location=${LOCATION}
+    ${ONBOARD_RESULT}=                   onboard device quick        ${netelem1}
     Should Be Equal As Strings          ${ONBOARD_RESULT}       1
 
     ${SEARCH_SWITCH}=       Search Device       device_serial=${netelem1.serial}
     Should Be Equal As Strings             ${SEARCH_SWITCH}       1
 
-    ${SWITCH_CONNECTION_HOST}=      Capture XIQ Switch Connection Host
+    ${SWITCH_CONNECTION_HOST}=      Get Switch Connection Host
     Should Not Be Equal As Strings             ${SWITCH_CONNECTION_HOST}       ${EMPTY}
 
     ${SW_SPAWN}=            Open Spawn          ${netelem1.ip}       ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}

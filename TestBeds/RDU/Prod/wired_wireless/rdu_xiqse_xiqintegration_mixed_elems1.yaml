@@ -49,7 +49,7 @@ netelem2:
   image_family:             "summitx"
   template:                 "X440-G2-48p-10G4-default-template"
   make:                     "EXOS"
-  model:                    "X440G2-48p-10G4"
+  model:                    "X440-G2-48p-10G4"
   product:                  "X440_G2_48p_10_G4"
   function:                 "Switch"
   ccg:                      "Model_EXOSSWITCH"
@@ -99,7 +99,7 @@ netelem3:
       new: "8.6.1.1"
   iqagent_version:
     old: "0.5.13"
-    new: "0.5.38"
+    new: "0.5.55"
   vr:                       "VR-Default"
 
 netelem4:
@@ -195,7 +195,7 @@ aerohive_sw1:
   model:                    "SR2348P"
   device_template:          "SR_2348P-default-template"
   xiq_os:
-  cli_type:                 "AH-XR"
+  cli_type:                 "AH-FASTPATH"
   network_policy:
   username:                 "admin"
   password:                 "Aerohive123"
