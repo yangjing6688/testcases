@@ -15,16 +15,16 @@ Variables   Environments/Config/waits.yaml
 
 
 #####  Get default device password Keywords   #####
-Get Default Device Password
-    [Documentation]  get the default device password
+xapi get default device password
+    [Documentation]  get the default device password in global settings
     ${RESP}=  rest api get  ${DEVICE_PASSWORD_URI}
     ${PASSWORD}=  get json values  ${RESP}  key=password
     log  ${PASSWORD}
     [Return]  ${PASSWORD}
 
 #####  Change default device password Keywords   #####
-Change Default Device Password
-    [Documentation]  change device password
+xapi change default device password
+    [Documentation]  change default device password in global settings
     [Arguments]  ${PASSWORD}
     ${RESPCODE}=  rest api put v1  ${DEVICE_PASSWORD_URI}    ${PASSWORD}
     [Return]  ${RESPCODE}
