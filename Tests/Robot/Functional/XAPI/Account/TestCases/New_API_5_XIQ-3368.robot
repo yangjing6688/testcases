@@ -43,7 +43,7 @@ Variables   Environments/Config/waits.yaml
 
 Suite Setup      Pre Condition
 
-
+*** Keywords ***
 Pre Condition
     ${ACCESS_TOKEN}=        generate_access_token    ${tenant_username}      ${tenant_password}      login
     set suite variable     ${ACCESS_TOKEN}
