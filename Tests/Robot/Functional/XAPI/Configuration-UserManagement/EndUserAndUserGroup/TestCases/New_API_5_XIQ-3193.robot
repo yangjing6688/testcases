@@ -2,6 +2,10 @@
 # Date          : 02 JUNE 2022
 # Description   : XAPI - PPSK Usergroups and PPSK Users
 
+# Moved to XAPI Location and modified by Subanesh Amarasekaran(samarasekaran)
+# Date : 11 NOVEMBER 2022
+# Separated the XAPI keywords and moved into Librarires - Robot/Libraries/XAPI/XAPI-Account-Keywords.robot
+
 # Topology:
 # ---------
 #    ScriptHost
@@ -41,13 +45,10 @@ Force Tags  testbed_none
 Library     common/TestFlow.py
 Library     common/Xapi.py
 Library     common/Utils.py
-Library     xiq/flows/common/Login.py
-Library     xiq/flows/configure/CommonObjects.py
 
 
 Resource    Tests/Robot/Libraries/XAPI/XAPI-Configuration-UserManagement-Keywords.robot
 
-Variables   Environments/Config/waits.yaml
 Variables   Environments/${TOPO}
 
 Suite Setup      Pre Condition
