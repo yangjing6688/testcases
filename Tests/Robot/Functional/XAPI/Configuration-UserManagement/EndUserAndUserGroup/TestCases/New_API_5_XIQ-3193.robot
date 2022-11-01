@@ -69,7 +69,6 @@ Pre Condition
 
 TCXM-6677: Create PPSK User Group
     [Documentation]         create ppsk usergroup
-
     [Tags]                  tcxm_6677     development
 
     ${UG_ID}=  xapi create ppsk user group  ${PPSK_USERGROUP}
@@ -77,9 +76,8 @@ TCXM-6677: Create PPSK User Group
     should be true  ${UG_ID}>0
     set suite variable      ${UG_ID}
 
-TCXM-6676: PPSK-Get list of PPSK Gser Groups
+TCXM-6676: PPSK-Get list of PPSK User Groups
     [Documentation]         fetch ppsk usergroups
-
     [Tags]                  tcxm_6676     development
 
     ${PPSK_USER_GROUPS_COUNT}=  xapi get ppsk usergroups
@@ -98,8 +96,7 @@ TCXM-16308: Create PPSK User for a particular User Group with EMAIL and SMS
     set suite variable      ${PPSK_USER_ID}
 
 TCXM-16319: PPSK-Get list of PPSK Users
-    [Documentation]         PPSK-Get list of PPSK users
-    
+    [Documentation]         PPSK-Get list of PPSK users    
     [Tags]                  tcxm_16319       development
 
     ${PPSK_USERS_COUNT}=  xapi get ppsk users   ${PPSK_USERNAME}
@@ -109,7 +106,6 @@ TCXM-16319: PPSK-Get list of PPSK Users
 
 Test Suite Clean Up
     [Documentation]    Delete PPSK User Group(s) and PPSK User(s)
-
     [Tags]           tcxm_16319	development  cleanup
 
     [Teardown]
