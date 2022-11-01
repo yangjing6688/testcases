@@ -8,8 +8,6 @@ Library     common/Cli.py
 Library     common/Utils.py
 
 
-Variables   Environments/Config/waits.yaml
-
 
 *** Keywords ***
 
