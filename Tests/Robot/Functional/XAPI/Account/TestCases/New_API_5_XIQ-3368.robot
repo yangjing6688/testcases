@@ -34,28 +34,13 @@ Library     common/Utils.py
 Library     xiq/flows/common/Login.py
 Library     xiq/flows/configure/CommonObjects.py
 
-
-Resource    ../../XAPI_PHASE_5A/Resources/AllResources.robot
+Resource    Tests/Robot/Libraries/XAPI/XAPI-Account-Keywords.robot
 
 Variables   Environments/Config/waits.yaml
 
 
 *** Keywords ***
 
-#####  Get default device password Keywords   #####
-Get Default Device Password
-    [Documentation]  get the default device password
-    ${RESP}=  rest api get  ${DEVICE_PASSWORD_URI}
-    ${PASSWORD}=  get json values  ${RESP}  key=password
-    log  ${PASSWORD}
-    [Return]  ${PASSWORD}
-
-#####  Change default device password Keywords   #####
-Change Default Device Password
-    [Documentation]  change device password
-    [Arguments]  ${PASSWORD}
-    ${RESPCODE}=  rest api put v1  ${DEVICE_PASSWORD_URI}    ${PASSWORD}
-    [Return]  ${RESPCODE}
 
 *** Test Cases ***
 
@@ -71,7 +56,7 @@ Pre Condition-User-Login
 Pre Condition-Get-Current-Device-Password
     [Documentation]  XAPI Get current device password successful
     [Tags]                  tcxm_18342     development
-    ${CUR_PASSWORD}=        get default device password
+    ${CUR_PASSWORD}=        xapi get default device password
     log  ${CUR_PASSWORD}
     Set Suite Variable     ${CUR_PASSWORD}
 
@@ -80,7 +65,7 @@ Pre Condition-Get-Current-Device-Password
 TC-18333: change default device password
     [Documentation]         change default device password
     [Tags]                  tcxm_18333     development
-    ${RESP_CODE}=   change default device password    ${NEW_DEVICE_PASSWORD}
+    ${RESP_CODE}=   xapi change default device password    ${NEW_DEVICE_PASSWORD}
     should be true  ${RESP_CODE}==200
 
 
@@ -88,7 +73,7 @@ TC-18333: change default device password
 TC-18342: get default device password
     [Documentation]         get the default device password
     [Tags]                  tcxm_18342     development
-    ${PASSWORD}=   get default device password
+    ${PASSWORD}=   xapi get default device password
     Should Be Equal As Strings    '${PASSWORD}'      '${NEW_DEVICE_PASSWORD}'
 
     [Teardown]
