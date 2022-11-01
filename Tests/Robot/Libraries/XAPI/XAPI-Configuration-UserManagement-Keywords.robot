@@ -3,6 +3,10 @@ Library     common/TestFlow.py
 Library     common/Xapi.py
 Library     common/Utils.py
 
+*** Variables ***
+${PPSK_USERGROUP_URI}=  /usergroups
+${PPSK_USER_URI}=  /endusers
+${PPSK_UPDATE_USER_URI}=  /endusers/:id
 
 
 *** Keywords ***
