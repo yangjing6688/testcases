@@ -49,7 +49,7 @@ Resource    Tests/Robot/Libraries/XAPI/XAPI-Configuration-UserManagement-Keyword
 
 Suite Setup      Pre Condition
 
-
+*** Keywords ***
 
 Pre Condition
     [Documentation]   Login and generate access_token. Create PPSK Usergroup
