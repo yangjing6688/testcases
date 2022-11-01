@@ -63,7 +63,7 @@ Pre Condition-Get-Current-Device-Password
 
 
 # Change the current device default password
-TC-18333: change default device password
+TCXM-18333: change default device password
     [Documentation]         change default device password
     [Tags]                  tcxm_18333     development
     ${RESP_CODE}=   xapi change default device password    ${NEW_DEVICE_PASSWORD}
@@ -71,11 +71,11 @@ TC-18333: change default device password
 
 
 # Get the changed device default password
-TC-18342: get default device password
+TCXM-18342: get default device password
     [Documentation]         get the default device password
     [Tags]                  tcxm_18342     development
     ${PASSWORD}=   xapi get default device password
     Should Be Equal As Strings    '${PASSWORD}'      '${NEW_DEVICE_PASSWORD}'
 
     [Teardown]
-    Change Default Device Password   ${CUR_PASSWORD}
+    xapi change default device password   ${CUR_PASSWORD}
