@@ -36,7 +36,7 @@ ${ERROR_CODE_KNOWN_VALUE}=  UNKNOWN
 ${ERROR_CODE_ERROR_VALUE}=  ServerError
 
 *** Settings ***
-Force Tags  testbed_3_node
+Force Tags  testbed_none
 
 Library     common/TestFlow.py
 Library     common/Xapi.py
@@ -52,7 +52,7 @@ Variables   Environments/${TOPO}
 
 Suite Setup      Pre Condition
 
-*** Keywords ***
+
 
 Pre Condition
     [Documentation]   Login and generate access_token. Create PPSK Usergroup
@@ -69,7 +69,7 @@ Pre Condition
 
 *** Test Cases ***
 
-TC-6677: Create PPSK User Group
+TCXM-6677: Create PPSK User Group
     [Documentation]         create ppsk usergroup
 
     [Tags]                  tcxm_6677     development
@@ -79,7 +79,7 @@ TC-6677: Create PPSK User Group
     should be true  ${UG_ID}>0
     set suite variable      ${UG_ID}
 
-TC-6676: PPSK-Get list of PPSK Gser Groups
+TCXM-6676: PPSK-Get list of PPSK Gser Groups
     [Documentation]         fetch ppsk usergroups
 
     [Tags]                  tcxm_6676     development
@@ -88,7 +88,7 @@ TC-6676: PPSK-Get list of PPSK Gser Groups
     log     ${PPSK_USER_GROUPS_COUNT}
     should be true  ${PPSK_USER_GROUPS_COUNT}>0
 
-TC-16308: Create PPSK User for a particular User Group with EMAIL and SMS
+TCXM-16308: Create PPSK User for a particular User Group with EMAIL and SMS
     [Documentation]         Create PPSK User for a particular user group with EMAIL and SMS
 
     [Tags]                  tcxm_16308     development
@@ -99,7 +99,7 @@ TC-16308: Create PPSK User for a particular User Group with EMAIL and SMS
     skip if   ${PPSK_USER_ID}==0
     set suite variable      ${PPSK_USER_ID}
 
-TC-16319: PPSK-Get list of PPSK Users
+TCXM-16319: PPSK-Get list of PPSK Users
     [Documentation]         PPSK-Get list of PPSK users
     
     [Tags]                  tcxm_16319       development
