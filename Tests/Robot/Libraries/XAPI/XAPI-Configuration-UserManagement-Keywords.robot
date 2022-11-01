@@ -2,10 +2,7 @@
 Library     common/TestFlow.py
 Library     common/Xapi.py
 Library     common/Utils.py
-Library     xiq/flows/common/Login.py
-Library     xiq/flows/configure/CommonObjects.py
 
-Variables   Environments/Config/waits.yaml
 
 
 *** Keywords ***
