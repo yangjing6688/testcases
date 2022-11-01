@@ -43,6 +43,7 @@ Library     common/TestFlow.py
 Library     common/Xapi.py
 Library     common/Utils.py
 
+Variables   Environments/${TOPO}
 
 Resource    Tests/Robot/Libraries/XAPI/XAPI-Configuration-UserManagement-Keywords.robot
 
