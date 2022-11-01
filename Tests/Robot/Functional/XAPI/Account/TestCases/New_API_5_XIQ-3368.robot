@@ -41,20 +41,18 @@ Variables   Environments/Config/waits.yaml
 
 *** Keywords ***
 
-
-*** Test Cases ***
-
-# generate the key once per suite
-Pre Condition-User-Login
-    [Documentation]  XAPI User login successful
-    [Tags]                  tcxm_16480     development
+Pre Condition
     ${ACCESS_TOKEN}=        generate_access_token    ${tenant_username}      ${tenant_password}      login
+    set suite variable     ${ACCESS_TOKEN}
     log  ${ACCESS_TOKEN}
-    set global variable     ${ACCESS_TOKEN}
+    Log    Checking the Access Token not equal to -1
+    skip if     '${ACCESS_TOKEN}' == '-1'
+    
+*** Test Cases ***
 
 # Get the current device default password
 Pre Condition-Get-Current-Device-Password
-    [Documentation]  XAPI Get current device password successful
+    [Documentation]  XAPI Get current device password 
     [Tags]                  tcxm_18342     development
     ${CUR_PASSWORD}=        xapi get default device password
     log  ${CUR_PASSWORD}
