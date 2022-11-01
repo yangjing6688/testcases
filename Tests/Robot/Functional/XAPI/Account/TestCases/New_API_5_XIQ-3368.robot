@@ -39,7 +39,7 @@ Library     common/Utils.py
 
 Resource    Tests/Robot/Libraries/XAPI/XAPI-Account-Keywords.robot
 
-Variables   Environments/Config/waits.yaml
+Variables   Environments/${TOPO}
 
 Suite Setup      Pre Condition
 
