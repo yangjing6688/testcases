@@ -21,12 +21,12 @@
 
 
 *** Variables ***
-${DEVICE_PASSWORD_URI}=  /account/viq/default-device-password
+
 ${NEW_DEVICE_PASSWORD}=  automation123
 
 
 *** Settings ***
-Force Tags  testbed_3_node
+Force Tags  testbed_none
 
 Library     common/TestFlow.py
 Library     common/Xapi.py
@@ -38,8 +38,8 @@ Resource    Tests/Robot/Libraries/XAPI/XAPI-Account-Keywords.robot
 
 Variables   Environments/Config/waits.yaml
 
+Suite Setup      Pre Condition
 
-*** Keywords ***
 
 Pre Condition
     ${ACCESS_TOKEN}=        generate_access_token    ${tenant_username}      ${tenant_password}      login
