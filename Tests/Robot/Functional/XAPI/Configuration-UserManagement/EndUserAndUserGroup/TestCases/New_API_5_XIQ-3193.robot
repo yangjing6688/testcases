@@ -25,19 +25,16 @@
 
 
 *** Variables ***
-${PPSK_USERGROUP_URI}=  /usergroups
-${PPSK_USER_URI}=  /endusers
+
 ${PPSK_USER_GROUP_ID}=  0
-${PPSK_UPDATE_USER_URI}=  /endusers/:id
+
 ${PPSK_USER_ID}=  0
 ${PPSK_USERGROUP_GLOBAL}=    group3
 ${PPSK_USERNAME_GLOBAL}=    ppskuser1
 ${PPSK_USERGROUP}=    group1
 ${PPSK_USERNAME}=    ppskuser
-${NEW_PASSWORD}=    Test@123456789
-${ERROR_CODE}=  error_code
-${ERROR_CODE_KNOWN_VALUE}=  UNKNOWN
-${ERROR_CODE_ERROR_VALUE}=  ServerError
+
+
 
 *** Settings ***
 Force Tags  testbed_none
@@ -49,7 +46,6 @@ Library     common/Utils.py
 
 Resource    Tests/Robot/Libraries/XAPI/XAPI-Configuration-UserManagement-Keywords.robot
 
-Variables   Environments/${TOPO}
 
 Suite Setup      Pre Condition
 
