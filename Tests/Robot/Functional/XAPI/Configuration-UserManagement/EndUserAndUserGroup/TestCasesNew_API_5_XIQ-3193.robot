@@ -45,7 +45,6 @@ Library     xiq/flows/common/Login.py
 Library     xiq/flows/configure/CommonObjects.py
 
 
-#Resource    ../../XAPI_PHASE_5A/Resources/AllResources.robot
 Resource    Tests/Robot/Libraries/XAPI/XAPI-Configuration-UserManagement.robot
 
 Variables   Environments/Config/waits.yaml
