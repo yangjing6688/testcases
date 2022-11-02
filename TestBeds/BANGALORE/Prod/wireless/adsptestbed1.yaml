@@ -9,7 +9,7 @@ ap1:
   console_ip:               10.234.201.225
   console_port:             7029
   mac:                      BCF3105E2F40
-  cli_type:                 "AH-AP"
+  cli_type:                  AH-AP
   platform:                 aerohive
   model:                    AP410C
   template:                 AP_410C-default-template
@@ -41,7 +41,7 @@ ap2:
   console_ip:               10.234.201.225
   console_port:             7030
   mac:                      BCF3102A99C0
-  cli_type:                 "AH-AP"
+  cli_type:                 AH-AP
   platform:                 aerohive
   model:                    AP460C
   template:                 AP_460C-default-template
@@ -67,7 +67,7 @@ kali_server1:
   password:           "symbol"
   connection_method:  "ssh"
   port:               "22"
-  platform:           "linux"
+  platform:           "MU-LINUX"
 
 mu1:
   ip:             10.234.201.181

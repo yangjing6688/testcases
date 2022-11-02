@@ -1,0 +1,121 @@
+ap1:
+  name:                     AH-5cc300
+  connection_method:        "ssh"
+  ip:                       10.234.118.2
+  port:                     2050
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '04102003240819'
+  console_ip:               10.234.118.3
+  console_port:             7001
+  mac:                      BCF3103536C0
+  cli_type:                 Cloud IQ Engine
+  platform:                 AH-AP
+  model:                    AP410C
+  template:                 AP_410C-default-template
+  template_name:            AP410C-ADESS_REG
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, San Jose, building_01, floor_01
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+
+####AP for ONPREM_CONFIGPUSH test cases#####
+ap2:
+  name:                     BUI-FLO-0028
+  connection_method:        "telnet"
+  ip:                       10.234.118.2
+  port:                     2113
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '24602001170028'
+  console_ip:               10.234.118.3
+  console_port:             7030
+  mac:                      BCF3102A9500
+  cli_type:                 Cloud IQ Engine
+  platform:                 AH-AP
+  model:                    AP460C
+  template:                 AP_460C-default-template
+  template_name:            AP460C-ADESS_REG
+  template_onprem:          AP460C-ONPREM_REG
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, San Jose, building_01, floor_01
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+
+#AP305c for Regression
+ap3:
+  name:                     bui-flo-0033
+  connection_method:        "telnet"
+  ip:                       10.234.201.151
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  cli_type:                 "AH-AP"
+  serial:                   '03052007030033'
+  mac:                      BCF310727180
+  platform:                 aerohive
+  model:                    AP305C
+  template:                 AP_305C-default-template
+  template_name:            ap305c_temp_reg
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, San Jose, building_01, floor_02
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+      plug_a:
+      plug_b:
+    type:
+
+#ap4000u for Regression
+ap4:
+  name:                     bui-flo-0004
+  connection_method:        "telnet"
+  ip:                       10.234.201.150
+  port:                     22
+  cli_type:                 "AH-AP"
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '64002106080004'
+  mac:                      B027CF6ED4C0
+  platform:                 aerohive
+  model:                    AP4000U
+  template:                 AP_4000U-default-template
+  template_name:            ap4000u_temp_reg
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, San Jose, building_01, floor_02
+  new_location:             auto_location_01, San Jose, building_01, floor_01
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+      plug_a:
+      plug_b:
+    type:

@@ -23,6 +23,7 @@ ${BUILDING_NAME}            building_01
 ${NW_POLICY_NAME2}          alarm_generation_policy
 ${SSID_NAME2}               alarm_generation_ssid
 ${EXPECTED_ALARM}           DoS Deauthentication
+${MAP_FILE_NAME}            auto_location_01_1595321828282.tar.gz
 
 *** Settings ***
 
@@ -33,20 +34,20 @@ Library     String
 Library     common/Utils.py
 Library     common/Cli.py
 Library     common/TestFlow.py
-
+Library     common/WebElementHandler.py
 Library     xiq/flows/common/Login.py
 Library     xiq/flows/common/Navigator.py
-
 Library     xiq/flows/AirDefence/AirDefenceAlarms.py
-
 Library     xiq/flows/manage/Client.py
 Library     xiq/flows/manage/Devices.py
 Library     xiq/flows/manage/Location.py
-
 Library     xiq/flows/configure/Wips.py
 Library     xiq/flows/configure/NetworkPolicy.py
 Library     xiq/flows/configure/CommonObjects.py
 Library     xiq/flows/configure/DeviceTemplate.py
+Library     xiq/flows/mlinsights/Network360Plan.py
+Library     xiq/flows/globalsettings/GlobalSetting.py
+
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -56,7 +57,7 @@ Variables    Environments/Config/device_commands.yaml
 
 Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/adsp_integration_config.robot
 
-Library	        Remote 	http://${mu1.ip}:${mu1.port}  WITH NAME   Remote_Server
+
 Suite Setup      Pre Condition
 Suite Teardown   Test Suite Clean Up
 
@@ -64,24 +65,20 @@ Suite Teardown   Test Suite Clean Up
 Pre Condition
     [Documentation]   AP Should be onboarded  and it is online
     ${result}=                      Login User          ${tenant_username}     ${tenant_password}
-    Delete Device                   device_serial=${ap1.serial}
-    Delete Device                   device_serial=${ap2.serial}
-    Delete Network Polices          ${NW_POLICY_NAME}   ${NW_POLICY_NAME2}
-    Delete SSIDs                    ${SSID_NAME}   ${SSID_NAME2}
-    Delete Wips Policy Profile      ${WIPS_POLICY_NAME}
-    Delete AP Template Profile      ${ap1.model}
-    Logout User
-    Quit Browser
+     click advanced onboard popup
+     import map in network360plan       ${MAP_FILE_NAME}
+      Logout User
+      Quit Browser
 
 Test Suite Clean Up
-    [Documentation]    Delete Devices / cleanup scripts
-    ${result}=    Login User        ${tenant_username}     ${tenant_password}
-    Delete Device                   device_serial=${ap1.serial}
-    Delete Device                   device_serial=${ap2.serial}
-    Remote_Server.Disconnect_wifi
-    logout user
-    quit browser
-
+    [Documentation]         Test Suite Clean Up: Reset Customer Account Data
+    [Tags]                  sanity  aerohive  P1   production   regression
+    ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
+    ${RESET_VIQ_DATA}=               Reset VIQ Data
+    Should Be Equal As Strings      '${RESET_VIQ_DATA}'              '1'
+    sleep  60s
+    [Teardown]   run keywords       Logout User
+    ...                             Quit Browser
 
 *** Test Cases ***
 
@@ -90,22 +87,20 @@ Test1: Onboard Sensor AP
     [Tags]                  tccs_12494      adsp        development
     ${LOGIN_XIQ}=               Login User          ${tenant_username}     ${tenant_password}
 
-    ${ONBOARD_RESULT}=          Onboard Device      ${ap1.serial}           ${ap1.make}       location=${ap1.location}
+    ${ONBOARD_RESULT}=          onboard device quick     ${ap1}
+    should be equal as integers       ${ONBOARD_RESULT}       1
 
-    ${AP_SPAWN}=                open pxssh spawn     ${ap1.ip}       ${ap1.username}     ${ap1.password}     ${ap1.port}
+    ${AP_SPAWN}=                open spawn       ${ap1.ip}      ${ap1.port}   ${ap1.username}     ${ap1.password}        ${ap1.cli_type}
 
     Set Suite Variable          ${AP_SPAWN}
 
-    ${OUTPUT0}=                 send commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
-
+    ${OUTPUT0}=                 send Commands  ${AP_SPAWN}   capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
+    sleep  240s
     Wait Until Device Online    ${ap1.serial}
 
-    Refresh Devices Page
+    ${AP1_STATUS}=              get device status       device_mac=${ap1.mac}
 
-    ${AP1_STATUS}=              Get AP Status       ap_mac=${ap1.mac}
     Should Be Equal As Strings  '${AP1_STATUS}'     'green'
-
-    close Spawn  ${AP_SPAWN}
 
     [Teardown]         run keywords    logout user
      ...                               quit browser
@@ -116,24 +111,19 @@ Test2: Onboard AP to Generate DoS Deauthentication
     Depends On              Test1
     ${LOGIN_XIQ}=               Login User          ${tenant_username}     ${tenant_password}
 
-    ${ONBOARD_RESULT}=          Onboard Device      ${ap2.serial}           ${ap2.make}       location=${ap2.location}
-
-    ${AP2_SPAWN}=               Open PXSSH Spawn          ${ap2.ip}        ${ap2.username}       ${ap2.password}        ${ap2.port}
+    ${ONBOARD_RESULT}=          onboard device quick     ${ap2}
+    should be equal as integers        ${ONBOARD_RESULT}       1
+     ${AP2_SPAWN}=               open spawn       ${ap2.ip}      ${ap2.port}   ${ap2.username}     ${ap2.password}        ${ap2.cli_type}
     Set Suite Variable          ${AP2_SPAWN}
     ${OUTPUT0}=                 send commands      ${AP2_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
-
+    sleep  240s
     Wait Until Device Online    ${ap2.serial}
 
-    Refresh Devices Page
-
-    ${AP2_STATUS}=               Get AP Status       ap_mac=${ap2.mac}
+    ${AP2_STATUS}=               get device status      device_mac=${ap2.mac}
     Should Be Equal As Strings  '${AP2_STATUS}'     'green'
-
-    close Spawn  ${AP2_SPAWN}
 
     [Teardown]         run keywords    logout user
      ...                               quit browser
-
 
 Test3: Connect Client to Generate DoS Deauthentication
     [Documentation]         Pre-config-Connect Client to Generate DoS Deauthentication
@@ -150,14 +140,6 @@ Test3: Connect Client to Generate DoS Deauthentication
     Log to Console      Sleep for ${config_push_wait}
     sleep                         ${config_push_wait}
 
-    Remote_Server.Connect Open Network    ${SSID_NAME2}
-
-    Log to Console      Sleep for ${client_connect_wait}
-    sleep                         ${client_connect_wait}
-
-    ${CLIENT_STATUS}=                Get Client Status   client_mac=${mu1.wifi_mac}
-    Should Be Equal As Strings       '${CLIENT_STATUS}'      '1'
-
     [Teardown]         run keywords    logout user
      ...                               quit browser
 
@@ -170,23 +152,24 @@ Test4: Configure ADSP on AP
     ${CREATE_POLICY1}=         Create Network Policy   ${NW_POLICY_NAME}       &{ADSP_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap1.model}     ${ap1.template_name}        &{AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap1.model}     AP410C-ADSP_Prod       &{AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings   '${CREATE_AP_TEMPLATE}'   '1'
 
     ${CONFIG_WIPS_POLICY}      Configure WIPS Policy On Common Objects   ${WIPS_POLICY_NAME}
     Should Be Equal As Strings   '${CONFIG_WIPS_POLICY}'   '1'
 
-    Clear All ADSP Alarms
-
     ${NP_REUSE_WIPS}           Configure Reuse Wips Policy On Network Policy  ${NW_POLICY_NAME}  ${WIPS_POLICY_NAME}
     Should Be Equal As Strings   '${NP_REUSE_WIPS}'   '1'
 
-    ${AP1_UPDATE_CONFIG}=      Update Network Policy To AP   ${NW_POLICY_NAME}     ap_serial=${ap1.serial}   update_method=Complete
-    Should Be Equal As Strings              '${AP1_UPDATE_CONFIG}'       '1'
+    ${AP1_UPDATE_CONFIG}=      Update Network Policy To AP     ${NW_POLICY_NAME}     ap_serial=${ap1.serial}   update_method=Complete
+    Should Be Equal As Strings             '${AP1_UPDATE_CONFIG}'       '1'
 
-    ${AP_SPAWN}=               open PXSSH spawn         ${ap1.ip}        ${ap1.username}       ${ap1.password}        ${ap1.port}
-    ${SENSOR_WIFI_CONFIG}=     Send                ${AP_SPAWN}         show running-config | include "interface wifi2"
+    ${AP_SPAWN}=               open spawn       ${ap1.ip}      ${ap1.port}   ${ap1.username}     ${ap1.password}        ${ap1.cli_type}
+    ${SENSOR_WIFI_CONFIG}=     send commands                ${AP_SPAWN}         show running-config | include "interface wifi2"
     Should Contain             ${SENSOR_WIFI_CONFIG}      interface wifi2 mode adsp-sensor
+
+    ${SUBSCRIBE_ESSENTIALS} =  subscribe adess essentials
+    Should Be Equal As Strings      '${SUBSCRIBE_ESSENTIALS}'   '1'
 
     close spawn   ${AP_SPAWN}
 
@@ -197,11 +180,11 @@ Test5: Generate DoS Deauthentication Alarm on Kali Linux
     [Documentation]         Generate DoS Deauthentication Alarm on Kali Linux
     [Tags]                  tccs_12498      adsp        development
 
-    Depends On              Test2  Test3   Test4
+    Depends On               Test3   Test4
 
-    FOR    ${i}    IN RANGE   20
-          ${KALI_SPAWN}=               Open PxSSH Spawn         ${kali_server1.ip}   ${kali_server1.username}       ${kali_server1.password}
-          ${DOS_ALARM_CMD}=            Send                ${KALI_SPAWN}        aireplay-ng -D wlan1 --deauth 0 -a ${mu1.wifi_mac}
+    FOR    ${i}    IN RANGE  2
+          ${KALI_SPAWN}=               open spawn        ${Kali_server1.ip}   ${Kali_server1.port}    ${Kali_server1.username}       ${Kali_server1.password}   ${Kali_server1.platform}
+          ${DOS_ALARM_CMD}=            send commands               ${KALI_SPAWN}        aireplay-ng -D wlan1 --deauth 0 -a ${mu1.wifi_mac}
           Should Contain               ${DOS_ALARM_CMD}   Sending DeAuth
           close spawn   ${KALI_SPAWN}
     END
@@ -212,21 +195,7 @@ Test6: Validate Alarm Grid Information
     Depends On              Test4   Test5
     ${LOGIN_XIQ}=                   Login User                ${tenant_username}      ${tenant_password}
 
-    ${ALARM_DETAILS_ON_GRID}=       Get ADSP Alarm Details    ${mu1.wifi_mac}
-
-    ${ALARM_NAME}=                  Get From Dictionary       ${ALARM_DETAILS_ON_GRID}    alarmId
-    Should Be Equal As Strings      '${ALARM_NAME}'          '${EXPECTED_ALARM}'
-
-    ${SEVERITY_GRID}=              Get From Dictionary        ${ALARM_DETAILS_ON_GRID}    severity
-    ${SEVERITY_LIST}=              Split String               ${SEVERITY_GRID}         separator=fiber_manual_record\n
-    ${ALARM_SEVERITY}=             Set Variable               ${SEVERITY_LIST}[1]
-    Should Be Equal As Strings    '${ALARM_SEVERITY}'         'MAJOR'
-
-    ${ALARM_STATE_GRID}=            Get From Dictionary       ${ALARM_DETAILS_ON_GRID}    alarmState
-    ${ALARM_STATE_LIST}=            Split String              ${ALARM_STATE_GRID}         separator=notifications_active\n
-    ${ALARM_STATE}=                 Set Variable              ${ALARM_STATE_LIST}[1]
-    Should Contain                 '${ALARM_STATE}'          'ACTIVE'
-    Should Not Contain             '${ALARM_STATE}'          'INACTIVE'
+    ${ALARM_DETAILS_ON_GRID}=       Get ADSP Alarm Details    ${EXPECTED_ALARM}
 
     ${SENSOR_MAC}=                  Get From Dictionary       ${ALARM_DETAILS_ON_GRID}    sensorMac
     Should Be Equal As Strings      '${SENSOR_MAC}'          '${ap1.mac}'
@@ -236,15 +205,6 @@ Test6: Validate Alarm Grid Information
 
     ${SITE_ID}=                     Get From Dictionary       ${ALARM_DETAILS_ON_GRID}    siteId
     Should Be Equal As Strings      '${SITE_ID}'              '${BUILDING_NAME}'
-
-    ${TIME_ALARM_FORMAT}=           Get Current Date Time     time_format=%d %b %Y %I
-    ${ALARM_ACTIVE_TIME}=           Get From Dictionary       ${ALARM_DETAILS_ON_GRID}    alarmActiveAt
-    ${ALARM_ACTIVE_TIME_MATCH}=     String.Get Regexp Matches        ${ALARM_ACTIVE_TIME}  (?i)(\\d+\\s+\\w+\\s+\\d+\\s+\\d+):\\d+:\\d+   1
-    ${FINAL_ALARM_TIME}=            Set Variable              ${ALARM_ACTIVE_TIME_MATCH}[0]
-    Should Be Equal As Strings     '${FINAL_ALARM_TIME}'     '${TIME_ALARM_FORMAT}'
-
-    ${AM_PM_TIME}=                 Get Current Date Time      time_format=%p
-    Should Contain                 ${ALARM_ACTIVE_TIME}       ${AM_PM_TIME}
 
     [Teardown]   run keywords     Logout User
     ...                           Quit Browser
@@ -263,10 +223,10 @@ Test7: Change Wireless Thread Detection Status
 Test8: Verify Alarms Overview Widget Count
     [Documentation]         Verify Alarms Overview Widget Count
     [Tags]                  tccs_12501      adsp        development
-    Depends On              Test4  Test7
+    Depends On              Test4
     ${LOGIN_XIQ}=                 Login User          ${tenant_username}      ${tenant_password}
 
-    ${AP1_UPDATE_CONFIG}=         Update Network Policy To AP   ${NW_POLICY_NAME}     ap_serial=${ap1.serial}   update_method=Delta
+    ${AP1_UPDATE_CONFIG}=         update device delta configuration     ${ap1.serial}   update_method=Delta
     Should Be Equal As Strings   '${AP1_UPDATE_CONFIG}'       '1'
 
     Sleep                         ${config_push_wait}
@@ -282,7 +242,7 @@ Test8: Verify Alarms Overview Widget Count
 Test9: Verify Alarms By Severity Widget Count
     [Documentation]         Verify Alarms By Severity Widget Count
     [Tags]                  tccs_12502      adsp        development
-    Depends On              Test4  Test7
+    Depends On              Test4
     ${LOGIN_XIQ}=                 Login User          ${tenant_username}      ${tenant_password}
 
     ${ALARM_COUNT_ON_GRID}=       Get Total ADSP Alarm Count
@@ -296,18 +256,14 @@ Test9: Verify Alarms By Severity Widget Count
 Test10: Verify Alarm InActive Time
     [Documentation]         Verify Alarm InActive Time
     [Tags]                  tccs_12503      adsp        development
-    Depends On              Test4  Test6
+    Depends On              Test4
 
-    Log to Console      Sleep for 30 Minutes to Validate Alarm InActive Time
-    Sleep                   30m
+    Log to Console      Sleep for 20 Minutes to Validate Alarm InActive Time
+    Sleep               20m
 
     ${LOGIN_XIQ}=                   Login User          ${tenant_username}      ${tenant_password}
 
-    ${ALARM_DETAILS_ON_GRID}=       Get ADSP Alarm Details    ${mu1.wifi_mac}
-
-    ${ALARM_NAME}=                  Get From Dictionary       ${ALARM_DETAILS_ON_GRID}    alarmId
-    Should Be Equal As Strings      '${ALARM_NAME}'          '${EXPECTED_ALARM}'
-
+    ${ALARM_DETAILS_ON_GRID}=       Get ADSP Alarm Details    ${EXPECTED_ALARM}
     ${ALARM_STATE_GRID}=            Get From Dictionary       ${ALARM_DETAILS_ON_GRID}    alarmState
     ${ALARM_STATE_LIST}=            Split String              ${ALARM_STATE_GRID}         separator=notifications\n
     ${ALARM_STATE}=                 Set Variable              ${ALARM_STATE_LIST}[1]
@@ -316,3 +272,13 @@ Test10: Verify Alarm InActive Time
     [Teardown]   run keywords     Logout User
     ...                           Quit Browser
 
+Test11: Verify backup viq
+    [Documentation]     Check the viq backup
+    [Tags]      tccs_13260    adsp      development
+      ${result1}=         login user  ${tenant_username}      ${tenant_password}
+     Should Be Equal As Strings      '${result1}'     '1'
+     ${BKUP_VIQ}=           backup viq data
+     Should Be Equal As Strings      '${BKUP_VIQ}'              '1'
+     sleep   60s
+    [Teardown]        run keywords    logout user
+     ...                               QUIT BROWSER
