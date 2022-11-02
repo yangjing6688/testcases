@@ -1,14 +1,6 @@
 lab:                        "SALEM"
 
-pilot_ip_range:
-  start_ip:                 "10.57.235.233"
-  end_ip:                   "10.57.235.241"
-
-profile:
-  pilot:                    "public_v1_Profile"
-  nav:                      "public_v2_Profile"
-
-pilot1:
+netelem1:
   name:                     "SAPro-x440-235-230"
   ip:                       "10.57.235.230"
   profile:                  "public_v1_Profile"
@@ -17,7 +9,7 @@ pilot1:
   model:                    "X460G2-24t-G4"
   platform:                 "exos"
 
-pilot2:
+netelem2:
   name:                     "SAPro-x440-235-231"
   ip:                       "10.57.235.231"
   profile:                  "public_v1_Profile"
@@ -26,7 +18,7 @@ pilot2:
   model:                    "X460G2-24t-G4"
   platform:                 "exos"
 
-pilot3:
+netelem3:
   name:                     "SAPro-x440-235-232"
   ip:                       "10.57.235.232"
   profile:                  "public_v1_Profile"
@@ -35,7 +27,7 @@ pilot3:
   model:                    "X460G2-24t-G4"
   platform:                 "exos"
 
-nav1:
+netelem4:
   name:                     "SAPro-c3750X-229-170"
   ip:                       "10.57.229.170"
   profile:                  "public_v2_Profile"
@@ -44,7 +36,7 @@ nav1:
   model:                    "Cisco 3750"
   platform:                 "cisco"
 
-nav2:
+netelem5:
   name:                     "SAPro-c3750X-229-171"
   ip:                       "10.57.229.171"
   profile:                  "public_v2_Profile"
@@ -53,7 +45,7 @@ nav2:
   model:                    "Cisco 3750"
   platform:                 "cisco"
 
-nav3:
+netelem6:
   name:                     "SAPro-c3750X-229-172"
   ip:                       "10.57.229.172"
   profile:                  "public_v2_Profile"
@@ -61,3 +53,13 @@ nav3:
   mac:                      "D0D0FDE5AC00"
   model:                    "Cisco 3750"
   platform:                 "cisco"
+
+netelem7:
+  ip:                       "10.57.235.233"
+  profile:                  "public_v1_Profile"
+  model:                    "X440-G2-24t-G4"
+
+netelem8:
+  ip:                       "10.57.235.241"
+  profile:                  "public_v1_Profile"
+  model:                    "X440-G2-24t-G4"

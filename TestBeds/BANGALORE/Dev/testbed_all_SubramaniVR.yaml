@@ -3,11 +3,11 @@ ap1:
   connection_method:        "ssh"
   username:                 admin
   password:                 aerohive
+  default_password:         aerohive
   serial:                   '03051907020094'
   ip:                       10.234.152.99
   port:                     22
   mac:                      bcf3100048c0
-  os:                       Cloud IQ Engine
   platform:                 aerohive
   model:                    AP305C
   template:                 AP_305C-default-template
@@ -20,21 +20,23 @@ ap1:
   floor_name:               floor2
   console_ip:               10.234.221.5
   console_port:             7016
+  server_name:              qa-redirector.extremecloudiq.com
+  capwap_production:        redirector.aerohive.com
+  cli_type:                 AH-AP
   command_list:             no capwap client enable,   no capwap client server,   no capwap client server name,  no capwap client server backup name,   no capwap client default-server-name,  capwap client server name ${capwap_url},    capwap client server backup name ${capwap_url},     capwap client default-server-name ${capwap_url},    capwap client enable
-  onboard_device_type:      Real
 
 ap2:
   name:                     AP410C
   connection_method:        "ssh"
   username:                 admin
-  password:                 Aerohive123
+  password:                 aerohive
+  default_password:         aerohive
   serial:                   '04102005201734'
-  ip:                       10.234.152.99
+  ip:                       10.234.152.97
   console_ip:               10.234.221.5
   port:                     22
   console_port:             7013
   mac:                      bcf3105e46c0
-  os:                       Cloud IQ Engine
   platform:                 aerohive
   model:                    AP410C
   template:                 AP_410C-default-template
@@ -46,24 +48,78 @@ ap2:
   building_address:         ORR
   floor_name:               floor2
   country_code:             AUSTRALIA_36
+  server_name:              qa-redirector.extremecloudiq.com
+  cli_type:                 AH-AP
   command_list:             no capwap client enable,   no capwap client server,   no capwap client server name,  no capwap client server backup name,   no capwap client default-server-name,  capwap client server name qa-redirector.extremecloudiq.com,    capwap client server backup name qa-redirector.extremecloudiq.com,     capwap client default-server-name qa-redirector.extremecloudiq.com,    capwap client enable
-  onboard_device_type:      Real
+
+ap3:
+  name:                     AP410C
+  connection_method:        "ssh"
+  username:                 admin
+  password:                 aerohive
+  serial:                   '04102005201286'
+  ip:                       10.234.152.86
+  console_ip:               10.234.221.5
+  port:                     22
+  console_port:             7014
+  mac:                      bcf3105dd6c0
+  platform:                 aerohive
+  model:                    AP410C
+  template:                 AP_410C-default-template
+  make:                     Extreme - Aerohive
+  location:                 BLR, EcoSpace, Floor-1
+  nw_policy:                test_nw_01
+  location_name:            BLR1
+  building_name:            EcoSpace1
+  building_address:         ORR
+  floor_name:               floor2
+  country_code:             AUSTRALIA_36
+  server_name:              qa-redirector.extremecloudiq.com
+  cli_type:                 AH-AP
+  command_list:             no capwap client enable,   no capwap client server,   no capwap client server name,  no capwap client server backup name,   no capwap client default-server-name,  capwap client server name qa-redirector.extremecloudiq.com,    capwap client server backup name qa-redirector.extremecloudiq.com,     capwap client default-server-name qa-redirector.extremecloudiq.com,    capwap client enable
+
+ap4:
+  name:                     AP410C
+  connection_method:        "ssh"
+  username:                 admin
+  password:                 aerohive
+  serial:                   '04102005200172'
+  ip:                       10.234.152.95
+  console_ip:               10.234.221.5
+  port:                     22
+  console_port:             7014
+  mac:                      bcf3105cc040
+  platform:                 aerohive
+  model:                    AP410C
+  template:                 AP_410C-default-template
+  make:                     Extreme - Aerohive
+  location:                 BLR, EcoSpace, Floor-1
+  nw_policy:                test_nw_01
+  location_name:            BLR1
+  building_name:            EcoSpace1
+  building_address:         ORR
+  floor_name:               floor2
+  country_code:             AUSTRALIA_36
+  server_name:              qa-redirector.extremecloudiq.com
+  cli_type:                 AH-AP
+  command_list:             no capwap client enable,   no capwap client server,   no capwap client server name,  no capwap client server backup name,   no capwap client default-server-name,  capwap client server name qa-redirector.extremecloudiq.com,    capwap client server backup name qa-redirector.extremecloudiq.com,     capwap client default-server-name qa-redirector.extremecloudiq.com,    capwap client enable
 
 sw1:
   name:                     AH-SR-2348P
   connection_method:        "telnet"
   username:                 admin
-  password:                 aerohive
+  password:                 Aerohive123
+  default_password:         aerohive
   serial:                   '23481812230045'
   ip:                       10.234.152.94
   port:                     22
   mac:                      B87CF20269E0
-  os:                       Cloud IQ Engine
   platform:                 aerohive
   model:                    AH-SR-2348P
   make:                     Extreme - Aerohive
   location:                 BLR, EcoSpace, Floor-1
   console_ip:               10.234.221.5
   console_port:             7011
+  cli_type:                 AH-FASTPATH
+  server_name:              g2r1.qa.xcloudiq.com
   command_list:             application stop hiveagent,   hivemanager address ${switch_connection_host_url},   application start hiveagent
-  onboard_device_type:      Real

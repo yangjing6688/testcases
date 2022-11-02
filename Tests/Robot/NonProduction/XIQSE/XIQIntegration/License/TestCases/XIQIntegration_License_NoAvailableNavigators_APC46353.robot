@@ -43,20 +43,20 @@ ${XIQ_URL}                ${xiq.test_url}
 ${XIQ_USER}               ${xiq.tenant_username}
 ${XIQ_PASSWORD}           ${xiq.tenant_password}
 
-${PILOT_IP_START}         ${pilot_ip_range.start_ip}
-${PILOT_IP_END}           ${pilot_ip_range.end_ip}
-${PILOT_PROFILE}          ${profile.pilot}
+${PILOT_IP_START}         ${netelem7.ip}
+${PILOT_IP_END}           ${netelem8.ip}
+${PILOT_PROFILE}          ${netelem7.profile}
 
-${NAV1_IP}                ${nav1.ip}
-${NAV1_PROFILE}           ${nav1.profile}
+${NAV1_IP}                ${netelem4.ip}
+${NAV1_PROFILE}           ${netelem4.profile}
 
-${NAV2_IP}                ${nav2.ip}
-${NAV2_PROFILE}           ${nav2.profile}
-${NAV2_SERIAL}            ${nav2.serial}
+${NAV2_IP}                ${netelem5.ip}
+${NAV2_PROFILE}           ${netelem5.profile}
+${NAV2_SERIAL}            ${netelem5.serial}
 
-${NAV3_IP}                ${nav3.ip}
-${NAV3_PROFILE}           ${nav3.profile}
-${NAV3_SERIAL}            ${nav3.serial}
+${NAV3_IP}                ${netelem6.ip}
+${NAV3_PROFILE}           ${netelem6.profile}
+${NAV3_SERIAL}            ${netelem6.serial}
 
 ${PILOT_ENTITLEMENT}      ${xiq.pilot_entitlements}
 ${NAVIGATOR_ENTITLEMENT}  ${xiq.navigator_entitlements}
@@ -441,18 +441,13 @@ XIQ Confirm Devices Not Onboarded
 XIQSE Confirm User Informed License Limit Exceeded
     [Documentation]     Confirms the user is informed that the device license limit has been exceeded
 
-    Run Keyword If  '23.' in '${XIQSE_OS_VERSION}'
-    ...  Confirm Operations Panel Message For Type  Device Added  No licenses available
-# The banner message closes too fast for automation to check so we will check the operations panel instead
-#    ...      Confirm Licensed Device Limit Exceeded Message Displayed
-#    ...      AND
-#    ...      Close Licensed Device Limit Exceeded Message
-
-    Run Keyword If  '23.' not in '${XIQSE_OS_VERSION}'
+    Run Keyword If  '21.' in '${XIQSE_OS_VERSION}'
     ...  Run Keywords
     ...      Confirm License Limit Warning Message Displayed
     ...      AND
     ...      Close License Limit Warning Message
+    ...      ELSE
+    ...      Confirm Operations Panel Message For Type  Device Added  No licenses available
 
 XIQSE Confirm License Device Limit Exceeded Event Generated For Device
     [Documentation]     Confirms the License Device Limit Exceeded event exists for the specified device
