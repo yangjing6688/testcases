@@ -25,7 +25,7 @@ netelem1:
   function:                 "Switch"
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
-  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  location:                 "San Jose, building_01, floor_02"
   license:                  "PILOT"
   vr:                       "VR-Mgmt"
   onboard_device_type:      "Real"
@@ -54,7 +54,7 @@ netelem2:
   function:                 "Switch"
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
-  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  location:                 "San Jose, building_01, floor_02"
   license:                  "PILOT"
   vr:                       "VR-Mgmt"
   onboard_device_type:      "Real"
@@ -83,7 +83,7 @@ netelem3:
   function:                 "Switch"
   ccg:                      "Model_VOSSSWITCH"
   contact:                  "Salem NH Automation Team"
-  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  location:                 "San Jose, building_01, floor_02"
   license:                  "PILOT"
   test_port:                "1/3"
   test_port_num:            "3"
@@ -126,7 +126,7 @@ netelem4:
   function:                 "Switch"
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
-  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  location:                 "San Jose, building_01, floor_02"
   license:                  "PILOT"
   vr:                       "VR-Mgmt"
   onboard_device_type:      "Real"
@@ -153,7 +153,7 @@ netelem5:
   function:                 "Switch"
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
-  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  location:                 "San Jose, building_01, floor_02"
   license:                  "PILOT"
   onboard_device_type:      "Real"
   vr:                       "VR-Default"
@@ -180,7 +180,7 @@ netelem6:
   function:                 "Switch"
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
-  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  location:                 "San Jose, building_01, floor_02"
   license:                  "PILOT"
   onboard_device_type:      "Real"
 
@@ -203,7 +203,7 @@ aerohive_sw1:
   console_ip:               "10.54.7.2"
   console_port:             "7012"
   test_port:                "1/0/2"
-  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  location:                 "San Jose, building_01, floor_02"
   onboard_device_type:      "Real"
 
 ap1:
@@ -227,7 +227,7 @@ ap1:
   product:                  "AP"
   function:                 "AP"
   ccg:                      "Model_AP_650X"
-  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  location:                 "San Jose, building_01, floor_02"
   onboard_device_type:      "Real"
 
 ap2:
@@ -251,7 +251,7 @@ ap2:
   product:                  "AP"
   function:                 "AP"
   ccg:                      "Model_AP_650X"
-  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  location:                 "San Jose, building_01, floor_02"
   onboard_device_type:      "Real"
 
 ap3:
@@ -275,7 +275,7 @@ ap3:
   product:                  "AP"
   function:                 "AP"
   ccg:                      "Model_AP_650X"
-  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  location:                 "San Jose, building_01, floor_02"
   onboard_device_type:      "Real"
 
 ap4:
@@ -297,5 +297,5 @@ ap4:
   product:                  "AP"
   function:                 "AP"
   ccg:                      "Model_AP_410C"
-  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  location:                 "San Jose, building_01, floor_02"
   onboard_device_type:      "Real"
