@@ -171,7 +171,7 @@ TCCS-13512-Testcase2: Verify Information on Device page (Advanced onboarding)
 TCCS-13512-Testcase3: Simple Onboard Device on XIQ
     [Documentation]         Checks for Device onboarding on XIQ
 
-    [Tags]                  onboard      development   onboard-fast     tccs_13512     tccs_13512_testcase3   tccs_13512_testcase4   tccs_13512_testcase5   tccs_13512_testcase6   tccs_13512_testcase7
+    [Tags]                  onboard      development   onboard-fast     tccs_13512     tccs_13512_testcase3   tccs_13512_testcase4   tccs_13512_testcase5   tccs_13512_testcase6   tccs_13512_testcase7     tccs_13512_testcase8
 
     Clean Up Device
 
@@ -272,63 +272,49 @@ TCCS-13512-Testcase7: Verification of config push delta update (AH-AP Only)
     ${OUTPUT1}=             Send            ${MAIN_DEVICE_SPAWN}              show ssid
     Should Contain                          ${OUTPUT1}                  ${NEW_SSID_NAME_1}
 
-# Not sure if this should be a part of Sanity
-# yes, froce the upgrade
-#
-#Step9: Firmware upgrade to lastest version (AH-AP Only)
-#    [Documentation]         Verify IQ engine upgrade to lastest version ( we should just make sure it was upgraded )
-#    [Tags]			        push_config     development
-#    Depends On             step1
-#
-#    @{supported_cli_types}=    Create List   AH-AP
-#    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
-#
-#    ${SPAWN1}=              Open Spawn      ${device1.ip}   ${device1.port}      ${device1.username}       ${device1.password}        ${device1.cli_type}
-#
-#    ${CLOCK_OUPUT1}=        Send            ${SPAWN1}         show clock
-#    ${REBOOT_OUPUT1}=       Send            ${SPAWN1}         show reboot schedule
-#    Should Not Contain      ${REBOOT_OUPUT1}     Next reboot Scheduled
-#
-#    ${VERSION_DETAIL1}=     Send            ${SPAWN1}         show version detail
-#
-#    Should Contain          ${VERSION_DETAIL1}   Running image:      Current version
-#    Should Contain          ${VERSION_DETAIL1}   Backup version:     HiveOS 10.0r3
-#    Should Contain          ${VERSION_DETAIL1}   Load after reboot:  Current version
-#
-#    ${AP_BUILD_VERSION1}=   Get AP Version              ${SPAWN1}
-#
-#    ${LATEST_VERSION}=      Upgrade Device To Latest Version            ${device1.serial}
-#    Should Not be Empty     ${LATEST_VERSION}
-#
-#    Sleep                   ${ap_reboot_wait}
-#
-#    ${CONNECTED_STATUS}=    Wait Until Device Online                ${device1.serial}       retry_count=15
-#    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
-#
-#    ${REBOOT_STATUS}=    Wait Until Device Reboots               ${device1.serial}
-#    Should Be Equal as Integers             ${REBOOT_STATUS}          1
-#
-#    Close Spawn             ${SPAWN1}
-#
-#    ${SPAWN2}=              Open Spawn      ${device1.ip}   ${device1.port}      ${device1.username}       ${device1.password}        ${device1.cli_type}
-#    Should not be equal as Strings          '${SPAWN2}'        '-1'
-#
-#    ${CLOCK_OUPUT2}=        Send            ${SPAWN2}         show clock
-#
-#    ${REBOOT_OUPUT2}=       Send            ${SPAWN2}         show reboot schedule
-#    Should Not Contain      ${REBOOT_OUPUT2}     Next reboot Scheduled
-#
-#    ${VERSION_DETAIL2}=     Send            ${SPAWN2}         show version detail
-#
-#    Should Contain          ${VERSION_DETAIL2}   Running image:      Current version
-#    Should Contain          ${VERSION_DETAIL2}   Backup version:     HiveOS 10.0r3
-#    Should Contain          ${VERSION_DETAIL2}   Load after reboot:  Current version
-#    Should Contain          ${VERSION_DETAIL2}   Uptime:             0 weeks, 0 days, 0 hours
-#
-#    ${AP_BUILD_VERSION2}=   Get AP Version              ${SPAWN2}
-#    Should Be Equal As Strings  ${LATEST_VERSION}           ${AP_BUILD_VERSION2}
-#
-#    Close Spawn        ${SPAWN2}
+TCCS-13512-Testcase8: Firmware upgrade to lastest version (AH-AP Only)
+    [Documentation]         Verify IQ engine upgrade to lastest version ( we should just make sure it was upgraded )
+
+    [Tags]			        push_config     development     tccs_13512      tccs_13512_testcase8
+
+    Depends On             TCCS-13512-Testcase3
+
+    @{supported_cli_types}=    Create List   AH-AP
+    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+
+    ${SPAWN1}=              Open Spawn      ${device1.ip}   ${device1.port}      ${device1.username}       ${device1.password}        ${device1.cli_type}
+
+    ${VERSION_DETAIL1}=     Send            ${SPAWN1}         show version detail
+
+    ${AP_BUILD_VERSION1}=   Get AP Version              ${SPAWN1}
+
+    ${LATEST_VERSION}=      Upgrade Device To Latest Version            ${device1.serial}
+    Should Not be Empty     ${LATEST_VERSION}
+
+    Sleep                   ${ap_reboot_wait}
+
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${device1.serial}       retry_count=15
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
+
+    ${REBOOT_STATUS}=    Wait Until Device Reboots               ${device1.serial}
+    Should Be Equal as Integers             ${REBOOT_STATUS}          1
+
+    Close Spawn             ${SPAWN1}
+
+    ${SPAWN2}=              Open Spawn      ${device1.ip}   ${device1.port}      ${device1.username}       ${device1.password}        ${device1.cli_type}
+    Should not be equal as Strings          '${SPAWN2}'        '-1'
+
+    ${CLOCK_OUPUT2}=        Send            ${SPAWN2}         show clock
+
+    ${REBOOT_OUPUT2}=       Send            ${SPAWN2}         show reboot schedule
+    Should Not Contain      ${REBOOT_OUPUT2}     Next reboot Scheduled
+
+    ${VERSION_DETAIL2}=     Send            ${SPAWN2}         show version detail
+
+    ${AP_BUILD_VERSION2}=   Get AP Version              ${SPAWN2}
+    Should Be Equal As Strings  ${LATEST_VERSION}           ${AP_BUILD_VERSION2}
+
+    Close Spawn        ${SPAWN2}
 
 #Step10: Perform Device Update on VOSS Switch (VOSS ONLY)
 #    [Documentation]     Performs a device update on the VOSS switch
