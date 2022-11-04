@@ -223,59 +223,10 @@ TCCS-13512-Testcase5: Enable SSH on Device and Confirm Only a Single SSH Session
 
     [Teardown]  Disable SSH and Close Device360 Window
 
-
-TCCS-13512-Testcase6: Verification of config push complete config update (AH-AP Only)
-    [Documentation]             Verification of config push complete config update
-
-    [Tags]                      push_config     development     tccs_13512     tccs_13512_testcase6   tccs_13512_testcase7
-
-    Depends On                  TCCS-13512-Testcase3
-
-    @{supported_cli_types}=    Create List   AH-AP
-    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
-
-    Set To Dictionary           ${CONFIG_PUSH_OPEN_NW_01}    ssid_name=${PUSH_CONFIG_SSID_01}
-    Log to Console              ${CONFIG_PUSH_OPEN_NW_01}
-
-    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy   policy=${PUSH_CONFIG_POLICY_01}      &{CONFIG_PUSH_OPEN_NW_01}
-    should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
-
-    ${DEPLOY_STATUS}=               Deploy Network Policy with Complete Update      ${PUSH_CONFIG_POLICY_01}          ${device1.serial}
-    should be equal as integers     ${DEPLOY_STATUS}               1
-
-    ${CONNECTED_STATUS}=            Wait Until Device Online                ${device1.serial}   None   30   20
-    Should Be Equal as Integers     ${CONNECTED_STATUS}          1
-
-    ${OUTPUT1}=             Send           ${MAIN_DEVICE_SPAWN}                show ssid
-    Should Contain                          ${OUTPUT1}                  ${PUSH_CONFIG_SSID_01}
-
-
-TCCS-13512-Testcase7: Verification of config push delta update (AH-AP Only)
-    [Documentation]         Verification of config push delta update
-
-    [Tags]                  push_config     development     tccs_13512     tccs_13512_testcase7
-
-    Depends On              TCCS-13512-Testcase6
-
-    @{supported_cli_types}=    Create List   AH-AP
-    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
-
-    ${EDIT_STATUS}=                 Edit Network Policy SSID                    ${PUSH_CONFIG_POLICY_01}          ${PUSH_CONFIG_SSID_01}     ${NEW_SSID_NAME_1}
-    should be equal as integers             ${EDIT_STATUS}              1
-
-    ${DEPLOY_STATUS}=       Deploy Network Policy with Delta Update     ${PUSH_CONFIG_POLICY_01}          ${device1.serial}
-    should be equal as integers             ${DEPLOY_STATUS}            1
-
-    ${CONNECTED_STATUS}=    Wait Until Device Online                ${device1.serial}
-    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
-
-    ${OUTPUT1}=             Send            ${MAIN_DEVICE_SPAWN}              show ssid
-    Should Contain                          ${OUTPUT1}                  ${NEW_SSID_NAME_1}
-
-TCCS-13512-Testcase8: Firmware upgrade to lastest version (AH-AP Only)
+TCCS-13512-Testcase6: Firmware upgrade to lastest version (AH-AP Only)
     [Documentation]         Verify IQ engine upgrade to lastest version ( we should just make sure it was upgraded )
 
-    [Tags]			        push_config     development     tccs_13512      tccs_13512_testcase8
+    [Tags]			        push_config     development     tccs_13512      tccs_13512_testcase6
 
     Depends On             TCCS-13512-Testcase3
 
@@ -315,6 +266,54 @@ TCCS-13512-Testcase8: Firmware upgrade to lastest version (AH-AP Only)
     Should Be Equal As Strings  ${LATEST_VERSION}           ${AP_BUILD_VERSION2}
 
     Close Spawn        ${SPAWN2}
+
+TCCS-13512-Testcase7: Verification of config push complete config update (AH-AP Only)
+    [Documentation]             Verification of config push complete config update
+
+    [Tags]                      push_config     development     tccs_13512     tccs_13512_testcase7   tccs_13512_testcase8
+
+    Depends On                  TCCS-13512-Testcase3
+
+    @{supported_cli_types}=    Create List   AH-AP
+    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+
+    Set To Dictionary           ${CONFIG_PUSH_OPEN_NW_01}    ssid_name=${PUSH_CONFIG_SSID_01}
+    Log to Console              ${CONFIG_PUSH_OPEN_NW_01}
+
+    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy   policy=${PUSH_CONFIG_POLICY_01}      &{CONFIG_PUSH_OPEN_NW_01}
+    should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
+
+    ${DEPLOY_STATUS}=               Deploy Network Policy with Complete Update      ${PUSH_CONFIG_POLICY_01}          ${device1.serial}
+    should be equal as integers     ${DEPLOY_STATUS}               1
+
+    ${CONNECTED_STATUS}=            Wait Until Device Online                ${device1.serial}   None   30   20
+    Should Be Equal as Integers     ${CONNECTED_STATUS}          1
+
+    ${OUTPUT1}=             Send           ${MAIN_DEVICE_SPAWN}                show ssid
+    Should Contain                          ${OUTPUT1}                  ${PUSH_CONFIG_SSID_01}
+
+
+TCCS-13512-Testcase8: Verification of config push delta update (AH-AP Only)
+    [Documentation]         Verification of config push delta update
+
+    [Tags]                  push_config     development     tccs_13512     tccs_13512_testcase8
+
+    Depends On              TCCS-13512-Testcase7
+
+    @{supported_cli_types}=    Create List   AH-AP
+    check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
+
+    ${EDIT_STATUS}=                 Edit Network Policy SSID                    ${PUSH_CONFIG_POLICY_01}          ${PUSH_CONFIG_SSID_01}     ${NEW_SSID_NAME_1}
+    should be equal as integers             ${EDIT_STATUS}              1
+
+    ${DEPLOY_STATUS}=       Deploy Network Policy with Delta Update     ${PUSH_CONFIG_POLICY_01}          ${device1.serial}
+    should be equal as integers             ${DEPLOY_STATUS}            1
+
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${device1.serial}
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
+
+    ${OUTPUT1}=             Send            ${MAIN_DEVICE_SPAWN}              show ssid
+    Should Contain                          ${OUTPUT1}                  ${NEW_SSID_NAME_1}
 
 #Step10: Perform Device Update on VOSS Switch (VOSS ONLY)
 #    [Documentation]     Performs a device update on the VOSS switch

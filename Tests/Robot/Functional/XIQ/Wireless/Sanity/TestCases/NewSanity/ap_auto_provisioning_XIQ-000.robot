@@ -116,6 +116,9 @@ Device Onboard
     ${ONLINE_STATUS_RESULT}=    wait until device online     ${device.serial}
     Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1
 
+    ${REBOOT_STATUS_RESULT}=    Wait Until Device Reboots               ${device.serial}
+    Should Be Equal as Integers             ${REBOOT_STATUS_RESULT}          1
+
     ${MANAGED_STATUS_RESULT}=   wait until device managed   ${device.serial}
     Should Be Equal As Strings                  ${MANAGED_STATUS_RESULT}      1
 
@@ -147,5 +150,8 @@ TCCS-7632: Configure AP Auto Provision Profile
 
     ${verify_result}=   Verify Auto Provision Policy Update     ${ap1.serial}     ${ap1.country}     &{APP_AP_01}
     Should Be Equal As Integers                     ${verify_result}        1
+
+    ${update_result}=   Wait Until device update done   device_serial=${ap1.serial}
+    Should Be Equal As Integers                     ${update_result}        1
 
     Sleep       ${max_config_push_time}
