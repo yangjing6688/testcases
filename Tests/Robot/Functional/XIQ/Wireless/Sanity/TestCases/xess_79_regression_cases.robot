@@ -70,16 +70,19 @@ Suite Setup      Pre Condition
 Pre Condition
     [Documentation]   AP Should be onboarded  and it is online
     
-    ${result}=                       Login User          ${TENANT_USERNAME}     ${TENANT_PASSWORD}   url=${TEST_URL}    map_override=${MAP_FILE_NAME}
+    ${LOGIN_XIQ}=                       Login User          ${TENANT_USERNAME}     ${TENANT_PASSWORD}   url=${TEST_URL}    map_override=${MAP_FILE_NAME}
+    Should Be Equal As Strings      '${LOGIN_XIQ}'   '1'
 
-    Onboard AP          ${ap1.serial}       ${ap1.make}        ${LOCATION}
-    
+    ${ONBOARD_AP}=        Onboard AP          ${ap1.serial}       ${ap1.make}        ${LOCATION}
+    Should Be Equal As Strings      '${ONBOARD_AP}'   '1'
+
     ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
     Set Suite Variable  ${AP_SPAWN}
 
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${CAPWAP_URL}, capwap client default-server-name ${CAPWAP_URL}, capwap client server backup name ${CAPWAP_URL}, no capwap client enable, capwap client enable, save config
     
-    Wait Until Device Online                ${ap1.serial}
+    ${ONLINE_STATUS}=        Wait Until Device Online                ${ap1.serial}
+    Should Be Equal As Strings      '${ONLINE_STATUS}'   '1'
 
     Refresh Devices Page
     
@@ -97,18 +100,19 @@ Pre Condition
     ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME}     ap_serial=${ap1.serial}   update_method=Complete
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
-    Wait Until Device Online       ${ap1.serial}
+    ${ONLINE_STATUS}=        Wait Until Device Online                ${ap1.serial}
+    Should Be Equal As Strings      '${ONLINE_STATUS}'   '1'
 
     ${SUBSCRIBE_LOCATION}=          Subscribe Extreme Location Essentials
     Should Be Equal As Strings      '${SUBSCRIBE_LOCATION}'   '1'
 
-    Create Asset Category XLOC    ${AS_CATEGORY_NAME}     ${XLOC_SITE_NAME}
+    ${CREATE_ASSEST_XLOC}=          Create Asset Category XLOC    ${AS_CATEGORY_NAME}     ${XLOC_SITE_NAME}
+    Should Be Equal As Strings      '${CREATE_ASSEST_XLOC}'   '1'
 
     ${OUTPUT1}=         Send Commands       ${AP_SPAWN}         interface ble0 ibeacon enable, interface ble0 ibeacon major 5, interface ble0 ibeacon minor 5, interface ble0 ibeacon uuid 4155726F686976654E5574776F726B72, interface ble0 ibeacon advertisement-interval 120, interface ble0 ibeacon measured-power -65, interface ble0 ibeacon enable, interface ble0 ibeacon-monitor enable
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
-
 *** Test Cases ***
 
 TCEL-3046: Create ibeacon with long name upto 32 characters	
