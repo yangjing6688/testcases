@@ -63,7 +63,7 @@ Variables    Environments/Config/device_commands.yaml
 
 Force Tags       testbed_1_node     testbed_2_node     testbed_3_node
 Suite Setup      Pre_condition
-#Suite Teardown   Post_condition
+Suite Teardown   Post_condition
 
 *** Test Cases ***
 Step0: Verify device template wireless interface wifi0-1-2 default config - AP4000
