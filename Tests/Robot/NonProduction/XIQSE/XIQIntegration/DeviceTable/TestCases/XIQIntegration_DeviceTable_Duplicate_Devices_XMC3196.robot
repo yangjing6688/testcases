@@ -44,6 +44,7 @@ ${DUT_IP}               ${netelem2.ip}
 ${DUT_PROFILE}          ${netelem2.profile}
 ${DUT_MODEL}            ${netelem2.model}
 ${DUT_MAKE}             ${netelem2.make}
+${LOCATION}             ${netelem2.location}
 
 ${WORLD_SITE}           World
 
