@@ -1,6 +1,7 @@
 test_url:                 "https://extremecloudiq.com"
 capwap_url:               "redirector.aerohive.com"
 sw_capwap_url:            "se.extremecloudiq.com"
+wing_capwap_url:          "se-wing.extremecloudiq.com"
 tenant_username:          "releaseextreme+se@gmail.com"
 tenant_password:          "PASprt86"
 rdc:                      "Extreme_SE"
