@@ -1,11 +1,11 @@
 ap1:
-  name:                     bui-flo-0019
+  name:                     bui-flo-0444
   connection_method:        "ssh"
   ip:                       10.16.170.68
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   "01501707240019"
+  serial:                   "01501708180444"
   console_ip:               10.16.170.37
   console_port:             4003
   mac:                      7C95B1004DC0

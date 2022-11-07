@@ -1,0 +1,8 @@
+test_url:             "https://extremecloudiq.com"
+capwap_url:           "redirector.aerohive.com"
+sw_capwap_url:        "af.extremecloudiq.com"
+wing_capwap_url:      "af-wing.extremecloudiq.com"
+tenant_username:      "xiqextremeqa+adess-af@gmail.com"
+tenant_password:      "Extreme@123"
+base_url:             "https://api.extremecloudiq.com"
+test_rdc_url:         "https://af.extremecloudiq.com"

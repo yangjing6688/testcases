@@ -42,8 +42,8 @@ Test 1: Add Device And Deselect Run Site Add Actions
     ${add_result}=  XIQSE Add Device                    ${DUT1_IP}  ${DUT1_PROFILE}  add_actions=False
     Should Be Equal As Integers                         ${add_result}      1
 
-    # Wait until the Operations panel shows the add operation is completed
-    ${wait_result}=  XIQSE Wait Until Device Add Operation Complete   retry_duration=10  retry_count=6
+    # Wait until the Operations panel shows the discover site actions operation is completed
+    ${wait_result}=  XIQSE Wait Until Discover Site Actions Operation Complete   retry_duration=10  retry_count=30
     Should Be Equal As Integers                         ${wait_result}   1
 
     # Wait until the Operations panel shows the Discover Site Actions operation is completed

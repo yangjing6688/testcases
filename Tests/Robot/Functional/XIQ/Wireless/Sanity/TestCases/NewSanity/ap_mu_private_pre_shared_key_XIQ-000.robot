@@ -24,6 +24,7 @@
 # !!!!!
 
 ${PAGE_TITLE}                       End-to-End Cloud Driven Networking Solutions - Extreme Networks
+${LOCATION}                 auto_location_01, Santa Clara, building_02, floor_04
 
 *** Settings ***
 Library     Collections
@@ -59,6 +60,7 @@ Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 Variables    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/test_email_ids.py
 Variables    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/private_pre_shared_key_config.py
+Library      ExtremeAutomation/Keywords/UserDefinedKeywords/NetworkElements/SetupTeardown/SetupTeardownUdks.py
 
 Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   mu1
 
@@ -75,7 +77,7 @@ Pre Condition
     # ap1       => device1
     # wing1     => device1
     # netelem1  => device1 (EXOS / VOSS)
-    convert to generic device object   device  index=1  look_for_device_type='ap'
+    convert to generic device object   device  index=1  look_for_device_type=ap  set_to_index=1
 
     # Create the connection to the device(s)
     Base Test Suite Setup

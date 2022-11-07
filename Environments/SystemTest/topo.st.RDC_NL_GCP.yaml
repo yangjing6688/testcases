@@ -1,6 +1,7 @@
 test_url:                 "https://extremecloudiq.com"
 capwap_url:               "redirector.aerohive.com"
 sw_capwap_url:            "nl-gcp.extremecloudiq.com"
+wing_capwap_url:          "nl-gcp-wing.extremecloudiq.com"
 tenant_username:          "releaseextreme+nlgcp2@gmail.com"
 tenant_password:          "PASprt86"
 rdc:                      "Extreme_NL-GCP"

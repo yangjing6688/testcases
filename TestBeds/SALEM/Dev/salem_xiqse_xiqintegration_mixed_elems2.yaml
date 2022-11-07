@@ -27,7 +27,7 @@ netelem1:
   function:                 "Switch"
   ccg:                      "Model_EXOSSWITCH"
   contact:                  "Salem NH Automation Team"
-  location:                 "Salem NH Automation Lab"
+  location:                 "San Jose, building_01, floor_02"
   license:                  "PILOT"
   onboard_device_type:      "Real"
 
@@ -55,6 +55,7 @@ netelem2:
   function:                 "Switch"
   license:                  "PILOT"
   onboard_device_type:      "Real"
+  location:                 "San Jose, building_01, floor_02"
 
 netelem3:
   name:                     "SAPro-x440-235-207"
@@ -80,6 +81,7 @@ netelem3:
   function:                 "Switch"
   license:                  "PILOT"
   onboard_device_type:      "Real"
+  location:                 "San Jose, building_01, floor_02"
 
 netelem4:
   name:                     "SAPro-x440-235-208"
@@ -104,6 +106,7 @@ netelem4:
   product:                  "X440_G2_24t_G4"
   function:                 "Switch"
   license:                  "PILOT"
+  location:                 "San Jose, building_01, floor_02"
 
 netelem5:
   name:                     "SAPro-x440-235-209"
@@ -129,6 +132,7 @@ netelem5:
   function:                 "Switch"
   license:                  "PILOT"
   onboard_device_type:      "Real"
+  location:                 "San Jose, building_01, floor_02"
 
 netelem6:
   name:                     "SAPro-x440-235-210"
@@ -154,6 +158,7 @@ netelem6:
   function:                 "Switch"
   license:                  "PILOT"
   onboard_device_type:      "Real"
+  location:                 "San Jose, building_01, floor_02"
 
 ap1:
   name:                     "bui-flo-0004"
@@ -176,5 +181,5 @@ ap1:
   product:                  "AP"
   function:                 "AP"
   ccg:                      "Model_AP_460S6C"
-  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  location:                 "San Jose, building_01, floor_02"
   onboard_device_type:      "Real"

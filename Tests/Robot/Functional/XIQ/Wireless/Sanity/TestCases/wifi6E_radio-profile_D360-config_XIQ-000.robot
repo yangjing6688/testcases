@@ -505,7 +505,7 @@ TCXM-18405: APC-44617: Verify The Radio Profile Details with the radio mode ax (
     [Tags]              tcxm_18405    development    xiq-mainline   tcxm-18405    t3     apc-44617    radio-profile
 
     &{fields_to_check1}=   Create Dictionary    supported_radio_modes=ax (5GHz)   radio_profile_maximum_transmit_power=20  radio_profile_transmit_power_floor=5
-    &{fields_to_check2}=   Create Dictionary    tranmission_power_max_drop=18     maximum_number_of_clients=100            channel_auto_or_manual=Auto
+    &{fields_to_check2}=   Create Dictionary    tranmission_power_max_drop=9     maximum_number_of_clients=100            channel_auto_or_manual=Auto
     &{fields_to_check3}=   Create Dictionary    tranmission_power=Auto            transmission_power_control=OFF           background_scan=ON
 
     navigate_to_radio_profile

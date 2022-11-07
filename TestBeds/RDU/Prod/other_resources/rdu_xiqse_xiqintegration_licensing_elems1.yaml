@@ -1,21 +1,7 @@
 ---
 lab:                        "RDU"
 
-pilot_ip_range:
-  start_ip:                 "10.69.61.17"
-  end_ip:                   "10.69.61.25"
-  g2r1:
-    start_ip:               "10.69.61.17"
-    end_ip:                 "10.69.61.25"
-  g9r2:
-    start_ip:               "10.69.61.17"
-    end_ip:                 "10.69.61.35"
-
-profile:
-  pilot:                    "public_v1_Profile"
-  nav:                      "public_v2_Profile"
-
-pilot1:
+netelem1:
   name:                     "Gns3-5520-61-14"
   ip:                       "10.69.61.14"
   profile:                  "public_v1_Profile"
@@ -23,8 +9,17 @@ pilot1:
   mac:                      "0cfd64a30100"
   model:                    "5520-24T-SwitchEngine"
   platform:                 "exos"
+  cli_type:                 "EXOS"
+  platform:                 "exos"
+  make:                     "EXOS"
+  hostname:                 "10.69.61.14"
+  image_family:             "summitx"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "ssh"
+  xiq_os:                   "EXOS"
 
-pilot2:
+netelem2:
   name:                     "Gns3-5420-61-15"
   ip:                       "10.69.61.15"
   profile:                  "public_v1_Profile"
@@ -32,8 +27,17 @@ pilot2:
   mac:                      "0cfd64a30200"
   model:                    "5420F-24T-4XE-SwitchEngine"
   platform:                 "exos"
+  cli_type:                 "EXOS"
+  platform:                 "exos"
+  make:                     "EXOS"
+  hostname:                 "10.69.61.15"
+  image_family:             "summitx"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "ssh"
+  xiq_os:                   "EXOS"
 
-pilot3:
+netelem3:
   name:                     "Gns3-5520-61-16"
   ip:                       "10.69.61.16"
   profile:                  "public_v1_Profile"
@@ -41,8 +45,17 @@ pilot3:
   mac:                      "0cfd64a30300"
   model:                    "5320-16P-4XE-SwitchEngine"
   platform:                 "exos"
+  cli_type:                 "EXOS"
+  platform:                 "exos"
+  make:                     "EXOS"
+  hostname:                 "10.69.61.16"
+  image_family:             "summitx"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "ssh"
+  xiq_os:                   "EXOS"
 
-nav1:
+netelem4:
   name:                     "GNS3-c3745-61-10"
   ip:                       "10.69.61.10"
   profile:                  "public_v2_Profile"
@@ -50,8 +63,17 @@ nav1:
   mac:                      "c401a1790000"
   model:                    "Cisco 3640"
   platform:                 "cisco"
+  cli_type:                 "CISCO"
+  platform:                 "Cisco"
+  make:                     "CISCO"
+  hostname:                 "10.69.61.10.extremenetworks.com"
+  image_family:             "cisco"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "ssh"
+  xiq_os:                   "Cisco"
 
-nav2:
+netelem5:
   name:                     "GNS3-c7206-61-11"
   ip:                       "10.69.61.11"
   profile:                  "public_v2_Profile"
@@ -59,8 +81,17 @@ nav2:
   mac:                      "ca033ea40006"
   model:                    "Cisco"
   platform:                 "cisco"
+  cli_type:                 "CISCO"
+  platform:                 "Cisco"
+  make:                     "CISCO"
+  hostname:                 "10.69.61.11.extremenetworks.com"
+  image_family:             "cisco"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "ssh"
+  xiq_os:                   "Cisco"
 
-nav3:
+netelem6:
   name:                     "GNS3-c3745-61-13"
   ip:                       "10.69.61.13"
   profile:                  "public_v2_Profile"
@@ -68,3 +99,48 @@ nav3:
   mac:                      "c402ae550000"
   model:                    "Cisco 3640"
   platform:                 "cisco"
+  cli_type:                 "CISCO"
+  platform:                 "Cisco"
+  make:                     "CISCO"
+  hostname:                 "10.69.61.13.extremenetworks.com"
+  image_family:             "cisco"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "ssh"
+  xiq_os:                   "Cisco"
+
+netelem7:
+  ip:                       "10.69.61.17"
+  profile:                  "public_v1_Profile"
+  model:                    "5420M-24T-4YE-SwitchEngine"
+  name:                     "10.69.61.17"
+  serial:                   "SIM611Q-A104"
+  mac:                      "0cfd64a30400"
+  platform:                 "exos"
+  cli_type:                 "EXOS"
+  platform:                 "exos"
+  make:                     "EXOS"
+  hostname:                 "10.69.61.17"
+  image_family:             "summitx"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "ssh"
+  xiq_os:                   "EXOS"
+
+netelem8:
+  ip:                       "10.69.61.25"
+  profile:                  "public_v1_Profile"
+  model:                    "5420F-24T-4XE-SwitchEngine"
+  name:                     "10.69.61.25"
+  serial:                   "SIM611Q-A10C"
+  mac:                      "0cfd64a30c00"
+  platform:                 "exos"
+  cli_type:                 "EXOS"
+  platform:                 "exos"
+  make:                     "EXOS"
+  hostname:                 "10.69.61.25"
+  image_family:             "summitx"
+  username:                 "admin"
+  password:                 ""
+  connection_method:        "ssh"
+  xiq_os:                   "EXOS"

@@ -44,27 +44,27 @@ ${XIQ_URL}                ${xiq.test_url}
 ${XIQ_USER}               ${xiq.tenant_username}
 ${XIQ_PASSWORD}           ${xiq.tenant_password}
 
-${PILOT_IP_START}         ${pilot_ip_range.start_ip}
-${PILOT_IP_END}           ${pilot_ip_range.end_ip}
-${PILOT_PROFILE}          ${profile.pilot}
+${PILOT_IP_START}         ${netelem7.ip}
+${PILOT_IP_END}           ${netelem8.ip}
+${PILOT_PROFILE}          ${netelem7.profile}
 
-${PIL1_IP}                ${pilot1.ip}
-${PIL1_PROFILE}           ${pilot1.profile}
+${PIL1_IP}                ${netelem1.ip}
+${PIL1_PROFILE}           ${netelem1.profile}
 
-${PIL2_IP}                ${pilot2.ip}
-${PIL2_PROFILE}           ${pilot2.profile}
+${PIL2_IP}                ${netelem2.ip}
+${PIL2_PROFILE}           ${netelem2.profile}
 
-${PIL3_IP}                ${pilot3.ip}
-${PIL3_PROFILE}           ${pilot3.profile}
+${PIL3_IP}                ${netelem3.ip}
+${PIL3_PROFILE}           ${netelem3.profile}
 
-${NAV1_IP}                ${nav1.ip}
-${NAV1_PROFILE}           ${nav1.profile}
+${NAV1_IP}                ${netelem4.ip}
+${NAV1_PROFILE}           ${netelem4.profile}
 
-${NAV2_IP}                ${nav2.ip}
-${NAV2_PROFILE}           ${nav2.profile}
+${NAV2_IP}                ${netelem5.ip}
+${NAV2_PROFILE}           ${netelem5.profile}
 
-${NAV3_IP}                ${nav3.ip}
-${NAV3_PROFILE}           ${nav3.profile}
+${NAV3_IP}                ${netelem6.ip}
+${NAV3_PROFILE}           ${netelem6.profile}
 
 ${PILOT_ENTITLEMENT}      ${xiq.pilot_entitlements}
 ${NAVIGATOR_ENTITLEMENT}  ${xiq.navigator_entitlements}

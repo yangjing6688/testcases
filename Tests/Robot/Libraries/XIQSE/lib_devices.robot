@@ -71,7 +71,7 @@ Create Status Only Device and Confirm Success
     Should Be Equal As Integers                         ${add_result}      1
 
     # Wait until the Operations panel shows the add operation is completed
-    ${wait_result}=  XIQSE Wait Until Device Add Operation Complete   retry_duration=10  retry_count=6
+    ${wait_result}=  XIQSE Wait Until Device Add Operation Complete   retry_duration=10  retry_count=30
     Should Be Equal As Integers         ${wait_result}   1
 
     # Make sure we didn't get a license limit banner
@@ -81,8 +81,8 @@ Create Status Only Device and Confirm Success
     ${confirm_result}=  XIQSE Wait Until Device Added   ${ip}
     Should Be Equal As Integers                         ${confirm_result}  1
 
-Add Device and Wait for Operation to Complete
-    [Documentation]     Adds the specified device in XIQ-SE and waits for the operations panel to show it is complete
+Add Device and Wait for Device Add Operation to Complete
+    [Documentation]     Adds the specified device in XIQ-SE and waits for the device add operations panel to show it is complete
     [Arguments]         ${ip}  ${profile}
 
     # Add the device
@@ -90,7 +90,23 @@ Add Device and Wait for Operation to Complete
     Should Be Equal As Integers                         ${add_result}      1
 
     # Wait until the Operations panel shows the add operation is completed
-    ${wait_result}=  XIQSE Wait Until Device Add Operation Complete   retry_duration=10  retry_count=6
+    ${wait_result}=  XIQSE Wait Until Device Add Operation Complete   retry_duration=10  retry_count=30
+    Should Be Equal As Integers         ${wait_result}   1
+
+Add Device and Wait for Operation to Complete
+    [Documentation]     Adds the specified device in XIQ-SE and waits for the device site action operations panel to show it is complete
+    [Arguments]         ${ip}  ${profile}
+
+    # Add the device
+    ${add_result}=  XIQSE Add Device                    ${ip}  ${profile}
+    Should Be Equal As Integers                         ${add_result}      1
+
+    # Wait until the Operations panel shows the add operation is completed
+    ${wait_result}=    Run Keyword If  '<Ping Only>' in '${profile}'
+    ...    XIQSE Wait Until Device Add Operation Complete   retry_duration=10  retry_count=30
+    ...    ELSE
+    ...    XIQSE Wait Until Discover Site Actions Operation Complete   retry_duration=10  retry_count=30
+
     Should Be Equal As Integers         ${wait_result}   1
 
 Search Device and Confirm Success
