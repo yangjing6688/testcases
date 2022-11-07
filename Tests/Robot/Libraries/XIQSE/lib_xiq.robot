@@ -50,13 +50,6 @@ Navigate to XIQ Devices and Confirm Success
     ${result}=  Navigate to Devices
     Should Be Equal As Integers  ${result}  1
 
-Navigate and Onboard Switch to XIQ
-    [Documentation]     Navigates to XIQ Devices and onboards the specified switch to XIQ
-    [Arguments]         ${serial}  ${make}  ${location}
-
-    Navigate to XIQ Devices and Confirm Success
-    Onboard Switch to XIQ and Confirm Success  ${serial}  ${make}  ${location}
-
 Navigate and Remove Device by MAC From XIQ
     [Documentation]     Navigates to XIQ Devices and removes the specified device by MAC address from XIQ
     [Arguments]         ${mac}
@@ -71,12 +64,21 @@ Navigate and Remove Device by Serial From XIQ
     Navigate to XIQ Devices and Confirm Success
     Remove Device By Serial From XIQ and Confirm Success  ${serial}
 
-Onboard Switch to XIQ and Confirm Success
+Navigate and Onboard Device to XIQ
+    [Documentation]     Navigates to XIQ Devices, onboards the specified switch to XIQ and confirms it was added
+    [Arguments]         ${netelem}  ${serial}
+
+    Navigate to XIQ Devices and Confirm Success
+    ${onboard_result}=  Onboard Device Quick  ${netelem}
+    Should Be Equal As Integers         ${onboard_result}  1
+
+    Confirm Device Serial Present       ${serial}
+
+Onboard Device to XIQ and Confirm Success
     [Documentation]     Onboards the specified switch to XIQ and confirms it was added
-    [Arguments]         ${serial}  ${make}  ${location}
+    [Arguments]         ${netelem}  ${serial}
 
-
-    ${onboard_result}=  Onboard Device  ${serial}  ${make}  location=${location}
+    ${onboard_result}=  Onboard Device Quick  ${netelem}
     Should Be Equal As Integers         ${onboard_result}  1
 
     Confirm Device Serial Present       ${serial}

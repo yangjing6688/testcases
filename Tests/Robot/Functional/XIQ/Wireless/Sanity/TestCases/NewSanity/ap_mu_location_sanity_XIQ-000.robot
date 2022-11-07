@@ -161,6 +161,8 @@ TCCS-11597: Verify AP Hostname and Client in ML Insights Monitor Tab
     ${CONNECT_STATUS}=              MU1.connect_open_network         ${SSID_NAME}
     should be equal as strings      '${CONNECT_STATUS}'    '1'
 
+    sleep   ${client_connect_wait}
+
     ${FLOOR_SEARCH}=                search_floor_in_network360monitor               ${FLOOR}
     Save Screen shot
     Should Not Be Equal as Strings             '${FLOOR_SEARCH}'          '-1'

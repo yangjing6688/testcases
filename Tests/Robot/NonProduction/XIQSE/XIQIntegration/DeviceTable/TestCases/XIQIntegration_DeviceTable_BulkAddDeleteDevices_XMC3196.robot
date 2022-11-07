@@ -41,11 +41,11 @@ ${XIQ_URL}                ${xiq.test_url}
 ${XIQ_USER}               ${xiq.tenant_username}
 ${XIQ_PASSWORD}           ${xiq.tenant_password}
 
-${DISCOVER_IP_START}      ${pilot_ip_range.start_ip}
-${DISCOVER_IP_END}        ${pilot_ip_range.end_ip}
-${DISCOVER_PROFILE}       ${profile.pilot}
+${DISCOVER_IP_START}      ${netelem7.ip}
+${DISCOVER_IP_END}        ${netelem8.ip}
+${DISCOVER_PROFILE}       ${netelem7.profile}
 
-${DISCOVER_SUBNET}        ${pilot_ip_range.start_ip}/24
+${DISCOVER_SUBNET}        ${netelem7.ip}/24
 
 ${TEST_SITE}              AutomationSite
 ${DISCOVERY_TYPE}         RANGE

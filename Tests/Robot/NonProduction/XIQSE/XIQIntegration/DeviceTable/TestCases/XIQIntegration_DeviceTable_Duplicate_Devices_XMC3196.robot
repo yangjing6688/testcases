@@ -44,8 +44,8 @@ ${DUT_IP}               ${netelem2.ip}
 ${DUT_PROFILE}          ${netelem2.profile}
 ${DUT_MODEL}            ${netelem2.model}
 ${DUT_MAKE}             ${netelem2.make}
+${LOCATION}             ${netelem2.location}
 
-${LOCATION}             San Jose, building_01, floor_02
 ${WORLD_SITE}           World
 
 
@@ -59,7 +59,7 @@ Test 1: TC-52234 - Device Onboarded to XIQ & Subsequently Onboarded to XIQSE
     XIQ Navigate to Devices and Confirm Success
     Delete XIQ Test Device and Confirm Success    ${DUT_SERIAL}
 
-    Navigate and Onboard Switch to XIQ   ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}
+    Onboard Device to XIQ and Confirm Success       ${netelem2}    ${DUT_SERIAL}
 
     # Add Device to XIQSE and make sure a system message appears that it is already onboarded
     Switch To Window  ${XIQSE_WINDOW_INDEX}
@@ -97,7 +97,7 @@ Test 3: TC-52236 - Device in XIQ and XIQSE then Deleted from XIQ
     # Onboard Device to XIQ
     Switch To Window  ${XIQ_WINDOW_INDEX}
     Refresh Devices Page
-    Onboard Switch to XIQ and Confirm Success   ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}
+    Navigate and Onboard Device to XIQ              ${netelem2}    ${DUT_SERIAL}
 
     # Add Same Device to XIQSE
     Switch To Window  ${XIQSE_WINDOW_INDEX}

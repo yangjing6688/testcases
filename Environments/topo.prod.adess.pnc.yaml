@@ -1,0 +1,8 @@
+test_url:             "https://extremecloudiq.com"
+capwap_url:           "redirector.aerohive.com"
+sw_capwap_url:        "pnc.extremecloudiq.com"
+wing_capwap_url:      "pnc-wing.extremecloudiq.com"
+tenant_username:      "xiqextremeqa+adess-pnc@gmail.com"
+tenant_password:      "Extreme@123"
+base_url:             "https://api.extremecloudiq.com"
+test_rdc_url:         "https://pnc.extremecloudiq.com"
