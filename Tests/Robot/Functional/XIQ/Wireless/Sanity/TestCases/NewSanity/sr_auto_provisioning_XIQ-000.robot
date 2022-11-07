@@ -115,6 +115,9 @@ Device Onboard
     ${ONLINE_STATUS_RESULT}=    wait until device online     ${device.serial}
     Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1
 
+    ${REBOOT_STATUS_RESULT}=    Wait Until Device Reboots               ${device.serial}
+    Should Be Equal as Integers             ${REBOOT_STATUS_RESULT}          1
+
     ${MANAGED_STATUS_RESULT}=   wait until device managed   ${device.serial}
     Should Be Equal As Strings                  ${MANAGED_STATUS_RESULT}      1
 

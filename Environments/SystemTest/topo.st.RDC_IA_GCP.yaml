@@ -1,6 +1,7 @@
 test_url:                 "https://extremecloudiq.com"
 capwap_url:               "redirector.aerohive.com"
 sw_capwap_url:            "ia-gcp.extremecloudiq.com"
+wing_capwap_url:          "ia-gcp-wing.extremecloudiq.com"
 tenant_username:          "releaseextreme+gcpia@gmail.com"
 tenant_password:          "PASprt86"
 rdc:                      "Extreme_IA-GCP"

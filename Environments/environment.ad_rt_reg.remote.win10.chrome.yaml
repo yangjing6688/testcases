@@ -1,0 +1,16 @@
+WEB_DRIVER_LOC:           remote
+OS_PLATFORM:              windows10
+BROWSER:                  chrome
+
+# Configure this to True to print the WebElement descriptions in definitions
+ELEMENT_INFO:             None
+
+# Remote Webdriver Port
+WINDOWS10:                10.234.123.221
+WEBDRIVER_PORT:           4444
+
+# Remote Robot Server Port
+REMOTE_SERVER_PORT:       8270
+
+# Max Delay for which framework wait for an Element to respond
+ELEMENT_DELAY:            10

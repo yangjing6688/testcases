@@ -379,7 +379,7 @@ XIQSE Add Device and Confirm Not Added
 
     Clear Operations Panel and Confirm Success
 
-    Add Device and Wait for Operation to Complete  ${ip}  ${profile}
+    Add Device and Wait for Device Add Operation to Complete  ${ip}  ${profile}
 
     XIQSE Confirm Devices Not Added      ${ip}
 
