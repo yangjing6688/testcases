@@ -1,0 +1,23 @@
+# Base for negative tests bc_01x.yaml
+---
+system:
+  stacking: true
+  slots:
+    - num: 1
+      type: 5720-24MW
+      vims:
+        - slot: A
+          type: 5720-VIM-2CE
+    - num: 2
+      type: 5720-48MW
+      primary: true
+      vims:
+        - slot: A
+          type: 5720-VIM-6YE
+    - num: 3
+      type: 5720-24MXW
+    - num: 4
+      type: 5720-48MXW
+      vims:
+        - slot: A
+          type: 5720-VIM-2CE

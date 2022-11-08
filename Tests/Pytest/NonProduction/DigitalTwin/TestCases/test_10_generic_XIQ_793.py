@@ -2,7 +2,6 @@
 Digital Twin - test_10_generic.py
 """
 
-# pylint: disable=import-error
 import pytest
 from pytest_testconfig import config
 from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary
@@ -128,5 +127,4 @@ class GenericTests:
                                                      dt_cl_test_env.get_prim_slot_num())
     @pytest.mark.p1
     def test_12_dt_mgmt(self):
-        assert self.suiteUdks.verify_dt_mgmt(self.tb.dut1.name,
-                                             pytest.use_dt_mgmt) # pylint: disable=no-member
+        assert self.suiteUdks.verify_dt_mgmt(self.tb.dut1.name, pytest.use_dt_mgmt)

@@ -1,0 +1,9 @@
+# Same as bc_011.yaml, but without stacking
+---
+system:
+  slots:
+    - num: 1
+      type: 5720-24MW
+      vims:
+        - slot: A
+          type: 5720-VIM-2CE

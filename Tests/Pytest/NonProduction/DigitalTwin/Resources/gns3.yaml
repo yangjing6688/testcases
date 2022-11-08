@@ -4,6 +4,7 @@ lab:                        "local"
 netelem1:
   name:                     "gns3_container"
   os:                       "exos"
+  cli_type:                 "exos"
   platform:                 "VM"
   image_family:             "vm"
   ip:                       "localhost"
