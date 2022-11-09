@@ -146,7 +146,8 @@ def update_qtest():
                             rc=1
                     except Exception as e:
                         # endpoint returned non-json response or didn't contain status key in dict
-                        # Since this is unhandled it exits with a 1 code
+                        # Return 1 so that this error is reported
+                        rc=1
                         print(f'Bad response from endpoint: {r.text} \nError: {e}')
 
                 print() # Add blank line between testcases
@@ -180,7 +181,9 @@ def update_testcase_data():
 
             try:
                 json_response = r.json()
-                if json_response['result'].get('status') == 'success':
+                if isinstance(json_response['result'], dict) and json_response['result'].get('status') == 'success':
+                    print(f"{SUCCESS_PREFIX} Test Case [{testcase}] added to the AutoIQ Database")
+                elif isinstance(json_response['result'], list) and json_response['result'][0].get('status') == 'success':
                     print(f"{SUCCESS_PREFIX} Test Case [{testcase}] added to the AutoIQ Database")
                 elif 'Duplicate' in json_response['errors'][0]:
                     print(f"{SUCCESS_PREFIX} Test Case [{testcase}] is already in the AutoIQ Database")
@@ -189,8 +192,9 @@ def update_testcase_data():
                     rc=1
             except Exception as e:
                 # endpoint returned non-json response or didn't contain status key in dict
-                # Since this is unhandled it exits with a 1 code
-                raise Exception(f'Bad response from endpoint: {r.text}') from e
+                # Return 1 so that this error is reported
+                rc=1
+                print(f'Bad response from endpoint: {r.text} \nError: {e}')
 
             print() # Add blank line between testcases
         print() # Add blank line between files
