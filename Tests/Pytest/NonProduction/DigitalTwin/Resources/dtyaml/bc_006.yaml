@@ -1,0 +1,7 @@
+# Same as bc_001.yaml, but with different VIM configuration
+---
+system:
+  license: PRD-5000-PRMR,PRD-5000-MACSEC
+  slots:
+    - num: 1
+      type: 5520-24T
