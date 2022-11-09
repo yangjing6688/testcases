@@ -93,7 +93,7 @@ Step0: Verify device template wireless interface wifi0-1-2 default config - AP40
 Step1a: Onboard AP - AP4000
     [Documentation]    Onboard AP
     [Tags]             tcxm-9350   development     step1     step1a    steps
-    ${STATUS}                      Onboard Device    ${ap1.serial}    ${ap1.make}    location=${ap1.location}
+    ${STATUS}                      onboard device quick    ${ap1}
     ${AP_SPAWN}        Open Spawn          ${ap1.ip}           ${ap1.port}      ${ap1.username}      ${ap1.password}      ${ap1}[cli_type]
     ${OUTPUT0}         Send Commands       ${AP_SPAWN}        capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
     ${OUTPUT0}         Send                ${AP_SPAWN}        console page 0

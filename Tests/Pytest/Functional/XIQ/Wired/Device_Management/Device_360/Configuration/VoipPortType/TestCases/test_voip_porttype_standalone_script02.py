@@ -189,8 +189,7 @@ class xiqTests():
                 cls.get_virtual_router(cls,cls.tb.dut1_name, cls.tb.dut1.ip)
             cls.Configure_iqagent(cls, cls.tb.dut1.cli_type, cls.tb.dut1_name, cls.tb.dut1.serial)
             if cls.tb.dut1.cli_type == "exos":
-                res = cls.xiq.xflowsmanageSwitch.onboard_switch(cls.tb.dut1.serial, device_os=cls.tb.dut1.cli_type,
-                                                                entry_type="Manual", location=dut_location)
+                res = cls.xiq.xflowscommonDevices.onboard_device_quick(cls.tb.dut1)
 
 
         except Exception as e:

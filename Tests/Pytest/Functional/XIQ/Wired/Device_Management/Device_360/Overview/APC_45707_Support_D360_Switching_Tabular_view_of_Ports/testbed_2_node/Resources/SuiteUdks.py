@@ -460,8 +460,7 @@ class SuiteUdk:
                 self.xiq.xflowscommonDevices._goto_devices()
                 self.xiq.xflowscommonDevices.delete_device(device_serial=dut.serial)
 
-            assert self.xiq.xflowsmanageSwitch.onboard_switch(
-                dut.serial, device_os=dut.cli_type, location=location) == 1, f"Failed to onboard this dut to XiQ: {dut}"
+            assert self.xiq.xflowscommonDevices.onboard_device_quick(dut) == 1
 
             if configure_iqagent:
 

@@ -98,7 +98,7 @@ TCCS-13495_Step1 : Login and Onboard AP on XIQ Account
     #${IMPORT_MAP}=                Import Map In Network360Plan  ${MAP_FILE_NAME}
     #Should Be Equal As Strings    ${IMPORT_MAP}       1
 
-    ${ONBOARD_RESULT}=      Onboard Device      ${ap1.serial}           ${ap1.cli_type}       location=${LOCATION}
+    ${ONBOARD_RESULT}=      onboard device quick      ${ap1}
     Should be equal as integers                 ${ONBOARD_RESULT}       1
 
     ${AP_SPAWN}=                Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}

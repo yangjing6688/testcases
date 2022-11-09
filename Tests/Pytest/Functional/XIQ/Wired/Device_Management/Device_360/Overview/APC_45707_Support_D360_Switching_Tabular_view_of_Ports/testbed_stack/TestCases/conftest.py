@@ -157,9 +157,7 @@ def onboarded_stack(onboarding_location):
 
             xiq.xflowscommonDevices.delete_device(device_mac=dut.mac)
 
-            assert xiq.xflowsmanageSwitch.onboard_switch(
-                dut.serial, device_os="Switch Engine", entry_type="Manual",
-                location=onboarding_location) == 1, f"Failed to onboard this dut to XiQ: {dut}"
+            assert xiq.xflowscommonDevices.onboard_device_quick(dut) == 1
             time.sleep(5)
 
             netelement_iqagent_config(devCmd, dut.name, config['sw_connection_host'])

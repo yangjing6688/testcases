@@ -62,7 +62,7 @@ TCCS-7279_Step1: Onboard WiNG AP
     ${DELETE_STATUS}=               Delete Device           device_serial=${wing1.serial}
     Should be Equal As Integers     ${DELETE_STATUS}      1
 
-    ${ONBOARD_RESULT}=              Onboard WiNG AP         ${wing1.serial}         ${wing1.mac}   ${wing1.make}
+    ${ONBOARD_RESULT}=              onboard device quick         ${wing1}
     Should Be Equal As Integers     ${ONBOARD_RESULT}           1
 
     ${search_result}=               Search AP Serial    ${wing1.serial}

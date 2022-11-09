@@ -95,7 +95,7 @@ XIQ-10314 - TCXM-25835 - Automation: XIQ Measure time taken to Onboard device
 
     ${START_TIME}=           Get Current Date Time   time_format=${TIME_FORMAT}
 
-    ${ONBOARD_RESULT}=       Onboard Device      ${ap1.serial}           ${ap1.make}       location=${LOCATION}
+    ${ONBOARD_RESULT}=       onboard device quick     ${ap1}
     should be equal as integers     ${ONBOARD_RESULT}       1
 
     ${SEARCH_AP}=            Search AP Serial    ${ap1.serial}

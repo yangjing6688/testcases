@@ -81,7 +81,7 @@ Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
 
     ${result1}=             Login User          ${tenant_username}    ${tenant_password}
     should be equal as integers                 ${result1}            1
-    ${onboard_result}=      Onboard Device      ${ap1.serial}         ${ap1.make}       location=${ap1.location}      device_os=${ap1.os}
+    ${onboard_result}=      onboard device quick     ${ap1}
     ${search_result}=       Search AP Serial    ${ap1.serial}
     should be equal as integers                 ${onboard_result}     1
     should be equal as integers                 ${search_result}      1

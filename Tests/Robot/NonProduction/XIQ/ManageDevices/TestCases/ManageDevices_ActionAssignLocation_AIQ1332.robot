@@ -112,7 +112,7 @@ Tear Down Test and Close Session
 Set Up Aerohive Switch Test
     [Documentation]     Configures and onboards the Aerohive Switch test device
 
-    Onboard Device                         ${DUT_SERIAL}  ${DUT_MAKE}  location=${LOCATION}
+    onboard device quick                   ${aerohive_sw1}
     Configure iqagent for Aerohive Switch  ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}
     ...                                    ${DUT_PASSWORD}  ${IQAGENT}
     Confirm Device Serial Present          ${DUT_SERIAL}
@@ -120,7 +120,7 @@ Set Up Aerohive Switch Test
 Set Up Aerohive AP Test
     [Documentation]     Configures and onboards the Aerohive AP test device
 
-    Onboard Device                                  ${DUT_SERIAL}  ${DUT_MAKE}  location=${LOCATION}
+    onboard device quick                            ${ap1}
     Configure CAPWAP Device To Connect To Cloud     ${DUT_CLI_TYPE}  ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}
     ...                                             ${DUT_PASSWORD}  ${XIQ_CAPWAP_URL}
     Confirm Device Serial Present                   ${DUT_SERIAL}
@@ -128,7 +128,7 @@ Set Up Aerohive AP Test
 Set Up VOSS Test
     [Documentation]     Configures and onboards the VOSS test device
 
-    Onboard VOSS Device                    ${DUT_SERIAL}  loc_name=${LOCATION}
+    onboard device quick                   ${ap1}
     Reset VOSS Switch to Factory Defaults  ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
     Configure iqagent for VOSS Switch      ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${IQAGENT}
     Confirm Device Serial Present          ${DUT_SERIAL}
