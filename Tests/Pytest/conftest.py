@@ -425,7 +425,7 @@ def pytest_collection_modifyitems(session, items):
         
         logger_obj.info(f"Current runlist ('{pytest.runlist_name}') is located in this yaml file: '{pytest.runlist_path}'.")
         logger_obj.info(f"Found {len(pytest.runlist_tests)} tests in given runlist: " + "'" + "', '".join(pytest.runlist_tests) + "'.")
-        logger_obj.info(f"Collected {len(items)} test functions from given test directory path.")
+        logger_obj.info(f"Collected {len(items)} test functions from given test directory path(s).")
 
         for item in items:
             if (cls_markers := getattr(item.cls, "pytestmark", None)) is not None:
@@ -848,8 +848,6 @@ def pytest_runtest_call(item):
         
         logger_obj.step(f"Start test function of '{current_test_marker}': '{item.nodeid}'.")
 
-        test_identifier = f"{item.cls.__name__}::{item.originalname}"
-            
         output = ""
         test_data = {}
         
@@ -857,7 +855,7 @@ def pytest_runtest_call(item):
             if (data := callspec.params.get("test_data")) is not None:
                 test_data = data
         else:
-            test_data = pytest.suitemap_tests[test_identifier]
+            test_data = pytest.suitemap_tests[f"{item.cls.__name__}::{item.originalname}"]
             
         for field in ["author", "tc", "description", "title"]:
             if (field_value := test_data.get(field)) is not None:
@@ -882,6 +880,10 @@ class OnboardingTests:
             request: fixtures.SubRequest,
             logger: PytestLogger
     ) -> None:
+        """ It should be the first test in the runlist in order to onboard the network devices before the other tests.
+            The tests that depend on this test should use this marker '@pytest.mark.dependson("tcxm_xiq_onboarding")' in order to be skipped if the onboarding fails or is skipped.
+            This test must be added to the suitemap yaml in order to be later used in the runlist yaml.
+        """
         if not any(
             [
                 pytest.onboard_one_node,
@@ -897,6 +899,7 @@ class OnboardingTests:
             logger_obj.info(
                 "The 'skip_setup' option is given in runlist. The onboarding is skipped.")
             return
+        
         request.getfixturevalue("onboard")
 
 
@@ -906,6 +909,8 @@ class OnboardingTests:
         request: fixtures.SubRequest,
         logger: PytestLogger
         ) -> None:
+        """ It should be the last test in the runlist in order to clean the onboarded devices after all the tests ran
+        """
         if not any(
             [
                 pytest.onboard_one_node,
@@ -917,10 +922,12 @@ class OnboardingTests:
                 "Currently there are no devices given in the yaml files so "
                 "the onboarding cleanup test won't unconfigure anything.")
             return
+        
         if pytest.run_options.get("skip_teardown"):
             logger_obj.info(
                 "The 'skip_teardown' option is given in runlist. The onboarding cleanup is skipped.")
             return
+        
         request.getfixturevalue("onboard_cleanup")
 
 
