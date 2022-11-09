@@ -16,17 +16,7 @@ from _pytest import mark, fixtures
 from collections import defaultdict
 from pytest_testconfig import config
 from contextlib import contextmanager
-from typing import (
-    List,
-    Dict,
-    DefaultDict,
-    Callable,
-    Tuple,
-    Iterator,
-    Protocol,
-    NewType,
-    Union
-)
+from typing import List, Dict, DefaultDict, Callable, Tuple, Iterator, Protocol, NewType, Union
 
 from ExtremeAutomation.Library.Utils.Singleton import Singleton
 from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
@@ -38,6 +28,13 @@ from ExtremeAutomation.Keywords.NetworkElementKeywords.NetworkElementConnectionM
 from ExtremeAutomation.Keywords.NetworkElementKeywords.Utils.NetworkElementCliSend import NetworkElementCliSend
 from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary
 from ExtremeAutomation.Imports.Udks import Udks
+from ExtremeAutomation.Imports.EndSystemUtils import EndSystemUtils
+from ExtremeAutomation.Imports.LowLevelApis import LowLevelApis
+from ExtremeAutomation.Imports.VirtualMachineUtils import VirtualMachineUtils
+from ExtremeAutomation.Imports.NetElementUtils import NetElementUtils
+from ExtremeAutomation.Imports.LowLevelTrafficApis import LowLevelTrafficApis
+from ExtremeAutomation.Imports.CommonObjectUtils import CommonObjectUtils
+
 from extauto.common.Screen import Screen
 from extauto.common.Rest import Rest
 from extauto.common.WebElementHandler import WebElementHandler
@@ -162,11 +159,68 @@ class UpdateDevices(Protocol):
         ) -> None: ...
 
 
-class OnboardDevices(Protocol):
+class Onboarding(Protocol):
     def __call__(
         self,
         xiq: XiqLibrary,
         duts: List[Node]
+        ) -> None: ...
+
+
+class PreOnboardingConfiguration(Protocol):
+    def __call__(
+        self,
+        xiq: XiqLibrary,
+        duts: List[Node]
+        ) -> None: ...
+
+
+class PostOnboardingConfiguration(Protocol):
+    def __call__(
+        self,
+        xiq: XiqLibrary,
+        duts: List[Node]
+        ) -> None: ...
+
+
+class PostOnboardingVerifications(Protocol):
+    def __call__(
+        self,
+        xiq: XiqLibrary,
+        duts: List[Node]
+        ) -> None: ...
+
+class OnboardingFailure(Protocol):
+    def __call__(
+        self,
+        xiq: XiqLibrary,
+        duts: List[Node]
+        ) -> None: ...
+
+
+class OnboardingSucceeded(Protocol):
+    def __call__(
+        self,
+        xiq: XiqLibrary,
+        duts: List[Node]
+        ) -> None: ...
+
+class DevicesConfiguration(Protocol):
+    def __call__(
+        self,
+        ) -> None: ...
+
+
+class DevicesVerifications(Protocol):
+    def __call__(
+        self,
+        ) -> None: ...
+
+
+class AccountConfiguration(Protocol):
+    def __call__(
+        self,
+        xiq: XiqLibrary,
         ) -> None: ...
 
 
@@ -257,11 +311,13 @@ class ClearTrafficCounters(Protocol):
 
 valid_test_markers: List[TestCaseMarker] = [
     "tcxm",
-    "tccs"
+    "tccs",
+    "xim_tcxm"
 ]
 
 
 valid_priority_markers: List[PriorityMarker] = [
+    "p0",
     "p1",
     "p2",
     "p3",
@@ -366,9 +422,11 @@ def pytest_configure(config):
 def pytest_collection_modifyitems(session, items):
 
     if pytest.runlist_path != "default":
-        logger_obj.info(f"Current runlist ('{pytest.runlist_name}') is located in this yaml file: '{pytest.runlist_path}'.")
-        logger_obj.info(f"Found {len(pytest.runlist_name)} tests in given runlist: " + "'" + "', '".join(pytest.runlist_tests) + "'.")
         
+        logger_obj.info(f"Current runlist ('{pytest.runlist_name}') is located in this yaml file: '{pytest.runlist_path}'.")
+        logger_obj.info(f"Found {len(pytest.runlist_tests)} tests in given runlist: " + "'" + "', '".join(pytest.runlist_tests) + "'.")
+        logger_obj.info(f"Collected {len(items)} test functions from given test directory path.")
+
         for item in items:
             if (cls_markers := getattr(item.cls, "pytestmark", None)) is not None:
                 item_markers = get_testbed_markers(item)
@@ -449,9 +507,7 @@ def pytest_collection_modifyitems(session, items):
         
         temp_items = [
             item for item in temp_items if any(
-                [testbed_marker in [marker.name for marker in item.own_markers] for testbed_marker in [
-                    "testbed_1_node", "testbed_2_node", "testbed_stack", "testbed_none"
-            ]]
+                [testbed_marker in [marker.name for marker in item.own_markers] for testbed_marker in valid_testbed_markers]
         )]
 
         for item in collected_items:
@@ -819,6 +875,7 @@ def pytest_runtest_call(item):
 
 
 class OnboardingTests:
+    
     @pytest.mark.tcxm_xiq_onboarding
     def test_xiq_onboarding(
             self,
@@ -898,7 +955,6 @@ def get_xiq_library(
     debug: Callable
 ) -> GetXiqLibrary:
 
-
     @debug
     def get_xiq_library_func(
         username: str = loaded_config['tenant_username'],
@@ -954,7 +1010,7 @@ def enter_switch_cli(
 ) -> EnterSwitchCli:
 
     @contextmanager
-    def func(
+    def enter_switch_cli_func(
             dut: Node
     ) -> Iterator[NetworkElementCliSend]:
         try:
@@ -963,7 +1019,7 @@ def enter_switch_cli(
             yield dev_cmd
         finally:
             close_connection(dut)
-    return func
+    return enter_switch_cli_func
 
 
 @pytest.fixture(scope="session")
@@ -977,7 +1033,7 @@ def open_spawn(
 ) -> OpenSpawn:
     
     @contextmanager
-    def func(
+    def open_spawn_func(
             dut: Node
     ) -> Iterator[pxssh]:
         try:
@@ -986,7 +1042,7 @@ def open_spawn(
             yield spawn_connection
         finally:          
             cli.close_spawn(spawn_connection)
-    return func
+    return open_spawn_func
 
 
 @pytest.fixture(scope="session")
@@ -996,14 +1052,14 @@ def connect_to_all_devices(
 ) -> Callable[[], Iterator[NetworkElementCliSend]]:
     
     @contextmanager
-    def func(
+    def connect_to_all_devices_func(
     ) -> Iterator[NetworkElementCliSend]:
         try:
             network_manager.connect_to_all_network_elements()
             yield dev_cmd
         finally:
             network_manager.close_connection_to_all_network_elements()
-    return func
+    return connect_to_all_devices_func
 
 
 @pytest.fixture(scope="session")
@@ -1084,12 +1140,12 @@ def close_connection(
         network_manager: NetworkElementConnectionManager,
         logger: PytestLogger
 ) -> CloseConnection:
-    def func(dut: Node) -> None:
+    def close_connection_func(dut: Node) -> None:
         try:
             network_manager.close_connection_to_network_element(dut.name)
         except Exception as exc:
             logger.info(exc)
-    return func
+    return close_connection_func
 
 
 @pytest.fixture(scope="session")
@@ -1602,6 +1658,48 @@ def node_stack_onboarding_location(
 
 
 @pytest.fixture(scope="session")
+def node_1_policy_name(
+    node_1_policy_config: Dict[str, str]
+) -> str:
+    return node_1_policy_config.get("policy_name")
+
+
+@pytest.fixture(scope="session")
+def node_2_policy_name(
+    node_2_policy_config: Dict[str, str]
+) -> str:
+    return node_2_policy_config.get("policy_name")
+
+
+@pytest.fixture(scope="session")
+def node_stack_policy_name(
+    node_stack_policy_config: Dict[str, str]
+) -> str:
+    return node_stack_policy_config.get("policy_name")
+
+
+@pytest.fixture(scope="session")
+def node_1_template_name(
+    node_1_policy_config: Dict[str, str]
+) -> str:
+    return node_1_policy_config.get("template_name")
+
+
+@pytest.fixture(scope="session")
+def node_2_template_name(
+    node_2_policy_config: Dict[str, str]
+) -> str:
+    return node_2_policy_config.get("template_name")
+
+
+@pytest.fixture(scope="session")
+def node_stack_template_name(
+    node_stack_policy_config: Dict[str, str]
+) -> str:
+    return node_stack_policy_config.get("template_name")
+
+
+@pytest.fixture(scope="session")
 def node_list(
         standalone_nodes: List[Node],
         stack_nodes: List[Node],
@@ -1738,16 +1836,16 @@ def update_devices(
 
 
 @pytest.fixture(scope="session")
-def onboard_devices(
+def onboarding(
         node_list: List[Node],
         logger: PytestLogger,
         screen: Screen,
         debug: Callable,
         request: fixtures.SubRequest
-) -> OnboardDevices:
+) -> Onboarding:
     
     @debug
-    def onboard_devices_func(
+    def onboarding_func(
         xiq: XiqLibrary, 
         duts: List[Node]=node_list
         ) -> None:
@@ -1779,7 +1877,7 @@ def onboard_devices(
                 screen.save_screen_shot()
                 pytest.fail(error_msg)
                 
-    return onboard_devices_func
+    return onboarding_func
 
 
 def dump_data(data) -> str:
@@ -1824,7 +1922,7 @@ def dump_switch_logs(
         "show clock"
     ]
 
-    def func(
+    def dump_switch_logs_func(
         duts: List[Node]=node_list
         ) -> None:
         
@@ -1857,18 +1955,24 @@ def dump_switch_logs(
                         
         for dut in duts:
             worker(dut)
-    return func
+
+    return dump_switch_logs_func
 
 
 @pytest.fixture(scope="session")
-def log_onboarding_options(
+def log_options(
         request: fixtures.SubRequest,
         logger: PytestLogger
 ) -> None:
+    """ Fixture that logs the onboarding options that are selected in the runlist yaml file.
+    """
     for node_name in ["node_1", "node_2", "node_stack"]:
-        fxt = request.getfixturevalue(f"{node_name}_onboarding_options")
+        fxt: Options = request.getfixturevalue(f"{node_name}_onboarding_options")
         if fxt:
             logger.info(f"The onboarding options for '{node_name}':\n{json.dumps(fxt, indent=4)}")
+
+    run_options: Options = request.getfixturevalue("run_options")
+    logger.info(f"The run options for this session: {json.dumps(run_options, indent=4)}")
 
 
 @pytest.fixture(scope="session")
@@ -1885,29 +1989,196 @@ def get_new_action_chains(
 
 
 @pytest.fixture(scope="session")
+def devices_verifications(
+    request: fixtures.SubRequest,
+    debug: Callable
+) -> DevicesVerifications:
+    """ Fixture that verifies the devices before they are configured for the onboarding.
+    """
+    
+    @debug
+    def devices_verifications_func() -> None:
+        node_list: List[Node] = request.getfixturevalue("node_list")
+        check_devices_are_reachable: CheckDevicesAreReachable = request.getfixturevalue("check_devices_are_reachable")
+        
+        check_devices_are_reachable(node_list)
+
+    return devices_verifications_func
+
+
+@pytest.fixture(scope="session")
+def devices_configuration(
+    request: fixtures.SubRequest,
+    debug: Callable
+) -> DevicesConfiguration:
+    """ Fixture that configures the devices for the onboarding.
+    """
+    
+    @debug
+    def device_configuration_func() -> None:
+        
+        configure_iq_agent: ConfigureIqAgent = request.getfixturevalue("configure_iq_agent")
+        node_list: List[Node] = request.getfixturevalue("node_list")
+        
+        configure_iq_agent(duts=node_list)
+
+    return device_configuration_func
+
+
+@pytest.fixture(scope="session")
+def account_configuration(
+    request: fixtures.SubRequest,
+    debug: Callable
+) -> AccountConfiguration:
+    """ Fixture that configures the XIQ account at the start of the session.
+    """
+
+    @debug
+    def account_configuration_func(
+        xiq: XiqLibrary
+    ) -> None:
+        if (option := pytest.run_options.get("change_device_management_settings", "disable")):
+            
+            change_device_management_settings: ChangeDeviceManagementSettings = request.getfixturevalue("change_device_management_settings")
+            
+            change_device_management_settings(
+                xiq,
+                option=option
+            )
+
+    return account_configuration_func
+
+
+@pytest.fixture(scope="session")
+def pre_onboarding_configuration(
+    request: fixtures.SubRequest,
+    debug: Callable
+) -> PreOnboardingConfiguration:
+    """ Fixture that prepares the XIQ account for the onboarding.
+    """
+    
+    @debug
+    def pre_onboarding_xiq_configuration_func(
+        xiq: XiqLibrary
+    ) -> None:
+        
+        cleanup: Cleanup = request.getfixturevalue("cleanup")
+        node_list: List[Node] = request.getfixturevalue("node_list")
+        
+        account_configuration = request.getfixturevalue("account_configuration")
+        account_configuration(xiq)
+        
+        cleanup(
+            xiq=xiq,                                      # by default pytest.created_onboarding_locations is an empty list
+            duts=node_list,                               # it has elements only if there are locations specified to be created
+            locations=pytest.created_onboarding_locations # in the runlist file
+        )
+                                                          
+    return pre_onboarding_xiq_configuration_func
+
+
+@pytest.fixture(scope="session")
+def post_onboarding_verifications(
+    request: fixtures.SubRequest,
+    debug: Callable
+) -> PostOnboardingVerifications:
+    """ Fixture that verifies the devices are onboarded successfully.
+    """
+    
+    @debug
+    def post_onboarding_verifications_func(
+        xiq: XiqLibrary
+    ) -> None:
+        
+        check_devices_are_onboarded: CheckDevicesAreOnboarded = request.getfixturevalue("check_devices_are_onboarded")
+        
+        check_devices_are_onboarded(xiq)
+    
+    return post_onboarding_verifications_func
+
+
+@pytest.fixture(scope="session")
+def post_onboarding_configuration(
+    request: fixtures.SubRequest,
+    debug: Callable
+) -> PostOnboardingConfiguration:
+    """ Fixture that does additional configuration in XIQ for the onboarded devices.
+    """
+    
+    @debug
+    def post_onboarding_configuration_func(
+        xiq: XiqLibrary
+    ) -> None:
+                    
+            update_devices: UpdateDevices = request.getfixturevalue("update_devices")
+            configure_network_policies: ConfigureNetworkPolicies = request.getfixturevalue("configure_network_policies")
+
+            configure_network_policies(xiq)
+            update_devices(xiq)
+
+    return post_onboarding_configuration_func
+
+
+@pytest.fixture(scope="session")
+def onboarding_failure(
+    request: fixtures.SubRequest, 
+    debug: Callable
+) -> OnboardingFailure:
+    """ Fixture that is called when the onboarding fails.
+    """
+    
+    @debug
+    def onboarding_failure_func() -> None:
+        
+        dump_switch_logs: DumpSwitchLogs = request.getfixturevalue("dump_switch_logs")
+        dump_switch_logs()
+    
+    return onboarding_failure_func
+
+
+@pytest.fixture(scope="session")
+def onboarding_succeeded(
+    request: fixtures.SubRequest, 
+    debug: Callable
+) -> OnboardingSucceeded:
+    """ Fixture that is called when the onboarding succeeds.
+    """
+    
+    @debug
+    def onboarding_succeeded_func(
+        xiq: XiqLibrary
+    ) -> None:
+        request.getfixturevalue("test_bed")
+
+    return onboarding_succeeded_func
+
+
+@pytest.fixture(scope="session")
 def onboard(
         request: fixtures.SubRequest
 ) -> None:
-
-    check_devices_are_reachable: CheckDevicesAreReachable = request.getfixturevalue("check_devices_are_reachable")
-    configure_network_policies: ConfigureNetworkPolicies = request.getfixturevalue("configure_network_policies")
-    login_xiq: LoginXiq = request.getfixturevalue("login_xiq")
-    change_device_management_settings: ChangeDeviceManagementSettings = request.getfixturevalue("change_device_management_settings")
-    check_devices_are_onboarded: CheckDevicesAreOnboarded = request.getfixturevalue("check_devices_are_onboarded")
-    cleanup: Cleanup = request.getfixturevalue("cleanup")
-    onboard_devices: OnboardDevices = request.getfixturevalue("onboard_devices")
-    configure_iq_agent: ConfigureIqAgent = request.getfixturevalue("configure_iq_agent")
-    dump_switch_logs: DumpSwitchLogs = request.getfixturevalue("dump_switch_logs")
-    update_devices: UpdateDevices = request.getfixturevalue("update_devices")
+    """ This fixture does the onboarding of the selected devices.
+        It is called in the onboarding test ('test_xiq_onboarding').
+    """
+    
     logger: PytestLogger = request.getfixturevalue("logger")
+    login_xiq: LoginXiq = request.getfixturevalue("login_xiq")
+    
+    devices_verifications: DevicesVerifications = request.getfixturevalue("devices_verifications")
+    devices_configuration: DevicesConfiguration = request.getfixturevalue("devices_configuration")
 
-    request.getfixturevalue("log_onboarding_options")
+    onboarding: Onboarding = request.getfixturevalue("onboarding")
+    pre_onboarding_configuration: PreOnboardingConfiguration = request.getfixturevalue("pre_onboarding_configuration")
+    post_onboarding_verifications: PostOnboardingVerifications = request.getfixturevalue("post_onboarding_verifications")
+    post_onboarding_configuration: PostOnboardingConfiguration = request.getfixturevalue("post_onboarding_configuration")
+    onboarding_succeeded: OnboardingSucceeded = request.getfixturevalue("onboarding_succeeded")
+    onboarding_failure: OnboardingFailure = request.getfixturevalue("onboarding_failure")
+    
+    request.getfixturevalue("log_options")
 
     node_list: List[Node] = request.getfixturevalue("node_list")
     logger.info(f"These are the devices that will be onboarded ({len(node_list)} device(s)): " + "'" +
                 '\', \''.join([dut.name for dut in node_list]) + "'.")
-
-    check_devices_are_reachable(node_list)
 
     onboarding_locations: Dict[str, str] = request.getfixturevalue("onboarding_locations")
     logger.info(f"These locations will be used for the onboarding:\n'{dump_data(onboarding_locations)}'")
@@ -1918,37 +2189,30 @@ def onboard(
 
     try:
         
-        configure_iq_agent(duts=node_list)
+        devices_verifications()
+        devices_configuration()
+
+        xiq: XiqLibrary
 
         with login_xiq() as xiq:
-                
-            change_device_management_settings(
-                xiq,
-                option="disable"
-            )
             
-            cleanup(
-                xiq=xiq,
-                duts=node_list,
-                locations=pytest.created_onboarding_locations # by default pytest.created_onboarding_locations is an empty list
-                                                              # it has elements only if there are locations specified to be created
-                                                              # in the runlist file
-            )
+            pre_onboarding_configuration(xiq)
             
-            onboard_devices(xiq)
+            onboarding(xiq)
             
-            check_devices_are_onboarded(xiq)
-
-            configure_network_policies(xiq)
-
-            update_devices(xiq)
-
-            request.getfixturevalue("test_bed")
+            post_onboarding_verifications(xiq)
+            
+            post_onboarding_configuration(xiq)
+            
+            onboarding_succeeded(xiq)
 
     except Exception as exc:
+        
         logger.error(repr(exc))
-        dump_switch_logs()
         logger.error(traceback.format_exc())
+        
+        onboarding_failure()
+        
         pytest.fail(f"The onboarding failed for these devices: {node_list}\n{traceback.format_exc()}")
     
 
@@ -1956,6 +2220,9 @@ def onboard(
 def onboard_cleanup(
         request: fixtures.SubRequest
 ) -> None:
+    """ This fixture does the onboarding cleanup of the selected devices.
+        It is called in the onboarding cleanup test ('test_xiq_onboarding_cleanup').
+    """
     
     login_xiq: LoginXiq = request.getfixturevalue("login_xiq")
     stack_nodes: List[Node] = request.getfixturevalue("stack_nodes")
@@ -2056,7 +2323,9 @@ def dut_ports(
     
     @debug
     def dut_ports_worker(dut: Node):
+        
         with enter_switch_cli(dut) as dev_cmd:
+            
             if dut.cli_type.upper() == "VOSS":
                 dev_cmd.send_cmd(
                     dut.name, 'enable', max_wait=10, interval=2)
@@ -2106,14 +2375,17 @@ def dut_ports(
                 dev_cmd.send_cmd(dut.name, "exit")
 
     threads: List[threading.Thread] = []
+    
     try:
         for dut in node_list:
             thread = threading.Thread(target=dut_ports_worker, args=(dut, ))
             threads.append(thread)
             thread.start()
+    
     finally:
         for thread in threads:
             thread.join()
+    
     return ports
 
 
@@ -2149,8 +2421,10 @@ def bounce_iqagent(
                     dut.name, 'no iqagent enable', max_wait=10, interval=2)
                 dev_cmd.send_cmd(
                     dut.name, 'iqagent enable', max_wait=10, interval=2)
+        
         if wait is True and xiq is not None:
             xiq.xflowscommonDevices.wait_until_device_online(dut.mac)
+    
     return bounce_iqagent_func
 
 
@@ -2634,8 +2908,16 @@ class Testbed(metaclass=Singleton):
         self.node_2_policy_config: Dict[str, str] = request.getfixturevalue("node_2_policy_config")
         self.node_stack_policy_config: Dict[str, str] = request.getfixturevalue("node_stack_policy_config")
         
+        self.node_1_policy_name: str = request.getfixturevalue("node_1_policy_name")
+        self.node_2_policy_name: str = request.getfixturevalue("node_2_policy_name")
+        self.node_stack_policy_name: str = request.getfixturevalue("node_stack_policy_name")
+        self.node_1_template_name: str = request.getfixturevalue("node_1_template_name")
+        self.node_2_template_name: str = request.getfixturevalue("node_2_template_name")
+        self.node_stack_template_name: str = request.getfixturevalue("node_stack_template_name")
+        
         self.network_manager: NetworkElementConnectionManager = request.getfixturevalue("network_manager")
         self.cli: Cli = request.getfixturevalue("cli")
+        self.auto_actions: AutoActions = request.getfixturevalue("auto_actions")
         self.screen: Screen = request.getfixturevalue("screen")
         self.navigator: Navigator = request.getfixturevalue("navigator")
         self.utils: Utils = request.getfixturevalue("utils")
@@ -2649,7 +2931,13 @@ class Testbed(metaclass=Singleton):
         self.action_chains: type = request.getfixturevalue("action_chains")
         self.dump_data: Callable[[Union[str, List, Dict]], str] = dump_data
         self.update_test_name: Callable[[str], None] = request.getfixturevalue("update_test_name")
-
+        self.end_system_utils: EndSystemUtils = EndSystemUtils()
+        self.low_level_apis: LowLevelApis = LowLevelApis()
+        self.virtual_machine_utils: VirtualMachineUtils = VirtualMachineUtils()
+        self.netelem_utils: NetElementUtils = NetElementUtils()
+        self.low_level_traffic_apis: LowLevelTrafficApis = LowLevelTrafficApis()
+        self.common_object_utils: CommonObjectUtils = CommonObjectUtils()
+        
         self.get_xiq_library: GetXiqLibrary = request.getfixturevalue("get_xiq_library")
         self.deactivate_xiq_library: DeactivateXiqLibrary = request.getfixturevalue("deactivate_xiq_library")
         self.bounce_iqagent: BounceIqagent = request.getfixturevalue("bounce_iqagent")
@@ -2678,5 +2966,7 @@ class Testbed(metaclass=Singleton):
 
 
 @pytest.fixture(scope="session")
-def test_bed(request):
+def test_bed(
+    request: fixtures.SubRequest
+) -> Testbed:
     return Testbed(request)
