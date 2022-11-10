@@ -991,6 +991,23 @@ def get_xiq_library(
     return get_xiq_library_func
 
 
+@pytest.fixture(scope="class")
+def xiq_library_at_class_level(
+    request: fixtures.SubRequest
+) -> XiqLibrary:
+    
+    get_xiq_library: GetXiqLibrary = request.getfixturevalue("get_xiq_library")
+    deactivate_xiq_library: DeactivateXiqLibrary = request.getfixturevalue("deactivate_xiq_library")
+    
+    xiq: XiqLibrary = None
+    
+    try:
+        xiq = get_xiq_library()
+        yield xiq
+    finally:
+        deactivate_xiq_library(xiq)
+
+
 @pytest.fixture(scope="session")
 def deactivate_xiq_library(
     debug: Callable
@@ -1279,10 +1296,11 @@ def onboarding_locations(
                 found_location = random.choice(list(locations.values()))
                 logger.info(f"The chosen location for '{node.name}' is '{found_location}'.")
                 ret[node.name] = found_location
+            
             else:
                 logger.info(f"Did not find any location attached to '{node.name}'.")
 
-                logger.step(f"Will choose a location out of these: {hardcoded_locations}.")
+                logger.step(f"Will choose a location out of these for '{node.name}': {hardcoded_locations}.")
                 found_location = random.choice(hardcoded_locations)
                 logger.info(f"The chosen location for '{node.name}' is '{found_location}'.")
                 ret[node.name] = found_location
@@ -1638,6 +1656,13 @@ def node_stack_policy_config(
         node_stack: Node
 ) -> Dict[str, str]:
     return policy_config.get(node_stack.get("name"), {})
+
+
+@pytest.fixture(scope="session")
+def node_stack_model_units(
+    node_stack_policy_config: Dict[str, str]
+) -> str:
+    return node_stack_policy_config.get("units_model")
 
 
 @pytest.fixture(scope="session")
@@ -2921,7 +2946,8 @@ class Testbed(metaclass=Singleton):
         self.node_1_template_name: str = request.getfixturevalue("node_1_template_name")
         self.node_2_template_name: str = request.getfixturevalue("node_2_template_name")
         self.node_stack_template_name: str = request.getfixturevalue("node_stack_template_name")
-        
+        self.node_stack_model_units: str = request.getfixturevalue("node_stack_model_units")
+
         self.network_manager: NetworkElementConnectionManager = request.getfixturevalue("network_manager")
         self.cli: Cli = request.getfixturevalue("cli")
         self.auto_actions: AutoActions = request.getfixturevalue("auto_actions")
