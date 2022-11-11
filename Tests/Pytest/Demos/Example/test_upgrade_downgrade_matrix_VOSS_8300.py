@@ -140,9 +140,9 @@ class xiqTests():
             self.udks = self.defaultLibrary.apiUdks
             self.devCmd = self.defaultLibrary.deviceNetworkElement.networkElementCliSend
             self.init_xiq_libaries_and_login(self,
-                                             self.cfg['TENANT_USERNAME'], 
-                                             self.cfg['TENANT_PASSWORD'], 
-                                             url=self.cfg['TEST_URL'])
+                                             self.cfg['tenant_username'],
+                                             self.cfg['tenant_password'],
+                                             url=self.cfg['test_url'])
 
             # Clear out the device information
             self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1.serial)
@@ -230,7 +230,7 @@ class xiqTests():
                 self.remove_unused_versions_of_software()
 
                 # Onboard the device. If the device can not be onboarded fail and print which device did not onboard
-                res = self.xiq.xflowscommonDevices.onboard_device(self.tb.dut1.serial, device_make=self.tb.dut1.os)
+                res = self.xiq.xflowscommonDevices.onboard_device_quick(self.tb.dut1)
                 if res != 1:
                     pytest.fail('Could not onboard {}'.format(self.tb.dut1.serial))
 

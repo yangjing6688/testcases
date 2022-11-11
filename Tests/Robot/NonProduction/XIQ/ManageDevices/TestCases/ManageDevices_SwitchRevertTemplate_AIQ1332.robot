@@ -98,7 +98,7 @@ Log In and Set Up Test
     Close Spawn       ${SPAWN_CONNECTION}
     Create Open Express Policy With Switch Template and Confirm Success  ${POLICY_NAME}  ${SSID_NAME}  ${DUT_TEST_TEMPLATE}
 
-    Onboard New Test Device       ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}
+    Onboard New Test Device       ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}   ${aerohive_sw1}
     Column Picker Select          MAC Address
     Confirm Device Serial Online  ${DUT_SERIAL}
 
@@ -137,7 +137,7 @@ Navigate to Port Configuration and Confirm Success
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${location}
+    [Arguments]         ${serial}  ${make}  ${location}    ${device}
 
     Navigate to Devices and Confirm Success
 
@@ -145,5 +145,5 @@ Onboard New Test Device
     Delete Device and Confirm Success  ${serial}
 
     # Onboard the device and confirm it was onboarded successfully
-    Onboard Device  ${serial}  ${make}  location=${location}
+    onboard device quick    ${device}
     Confirm Device Serial Present  ${serial}

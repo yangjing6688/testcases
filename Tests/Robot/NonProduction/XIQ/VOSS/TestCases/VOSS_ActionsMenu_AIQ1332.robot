@@ -92,7 +92,7 @@ Log Into XIQ and Set Up Test
     Change Device Password and Confirm Success  ${DEFAULT_DEVICE_PWD}
     Create Open Express Policy With Switch Template and Confirm Success  ${POLICY_NAME}  ${SSID_NAME}  ${DUT_TEMPLATE}
     Configure Test Device                       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}
-    Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}
+    Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}     ${netelem3}
 
 Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
@@ -119,7 +119,7 @@ Configure Test Device
     Close Spawn       ${SPAWN_CONNECTION}
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${location}
+    [Arguments]         ${serial}  ${make}  ${location}    ${device}
 
     Navigate to Devices and Confirm Success
 
@@ -128,7 +128,7 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    Onboard Device    ${serial}  ${make}  location=${location}
+    onboard device quick    ${device}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 

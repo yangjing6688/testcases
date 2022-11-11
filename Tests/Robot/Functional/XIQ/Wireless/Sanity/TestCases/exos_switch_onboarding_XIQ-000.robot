@@ -45,7 +45,6 @@ Cleanup-Delete Switch
     should be equal as integers        ${DELETE_DEVICE_STATUS}               1
 
     ${SW_SPAWN}=                        Open Spawn          ${netelem1.ip}       ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
-
     ${DOWNGRADE_IQAGENT}=               Downgrade iqagent      ${netelem1.cli_type}     ${SW_SPAWN}
     Should Be Equal As Integers         ${DOWNGRADE_IQAGENT}       1
 
@@ -67,6 +66,7 @@ TCCS-7292_Step1: Onboard EXOS Switch on XIQ
     [Documentation]         Checks for Exos switch onboarding on XIQ
 
     [Tags]                  production      tccs_7292       tccs_7292_step1
+
 
     ${ONBOARD_RESULT}=                   onboard device quick        ${netelem1}
     Should Be Equal As Strings          ${ONBOARD_RESULT}       1

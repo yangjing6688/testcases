@@ -30,13 +30,14 @@ Suite Setup      Pre Condition
 Pre Condition
     [Documentation]   AP Should be onboarded  and it is online
 
+
     ${LOGIN_XIQ}=                       Login User          ${TENANT_USERNAME}     ${TENANT_PASSWORD}   url=${TEST_URL}    map_override=${MAP_FILE_NAME}
     Should Be Equal As Strings      '${LOGIN_XIQ}'   '1'
 
     ${CHANGE_DEVICE_PASSWORD}=        change device password          ${ap1.password}
     Should Be Equal As Strings      '${CHANGE_DEVICE_PASSWORD}'   '1'
 
-    ${ONBOARD_AP}=        Onboard AP          ${ap1.serial}       ${ap1.make}        ${LOCATION_TREE}
+    ${ONBOARD_AP}=        onboard device quick        ${ap1}
     Should Be Equal As Strings      '${ONBOARD_AP}'   '1'
 
     ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}

@@ -56,7 +56,7 @@ TCXM-14733: Login to a VIQ via XAPI
 
     set global variable   ${onboard_flag}  1
 
-    ${onboard_result}=  onboard switch     ${netelem1.serial}  device_os=${netelem1.cli_type}   entry_type=Manual  location=${LOCATION}
+    ${onboard_result}=  onboard device quick     ${netelem1}
 	
     RUN KEYWORD IF  '${netelem1.cli_type}' == 'exos'  Configure IQagent EXOS
     RUN KEYWORD IF  '${netelem1.cli_type}' == 'voss'  Configure IQagent VOSS

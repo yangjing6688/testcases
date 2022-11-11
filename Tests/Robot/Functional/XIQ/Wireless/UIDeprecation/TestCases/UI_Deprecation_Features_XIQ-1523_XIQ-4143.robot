@@ -8,15 +8,16 @@
 *** Variables ***
 ${APPLICATION_NAME}            test-app
 ${APPLICATION_NAME_MODIFIED}   test-app-modified
-${GROUP_NAME}                  test-group10
 ${WAIT}                        5
 
 
 *** Settings ***
 Force Tags   testbed_3_node
+Suite Setup  Test Suite Setup
 
 Library      String
 Library      Collections
+Library      extauto/common/Utils.py
 Library      extauto/common/TestFlow.py
 Library      extauto/xiq/flows/common/Login.py
 Library      extauto/xiq/flows/common/Navigator.py
@@ -27,7 +28,12 @@ Resource    ../../UIDeprecation/Resources/AllResources.robot
 
 
 *** Keywords ***
-Pre Condition
+Test Suite Setup
+# Create a random string for application group name
+    ${random_string}=         Get Random String
+    ${GROUP_NAME}=            Catenate    GROUP_NAME_${random_string}
+
+    Set Global Variable       ${GROUP_NAME}
 
 
 *** Test Cases ***

@@ -81,7 +81,7 @@ class xiqTests():
         # Checks for Exos switch advanced onboarding on XIQ
         self.cfg['${TEST_NAME}'] = 'test_Onboard'
         self.devCmd.send_cmd_verify_output(self.tb.dut1_name, 'show process iqagent', 'Ready', max_wait=30, interval=10)
-        res =  self.xiq.xflowscommonDevices.onboard_device(self.tb.dut1.serial, device_make=self.tb.dut1.os)
+        res = self.xiq.xflowscommonDevices.onboard_device_quick(self.tb.dut1)
       
         if res != 1:
             pytest.fail('Could not onboard {}'.format(self.tb.dut1.serial))
