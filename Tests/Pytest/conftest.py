@@ -483,10 +483,25 @@ def pytest_collection_modifyitems(session, items):
 
         temp_items: List[pytest.Function] = collected_items[:]
 
+        testbed_item_mapping: Dict[str, List[pytest.Function]] = {}
+        
+        for testbed_marker in valid_testbed_markers:
+            testbed_items = list(filter(lambda item: testbed_marker in [marker.name for marker in item.own_markers], items))
+            logger_obj.info(f"Collected {len(testbed_items)} {testbed_marker} item(s).")
+            testbed_item_mapping[testbed_marker] = testbed_items
+
+        items_without_testbed_marker = [
+            item for item in collected_items if not any([testbed_marker in [marker.name for marker in item.own_markers] for testbed_marker in valid_testbed_markers])]
+        logger_obj.info(f"Collected {len(items_without_testbed_marker)} item(s) that do not have a valid testbed marker ({valid_testbed_markers}).")
+        
         pytest.onboard_stack = len(pytest.stack_nodes) >= 1
         if not pytest.onboard_stack:
             logger_obj.warning(
                 "There is no stack device in the provided yaml file. The stack test cases will be unselected.")
+            
+            if testbed_item_mapping['testbed_stack']:
+                logger_obj.warning(f"{len(testbed_item_mapping['testbed_stack'])} testbed_stack item(s) will be unselected.")
+            
             temp_items = [
                 item for item in temp_items if 'testbed_stack' not in [marker.name for marker in item.own_markers]]
 
@@ -495,16 +510,26 @@ def pytest_collection_modifyitems(session, items):
             logger_obj.warning(
                 "There are not enough standalone devices in the provided yaml file. "
                 "The testbed two node test cases will be unselected.")
+            
+            if testbed_item_mapping['testbed_2_node']:
+                    logger_obj.warning(f"{len(testbed_item_mapping['testbed_2_node'])} testbed_2_node item(s) will be unselected.")
+            
             temp_items = [
                 item for item in temp_items if 'testbed_2_node' not in [marker.name for marker in item.own_markers]]
         
         pytest.onboard_one_node = len(pytest.standalone_nodes) >= 1
         if not pytest.onboard_one_node:
-            logger_obj.warning("There is no standalone device in the provided yaml file. "
-                            "The testbed one node test cases will be unselected.")
+            logger_obj.warning(
+                "There is no standalone device in the provided yaml file. "
+                "The testbed one node test cases will be unselected.")
+        
+            if testbed_item_mapping['testbed_1_node']:
+                logger_obj.warning(f"{len(testbed_item_mapping['testbed_1_node'])} testbed_1_node item(s) will be unselected.")
+            
             temp_items = [
                 item for item in temp_items if 'testbed_1_node' not in [marker.name for marker in item.own_markers]]
         
+        logger_obj.warning(f"{len(items_without_testbed_marker)} item(s) that do not have a valid testbed marker will be unselected.")
         temp_items = [
             item for item in temp_items if any(
                 [testbed_marker in [marker.name for marker in item.own_markers] for testbed_marker in valid_testbed_markers]
@@ -569,6 +594,7 @@ def pytest_collection_modifyitems(session, items):
                     
                     item_markers: List[mark.structures.Mark] = get_item_dependson_markers(item)
                     cls_dependson_markers: List[mark.structures.Mark] = [m for m in cls_markers if m.name == "dependson"]
+
                     for marker in cls_dependson_markers:
                         if not any(marker.name == m.name and marker.args == m.args for m in item_markers):
                             item.add_marker(
@@ -614,7 +640,8 @@ def pytest_collection_modifyitems(session, items):
 
             temp_items.extend([item_onboarding, item_onboarding_cleanup])
             
-            suitemap_tcs = []
+            suitemap_tcs: List[TestCaseMarker] = []
+            
             for test_identifier, test_info in pytest.suitemap_tests.items():
                 if (tc := test_info.get("tc")) is not None:
                     suitemap_tcs.append(tc)
@@ -623,8 +650,9 @@ def pytest_collection_modifyitems(session, items):
                         suitemap_tcs.append(tc['tc'])
 
             for test in pytest.runlist_tests:
-                test_found_in_suitemap = test in suitemap_tcs
-                found_item = [item for item in temp_items if test == get_test_marker(item)[0]]
+                
+                test_found_in_suitemap: bool = test in suitemap_tcs
+                found_item: pytest.Function = [item for item in temp_items if test == get_test_marker(item)[0]]
                 
                 if not test_found_in_suitemap:
                     logger_obj.warning(f"'{test}' test is given in runlist but it is not found in specified suitemap files.")
@@ -661,7 +689,7 @@ def pytest_collection_modifyitems(session, items):
                             elif (temp_marker not in all_tcs) or (temp_marker not in pytest.runlist_tests):
                                 item.add_marker(
                                     pytest.mark.skip(f"'{test_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}'"
-                                                    f" is not in the current list of testcases to be run. '{test_code}' will be skipped.")
+                                                     f" is not in the current list of testcases to be run. The '{test_code}' test case will be skipped.")
                                 )
                                 
                             elif temp_marker not in found_tcs:
@@ -670,7 +698,7 @@ def pytest_collection_modifyitems(session, items):
                                         f"Please modify the order of the test cases. '{test_code}' "
                                         f"depends on '{', '.join(temp_markers)}' but the order is not correct. "
                                         f"'{temp_marker}' should run before '{test_code}'."
-                                        f"'{test_code}' will be skipped.")
+                                        f" The '{test_code}' test case will be skipped.")
                                 )
 
             if all(
@@ -680,7 +708,7 @@ def pytest_collection_modifyitems(session, items):
                     len(ordered_items) == 2
                 ]
             ):
-                logger_obj.warning(f"There are no test cases left selected to run for this session.")
+                logger_obj.warning("There are no test cases left selected to run for this session.")
                 ordered_items = []
 
             for item in ordered_items:
@@ -822,7 +850,7 @@ def pytest_runtest_makereport(item, call):
                                 it.add_marker(
                                     pytest.mark.skip(
                                         f"'{temp_test_marker}' depends on '{current_test_marker}' but "
-                                        f"'{current_test_marker}' failed. '{temp_test_marker}' "
+                                        f"'{current_test_marker}' failed. The '{temp_test_marker}' "
                                         f"test case will be skipped."))
 
         if "skip" in [m.name for m in item.own_markers]:
@@ -834,7 +862,7 @@ def pytest_runtest_makereport(item, call):
                             it.add_marker(
                                 pytest.mark.skip(
                                     f"'{temp_test_marker}' depends on '{current_test_marker}' but "
-                                    f"'{current_test_marker}' is skipped. '{temp_test_marker}' "
+                                    f"'{current_test_marker}' is skipped. The '{temp_test_marker}' "
                                     f"test case will be skipped.")
                                 )
 
@@ -880,10 +908,12 @@ class OnboardingTests:
             request: fixtures.SubRequest,
             logger: PytestLogger
     ) -> None:
-        """ It should be the first test in the runlist in order to onboard the network devices before the other tests.
-            The tests that depend on this test should use this marker '@pytest.mark.dependson("tcxm_xiq_onboarding")' in order to be skipped if the onboarding fails or is skipped.
-            This test must be added to the suitemap yaml in order to be later used in the runlist yaml.
+        """ 
+        It should be the first test in the runlist in order to onboard the network devices before the other tests.
+        The tests that depend on this test should use this marker '@pytest.mark.dependson("tcxm_xiq_onboarding")' in order to be skipped if the onboarding fails or is skipped.
+        This test must be added to the suitemap yaml in order to be later used in the runlist yaml.
         """
+        
         if not any(
             [
                 pytest.onboard_one_node,
@@ -909,8 +939,10 @@ class OnboardingTests:
         request: fixtures.SubRequest,
         logger: PytestLogger
         ) -> None:
-        """ It should be the last test in the runlist in order to clean the onboarded devices after all the tests ran
         """
+        It should be the last test in the runlist in order to clean the onboarded devices after all the tests ran
+        """
+        
         if not any(
             [
                 pytest.onboard_one_node,
@@ -961,6 +993,9 @@ def get_xiq_library(
     cloud_driver: CloudDriver,
     debug: Callable
 ) -> GetXiqLibrary:
+    """
+    Method that creates a XiqLibrary object and then authenticate to XIQ with the credentials available in the topology yaml.
+    """
 
     @debug
     def get_xiq_library_func(
@@ -995,6 +1030,10 @@ def get_xiq_library(
 def xiq_library_at_class_level(
     request: fixtures.SubRequest
 ) -> XiqLibrary:
+    """
+    The fixture creates a XiqLibrary object before the start of the first test of this class.
+    After the last test ran, the created XiqLibrary object is deleted.
+    """
     
     get_xiq_library: GetXiqLibrary = request.getfixturevalue("get_xiq_library")
     deactivate_xiq_library: DeactivateXiqLibrary = request.getfixturevalue("deactivate_xiq_library")
@@ -1012,6 +1051,9 @@ def xiq_library_at_class_level(
 def deactivate_xiq_library(
     debug: Callable
 ) -> DeactivateXiqLibrary:
+    """
+    Fixture that deactivates the given XiqLibrary object.
+    """
     
     @debug
     def deactivate_xiq_library_func(
@@ -1032,6 +1074,10 @@ def enter_switch_cli(
         close_connection: CloseConnection,
         dev_cmd: NetworkElementCliSend
 ) -> EnterSwitchCli:
+    """
+    Fixture that connects to a device and returns the NetworkElementCliSend object.
+    At the end the connection to the device is closed.
+    """
 
     @contextmanager
     def enter_switch_cli_func(
@@ -1055,7 +1101,11 @@ def cli() -> Cli:
 def open_spawn(
         cli: Cli
 ) -> OpenSpawn:
-    
+    """
+    Fixture that creates a spawn connection to the device and returns the said connection.
+    At the end the spawn is closed.
+    """
+
     @contextmanager
     def open_spawn_func(
             dut: Node
@@ -1074,7 +1124,11 @@ def connect_to_all_devices(
         network_manager: NetworkElementConnectionManager,
         dev_cmd: NetworkElementCliSend
 ) -> Callable[[], Iterator[NetworkElementCliSend]]:
-    
+    """
+    Fixture that connects to all devices and returns the NetworkElementCliSend object.
+    At the end the connections to the devices are closed.
+    """
+
     @contextmanager
     def connect_to_all_devices_func(
     ) -> Iterator[NetworkElementCliSend]:
@@ -1219,7 +1273,10 @@ def configure_iq_agent(
         cli: Cli,
         request: fixtures.SubRequest
 ) -> ConfigureIqAgent:
-    
+    """
+    Fixture that configures the IQAGENT on given devices.
+    """
+
     @debug
     def configure_iq_agent_func(
             duts: List[Node]=node_list,
@@ -1229,7 +1286,7 @@ def configure_iq_agent(
         virtual_routers: Dict[str, str] = request.getfixturevalue("virtual_routers")
 
         logger.step(
-            f"Configure IQAGENT with ipaddress='{ipaddress}' on these devices: {', '.join([d.name for d in node_list])}.")
+            f"Configure IQAGENT with IP-Address='{ipaddress}' on these devices: {', '.join([d.name for d in node_list])}.")
 
         def worker(dut: Node):
             
@@ -1261,6 +1318,9 @@ def onboarding_locations(
         request: fixtures.SubRequest,
         
 ) -> Dict[str, str]:
+    """
+    Fixture that choose the onboarding location for the available nodes.
+    """
     
     ret = {}
     
@@ -1313,7 +1373,10 @@ def check_devices_are_reachable(
         debug: Callable,
         wait_till: Callable
 ) -> CheckDevicesAreReachable:
-
+    """
+    Fixture that check if given devices are reachable from the test automation environment.
+    """
+    
     windows = platform.system() == "Windows"
     
     @debug
@@ -1394,6 +1457,9 @@ def check_devices_are_onboarded(
         debug: Callable,
         wait_till: Callable
 ) -> CheckDevicesAreOnboarded:
+    """
+    Fixture that checks if the nodes are successfully onboarded.
+    """
     
     @debug
     def check_devices_are_onboarded_func(
@@ -1474,7 +1540,10 @@ def cleanup(
         screen: Screen, 
         debug: Callable
 ) -> Cleanup:
-
+    """
+    Fixture that does the cleanup in XIQ.
+    """
+    
     @debug
     def cleanup_func(
             xiq: XiqLibrary,
@@ -1543,6 +1612,10 @@ def configure_network_policies(
         debug: Callable,
         request
 ) -> ConfigureNetworkPolicies:
+    """
+    Fixture that configures the network policies and the switch templates for the onboarded nodes.
+    This fixture should be used only in the onboarding test as it is using the onboarding options of the runlist.
+    """
     
     @debug
     def configure_network_policies_func(
@@ -1614,7 +1687,10 @@ def policy_config(
         node_list: List[Node],
         request: fixtures.SubRequest
 ) -> PolicyConfig:
-
+    """
+    Fixture that selects the policy name and the template name for all the nodes.
+    """
+    
     dut_config: PolicyConfig = defaultdict(lambda: {})
     pool = list(string.ascii_letters) + list(string.digits)
 
@@ -1623,8 +1699,12 @@ def policy_config(
         model, units_model = generate_template_for_given_model(dut)
         
         onboarding_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
-        policy_name: str = onboarding_options.get("policy_name", f"np_{''.join(random.sample(pool, k=8))}")
-        template_name: str = onboarding_options.get("template_name", f"template_{''.join(random.sample(pool, k=8))}")
+        
+        random_policy_name = f"{pytest.runlist_name}_np_{''.join(random.sample(pool, k=8))}"[:32]
+        random_template_name = f"{pytest.runlist_name}_template_{''.join(random.sample(pool, k=8))}"[:32]
+        
+        policy_name: str = onboarding_options.get("policy_name", random_policy_name)
+        template_name: str = onboarding_options.get("template_name",random_template_name)
         
         dut_config[dut.name]["policy_name"] = policy_name
         dut_config[dut.name]['template_name'] = template_name
@@ -1740,6 +1820,9 @@ def node_list(
         node_stack_onboarding_options,
         logger: PytestLogger
 ) -> List[Node]:
+    """
+    Fixture that selects the devices to be onboarded from the devices.yaml.
+    """
     
     duts: List[Node] = []
 
@@ -1819,6 +1902,10 @@ def update_devices(
         wait_till: Callable,
         request
 ) -> UpdateDevices:
+    """ 
+    Fixture that updates the onboarded nodes after the onboarding.
+    This fixture should be used only in the onboarding test as it uses the onboarding options of each onboarded node.
+    """
     
     @debug
     def update_devices_func(
@@ -1875,6 +1962,8 @@ def onboarding(
         debug: Callable,
         request: fixtures.SubRequest
 ) -> Onboarding:
+    """ This fixture should be used only in the onboarding test as it uses the onboarding options of each onboarded node.
+    """
     
     @debug
     def onboarding_func(
@@ -1998,6 +2087,7 @@ def log_options(
 ) -> None:
     """ Fixture that logs the onboarding options that are selected in the runlist yaml file.
     """
+    
     for node_name in ["node_1", "node_2", "node_stack"]:
         fxt: Options = request.getfixturevalue(f"{node_name}_onboarding_options")
         if fxt:
@@ -2086,7 +2176,8 @@ def pre_onboarding_configuration(
     request: fixtures.SubRequest,
     debug: Callable
 ) -> PreOnboardingConfiguration:
-    """ Fixture that prepares the XIQ account for the onboarding.
+    """
+    Fixture that prepares the XIQ account for the onboarding.
     """
     
     @debug
@@ -2748,23 +2839,6 @@ def get_default_password(
     return get_default_password_func
 
 
-def get_dut(
-        tb: PytestConfigHelper,
-        os: str,
-        platform: str=""
-) -> Node:
-    for dut_index in [f"dut{i}" for i in range(10)]:
-        if getattr(tb, dut_index, {}).get("cli_type", "").upper() == os.upper():
-            current_platform = getattr(tb, dut_index).get("platform", "").upper()
-            
-            if platform.upper() == "STACK":
-                if current_platform == "STACK":
-                    return getattr(tb, dut_index) 
-            else:
-                if current_platform != "STACK":
-                    return getattr(tb, dut_index) 
-
-
 @pytest.fixture(scope="session")
 def dut1(
         config_helper: PytestConfigHelper,
@@ -2923,6 +2997,7 @@ class Testbed(metaclass=Singleton):
         self.dut_2: Node = request.getfixturevalue("dut2")
         self.dut_3: Node = request.getfixturevalue("dut3")
         self.dut_4: Node = request.getfixturevalue("dut4")
+        self.dut_5: Node = request.getfixturevalue("dut5")
 
         self.node_1_onboarding_options: Options = request.getfixturevalue("node_1_onboarding_options")
         self.node_2_onboarding_options: Options = request.getfixturevalue("node_2_onboarding_options")
