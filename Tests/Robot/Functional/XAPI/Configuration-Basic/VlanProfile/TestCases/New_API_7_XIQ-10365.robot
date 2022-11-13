@@ -2,6 +2,9 @@
 # Date          : 27 Oct 2022
 # Description   : XAPI Automation for XIQ-4653 - Configure VLAN profile
 
+# Moved to XAPI Location and modified by Subanesh Amarasekaran(samarasekaran)
+# Date : 13 NOVEMBER 2022
+
 # Topology:
 # ---------
 #    ScriptHost
@@ -23,7 +26,7 @@
 ${VLAN_PROFILE_ID}=                -1
 
 *** Settings ***
-Force Tags  testbed_1_node
+Force Tags  testbed_none
 
 Library     common/Xapi.py
 Library     common/Cli.py
@@ -37,13 +40,17 @@ Variables   Environments/Config/waits.yaml
 Variables   TestBeds/${TESTBED}
 Variables   Environments/${TOPO}
 
-*** Test Cases ***
-Pre Condition-User-Login
-    [Documentation]  XAPI User login successful
-    [Tags]                  tcxm_16480     development
+Suite Setup      Pre Condition
+
+*** Keywords ***
+Pre Condition
     ${ACCESS_TOKEN}=        generate_access_token    ${tenant_username}      ${tenant_password}      login
+    set suite variable     ${ACCESS_TOKEN}
     log  ${ACCESS_TOKEN}
-    set global variable     ${ACCESS_TOKEN}
+    Log    Checking the Access Token not equal to -1
+    skip if     '${ACCESS_TOKEN}' == '-1'
+    
+*** Test Cases ***
 
 TC-10730: List VLAN Profiles
     [Documentation]         List VLAN Profiles
