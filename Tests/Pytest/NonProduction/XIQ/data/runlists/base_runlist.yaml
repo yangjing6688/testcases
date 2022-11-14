@@ -66,7 +66,7 @@ runlist_story_name:
                                                     #             if not provided: the onboarding location for node_1 will be taken from the devices.yaml
         create_onboarding_location:                 # not mandatory (by default it is set to "no"); if provided then the onboarding_location will be created before the onboarding takes place
       node_2:
-        run_os: []                                  #
+        run_os: []                                  
         platform: 'standalone'
         create_network_policy: yes
         create_switch_template: yes

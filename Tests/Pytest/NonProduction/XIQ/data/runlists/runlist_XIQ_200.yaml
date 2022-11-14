@@ -1,25 +1,26 @@
 # How to run this runlist
 #
 # pytest 
-# --runlist extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/data/runlists/templates/runlist_XIQ_200.yaml \
-# extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/Wired/template_XIQ_200 \
-# --tc-file extreme_automation_tests/vstefan/topo.yaml \
-# --tc-file extreme_automation_tests/vstefan/env.yaml \
-# --tc-file extreme_automation_tests/vstefan/devices.yaml \
+# --runlist extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/data/runlists/templates/runlist_XIQ_200.yaml
+# extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/Wired/template_XIQ_200
+# --tc-file extreme_automation_tests/vstefan/topo.yaml
+# --tc-file extreme_automation_tests/vstefan/env.yaml
+# --tc-file extreme_automation_tests/vstefan/devices.yaml
 #
 #
 
+
+# The runlist for the XIQ_200 test story looks like this:
+# 
 runlist_XIQ_200:
   suitemap: 
     - extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/data/suitemaps/suitemap_XIQ_200.yaml
   onboarding_options:
     standalone:
       node_1:
-        run_os: ['exos', "voss"]
-        platform: 'standalone'
-    stack:
-      node_stack:
-        run_os: ["exos"]
+        run_os: ['exos', "voss"] # it will raise an error if it does not find in the devices.yaml a standalone dut with cli_type voss or exos
+    node_stack:
+      run_os: ["exos"] # it will raise an error if it does not find in the devices.yaml a stack dut with cli_type exos
   tests:
     - tcxm_xiq_onboarding
     - tcxm_201 # 1 node
@@ -37,3 +38,45 @@ runlist_XIQ_200:
     - tcxm_213 # 1 node // depends on 212
     - tcxm_214 # 1 node // depends on 213
     - tcxm_xiq_onboarding_cleanup
+
+
+# The above runlist can be simplified.
+#
+# Because the "run_os" field is not specified, it will take for each node the default value which is an empty list - []
+#
+# This means that
+#  - it won't check the cli_type of the duts
+#  - it will take the first available dut from the devices.yaml for each node
+#
+# runlist_XIQ_200:
+#   suitemap: 
+#     - extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/data/suitemaps/suitemap_XIQ_200.yaml
+#   tests:
+#     - tcxm_xiq_onboarding
+#     - tcxm_201 # 1 node
+#     - tcxm_202 # 1 node
+#     - tcxm_203 # 1 node
+#     - tcxm_204 # 1 node
+#     - tcxm_205 # 1 node
+#     - tcxm_206 # none
+#     - tcxm_207 # none
+#     - tcxm_208 # 2 node
+#     - tcxm_209 # 2 node
+#     - tcxm_210 # stack
+#     - tcxm_211 # stack
+#     - tcxm_212 # none
+#     - tcxm_213 # 1 node // depends on 212
+#     - tcxm_214 # 1 node // depends on 213
+#     - tcxm_xiq_onboarding_cleanup
+
+
+# This runlist does not use the onboarding tests.
+# It has only tests that do not depend on the onboarding procedure.
+#
+# runlist_XIQ_200:
+#   suitemap: 
+#     - extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/data/suitemaps/suitemap_XIQ_200.yaml
+#   tests:
+#     - tcxm_206 # none
+#     - tcxm_207 # none
+#     - tcxm_212 # none
