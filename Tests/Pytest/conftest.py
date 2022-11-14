@@ -417,6 +417,10 @@ def pytest_configure(config):
     pytest.onboarding_test_name: str = "tcxm_xiq_onboarding"
     pytest.onboarding_cleanup_test_name: str = "tcxm_xiq_onboarding_cleanup"
     pytest.created_onboarding_locations: List[str] = []
+    pytest.items: List[pytest.Function] = []
+    pytest.testbed_one_node_items: List[pytest.Function] = []
+    pytest.testbed_two_node_items: List[pytest.Function] = []
+    pytest.testbed_stack_items: List[pytest.Function] = []
 
 
 def pytest_collection_modifyitems(session, items):
@@ -708,8 +712,7 @@ def pytest_collection_modifyitems(session, items):
                     len(ordered_items) == 2
                 ]
             ):
-                logger_obj.warning("There are no test cases left selected to run for this session.")
-                ordered_items = []
+                logger_obj.warning("There are no test left selected to run for this session besides the onboarding tests.")
 
             for item in ordered_items:
                 logger_obj.info(f"Selected: '{item.nodeid}' "
@@ -718,8 +721,29 @@ def pytest_collection_modifyitems(session, items):
             message = "Did not find any test function to run this session."
             logger_obj.warning(message)
 
-        items[:] = ordered_items
+        pytest.testbed_one_node_items = list(filter(lambda item: "testbed_1_node" in [marker.name for marker in item.own_markers], ordered_items))
+        pytest.testbed_two_node_items = list(filter(lambda item: "testbed_2_node" in [marker.name for marker in item.own_markers], ordered_items))
+        pytest.testbed_stack_items = list(filter(lambda item: "testbed_stack" in [marker.name for marker in item.own_markers], ordered_items))
+        
+        if (not pytest.testbed_two_node_items) and pytest.onboard_two_node:
+            logger_obj.info("There are no testbed_two_node items left. Make sure that the second node is not onboarded.")
+            pytest.onboard_two_node = False
 
+        if (not pytest.testbed_one_node_items) and pytest.onboard_one_node:
+            logger_obj.info("There are no testbed_one_node items left. Make sure that the first node is not onboarded (except when the onboard_two_node flag is enabled).")
+            if not pytest.onboard_two_node:
+                pytest.onboard_one_node = False
+        
+        if (not pytest.testbed_stack_items) and pytest.onboard_stack:
+            logger_obj.info("There are no testbed_stack items left. Make sure that the stack node is not onboarded.")
+            pytest.onboard_stack = False
+
+        if ordered_items:
+            logger_obj.info(f"These are tests that remained to run this session: {[get_test_marker(item)[0] for item in ordered_items]}")
+        
+        pytest.items = ordered_items
+        items[:] = ordered_items
+        
     else:
         
         # Pytest enters this branch when the runlist is not specified as argument.
@@ -871,21 +895,27 @@ def pytest_runtest_call(item):
     
     if pytest.runlist_path != "default":
         current_test_marker: TestCaseMarker
-        [current_test_marker] = get_test_marker(item)
-        config['${TEST_NAME}'] = current_test_marker
         
+        [current_test_marker] = get_test_marker(item)
+        
+        try:
+            config['${TEST_NAME}'] = f"{current_test_marker} ({pytest.items.index(item) + 1}/{len(pytest.items)})"
+        except:
+            config['${TEST_NAME}'] = current_test_marker
+
         logger_obj.step(f"Start test function of '{current_test_marker}': '{item.nodeid}'.")
 
         output = ""
         test_data = {}
-        
+        mandatory_fields = ["author", "tc", "description", "title"]
+
         if (callspec := getattr(item, "callspec", None)) is not None:
             if (data := callspec.params.get("test_data")) is not None:
                 test_data = data
         else:
             test_data = pytest.suitemap_tests[f"{item.cls.__name__}::{item.originalname}"]
             
-        for field in ["author", "tc", "description", "title"]:
+        for field in mandatory_fields:
             if (field_value := test_data.get(field)) is not None:
                 output += f"\n{field.capitalize()}: '{field_value}'"
                 
@@ -913,7 +943,12 @@ class OnboardingTests:
         The tests that depend on this test should use this marker '@pytest.mark.dependson("tcxm_xiq_onboarding")' in order to be skipped if the onboarding fails or is skipped.
         This test must be added to the suitemap yaml in order to be later used in the runlist yaml.
         """
-        
+
+        if pytest.run_options.get("skip_setup"):
+            logger_obj.info(
+                "The 'skip_setup' option is given in runlist. The onboarding is skipped.")
+            return
+
         if not any(
             [
                 pytest.onboard_one_node,
@@ -922,12 +957,8 @@ class OnboardingTests:
             ]
         ):
             logger.info(
-                "Currently there are no devices given in the yaml files so the onboarding test won't configure anything.")
-            return
-        
-        if pytest.run_options.get("skip_setup"):
-            logger_obj.info(
-                "The 'skip_setup' option is given in runlist. The onboarding is skipped.")
+                "There are no devices given in the yaml files or there are no tests left to run "
+                "so the onboarding test won't configure anything.")
             return
         
         request.getfixturevalue("onboard")
@@ -943,6 +974,11 @@ class OnboardingTests:
         It should be the last test in the runlist in order to clean the onboarded devices after all the tests ran
         """
         
+        if pytest.run_options.get("skip_teardown"):
+            logger_obj.info(
+                "The 'skip_teardown' option is given in runlist. The onboarding cleanup is skipped.")
+            return
+        
         if not any(
             [
                 pytest.onboard_one_node,
@@ -951,15 +987,10 @@ class OnboardingTests:
             ]
         ):
             logger.info(
-                "Currently there are no devices given in the yaml files so "
-                "the onboarding cleanup test won't unconfigure anything.")
+                "There are no devices given in the yaml files or there were no tests left to run"
+                " so the onboarding cleanup test won't unconfigure anything.")
             return
-        
-        if pytest.run_options.get("skip_teardown"):
-            logger_obj.info(
-                "The 'skip_teardown' option is given in runlist. The onboarding cleanup is skipped.")
-            return
-        
+
         request.getfixturevalue("onboard_cleanup")
 
 
@@ -1313,7 +1344,7 @@ def configure_iq_agent(
 
 @pytest.fixture(scope="session")
 def onboarding_locations(
-        all_nodes: List[Node],
+        node_list: List[Node],
         logger: PytestLogger,
         request: fixtures.SubRequest,
         
@@ -1328,7 +1359,7 @@ def onboarding_locations(
         "San Jose,building_01,floor_01",
     ]
     
-    for node in all_nodes:
+    for node in node_list:
         
         onboarding_options: Options = request.getfixturevalue(f"{node.node_name}_onboarding_options")
         onboarding_location: str = onboarding_options.get("onboarding_location")
@@ -2159,7 +2190,8 @@ def account_configuration(
     def account_configuration_func(
         xiq: XiqLibrary
     ) -> None:
-        if (option := pytest.run_options.get("change_device_management_settings", "disable")):
+        
+        if (option := pytest.onboarding_options.get("change_device_management_settings", "disable")):
             
             change_device_management_settings: ChangeDeviceManagementSettings = request.getfixturevalue("change_device_management_settings")
             
@@ -2187,8 +2219,8 @@ def pre_onboarding_configuration(
         
         cleanup: Cleanup = request.getfixturevalue("cleanup")
         node_list: List[Node] = request.getfixturevalue("node_list")
+        account_configuration: AccountConfiguration = request.getfixturevalue("account_configuration")
         
-        account_configuration = request.getfixturevalue("account_configuration")
         account_configuration(xiq)
         
         cleanup(
