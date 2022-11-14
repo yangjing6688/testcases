@@ -1,0 +1,39 @@
+# How to run this runlist
+#
+# pytest 
+# --runlist extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/data/runlists/templates/runlist_XIQ_200.yaml \
+# extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/Wired/template_XIQ_200 \
+# --tc-file extreme_automation_tests/vstefan/topo.yaml \
+# --tc-file extreme_automation_tests/vstefan/env.yaml \
+# --tc-file extreme_automation_tests/vstefan/devices.yaml \
+#
+#
+
+runlist_XIQ_200:
+  suitemap: 
+    - extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/data/suitemaps/suitemap_XIQ_200.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ['exos', "voss"]
+        platform: 'standalone'
+    stack:
+      node_stack:
+        run_os: ["exos"]
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_201 # 1 node
+    - tcxm_202 # 1 node
+    - tcxm_203 # 1 node
+    - tcxm_204 # 1 node
+    - tcxm_205 # 1 node
+    - tcxm_206 # none
+    - tcxm_207 # none
+    - tcxm_208 # 2 node
+    - tcxm_209 # 2 node
+    - tcxm_210 # stack
+    - tcxm_211 # stack
+    - tcxm_212 # none
+    - tcxm_213 # 1 node // depends on 212
+    - tcxm_214 # 1 node // depends on 213
+    - tcxm_xiq_onboarding_cleanup
