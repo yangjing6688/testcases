@@ -41,15 +41,13 @@ ${XIQ_URL}                  ${test_url}
 ${XIQ_USER}                 ${tenant_username}
 ${XIQ_PASSWORD}             ${tenant_password}
 
-${DT_PERSONA}               SwitchEngine
-${DT_MAKE}                  Switch Engine
-${DT_MODEL}                 5320-24T-8XE
-${DT_VERSION}               32.1.1.6
-${DT_POLICY}
-${DT_SERIAL}
-${DT_MAC}
-${DT_IP_ADDRESS}            10.0.2.15
-${DT_IQAGENT}               0.5.61
+${DT_PERSONA}               ${netelem1.digital_twin_persona}
+${DT_MAKE}                  ${netelem1.make}
+${DT_MODEL}                 ${netelem1.model}
+${DT_VERSION}               ${netelem1.digital_twin_version}
+${DT_IP_ADDRESS}            ${netelem1.ip}
+${LOCATION}                 ${netelem1.location}
+${DT_IQAGENT}               ${capwap_url}
 
 *** Test Cases ***
 TCCS-13497: Enable Digital Twin Feature
@@ -80,11 +78,12 @@ TCCS-13498: Onboard Digital Twin Device
     Depends On      TCCS-13497
 
     ${result}=  Navigate to Devices
-    Should Be Equal As Integers  ${result}  1
+    Should Be Equal As Integers                             ${result}       1
 
-    ${dt_serial}=  Onboard Device DT                        device_type=Digital_Twin        os_persona=${DT_PERSONA}
-    ...                                                     device_model=${DT_MODEL}     os_version=${DT_VERSION}
-    ...                                                     policy=${DT_POLICY}
+    ${ONBOARD_RESULT}=      onboard device quick            ${netelem1}
+    Should Be Equal As Strings                              ${ONBOARD_RESULT}     1
+
+    ${dt_serial}=           set variable                    ${${netelem1.name}.serial}
     Set Suite Variable                                      ${DT_SERIAL}    ${dt_serial}
 
     ${result}=  Length Should Be                            ${DT_SERIAL}    14

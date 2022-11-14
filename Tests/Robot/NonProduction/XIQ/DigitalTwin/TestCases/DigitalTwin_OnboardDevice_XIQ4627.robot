@@ -19,8 +19,9 @@
 
 *** Settings ***
 Resource         ../../DigitalTwin/Resources/AllResources.robot
-
-Force Tags       testbed_not_required
+Variables    TestBeds/${TESTBED}
+Variables    Environments/${TOPO}
+Variables    Environments/${ENV}
 
 Suite Setup      Log In and Set Up Test
 Suite Teardown   Tear Down Test and Close Session
@@ -30,27 +31,24 @@ Suite Teardown   Tear Down Test and Close Session
 ${XIQ_URL}                  ${test_url}
 ${XIQ_USER}                 ${tenant_username}
 ${XIQ_PASSWORD}             ${tenant_password}
+${LOCATION}                 ${netelem1.location}
 
 ${ENABLE_DT_FEATURE}        ${XIQ_URL}/hm-webapp/?digitalTwin=true#/devices
 ${DISABLE_DT_FEATURE}       ${XIQ_URL}/hm-webapp/?digitalTwin=false#/devices
 
-${DT_SE_PERSONA}            SwitchEngine
-${DT_SE_MODEL}              5320-24T-8XE
-${DT_SE_VERSION}            32.1.1.6
-${DT_SE_POLICY}
-${DT_SE_SERIAL}
-${DT_SE_MAC}
-${DT_FE_PERSONA}            FabricEngine
-${DT_FE_MODEL}              5420F-24S-4XE
-${DT_FE_VERSION}            8.7.0.0
-${DT_FE_POLICY}
-${DT_FE_SERIAL}
-${DT_FE_MAC}
+${DT_SE_PERSONA}               ${netelem1.digital_twin_persona}
+${DT_SE_MAKE}                  ${netelem1.make}
+${DT_SE_MODEL}                 ${netelem1.model}
+${DT_SE_VERSION}               ${netelem1.digital_twin_version}
+${DT_SE_IP_ADDRESS}            ${netelem1.ip}
+${DT_SE_IQAGENT}               ${capwap_url}
 
-${LOCATION}                 San Jose, building_01, floor_02
-${DEFAULT_DEVICE_PWD}       Aerohive123
-${POLICY_NAME}              Automation_Policy
-
+${DT_FE_PERSONA}               ${netelem2.digital_twin_persona}
+${DT_FE_MAKE}                  ${netelem2.make}
+${DT_FE_MODEL}                 ${netelem2.model}
+${DT_FE_VERSION}               ${netelem2.digital_twin_version}
+${DT_FE_IP_ADDRESS}            ${netelem2.ip}
+${DT_FE_IQAGENT}               ${capwap_url}
 
 *** Test Cases ***
 Test 1: Enable Digital Twin Soft Launch Feature
@@ -70,9 +68,10 @@ Test 2: Onboard Digital Twin Switch Engine Device
 
     Navigate to Devices and Confirm Success
 
-    ${dt_se_serial}=  Onboard Device DT                     device_type=Digital_Twin        os_persona=${DT_SE_PERSONA}
-    ...                                                     device_model=${DT_SE_MODEL}     os_version=${DT_SE_VERSION}
-    ...                                                     policy=${DT_SE_POLICY}
+    ${ONBOARD_SE_RESULT}=      onboard device quick         ${netelem1}
+    Should Be Equal As Strings                              ${ONBOARD_SE_RESULT}     1
+
+    ${dt_se_serial}=           set variable                 ${${netelem1.name}.serial}
     Set Suite Variable                                      ${DT_SE_SERIAL}     ${dt_se_serial}
 
     Confirm Digital Twin Serial Number                      ${DT_SE_SERIAL}
@@ -97,10 +96,11 @@ Test 3: Onboard Digital Twin Fabric Engine Device
 
     Navigate to Devices and Confirm Success
 
-    ${dt_fe_serial}=  Onboard Device DT                     device_type=digital_twin        os_persona=${DT_FE_PERSONA}
-    ...                                                     device_model=${DT_FE_MODEL}     os_version=${DT_FE_VERSION}
-    ...                                                     policy=${DT_FE_POLICY}
-    Set Suite Variable                                      ${DT_FE_SERIAL}     ${dt_fe_serial}
+    ${ONBOARD_FE_RESULT}=      onboard device quick         ${netelem2}
+    Should Be Equal As Strings                              ${ONBOARD_FE_RESULT}     1
+
+    ${dt_fe_serial}=           set variable                 ${${netelem2.name}.serial}
+    Set Suite Variable                                      ${DT_FE_SERIAL}    ${dt_fe_serial}
 
     Confirm Digital Twin Serial Number                      ${DT_FE_SERIAL}
     Confirm Device Status Icon                              ${DT_FE_SERIAL}     expected_icon=digital_twin

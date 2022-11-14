@@ -101,9 +101,22 @@ TCXM-19837: Confirm No Access To Location Change
 Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ
 
+    ${device}=      Create Dictionary
+    ...     name=simulated_dut04
+    ...     model=AP460C
+    ...     simulated_count=1
+    ...     onboard_device_type=Simulated
+    ...     location=auto_location_01, Santa Clara, building_02, floor_04
+
+    set suite variable    ${device}
     Log Into XIQ and Confirm Success   ${XIQ_USER}   ${XIQ_PASSWORD}   ${XIQ_URL}
-    ${SIM_SERIAL}=      Onboard Simulated Device   AP460C   location=${SIM_LOCATION}
+
+    ${ONBOARD_RESULT}=      onboard device quick    ${device}
+    Should Be Equal As Strings          ${ONBOARD_RESULT}       1
+
+    ${SIM_SERIAL}=     set variable    ${${device.name}.serial}
     Set Suite Variable          ${SIM_SERIAL}
+
     Log Out of XIQ and Quit Browser
     Log Into XIQ and Confirm Success   ${XIQ_HD_USER}   ${XIQ_HD_PASSWORD}   ${XIQ_URL}
 

@@ -12,7 +12,9 @@
 *** Settings ***
 Resource         ../../CoPilot_Release_Testing/Resources/AllResources.robot
 
-Force Tags       testbed_none
+Variables    TestBeds/${TESTBED}
+Variables    Environments/${TOPO}
+Variables    Environments/${ENV}
 
 Suite Setup      Log Into XIQ and Set Up Test
 Suite Teardown   Tear Down Test and Close Session
@@ -24,12 +26,12 @@ ${XIQ_USER}                 ${tenant_username}
 ${XIQ_PASSWORD}             ${tenant_password}
 ${IQAGENT}                  ${sw_connection_host}
 
-${DT_FE_PERSONA}            FabricEngine
-${DT_FE_MODEL}              5720-24MW
-${DT_FE_VERSION}            8.8.0.0
-${DT_FE_POLICY}
-${DT_FE_SERIAL}
-${DT_FE_MAC}
+${DT_FE_PERSONA}               ${netelem1.digital_twin_persona}
+${DT_FE_MAKE}                  ${netelem1.make}
+${DT_FE_MODEL}                 ${netelem1.model}
+${DT_FE_VERSION}               ${netelem1.digital_twin_version}
+${DT_FE_IP_ADDRESS}            ${netelem1.ip}
+
 
 ${PILOT_ENTITLEMENT}        PRD-XIQ-PIL-S-C
 ${COPILOT_ENTITLEMENT}      PRD-XIQ-COPILOT-S-C
@@ -60,9 +62,10 @@ Test 2: Onboard Digital Twin Fabric Engine Device
     ${selected}=    Column Picker Select                    ${COLUMN_1}     ${COLUMN_2}    ${COLUMN_3}
     Should Be Equal As Integers                             ${selected}     1
 
-    ${dt_fe_serial}=  Onboard Device DT                     device_type=Digital_Twin        os_persona=${DT_FE_PERSONA}
-    ...                                                     device_model=${DT_FE_MODEL}     os_version=${DT_FE_VERSION}
-    ...                                                     policy=${DT_FE_POLICY}
+    ${ONBOARD_RESULT}=    onboard device quick              ${netelem1}
+    Should Be Equal As Strings                              ${ONBOARD_RESULT}     1
+
+    ${dt_fe_serial}=           set variable                    ${${netelem1.name}.serial}
     Set Suite Variable                                      ${DT_FE_SERIAL}     ${dt_fe_serial}
 
     Confirm Digital Twin Serial Number                      ${DT_FE_SERIAL}
