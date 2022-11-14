@@ -10,7 +10,7 @@
 # --tc-file <path_to_the_topo.yaml>
 #
 #
-# If the "run_options" is not given then all the possible settings default to 0
+# If the "run_options" is not given then all of its possible settings will have the default values.
 #
 # If the devices.yaml contains:
 #
@@ -85,3 +85,35 @@ runlist_story_name:
     - <test_code_3>
     # ...
     - tcxm_xiq_onboarding_cleanup                       # the last one should be the onboarding cleanup test
+
+
+# This runlist will onboard the chosen devices with the default onboarding options (create policy, create template, assign policy and initial policy push).
+
+runlist_without_config:
+  suitemap:
+    - <path_to_the_suitemap_file_1>
+    - <path_to_the_suitemap_file_2>
+    # - ...
+  tests:
+    - tcxm_xiq_onboarding
+    - <test_code_1>
+    - <test_code_2>
+    - <test_code_3>
+    # ...
+    - tcxm_xiq_onboarding_cleanup
+
+
+# This runlist won't do the onboarding as it does not contain the onboarding test.
+# Its tests should not depend on the onboarding test (otherwise they will get skipped).
+# These tests should be marked with the "testbed_none" marker.
+
+runlist_without_onboarding:
+  suitemap:
+    - <path_to_the_suitemap_file_1>
+    - <path_to_the_suitemap_file_2>
+    # - ...
+  tests:
+    - <test_code_1>
+    - <test_code_2>
+    - <test_code_3>
+    # ...
