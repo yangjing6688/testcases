@@ -5,14 +5,16 @@ Digital Twin - conftest.py
 # pylint: disable=import-error
 import sys
 import os
-import logging
 import time
 import random
 import subprocess
 import uuid
 import yaml
 import pytest
+from ExtremeAutomation.Library.Logger.PytestLogger import PytestLogger
 from ..Resources import shared
+
+logger = PytestLogger()
 
 DFLT_HTTP_PORT = "8181"
 
@@ -72,13 +74,19 @@ def handle_misc_cli_options(config):
     pytest.http_ip = config.getoption("http_ip")
     pytest.http_port = config.getoption("http_port") or pytest.http_port
 
-    # ...but here, where we define the HTTP server URL, we need a real value
-    http_ip = pytest.http_ip or shared.get_my_ip_address()
-    pytest.cfg_urls = f"http://{http_ip}:{pytest.http_port}/"
+    # In some places, we need the IP address to connect to
+    pytest.http_my_ip = pytest.http_ip or shared.get_my_ip_address()
+
+    # ...like here, where we define the HTTP server URL, we need a real value
+    pytest.cfg_urls = f"http://{pytest.http_my_ip}:{pytest.http_port}/"
+    pytest.upload_url = f"http://{pytest.http_my_ip}:{pytest.http_port}/cgi-bin/upload"
+    pytest.download_url = f"http://{pytest.http_my_ip}:{pytest.http_port}/upload_files"
 
 
-def handle_generic_tests_cli_options(config): # pylint: disable=too-many-branches
+def handle_generic_tests_cli_options(config):
     """Parse custom CLI options for Generic Tests.  Note that logging doesn't work in here"""
+
+    print("handle_generic_tests_cli_options")
 
     # This will hold a list of DtTestEnv instances to be used
     params = []
@@ -153,6 +161,64 @@ def handle_generic_tests_cli_options(config): # pylint: disable=too-many-branche
     shared.set_generic_test_envs(params)
 
 
+def handle_bundle_tests_cli_options(config):
+    """Parse custom CLI options for Bundle Tests.  Note that logging doesn't work in here"""
+
+    print("handle_bundle_tests_cli_options")
+
+    # This will hold a list of DtTestEnv instances to be used
+    params = []
+
+    # Handle "configs" option
+    options = []
+    for opt in config.getoption("configs") or ["standard"]:
+        options += opt.split(",")
+
+    print("options = {}".format(str(options)))
+
+    # "configs" - handle hard-coded options pecified
+    if any(p in options for p in ["standard", "all"]):
+        params += shared.VM_CFGS["standard"]
+
+    # "configs" - handle single yaml file options specified
+    for opt in options:
+        if opt.endswith(".yaml"):
+            for cfg in shared.VM_CFGS["standard"]:
+                if cfg.yaml_file == opt:
+                    params.append(cfg)
+
+    print("{} number of inital test environments".format(len(params)))
+
+    # Ensure the items in the list are unique (requires Python 3.7+)
+    params = list(dict.fromkeys(params))
+    print("{} number of test environments after removing duplicates".format(len(params)))
+
+    # Handle "stacking" option
+    if config.getoption("stacking") == "exclude":
+        params = [elem for elem in params if not elem.uses_stacking()]
+    elif config.getoption("stacking") == "only":
+        params = [elem for elem in params if elem.uses_stacking()]
+    print("{} number of test environments after adjustments for stacking".format(len(params)))
+
+    # Handle "max-instances" option
+    if config.getoption("max_instances") is not None:
+        max_instances = int(config.getoption("max_instances"))
+    else:
+        max_instances = None
+
+    if max_instances and max_instances < len(params):
+        params = random.sample(params, k=max_instances)
+    elif max_instances is not None and not max_instances:
+        # max_instances=0 -- Special case for debugging
+        print("params = {}".format(str(params)))
+        print("User requested no DT instances")
+        params = []
+    print("{} number of test environments after adjustments for max-instances".format(len(params)))
+
+    print("params = {}".format(str(params)))
+    shared.set_bundle_test_envs(params)
+
+
 def pytest_configure(config):
     """Note that logging doesn't work in here"""
 
@@ -161,20 +227,26 @@ def pytest_configure(config):
     # Instance of Gns3 from shared.py
     pytest.gns3_inst = None
     pytest.cfg_urls = None
+    pytest.upload_url = None
+    pytest.download_url = None
     pytest.use_dt_mgmt = True
+    pytest.my_ip = None
     pytest.http_ip = None
     pytest.http_port = DFLT_HTTP_PORT
 
     # Parse custom CLI options
     handle_misc_cli_options(config)
     handle_generic_tests_cli_options(config)
+    handle_bundle_tests_cli_options(config)
 
 
 def pytest_generate_tests(metafunc):
-    logging.debug("pytest_generate_tests - function=%s", metafunc.function.__name__)
+    logger.debug("pytest_generate_tests - function=%s", metafunc.function.__name__)
 
     if metafunc.cls.__name__ == "GenericTests":
         metafunc.parametrize("dte_cl_envs", shared.get_generic_test_envs(), ids=str, scope="class")
+    elif metafunc.cls.__name__ == "BundleTests":
+        metafunc.parametrize("dte_cl_envs", shared.get_bundle_test_envs(), ids=str, scope="class")
 
 
 ###############################################################################
@@ -191,8 +263,8 @@ def pytest_generate_tests(metafunc):
 class EnvSetupStage1():
     @staticmethod
     def setup(dt_env):
-        logging.info("dt_env = %s", dt_env)
-        logging.info("DT YAML:\n%s", yaml.safe_dump(dt_env.yaml))
+        logger.info("dt_env = %s", dt_env)
+        logger.info("DT YAML:\n%s", yaml.safe_dump(dt_env.yaml))
         dt_env.setup()
 
     @staticmethod
@@ -221,7 +293,7 @@ class EnvSetupStage3():
 class EnvSetupStage4():
     @staticmethod
     def setup(dt_env):
-        logging.info("Sleep %d seconds while system boots", dt_env.get_boot_wait_time())
+        logger.info("Sleep %d seconds while system boots", dt_env.get_boot_wait_time())
         time.sleep(dt_env.get_boot_wait_time())
 
     @staticmethod
@@ -324,7 +396,7 @@ def _sst_stage1():
         except Exception:
             pass # Best effort to stop any running container
         err_msg = "Exception starting GNS3 instance"
-        logging.exception(err_msg)
+        logger.exception(err_msg)
         pytest.exit(err_msg)
     except BaseException as exc:
         try:
@@ -341,7 +413,7 @@ def _sst_stage2(_sst_stage1):
         pytest.gns3_inst.create_common_infrastructure()
     except Exception:
         err_msg = "Exception creating common GNS3 infrastructure"
-        logging.exception(err_msg)
+        logger.exception(err_msg)
         pytest.exit(err_msg)
     yield
     pytest.gns3_inst.delete_common_infrastructure()
@@ -352,19 +424,20 @@ def session_setup_and_teardown(_sst_stage2):
         pytest.gns3_inst.copy_nos_image()
     except Exception:
         err_msg = "Exception copying NOS image to GNS3 container"
-        logging.exception(err_msg)
+        logger.exception(err_msg)
         pytest.exit(err_msg)
     yield
     # This is done as a best-effort...just-in-case cleanup
     if os.path.exists(shared.DT_YAML_FILE_PATH):
         os.remove(shared.DT_YAML_FILE_PATH)
 
-
 @pytest.fixture(scope="session", autouse=True)
 def start_http_server(request):
     """Start an http server to server the YAML files to DTs when they boot"""
-    cmd = [sys.executable, "-m", "http.server", pytest.http_port, "--directory", shared.DT_YAML_DIR]
+    # http.server doesn't apply "--directory" if "--cgi" is used, so
+    # execute the system call in the desired base directory
+    cmd = [sys.executable, "-m", "http.server", "--cgi", pytest.http_port]
     if pytest.http_ip:
         cmd += ["--bind", pytest.http_ip]
-    proc = subprocess.Popen(cmd) # pylint: disable=consider-using-with
+    proc = subprocess.Popen(cmd, cwd=shared.DT_YAML_DIR)  # pylint: disable=consider-using-with
     request.addfinalizer(proc.kill)

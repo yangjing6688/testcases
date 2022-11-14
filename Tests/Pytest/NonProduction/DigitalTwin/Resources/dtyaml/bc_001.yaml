@@ -1,0 +1,10 @@
+# Base for negative tests bc_00x.yaml
+---
+system:
+  license: PRD-5000-PRMR,PRD-5000-MACSEC
+  slots:
+    - num: 1
+      type: 5520-24T
+      vims:
+        - slot: A
+          type: 5520-VIM-4X

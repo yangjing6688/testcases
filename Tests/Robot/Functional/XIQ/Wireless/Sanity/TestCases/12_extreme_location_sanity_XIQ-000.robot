@@ -260,9 +260,9 @@ Test7: Onboard AP on New customer Account
     ${IMPORT_MAP}=                Import Map In Network360Plan  ${MAP_FILE_NAME}
     Should Be Equal As Strings    ${IMPORT_MAP}       1
 
-    Onboard AP                  ${ap1.serial}       aerohive
+    onboard device quick                 ${ap1}
 
-    ${AP_SPAWN}=               Open Spawn          ${ap1.p}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
+    ${AP_SPAWN}=               Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
 
     Set Suite Variable          ${AP_SPAWN}
     ${OUTPUT0}=                 Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config

@@ -56,7 +56,7 @@ Test 1: Test Device Onboarding - CSV Entry Type
 
     [Setup]  Delete Device and Confirm Success  ${DUT_SERIAL}
 
-    ${onboard_result}=  Onboard VOSS Device     ${DUT_SERIAL}  entry_type=CSV  csv_location=${DUT_CSV_FILE}  loc_name=${LOCATION}
+    ${onboard_result}=  onboard device quick     ${netelem3}
     Should Be Equal As Integers                 ${onboard_result}       1
 
     Confirm Device Serial Online                ${DUT_SERIAL}
@@ -72,7 +72,7 @@ Test 2: Test Device Onboarding - No IQAgent Upgrade Required
     Confirm IQAgent Version on Test Device      ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${IQAGENT_VERSION_NEW}
 
     # Onboard the device and confirm it appears in the list
-    Onboard VOSS Device and Confirm Success     ${DUT_SERIAL}  ${DUT_MAKE}
+    Onboard VOSS Device and Confirm Success     ${DUT_SERIAL}  ${DUT_MAKE}    ${netelem3}
 
     # Confirm the device connects successfully
     Confirm Device Serial Online                ${DUT_SERIAL}
@@ -102,7 +102,7 @@ Test 3: Test Device Onboarding - IQAgent Upgrade Required
     Confirm IQAgent Version on Test Device      ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${IQAGENT_VERSION_OLD}
 
     # Onboard the device and confirm it appears in the list
-    Onboard VOSS Device and Confirm Success     ${DUT_SERIAL}  ${DUT_MAKE}
+    Onboard VOSS Device and Confirm Success     ${DUT_SERIAL}  ${DUT_MAKE}   ${netelem3}
 
     # Confirm the device connects successfully
     Confirm Device Serial Online                ${DUT_SERIAL}
@@ -157,16 +157,16 @@ Configure Test Device
 
 Onboard Device and Confirm Success
     [Documentation]     Onboards the specified device and confirms the action was successful
-    [Arguments]         ${serial}  ${location}  ${csv_file}
+    [Arguments]         ${serial}  ${location}  ${csv_file}    ${device}
 
-    ${onboard_result}=  Onboard VOSS Device  ${serial}  ${csv_file}  location=${LOCATION}
+    ${onboard_result}=  onboard device quick    ${device}
     Should Be Equal As Integers  ${onboard_result}       1
 
 Onboard VOSS Device and Confirm Success
     [Documentation]     Onboards the specified device and confirms the action was successful
-    [Arguments]         ${serial}  ${make}
+    [Arguments]         ${serial}  ${make}    ${device}
 
-    ${onboard_result}=  Onboard VOSS Device  ${serial}  ${make}  loc_name=${LOCATION}
+    ${onboard_result}=  onboard device quick    ${device}
     Should Be Equal As Integers  ${onboard_result}       1
 
 Clean Up Test Device and Confirm Success

@@ -193,10 +193,10 @@ Onboard and Configure Test Devices
     ${dut2_result}=     Search Device   ${DUT2_SERIAL}
     ${dut3_result}=     Search Device   ${DUT3_SERIAL}
     ${dut4_result}=     Search Device   ${DUT4_SERIAL}
-    Run Keyword If      '${dut1_result}' != '1'  Onboard Device   ${DUT1_SERIAL}  ${DUT1_MAKE}  location=${LOCATION}
-    Run Keyword If      '${dut2_result}' != '1'  Onboard Device   ${DUT2_SERIAL}  ${DUT2_MAKE}  location=${LOCATION}
-    Run Keyword If      '${dut3_result}' != '1'  Onboard Device   ${DUT3_SERIAL}  ${DUT3_MAKE}  location=${LOCATION}
-    Run Keyword If      '${dut4_result}' != '1'  Onboard Device   ${DUT4_SERIAL}  ${DUT4_MAKE}  location=${LOCATION}
+    Run Keyword If      '${dut1_result}' != '1'  onboard device quick    ${ap1}
+    Run Keyword If      '${dut2_result}' != '1'  onboard device quick    ${ap2}
+    Run Keyword If      '${dut3_result}' != '1'  onboard device quick    ${ap3}
+    Run Keyword If      '${dut4_result}' != '1'  onboard device quick    ${ap4}
 
     # Confirm the devices were onboarded
     Confirm Device Serial Present  ${DUT1_SERIAL}

@@ -43,7 +43,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     # https://github.com/tj-actions/changed-files
     - name: Get changed pytest functional tests
@@ -181,7 +181,7 @@ jobs:
         # echo $OTHER_FILES > ${{ env.other_files_path }}
 
     - name: Upload test results to GH artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.changed_files_artifact_name }}
         path: |
@@ -205,9 +205,9 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: ${{ env.changed_files_artifact_name }}
 
@@ -240,7 +240,7 @@ jobs:
         python .github/workflows/testbed_yaml_parser.py ${{ env.testbed_non_prod_path }} | tee -a ${{ env.testbed_files_report_path }}
 
     - name: Upload test results to GH artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       if: ${{ always() }}
       with:
         name: ${{ env.report_artifact_name }}
@@ -251,7 +251,7 @@ jobs:
       if: ${{ always() }}
       id: set-output
       run: |
-        echo "::set-output name=status::${{ job.status }}"
+        echo "status=${{ job.status }}" >> $GITHUB_OUTPUT
 
   check_file:
     needs: [check_changes]
@@ -261,7 +261,7 @@ jobs:
       status: ${{ steps.set-output.outputs.status }}
 
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: ${{ env.changed_files_artifact_name }}
 
@@ -472,7 +472,7 @@ jobs:
         exit $rc
 
     - name: Upload test results to GH artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       if: ${{ always() }}
       with:
         name: ${{ env.report_artifact_name }}
@@ -483,7 +483,7 @@ jobs:
       if: ${{ always() }}
       id: set-output
       run: |
-        echo "::set-output name=status::${{ job.status }}"
+        echo "status=${{ job.status }}" >> $GITHUB_OUTPUT
 
   check_dir:
     needs: [check_changes]
@@ -494,9 +494,9 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: ${{ env.changed_files_artifact_name }}
 
@@ -536,7 +536,7 @@ jobs:
         fi
 
     - name: Upload test results to GH artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       if: ${{ always() }}
       with:
         name: ${{ env.report_artifact_name }}
@@ -547,7 +547,7 @@ jobs:
       if: ${{ always() }}
       id: set-output
       run: |
-        echo "::set-output name=status::${{ job.status }}"
+        echo "status=${{ job.status }}" >> $GITHUB_OUTPUT
 
   check_names:
     needs: [check_file, check_dir]
@@ -558,9 +558,9 @@ jobs:
 
     steps:
     - name: Checkout modified files
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: ${{ env.changed_files_artifact_name }}
 
@@ -637,7 +637,7 @@ jobs:
         exit $rc
 
     - name: Upload test results to GH artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       if: ${{ always() }}
       with:
         name: ${{ env.report_artifact_name }}
@@ -648,7 +648,7 @@ jobs:
       if: ${{ always() }}
       id: set-output
       run: |
-        echo "::set-output name=status::${{ job.status }}"
+        echo "status=${{ job.status }}" >> $GITHUB_OUTPUT
 
   check_tags:
     needs: [check_changes, check_names]
@@ -661,7 +661,7 @@ jobs:
       robot_result_file: robot_data.json
 
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: ${{ env.changed_files_artifact_name }}
 
@@ -683,7 +683,7 @@ jobs:
     # Only do the below steps if we need to evaluate any of the changes being committed
     - name: Checkout local repo
       if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Handle Skip Requests
       if: ${{env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true'}}
@@ -699,14 +699,14 @@ jobs:
 
     - name: Checkout framework
       if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: extremenetworks/extreme_automation_framework
         token: ${{ secrets.REGISTRY_PAT }}
         path: extreme_automation_framework
         ref: main
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       if: ${{env.SKIP_CHECK == 'false' && (env.RUN_PYTEST == 'true' || env.RUN_ROBOT == 'true')}}
       with:
         name: ${{ env.changed_files_artifact_name }}
@@ -769,7 +769,7 @@ jobs:
           | tee -a ${{ env.tag_marker_report_path }}
 
     - name: Upload test results to GH artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       if: ${{ always() }}
       with:
         name: ${{ env.report_artifact_name }}
@@ -780,7 +780,7 @@ jobs:
       if: ${{ always() }}
       id: set-output
       run: |
-        echo "::set-output name=status::${{ job.status }}"
+        echo "status=${{ job.status }}" >> $GITHUB_OUTPUT
 
   # ####
   # # Commentted out on 8/15/22 by peter sadej
@@ -797,9 +797,9 @@ jobs:
 
   #   steps:
   #   - name: Checkout modified files
-  #     uses: actions/checkout@v2
+  #     uses: actions/checkout@v3
 
-  #   - uses: actions/download-artifact@v2
+  #   - uses: actions/download-artifact@v3
   #     with:
   #       name: ${{ env.changed_files_artifact_name }}
 
@@ -1001,7 +1001,7 @@ jobs:
 
 
   #   - name: Upload test results to GH artifacts
-  #     uses: actions/upload-artifact@v2
+  #     uses: actions/upload-artifact@v3
   #     if: ${{ always() }}
   #     with:
   #       name: ${{ env.report_artifact_name }}
@@ -1012,7 +1012,7 @@ jobs:
   #     if: ${{ always() }}
   #     id: set-output
   #     run: |
-  #       echo "::set-output name=status::${{ job.status }}"
+  #       echo "status=${{ job.status }}" >> $GITHUB_OUTPUT
 
   handle_results:
     needs: [check_testbeds, check_file, check_names, check_tags, check_dir] #, check_tests_functionality]
@@ -1022,9 +1022,9 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: ${{ env.report_artifact_name }}
 

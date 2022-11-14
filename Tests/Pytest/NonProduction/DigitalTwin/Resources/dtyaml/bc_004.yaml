@@ -1,0 +1,10 @@
+# Same as bc_001.yaml, but with different license
+---
+system:
+  license: PRD-5000-PRMR
+  slots:
+    - num: 1
+      type: 5520-24T
+      vims:
+        - slot: A
+          type: 5520-VIM-4X

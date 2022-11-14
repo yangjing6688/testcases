@@ -95,7 +95,7 @@ Log Into XIQ and Set Up Test
 
     Configure Test Device                        ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}
 
-    Onboard New Test Device                      ${DUT_SERIAL}  ${DUT_MAKE}  ${POLICY_NAME}  ${LOCATION}
+    Onboard New Test Device                      ${DUT_SERIAL}  ${DUT_MAKE}  ${POLICY_NAME}  ${LOCATION}    ${netelem3}
     Assign Policy to Switch and Confirm Success  ${POLICY_NAME}  ${DUT_SERIAL}
     Confirm Device Serial Has Expected Status    ${DUT_SERIAL}  ${STATUS_AFTER_UPDATE}
 
@@ -127,7 +127,7 @@ Configure Test Device
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${policy}  ${location}
+    [Arguments]         ${serial}  ${make}  ${policy}  ${location}    ${device}
 
     Navigate to Devices and Confirm Success
 
@@ -136,7 +136,7 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    Onboard Device    ${serial}  ${make}  ${policy}  location=${location}
+    onboard device quick    ${device}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 

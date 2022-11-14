@@ -106,7 +106,7 @@ Log Into XIQ and Set Up Test
 
     Enable Port for Test Device                 ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_TEST_PORT}
 
-    Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}
+    Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}    ${netelem3}
     Wait Until Device Online                    ${DUT_SERIAL}
 
     ${date_time}=                               Get UTC Time    %Y-%m-%d %H:%M:%S
@@ -153,7 +153,7 @@ Clear Alarm Condition and Close Device360 Window
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${location}
+    [Arguments]         ${serial}  ${make}  ${location}    ${device}
 
     Navigate to Devices and Confirm Success
 
@@ -162,7 +162,7 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    Onboard Device    ${serial}  ${make}  location=${location}
+    onboard device quick    ${device}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 

@@ -413,7 +413,7 @@ Set Up XIQ Components
     Remove Device By MAC From XIQ and Confirm Success  ${XIQSE_MAC}
 
     # Onboard a test device managed by XIQ
-    Onboard New XIQ Device                                      ${XIQ_DUT_SERIAL}  ${XIQ_DUT_MAKE}  ${LOCATION}
+    Onboard New XIQ Device                                      ${XIQ_DUT_SERIAL}  ${XIQ_DUT_MAKE}  ${LOCATION}    ${ap1}
 
     ${SPAWN_CONNECTION}=      Open Spawn       ${XIQ_DUT_IP}  ${XIQ_DUT_PORT}  ${XIQ_DUT_USERNAME}  ${XIQ_DUT_PASSWORD}  ${XIQ_DUT_CLI_TYPE}
 
@@ -448,7 +448,7 @@ Confirm XIQ Site Engine Onboarded to XIQ
 
 Onboard New XIQ Device
     [Documentation]     Onboards the specified test device to XIQ, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${loc}
+    [Arguments]         ${serial}  ${make}  ${loc}   ${device}
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -458,7 +458,7 @@ Onboard New XIQ Device
     ${search_result}=  Search Device   ${serial}
 
     # Onboard the device
-    Run Keyword If  '${search_result}' != '1'    Onboard Device  ${serial}  ${make}  location=${loc}
+    Run Keyword If  '${search_result}' != '1'    onboard device quick    ${device}
     Run Keyword If  '${search_result}' != '1'    Sleep   ${device_onboarding_wait}
 
     # Confirm the device was added successfully

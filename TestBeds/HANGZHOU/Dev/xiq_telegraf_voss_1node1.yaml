@@ -1,0 +1,21 @@
+lab:                        "HANGZHOU"
+
+netelem1:
+  name:                     "VOSS"
+  hostname:                 ""
+  serial:                   "SB032048G-00057"
+  ip:                       "10.234.147.115"
+  port:                     "22"
+  username:                 "rwa"
+  password:                 "rwa"
+  connection_method:        "ssh"
+  cli_type:                 "voss"
+  mgmt_vlan:                "mgmt"
+  mgmt_vr:                  "vr-mgmt"
+  platform:                 "5420"
+  model:                    "5420F-24S-4XE-SwitchEngine"
+  make:                     "VOSS"
+  auth_mode:                "basic"
+  onboard_device_type:      "real"
+  location:                 ca,b,Floor 1
+  test_port:                1/7

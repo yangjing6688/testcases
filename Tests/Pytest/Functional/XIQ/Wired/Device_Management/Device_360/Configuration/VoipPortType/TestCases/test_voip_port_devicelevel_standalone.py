@@ -66,8 +66,7 @@ class XIQ1429Tests:
             cls.xiq.xflowscommonDevices.delete_device(device_mac=dut.mac)
             cls.suite_udk.configure_iqagent(dut)
 
-            assert cls.xiq.xflowsmanageSwitch.onboard_switch(
-                dut.serial, device_os=dut.cli_type, entry_type="Manual", location=cls.dut_location) == 1
+            assert cls.xiq.xflowscommonDevices.onboard_device_quick(dut) == 1
 
             assert cls.xiq.xflowscommonDevices.wait_until_device_online(
                 device_mac=dut.mac) == 1, "Device didn't come online"

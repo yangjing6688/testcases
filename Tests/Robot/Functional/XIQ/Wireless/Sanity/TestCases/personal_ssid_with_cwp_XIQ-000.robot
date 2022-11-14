@@ -78,7 +78,7 @@ Suite Teardown   Post_condition
 Step0: Onboard AP
     [Documentation]    Onboard AP
     [Tags]             tcxm-18034     development     step0    steps
-    ${STATUS}                      Onboard Device    ${ap1.serial}    ${ap1.make}    location=${ap1.location}
+    ${STATUS}                      onboard device quick    ${ap1}
     should be equal as integers    ${STATUS}         1
 
     ${AP_SPAWN}=        Open Spawn          ${ap1.ip}           ${ap1.port}      ${ap1.username}      ${ap1.password}      ${ap1.cli_type}

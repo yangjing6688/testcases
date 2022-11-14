@@ -90,7 +90,7 @@ Test 2: Onboard First Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT1_SERIAL}  ${DUT1_MAKE}  ${LOCATION}  ${DUT1_MAC}
+    Onboard New Test Device                     ${DUT1_SERIAL}  ${DUT1_MAKE}  ${LOCATION}  ${DUT1_MAC}  ${netelem1}
 
     ${selected}=    Column Picker Select        ${COLUMN_1}     ${COLUMN_2}    ${COLUMN_3}
     Should Be Equal As Integers                 ${selected}     1
@@ -124,7 +124,7 @@ Test 4: Onboard Second Test Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT2_SERIAL}  ${DUT2_MAKE}  ${LOCATION}  ${DUT2_MAC}
+    Onboard New Test Device                     ${DUT2_SERIAL}  ${DUT2_MAKE}  ${LOCATION}  ${DUT2_MAC}    ${netelem2}
 
     Refresh Devices Page
     Verify and Wait Until Device Online         ${DUT2_SERIAL}
@@ -155,7 +155,7 @@ Test 6: Onboard Third Test Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT3_SERIAL}  ${DUT3_MAKE}  ${LOCATION}  ${DUT3_MAC}
+    Onboard New Test Device                     ${DUT3_SERIAL}  ${DUT3_MAKE}  ${LOCATION}  ${DUT3_MAC}  ${netelem3}
 
     Refresh Devices Page
     Verify and Wait Until Device Online         ${DUT3_SERIAL}
@@ -306,7 +306,7 @@ Disable CoPilot Feature and Confirm Success
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${location}  ${mac}
+    [Arguments]         ${serial}  ${make}  ${location}  ${mac}  ${device}
 
     Navigate to Devices and Confirm Success
 
@@ -315,7 +315,7 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    Onboard Device    ${serial}  ${make}  location=${location}  device_mac=${mac}
+    onboard device quick    ${device}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 

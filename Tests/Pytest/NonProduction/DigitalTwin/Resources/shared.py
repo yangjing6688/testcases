@@ -7,26 +7,29 @@ items.
 """
 
 import os
-import logging
 import random
 import time
 import re
 import subprocess
 import requests
 import yaml
+from ExtremeAutomation.Library.Logger.PytestLogger import PytestLogger
 from ..Resources.SuiteUdks import SuiteUdk
 
+
+logger = PytestLogger()
 
 
 TMP_YAML_FILE = "cfg_tmp.yaml"
 DT_YAML_DIR = os.path.join("Resources", "dtyaml")
 DT_YAML_FILE_PATH = os.path.join(DT_YAML_DIR, TMP_YAML_FILE)
 
+UPLOAD_PATH = os.path.join(DT_YAML_DIR, "upload_files")
+
 PLATFORMS_YAML_FILE = os.path.join("Resources", "platforms.yaml")
 
 GNS3_API_URL = "http://localhost:3801/v2"
-# TODO: Is this going to be a problem (sometimes cloudy, sometimes actual user??)
-GNS3_NOS_LOCATION = "/home/cloudy/GNS3/images/QEMU/exos.qcow2"
+GNS3_NOS_LOCATION = "/ext/ro/images/QEMU/exos.qcow2"
 GNS3_DFLT_DOCKER_IMG = "engartifacts1.extremenetworks.com:8099/dtec/dtec:latest"
 
 DT_DFLT_RAM_AMOUNT = 1024
@@ -35,6 +38,8 @@ DT_DFLT_RAM_AMOUNT = 1024
 SYS_BOOT_SLEEP = 25
 SYS_BOOT_SLEEP_STACK = 45
 
+# List of platform prefixes/family that do not have OOB Mgmt (no VR-Mgmt)
+PLATFORMS_WITHOUT_OOB_MGMT = ["5320"]
 
 def get_platforms():
     """Returns a dictionary of supported platforms"""
@@ -54,6 +59,18 @@ def set_generic_test_envs(newlist):
 
 def get_generic_test_envs():
     return GENERIC_TEST_ENVS
+
+
+# This will be the list of DtTestEnv instances to be used by the Bundle Tests
+BUNDLE_TEST_ENVS = []
+
+def set_bundle_test_envs(newlist):
+    global BUNDLE_TEST_ENVS # pylint: disable=global-statement
+    BUNDLE_TEST_ENVS.clear()
+    BUNDLE_TEST_ENVS += newlist
+
+def get_bundle_test_envs():
+    return BUNDLE_TEST_ENVS
 
 
 class DtTestEnv:
@@ -122,7 +139,7 @@ class DtTestEnv:
         return str(min(slot_nums)) if slot_nums else None
 
     def get_prim_slot_num(self):
-        if self.yaml["system"].get("stacking", False):
+        if self.uses_stacking():
             for slot in self.yaml["system"]["slots"]:
                 if slot.get("primary", False):
                     return str(slot["num"])
@@ -134,6 +151,16 @@ class DtTestEnv:
         if self.uses_stacking():
             return SYS_BOOT_SLEEP_STACK
         return SYS_BOOT_SLEEP
+
+    def get_dflt_mgmt_vrid(self):
+        if self.uses_stacking():
+            sys_type = self.get_slot(self.get_prim_slot_num())["type"]
+        else:
+            sys_type = self.yaml["system"]["slots"][0]["type"]
+
+        if any(re.match(plat, sys_type) for plat in PLATFORMS_WITHOUT_OOB_MGMT):
+            return 2  # VR-Default
+        return 0  # VR-Mgmt
 
     @staticmethod
     def get_ram_for_sys_type(sys_type):
@@ -163,11 +190,11 @@ class DtTestEnv:
                         ram = self.get_ram_for_sys_type(slot["type"])
                         break
         except Exception:
-            logging.debug("Exception detecting RAM value")
+            logger.debug("Exception detecting RAM value")
 
         if ram is None:
             ram = DT_DFLT_RAM_AMOUNT
-            logging.info("Error detecting RAM value...using default: %d", ram)
+            logger.info("Error detecting RAM value...using default: %d", ram)
 
         return ram
 
@@ -237,7 +264,7 @@ def get_my_ip_address():
     """Quick and dirty get the usable IP address of the device running pytest"""
     cmd = ["ip", "route", "get", "8.8.8.8"]
     output = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    logging.debug("output: %s", output)
+    logger.debug("output: %s", output)
     match = re.search(r"src (\d+\.\d+\.\d+.\d+) ", str(output.stdout))
     if match:
         return match.group(1)
@@ -261,36 +288,36 @@ class Gns3:
     @staticmethod
     def _run_sys_cmd(cmd):
         output = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        logging.debug("output: %s", output)
+        logger.debug("output: %s", output)
 
     @staticmethod
     def _send_post(url, json=None):
-        logging.debug("Post Request: %s", json)
+        logger.debug("Post Request: %s", json)
         req = requests.post(url, json=json if json else {})
-        logging.debug("Status Code: %s (%d)", req.reason, req.status_code)
+        logger.debug("Status Code: %s (%d)", req.reason, req.status_code)
         return req.json()
 
     @staticmethod
     def _send_put(url, json):
-        logging.debug("Put Request: %s", json)
+        logger.debug("Put Request: %s", json)
         req = requests.put(url, json=json)
-        logging.debug("Status Code: %s (%d)", req.reason, req.status_code)
+        logger.debug("Status Code: %s (%d)", req.reason, req.status_code)
         return req.json()
 
     @staticmethod
     def _send_get(url):
         req = requests.get(url)
-        logging.debug("Status Code: %s (%d)", req.reason, req.status_code)
-        logging.debug("Get Request: %s", req.json())
+        logger.debug("Status Code: %s (%d)", req.reason, req.status_code)
+        logger.debug("Get Request: %s", req.json())
         return req.json()
 
     @staticmethod
     def _send_delete(url):
         req = requests.delete(url)
-        logging.debug("Status Code: %s (%d)", req.reason, req.status_code)
+        logger.debug("Status Code: %s (%d)", req.reason, req.status_code)
 
     def get_templates(self):
-        logging.info("Getting GNS3 Templates")
+        logger.info("Getting GNS3 Templates")
         url = self.base_url + "/templates"
         resp = self._send_get(url)
         for template in resp:
@@ -302,38 +329,60 @@ class Gns3:
             raise LookupError
 
     def start_instance(self):
-        logging.info("Pulling docker image %s", self.docker_image)
+        logger.info("Pulling docker image %s", self.docker_image)
         self._run_sys_cmd(["docker", "image", "pull", self.docker_image])
 
-        logging.info("Starting docker container %s", self.name)
-        self._run_sys_cmd(["docker", "container", "run", "--rm", "--name", self.name,
-                           "--hostname", self.name, "--detach", "--privileged",
+## TODO:JLB This is temporary.  Once a new "fixed" container image is available, this can be removed
+#
+#if container has been fixed
+#       logger.info("Starting docker container %s", self.name)
+#       self._run_sys_cmd(["docker", "container", "run", "--rm", "--name", self.name,
+#                          "--hostname", self.name, "--detach", "--privileged",
+#                          "--publish", "3801:3080", "--publish", "5000:5002",
+#                          "--publish", "8801:8080",
+#                          self.docker_image, "--start-gns3-be", "--start-gns3-fe"])
+#else use workaround
+        logger.info("Creating docker container %s", self.name)
+        self._run_sys_cmd(["docker", "container", "create", "--rm", "--name", self.name,
+                           "--hostname", self.name, "--privileged",
                            "--publish", "3801:3080", "--publish", "5000:5002",
                            "--publish", "8801:8080",
                            self.docker_image, "--start-gns3-be", "--start-gns3-fe"])
 
+        logger.info("Copying new qemu_vm.py to docker container %s", self.name)
+        self._run_sys_cmd(["docker", "container", "cp", "/home/jbarnhill/qemu_vm.py",
+                           self.name+":"+"/usr/share/gns3/gns3-server/lib/python3.9/site-packages/gns3server/compute/qemu/qemu_vm.py"])
+
+        logger.info("Starting docker container %s", self.name)
+        self._run_sys_cmd(["docker", "container", "start", self.name])
+#end
         wait_time = 5
-        logging.info("Sleep %d seconds while container starts", wait_time)
+        logger.info("Sleep %d seconds while container starts", wait_time)
         time.sleep(wait_time)
         self.get_templates()
 
     def stop_instance(self):
-        logging.info("Stopping docker instance %s", self.name)
+        logger.info("Stopping docker instance %s", self.name)
         self._run_sys_cmd(["docker", "container", "stop", self.name])
 
     def copy_nos_image(self):
-        logging.info("Copying %s to docker instance %s", self.nos_image, self.name)
+        assert os.path.exists(self.nos_image), f"NOS image {self.nos_image} does not exist"
+        #JLB:New Container
+        qemu_dir = os.path.dirname(GNS3_NOS_LOCATION)
+        logger.info("Creating QEMU directory %s in docker instance %s", qemu_dir, self.name)
+        self._run_sys_cmd(["docker", "exec", self.name, "mkdir", "-p", qemu_dir])
+        logger.info("Copying %s to docker instance %s", self.nos_image, self.name)
         self._run_sys_cmd(["docker", "container", "cp", self.nos_image,
                            self.name + ":" + GNS3_NOS_LOCATION])
 
     def create_project(self, project_name):
-        logging.info("Creating GNS3 Project %s", project_name)
+        logger.info("Creating GNS3 Project %s", project_name)
 
         url = self.base_url + "/projects"
         json = {"name": project_name}
         resp = self._send_post(url, json)
         proj_id = resp["project_id"]
-        logging.debug("proj_id = %s", proj_id)
+        logger.debug("proj_id = %s", proj_id)
 
         url += "/" + proj_id
         json = {"scene_width": 500, "scene_height": 500, "drawing_grid_size": 25, "grid_size": 75,
@@ -342,11 +391,11 @@ class Gns3:
         self.project = {"name": project_name, "id": proj_id, "url": url}
 
     def delete_project(self):
-        logging.info("Delete project %s", self.project["name"])
+        logger.info("Delete project %s", self.project["name"])
         self._send_delete(self.project["url"])
 
     def create_xiq_node(self):
-        logging.info("Create XIQ Node in project %s", self.project["name"])
+        logger.info("Create XIQ Node in project %s", self.project["name"])
 
         node_name = "XIQ"
         url = self.project["url"] + "/templates/" + self.xiq_template
@@ -361,7 +410,7 @@ class Gns3:
         self._send_put(url, json)
 
     def create_mgmt_switch_node(self):
-        logging.info("Create Mgmt Switch Node in project %s", self.project["name"])
+        logger.info("Create Mgmt Switch Node in project %s", self.project["name"])
 
         node_name = "Mgmt_SW"
         url = self.project["url"] + "/templates/" + self.switch_template
@@ -376,7 +425,7 @@ class Gns3:
         self._send_put(url, json)
 
     def create_dt_node(self, ram_size, mac_addr, cfg_name, cfg_urls):
-        logging.info("Create DT Node in project %s", self.project["name"])
+        logger.info("Create DT Node in project %s", self.project["name"])
 
         node_name = "EXOS-DT"
         url = self.project["url"] + "/nodes"
@@ -404,12 +453,12 @@ class Gns3:
         self.start_dt_node()
 
     def start_dt_node(self):
-        logging.info("Start DT Node in project %s", self.project["name"])
+        logger.info("Start DT Node in project %s", self.project["name"])
         url = self.project["url"] + "/nodes/" + self.project["dt"]["id"] + "/start"
         self._send_post(url)
 
     def delete_dt_node(self):
-        logging.info("Delete DT Node in project %s", self.project["name"])
+        logger.info("Delete DT Node in project %s", self.project["name"])
         url = self.project["url"] + "/nodes/" + self.project["dt"]["id"]
         self._send_delete(url)
 

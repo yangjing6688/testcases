@@ -75,7 +75,7 @@ Log In and Set Up Test
     Log Into XIQ and Confirm Success  ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
     Navigate to Devices and Confirm Success
 
-    Onboard Device                 ${DUT_SERIAL}  ${DUT_MAKE}  location=${LOCATION}
+    onboard device quick               ${ap1}
     Confirm Device Serial Present  ${DUT_SERIAL}
 
     Configure CAPWAP Device To Connect To Cloud     ${DUT_CLI_TYPE}  ${DUT_CONSOLE_IP}  ${DUT_CONSOLE_PORT}  ${DUT_USERNAME}

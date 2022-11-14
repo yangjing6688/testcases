@@ -118,10 +118,7 @@ class xiqTests():
             # Onboarding EXOS device(s)
             def exosDeviceOnboard (cls):
                 # Onboarding the exos stack device dut1 from testbed.yaml file using serial numbers
-                result = cls.xiq.xflowsmanageSwitch.onboard_switch( cls.tb.dut1.serial,
-                                                                    device_os = "Switch Engine",
-                                                                    entry_type= "Manual",
-                                                                    location= DUT_LOCATION )
+                result = cls.xiq.xflowscommonDevices.onboard_device_quick(cls.tb.dut1)
                 if result != 1:
                     pytest.fail("Onboard is not successful for all the devices.")
                 time.sleep(5)
