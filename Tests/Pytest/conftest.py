@@ -738,6 +738,8 @@ def pytest_collection_modifyitems(session, items):
             logger_obj.info("There are no testbed_stack items left. Make sure that the stack node is not onboarded.")
             pytest.onboard_stack = False
 
+        logger_obj.debug(f"{pytest.onboard_one_node=}, {pytest.onboard_two_node=}, {pytest.onboard_stack=}")
+
         if ordered_items:
             logger_obj.info(f"These are tests that remained to run this session: {[get_test_marker(item)[0] for item in ordered_items]}")
         
@@ -1367,17 +1369,21 @@ def onboarding_locations(
 
         if onboarding_location:
             
-            logger.info(f"Successfully found this location in the runlist for node '{node.name}': '{onboarding_location}'")
+            logger.info(f"Successfully found this location in the runlist for node '{node.node_name}': '{onboarding_location}'")
             ret[node.name] = onboarding_location
             
             if create_onboarding_location:
+                logger.info(
+                    f"The 'create_onboarding_location' flag is set to True. The '{onboarding_location}' location"
+                    f" will be created so it can be used at the onboarding of the '{node.node_name}' node."
+                )
                 pytest.created_onboarding_locations.append(onboarding_location)
 
         else:
             locations = node.get("location")
             
             if locations:
-                logger.info(f"Found location(s) attached to '{node.name}': {locations}.")
+                logger.info(f"Found location(s) attached to '{node.node_name}': {locations}.")
             
             if isinstance(locations, str):
                 ret[node.name] = locations
@@ -1385,13 +1391,13 @@ def onboarding_locations(
             elif isinstance(locations, dict):
                 logger.step("Choose one of them.")
                 found_location = random.choice(list(locations.values()))
-                logger.info(f"The chosen location for '{node.name}' is '{found_location}'.")
+                logger.info(f"The chosen location for '{node.node_name}' is '{found_location}'.")
                 ret[node.name] = found_location
             
             else:
-                logger.info(f"Did not find any location attached to '{node.name}'.")
+                logger.info(f"Did not find any location attached to '{node.node_name}'.")
 
-                logger.step(f"Will choose a location out of these for '{node.name}': {hardcoded_locations}.")
+                logger.step(f"Will choose a location out of these for '{node.node_name}': {hardcoded_locations}.")
                 found_location = random.choice(hardcoded_locations)
                 logger.info(f"The chosen location for '{node.name}' is '{found_location}'.")
                 ret[node.name] = found_location
@@ -1405,7 +1411,7 @@ def check_devices_are_reachable(
         wait_till: Callable
 ) -> CheckDevicesAreReachable:
     """
-    Fixture that check if given devices are reachable from the test automation environment.
+    Fixture that checks if given devices are reachable from the test automation environment.
     """
     
     windows = platform.system() == "Windows"
@@ -1416,6 +1422,7 @@ def check_devices_are_reachable(
         retries: int=3, 
         step: int=1
         ) -> None:
+        
         results: List[str] = []
         
         def worker(dut: Node):
@@ -1641,7 +1648,7 @@ def configure_network_policies(
         policy_config: PolicyConfig,
         screen: Screen,
         debug: Callable,
-        request
+        request: fixtures.SubRequest
 ) -> ConfigureNetworkPolicies:
     """
     Fixture that configures the network policies and the switch templates for the onboarded nodes.
@@ -1931,7 +1938,7 @@ def update_devices(
         policy_config: PolicyConfig,
         debug: Callable,
         wait_till: Callable,
-        request
+        request: fixtures.SubRequest
 ) -> UpdateDevices:
     """ 
     Fixture that updates the onboarded nodes after the onboarding.
