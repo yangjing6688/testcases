@@ -1,0 +1,6 @@
+test_url:                 "https://10.155.255.181"
+capwap_url:               "10.155.255.181"
+sw_capwap_url:            "10.155.255.181"
+tenant_username:          "admin@cust001.com"
+tenant_password:          "aerohive"
+base_url:                 "https://10.155.255.181"
