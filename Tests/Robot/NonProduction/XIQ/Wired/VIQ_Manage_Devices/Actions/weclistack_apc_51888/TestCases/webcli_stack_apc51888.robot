@@ -40,7 +40,7 @@ TCXM-15265: Verify that WEB CLI is available for EXOS Stack
     #Configure IQAgent
 
     ${onboard_result}=          run keyword if  """${netelem1.os}"""== "exos" and """${netelem1.platform}""" == "Stack"
-    ...    onboard switch     ${netelem1.serial}  device_os=${netelem1.os}   entry_type=Manual  location=${DUT_LOCATION}
+    ...    onboard device quick     ${netelem1}
     #Configure IQAgent
     Should Be Equal As Integers                 ${onboard_result}       1
     Configure IQAgent for EXOS Switch

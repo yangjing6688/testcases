@@ -75,7 +75,8 @@ Test1: Advance Onboard AP1 and AP2 - TCXM-15129 - TCXM-15131
     [Tags]             tcxm-15129     tcxm-15131    development     test1     test
     ${aps}       Create List        ${ap1}        ${ap2}
     FOR     ${ap}   IN    @{aps}
-        ${ONBOARD_STATUS}               Onboard Device      ${ap}[serial]    ${ap}[make]    location=${ap}[location]
+
+        ${ONBOARD_STATUS}=               onboard device quick     ${ap}
         should be equal as integers      ${ONBOARD_STATUS}   1
     END
 

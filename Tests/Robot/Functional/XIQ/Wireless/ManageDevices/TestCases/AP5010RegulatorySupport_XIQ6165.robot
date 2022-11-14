@@ -862,7 +862,7 @@ InitialSetup
     delete all network policies
     delete_all_ssids
 
-    ${onboard_result}=      Onboard Device      ${ap1.serial}         ${ap1.make}       location=${ap1.location}      device_os=${ap1.os}
+    ${onboard_result}=      onboard device quick     ${ap1}
     ${search_result}=       Search AP Serial    ${ap1.serial}
     should be equal as integers                 ${onboard_result}     1
     should be equal as integers                 ${search_result}      1

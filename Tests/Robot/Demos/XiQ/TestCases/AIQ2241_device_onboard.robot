@@ -86,7 +86,7 @@ step1: Quick Onboard Device on XIQ
 
         Clean Up Device
 
-        ${ONBOARD_RESULT}=          onboard device      ${device1.serial}       ${device1.make}   device_mac=${device1.mac}  location=${LOCATION}
+        ${ONBOARD_RESULT}=          onboard device quick      ${device1}
         Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
         ${SPAWN_CONNECTION}=     Open Spawn      ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}   ${device1.cli_type}
@@ -143,7 +143,7 @@ step3: Switching Between Advanced Onboard And Quick Onboard
         Log    ${index}
         Clean Up Device
 
-        ${ONBOARD_RESULT}=          onboard device      ${device1.serial}       ${device1.make}   device_mac=${device1.mac}  location=${LOCATION}
+        ${ONBOARD_RESULT}=          onboard device quick      ${device1}
         Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
         ${SPAWN_CONNECTION}=     Open Spawn      ${device1.ip}    ${device1.port}   ${device1.username}    ${device1.password}   ${device1.cli_type}

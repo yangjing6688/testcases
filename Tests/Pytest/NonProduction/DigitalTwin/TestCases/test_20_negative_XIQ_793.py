@@ -2,7 +2,6 @@
 Digital Twin - test_20_negative.py
 """
 
-# pylint: disable=import-error
 from pytest_testconfig import config
 from pytest import mark
 from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary

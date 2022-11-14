@@ -83,9 +83,7 @@ class TCXM9320Tests(xiqBase):
             self.xiq.xflowsmanageDevice360.close_device360_window()
 
             time.sleep(5)
-            assert self.xiq.xflowsmanageSwitch.onboard_switch(
-                dut2.serial, device_os=dut2.cli_type, location=onboarding_location) == 1, \
-                    f"Failed to onboard this dut to XiQ: {dut2}"
+            assert self.xiq.xflowscommonDevices.onboard_device_quick(dut2) == 1
 
             self.xiq.xflowscommonDevices.wait_until_device_online(dut2.serial)
             res = self.xiq.xflowscommonDevices.get_device_status(device_serial=dut2.serial)

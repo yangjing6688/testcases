@@ -111,9 +111,11 @@ Test2: Onboard AP to Generate DoS Deauthentication
     Depends On              Test1
     ${LOGIN_XIQ}=               Login User          ${tenant_username}     ${tenant_password}
 
+
     ${ONBOARD_RESULT}=          onboard device quick     ${ap2}
     should be equal as integers        ${ONBOARD_RESULT}       1
      ${AP2_SPAWN}=               open spawn       ${ap2.ip}      ${ap2.port}   ${ap2.username}     ${ap2.password}        ${ap2.cli_type}
+     
     Set Suite Variable          ${AP2_SPAWN}
     ${OUTPUT0}=                 send commands      ${AP2_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
     sleep  240s

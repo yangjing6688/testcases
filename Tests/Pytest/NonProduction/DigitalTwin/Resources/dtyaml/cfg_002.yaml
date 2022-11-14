@@ -2,7 +2,7 @@ system:
   stacking: true
   slots:
     - num: 1
-      type: 5520-24X
+      type: 5520-24T
     - num: 2
       type: 5520-48W
       primary: true

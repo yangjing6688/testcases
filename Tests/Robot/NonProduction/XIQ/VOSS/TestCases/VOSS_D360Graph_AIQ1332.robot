@@ -99,7 +99,7 @@ Log Into XIQ and Set Up Test
 
     Log Into XIQ and Confirm Success            ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
     Configure Test Device                       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}
-    Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}
+    Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}    ${netelem3}
     Confirm Device Serial Online                ${DUT_SERIAL}
 
 Tear Down Test and Close Session
@@ -110,7 +110,7 @@ Tear Down Test and Close Session
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${location}
+    [Arguments]         ${serial}  ${make}  ${location}   ${device}
 
     Navigate to Devices and Confirm Success
 
@@ -119,7 +119,7 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    Onboard Device    ${serial}  ${make}  location=${location}
+    onboard device quick    ${device}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 

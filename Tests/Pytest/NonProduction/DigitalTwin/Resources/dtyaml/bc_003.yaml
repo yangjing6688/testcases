@@ -1,0 +1,11 @@
+# Same as bc_001.yaml, but with stacking
+---
+system:
+  license: PRD-5000-PRMR,PRD-5000-MACSEC
+  stacking: true
+  slots:
+    - num: 1
+      type: 5520-24T
+      vims:
+        - slot: A
+          type: 5520-VIM-4X

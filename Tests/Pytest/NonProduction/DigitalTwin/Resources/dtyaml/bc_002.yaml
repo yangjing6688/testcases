@@ -1,0 +1,10 @@
+# Same as bc_001.yaml, but with different card type
+---
+system:
+  license: PRD-5000-PRMR,PRD-5000-MACSEC
+  slots:
+    - num: 1
+      type: 5520-24W
+      vims:
+        - slot: A
+          type: 5520-VIM-4X

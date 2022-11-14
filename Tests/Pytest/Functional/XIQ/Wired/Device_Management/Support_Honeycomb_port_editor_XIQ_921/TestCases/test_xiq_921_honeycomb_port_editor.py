@@ -363,8 +363,7 @@ class xiqTests():
             self.devCmd.send_cmd(self.tb.dut1.name, 'iq server none')
             self.devCmd.send_cmd(self.tb.dut1.name, 'iq en')
 
-        if self.xiq.xflowsmanageSwitch.onboard_switch(self.tb.dut1.serial, device_os=self.tb.dut1.cli_type,
-                                                      switch_make=self.tb.dut1.make, location=dut_location) != 1:
+        if self.xiq.xflowscommonDevices.onboard_device_quick(self.tb.dut1) != 1:
             setup_onboard_fail_flag = 1
             pytest.fail("Failed to onboard the device. Cleaning up...")
         self.xiq.xflowscommonDevices.check_100_rows_per_page_button()

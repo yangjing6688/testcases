@@ -442,8 +442,7 @@ class XiqTests():
             setup_flag_onboard_fail = 1
             cls.devCmd.send_cmd(cls.tb.dut1.name, 'configure iq server ipaddress none')
             cls.devCmd.send_cmd(cls.tb.dut1.name, 'enable iqagent')
-            if cls.xiq.xflowsmanageSwitch.onboard_switch(cls.tb.dut1.serial, device_os=cls.tb.dut1.cli_type,
-                                                         switch_make=cls.tb.dut1.make, location=dut_location) == 1:
+            if cls.xiq.xflowscommonDevices.onboard_device_quick(cls.tb.dut1) == 1:
                 setup_flag_onboard_fail = 0
             global setup_flag_connect_fail
             setup_flag_connect_fail = 1

@@ -1,0 +1,23 @@
+# Same as bc_011.yaml, but with different card type
+---
+system:
+  stacking: true
+  slots:
+    - num: 1
+      type: 5720-24MW
+      vims:
+        - slot: A
+          type: 5720-VIM-2CE
+    - num: 2
+      type: 5720-48MW
+      primary: true
+      vims:
+        - slot: A
+          type: 5720-VIM-6YE
+    - num: 3
+      type: 5720-48MXW
+    - num: 4
+      type: 5720-24MXW
+      vims:
+        - slot: A
+          type: 5720-VIM-2CE

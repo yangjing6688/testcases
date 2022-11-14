@@ -71,7 +71,7 @@ TCXM-21577: Unhide Country Code - AP templates
 
     # Country Code variables in line No.41 and 95 are different because retrived output and assigned output format are different for Country Code value.
 
-    ${onboard_status}=                Onboard Device                          ${ap1.serial}                    ${ap1.make}                 location=${xiq.location}
+    ${onboard_status}=                onboard device quick                         ${ap1}
     should be equal as integers       ${onboard_status}              1
 
     ${assign_np}=                     Assign Network Policy To All Devices    ${xiq.nw_policy_name}

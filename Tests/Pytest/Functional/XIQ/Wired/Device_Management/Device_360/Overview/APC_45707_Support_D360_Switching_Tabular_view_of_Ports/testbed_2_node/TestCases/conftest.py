@@ -98,8 +98,7 @@ def onboarded_2_switches(onboarding_location):
 
                 xiq.xflowscommonDevices.delete_device(device_serial=dut.serial)
 
-                assert xiq.xflowsmanageSwitch.onboard_switch(
-                    dut.serial, device_os=dut.cli_type, location=onboarding_location) == 1, f"Failed to onboard this dut to XiQ: {dut}"
+                assert xiq.xflowscommonDevices.onboard_device_quick(dut) == 1
 
                 if dut.cli_type.upper() == "EXOS":
                     devCmd.send_cmd_verify_output(dut.name, 'show process iqagent', 'Ready', max_wait=30, interval=10)

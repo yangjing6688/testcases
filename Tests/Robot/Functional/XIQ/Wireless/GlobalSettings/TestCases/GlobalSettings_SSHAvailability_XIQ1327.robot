@@ -76,8 +76,8 @@ Onboard Test Devices
     Navigate to Devices and Confirm Success
 
     # Onboard the devices for the test
-    ${dut1_result}=     Search Device Serial   ${AP_SERIAL}
-    Run Keyword If      '${dut1_result}' != '1'  Onboard Device   ${AP_SERIAL}  ${AP_MAKE}  location=${AP_LOCATION}
+    ${dut1_result}=     Search Device       device_serial=${AP_SERIAL}
+    Run Keyword If      '${dut1_result}' != '1'  onboard device quick    ${ap1}
 
     Configure CAPWAP               ${AP_CONSOLE_IP}  ${AP_CONSOLE_PORT}  ${AP_USERNAME}
     ...                            ${AP_PASSWORD}  ${AP_PLATFORM}  ${XIQ_CAPWAP_URL}
