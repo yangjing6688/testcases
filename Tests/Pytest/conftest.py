@@ -1377,7 +1377,8 @@ def onboarding_locations(
                     f"The 'create_onboarding_location' flag is set to True. The '{onboarding_location}' location"
                     f" will be created so it can be used at the onboarding of the '{node.node_name}' node."
                 )
-                pytest.created_onboarding_locations.append(onboarding_location)
+                if onboarding_location not in pytest.created_onboarding_locations:
+                    pytest.created_onboarding_locations.append(onboarding_location)
 
         else:
             locations = node.get("location")
