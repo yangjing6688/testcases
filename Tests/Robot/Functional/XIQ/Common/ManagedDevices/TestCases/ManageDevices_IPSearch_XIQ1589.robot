@@ -22,15 +22,12 @@ ${XIQ_URL}            ${test_url}
 ${XIQ_USER}           ${tenant_username}
 ${XIQ_PASSWORD}       ${tenant_password}
 
-${LOCATION}             auto_location_milpitas, San_Jose, building_1, floor_1
-
-
 *** Test Cases ***
 TCXM-18675: Basic IP Address Search
     [Documentation]     Confirms the device IP Search
     [Tags]              tcxm_18675   development
 
-    ${ip_list_result}=      Get Device Data Field Value     AP460C      ipAddress
+    ${ip_list_result}=      Get Device Data Field Value     ${device.model}      ipAddress
     ${search-result}=       Perform Search on Devices Table    ${ip_list_result[0]}
     Should Be Equal As Integers             ${search-result}               1
     Clear Search On Devices Table
@@ -39,6 +36,14 @@ TCXM-18675: Basic IP Address Search
 Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ and sets up the elements necessary to complete this test suite
 
+    ${device}=      Create Dictionary
+    ...     name=simulated_dut03
+    ...     model=AP460C
+    ...     simulated_count=1
+    ...     onboard_device_type=Simulated
+    ...     location=auto_location_01, Santa Clara, building_02, floor_04
+
+    set suite variable    ${device}
     Login User      ${XIQ_USER}  ${XIQ_PASSWORD}  url=${XIQ_URL}
     Onboard Test Devices
 
@@ -52,8 +57,12 @@ Tear Down Test and Close Session
 Onboard Test Devices
     [Documentation]     Onboards the test devices
 
-    ${SIM_SERIAL}=    Onboard Simulated Device        AP460C      location=${LOCATION}
-    Set Suite Variable          ${SIM_SERIAL}
+    ${ONBOARD_RESULT}=    onboard device quick       ${device}
+    Should Be Equal As Strings          ${ONBOARD_RESULT}       1
+
+    ${SIM_SERIAL}=     set variable    ${${device.name}.serial}
+    Set Suite Variable         ${SIM_SERIAL}
+
 
 Clean Up Test Device and Confirm Success
     [Documentation]     Deletes the specified device and confirms the action was successful

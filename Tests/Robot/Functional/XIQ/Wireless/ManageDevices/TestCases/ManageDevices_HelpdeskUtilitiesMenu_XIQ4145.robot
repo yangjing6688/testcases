@@ -261,6 +261,33 @@ TCXM-19993: Confirm Access To Switches Tools
 Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ and sets up the elements necessary to complete this test suite
 
+    ${device1}=      Create Dictionary
+    ...     name=simulated_dut05
+    ...     model=AP460C
+    ...     simulated_count=1
+    ...     onboard_device_type=Simulated
+    ...     location=auto_location_01, Santa Clara, building_02, floor_04
+
+    set suite variable    ${device1}
+
+    ${device2}=      Create Dictionary
+    ...     name=simulated_dut06
+    ...     model=SR2348P
+    ...     simulated_count=1
+    ...     onboard_device_type=Simulated
+    ...     location=auto_location_01, Santa Clara, building_02, floor_04
+
+    set suite variable    ${device2}
+
+    ${device3}=      Create Dictionary
+    ...     name=simulated_dut07
+    ...     model=XR600P
+    ...     simulated_count=1
+    ...     onboard_device_type=Simulated
+    ...     location=auto_location_01, Santa Clara, building_02, floor_04
+
+    set suite variable    ${device3}
+
     Log Into XIQ and Confirm Success  ${XIQ_USER}   ${XIQ_PASSWORD}   ${XIQ_URL}
     Onboard Test Devices
     Log Out of XIQ and Quit Browser
@@ -269,11 +296,19 @@ Log Into XIQ and Set Up Test
 Onboard Test Devices
     [Documentation]     Onboards the test devices
 
-    ${AP_SERIAL}=       Onboard Simulated Device   AP460C   location=${AP_LOCATION}
+    ${ONBOARD_RESULT1}=      onboard device quick    ${device1}
+    Should Be Equal As Strings          ${ONBOARD_RESULT1}       1
+    ${AP_SERIAL}=    set variable       ${${device1.name}.serial}
     Set Suite Variable          ${AP_SERIAL}
-    ${SW_SERIAL}=       Onboard Simulated Device   SR2348P   location=${SW_LOCATION}
+
+    ${ONBOARD_RESULT2}=       onboard device quick    ${device2}
+    Should Be Equal As Strings          ${ONBOARD_RESULT2}       1
+    ${SW_SERIAL}=    set variable       ${${device2.name}.serial}
     Set Suite Variable          ${SW_SERIAL}
-    ${RT_SERIAL}=       Onboard Simulated Device   XR600P   location=${RT_LOCATION}
+
+    ${ONBOARD_RESULT3}=       onboard device quick    ${device3}
+    Should Be Equal As Strings          ${ONBOARD_RESULT3}       1
+    ${RT_SERIAL}=    set variable       ${${device3.name}.serial}
     Set Suite Variable          ${RT_SERIAL}
 
 Select Device

@@ -27,8 +27,6 @@ ${ELEMENT_INFO}             None
 ${BROWSER}                  chrome
 ######### For Local AIO testbed End #########
 
-${DEVICE_TYPE}              AP410C
-${SIM_AP_COUNT}             4
 
 *** Settings ***
 
@@ -62,6 +60,16 @@ Suite Teardown   Suite Clean Up
 Pre Condition
     [Documentation]   Login XIQ and Create Maps and classification rules first
     [Tags]                      cfd-7020     development    pre-condition
+
+    ${device}=      Create Dictionary
+    ...     name=simulated_dut01
+    ...     model=AP410C
+    ...     simulated_count=4
+    ...     onboard_device_type=Simulated
+    ...     location=auto_location_01, Santa Clara, building_02, floor_04
+
+    set suite variable    ${device}
+
 # Login AIO
     ${Login_XIQ}=                  Login User              ${TENANT_USERNAME}      ${TENANT_PASSWORD}
     Should Be Equal As Integers    ${Login_XIQ}             1
@@ -75,7 +83,12 @@ Pre Condition
     Add Wireless Nw To Network Policy    ${NW_POLICY_NAME1}    &{WIRELESS_PESRONAL_WPA2CCMP_2}
 
 # Onboard 2 simulator APs
-    ${ONBOARD_AP_SERIALS}=      Onboard Simulated Device    ${DEVICE_TYPE}      count=${SIM_AP_COUNT}    location=${1st_LOCATION_ORG},${1st_LOCATION_CITY_STATE},${1st_LOCATION_STREET},Floor 1
+    ${ONBOARD_RESULT}=      onboard device quick    ${device}
+    Should Be Equal As Strings          ${ONBOARD_RESULT}       1
+
+
+    ${ONBOARD_AP_SERIALS}=     set variable    ${${device.name}.serial}
+    Set Suite Variable         ${ONBOARD_AP_SERIALS}
 
 # Create ccg profile
     ${CCG_NAME}=     Get From List      ${ONBOARD_AP_SERIALS}        0
