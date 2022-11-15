@@ -30,13 +30,13 @@
     ! Please check the runlist.yaml file that is already created in this branch !
 
 
-The run command:
+The Pytest command:
     pytest 
-        --runlist extreme_automation_tests/vstefan/runlist.yaml // the path to the runlist file
-        extreme_automation_tests/Tests/Pytest/NonProduction/XIQ // the path to the directory that contains the tests
-        --tc-file extreme_automation_tests/vstefan/topo.yaml    // the topo yaml
-        --tc-file extreme_automation_tests/vstefan/devices.yaml // the devices yaml
-        --tc-file extreme_automation_tests/vstefan/env.yaml     // the env yaml
+        --runlist extreme_automation_tests/vstefan/runlist.yaml                         // the path to the runlist file
+        extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/Wired/template_XIQ_200  // the path to the directory that contains the tests
+        --tc-file extreme_automation_tests/vstefan/topo.yaml                            // the topo yaml
+        --tc-file extreme_automation_tests/vstefan/devices.yaml                         // the devices yaml
+        --tc-file extreme_automation_tests/vstefan/env.yaml                             // the env yaml
     
 
 """
