@@ -8,10 +8,8 @@
 # --tc-file <path_to_the_devices.yaml>
 # --tc-file <path_to_the_env.yaml>
 # --tc-file <path_to_the_topo.yaml>
-#
-#
-# If the "run_options" is not given then all of its possible settings will have the default values.
-#
+
+
 # If the devices.yaml contains:
 #
 # 1) only a standalone node
@@ -39,7 +37,26 @@
 #    - the tests that are going to run are the ones marked with "pytest.mark.testbed_stack", "pytest.mark.testbed_1_node", "pytest.mark.testbde_2_node" and "pytest.mark.testbed_none"
 #
 # If the devices.yaml is not given as argument to Pytest then the only tests are going to run are the ones marker with "pytest.mark.testbed_node"
+# If the "run_options" is not given then all of its possible settings will have the default values.
+
+
+# How does the onboarding procedure choose the onboarding location for a node:
+# 
+# 1) It will check if there is any onboarding location given in the runlist yaml for the node. 
+#    Also it will check if the 'create_onboarding_location' flag is enabled.
+#    Finally it will use the location it found for the onboarding of the node.
+# 
+# 2) If we did not find an onboarding location in 1) then the onboarding will look for a location in the devices.yaml for that node.
 #
+# 3) As last resort when we did not find an onboarding location in 1) or 2), 
+# the onboarding will use a hardcoded location ('San Jose,building_01,floor_01' - found in the onboarding_locations fixture).
+#    This location should always be created on INT1R1, G2R1 ... 
+#
+# notes:
+# - make sure the onboarding location you specify in the runlist yaml for specific node is created before onboarding
+# - if the specified location is not created then the onboarding will fail
+# - a simple way to fix this is to use the 'create_onboarding_location: yes' option for said node
+
 
 runlist_story_name:
   suitemap:
@@ -89,6 +106,7 @@ runlist_story_name:
 
 # This runlist will onboard the chosen devices with the default onboarding options (create policy, create template, assign policy and initial policy push).
 
+
 runlist_without_config:
   suitemap:
     - <path_to_the_suitemap_file_1>
@@ -106,6 +124,7 @@ runlist_without_config:
 # This runlist won't do the onboarding as it does not contain the onboarding test.
 # Its tests should not depend on the onboarding test (otherwise they will get skipped).
 # These tests should be marked with the "testbed_none" marker.
+
 
 runlist_without_onboarding:
   suitemap:
