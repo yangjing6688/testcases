@@ -28,7 +28,7 @@ runlist_XIQ_200:
                                         #  - create a network policy for node_2
                                         #  - create a switch template for the created network policy
                                         #  - will assign the policy to node_2
-                                        #  - but it won't push the policy to node_1
+                                        #  - but it won't push the policy to node_2
     node_stack:
       run_os: ["exos"] # it will raise an error if it does not find in the devices.yaml a stack dut with cli_type exos
   tests:
