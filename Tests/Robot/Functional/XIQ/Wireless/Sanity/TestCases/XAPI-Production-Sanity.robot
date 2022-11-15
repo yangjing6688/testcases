@@ -145,7 +145,7 @@ TCCS-7267: XAPI Onboard Extreme-Aerohive AP , Assign Location and Assign Network
 
     ${SPAWN_CONNECTION}=      Open Spawn    ${ap1.ip}     ${ap1.port}   ${ap1.username}   ${ap1.password}    ${ap1.cli_type}
 
-    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud             ${ap1.cli_type}       ${ap1.server_name}      ${SPAWN_CONNECTION}
+    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud             ${ap1.cli_type}       ${server_name}      ${SPAWN_CONNECTION}
     Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
 
     Close Spawn       ${SPAWN_CONNECTION}
