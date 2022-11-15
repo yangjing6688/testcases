@@ -2011,16 +2011,13 @@ def onboarding(
         ) -> None:
         
         onboarding_locations: Dict[str, str] = request.getfixturevalue("onboarding_locations")
+        create_location: CreateLocation = request.getfixturevalue("create_location")
         
+        for location in pytest.created_onboarding_locations:
+            create_location(xiq, location)
+                            
         for dut in duts:
             
-            onboarding_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
-            create_onboarding_location: bool = onboarding_options.get("create_onboarding_location", False)
-            
-            if create_onboarding_location:
-                create_location: CreateLocation = request.getfixturevalue("create_location")
-                create_location(xiq, onboarding_locations[dut.name])
-
             if xiq.xflowscommonDevices.onboard_device_quick(
                 {
                     "location": onboarding_locations[dut.name],
