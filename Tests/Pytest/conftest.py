@@ -705,6 +705,33 @@ def pytest_collection_modifyitems(session, items):
                                         f" The '{test_code}' test case will be skipped.")
                                 )
 
+            filtered_by_priority_items: List[pytest.Function] = []
+            runlist_tests_priority = pytest.run_options.get("priority", valid_priority_markers)
+            logger_obj.step(f"Filter the items by the list of priorities given in the runlist: {runlist_tests_priority}.")
+            
+            for item in ordered_items:
+            
+                test_marker: TestCaseMarker = get_test_marker(item)[0]
+                
+                if test_marker in [pytest.onboarding_test_name, pytest.onboarding_cleanup_test_name]:
+                    filtered_by_priority_items.append(item)
+                    continue
+                
+                priority_marker: PriorityMarker = get_priority_marker(item)[0]
+
+                if priority_marker in runlist_tests_priority:
+                    filtered_by_priority_items.append(item)
+                else:
+                    logger_obj.warning(
+                        f"The '{test_marker}' test case will be unselected because its priority "
+                        f"('{priority_marker}') is not selected in the runlist yaml.")
+
+            ordered_items[:] = filtered_by_priority_items
+
+            for item in ordered_items:
+                logger_obj.info(f"Selected: '{item.nodeid}' "
+                                f"(markers: '{[m.name for m in item.own_markers]}').")
+            
             if all(
                 [
                     item_onboarding in ordered_items,
@@ -713,10 +740,7 @@ def pytest_collection_modifyitems(session, items):
                 ]
             ):
                 logger_obj.warning("There are no test left selected to run for this session besides the onboarding tests.")
-
-            for item in ordered_items:
-                logger_obj.info(f"Selected: '{item.nodeid}' "
-                                f"(markers: '{[m.name for m in item.own_markers]}').")
+            
         else:
             message = "Did not find any test function to run this session."
             logger_obj.warning(message)
