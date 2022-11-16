@@ -890,6 +890,13 @@ def pytest_runtest_makereport(item, call):
                 logger_obj.info(f"\n{Colors.Bg.BLUE}{Colors.Style.BRIGHT}{Colors.Fg.WHITE} --> {current_test_marker.upper()} SKIPPED "
                     f"<-- {Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
 
+        elif result.when == "teardown":
+            
+            next_tests: List[pytest.Function] = [get_test_marker(item)[0] for item in pytest.items[pytest.items.index(item) + 1:]]
+            
+            if next_tests:
+                logger_obj.info(f"The {len(next_tests)} test(s) that will run next: " + "'" + "', '".join(next_tests) + "'.")
+                
         if result.when == 'call' and result.outcome != "passed":
             for it in item.session.items:
                 [temp_test_marker] = get_test_marker(it)
@@ -917,6 +924,32 @@ def pytest_runtest_makereport(item, call):
                                 )
 
 
+def pytest_runtest_setup(item):
+    
+    if pytest.runlist_path != "default":
+        current_test_marker: TestCaseMarker
+        
+        [current_test_marker] = get_test_marker(item)
+        
+        try:
+            config['${TEST_NAME}'] = f"{current_test_marker} | SETUP | {pytest.items.index(item) + 1}/{len(pytest.items)}"
+        except:
+            config['${TEST_NAME}'] = current_test_marker
+
+
+def pytest_runtest_teardown(item):
+    
+    if pytest.runlist_path != "default":
+        current_test_marker: TestCaseMarker
+        
+        [current_test_marker] = get_test_marker(item)
+        
+        try:
+            config['${TEST_NAME}'] = f"{current_test_marker} | TEARDOWN | {pytest.items.index(item) + 1}/{len(pytest.items)}"
+        except:
+            config['${TEST_NAME}'] = current_test_marker
+
+
 def pytest_runtest_call(item):
     
     if pytest.runlist_path != "default":
@@ -925,7 +958,7 @@ def pytest_runtest_call(item):
         [current_test_marker] = get_test_marker(item)
         
         try:
-            config['${TEST_NAME}'] = f"{current_test_marker} ({pytest.items.index(item) + 1}/{len(pytest.items)})"
+            config['${TEST_NAME}'] = f"{current_test_marker} | {pytest.items.index(item) + 1}/{len(pytest.items)}"
         except:
             config['${TEST_NAME}'] = current_test_marker
 
