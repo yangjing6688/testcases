@@ -66,6 +66,7 @@ runlist_story_name:
   run_options:                                      # not mandatory (if not given then all the run option will default)
     skip_teardown: no                               # not mandatory (by default it is set to "no"); it specifies that the onboarding cleanup test needs to be skipped
     skip_setup: no                                  # not mandatory (by default it is set to "no"); it specifies that the onboarding test needs to be skipped
+    priority: ["p0", "p1", "p2", "p3", "p4", "p5"]  # not mandatory (by default it is set to ["p0", "p1", "p2", "p3", "p4", "p5"]); it specifies the priorities of the tests that will be selected to run
   onboarding_options:                               # not mandatory (if not given then all the onboarding option will default)
     change_device_management_settings: yes          # not mandatory (by default is it set to "yes"); it specifies if the "Enable Device Management Settings" should be enabled or disabled
     standalone:
