@@ -1,14 +1,14 @@
 ap1:
-  name:                     bui-flo-2741
+  name:                     bui-flo-0850
   connection_method:        "ssh"
-  ip:                       10.234.143.172
+  ip:                       10.234.203.242
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   '04102006082741'
+  serial:                   '04102005200850'
   console_ip:               10.234.220.11
   console_port:             7011
-  mac:                      bcf3107062c0
+  mac:                      bcf3105d69c0
   cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP410C
@@ -19,6 +19,7 @@ ap1:
   rf-env:                   true
   country:                  United States
   location:                 auto_location_01, San Jose, building_01, floor_01
+  onboard_device_type:      Real
   power_strip:
     ip:
     port:
@@ -30,16 +31,16 @@ ap1:
     type:
 
 mu1:
-  ip:             10.234.143.5
+  ip:             10.234.203.239
   port:           8270
-  username:       symbol
-  password:       Motorola@123
+  username:       extreme
+  password:       Extreme@123
   platform:       windows
   interface:      wlan0
-  wifi_mac:       104A7DC49456
-  ethernet_mac:   104A7DC49456
-  wifi_network:   10.234.143
-  wifi_network_vlan10:    10.234.143
+  wifi_mac:       7CB566233791
+  ethernet_mac:   C84BD64A7060
+  wifi_network:   10.234.203
+  wifi_network_vlan10:    10.234.203
   rf-mu-env:      true
 
 
