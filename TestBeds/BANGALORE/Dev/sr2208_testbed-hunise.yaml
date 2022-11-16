@@ -15,3 +15,5 @@ sw1:
   test_port:
   make:                     Extreme - Aerohive
   onboard_device_type:      Real
+  entry_type:               Manual
+  service_tag:              False
