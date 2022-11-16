@@ -1,11 +1,14 @@
 ap1:
-  name:                     AP460C
+  name:                     Eco-Flo-0062
   connection_method:        "telnet"
   ip:                       10.234.153.95
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '24602005230062'
+  onboard_device_type:      Real
+  entry_type:               Manual
+  service_tag:              False
   console_ip:               10.234.221.5
   console_port:             "7022"
   mac:                      BCF310651580
@@ -17,17 +20,20 @@ ap1:
   mgmt_vlan:                10
   country:                  United States
   cli_type:                 "AH-AP"
-  onboard_device_type:      Real
+  location:                 Bangalore, Eco Space, Floor 1
 
 
 ap2:
-  name:                     AP4000U-WW
+  name:                     2-Flo-0069
   connection_method:        "telnet"
   ip:                       10.234.153.98
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '64002107010069'
+  onboard_device_type:      Real
+  entry_type:               Manual
+  service_tag:              False
   console_ip:               10.234.221.5
   console_port:             "7028"
   mac:                      B027CF6EF600
@@ -39,7 +45,7 @@ ap2:
   mgmt_vlan:                10
   country:                  United States
   cli_type:                 "AH-AP"
-  onboard_device_type:      Real
+  location:                 Bangalore, Eco Space, Floor 1
 
 
 ap3:
@@ -50,6 +56,9 @@ ap3:
   username:                 admin
   password:                 Aerohive123
   serial:                   '03051907020068'
+  onboard_device_type:      Real
+  entry_type:               Manual
+  service_tag:              False
   console_ip:               10.234.221.5
   console_port:             "7026"
   mac:                      BCF310004240
@@ -61,17 +70,20 @@ ap3:
   mgmt_vlan:                10
   country:                  United States
   cli_type:                 "AH-AP"
-  onboard_device_type:      Real
+  location:                 Bangalore, Eco Space, Floor 1
 
 
 ap4:
-  name:                     AP305CX
+  name:                     bui-Flo-0023
   connection_method:        "telnet"
   ip:                       10.234.153.93
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '13051907040023'
+  onboard_device_type:      Real
+  entry_type:               Manual
+  service_tag:              False
   console_ip:               10.234.221.5
   console_port:             "7027"
   mac:                      BCF310005140
@@ -83,7 +95,7 @@ ap4:
   mgmt_vlan:                10
   country:                  United States
   cli_type:                 "AH-AP"
-  onboard_device_type:      Real
+  location:                 Bangalore, Eco Space, Floor 1
 
 
 ap5:
@@ -94,6 +106,9 @@ ap5:
   username:                 admin
   password:                 Aerohive123
   serial:                   '03022012080071'
+  onboard_device_type:      Real
+  entry_type:               Manual
+  service_tag:              False
   console_ip:               10.234.221.5
   console_port:             "7025"
   mac:                      40882F57C540
@@ -105,17 +120,20 @@ ap5:
   mgmt_vlan:                10
   country:                  United States
   cli_type:                 "AH-AP"
-  onboard_device_type:      Real
+  location:                 "Bangalore, Eco Space, Floor 1"
 
 
 ap6:
-  name:                     AP302W_DUT2
+  name:                     ap302w-57E980
   connection_method:        "telnet"
   ip:                       10.234.153.92
   port:                     22
   username:                 admin
   password:                 symbol
   serial:                   '03022012080216'
+  onboard_device_type:      Real
+  entry_type:               Manual
+  service_tag:              False
   console_ip:               10.234.221.5
   console_port:             "7024"
   mac:                      40882F57E980
@@ -127,17 +145,20 @@ ap6:
   mgmt_vlan:                10
   country:                  United States
   cli_type:                 "WING"
-  onboard_device_type:      Real
+  location:                 Bangalore, Eco Space, Floor 1
 
 
 ap7:
-  name:                     AP302W_DUT3
+  name:                     2-Flo-0115
   connection_method:        "telnet"
   ip:                       10.234.153.99
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '03022012080115'
+  onboard_device_type:      Real
+  entry_type:               Manual
+  service_tag:              False
   console_ip:               10.234.221.5
   console_port:             "7023"
   mac:                      40882F57D040
@@ -149,7 +170,7 @@ ap7:
   mgmt_vlan:                10
   country:                  United States
   cli_type:                 "AH-AP"
-  onboard_device_type:      Real
+  location:                 Bangalore, Eco Space, Floor 1
 
 
 ap8:
@@ -160,6 +181,9 @@ ap8:
   username:                 admin
   password:                 Aerohive123
   serial:                   '02501609210943'
+  onboard_device_type:      Real
+  entry_type:               Manual
+  service_tag:              False
   console_ip:               10.127.3.6
   console_port:             10004
   mac:
@@ -170,17 +194,20 @@ ap8:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
-  onboard_device_type:      Real
+  location:                 Bangalore, Eco Space, Floor 1
 
 
 ap9:
-  name:                     AP550
+  name:                     Eco-Flo-1509
   connection_method:        "telnet"
   ip:                       10.234.153.100
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '05501808101509'
+  onboard_device_type:      Real
+  entry_type:               Manual
+  service_tag:              False
   console_ip:               10.234.221.5
   console_port:             "7020"
   mac:                      B87CF26B93C0
@@ -192,7 +219,7 @@ ap9:
   mgmt_vlan:                10
   country:                  United States
   cli_type:                 "AH-AP"
-  onboard_device_type:      Real
+  location:                 Bangalore, Eco Space, Floor 1
 
 
 ap10:
@@ -203,6 +230,9 @@ ap10:
   username:                 admin
   password:                 Aerohive123
   serial:                   '01501807130013'
+  onboard_device_type:      Real
+  entry_type':              Manual
+  service_tag':             False
   console_ip:               10.234.221.5
   console_port:             7021
   mac:                      7C95B110C600
@@ -213,7 +243,7 @@ ap10:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
-  onboard_device_type:      Real
+  location:                 "Bangalore, Eco Space, Floor 1"
 
 
 ap11:
@@ -224,6 +254,9 @@ ap11:
   username:                 admin
   password:                 Aerohive123
   serial:                   '06301811090766'
+  type:                     Real
+  entry_type':              Manual
+  service_tag':             False
   console_ip:               10.127.3.6
   console_port:             10005
   mac:
@@ -234,7 +267,7 @@ ap11:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
-  onboard_device_type:      Real
+  location:                 "Bangalore, Eco Space, Floor 1"
 
 
 ap12:
