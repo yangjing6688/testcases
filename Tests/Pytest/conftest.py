@@ -343,10 +343,14 @@ def debug(logger: PytestLogger) -> Callable:
                 logger.step(f"Calling '{func.__name__}' function with args='{args}' and kwargs='{kwargs}'")
                 result = func(*args, **kwargs)
             except Exception as exc:
-                logger.error(f"Failed during '{func.__name__}' function call with args='{args}' and kwargs='{kwargs}' after {int(time.time()-start_time)} seconds: {repr(exc)}")
+                logger.error(
+                    f"Failed during '{func.__name__}' function call with args='{args}' and kwargs='{kwargs}' "
+                    f"after {int(time.time()-start_time)} seconds: {repr(exc)}")
                 raise exc
             else:
-                logger.info(f"Call for '{func.__name__}' with args='{args}' and kwargs='{kwargs}' ended after {int(time.time()-start_time)} seconds")
+                logger.info(
+                    f"Call for '{func.__name__}' with args='{args}' and kwargs='{kwargs}' ended "
+                    f"after {int(time.time()-start_time)} seconds")
                 return result
         return wrapped_func
     return debug_func
@@ -396,6 +400,18 @@ def get_node_dependson_markers(
      item: pytest.Function
 ) -> List[mark.structures.Mark]:
     return [marker for marker in get_node_markers(item) if marker.name == "dependson"]
+
+
+def is_onboarding_test(
+    item: pytest.Function
+) -> bool:
+    return get_test_marker(item)[0] == pytest.onboarding_test_name
+
+
+def is_onboarding_cleanup_test(
+    item: pytest.Function
+) -> bool:
+    return get_test_marker(item)[0] == pytest.onboarding_cleanup_test_name
 
 
 def pytest_configure(config):
@@ -495,8 +511,10 @@ def pytest_collection_modifyitems(session, items):
             testbed_item_mapping[testbed_marker] = testbed_items
 
         items_without_testbed_marker = [
-            item for item in collected_items if not any([testbed_marker in [marker.name for marker in item.own_markers] for testbed_marker in valid_testbed_markers])]
-        logger_obj.info(f"Collected {len(items_without_testbed_marker)} item(s) that do not have a valid testbed marker ({valid_testbed_markers}).")
+            item for item in collected_items if not any([testbed_marker in [marker.name for marker in item.own_markers]
+                                                         for testbed_marker in valid_testbed_markers])]
+        logger_obj.info(
+            f"Collected {len(items_without_testbed_marker)} item(s) that do not have a valid testbed marker ({valid_testbed_markers}).")
         
         pytest.onboard_stack = len(pytest.stack_nodes) >= 1
         if not pytest.onboard_stack:
@@ -504,7 +522,8 @@ def pytest_collection_modifyitems(session, items):
                 "There is no stack device in the provided yaml file. The stack test cases will be unselected.")
             
             if testbed_item_mapping['testbed_stack']:
-                logger_obj.warning(f"{len(testbed_item_mapping['testbed_stack'])} testbed_stack item(s) will be unselected.")
+                logger_obj.warning(
+                    f"{len(testbed_item_mapping['testbed_stack'])} testbed_stack item(s) will be unselected.")
             
             temp_items = [
                 item for item in temp_items if 'testbed_stack' not in [marker.name for marker in item.own_markers]]
@@ -516,7 +535,8 @@ def pytest_collection_modifyitems(session, items):
                 "The testbed two node test cases will be unselected.")
             
             if testbed_item_mapping['testbed_2_node']:
-                    logger_obj.warning(f"{len(testbed_item_mapping['testbed_2_node'])} testbed_2_node item(s) will be unselected.")
+                    logger_obj.warning(
+                        f"{len(testbed_item_mapping['testbed_2_node'])} testbed_2_node item(s) will be unselected.")
             
             temp_items = [
                 item for item in temp_items if 'testbed_2_node' not in [marker.name for marker in item.own_markers]]
@@ -528,15 +548,18 @@ def pytest_collection_modifyitems(session, items):
                 "The testbed one node test cases will be unselected.")
         
             if testbed_item_mapping['testbed_1_node']:
-                logger_obj.warning(f"{len(testbed_item_mapping['testbed_1_node'])} testbed_1_node item(s) will be unselected.")
+                logger_obj.warning(
+                    f"{len(testbed_item_mapping['testbed_1_node'])} testbed_1_node item(s) will be unselected.")
             
             temp_items = [
                 item for item in temp_items if 'testbed_1_node' not in [marker.name for marker in item.own_markers]]
         
-        logger_obj.warning(f"{len(items_without_testbed_marker)} item(s) that do not have a valid testbed marker will be unselected.")
+        logger_obj.warning(
+            f"{len(items_without_testbed_marker)} item(s) that do not have a valid testbed marker will be unselected.")
         temp_items = [
             item for item in temp_items if any(
-                [testbed_marker in [marker.name for marker in item.own_markers] for testbed_marker in valid_testbed_markers]
+                [testbed_marker in [marker.name for marker in item.own_markers]
+                 for testbed_marker in valid_testbed_markers]
         )]
 
         for item in collected_items:
@@ -572,7 +595,8 @@ def pytest_collection_modifyitems(session, items):
 
         for test_code, functions in item_test_marker_mapping.items():
             if len(functions) > 1:
-                error = f"Test marker '{test_code}' is used as marker for more than one test function:\n" + "\n".join(functions)
+                error = f"Test marker '{test_code}' is used as marker for more than one test function:\n" +\
+                        "\n".join(functions)
                 logger_obj.error(error)
                 pytest.fail(error)
 
@@ -597,7 +621,8 @@ def pytest_collection_modifyitems(session, items):
                 if (cls_markers := getattr(item.cls, "pytestmark", None)) is not None:
                     
                     item_markers: List[mark.structures.Mark] = get_item_dependson_markers(item)
-                    cls_dependson_markers: List[mark.structures.Mark] = [m for m in cls_markers if m.name == "dependson"]
+                    cls_dependson_markers: List[mark.structures.Mark] = [
+                        m for m in cls_markers if m.name == "dependson"]
 
                     for marker in cls_dependson_markers:
                         if not any(marker.name == m.name and marker.args == m.args for m in item_markers):
@@ -664,7 +689,8 @@ def pytest_collection_modifyitems(session, items):
                 if not found_item:
                     logger_obj.warning(
                         f"'{test}' test is given in runlist but it is not found in the collected tests "
-                        f"(it might have been removed because of its testbed marker or simply the test is not in the selected tests directory).")
+                        f"(it might have been removed because of its testbed marker or simply the test"
+                        f" is not in the selected tests directory).")
 
                 if test_found_in_suitemap and found_item:
                     ordered_items.append(found_item[0])
@@ -692,8 +718,10 @@ def pytest_collection_modifyitems(session, items):
                                 
                             elif (temp_marker not in all_tcs) or (temp_marker not in pytest.runlist_tests):
                                 item.add_marker(
-                                    pytest.mark.skip(f"'{test_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}'"
-                                                     f" is not in the current list of testcases to be run. The '{test_code}' test case will be skipped.")
+                                    pytest.mark.skip(
+                                        f"'{test_code}' depends on '{', '.join(temp_markers)}' but '{temp_marker}'"
+                                        f" is not in the current list of testcases to be run. The '{test_code}'"
+                                        f" test case will be skipped.")
                                 )
                                 
                             elif temp_marker not in found_tcs:
@@ -707,13 +735,14 @@ def pytest_collection_modifyitems(session, items):
 
             filtered_by_priority_items: List[pytest.Function] = []
             runlist_tests_priority = pytest.run_options.get("priority", valid_priority_markers)
-            logger_obj.step(f"Filter the items by the list of priorities given in the runlist: {runlist_tests_priority}.")
+            logger_obj.step(
+                f"Filter the items by the list of priorities given in the runlist: {runlist_tests_priority}.")
             
             for item in ordered_items:
             
                 test_marker: TestCaseMarker = get_test_marker(item)[0]
                 
-                if test_marker in [pytest.onboarding_test_name, pytest.onboarding_cleanup_test_name]:
+                if is_onboarding_test(item) or is_onboarding_cleanup_test(item):
                     filtered_by_priority_items.append(item)
                     continue
                 
@@ -739,33 +768,43 @@ def pytest_collection_modifyitems(session, items):
                     len(ordered_items) == 2
                 ]
             ):
-                logger_obj.warning("There are no test left selected to run for this session besides the onboarding tests.")
+                logger_obj.warning(
+                    "There are no test left selected to run for this session besides the onboarding tests.")
             
         else:
             message = "Did not find any test function to run this session."
             logger_obj.warning(message)
 
-        pytest.testbed_one_node_items = list(filter(lambda item: "testbed_1_node" in [marker.name for marker in item.own_markers], ordered_items))
-        pytest.testbed_two_node_items = list(filter(lambda item: "testbed_2_node" in [marker.name for marker in item.own_markers], ordered_items))
-        pytest.testbed_stack_items = list(filter(lambda item: "testbed_stack" in [marker.name for marker in item.own_markers], ordered_items))
+        pytest.testbed_one_node_items = list(
+            filter(lambda item: "testbed_1_node" in [marker.name for marker in item.own_markers], ordered_items))
+        pytest.testbed_two_node_items = list(
+            filter(lambda item: "testbed_2_node" in [marker.name for marker in item.own_markers], ordered_items))
+        pytest.testbed_stack_items = list(
+            filter(lambda item: "testbed_stack" in [marker.name for marker in item.own_markers], ordered_items))
         
         if (not pytest.testbed_two_node_items) and pytest.onboard_two_node:
-            logger_obj.info("There are no testbed_two_node items left. Make sure that the second node is not onboarded.")
+            logger_obj.info(
+                "There are no testbed_two_node items left. Will make sure the second node is not onboarded.")
             pytest.onboard_two_node = False
 
         if (not pytest.testbed_one_node_items) and pytest.onboard_one_node:
-            logger_obj.info("There are no testbed_one_node items left. Make sure that the first node is not onboarded (except when the onboard_two_node flag is enabled).")
+            logger_obj.info(
+                "There are no testbed_one_node items left. Will make sure the first node"
+                "is not onboarded (except when the onboard_two_node flag is enabled)."
+            )
             if not pytest.onboard_two_node:
                 pytest.onboard_one_node = False
         
         if (not pytest.testbed_stack_items) and pytest.onboard_stack:
-            logger_obj.info("There are no testbed_stack items left. Make sure that the stack node is not onboarded.")
+            logger_obj.info(
+                "There are no testbed_stack items left. Will make sure the stack node is not onboarded.")
             pytest.onboard_stack = False
 
         logger_obj.debug(f"{pytest.onboard_one_node=}, {pytest.onboard_two_node=}, {pytest.onboard_stack=}")
 
         if ordered_items:
-            logger_obj.info(f"These are tests that remained to run this session: {[get_test_marker(item)[0] for item in ordered_items]}")
+            logger_obj.info(
+                f"The test(s) that will run this session: {[get_test_marker(item)[0] for item in ordered_items]}")
         
         pytest.items = ordered_items
         items[:] = ordered_items
@@ -790,6 +829,8 @@ def pytest_collection_modifyitems(session, items):
 def pytest_sessionstart(session):
     
     session.results = dict()
+    session.setup_results = dict()
+    session.teardown_results = dict()
 
     pytest.runlist_path = session.config.option.runlist
     
@@ -822,6 +863,54 @@ def pytest_sessionstart(session):
         
         pytest.onboarding_options: Options = pytest.runlist[pytest.runlist_name].get('onboarding_options', {})
         pytest.run_options: Options = pytest.runlist[pytest.runlist_name].get("run_options", {}) or {}
+
+
+def pytest_sessionfinish(session):
+
+    if pytest.runlist_path != "default":
+        
+        try:
+            config['${TEST_NAME}'] = "RESULTS"
+            
+            max_tc_length = max([len(get_test_marker(item)[0]) for item in pytest.items])
+            result_witdh = 18
+
+            line_width = max_tc_length + 6 * result_witdh + 30
+            
+            output = "\n" + "-" * line_width
+            output += f"\n| {'ORDER':^5} | {'TEST CASE':^{max_tc_length}} | {'SETUP_RESULT':^{result_witdh}} | " \
+                      f"{'CALL_RESULT':^{result_witdh}} | {'TEARDOWN_RESULT':^{result_witdh}} | " \
+                      f"{'SETUP_DURATION':^{result_witdh}} | {'CALL_DURATION':^{result_witdh}} | " \
+                      f"{'TEARDOWN_DURATION':^{result_witdh}} |"
+            output += "\n" + "-" * line_width
+            
+            for index, item in enumerate(pytest.items):
+                
+                [test_marker] = get_test_marker(item)
+                
+                setup_results = session.setup_results.get(item)
+                setup_outcome = setup_results.outcome.upper()
+                setup_duration = round(setup_results.duration, 2)
+
+                if call_results := session.results.get(item):
+                    call_outcome = call_results.outcome.upper()
+                    call_duration = round(call_results.duration, 2)
+                else:
+                    call_outcome, call_duration = "N/A", 0.0
+                
+                teardown_results = session.teardown_results.get(item)
+                teardown_outcome = teardown_results.outcome.upper()
+                teardown_duration = round(teardown_results.duration, 2)
+                
+                output += f"\n| {index + 1:^5} | {test_marker:^{max_tc_length}} | {setup_outcome:^{result_witdh}} | " \
+                          f"{call_outcome:^{result_witdh}} | {teardown_outcome:^{result_witdh}} | " \
+                          f"{setup_duration:^{result_witdh}} | {call_duration:^{result_witdh}} | " \
+                          f"{teardown_duration:^{result_witdh}} |"
+                output += "\n" + "-" * line_width
+            
+            logger_obj.info(output)
+        except:
+            pass
 
 
 def pytest_generate_tests(metafunc):
@@ -872,6 +961,7 @@ def pytest_runtest_makereport(item, call):
         [current_test_marker] = get_test_marker(item)
 
         if result.when == 'call':
+            
             item.session.results[item] = result
 
             if outcome := result.outcome: 
@@ -886,16 +976,21 @@ def pytest_runtest_makereport(item, call):
         
         elif result.when == "setup":
             
+            item.session.setup_results[item] = result
+            
             if (outcome := result.outcome) == "skipped":
                 logger_obj.info(f"\n{Colors.Bg.BLUE}{Colors.Style.BRIGHT}{Colors.Fg.WHITE} --> {current_test_marker.upper()} SKIPPED "
                     f"<-- {Colors.Bg.RESET}{Colors.Style.RESET_ALL}")
 
         elif result.when == "teardown":
             
+            item.session.teardown_results[item] = result
+            
             next_tests: List[pytest.Function] = [get_test_marker(item)[0] for item in pytest.items[pytest.items.index(item) + 1:]]
             
             if next_tests:
-                logger_obj.info(f"The {len(next_tests)} test(s) that will run next: " + "'" + "', '".join(next_tests) + "'.")
+                logger_obj.info(
+                    f"The {len(next_tests)} test(s) that will run next: " + "'" + "', '".join(next_tests) + "'.")
                 
         if result.when == 'call' and result.outcome != "passed":
             for it in item.session.items:
@@ -927,6 +1022,7 @@ def pytest_runtest_makereport(item, call):
 def pytest_runtest_setup(item):
     
     if pytest.runlist_path != "default":
+        
         current_test_marker: TestCaseMarker
         
         [current_test_marker] = get_test_marker(item)
@@ -936,10 +1032,14 @@ def pytest_runtest_setup(item):
         except:
             config['${TEST_NAME}'] = current_test_marker
 
+        if (not is_onboarding_test(item)) and (not is_onboarding_cleanup_test(item)):
+            logger_obj.step(f"Start SETUP of test function '{current_test_marker}': '{item.nodeid}'.")
+
 
 def pytest_runtest_teardown(item):
     
     if pytest.runlist_path != "default":
+        
         current_test_marker: TestCaseMarker
         
         [current_test_marker] = get_test_marker(item)
@@ -949,10 +1049,14 @@ def pytest_runtest_teardown(item):
         except:
             config['${TEST_NAME}'] = current_test_marker
 
+        if (not is_onboarding_test(item)) and (not is_onboarding_cleanup_test(item)):
+            logger_obj.step(f"Start TEARDOWN of test function '{current_test_marker}': '{item.nodeid}'.")
+
 
 def pytest_runtest_call(item):
     
     if pytest.runlist_path != "default":
+        
         current_test_marker: TestCaseMarker
         
         [current_test_marker] = get_test_marker(item)
@@ -962,11 +1066,11 @@ def pytest_runtest_call(item):
         except:
             config['${TEST_NAME}'] = current_test_marker
 
-        logger_obj.step(f"Start test function of '{current_test_marker}': '{item.nodeid}'.")
+        logger_obj.step(f"Start test function '{current_test_marker}': '{item.nodeid}'.")
 
         output = ""
         test_data = {}
-        mandatory_fields = ["author", "tc", "description", "title"]
+        mandatory_fields = ["author", "tc", "description", "title", "steps"]
 
         if (callspec := getattr(item, "callspec", None)) is not None:
             if (data := callspec.params.get("test_data")) is not None:
@@ -975,16 +1079,18 @@ def pytest_runtest_call(item):
             test_data = pytest.suitemap_tests[f"{item.cls.__name__}::{item.originalname}"]
             
         for field in mandatory_fields:
-            if (field_value := test_data.get(field)) is not None:
+            
+            if field == "steps":
+                if (steps := test_data.get("steps")) is not None:
+                    output += "\nSteps:"
+                    for index, step in enumerate(steps):
+                        output += f"\n  Step {(index + 1)}: '{step}'"
+            
+            elif (field_value := test_data.get(field)) is not None:
                 output += f"\n{field.capitalize()}: '{field_value}'"
-                
-        if (steps := test_data.get("steps")) is not None:
-            output += "\nSteps:"
-            for index, step in enumerate(steps):
-                output += f"\n  Step {(index + 1)}: '{step}'"
-        
+
         for k, v in test_data.items():
-            if k not in ["author", "tc", "description", "steps", "title"]:
+            if k not in mandatory_fields:
                 output += f"\n{k}: '{v}'"
         output and logger_obj.step(output)
 
@@ -999,7 +1105,8 @@ class OnboardingTests:
     ) -> None:
         """ 
         It should be the first test in the runlist in order to onboard the network devices before the other tests.
-        The tests that depend on this test should use this marker '@pytest.mark.dependson("tcxm_xiq_onboarding")' in order to be skipped if the onboarding fails or is skipped.
+        The tests that depend on this test should use this marker '@pytest.mark.dependson("tcxm_xiq_onboarding")'
+         in order to be skipped if the onboarding fails or is skipped.
         This test must be added to the suitemap yaml in order to be later used in the runlist yaml.
         """
 
@@ -1532,7 +1639,7 @@ def loaded_config() -> Dict[str, str]:
     
     config['${TEST_NAME}'] = "onboarding"
     config['${OUTPUT DIR}'] = os.getcwd()
-    config['${MAX_CONFIG_PUSH_TIME}'] = 300
+    config['${MAX_CONFIG_PUSH_TIME}'] = 600
     config['${EXIT_LEVEL}'] = -600
 
     for word in ["tenant_username", "tenant_password", "test_url"]:
