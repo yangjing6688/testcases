@@ -375,7 +375,7 @@ def get_priority_marker(
 def get_testbed_markers(
         item: pytest.Function
 ) -> List[TestbedMarker]:
-    return [m.name for m in item.own_markers if m.name in valid_test_markers]
+    return [m.name for m in item.own_markers if m.name in valid_testbed_markers]
 
 
 def get_item_markers(
@@ -448,15 +448,17 @@ def pytest_collection_modifyitems(session, items):
         logger_obj.info(f"Collected {len(items)} test functions from given test directory path(s).")
 
         for item in items:
+            
             if (cls_markers := getattr(item.cls, "pytestmark", None)) is not None:
-                item_markers = get_testbed_markers(item)
+                
+                item_testbed_marker = [m for m in item.own_markers if m.name in valid_testbed_markers]
                 cls_testbed_marker = [m for m in cls_markers if m.name in valid_testbed_markers]
-                if cls_testbed_marker:
-                    marker = cls_testbed_marker[0]
-                    if not any(marker.name == m.name and marker.args == m.args for m in item_markers):
-                        item.add_marker(
-                            getattr(pytest.mark, marker.name)
-                        )
+                                
+                if cls_testbed_marker and not item_testbed_marker:
+                    cls_marker = cls_testbed_marker[0]
+                    item.add_marker(
+                        getattr(pytest.mark, cls_marker.name)
+                    )
 
         for item in items:
             if (callspec := getattr(item, "callspec", None)) is not None:
@@ -513,8 +515,9 @@ def pytest_collection_modifyitems(session, items):
         items_without_testbed_marker = [
             item for item in collected_items if not any([testbed_marker in [marker.name for marker in item.own_markers]
                                                          for testbed_marker in valid_testbed_markers])]
-        logger_obj.info(
-            f"Collected {len(items_without_testbed_marker)} item(s) that do not have a valid testbed marker ({valid_testbed_markers}).")
+        if items_without_testbed_marker:
+            logger_obj.info(
+                f"Collected {len(items_without_testbed_marker)} item(s) that do not have a valid testbed marker ({valid_testbed_markers}).")
         
         pytest.onboard_stack = len(pytest.stack_nodes) >= 1
         if not pytest.onboard_stack:
@@ -554,8 +557,10 @@ def pytest_collection_modifyitems(session, items):
             temp_items = [
                 item for item in temp_items if 'testbed_1_node' not in [marker.name for marker in item.own_markers]]
         
-        logger_obj.warning(
-            f"{len(items_without_testbed_marker)} item(s) that do not have a valid testbed marker will be unselected.")
+        if items_without_testbed_marker:
+            logger_obj.warning(
+                f"{len(items_without_testbed_marker)} item(s) that do not have a valid testbed marker will be unselected.")
+        
         temp_items = [
             item for item in temp_items if any(
                 [testbed_marker in [marker.name for marker in item.own_markers]
@@ -669,6 +674,38 @@ def pytest_collection_modifyitems(session, items):
 
             temp_items.extend([item_onboarding, item_onboarding_cleanup])
             
+            filtered_by_priority_items: List[pytest.Function] = []
+            runlist_tests_priority = pytest.run_options.get("priority") or valid_priority_markers
+            
+            if not all(priority in valid_priority_markers for priority in runlist_tests_priority):
+                pytest.fail(
+                    f"Not all the priority markers given in the runlist yaml are valid: {runlist_tests_priority}. "
+                    f"Please use these priority markers: {valid_priority_markers}."
+                )
+
+            if sorted(runlist_tests_priority) != sorted(valid_priority_markers):
+                logger_obj.step(
+                    f"Filter the items by the list of priorities given in the runlist: {runlist_tests_priority}.")
+                
+                for item in temp_items:
+                
+                    test_marker: TestCaseMarker = get_test_marker(item)[0]
+                    
+                    if is_onboarding_test(item) or is_onboarding_cleanup_test(item):
+                        filtered_by_priority_items.append(item)
+                        continue
+                    
+                    priority_marker: PriorityMarker = get_priority_marker(item)[0]
+
+                    if priority_marker in runlist_tests_priority:
+                        filtered_by_priority_items.append(item)
+                    else:
+                        logger_obj.warning(
+                            f"'{test_marker}' test case will be unselected because its priority "
+                            f"('{priority_marker}') is not selected in the runlist yaml.")
+
+                temp_items[:] = filtered_by_priority_items
+            
             suitemap_tcs: List[TestCaseMarker] = []
             
             for test_identifier, test_info in pytest.suitemap_tests.items():
@@ -684,7 +721,8 @@ def pytest_collection_modifyitems(session, items):
                 found_item: pytest.Function = [item for item in temp_items if test == get_test_marker(item)[0]]
                 
                 if not test_found_in_suitemap:
-                    logger_obj.warning(f"'{test}' test is given in runlist but it is not found in specified suitemap files.")
+                    logger_obj.warning(
+                        f"'{test}' test is given in runlist but it is not defined in the specified suitemap files.")
                 
                 if not found_item:
                     logger_obj.warning(
@@ -703,6 +741,7 @@ def pytest_collection_modifyitems(session, items):
                 item_markers: List[mark.structures.Mark] = item.own_markers
                 
                 for marker in item_markers:
+                    
                     if marker.name == "dependson":
                         temp_markers: Tuple[str] = marker.args
 
@@ -732,30 +771,6 @@ def pytest_collection_modifyitems(session, items):
                                         f"'{temp_marker}' should run before '{test_code}'."
                                         f" The '{test_code}' test case will be skipped.")
                                 )
-
-            filtered_by_priority_items: List[pytest.Function] = []
-            runlist_tests_priority = pytest.run_options.get("priority", valid_priority_markers)
-            logger_obj.step(
-                f"Filter the items by the list of priorities given in the runlist: {runlist_tests_priority}.")
-            
-            for item in ordered_items:
-            
-                test_marker: TestCaseMarker = get_test_marker(item)[0]
-                
-                if is_onboarding_test(item) or is_onboarding_cleanup_test(item):
-                    filtered_by_priority_items.append(item)
-                    continue
-                
-                priority_marker: PriorityMarker = get_priority_marker(item)[0]
-
-                if priority_marker in runlist_tests_priority:
-                    filtered_by_priority_items.append(item)
-                else:
-                    logger_obj.warning(
-                        f"The '{test_marker}' test case will be unselected because its priority "
-                        f"('{priority_marker}') is not selected in the runlist yaml.")
-
-            ordered_items[:] = filtered_by_priority_items
 
             for item in ordered_items:
                 logger_obj.info(f"Selected: '{item.nodeid}' "
@@ -804,7 +819,7 @@ def pytest_collection_modifyitems(session, items):
 
         if ordered_items:
             logger_obj.info(
-                f"The test(s) that will run this session: {[get_test_marker(item)[0] for item in ordered_items]}")
+                f"These {len(ordered_items)} test(s) will run this session: {[get_test_marker(item)[0] for item in ordered_items]}")
         
         pytest.items = ordered_items
         items[:] = ordered_items
@@ -868,17 +883,16 @@ def pytest_sessionstart(session):
 def pytest_sessionfinish(session):
 
     if pytest.runlist_path != "default":
-        
+
         try:
             config['${TEST_NAME}'] = "RESULTS"
             
             max_tc_length = max([len(get_test_marker(item)[0]) for item in pytest.items])
-            result_witdh = 18
-
-            line_width = max_tc_length + 6 * result_witdh + 30
+            result_witdh = 17
+            line_width = max_tc_length + 7 * result_witdh + 38
             
             output = "\n" + "-" * line_width
-            output += f"\n| {'ORDER':^5} | {'TEST CASE':^{max_tc_length}} | {'SETUP_RESULT':^{result_witdh}} | " \
+            output += f"\n| {'ORDER':^5} | {'TEST CASE':^{max_tc_length}} | {'P':^2} | {'TB':^{result_witdh}} | {'SETUP_RESULT':^{result_witdh}} | " \
                       f"{'CALL_RESULT':^{result_witdh}} | {'TEARDOWN_RESULT':^{result_witdh}} | " \
                       f"{'SETUP_DURATION':^{result_witdh}} | {'CALL_DURATION':^{result_witdh}} | " \
                       f"{'TEARDOWN_DURATION':^{result_witdh}} |"
@@ -886,7 +900,11 @@ def pytest_sessionfinish(session):
             
             for index, item in enumerate(pytest.items):
                 
+                test_marker: TestCaseMarker
                 [test_marker] = get_test_marker(item)
+                
+                test_priority: PriorityMarker = "P0" if (is_onboarding_cleanup_test(item) or is_onboarding_test(item)) else get_priority_marker(item)[0].upper()
+                testbed_marker: TestbedMarker = "N/A" if (is_onboarding_cleanup_test(item) or is_onboarding_test(item)) else get_testbed_markers(item)[0]
                 
                 setup_results = session.setup_results.get(item)
                 setup_outcome = setup_results.outcome.upper()
@@ -900,15 +918,17 @@ def pytest_sessionfinish(session):
                 
                 teardown_results = session.teardown_results.get(item)
                 teardown_outcome = teardown_results.outcome.upper()
-                teardown_duration = round(teardown_results.duration, 2)
+                teardown_duration = round(teardown_results.duration - call_duration - setup_duration, 2)
+                teardown_duration = 0.0 if teardown_duration <= 0 else teardown_duration
                 
-                output += f"\n| {index + 1:^5} | {test_marker:^{max_tc_length}} | {setup_outcome:^{result_witdh}} | " \
+                output += f"\n| {index + 1:^5} | {test_marker:^{max_tc_length}} | {test_priority:^2} | {testbed_marker:^{result_witdh}} | {setup_outcome:^{result_witdh}} | " \
                           f"{call_outcome:^{result_witdh}} | {teardown_outcome:^{result_witdh}} | " \
                           f"{setup_duration:^{result_witdh}} | {call_duration:^{result_witdh}} | " \
                           f"{teardown_duration:^{result_witdh}} |"
                 output += "\n" + "-" * line_width
             
             logger_obj.info(output)
+
         except:
             pass
 
@@ -1495,6 +1515,9 @@ def configure_iq_agent(
                     dut.cli_type, loaded_config['sw_connection_host'],
                     spawn_connection, vr=virtual_routers.get(dut.name, 'VR-Mgmt'), retry_count=30
                 )
+                
+                if dut.cli_type.upper() == "EXOS":
+                    spawn_connection.sendline("enable iqagent")
 
         threads: List[threading.Thread] = []
         try:
@@ -1678,7 +1701,8 @@ def check_devices_are_onboarded(
         devices_appeared_in_xiq = False
         devices_are_online = False
         devices_are_managed = False
-
+        stack_is_connected = False
+        
         while time.time() - start_time < timeout:
             try:
                 xiq.xflowsmanageDevices.refresh_devices_page()
@@ -1716,7 +1740,22 @@ def check_devices_are_onboarded(
                         logger.info(f"This device does have green status in the XIQ: {dut}.")
 
                     devices_are_online = True
-                
+
+                if not stack_is_connected:
+                    
+                    stack_node = [n for n in node_list if n.platform.upper() == "STACK"]
+                    
+                    if stack_node:
+                        stack_node = stack_node[0]
+                        stack_status = xiq.xflowsmanageDevices.get_device_stack_status(device_mac=stack_node.mac)
+                        assert stack_status == "blue", "Stack status is disconnected."
+                        
+                        logger.info(f"Successfully verified this stack is fully connected: {stack_node}.")                    
+                        stack_is_connected = True
+                        
+                    else:
+                        stack_is_connected = True
+
                 if not devices_are_managed:
                     
                     for dut in node_list:
@@ -2045,11 +2084,14 @@ def node_list(
                 if (platform_node_1.lower() == "standalone") or (node.platform.lower() == platform_node_1.lower()):
                     break
         else:
-            error_msg = f"Failed to find a standalone node in the testbed yaml that satisfy these requirements: run_os={runos_node_1}, platform='{platform_node_1}'."
+            error_msg = f"Failed to find a standalone node in the testbed yaml that satisfy these requirements:" \
+                        f" run_os={runos_node_1}, platform='{platform_node_1}'."
             logger.error(error_msg)
             pytest.fail(error_msg)
 
-        logger.info(f"Successfuly chose this dut as 'node_1': '{node.name}' (cli_type='{node.cli_type}', run_os={runos_node_1}, platform='{platform_node_1}').")
+        logger.info(
+            f"Successfuly chose this dut as 'node_1': '{node.name}' "
+            f"(cli_type='{node.cli_type}', run_os={runos_node_1}, platform='{platform_node_1}').")
 
         node.node_name = "node_1"
         duts.append(node)
@@ -2065,12 +2107,15 @@ def node_list(
                         if (platform_node_2.lower() == "standalone") or (node.platform.lower() == platform_node_2.lower()):
                             break  
             else:
-                error_msg = f"Failed to find a standalone node in the testbed yaml that satisfy these requirements: run_os={runos_node_2}, platform='{platform_node_2}'. "\
+                error_msg = f"Failed to find a standalone node in the testbed yaml that satisfy these requirements:" \
+                            f"run_os={runos_node_2}, platform='{platform_node_2}'. " \
                             f"Already used node: '{duts[0].name}'."
                 logger.error(error_msg)
                 pytest.fail(error_msg)
 
-            logger.info(f"Successfuly chose this dut as 'node_2': '{node.name}' (cli_type='{node.cli_type}', run_os={runos_node_2}, platform='{platform_node_2}').")
+            logger.info(
+                f"Successfuly chose this dut as 'node_2': '{node.name}' "
+                f"(cli_type='{node.cli_type}', run_os={runos_node_2}, platform='{platform_node_2}').")
             
             node.node_name = "node_2"
             duts.append(node)
@@ -2088,7 +2133,9 @@ def node_list(
             logger.error(error_msg)
             pytest.fail(error_msg)
 
-        logger.info(f"Successfuly chose this dut as 'node_stack': '{node.name}' (cli_type='{node.cli_type}', run_os={runos_node_stack}).")
+        logger.info(
+            f"Successfuly chose this dut as 'node_stack': '{node.name}' "
+            f"(cli_type='{node.cli_type}', run_os={runos_node_stack}, platform='stack').")
         
         node.node_name = "node_stack"
         duts.append(node)   
@@ -2362,7 +2409,8 @@ def account_configuration(
         
         if (option := pytest.onboarding_options.get("change_device_management_settings", "disable")):
             
-            change_device_management_settings: ChangeDeviceManagementSettings = request.getfixturevalue("change_device_management_settings")
+            change_device_management_settings: ChangeDeviceManagementSettings = request.getfixturevalue(
+                "change_device_management_settings")
             
             change_device_management_settings(
                 xiq,
@@ -2414,7 +2462,8 @@ def post_onboarding_verifications(
         xiq: XiqLibrary
     ) -> None:
         
-        check_devices_are_onboarded: CheckDevicesAreOnboarded = request.getfixturevalue("check_devices_are_onboarded")
+        check_devices_are_onboarded: CheckDevicesAreOnboarded = request.getfixturevalue(
+            "check_devices_are_onboarded")
         
         check_devices_are_onboarded(xiq)
     
@@ -2435,7 +2484,8 @@ def post_onboarding_configuration(
     ) -> None:
                     
             update_devices: UpdateDevices = request.getfixturevalue("update_devices")
-            configure_network_policies: ConfigureNetworkPolicies = request.getfixturevalue("configure_network_policies")
+            configure_network_policies: ConfigureNetworkPolicies = request.getfixturevalue(
+                "configure_network_policies")
 
             configure_network_policies(xiq)
             update_devices(xiq)
@@ -3000,44 +3050,6 @@ def change_device_management_settings(
         else:
             pytest.fail("Failed to change exos device management settings.")
     return change_device_management_settings_func
-
-
-@pytest.fixture(scope="session")
-def get_default_password(
-        navigator: Navigator,
-        auto_actions: AutoActions,
-        debug: Callable,
-        screen: Screen,
-        wait_till: Callable
-) -> Callable[[XiqLibrary], None]:
-    
-    @debug
-    def get_default_password_func(
-            xiq: XiqLibrary
-    ) -> None:
-        xiq.xflowscommonDevices._goto_devices()
-        navigator.navigate_to_global_settings_page()
-        
-        menu, _ = wait_till(
-            func=xiq.xflowsglobalsettingsGlobalSetting.get_device_management_settings_menu,
-            silent_failure=True,
-            delay=4
-        )
-        screen.save_screen_shot()
-        assert menu, "Failed to get the device management settings menu"
-        
-        wait_till(func=lambda: auto_actions.click(menu) == 1)
-        screen.save_screen_shot()
-        
-        password, _ = wait_till(
-            func=xiq.xflowsglobalsettingsGlobalSetting.get_device_management_settings_password,
-            silent_failure=True,
-            delay=4
-        )
-        screen.save_screen_shot()
-        assert password, "Failed to get the default device passowrd"
-        return password.get_attribute('value')
-    return get_default_password_func
 
 
 @pytest.fixture(scope="session")
