@@ -65,7 +65,7 @@ Test 2: Onboard Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}  ${DUT_MAC}     ${netelem1}
+    Onboard New Test Device                     ${DUT_SERIAL}  ${netelem1}
 
     ${selected}=    Column Picker Select        ${COLUMN_1}     ${COLUMN_2}
     Should Be Equal As Integers                 ${selected}     1
@@ -129,7 +129,7 @@ Tear Down Test and Close Session
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${location}  ${mac}    ${device}
+    [Arguments]         ${serial}  ${netelem}
 
     Navigate to Devices and Confirm Success
 
@@ -138,7 +138,7 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    onboard device quick    ${device}
+    onboard device quick    ${netelem}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 

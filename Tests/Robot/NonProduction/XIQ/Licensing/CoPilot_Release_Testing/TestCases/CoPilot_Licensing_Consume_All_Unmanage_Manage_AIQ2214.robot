@@ -65,8 +65,6 @@ ${COLUMN_1}                 CoPilot
 ${COLUMN_2}                 Managed
 ${COLUMN_3}                 Device License
 
-${LOCATION}                 San Jose, building_01, floor_02
-
 
 *** Test Cases ***
 Test 1: Verify Pilot and CoPilot Baseline License Counts
@@ -91,7 +89,7 @@ Test 2: Onboard First Test Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT1_SERIAL}  ${DUT1_MAKE}  ${LOCATION}  ${DUT1_MAC}  ${netelem1}
+    Onboard New Test Device                     ${DUT1_SERIAL}  ${netelem1}
 
     ${selected}=    Column Picker Select        ${COLUMN_1}     ${COLUMN_2}    ${COLUMN_3}
     Should Be Equal As Integers                 ${selected}     1
@@ -116,7 +114,7 @@ Test 3: Onboard Second Test Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT2_SERIAL}  ${DUT2_MAKE}  ${LOCATION}  ${DUT2_MAC}  ${netelem2}
+    Onboard New Test Device                     ${DUT2_SERIAL}  ${netelem2}
 
     Refresh Devices Page
     Verify and Wait Until Device Online         ${DUT2_SERIAL}
@@ -212,7 +210,7 @@ Test 9: Onboard Third Test Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT3_SERIAL}  ${DUT3_MAKE}  ${LOCATION}  ${DUT3_MAC}  ${netelem3}
+    Onboard New Test Device                     ${DUT3_SERIAL}  ${netelem3}
 
     Refresh Devices Page
     Verify and Wait Until Device Online         ${DUT3_SERIAL}
@@ -406,7 +404,7 @@ Disable CoPilot Feature and Confirm Success
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${location}  ${mac}    ${device}
+    [Arguments]         ${serial}  ${netelem}
 
     Navigate to Devices and Confirm Success
 
@@ -415,7 +413,7 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    onboard device quick    ${device}
+    onboard device quick    ${netelem}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 
