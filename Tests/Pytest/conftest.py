@@ -10,6 +10,8 @@ import traceback
 import pytest
 import platform
 import yaml
+import git
+import sys
 
 from pexpect.pxssh import pxssh
 from _pytest import mark, fixtures
@@ -366,6 +368,25 @@ def get_test_marker(
     return [m.name for m in item.own_markers if any(re.search(rf"^{test_marker}_", m.name) for test_marker in valid_test_markers)]
 
 
+def log_git():
+    
+    repos = ['extreme_automation_framework', 'extreme_automation_tests']
+    
+    for repo_name in repos:
+        for path in sys.path:
+            if re.search(rf"(.*/{repo_name})$", path):
+                try:
+                    git_repo = git.Repo(path)
+                except:
+                    pass
+                finally:
+                    logger_obj.step(f"{repo_name} git dir: '{git_repo.git_dir}'.")
+                    logger_obj.step(f"{repo_name} working tree dir: '{git_repo.working_tree_dir}'.")
+                    logger_obj.step(f"{repo_name} feature branch: '{git_repo.active_branch.name}'.")
+                    logger_obj.step(f"{repo_name} HEAD commit '{git_repo.head.commit}'.")
+                    break
+
+
 def get_priority_marker(
         item: pytest.Function
 ) -> List[PriorityMarker]:
@@ -443,6 +464,8 @@ def pytest_collection_modifyitems(session, items):
 
     if pytest.runlist_path != "default":
         
+        log_git()
+
         logger_obj.info(f"Current runlist ('{pytest.runlist_name}') is located in this yaml file: '{pytest.runlist_path}'.")
         logger_obj.info(f"Found {len(pytest.runlist_tests)} tests in given runlist: " + "'" + "', '".join(pytest.runlist_tests) + "'.")
         logger_obj.info(f"Collected {len(items)} test functions from given test directory path(s).")
@@ -927,6 +950,7 @@ def pytest_sessionfinish(session):
                           f"{teardown_duration:^{result_witdh}} |"
                 output += "\n" + "-" * line_width
             
+            logger_obj.info(f"Results of runlist '{pytest.runlist_name}' (path '{pytest.runlist_path}')")
             logger_obj.info(output)
 
         except:
