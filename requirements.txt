@@ -42,5 +42,6 @@ textfsm==0.4.1
 PyMySQL==1.0.2
 wheel==0.36.2
 ansi2html==1.8.0
+GitPython==3.1.29
 PyAutoGUI==0.9.42; platform_system == "Windows"
 https://github.com/jacexh/pyautoit/archive/master.zip; platform_system == "Windows"

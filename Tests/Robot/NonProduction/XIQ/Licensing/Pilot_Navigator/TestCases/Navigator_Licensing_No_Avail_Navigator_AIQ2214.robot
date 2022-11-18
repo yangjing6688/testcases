@@ -94,7 +94,7 @@ Test 2: Onboard First Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT1_SERIAL}  ${DUT1_MAKE}  ${LOCATION}  ${DUT1_MAC}  ${netelem1}
+    Onboard New Test Device                     ${DUT1_SERIAL}  ${netelem1}
 
     ${selected}=    Column Picker Select        ${COLUMN_1}     ${COLUMN_2}
     Should Be Equal As Integers                 ${selected}     1
@@ -128,7 +128,7 @@ Test 4: Onboard Second Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT2_SERIAL}  ${DUT2_MAKE}  ${LOCATION}  ${DUT2_MAC}  ${netelem2}
+    Onboard New Test Device                     ${DUT2_SERIAL}  ${netelem2}
 
     ${selected}=    Column Picker Select        ${COLUMN_1}     ${COLUMN_2}
     Should Be Equal As Integers                 ${selected}     1
@@ -175,7 +175,7 @@ Test 7: Onboard Third Test Device and Verify Device Consumes Pilot License Since
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT3_SERIAL}  ${DUT3_MAKE}  ${LOCATION}  ${DUT3_MAC}  ${netelem3}
+    Onboard New Test Device                     ${DUT3_SERIAL}  ${netelem3}
 
     Refresh Devices Page
     Verify and Wait Until Device Online         ${DUT3_SERIAL}
@@ -244,7 +244,7 @@ Tear Down Test and Close Session
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${location}  ${mac}  ${device}
+    [Arguments]         ${serial}  ${netelem}
 
     Navigate to Devices and Confirm Success
 
@@ -253,7 +253,7 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    onboard device quick    ${device}
+    onboard device quick    ${netelem}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 
@@ -288,15 +288,6 @@ Confirm Required Columns Selected
 
     ${selected}=    Confirm Column Picker Column Selected     ${COLUMN_1}  ${COLUMN_2}
     Should Be Equal As Integers     ${selected}    1
-
-Onboard New Test Device When Navigator License Limit Exceeded
-    [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${location}  ${mac}   ${device}
-
-    Navigate to Devices and Confirm Success
-
-    ${result_onboard}=    onboard device quick           ${device}
-    Should Be Equal As Integers                     ${result_onboard}     -1
 
 Delete Test Device and Confirm Success
     [Documentation]     Deletes the specified device and confirms the action was successful
