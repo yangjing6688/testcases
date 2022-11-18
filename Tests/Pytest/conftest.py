@@ -10,7 +10,6 @@ import traceback
 import pytest
 import platform
 import yaml
-import git
 import sys
 
 from pexpect.pxssh import pxssh
@@ -359,7 +358,7 @@ def debug(logger: PytestLogger) -> Callable:
 
 
 def pytest_cmdline_preparse(config, args):
-    args.append(os.path.join(os.path.dirname(__file__), "conftest.py"))
+    args.extend([os.path.join(os.path.dirname(__file__), "conftest.py"), "-vv", "--tb=long"])
 
 
 def get_test_marker(
@@ -372,18 +371,25 @@ def log_git():
     
     repos = ['extreme_automation_framework', 'extreme_automation_tests']
     
+    try:
+        from git import Repo
+        from git.exc import InvalidGitRepositoryError, NoSuchPathError
+    except ImportError:
+        logger_obj.warning("The 'GitPython' module is not installed.")
+        return
+    
     for repo_name in repos:
         for path in sys.path:
             if re.search(rf"(.*/{repo_name})$", path):
                 try:
-                    git_repo = git.Repo(path)
-                except:
+                    git_repo = Repo(path)
+                except (InvalidGitRepositoryError, NoSuchPathError):
                     pass
                 finally:
                     logger_obj.step(f"{repo_name} git dir: '{git_repo.git_dir}'.")
                     logger_obj.step(f"{repo_name} working tree dir: '{git_repo.working_tree_dir}'.")
                     logger_obj.step(f"{repo_name} feature branch: '{git_repo.active_branch.name}'.")
-                    logger_obj.step(f"{repo_name} HEAD commit '{git_repo.head.commit}'.")
+                    logger_obj.step(f"{repo_name} HEAD commit: '{git_repo.head.commit}'.")
                     break
 
 
@@ -915,7 +921,7 @@ def pytest_sessionfinish(session):
             line_width = max_tc_length + 7 * result_witdh + 38
             
             output = "\n" + "-" * line_width
-            output += f"\n| {'ORDER':^5} | {'TEST CASE':^{max_tc_length}} | {'P':^2} | {'TB':^{result_witdh}} | {'SETUP_RESULT':^{result_witdh}} | " \
+            output += f"\n| {'ORDER':^5} | {'TEST CASE':^{max_tc_length}} | {'P':^2} | {'TESTBED':^{result_witdh}} | {'SETUP_RESULT':^{result_witdh}} | " \
                       f"{'CALL_RESULT':^{result_witdh}} | {'TEARDOWN_RESULT':^{result_witdh}} | " \
                       f"{'SETUP_DURATION':^{result_witdh}} | {'CALL_DURATION':^{result_witdh}} | " \
                       f"{'TEARDOWN_DURATION':^{result_witdh}} |"
