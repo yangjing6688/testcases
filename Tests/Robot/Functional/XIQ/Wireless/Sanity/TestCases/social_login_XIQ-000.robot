@@ -168,8 +168,9 @@ TCCS-11614: Social login with facebook
     Log to Console      Sleep for ${auth_logs_duration_wait}
     sleep               ${auth_logs_duration_wait}
 
-    ${AUTH_LOGS}=                Get Authentication Logs Details       ${CURRENT_DATE_TIME}     ${MAIL_ID3}
+    ${AUTH_LOGS}=                Get Authentication Logs Details       ${NW_POLICY_SSID1}     ${MAIL_ID3}
     ${TIME_STAMP}=               Get From Dictionary     ${AUTH_LOGS}    authdate
+
     should contain               ${TIME_STAMP}       ${CURRENT_DATE_TIME[:-2:]}
     LOG TO CONSOLE               ${AUTH_LOGS}
 
@@ -193,7 +194,7 @@ TCCS-11614: Social login with facebook
     Should Be Equal As Strings      '${REJ_CODE}'        ''
 
     ${TIME_STAMP}=                  Get From Dictionary     ${AUTH_LOGS}    authdate
-    should contain                 ${TIME_STAMP}        ${CURRENT_DATE_TIME}
+    should contain                 ${TIME_STAMP}        ${CURRENT_DATE_TIME[:-2:]}
 
     Remote_Server.Disconnect WiFi
     Log to Console      Sleep for ${client_disconnect_wait}

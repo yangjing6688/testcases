@@ -27,7 +27,7 @@ TCCS-13211: Quick Add Onboard Simulated Device
     [Documentation]         Quick Onboarding - Add Simulated Devices
     [Tags]                  production      tccs_7651       tccs_13211
 
-    ${device1}=      Create Dictionary
+    ${device}=      Create Dictionary
     ...     name=simulated_dut08
     ...     model=AP460C
     ...     simulated_count=1
