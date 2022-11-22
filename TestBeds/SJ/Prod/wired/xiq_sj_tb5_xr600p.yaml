@@ -1,13 +1,13 @@
 router1:
-  name:                     bui-flo-0393
-  model:                    XR600P
-  device_template:          XR600P_test_automation
-  serial:                   "60018082400365"
+  name:                     bui-flo-0290
+  model:                    XR200P
+  device_template:          XR200P_test_automation
+  serial:                   "20318040900290"
   ip:                       10.16.166.228  # 10.16.170.66
   port:                     4008
   cli_type:                 "AH-XR"
   connection_method:        "console"
-  mac:                      F4EAB52DC700
+  mac:                      F09CE9CA4F00
   network_policy:           Test_np
   username:                 admin
   password:                 Aerohive123

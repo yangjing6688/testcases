@@ -12,6 +12,7 @@ import platform
 import yaml
 import sys
 
+from pytest import FixtureRequest
 from pexpect.pxssh import pxssh
 from _pytest import mark, fixtures
 from collections import defaultdict
@@ -144,6 +145,13 @@ class Cleanup(Protocol):
         ) -> None: ...
 
 
+class CheckVim(Protocol):
+    def __call__(
+        self,
+        xiq: XiqLibrary,
+        ) -> None: ...
+
+
 class ConfigureNetworkPolicies(Protocol):
     def __call__(
         self,
@@ -182,6 +190,14 @@ class PostOnboardingConfiguration(Protocol):
         xiq: XiqLibrary,
         duts: List[Node]
         ) -> None: ...
+
+
+class PreOnboardingVerifications(Protocol):
+    def __call__(
+    self,
+    xiq: XiqLibrary,
+    duts: List[Node]
+    ) -> None: ...
 
 
 class PostOnboardingVerifications(Protocol):
@@ -1040,7 +1056,7 @@ def pytest_runtest_makereport(item, call):
             
             if next_tests:
                 logger_obj.info(
-                    f"The {len(next_tests)} test(s) that will run next: " + "'" + "', '".join(next_tests) + "'.")
+                    f"These {len(next_tests)} test(s) will run next: " + "'" + "', '".join(next_tests) + "'.")
                 
         if result.when == 'call' and result.outcome != "passed":
             for it in item.session.items:
@@ -1082,6 +1098,38 @@ def pytest_runtest_setup(item):
         except:
             config['${TEST_NAME}'] = current_test_marker
 
+        request = FixtureRequest(item, _ispytest=True)
+
+        for marker in item.own_markers:
+            for node in ["node_1", "node_2", "node_stack"]:
+                for field in ["cli_type", "make", "model", "platform"]:
+                    if (marker.name == f'skip_if_{node}_{field}') and bool(marker.args):
+                        node_fxt = request.getfixturevalue(node)
+                        if node_fxt:
+                            if field_value := node_fxt.get(field):
+                                if any(field_value.upper() == str(arg).upper() for arg in marker.args):
+                                    msg = f"'{current_test_marker}' test case will be skipped because " \
+                                          f"it is not meant to run when '{node_fxt.name}' has" \
+                                          f" '{field_value}' set for the '{field}' field."
+                                    item.add_marker(pytest.mark.skip(msg))
+                                    pytest.skip(msg)
+                                    
+            if (marker.name == "skip_if_browser") and bool(marker.args):
+                if browser := config.get("BROWSER"):
+                    if any(browser.upper() == value.upper() for value in marker.args):
+                        msg = f"'{current_test_marker}' test case will be skipped because " \
+                              f"it is not meant to run when the used browser is '{browser}'."
+                        item.add_marker(pytest.mark.skip(msg))
+                        pytest.skip(msg)
+            
+            if (marker.name == "skip_if_lab") and bool(marker.args):
+                if lab := config.get("lab"):
+                    if any(lab.upper() == value.upper() for value in marker.args):
+                        msg = f"'{current_test_marker}' test case will be skipped because " \
+                              f"it is not meant to run when lab is '{lab}'."
+                        item.add_marker(pytest.mark.skip(msg))
+                        pytest.skip(msg)
+                         
         if (not is_onboarding_test(item)) and (not is_onboarding_cleanup_test(item)):
             logger_obj.step(f"Start SETUP of test function '{current_test_marker}': '{item.nodeid}'.")
 
@@ -1586,7 +1634,15 @@ def onboarding_locations(
 
         if onboarding_location:
             
-            logger.info(f"Successfully found this location in the runlist for node '{node.node_name}': '{onboarding_location}'")
+            if onboarding_location == "random":
+                create_onboarding_location = True
+                pool = list(string.ascii_letters) + list(string.digits)
+                onboarding_location = f"Salem_{''.join(random.sample(pool, k=4))}," \
+                                      f"Northeastern_{''.join(random.sample(pool, k=4))}," \
+                                      f"Floor_{''.join(random.sample(pool, k=4))}"
+                
+            logger.info(
+                f"Successfully found this location in the runlist for node '{node.node_name}': '{onboarding_location}'")
             ret[node.name] = onboarding_location
             
             if create_onboarding_location:
@@ -2451,6 +2507,24 @@ def account_configuration(
 
 
 @pytest.fixture(scope="session")
+def pre_onboarding_verifications(
+    request: fixtures.SubRequest,
+    debug: Callable
+) -> PreOnboardingVerifications:
+    """
+    Fixture that does verifications in XIQ before the onboarding.
+    """
+
+    @debug
+    def pre_onboarding_verifications_func(
+        xiq: XiqLibrary
+    ) -> None:
+         pass
+     
+    return pre_onboarding_verifications_func
+ 
+    
+@pytest.fixture(scope="session")
 def pre_onboarding_configuration(
     request: fixtures.SubRequest,
     debug: Callable
@@ -2480,6 +2554,39 @@ def pre_onboarding_configuration(
 
 
 @pytest.fixture(scope="session")
+def check_vim(
+    request: pytest.FixtureRequest,
+    debug: Callable,
+    logger: PytestLogger,
+    node_list: List[Node]
+    ) -> CheckVim:
+    
+    @debug
+    def check_vim_func(xiq):
+        
+        for node in node_list:
+            
+            onboarding_options: Options = request.getfixturevalue(f"{node.node_name}_onboarding_options")
+            check_vim_flag: bool = onboarding_options.get("check_vim", False)
+            
+            if check_vim_flag:
+                logger.step(f"The 'check_vim' flag is enabled for the '{node.node_name}' node.")
+                
+                try:
+                    xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(node.mac)
+                    time.sleep(10)
+                    assert xiq.xflowsmanageDevice360.d360_check_if_vim_is_installed()
+                except AssertionError:
+                    error = f"Invalid setup, no actual VIM module installed for chosen dut: '{node.name}' ({node.node_name})."
+                    logger.error(error)
+                    raise AssertionError(error)
+                finally:
+                    xiq.xflowsmanageDevice360.close_device360_window()
+
+    return check_vim_func
+
+
+@pytest.fixture(scope="session")
 def post_onboarding_verifications(
     request: fixtures.SubRequest,
     debug: Callable
@@ -2494,9 +2601,11 @@ def post_onboarding_verifications(
         
         check_devices_are_onboarded: CheckDevicesAreOnboarded = request.getfixturevalue(
             "check_devices_are_onboarded")
+        check_vim: CheckVim = request.getfixturevalue("check_vim")
         
         check_devices_are_onboarded(xiq)
-    
+        check_vim(xiq)
+
     return post_onboarding_verifications_func
 
 
@@ -2572,6 +2681,7 @@ def onboard(
     devices_configuration: DevicesConfiguration = request.getfixturevalue("devices_configuration")
 
     onboarding: Onboarding = request.getfixturevalue("onboarding")
+    pre_onboarding_verifications: PreOnboardingVerifications = request.getfixturevalue("pre_onboarding_verifications")
     pre_onboarding_configuration: PreOnboardingConfiguration = request.getfixturevalue("pre_onboarding_configuration")
     post_onboarding_verifications: PostOnboardingVerifications = request.getfixturevalue("post_onboarding_verifications")
     post_onboarding_configuration: PostOnboardingConfiguration = request.getfixturevalue("post_onboarding_configuration")
@@ -2594,12 +2704,15 @@ def onboard(
     try:
         
         devices_verifications()
+        
         devices_configuration()
 
         xiq: XiqLibrary
 
         with login_xiq() as xiq:
             
+            pre_onboarding_verifications(xiq)
+
             pre_onboarding_configuration(xiq)
             
             onboarding(xiq)

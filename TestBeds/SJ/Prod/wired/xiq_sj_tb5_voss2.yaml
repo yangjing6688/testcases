@@ -1,0 +1,22 @@
+netelem1:
+  name:                     bui-flo-0582
+  model:                    "FabricEngine_5320_48P_8XEE"
+  cli_type:                 VOSS
+  device_template:          "Fabric_Engine_5320_48P_8XE-default-template"
+  serial:                   "TB032231K-H0582"
+  mac:                      8C497AE01C00
+  connection_method:        "ssh"
+  cli_type:                 "VOSS"
+  bssid:
+  network_policy:           Test_np
+  username:                 rwa
+  password:                 Aerohive123
+  platform:                 voss
+  ip:                       10.16.170.50
+  port:                     "22"
+  console_ip:               10.16.166.228
+  console_port:             4013
+  country:                  United Kingdom
+  make:                     VOSS
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real

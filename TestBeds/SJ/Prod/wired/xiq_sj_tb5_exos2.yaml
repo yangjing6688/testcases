@@ -1,18 +1,18 @@
 netelem1:
   platform:                 EXOS
-  name:                     bui-flo-0139
-  model:                    X465-48W
-  serial:                   '1924F-10139'
-  mac:                      000496BA7F0C
+  name:                     5320-48P-8XE-EXOS
+  model:                    "Switch Engine 5320-48P-8XE"
+  serial:                   'TB032231K-H0745'
+  mac:                      8C497AE2A800
   username:                 admin
   password:                 Aerohive123
-  ip:                       10.16.148.24
+  ip:                       10.16.170.51
   port:                     "22"
   connection_method:        "ssh"
-  console_ip:               10.16.148.24
+  console_ip:               10.16.170.51
   console_port:             22
   network_policy:           Test_np
-  device_template:          X465-48W-default-template
+  device_template:          "Switch_Engine_5320_48P_8XE-default-template"
   cli_type:                 EXOS
   make:                     EXOS
   mgmt_vlan:                default
