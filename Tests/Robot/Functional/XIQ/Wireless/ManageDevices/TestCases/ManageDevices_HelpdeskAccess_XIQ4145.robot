@@ -70,31 +70,31 @@ TCXM-19760: Confirm No Access To Device360
     [Documentation]     Confirms no access to the Device360 popup
     [Tags]              tcxm_19760   development
 
-    ${is_link}=         Is Hostname Link Available   ${SIM_SERIAL}
-    Should Be Equal As Integers   ${is_link}   -1
-    ${is_link}=         Is Mac Link Available   ${SIM_SERIAL}
-    Should Be Equal As Integers   ${is_link}   -1
+    ${is_link}=         Verify Hostname Link Not Available   ${SIM_SERIAL}
+    Should Be Equal As Integers   ${is_link}   1
+    ${is_link}=         Verify Mac Link Not Available   ${SIM_SERIAL}
+    Should Be Equal As Integers   ${is_link}   1
 
 TCXM-19838: Confirm No Access To Device360 With Clients
     [Documentation]     Confirms no access to the Device360 popup through clients
     [Tags]              tcxm_19838   development
 
-    ${is_link}=         Is Client Link Available   ${SIM_SERIAL}
-    Should Be Equal As Integers   ${is_link}   -1
+    ${is_link}=         Verify Client Link Not Available   ${SIM_SERIAL}
+    Should Be Equal As Integers   ${is_link}   1
 
 TCXM-19836: Confirm No Access To Policy Change
     [Documentation]     Confirms no access to the policy change popup
     [Tags]              tcxm_19836   development
 
-    ${is_link}=         Is Policy Link Available   ${SIM_SERIAL}
-    Should Be Equal As Integers   ${is_link}   -1
+    ${is_link}=         Verify Policy Link Not Available   ${SIM_SERIAL}
+    Should Be Equal As Integers   ${is_link}   1
 
 TCXM-19837: Confirm No Access To Location Change
     [Documentation]     Confirms no access to the location change popup
     [Tags]              tcxm_19837   development
 
-    ${is_link}=         Is Location Link Available   ${SIM_SERIAL}
-    Should Be Equal As Integers   ${is_link}   -1
+    ${is_link}=         Verify Location Link Not Available   ${SIM_SERIAL}
+    Should Be Equal As Integers   ${is_link}   1
 
 
 *** Keywords ***
