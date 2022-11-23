@@ -15,6 +15,7 @@ ap1:
   mgmt_vlan:                1
   country:                  India
   onboard_device_type:      Real
+  location:                 auto_location_03, Bengaluru, Ecospace, Floor_01
 
 ap2:
   name:                     AP460C
@@ -33,6 +34,7 @@ ap2:
   mgmt_vlan:                1
   country:                  India
   onboard_device_type:      Real
+  location:                 auto_location_03, Bengaluru, Ecospace, Floor_01
 
 mu1:
   ip:                       10.234.62.101
