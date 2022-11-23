@@ -72,6 +72,9 @@ Test Suite Setup
     # log in the user
     Login User      ${tenant_username}      ${tenant_password}
 
+    # make sure the feature is enabled
+    enable ssh availability
+
 Test Suite Teardown
     Clean Up Device
     ${DLT_NW_POLICIES}=             Delete Network Polices      ${PUSH_CONFIG_POLICY_01}        ${VOSS_POLICY_NAME}    ignore_cli_feedback=true
@@ -180,9 +183,6 @@ TCCS-13686: Enable SSH on Device and Confirm Only a Single SSH Session Can Be Es
     [Tags]              ssh      development    tccs_13686
 
     Depends On           TCCS-13685
-
-    # make sure the feature is enabled
-    enable ssh availability
 
     # Create the SSH connection
     &{ip_port_info}=                    Device360 Enable SSH CLI Connectivity   ${device1.mac}  run_time=30
