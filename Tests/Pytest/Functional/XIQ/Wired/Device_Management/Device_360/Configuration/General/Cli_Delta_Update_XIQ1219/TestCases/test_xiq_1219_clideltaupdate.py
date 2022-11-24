@@ -1,6 +1,6 @@
 # Author        : Dragos Sofiea, Devi Ranganathan, Raluca Cionca
 # Description   : This script run the below tests for CLI Delta Update feature according with XIQ-1219 story
-# Testcases     : TCXM16515, TCXM16916, TCXM16915, TCXM16917
+# Testcases     : TCXM16515, TCXM16916, TCXM16916, TCXM16923, TCXM16915, TCXM16922, TCXM16917, TCXM16924
 # Comments      : This test is applicable for exos-voss, exos_Stack
 
 from pytest_testconfig import config, load_yaml
@@ -511,13 +511,16 @@ class xiqTests():
         cls.deactivate_xiq_libaries_and_logout(cls)
 
     @mark.p1
-    @mark.development
-    @mark.xim_txcm_TCXM16515_TCXM16916
+    @mark.tcxm_16515
+    @mark.tcxm_16916
+    @mark.tcxm_16516
+    @mark.tcxm_16923
     @mark.testbed_1_node
-
-    def test_TCXM16515_TCXM16916_long_config_update(self, xiq_teardown_long_config):
+    def test_tcxm16515_tcxm16916_tcxm_16516_tcxm_16923_long_config_update(self, xiq_teardown_long_config):
         """TCXM16515 - Configure a long  config update and check the config update messages"""
         """TCXM16916 - Long list of CLI commands"""
+        """TCXM16516 - Configure a long  config update and check messages in event page"""
+        """TCXM16923 - Long list of CLI commands and check messages in event page"""
 
         self.cfg['${TEST_NAME}'] = 'Configure a long  config update and check the config update messages'
         if self.tb.dut1.cli_type.lower() == "exos":
@@ -537,11 +540,12 @@ class xiqTests():
         self.check_event(event="Download Config", mac=self.tb.dut1.mac)
 
     @mark.p2
-    @mark.development
-    @mark.xim_txcm_16915
+    @mark.tcxm_16915
+    @mark.tcxm_16922
     @mark.testbed_1_node
-    def test_TCXM16915_small_config_update(self, xiq_teardown_small_config):
+    def test_tcxm16915_tcxm16922_small_config_update(self, xiq_teardown_small_config):
         """TCXM16915 - Configure a small config update and check the config update messages"""
+        """TCXM16922 - Configure a small config update and check messages in event page"""
 
         self.cfg['${TEST_NAME}'] = 'Configure a small config update and check the config update messages'
         self.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(policy_name="policy_test_" + self.tb.dut1.mac[:-2], option="disable", device_mac=self.tb.dut1.mac)
@@ -562,12 +566,12 @@ class xiqTests():
         self.check_event(event="Download Config", mac=self.tb.dut1.mac)
 
     @mark.p2
-    @mark.development
-    @mark.xim_txcm_16917
+    @mark.tcxm_16917
+    @mark.tcxm_16924
     @mark.testbed_1_node
-
-    def test_TCXM16917_cli_spans_many_minutes(self, xiq_cli_spans_minutes_teardown):
-        """TXCM16917 - CLI command which spans many minutes"""
+    def test_tcxm16917_tcxm16924_cli_spans_many_minutes(self, xiq_cli_spans_minutes_teardown):
+        """TCXM16917 - CLI command which spans many minutes"""
+        """TCXM16924 - CLI command which spans many mintues and check messages in event page"""
 
         self.cfg['${TEST_NAME}'] = 'CLI command which spans many minutes'
         self.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(policy_name="policy_test_" + self.tb.dut1.mac[:-2], option="disable", device_mac=self.tb.dut1.mac)
