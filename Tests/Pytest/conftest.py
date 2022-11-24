@@ -2497,14 +2497,7 @@ def onboarding(
                             
         for dut in duts:
             
-            if xiq.xflowscommonDevices.onboard_device_quick(
-                {
-                    "location": onboarding_locations[dut.name],
-                    "serial": dut.serial,
-                    "make": dut.cli_type,
-                    "onboard_device_type": "real"
-                }
-            ) == 1: 
+            if xiq.xflowscommonDevices.onboard_device_quick({**dut, "location": onboarding_locations[dut.name]}) == 1: 
                 logger.info(f"Successfully onboarded this device: '{dut}'.")
                 screen.save_screen_shot()
             else:
