@@ -1,0 +1,161 @@
+fpsw1:
+  name:
+  serial:                   '22081511137004'
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+fpsw2:
+  name:
+  serial:                   '23241512180078,22081511138004'
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+fpsw3:
+  name:
+  serial:                   '22241512130083,20261501027134'
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+fpsw4:
+  name:
+  serial:                   '21241408137809,23481603195014'
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+hossw1:
+  name:
+  serial:                   '21241408185009'
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+hossw2:
+  name:
+  serial:                   '21241408172009,20261508097134'
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+ap1:
+  name:
+  serial:                   '01221608177211'
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+ap2:
+  name:
+  serial:                   '01221608677411,02301508160470'
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+ap3:
+  name:
+  serial:                   '03052008050115,05501808501116'
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+ap4:
+  name:
+  serial:                   '05501808601336,03052006073105'
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+uh_ap1:
+  name:
+  serial:                   '04102007209507'
+  make:                     Dual Boot
+  os:                       Cloud IQ Engine
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+uh_ap2:
+  name:
+  serial:                   '03059008670105,04107007260107'
+  make:                     Dual Boot
+  os:                       Cloud IQ Engine
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+router1:
+  name:
+  serial:                   '60018082158834'
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+router2:
+  name:
+  serial:                   '60018082409834,20318042700232'
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+router3:
+  name:
+  serial:                   '60018082119834,20012058300492'
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+router4:
+  name:
+  serial:                   '20012052174492,60018082890834'
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+xca1:
+  name:
+  serial:                   'XC012027P-70675'
+  make:                     Universal Appliance
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+xca2:
+  name:
+  serial:                   'XC012027P-70676,XC012027P-70677'
+  make:                     Universal Appliance
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+wing1:
+  name:
+  serial:                   '10148522400052'
+  mac:                      B4C7996C89E4
+  make:                     Controllers
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+wing2:
+  name:
+  serial:                   '11314520400032,12130522400181'
+  mac:                      B4C7996C89E8,B4C7996C89E5
+  make:                     Controllers
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+xcc1:
+  name:
+  serial:                   '1634P-70004'
+  mac:                      000C2978F603
+  make:                     Controllers
+  model:                    Controller
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+xcc2:
+  name:
+  serial:                   '1822E-CFA38,1946E-CBF84'
+  mac:                      000C2978F604,000C2978F605
+  make:                     Controllers
+  model:                    Controller
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
