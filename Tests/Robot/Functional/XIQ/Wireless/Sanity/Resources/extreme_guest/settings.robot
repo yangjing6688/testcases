@@ -30,3 +30,4 @@ Library     xiq/flows/globalsettings/GlobalSetting.py
 Library     xiq/flows/manage/Client.py
 Library     xiq/flows/configure/ExpressNetworkPolicies.py
 Library     xiq/flows/extreme_guest/MuGuestPortal.py
+Library     ExtremeAutomation/Imports/CommonObjectUtils.py

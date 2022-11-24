@@ -11,6 +11,7 @@ import pytest
 import platform
 import yaml
 import sys
+import pexpect
 
 from pytest import FixtureRequest
 from pexpect.pxssh import pxssh
@@ -26,6 +27,7 @@ from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
 from ExtremeAutomation.Library.Logger.PytestLogger import PytestLogger
 from ExtremeAutomation.Library.Logger.Colors import Colors
 from selenium.webdriver.common.action_chains import ActionChains
+from ExtremeAutomation.Keywords.NetworkElementKeywords.StaticKeywords.NetworkElementResetDeviceUtilsKeywords import NetworkElementResetDeviceUtilsKeywords
 from ExtremeAutomation.Keywords.NetworkElementKeywords.NetworkElementConnectionManager import NetworkElementConnectionManager
 from ExtremeAutomation.Keywords.NetworkElementKeywords.Utils.NetworkElementCliSend import NetworkElementCliSend
 from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary
@@ -221,6 +223,13 @@ class OnboardingSucceeded(Protocol):
         xiq: XiqLibrary,
         duts: List[Node]
         ) -> None: ...
+
+
+class ResetSwitch(Protocol):
+    def __call__(
+        self,
+        ) -> None: ... 
+
 
 class DevicesConfiguration(Protocol):
     def __call__(
@@ -657,6 +666,14 @@ def pytest_collection_modifyitems(session, items):
 
         all_tcs: List[TestCaseMarker] = [pytest.onboarding_test_name, pytest.onboarding_cleanup_test_name]
         [all_tcs.append(get_test_marker(item)[0]) for item in temp_items]
+        
+        for item in temp_items + [item_onboarding, item_onboarding_cleanup]:
+            try:
+                [test_marker] = get_test_marker(item)
+                nodeid = re.search(fr".*{item.originalname}", item.nodeid).group(0)
+            except:
+                pass
+            item._nodeid = f"{nodeid}[{test_marker}]"
 
         found_tcs: List[TestCaseMarker] = []
 
@@ -1191,6 +1208,171 @@ def pytest_runtest_call(item):
             if k not in mandatory_fields:
                 output += f"\n{k}: '{v}'"
         output and logger_obj.step(output)
+
+
+@pytest.fixture(scope="session")
+def reset_switch(
+    node_list: List[Node],
+    network_manager: NetworkElementConnectionManager,
+    dev_cmd: NetworkElementCliSend,
+    reset_utils: NetworkElementResetDeviceUtilsKeywords,
+    request: fixtures.SubRequest,
+    logger: PytestLogger,
+    utils: Utils,
+    debug: Callable
+) -> ResetSwitch:
+    """ 
+    This fixture is intended to be used only in the onboarding fixture because 
+    it uses the onboarding options given for each node in the runlist yaml. 
+    """
+    
+    errors: List[str] = []
+
+    @debug
+    def reset_switch_func() -> None:
+        def reset_switch_worker(
+            node: Node
+            ) -> None:
+            
+            if node.node_name == "node_stack":
+                logger.warning("Currently reset switch to factory defaults for stack is not implemented.")
+                return
+                
+            onboarding_options: Options = request.getfixturevalue(f"{node.node_name}_onboarding_options")
+            
+            if onboarding_options.get("reset_switch_to_factory_defaults", False):
+                
+                if not (node.get("console_ip") and node.get("console_port")):
+                    logger.warning(
+                        f"The 'reset_switch_to_factory_defaults' flag is enabled for the '{node.node_name}' node "
+                        f"but this node does not have the console ip/console port configured in the yaml file.")
+                    return
+                            
+                logger.info(f"The 'reset_switch_to_factory_defaults' flag is enabled for the '{node.node_name}' node.")
+
+                try:
+                    if node.cli_type.upper() == "EXOS":
+                        
+                        try:
+                            network_manager.connect_to_network_element_name(node.name)
+                            
+                            logger.step(f"Reset to the factory defaults the '{node.node_name}' node.")
+                            reset_utils.reset_network_element_to_factory_defaults(node.name)
+                            utils.wait_till(timeout=180)
+                            logger.info(f"Successfully reset to the factory default the '{node.node_name}' node.")
+                        
+                        finally:
+                            network_manager.close_connection_to_network_element(node.name)
+                        
+                        try:
+                            network_manager.connect_to_network_element(
+                                node.name, ip=node.console_ip, username=node.username, password=node.password, connection_method="telnet", 
+                                device_cli_type=node.cli_type, port=node.console_port
+                            )
+                            reset_utils.bypass_initial_setup(node.name)
+
+                        finally:
+                            network_manager.close_connection_to_network_element(node.name)
+
+                        try:
+                            network_manager.connect_to_network_element(
+                                node.name, ip=node.console_ip, username=node.username, password=node.password, connection_method="telnet", 
+                                device_cli_type=node.cli_type, port=node.console_port
+                            )
+                            
+                            dev_cmd.send_cmd(
+                                node.name, "enable ssh2", max_wait=10, interval=2,
+                                confirmation_phrases="Continue?",
+                                confirmation_args='y'
+                            )
+                        finally:
+                            network_manager.close_connection_to_network_element(node.name)
+                                
+                    elif node.cli_type.upper() == "VOSS":
+                        
+                        try:
+                            network_manager.connect_to_network_element_name(node.name)
+                            
+                            output = dev_cmd.send_cmd(
+                                node.name, 'show boot config choice',
+                                max_wait=10, interval=2)[0].return_text
+                            config_file = re.findall(r"choice primary config-file \"(.*)\"", output)[0]
+
+                            logger.step(f"Delete this primary config file from '{node.node_name}' node: '{config_file}'.")
+                            dev_cmd.send_cmd(
+                                node.name, f"remove {config_file}", max_wait=10, interval=2,
+                                confirmation_phrases="Are you sure (y/n)",
+                                confirmation_args='y'
+                            )
+                            
+                            logger.step(f"Reset to the factory defaults the '{node.node_name}' node.")
+                            reset_utils.reboot_network_element_now_and_wait(node.name, max_wait=300)
+                            logger.info(f"Successfully reset to the factory default the '{node.node_name}' node.")
+                            
+                        finally:
+                            network_manager.close_connection_to_network_element(node.name)
+                        
+                        conn_str = f"telnet {node.console_ip} {node.console_port}"
+                        
+                        with pexpect.spawn(conn_str) as spawn_connection:
+                            spawn_connection.sendline()
+                            
+                            i = spawn_connection.expect([pexpect.TIMEOUT, 'Login:'])
+                            assert i == 1, "Failed to find this prompt after the reset: 'Login:'."
+                            spawn_connection.sendline(node.username)
+                            
+                            i = spawn_connection.expect([pexpect.TIMEOUT, 'Password:'])
+                            assert i == 1, "Failed to find this prompt after the reset: 'Password:'."
+                            spawn_connection.sendline(node.password)
+                            
+                            i = spawn_connection.expect([pexpect.TIMEOUT, 'Enter the New password :'])
+                            assert i == 1, "Failed to find this prompt after the reset: 'Enter the New password :'."
+                            spawn_connection.sendline(node.password)
+                            
+                            i = spawn_connection.expect([pexpect.TIMEOUT, 'Re-enter the New password :'])
+                            assert i == 1, "Failed to find this prompt after the reset: 'Re-enter the New password :'."
+                            spawn_connection.sendline(node.password)
+                            
+                            i = spawn_connection.expect([pexpect.TIMEOUT, "Password changed successfully"])
+                            assert i == 1, "Failed to find this message after the reset: 'Password changed successfully'."
+                            
+                            spawn_connection.sendline()
+                            
+                except Exception as exc:
+                    errors.append(f"Failed to reset to factory defaults this node: '{node.node_name}'.\n{repr(exc)}")  
+    
+            elif onboarding_options.get("reboot_switch", False):
+                
+                logger.info(f"The 'reboot_switch' flag is enabled for the '{node.node_name}' node.")
+                
+                try:
+                    logger.step(f"Reboot the '{node.node_name}' node.")
+                    network_manager.connect_to_network_element_name(node.name)
+                    reset_utils.reboot_network_element_now_and_wait(node.name, max_wait=300)
+                    logger.info(f"Successfully reboot the '{node.node_name}' node.")
+                except Exception as exc:
+                    errors.append(f"Failed to reboot this node: '{node.node_name}'.\n{repr(exc)}")  
+                finally:
+                    network_manager.close_connection_to_network_element(node.name)
+
+        threads: List[threading.Thread] = []
+            
+        try:
+            for node in node_list:
+                thread = threading.Thread(target=reset_switch_worker, args=(node, ))
+                threads.append(thread)
+                thread.start()
+        finally:
+            for thread in threads:
+                thread.join()
+
+        for error in errors:
+            logger.error(error)
+    
+        if errors:
+            pytest.fail("\n".join(errors))
+
+    return reset_switch_func
 
 
 class OnboardingTests:
@@ -2472,9 +2654,11 @@ def devices_configuration(
     @debug
     def device_configuration_func() -> None:
         
+        reset_switch: ResetSwitch = request.getfixturevalue("reset_switch")
         configure_iq_agent: ConfigureIqAgent = request.getfixturevalue("configure_iq_agent")
         node_list: List[Node] = request.getfixturevalue("node_list")
-        
+
+        reset_switch()
         configure_iq_agent(duts=node_list)
 
     return device_configuration_func
@@ -3256,6 +3440,11 @@ def dut5(
 
 
 @pytest.fixture(scope="session")
+def reset_utils() -> NetworkElementResetDeviceUtilsKeywords:
+    return NetworkElementResetDeviceUtilsKeywords()
+
+
+@pytest.fixture(scope="session")
 def network_manager() -> NetworkElementConnectionManager:
     return NetworkElementConnectionManager()
 
@@ -3392,6 +3581,7 @@ class Testbed(metaclass=Singleton):
         self.wec: WebElementController = request.getfixturevalue("wec")
         self.tshark: Tshark = request.getfixturevalue("tshark")
         self.rest: Rest = request.getfixturevalue("rest")
+        self.reset_utils: NetworkElementResetDeviceUtilsKeywords = request.getfixturevalue("reset_utils")
         self.action_chains: type = request.getfixturevalue("action_chains")
         self.dump_data: Callable[[Union[str, List, Dict]], str] = dump_data
         self.update_test_name: Callable[[str], None] = request.getfixturevalue("update_test_name")

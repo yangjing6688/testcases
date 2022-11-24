@@ -1,6 +1,6 @@
 netelem1:
   name:                     bui-flo-0544
-  model:                    "FabricEngine_5320_48P_8XEE"
+  model:                    "Fabric Engine 5320_48P_8XE"
   cli_type:                 VOSS
   device_template:          "Fabric_Engine_5320_48P_8XE-default-template"
   serial:                   "TB032231K-H0544"
