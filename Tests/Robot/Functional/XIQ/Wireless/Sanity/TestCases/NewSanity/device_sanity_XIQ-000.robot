@@ -257,7 +257,7 @@ TCCS-13688: Verification of config push complete config update (AH-AP Only)
     Set To Dictionary           ${CONFIG_PUSH_OPEN_NW_01}    ssid_name=${PUSH_CONFIG_SSID_01}
     Log to Console              ${CONFIG_PUSH_OPEN_NW_01}
 
-    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy   policy=${PUSH_CONFIG_POLICY_01}      &{CONFIG_PUSH_OPEN_NW_01}
+    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy   ${PUSH_CONFIG_POLICY_01}    ${CONFIG_PUSH_OPEN_NW_01}
     should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
 
     ${DEPLOY_STATUS}=               Deploy Network Policy with Complete Update      ${PUSH_CONFIG_POLICY_01}          ${device1.serial}

@@ -94,7 +94,7 @@ Pre Condition
     Should Be Equal As Integers    ${FIRST_MAP_CREATION}             1
 
 ### Create Network Policy
-    ${NW_POLICY_CREATION}=  Create Network Policy   ${NW_POLICY_NAME1}   &{WIRELESS_PESRONAL_WPA2CCMP_1}
+    ${NW_POLICY_CREATION}=  Create Network Policy   ${NW_POLICY_NAME1}   ${WIRELESS_PESRONAL_WPA2CCMP_1}
     Should Be Equal As Strings   '${NW_POLICY_CREATION}'   '1'
 
 ### Onboard an real AP150W

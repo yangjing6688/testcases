@@ -133,7 +133,7 @@ Test3: Connect Client to Generate DoS Deauthentication
     Depends On              Test1  Test2
     ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
 
-    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME2}      &{OPEN_NW_02}
+    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME2}      ${OPEN_NW_02}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
     ${AP2_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME2}     ap_serial=${ap2.serial}   update_method=Complete
@@ -151,7 +151,7 @@ Test4: Configure ADSP on AP
     Depends On              Test1
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
 
-    ${CREATE_POLICY1}=         Create Network Policy   ${NW_POLICY_NAME}       &{ADSP_OPEN_NW}
+    ${CREATE_POLICY1}=         Create Network Policy   ${NW_POLICY_NAME}       ${ADSP_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY1}'   '1'
 
     ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap1.model}     AP410C-ADSP_Prod       &{AP_TEMPLATE_CONFIG}

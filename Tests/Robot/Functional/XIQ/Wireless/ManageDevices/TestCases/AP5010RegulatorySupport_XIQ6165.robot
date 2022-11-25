@@ -894,7 +894,7 @@ InitialSetup
     Set To Dictionary              ${WIRELESS_PESRONAL_04}         ssid_name=${SSID_01}
 
     Log to Console                 Creating Network Policy
-    ${STATUS}                      Create Network Policy    policy=${POLICY}      &{WIRELESS_PESRONAL_00}
+    ${STATUS}                      Create Network Policy    ${POLICY}      ${WIRELESS_PESRONAL_00}
     should be equal as strings     '${STATUS}'       '1'
     ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_PESRONAL_04}
     should be equal as strings     '${STATUS}'        '1'
