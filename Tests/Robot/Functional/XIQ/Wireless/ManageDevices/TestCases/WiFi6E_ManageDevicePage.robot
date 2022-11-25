@@ -127,7 +127,7 @@ Onboard AP5010U
     Set Suite Variable  ${AP_SPAWN}
     Send Commands       ${AP_SPAWN}         no capwap client enable, save config
 
-    ${POLICY_RESULT}=                Create Network Policy   ${AP1_NETWORK_POLICY}      &{WIRELESS_PESRONAL_NW1}
+    ${POLICY_RESULT}=                Create Network Policy  ${AP1_NETWORK_POLICY}      ${WIRELESS_PESRONAL_NW1}
     Should Be Equal As Strings      '${POLICY_RESULT}'   '1'
     ${ONBOARD_RESULT}=      onboard_ap_with_policy      ${AP1_SERIAL}           ${AP1_MAKE}       location=${LOCATION}      policy=${AP1_NETWORK_POLICY}        device_os=${AP1_OS}
     ${search_result}=       Search AP Serial    ${AP1_SERIAL}

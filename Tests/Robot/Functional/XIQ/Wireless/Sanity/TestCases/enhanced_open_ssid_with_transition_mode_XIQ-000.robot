@@ -104,7 +104,7 @@ Step1: Create Policy - Enhanced open with transition mode
     Set To Dictionary              ${WIRELESS_ENHANCED_01}         ssid_name=${SSID_01}
     Set To Dictionary              ${WIRELESS_ENHANCED_02}         ssid_name=${SSID_02}
 
-    ${STATUS}                      Create Network Policy    ${POLICY}      &{WIRELESS_ENHANCED_00}
+    ${STATUS}                      Create Network Policy    ${POLICY}      ${WIRELESS_ENHANCED_00}
     should be equal as strings     '${STATUS}'       '1'
     ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_ENHANCED_01}
     should be equal as strings     '${STATUS}'        '1'

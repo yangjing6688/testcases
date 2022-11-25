@@ -130,7 +130,7 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-16059
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2_WIFI0}   client_mode_profile=${CLIENT_MODE_PROFILE_WIFI0}
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2}         wifi0_configuration=${AP_TEMPLATE_CONFIG_2_WIFI0}
 
-    Create Network Policy          policy=${POLICY}          &{WIRELESS_PESRONAL_ENT_00}
+    Create Network Policy          ${POLICY}          ${WIRELESS_PESRONAL_ENT_00}
     ${DHCP_STATUS}                 navigate to device config device config dhcp       ${ap1.mac}          enable
     Should Be Equal As Strings    '${DHCP_STATUS}'           '1'
     ${CREATE_AP_TEMPLATE}          add ap template from common object     ${ap1.model}         ${AP_TEMP_NAME}      &{AP_TEMPLATE_CONFIG_1}
@@ -138,7 +138,7 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-16059
     ${SELECT_AP_TEMPLATE}          add ap template to network policy      ${AP_TEMP_NAME}      ${POLICY}
     Should Be Equal As Strings     '${SELECT_AP_TEMPLATE}'   '1'
 
-    Create Network Policy          policy=${POLICY_CM}       &{WIRELESS_PESRONAL_CM}
+    Create Network Policy          ${POLICY_CM}       ${WIRELESS_PESRONAL_CM}
     ${CREATE_AP_TEMPLATE}          add ap template from common object      ${ap2.model}            ${AP_TEMP_NAME_CM}      &{AP_TEMPLATE_CONFIG_2}
     Should Be Equal As Strings     '${CREATE_AP_TEMPLATE}'   '1'
     ${SELECT_AP_TEMPLATE}          add ap template to network policy       ${AP_TEMP_NAME_CM}      ${POLICY_CM}

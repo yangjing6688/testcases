@@ -112,7 +112,7 @@ TC-6759_Step1: Create User Group and Network for PPSK Upgrade Test
     ${USER_GROUP_CREATE}=             Create User Group        ${MULTIPLE_CLOUD_USER_GROUP}   user_group_profile=&{USER_GROUP_PROFILE_CLOUD_MULTIPLE}
     should be equal as strings       '${USER_GROUP_CREATE}'   '1'
 
-    ${NW_STATUS}=                     Create Network Policy    ${PPSK_UPGRADE_TEST_NW}      &{PPSK_UPGRADE_TEST_NW_PROFILE}
+    ${NW_STATUS}=                     Create Network Policy    ${PPSK_UPGRADE_TEST_NW}      ${PPSK_UPGRADE_TEST_NW_PROFILE}
     should be equal as strings       '${NW_STATUS}'   '1'
 
 

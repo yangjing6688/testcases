@@ -121,7 +121,7 @@ TCCS-13495_Step2 : Create Network policy and Attach Network policy to AP
     Depends on      TCCS-13495_Step1
     ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
 
-    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      &{LOCATION_OPEN_NW}
+    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${LOCATION_OPEN_NW}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
     ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${ap1.template_name}    &{AP_TEMPLATE_CONFIG}

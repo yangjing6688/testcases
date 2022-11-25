@@ -71,7 +71,7 @@ Pre Condition
     ${DEVICE_STATUS}=       Get Device Status       device_serial=${ap1.serial}
     Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
 
-    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          ${NW_DEFAULT_POLICY}                 &{CONFIG_PUSH_OPEN_NW_01}
+    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          ${NW_DEFAULT_POLICY}     ${CONFIG_PUSH_OPEN_NW_01}
     should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
 
     ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap If Needed   policy_name=${NW_DEFAULT_POLICY}   ap_serial=${ap1.serial}
@@ -134,7 +134,7 @@ TCCS-11614: Social login with facebook
     #${LOGIN_STATUS}=                        Login User          ${tenant_username}      ${tenant_password}
     #should be equal as integers             ${LOGIN_STATUS}               1
 
-    ${CREATE_NW_POLICY_STATUS}=             Create Network Policy     ${NW_POLICY_NAME1}    &{OPEN_NW_1}
+    ${CREATE_NW_POLICY_STATUS}=             Create Network Policy     ${NW_POLICY_NAME1}    ${OPEN_NW_1}
     should be equal as integers             ${CREATE_NW_POLICY_STATUS}               1
 
     ${UPDATE_NW_POLICY_STATUS}=             Update Network Policy To AP   ${NW_POLICY_NAME1}     ap_serial=${ap1.serial}

@@ -107,7 +107,7 @@ Pre Condition
     Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
 
     # Setup the test
-    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          ${OPEN_POLICY}            &{CONFIG_PUSH_OPEN_NW_01}
+    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          ${OPEN_POLICY}            ${CONFIG_PUSH_OPEN_NW_01}
     should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
 
     ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap    policy_name=${OPEN_POLICY}   ap_serial=${device1.serial}
@@ -127,7 +127,6 @@ Pre Condition
 
 Test Suite Clean Up
     [Documentation]    delete created network policies, usergroups, radius server
-
     [Tags]             development       cleanup
 
     Navigate To Devices
@@ -194,7 +193,7 @@ TCCS-7678: Cloud DB PPSK Network Client Connectivity With Bulk Users Group
     ${USER_GROUP_CREATE}=           Create User Group   ${BULK_CLOUD_USER_GROUP}   user_group_profile=&{USER_GROUP_PROFILE_CLOUD_BULK}
     should be equal as strings     '${USER_GROUP_CREATE}'     '1'
 
-    ${NW_STATUS}=                   Create Network Policy   ${BULK_CLOUD_NW_POLICY}   &{WIRELESS_PPSK_NW_CLOUD_BULK}
+    ${NW_STATUS}=                   Create Network Policy   ${BULK_CLOUD_NW_POLICY}   ${WIRELESS_PPSK_NW_CLOUD_BULK}
     should be equal as strings     '${NW_STATUS}'           '1'
 
     ${DELTA_UPDATE}=                Update Network Policy To Ap    policy_name=${BULK_CLOUD_NW_POLICY}    ap_serial=${device1.serial}
@@ -230,7 +229,7 @@ TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
     ${USER_GROUP_CREATE}=           Create User Group        ${BULK_LOCAL_USER_GROUP}  user_group_profile=&{USER_GROUP_PROFILE_LOCAL_BULK}
     should be equal as strings     '${USER_GROUP_CREATE}'    '1'
 
-    ${NW_STATUS}=                   Create Network Policy    ${BULK_LOCAL_NW_POLICY}   &{WIRELESS_PPSK_NW_LOCAL_BULK}
+    ${NW_STATUS}=                   Create Network Policy    ${BULK_LOCAL_NW_POLICY}   ${WIRELESS_PPSK_NW_LOCAL_BULK}
     should be equal as strings     '${NW_STATUS}'      '1'
 
     ${DELTA_UPDATE}=                Update Network Policy To Ap    policy_name=${BULK_LOCAL_NW_POLICY}    ap_serial=${device1.serial}
