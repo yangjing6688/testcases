@@ -94,25 +94,25 @@ Modify Suite Variables
 Create Network Policies
     [Documentation]    Create Network Policies
 
-    ${CREATE_POLICY0}=              Create Network Policy   ${NW_POLICY_NAME0}      &{GUEST_OPEN_NW0}
+    ${CREATE_POLICY0}=              Create Network Policy   ${NW_POLICY_NAME0}      ${GUEST_OPEN_NW0}
     Should Be Equal As Strings      '${CREATE_POLICY0}'   '1'
 
-    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME1}      &{GUEST_OPEN_NW1}
+    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME1}      ${GUEST_OPEN_NW1}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_POLICY2}=              Create Network Policy   ${NW_POLICY_NAME2}      &{GUEST_OPEN_NW2}
+    ${CREATE_POLICY2}=              Create Network Policy   ${NW_POLICY_NAME2}      ${GUEST_OPEN_NW2}
     Should Be Equal As Strings      '${CREATE_POLICY2}'   '1'
 
-    ${CREATE_POLICY3}=              Create Network Policy   ${NW_POLICY_NAME3}      &{GUEST_OPEN_NW3}
+    ${CREATE_POLICY3}=              Create Network Policy   ${NW_POLICY_NAME3}      ${GUEST_OPEN_NW3}
     Should Be Equal As Strings      '${CREATE_POLICY3}'   '1'
 
-    ${CREATE_POLICY5}=              Create Network Policy   ${NW_POLICY_NAME5}      &{GUEST_OPEN_NW5}
+    ${CREATE_POLICY5}=              Create Network Policy   ${NW_POLICY_NAME5}      ${GUEST_OPEN_NW5}
     Should Be Equal As Strings      '${CREATE_POLICY5}'   '1'
 
-    ${CREATE_POLICY6}=              Create Network Policy   ${NW_POLICY_NAME6}      &{GUEST_OPEN_NW6}
+    ${CREATE_POLICY6}=              Create Network Policy   ${NW_POLICY_NAME6}      ${GUEST_OPEN_NW6}
     Should Be Equal As Strings      '${CREATE_POLICY6}'   '1'
 
-    ${CREATE_POLICY7}=              Create Network Policy   ${NW_POLICY_NAME7}      &{GUEST_OPEN_NW7}
+    ${CREATE_POLICY7}=              Create Network Policy   ${NW_POLICY_NAME7}      ${GUEST_OPEN_NW7}
     Should Be Equal As Strings      '${CREATE_POLICY7}'   '1'
 
 *** Test Cases ***
@@ -404,7 +404,7 @@ TCCS-13014: Verify Default System template (Accept and Connect)
     
     [Tags]                  development    greenfield    brownfield    simple    tccs-13014
 
-    ${CREATE_POLICY4}=              Create Network Policy   ${NW_POLICY_NAME4}      &{GUEST_OPEN_NW4}
+    ${CREATE_POLICY4}=              Create Network Policy   ${NW_POLICY_NAME4}      ${GUEST_OPEN_NW4}
     Should Be Equal As Strings      '${CREATE_POLICY4}'   '1'
 
     ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME4}          ${device1.serial}

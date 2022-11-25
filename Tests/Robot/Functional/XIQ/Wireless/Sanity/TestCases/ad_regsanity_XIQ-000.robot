@@ -112,7 +112,7 @@ Test1: Onboard Dual Radio AP305C, Assign policy, template with WIPS ON as ADEss 
 
     close Spawn  ${AP3_SPAWN}
 
-    ${CREATE_POLICY2}=         Create Network Policy    ${NW_DUAL_POLICY_NAME}       &{ADSP_DUAL_OPEN_NW}
+    ${CREATE_POLICY2}=         Create Network Policy    ${NW_DUAL_POLICY_NAME}       ${ADSP_DUAL_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY2}'   '1'
 
     ${CREATE_AP_TEMPLATE2}=     Add AP Template     ${ap3.model}     ${ap3.template_name}        &{AP_DUAL_TEMPLATE_CONFIG}
@@ -151,7 +151,7 @@ Test2: Onboard WiFi6 AP4000U, Assign policy, template with WIPS ON as ADEss Enab
 
     close Spawn  ${AP4_SPAWN}
 
-    ${CREATE_POLICY3}=         Create Network Policy    ${NW_WIFI6_POLICY_NAME}       &{ADSP_WIFI6_OPEN_NW}
+    ${CREATE_POLICY3}=         Create Network Policy    ${NW_WIFI6_POLICY_NAME}       ${ADSP_WIFI6_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY3}'   '1'
 
     ${CREATE_AP_TEMPLATE3}=     Add AP Template     ${ap4.model}     ${ap4.template_name}        &{AP_WIFI6_TEMPLATE_CONFIG}
@@ -255,7 +255,7 @@ Test7: Verify AD on-prem, XLOC and Eguest works together with one AP and one XIQ
 
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
 
-    ${CREATE_POLICY1}=         Create Network Policy    ${NW_ONPREM_POLICY_NAME}       &{ADSP_ONPREM_OPEN_NW}
+    ${CREATE_POLICY1}=         Create Network Policy    ${NW_ONPREM_POLICY_NAME}       ${ADSP_ONPREM_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY1}'   '1'
 
     ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap1.model}     ${ap1.template_onprem_name}        &{AP_TEMPLATE_CONFIG}

@@ -145,7 +145,7 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
     Set To Dictionary         ${CONFIG_PUSH_OPEN_NW_01}    ssid_name=${SSID_01}
     Log to Console            ${CONFIG_PUSH_OPEN_NW_01}
 
-    ${POLICY_STATUS}=         Create Network Policy   policy=config_push_${POLICY_01}      &{CONFIG_PUSH_OPEN_NW_01}
+    ${POLICY_STATUS}=         Create Network Policy     config_push_${POLICY_01}      ${CONFIG_PUSH_OPEN_NW_01}
     ${DEPLOY_STATUS}=         Deploy Network Policy with Complete Update      config_push_${POLICY_01}          ${ap1.serial}
     Log to Console            POLICY_STATUS ${POLICY_STATUS}
     Log to Console            DeployStatus ${DEPLOY_STATUS}

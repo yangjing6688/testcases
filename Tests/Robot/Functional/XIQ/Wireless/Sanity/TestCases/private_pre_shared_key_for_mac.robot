@@ -67,7 +67,7 @@ Pre Condition
     ${result}=                      Login User                 ${TENANT_USERNAME}     ${TENANT_PASSWORD}
     ${AP_STATUS}=                   Get AP Status              ap_mac=${ap1.mac}
     Should Be Equal As Strings     '${AP_STATUS}'             'green'
-    Create Network Policy           ${OPEN_POLICY}             &{CONFIG_PUSH_OPEN_NW_01}
+    Create Network Policy           ${OPEN_POLICY}             ${CONFIG_PUSH_OPEN_NW_01}
     Update Network Policy To Ap     policy_name=${OPEN_POLICY}      ap_serial=${ap1.serial}
 
     ${DELETE_STATUS}=              delete network polices      ${CLOUD_CWP_NW_POLICY}
@@ -113,7 +113,7 @@ Test1: Cloud DB PPSK Network Client Connectivity With Single Users Group
     ${USER_GROUP_CREATE}=           Create User Group   ${SINGLE_CLOUD_USER_GROUP}   user_group_profile=&{USER_GROUP_PROFILE_CLOUD_SINGLE}
     should be equal as strings     '${USER_GROUP_CREATE}'     '1'
 
-    ${NW_STATUS}=                   Create Network Policy   ${CLOUD_CWP_NW_POLICY}   &{WIRELESS_PPSK_NW_CLOUD_SINGLE}
+    ${NW_STATUS}=                   Create Network Policy   ${CLOUD_CWP_NW_POLICY}   ${WIRELESS_PPSK_NW_CLOUD_SINGLE}
     should be equal as strings     '${NW_STATUS}'           '1'
 
     ${DELTA_UPDATE}=                Update Network Policy To Ap    policy_name=${CLOUD_CWP_NW_POLICY}    ap_serial=${ap1.serial}

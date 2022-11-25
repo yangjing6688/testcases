@@ -129,7 +129,7 @@ Test 2: Verify Login till config push
     [Documentation]               Check the onboard AP
     [Tags]                       tccs_13237      testbed_adsp        development
           Login User                      ${TENANT_USERNAME}     ${TENANT_PASSWORD}
-          ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      &{ADSP_OPEN_NW}
+          ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${ADSP_OPEN_NW}
          Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
          ${CREATE_AP_TEMPLATE}=            Add AP Template     ${ap1.model}     ${AP1_TEMPLATE_NAME}        &{AP_TEMPLATE_CONFIG}
          Should Be Equal As Strings      '${CREATE_AP_TEMPLATE}'   '1'

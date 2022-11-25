@@ -182,7 +182,7 @@ TCXM-19406: verify policy assign for AP5010U/AP5010 from manage device from acti
     ${RESULT}=          Login User       ${TENANT_USERNAME}      ${TENANT_PASSWORD}
     Should be Equal as integers     ${RESULT}       1
 
-    ${POLICY_RESULT}=                Create Network Policy          ${NW_POLICY_NAME}       &{SSID_1}
+    ${POLICY_RESULT}=                Create Network Policy          ${NW_POLICY_NAME}       ${SSID_1}
     Should Be Equal As Strings      '${POLICY_RESULT}'   '1'
 
     ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP     ${NW_POLICY_NAME}     ap_serial=${AP1_SERIAL}   update_method=Complete
