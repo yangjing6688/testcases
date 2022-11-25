@@ -154,6 +154,12 @@ class CheckVim(Protocol):
         ) -> None: ...
 
 
+class CheckPoe(Protocol):
+    def __call__(
+        self,
+    ) -> None: ...
+
+
 class ConfigureNetworkPolicies(Protocol):
     def __call__(
         self,
@@ -2628,11 +2634,14 @@ def devices_verifications(
     
     @debug
     def devices_verifications_func() -> None:
+
         node_list: List[Node] = request.getfixturevalue("node_list")
         check_devices_are_reachable: CheckDevicesAreReachable = request.getfixturevalue("check_devices_are_reachable")
-        
-        check_devices_are_reachable(node_list)
+        check_poe: CheckPoe = request.getfixturevalue("check_poe")
 
+        check_devices_are_reachable(node_list)
+        check_poe()
+        
     return devices_verifications_func
 
 
@@ -2761,6 +2770,82 @@ def check_vim(
                     xiq.xflowsmanageDevice360.close_device360_window()
 
     return check_vim_func
+
+
+@pytest.fixture(scope="session")
+def check_poe(
+    debug: Callable,
+    enter_switch_cli: EnterSwitchCli, 
+    logger: PytestLogger,
+    request: fixtures.SubRequest,
+    node_list: List[Node]
+) -> CheckPoe:
+    
+    errors: List[str] = []
+    
+    @debug
+    def check_poe_func():
+        def check_poe_worker(node: Node):
+            
+            onboarding_options: Options = request.getfixturevalue(f"{node.node_name}_onboarding_options")
+            check_poe_flag: bool = onboarding_options.get("check_poe", False)
+            
+            if check_poe_flag:
+                
+                logger.info(f"The 'check_poe' flag is enabled for the '{node.node_name}' node ('{node.name}').")
+                
+                logger.step(f"Verify that the '{node.node_name}' ('{node.name}') supports POE.")
+
+                with enter_switch_cli(node) as dev_cmd:
+                
+                    try:
+                        if node.cli_type.lower() == "voss":
+                            dev_cmd.send_cmd(
+                                node.name, 'enable', max_wait=30, interval=10)
+                            dev_cmd.send_cmd(
+                                node.name, 'configure terminal', max_wait=30, interval=10)
+                            result = dev_cmd.send_cmd(
+                                node.name, 'show poe-main-status', max_wait=30, interval=10)[0].return_text
+                            logger.cli(result)
+                            assert re.search("PoE Main Status", result)
+                            assert not re.search("Device is not a POE device", result)
+
+                        elif node.cli_type.lower() == 'exos':
+                            dev_cmd.send_cmd(node.name, 'enable telnet')
+                            dev_cmd.send_cmd(node.name, 'disable cli paging')
+                            result = dev_cmd.send_cmd(
+                                node.name, 'show inline-power', max_wait=30, 
+                                interval=10)[0].cmd_obj._return_text
+                            logger.cli(result)
+                            assert re.search('Inline Power System Information', result)
+
+                    except Exception as exc:
+                        logger.error(exc)
+                        error = f"'{node.node_name}' node ('{node.name}') does not support POE."
+                        logger.error(error)
+                        errors.append(error)
+                        
+                    else:
+                        logger.info(f"Successfully verified that the '{node.node_name}' ('{node.name}') node supports POE.")
+                        
+        threads: List[threading.Thread] = []
+        
+        try:
+            for node in node_list:
+                thread = threading.Thread(target=check_poe_worker, args=(node, ))
+                threads.append(thread)
+                thread.start()
+        finally:
+            for thread in threads:
+                thread.join()
+
+        for error in errors:
+            logger.error(error)
+    
+        if errors:
+            pytest.fail("\n".join(errors))
+
+    return check_poe_func
 
 
 @pytest.fixture(scope="session")
