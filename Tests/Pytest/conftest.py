@@ -941,7 +941,7 @@ def pytest_sessionstart(session):
                 suitemap_dict = yaml.safe_load(output_suitemap)
                 suitemap_tests_dict = suitemap_dict['tests']
                 suitemap_data_dict = suitemap_dict.get('data', {})
-                pytest.suitemap_tests = {**pytest.suitemap_tests, ** suitemap_tests_dict}
+                pytest.suitemap_tests = {**pytest.suitemap_tests, **suitemap_tests_dict}
                 pytest.suitemap_data = {**pytest.suitemap_data, **suitemap_data_dict}
         
         pytest.onboarding_options: Options = pytest.runlist[pytest.runlist_name].get('onboarding_options', {})
@@ -1532,7 +1532,8 @@ def xiq_library_at_class_level(
 
 @pytest.fixture(scope="session")
 def deactivate_xiq_library(
-    debug: Callable
+    debug: Callable,
+    cloud_driver: CloudDriver
 ) -> DeactivateXiqLibrary:
     """
     Fixture that deactivates the given XiqLibrary object.
@@ -1547,7 +1548,11 @@ def deactivate_xiq_library(
             xiq.login.logout_user()
             xiq.login.quit_browser()
         except:
-            pass
+            if not xiq:
+                try:
+                    cloud_driver.cloud_driver.close()
+                except:
+                    pass
     return deactivate_xiq_library_func
 
 
@@ -3039,7 +3044,6 @@ def node_1(
     if pytest.onboard_one_node or pytest.onboard_two_node:
         node_list: List[Node] = request.getfixturevalue("node_list")
         return [dut for dut in node_list if dut.node_name == "node_1"][0]
-    logger.warning("Testbed does not have a standalone node.")
     return {}
 
 
@@ -3075,7 +3079,6 @@ def node_2(
     if pytest.onboard_two_node:
         node_list: List[Node] = request.getfixturevalue("node_list")
         return [dut for dut in node_list if dut.node_name == "node_2"][0]
-    logger.warning("Testbed does not have two standalone nodes.")
     return {}
 
 
@@ -3087,7 +3090,6 @@ def node_stack(
     if pytest.onboard_stack:
         node_list: List[Node] = request.getfixturevalue("node_list")
         return [dut for dut in node_list if dut.node_name == "node_stack"][0]
-    logger.warning("Testbed does not have a stack node.")
     return {}
 
  
@@ -3583,6 +3585,15 @@ def update_test_name(
     ) -> Callable[[str], None]:
     def func(test_name: str):
         loaded_config['${TEST_NAME}'] = test_name
+    return func
+
+
+@pytest.fixture(scope="session")
+def update_pytest_config(
+    loaded_config: Dict[str, str]
+) -> Callable[[str], None]:
+    def func(key: str, value: str):
+        loaded_config[f'{key}'] = value
     return func
 
 
