@@ -1,0 +1,139 @@
+##############################  Runlist template with all the configurable fields ######################################
+#
+#  How to run this runlist
+#
+# pytest
+# --runlist <path_of_this_runlist>
+# <path_to_the_tests_of_the_story>
+# --tc-file <path_to_the_devices.yaml>
+# --tc-file <path_to_the_env.yaml>
+# --tc-file <path_to_the_topo.yaml>
+
+
+# If the devices.yaml contains:
+#
+# 1) only a standalone node
+#    - the onboarding test will use the settings given in the "node_1" key to configure the standalone node
+#    - the tests that are going to run are the ones marked with "pytest.mark.testbed_1_node" and "pytest.mark.testbed_none"
+#
+# 2) two standalone nodes
+#    - the onboarding test will use the settings given in the "node_1" key to configure the first standalone node
+#    - the onboarding test will use the settings given in the "node_2" key to configure the second standalone node
+#    - the tests that are going to run are the ones marked with "pytest.mark.testbed_1_node", "pytest.mark.testbed_2_node" and "pytest.mark.testbed_none"
+#
+# 3) only a stack node
+#    - the onboarding test will use the settings given in the "node_stack" key to configure the stack node
+#    - the tests that are going to run are the ones marked with "pytest.mark.testbed_stack" and "pytest.mark.testbed_none"
+#
+# 4) a standalone node a stack node
+#    - the onboarding test will use the settings given in the "node_1" key to configure the standalone node
+#    - the onboarding test will use the settings given in the "node_stack" key to configure the stack node
+#    - the tests that are going to run are the ones marked with "pytest.mark.testbed_stack", "pytest.mark.testbed_1_node" and "pytest.mark.testbed_none"
+#
+# 5) two standalone nodes and a stack node
+#    - the onboarding test will use the settings given in the "node_1" key to configure the first standalone node
+#    - the onboarding test will use the settings given in the "node_2" key to configure the second standalone node
+#    - the onboarding test will use the settings given in the "node_stack" key to configure the stack node
+#    - the tests that are going to run are the ones marked with "pytest.mark.testbed_stack", "pytest.mark.testbed_1_node", "pytest.mark.testbde_2_node" and "pytest.mark.testbed_none"
+#
+# If the devices.yaml is not given as argument to Pytest then the only tests are going to run are the ones marker with "pytest.mark.testbed_node"
+# If the "run_options" is not given then all of its possible settings will have the default values.
+
+
+# How does the onboarding procedure choose the onboarding location for a node:
+# 
+# 1) It will check if there is any onboarding location given in the runlist yaml for the node. 
+#    Also it will check if the 'create_onboarding_location' flag is enabled.
+#    Finally it will use the location it found for the onboarding of the node.
+# 
+# 2) If we did not find an onboarding location in 1) then the onboarding will look for a location in the devices.yaml for that node.
+#
+# 3) As last resort when we did not find an onboarding location in 1) or 2), 
+# the onboarding will use a hardcoded location ('San Jose,building_01,floor_01' - found in the onboarding_locations fixture).
+#    This location should always be created on INT1R1, G2R1 ... 
+#
+# notes:
+# - make sure the onboarding location you specify in the runlist yaml for specific node is created before onboarding
+# - if the specified location is not created then the onboarding will fail
+# - a simple way to fix this is to use the 'create_onboarding_location: yes' option for said node
+
+
+runlist_story_name:
+  suitemap:
+    - <path_to_the_suitemap_file_1>
+    - <path_to_the_suitemap_file_2>
+    # - ...
+  run_options:                                      # not mandatory (if not given then all the run option will default)
+    skip_teardown: no                               # not mandatory (by default it is set to "no"); it specifies that the onboarding cleanup test needs to be skipped
+    skip_setup: no                                  # not mandatory (by default it is set to "no"); it specifies that the onboarding test needs to be skipped
+    priority: ["p0", "p1", "p2", "p3", "p4", "p5"]  # not mandatory (by default it is set to ["p0", "p1", "p2", "p3", "p4", "p5"]); it specifies the priorities of the tests that will be selected to run
+  onboarding_options:                               # not mandatory (if not given then all the onboarding option will default)
+    change_device_management_settings: yes          # not mandatory (by default is it set to "yes"); it specifies if the "Enable Device Management Settings" should be enabled or disabled
+    standalone:
+      node_1:
+        run_os: ['exos', "voss"]                    # not mandatory (by default it is []); it specifies which cli_type the devices needs to have
+        platform: 'standalone'                      # not mandatory (by default it is set to "standalone"); it specifies which platform needs to have (e.g. 5320, 5420, 5520)
+        create_network_policy: yes                  # not mandatory (by default it is set to "yes"); it specifies if there will be created a network policy for the node
+        create_switch_template: yes                 # not mandatory (by default it is set to "yes"); it specifies if there will be created a new switch template for the node and its network policy
+        assign_network_policy_to_device: yes        # not mandatory (by default it is set to "yes"); it specifies if the created network policy will be assigned to the node
+        initial_network_policy_push: yes            # not mandatory (by default it is set to "yes"); it specifies if the network policy will be pushed to node in the onboarding test
+        policy_name: "policy_test"                  # not mandatory (by default is is randomly generated); it is recommended to not be used as the policy name is randomly chosen at runtime
+        template_name: "template_test"              # not mandatory (by default is is randomly generated); it is recommended to not be used as the template name is randomly chosen at runtime
+        onboarding_location: "loc, bld, floor"      # not mandatory
+                                                    #             if provided: the onboarding location will be used for the onboarding of node_1
+                                                    #             if not provided: the onboarding location for node_1 will be taken from the devices.yaml
+        create_onboarding_location:                 # not mandatory (by default it is set to "no"); if provided then the onboarding_location will be created before the onboarding takes place
+      node_2:
+        run_os: []                                  
+        platform: 'standalone'
+        create_network_policy: yes
+        create_switch_template: yes
+        assign_network_policy_to_device: yes
+        initial_network_policy_push: yes
+    node_stack:
+        run_os: ["exos"]
+        create_network_policy: yes
+        create_switch_template: yes
+        assign_network_policy_to_device: yes
+        initial_network_policy_push: yes
+  tests:
+    - tcxm_xiq_onboarding                               # the onboarding test should be the first one
+    - <test_code_1>
+    - <test_code_2>
+    - <test_code_3>
+    # ...
+    - tcxm_xiq_onboarding_cleanup                       # the last one should be the onboarding cleanup test
+
+
+# This runlist will onboard the chosen devices with the default onboarding options (create policy, create template, assign policy and initial policy push).
+
+
+runlist_without_config:
+  suitemap:
+    - <path_to_the_suitemap_file_1>
+    - <path_to_the_suitemap_file_2>
+    # - ...
+  tests:
+    - tcxm_xiq_onboarding
+    - <test_code_1>
+    - <test_code_2>
+    - <test_code_3>
+    # ...
+    - tcxm_xiq_onboarding_cleanup
+
+
+# This runlist won't do the onboarding as it does not contain the onboarding test.
+# Its tests should not depend on the onboarding test (otherwise they will get skipped).
+# These tests should be marked with the "testbed_none" marker.
+
+
+runlist_without_onboarding:
+  suitemap:
+    - <path_to_the_suitemap_file_1>
+    - <path_to_the_suitemap_file_2>
+    # - ...
+  tests:
+    - <test_code_1>
+    - <test_code_2>
+    - <test_code_3>
+    # ...
