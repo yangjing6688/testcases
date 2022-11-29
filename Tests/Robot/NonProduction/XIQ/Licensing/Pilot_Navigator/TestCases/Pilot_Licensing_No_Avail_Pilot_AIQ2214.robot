@@ -95,7 +95,7 @@ Test 2: Onboard First Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT1_SERIAL}  ${DUT1_MAKE}  ${LOCATION}  ${DUT1_MAC}      ${netelem1}
+    Onboard New Test Device                     ${DUT1_SERIAL}  ${netelem1}
 
     ${selected}=    Column Picker Select        ${COLUMN_1}     ${COLUMN_2}
     Should Be Equal As Integers                 ${selected}     1
@@ -128,7 +128,7 @@ Test 4: Onboard Second Test Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT2_SERIAL}  ${DUT2_MAKE}  ${LOCATION}  ${DUT2_MAC}      ${netelem2}
+    Onboard New Test Device                     ${DUT2_SERIAL}  ${netelem2}
 
     Refresh Devices Page
     Verify and Wait Until Device Online         ${DUT2_SERIAL}
@@ -158,7 +158,7 @@ Test 6: Onboard Third Test Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT3_SERIAL}  ${DUT3_MAKE}  ${LOCATION}  ${DUT3_MAC}      ${netelem3}
+    Onboard New Test Device                     ${DUT3_SERIAL}  ${netelem3}
 
     Refresh Devices Page
     Verify and Wait Until Device Online         ${DUT3_SERIAL}
@@ -206,7 +206,7 @@ Test 9: Onboard Fourth Test Device and Verify Device Not Onboarded Due to Licens
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device When License Limit Exceeded      ${DUT4_SERIAL}  ${DUT4_MAKE}  ${LOCATION}  ${DUT4_MAC}   ${netelem4}
+    Onboard New Test Device When License Limit Exceeded      ${DUT4_SERIAL}  ${netelem4}
 
 Test 10: Verify Fourth Device Not Onboarded and Not Present In Devices panel
     [Documentation]     Confirms the fourth device was not onboarded and is not present in the Devices panel
@@ -253,7 +253,7 @@ Tear Down Test and Close Session
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${location}  ${mac}    ${device}
+    [Arguments]         ${serial}  ${netelem}
 
     Navigate to Devices and Confirm Success
 
@@ -262,17 +262,17 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    onboard device quick    ${device}
+    onboard device quick    ${netelem}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 
 Onboard New Test Device When License Limit Exceeded
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${location}  ${mac}   ${device}
+    [Arguments]         ${serial}  ${netelem}
 
     Navigate to Devices and Confirm Success
 
-    onboard device quick          ${device}
+    onboard device quick          ${netelem}
 
 Verify and Wait Until Device Online
     [Documentation]     Confirms that the device is online in XIQ

@@ -74,7 +74,7 @@ Suite Setup
     ${DLT_DEF_POLICY}=              Delete Network Policy           default_network_policy
     Should Be Equal As Integers     ${DLT_DEF_POLICY}               1
 
-    ${CREATE_DEF_POLICY_STATUS}=    Create Network Policy           default_network_policy      &{CONFIG_PUSH_OPEN_NW_01}
+    ${CREATE_DEF_POLICY_STATUS}=    Create Network Policy           default_network_policy      ${CONFIG_PUSH_OPEN_NW_01}
     Should Be Equal As Integers     ${CREATE_DEF_POLICY_STATUS}     1
 
     ${DELETE_SSID}=                 Delete SSIDs                    ${SSID_NAME}
@@ -232,7 +232,7 @@ TCCS-12330: Create Router XR Template
 
     Push XR Router Template     ${DEF_POLICY_NAME}
 
-    ${CREATE_NW_POLICY}=        Create Network Policy   ${NW_POLICY_NAME}   &{XR_ROUTER_NW_01}
+    ${CREATE_NW_POLICY}=        Create Network Policy   ${NW_POLICY_NAME}   ${XR_ROUTER_NW_01}
     Should Be Equal As Integers     ${CREATE_NW_POLICY}         1
 
     ${CREATE_ROUTER_TEMPLATE}=  Add Router Template     ${NW_POLICY_NAME}   &{ROUTER_TEMPLATE_CONFIG1}

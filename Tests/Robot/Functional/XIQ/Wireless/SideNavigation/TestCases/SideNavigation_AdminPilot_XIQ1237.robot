@@ -259,7 +259,7 @@ Confirm Main Side Nav Menu Item
     [Arguments]         ${tag}   ${order}   ${icon_class}
 
     # check tab is visible
-    ${nav_visible}=     Is Nav Menu Item Visible   ${tag}
+    ${nav_visible}=     Verify Nav Menu Item Visible   ${tag}
     Should Be Equal As Integers   ${nav_visible}   1
     # check tab is in the expected order number
     ${nav_order}=       Get Order Number Of Main Nav Tab   ${tag}
@@ -273,13 +273,13 @@ Confirm Side Nav Menu Item
     [Arguments]         ${tag}   ${order}
 
     # check that menu item is visible
-    ${nav_visible}=     Is Nav Menu Item Visible   ${tag}
+    ${nav_visible}=     Verify Nav Menu Item Visible   ${tag}
     Should Be Equal As Integers   ${nav_visible}   1
     # check that menu item is in the expected order number
     ${nav_order}=       Get Order Number Of Side Nav Menu Item   ${tag}
     Should Be Equal As Integers   ${nav_order}   ${order}
     # check tab is enabled
-    ${nav_enabled}      Is Nav Menu Item Enabled   ${tag}
+    ${nav_enabled}      Verify Nav Menu Item Enabled   ${tag}
     Should Be Equal As Integers   ${nav_enabled}   1
 
 Confirm Side Nav Sub Menu Item
@@ -287,12 +287,12 @@ Confirm Side Nav Sub Menu Item
     [Arguments]         ${tag}   ${order}
 
     # check that sub menu item is visible
-    ${nav_visible}=     Is Nav Menu Item Visible   ${tag}
+    ${nav_visible}=     Verify Nav Menu Item Visible   ${tag}
     Should Be Equal As Integers   ${nav_visible}   1
     ${nav_order}=       Get Order Number Of Side Nav Sub Menu Item   ${tag}
     Should Be Equal As Integers   ${nav_order}   ${order}
     # check tab is enabled
-    ${nav_enabled}      Is Nav Menu Item Enabled   ${tag}
+    ${nav_enabled}      Verify Nav Menu Item Enabled   ${tag}
     Should Be Equal As Integers   ${nav_enabled}   1
 
 Confirm IOT Submenu

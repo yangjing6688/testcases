@@ -70,7 +70,7 @@ Pre Condition
     Should Be Equal As Strings      '${AP1_STATUS}'     'green'
     ${IMPORT_MAP}=                  Import Map In Network360Plan  ${MAP_FILE_NAME}
     Should Be Equal As Strings      ${IMPORT_MAP}       1
-    Create Network Policy           default_network_policy     &{OPEN_NW_01}
+    Create Network Policy           default_network_policy     ${OPEN_NW_01}
     Update Network Policy To AP     default_network_policy      ap_serial=${ap1.serial}
     Delete Network Policy           ${NW_POLICY_NAME}
     Delete SSID                     ${SSID_NAME}
@@ -88,7 +88,7 @@ Test1: Check Extreme Location Subscription Flow For Existing Customer
     ${LOCATION_RESULT}=             Assign Location With Device Actions         ${ap1.serial}       ${LOCATION}
     Should Be Equal As Integers     ${LOCATION_RESULT}      1       Unable to Assign Location to Device
 
-    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      &{LOCATION_OPEN_NW}
+    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${LOCATION_OPEN_NW}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
     ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    &{AP_TEMPLATE_CONFIG}
@@ -286,7 +286,7 @@ Test8: Check Extreme Location Subscription Flow For New Customer
     Depends On          Test7
     ${LOGIN_XIQ}=                   Login User          ${TENANT_USERNAME2}     ${TENANT_PASSWORD2}
 
-    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      &{LOCATION_OPEN_NW}
+    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${LOCATION_OPEN_NW}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
     ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    &{AP_TEMPLATE_CONFIG}

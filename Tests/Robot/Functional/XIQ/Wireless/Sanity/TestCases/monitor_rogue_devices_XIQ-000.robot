@@ -61,7 +61,7 @@ Pre Condition
     ${AP1_STATUS}=       Get AP Status       ap_mac=${ap1.mac}
     Should Be Equal As Strings  '${AP1_STATUS}'     'green'
 
-    create network policy           default_network_policy     &{OPEN_NW_01}
+    create network policy           default_network_policy     ${OPEN_NW_01}
     Update Network Policy To AP     default_network_policy      ap_serial=${ap1.serial}
     Update Network Policy To AP     default_network_policy      ap_serial=${ap2.serial}
     Delete Network Polices          ${NW_POLICY_NAME}  ${NW_POLICY_ROGUE}
@@ -94,7 +94,7 @@ Test1: TC-49871 - Configure WIPS Policy on AP
     [Documentation]         Configure WIPS Policies
     [Tags]                  sanity  add   Rougueap  wips_ssid   aerohive  P3  P4  production  regression
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}   capture_version=True
-    ${CREATE_POLICY1}=         Create Network Policy   ${NW_POLICY_NAME}      &{WIPS_OPEN_NW}
+    ${CREATE_POLICY1}=         Create Network Policy   ${NW_POLICY_NAME}      ${WIPS_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY1}'   '1'
     ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap1.model}    &{AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings   '${CREATE_AP_TEMPLATE}'   '1'
@@ -134,7 +134,7 @@ Test2: Make a WiFi connection with WIPS policy Configured Non-Permiited SSID
 
     Depends On          Test1
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
-    ${CREATE_POLICY2}=          Create Network Policy   ${NW_POLICY_ROGUE}     &{WIPS_OPEN_ROGUE_NW}
+    ${CREATE_POLICY2}=          Create Network Policy   ${NW_POLICY_ROGUE}     ${WIPS_OPEN_ROGUE_NW}
     Should Be Equal As Strings   '${CREATE_POLICY2}'   '1'
     ${AP2_UPDATE_CONFIG}=       Update Network Policy To AP   ${NW_POLICY_ROGUE}     ap_serial=${ap2.serial}
     Should Be Equal As Strings              '${AP2_UPDATE_CONFIG}'       '1'
@@ -188,7 +188,7 @@ Test4: Make a WiFi connection with WIPS policy Configured Permitted SSID
 
     Depends On          Test1
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
-    ${CREATE_POLICY1}=         Create Network Policy   ${NW_POLICY_NAME}      &{WIPS_OPEN_NW}
+    ${CREATE_POLICY1}=         Create Network Policy   ${NW_POLICY_NAME}      ${WIPS_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY1}'   '1'
     ${AP2_UPDATE_CONFIG}=       Update Network Policy To AP   ${NW_POLICY_NAME}      ap_serial=${ap2.serial}
     Should Be Equal As Strings              '${AP2_UPDATE_CONFIG}'       '1'

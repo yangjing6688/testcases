@@ -56,7 +56,7 @@ Test Suite Clean Up
     ${LOGIN_STATUS}=                        Login User       ${tenant_username}        ${tenant_password}
     should be equal as integers             ${LOGIN_STATUS}               1
 
-    ${CREATE_NW_POLICY_STATUS}=             Create Network Policy          OPEN_AUTO                 &{CONFIG_PUSH_OPEN_NW_01}
+    ${CREATE_NW_POLICY_STATUS}=             Create Network Policy          OPEN_AUTO                 ${CONFIG_PUSH_OPEN_NW_01}
     should be equal as integers             ${CREATE_NW_POLICY_STATUS}               1
 
     ${UPDATE_NW_POLICY_STATUS}=             Update Network Policy To Ap    policy_name=OPEN_AUTO     ap_serial=${ap1.serial}

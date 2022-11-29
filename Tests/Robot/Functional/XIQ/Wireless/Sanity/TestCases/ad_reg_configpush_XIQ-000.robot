@@ -89,7 +89,7 @@ Test1: Verify Network policy with wireless and routing mode enabled
      Login User                      ${TENANT_USERNAME1}     ${TENANT_PASSWORD1}
      ${ADV_cONBOARD}=                click advanced onboard popup
 
-    ${CREATE_POLICY1} =              Create Network Policy               ${NW_POLICY_NAME}        &{ADESS_NWP}
+    ${CREATE_POLICY1} =              Create Network Policy               ${NW_POLICY_NAME}        ${ADESS_NWP}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
     ${CREATE_AP_TEMPLATE}=           Add AP Template     ${ap2.model}     ${ap2.template_name}    &{AP_TEMPLATE_CONFIG}

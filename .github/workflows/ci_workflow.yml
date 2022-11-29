@@ -14,6 +14,7 @@ env:
   pytest_non_prod_path:         pytest_non_prod_tests.txt
   pytest_libs_path:             pytest_libs.txt
   pytest_res:                   pytest_resources.txt
+  pytest_runlists:              pytest_runlists.txt
   robot_func_path:              robot_func_tests.txt
   robot_non_prod_path:          robot_non_prod_tests.txt
   robot_libs_path:              robot_libs.txt
@@ -60,6 +61,14 @@ jobs:
       with:
         files: |
           Tests/Pytest/NonProduction/([^/]+/)+TestCases/
+        separator: ','
+
+    - name: Get changed pytest runlists & suitemaps
+      id: pytest-runlists
+      uses: tj-actions/changed-files@v12.2
+      with:
+        files: |
+          Tests/Pytest/(SystemTest|Functional|NonProduction)/[^/]+/data/(runlists|suitemaps)/
         separator: ','
 
     - name: Get changed pytest resources
@@ -126,9 +135,11 @@ jobs:
       with:
         files: |
           Tests/(Pytest|Robot)/(SystemTest|Functional|NonProduction)/([^/]+/)+(TestCases|Resources)/
+          Tests/Pytest/(SystemTest|Functional|NonProduction)/[^/]+/data/(runlists|suitemaps)/
           Tests/(Pytest|Robot)/Libraries/([^/]+/)+
           Tests/(Pytest|Robot)/Demos/
           __init__.py
+          conftest.py
           .pylintrc
           [rR][eE][aA][dD][mM][eE]\.md
         separator: ','
@@ -162,6 +173,7 @@ jobs:
         PY_NON_PROD:      ${{ steps.pytest-non-prod.outputs.all_changed_files }}
         PY_LIBS:          ${{ steps.pytest-libs.outputs.all_changed_files }}
         PY_RES:           ${{ steps.pytest-resources.outputs.all_changed_files }}
+        PY_RUNLISTS:      ${{ steps.pytest-runlists.outputs.all_changed_files }}
         ROBOT_FUNC:       ${{ steps.robot-func.outputs.all_changed_files }}
         ROBOT_NON_PROD:   ${{ steps.robot-non-prod.outputs.all_changed_files }}
         ROBOT_LIBS:       ${{ steps.robot-libs.outputs.all_changed_files }}
@@ -173,6 +185,7 @@ jobs:
         echo $PY_NON_PROD > ${{ env.pytest_non_prod_path }}
         echo $PY_LIBS > ${{ env.pytest_libs_path }}
         echo $PY_RES > ${{ env.pytest_res }}
+        echo $PY_RUNLISTS > ${{ env.pytest_runlists }}
         echo $ROBOT_FUNC > ${{ env.robot_func_path }}
         echo $ROBOT_NON_PROD > ${{ env.robot_non_prod_path }}
         echo $ROBOT_LIBS > ${{ env.robot_libs_path }}
@@ -189,6 +202,7 @@ jobs:
           ${{ env.pytest_non_prod_path }}
           ${{ env.pytest_libs_path }}
           ${{ env.pytest_res }}
+          ${{ env.pytest_runlists }}
           ${{ env.robot_func_path }}
           ${{ env.robot_non_prod_path }}
           ${{ env.robot_libs_path }}
@@ -261,6 +275,10 @@ jobs:
       status: ${{ steps.set-output.outputs.status }}
 
     steps:
+    # For skip request processing
+    - name: Checkout
+      uses: actions/checkout@v3
+
     - uses: actions/download-artifact@v3
       with:
         name: ${{ env.changed_files_artifact_name }}
@@ -372,7 +390,7 @@ jobs:
         for path in $( cat ${{ env.pytest_libs_path }} | sed -e 's/ //g' ); do
           f=$( basename "$path" )
           let "files_tested += 1"
-          printf "[*] Processing Python file: $path ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          printf "\n[*] Processing Python file: $path ...\n" | tee -a ${{ env.testcase_files_report_path }}
           if [[ ! $f =~ .*\.py$ ]] ; then
               printf "[**] FAIL: $path is NOT a Python file! Only .py files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
               rc=1;
@@ -383,6 +401,41 @@ jobs:
         unset IFS
         if (( files_tested == 0 )); then
           echo "[*] No Pytest Library files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
+        fi
+        exit $rc
+
+    - name: Process Pytest Runlist & Suitemap file(s)
+      if: ${{env.SKIP_CHECK == 'false'}}
+      run: |
+        IFS=','
+        rc=0
+        files_tested=0
+        for path in $( cat ${{ env.pytest_runlists }} | sed -e 's/ //g' ); do
+          errors=0
+          f=$( basename "$path" )
+          let "files_tested += 1"
+          printf "\n[*] Processing file: $path ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          if [[ ! $f =~ .*\.ya?ml$ ]] ; then
+              printf "[**] FAIL: $path is NOT a YAML file! Only .yaml/.yml files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              rc=1; let "errors += 1"
+          fi
+
+          # Only allow YAML files that contain "suitemap" or "runlist".
+          # Note: inside bash [[ ]] you need to use extended regex format
+          if [[ ! "$f" =~ .*suitemap.*\.ya?ml$|.*runlist.*\.ya?ml$ ]] ; then
+              echo "[**] FAIL: $path does not contain 'suitemap' or 'runlist'!" | tee -a ${{ env.testcase_files_report_path }}
+              rc=1; let "errors += 1"
+          fi
+
+          if (( errors == 0 )); then
+              printf "[**] PASS: $path\n" | tee -a ${{ env.testcase_files_report_path }}
+          else
+              echo '[**] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
+          fi
+        done
+        unset IFS
+        if (( files_tested == 0 )); then
+          echo "[*] No Pytest Runlist & Suitemap files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
         fi
         exit $rc
 

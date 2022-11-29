@@ -9,10 +9,10 @@ netelem1:
   ip:                       10.16.148.24
   port:                     "22"
   connection_method:        "ssh"
-  console_ip:               10.16.128.23
-  console_port:             7036
+  console_ip:               10.16.148.24
+  console_port:             22
   network_policy:           Test_np
-  device_template:          5520-default-template
+  device_template:          X465-48W-default-template
   cli_type:                 EXOS
   make:                     EXOS
   mgmt_vlan:                default

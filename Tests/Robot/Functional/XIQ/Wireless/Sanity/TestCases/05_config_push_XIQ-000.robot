@@ -76,7 +76,7 @@ TCCS-11310: Verification of config push complete config update
     ${LOGIN_STATUS}=                Login User              ${tenant_username}      ${tenant_password}
     should be equal as integers     ${LOGIN_STATUS}               1
 
-    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy   policy=${POLICY_01}      &{CONFIG_PUSH_OPEN_NW_01}
+    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy   ${POLICY_01}      ${CONFIG_PUSH_OPEN_NW_01}
     should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
 
     ${DEPLOY_STATUS}=               Deploy Network Policy with Complete Update      ${POLICY_01}          ${ap1.serial}

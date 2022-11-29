@@ -31,26 +31,32 @@ Pre Condition
     [Documentation]   AP Should be onboarded  and it is online
 
 
+    # Use this method to convert the ap, wing, netelem to a generic device object
+    # ap1       => device1
+    # wing1     => device1
+    # netelem1  => device1 (EXOS / VOSS)
+    convert to generic device object            device  index=1
+
     ${LOGIN_XIQ}=                       Login User          ${TENANT_USERNAME}     ${TENANT_PASSWORD}   url=${TEST_URL}    map_override=${MAP_FILE_NAME}
     Should Be Equal As Strings      '${LOGIN_XIQ}'   '1'
 
-    ${CHANGE_DEVICE_PASSWORD}=        change device password          ${ap1.password}
+    ${CHANGE_DEVICE_PASSWORD}=        change device password          ${device1.password}
     Should Be Equal As Strings      '${CHANGE_DEVICE_PASSWORD}'   '1'
 
-    ${ONBOARD_AP}=        onboard device quick        ${ap1}
+    ${ONBOARD_AP}=        onboard device quick        ${device1}
     Should Be Equal As Strings      '${ONBOARD_AP}'   '1'
 
-    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
+    ${AP_SPAWN}=        Open Spawn          ${device1.ip}   ${device1.port}      ${device1.username}       ${device1.password}        ${device1.cli_type}
     Set Suite Variable  ${AP_SPAWN}
 
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${CAPWAP_URL}, capwap client default-server-name ${CAPWAP_URL}, capwap client server backup name ${CAPWAP_URL}, no capwap client enable, capwap client enable, save config
 
-    ${ONLINE_STATUS}=        Wait Until Device Online                ${ap1.serial}
+    ${ONLINE_STATUS}=        Wait Until Device Online                ${device1.serial}
     Should Be Equal As Strings      '${ONLINE_STATUS}'   '1'
     Refresh Devices Page
 
-    ${AP1_STATUS}=                  Get AP Status       ap_mac=${ap1.mac}
-    Should Be Equal As Strings      '${AP1_STATUS}'     'green'
+    ${DEVICE_STATUS_RESULT}=                  get device status       ${device1.serial}
+    Should Be Equal As Strings      '${DEVICE_STATUS_RESULT}'     'green'
 
     ${DELETE_NW_POLICIES}=        delete network polices          ${NW_POLICY_NAME0} ${NW_POLICY_NAME1} ${NW_POLICY_NAME2} ${NW_POLICY_NAME3}
     Should Be Equal As Strings      '${DELETE_NW_POLICIES}'   '1'
@@ -64,7 +70,7 @@ Pre Condition
 
 AP Cleanup
     [Documentation]    Clean Clien details from AP
-    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
+    ${AP_SPAWN}=        Open Spawn          ${device1.ip}   ${device1.port}      ${device1.username}       ${device1.password}        ${device1.cli_type}
     ${CLEAR_CLIENT}=        Send            ${AP_SPAWN}         ${CMD_CLEAR_CLIENT_STATION}
     ${CLEAR_LOCAL_CACHE}=   Send            ${AP_SPAWN}         ${CMD_CLEAR_CLIENT_LOCAL}
     ${CLEAR_ROAMING_CACHE}=     Send            ${AP_SPAWN}         ${CMD_CLEAR_CLIENT_ROAMING}
@@ -88,25 +94,25 @@ Modify Suite Variables
 Create Network Policies
     [Documentation]    Create Network Policies
 
-    ${CREATE_POLICY0}=              Create Network Policy   ${NW_POLICY_NAME0}      &{GUEST_OPEN_NW0}
+    ${CREATE_POLICY0}=              Create Network Policy   ${NW_POLICY_NAME0}      ${GUEST_OPEN_NW0}
     Should Be Equal As Strings      '${CREATE_POLICY0}'   '1'
 
-    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME1}      &{GUEST_OPEN_NW1}
+    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME1}      ${GUEST_OPEN_NW1}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_POLICY2}=              Create Network Policy   ${NW_POLICY_NAME2}      &{GUEST_OPEN_NW2}
+    ${CREATE_POLICY2}=              Create Network Policy   ${NW_POLICY_NAME2}      ${GUEST_OPEN_NW2}
     Should Be Equal As Strings      '${CREATE_POLICY2}'   '1'
 
-    ${CREATE_POLICY3}=              Create Network Policy   ${NW_POLICY_NAME3}      &{GUEST_OPEN_NW3}
+    ${CREATE_POLICY3}=              Create Network Policy   ${NW_POLICY_NAME3}      ${GUEST_OPEN_NW3}
     Should Be Equal As Strings      '${CREATE_POLICY3}'   '1'
 
-    ${CREATE_POLICY5}=              Create Network Policy   ${NW_POLICY_NAME5}      &{GUEST_OPEN_NW5}
+    ${CREATE_POLICY5}=              Create Network Policy   ${NW_POLICY_NAME5}      ${GUEST_OPEN_NW5}
     Should Be Equal As Strings      '${CREATE_POLICY5}'   '1'
 
-    ${CREATE_POLICY6}=              Create Network Policy   ${NW_POLICY_NAME6}      &{GUEST_OPEN_NW6}
+    ${CREATE_POLICY6}=              Create Network Policy   ${NW_POLICY_NAME6}      ${GUEST_OPEN_NW6}
     Should Be Equal As Strings      '${CREATE_POLICY6}'   '1'
 
-    ${CREATE_POLICY7}=              Create Network Policy   ${NW_POLICY_NAME7}      &{GUEST_OPEN_NW7}
+    ${CREATE_POLICY7}=              Create Network Policy   ${NW_POLICY_NAME7}      ${GUEST_OPEN_NW7}
     Should Be Equal As Strings      '${CREATE_POLICY7}'   '1'
 
 *** Test Cases ***
@@ -251,10 +257,10 @@ TCCS-12997: Verify User registration and authenticate CP with Facebook
 
     Depends On              TCCS-12993    TCCS-13119
 
-    ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME1}     ap_serial=${ap1.serial}   update_method=Complete
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Complete Update      ${NW_POLICY_NAME1}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
-    ${DEVICE_STATUS}=             Wait Until Device Online       ${ap1.serial}
+    ${DEVICE_STATUS}=             Wait Until Device Online       ${device1.serial}
     Should Be Equal As Strings      '${DEVICE_STATUS}'     '1'
 
     ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
@@ -287,6 +293,9 @@ TCCS-12997: Verify User registration and authenticate CP with Facebook
     
     get gp page screen shot
 
+    ${FACEBOOK_USER_COUNT}=    Get Extreme Social Users Count    social_name=Facebook
+    Log to Console     Number of Facebook Users: ${FACEBOOK_USER_COUNT}
+
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
     Should Be Equal As Strings      '${WIFI_DISCONNECT}'     '1'
 
@@ -307,6 +316,13 @@ TCCS-12997: Verify User registration and authenticate CP with Facebook
     ...                             AP Cleanup
     ...                             go back to xiq
 
+TCCS-13695: Verify Number of Facebook Registration
+
+    [Documentation]         Verify Number of Facebook Registration
+
+    [Tags]                  development    greenfield    brownfield    social    facebook    tccs-13695
+
+    Depends On              TCCS-12997
 
 TCCS-12998: Verify User registration and authenticate CP with LinkedIn
 
@@ -316,10 +332,10 @@ TCCS-12998: Verify User registration and authenticate CP with LinkedIn
 
     Depends On              TCCS-12993    TCCS-13119
 
-    ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME2}     ap_serial=${ap1.serial}
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME2}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
-    ${DEVICE_STATUS}=           Wait Until Device Online       ${ap1.serial}
+    ${DEVICE_STATUS}=           Wait Until Device Online       ${device1.serial}
     Should Be Equal As Strings      '${DEVICE_STATUS}'       '1'
 
     ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
@@ -352,6 +368,9 @@ TCCS-12998: Verify User registration and authenticate CP with LinkedIn
     
     get gp page screen shot
 
+    ${LINKENDIN_USER_COUNT}=    Get Extreme Social Users Count    social_name=Linkedin
+    Log to Console     Number of Linkedin Users: ${LINKENDIN_USER_COUNT}
+
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
     Should Be Equal As Strings      '${WIFI_DISCONNECT}'     '1'
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
@@ -371,6 +390,13 @@ TCCS-12998: Verify User registration and authenticate CP with LinkedIn
     ...                             AP Cleanup
     ...                             go back to xiq
 
+TCCS-13696: Verify Number of LinkedIn Registration
+
+    [Documentation]         Verify Number of LinkedIn Registration
+
+    [Tags]                  development    greenfield    brownfield    social    linkedin    tccs-13696
+
+    Depends On              TCCS-12998
 
 TCCS-13014: Verify Default System template (Accept and Connect)
 
@@ -378,13 +404,13 @@ TCCS-13014: Verify Default System template (Accept and Connect)
     
     [Tags]                  development    greenfield    brownfield    simple    tccs-13014
 
-    ${CREATE_POLICY4}=              Create Network Policy   ${NW_POLICY_NAME4}      &{GUEST_OPEN_NW4}
+    ${CREATE_POLICY4}=              Create Network Policy   ${NW_POLICY_NAME4}      ${GUEST_OPEN_NW4}
     Should Be Equal As Strings      '${CREATE_POLICY4}'   '1'
 
-    ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME4}    ap_serial=${ap1.serial}
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME4}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
-    ${DEVICE_STATUS}=           Wait Until Device Online       ${ap1.serial}
+    ${DEVICE_STATUS}=           Wait Until Device Online       ${device1.serial}
     Should Be Equal As Strings      '${DEVICE_STATUS}'       '1'
 
     ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME4}
@@ -422,10 +448,10 @@ TCCS-12994: Verify Device registration and authenticate CP with OTP notified ove
 
     Depends On              TCCS-12993    TCCS-13119
 
-    ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME5}     ap_serial=${ap1.serial}
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME5}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
-    ${DEVICE_STATUS}=           Wait Until Device Online       ${ap1.serial}
+    ${DEVICE_STATUS}=           Wait Until Device Online       ${device1.serial}
     Should Be Equal As Strings      '${DEVICE_STATUS}'       '1'
 
     ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
@@ -486,10 +512,10 @@ TCCS-13012: Verify User registration and authenticate CP with passcode notified 
     
     Depends On              TCCS-12993    TCCS-13119
 
-    ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME6}     ap_serial=${ap1.serial}
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME6}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
-    ${DEVICE_STATUS}=           Wait Until Device Online       ${ap1.serial}
+    ${DEVICE_STATUS}=           Wait Until Device Online       ${device1.serial}
     Should Be Equal As Strings     '${DEVICE_STATUS}'  '1'
 
     ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
@@ -551,10 +577,10 @@ TCCS-12995: Verify user authentication with guest bulk vouchers
 
     Depends On              TCCS-12993    TCCS-13119
 
-    ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME0}    ap_serial=${ap1.serial}
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME0}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
-    ${DEVICE_STATUS}=           Wait Until Device Online       ${ap1.serial}
+    ${DEVICE_STATUS}=           Wait Until Device Online       ${device1.serial}
     Should Be Equal As Strings      '${DEVICE_STATUS}'       '1'
 
     ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
@@ -623,10 +649,10 @@ TCCS-12996: Verify User registration and get CP access using E-mail
 
     Depends On              TCCS-12993    TCCS-13119
 
-    ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME7}     ap_serial=${ap1.serial}
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME7}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
-    ${DEVICE_STATUS}=           Wait Until Device Online       ${ap1.serial}
+    ${DEVICE_STATUS}=           Wait Until Device Online       ${device1.serial}
     Should Be Equal As Strings      '${DEVICE_STATUS}'       '1'
 
     ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
