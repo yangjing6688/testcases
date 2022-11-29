@@ -85,7 +85,7 @@ Test1: Configure on-prem ADSP ip address in WIPS profile
     [Documentation]         Configure on-prem ADSP ip address in WIPS profile - when ADEss is not subscribed
     [Tags]                  tccs_13263        testbed_adsp        development
      Login User                      ${TENANT_USERNAME1}     ${TENANT_PASSWORD1}
-    ${CREATE_POLICY1} =              Create Network Policy               ${NW_POLICY_NAME}        &{ADESS_NWP}
+    ${CREATE_POLICY1} =              Create Network Policy               ${NW_POLICY_NAME}        ${ADESS_NWP}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
     ${CREATE_AP_TEMPLATE}=           Add AP Template     ${ap2.model}     ${ap2.template_onprem}    &{AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings       '${CREATE_AP_TEMPLATE}'   '1'

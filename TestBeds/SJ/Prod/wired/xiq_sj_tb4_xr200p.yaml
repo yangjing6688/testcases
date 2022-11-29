@@ -4,7 +4,7 @@ router1:
   device_template:          XR200P_test_automation
   serial:                   "20316031100565"
   ip:                       10.16.166.228
-  port:                     4011
+  port:                     4007
   cli_type:                 "AH-XR"
   connection_method:        "console"
   mac:                      F09CE9C71D00

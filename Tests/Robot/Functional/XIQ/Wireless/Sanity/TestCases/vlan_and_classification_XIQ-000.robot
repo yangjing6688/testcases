@@ -113,7 +113,7 @@ Step1: Create Policy
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      Add Classification Rule to User Profile    ${USER_PROFILE_00}[profile_name]   ${USER_PROFILE_01}[vlan_id]     ${USER_PROFILE_01}[classification_rule_name]
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      Create Network Policy                              ${POLICY}         &{WIRELESS_PESRONAL_00}
+    ${STATUS}                      Create Network Policy                              ${POLICY}         ${WIRELESS_PESRONAL_00}
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      create ssid to policy                              ${POLICY}         &{WIRELESS_PESRONAL_01}
     should be equal as strings     '${STATUS}'        '1'

@@ -1,16 +1,16 @@
 ap1:
-  name:                     bui-flo-1996
+  name:                     bui-flo-0150
   connection_method:        "ssh"
-  ip:                       10.16.171.71
+  ip:                       10.16.171.57
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   "01301506171996"
-  mac:                      885BDD3E0280
+  serial:                   "01501707240150"
+  mac:                      7C95B1006E80
   cli_type:                 "AH-AP"
   platform:                 aerohive
-  model:                    AP130
-  template:                 AP130-default-template
+  model:                    AP150W
+  template:                 AP150W-default-template
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
@@ -28,7 +28,7 @@ ap1:
   extra:
       country:                  United Kingdom
       network_policy:           Test_np
-      ssid:                     AP130_01
+      ssid:                     AP150W_01
       version:                  6.5
       neighbour_serial:         06301908310556
       neighbour_mac:            7C95B1005700

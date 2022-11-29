@@ -70,40 +70,53 @@ TCXM-19760: Confirm No Access To Device360
     [Documentation]     Confirms no access to the Device360 popup
     [Tags]              tcxm_19760   development
 
-    ${is_link}=         Is Hostname Link Available   ${SIM_SERIAL}
-    Should Be Equal As Integers   ${is_link}   -1
-    ${is_link}=         Is Mac Link Available   ${SIM_SERIAL}
-    Should Be Equal As Integers   ${is_link}   -1
+    ${is_link}=         Verify Hostname Link Not Available   ${SIM_SERIAL}
+    Should Be Equal As Integers   ${is_link}   1
+    ${is_link}=         Verify Mac Link Not Available   ${SIM_SERIAL}
+    Should Be Equal As Integers   ${is_link}   1
 
 TCXM-19838: Confirm No Access To Device360 With Clients
     [Documentation]     Confirms no access to the Device360 popup through clients
     [Tags]              tcxm_19838   development
 
-    ${is_link}=         Is Client Link Available   ${SIM_SERIAL}
-    Should Be Equal As Integers   ${is_link}   -1
+    ${is_link}=         Verify Client Link Not Available   ${SIM_SERIAL}
+    Should Be Equal As Integers   ${is_link}   1
 
 TCXM-19836: Confirm No Access To Policy Change
     [Documentation]     Confirms no access to the policy change popup
     [Tags]              tcxm_19836   development
 
-    ${is_link}=         Is Policy Link Available   ${SIM_SERIAL}
-    Should Be Equal As Integers   ${is_link}   -1
+    ${is_link}=         Verify Policy Link Not Available   ${SIM_SERIAL}
+    Should Be Equal As Integers   ${is_link}   1
 
 TCXM-19837: Confirm No Access To Location Change
     [Documentation]     Confirms no access to the location change popup
     [Tags]              tcxm_19837   development
 
-    ${is_link}=         Is Location Link Available   ${SIM_SERIAL}
-    Should Be Equal As Integers   ${is_link}   -1
+    ${is_link}=         Verify Location Link Not Available   ${SIM_SERIAL}
+    Should Be Equal As Integers   ${is_link}   1
 
 
 *** Keywords ***
 Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ
 
+    ${device}=      Create Dictionary
+    ...     name=simulated_dut04
+    ...     model=AP460C
+    ...     simulated_count=1
+    ...     onboard_device_type=Simulated
+    ...     location=auto_location_01, Santa Clara, building_02, floor_04
+
+    set suite variable    ${device}
     Log Into XIQ and Confirm Success   ${XIQ_USER}   ${XIQ_PASSWORD}   ${XIQ_URL}
-    ${SIM_SERIAL}=      Onboard Simulated Device   AP460C   location=${SIM_LOCATION}
+
+    ${ONBOARD_RESULT}=      onboard device quick    ${device}
+    Should Be Equal As Strings          ${ONBOARD_RESULT}       1
+
+    ${SIM_SERIAL}=     set variable    ${${device.name}.serial}
     Set Suite Variable          ${SIM_SERIAL}
+
     Log Out of XIQ and Quit Browser
     Log Into XIQ and Confirm Success   ${XIQ_HD_USER}   ${XIQ_HD_PASSWORD}   ${XIQ_URL}
 

@@ -122,7 +122,7 @@ Step1b: Create and Assign network policy to AP - AP4000
     Set To Dictionary              ${WIRELESS_PESRONAL_01}         ssid_name=${SSID_01}
     Set To Dictionary              ${WIRELESS_PESRONAL_02}         ssid_name=${SSID_02}
 
-    ${STATUS}                      Create Network Policy    ${POLICY}      &{WIRELESS_PESRONAL_00}
+    ${STATUS}                      Create Network Policy    ${POLICY}      ${WIRELESS_PESRONAL_00}
     should be equal as strings     '${STATUS}'       '1'
     ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_PESRONAL_01}
     should be equal as strings     '${STATUS}'        '1'

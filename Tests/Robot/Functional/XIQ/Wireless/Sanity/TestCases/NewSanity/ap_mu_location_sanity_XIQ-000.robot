@@ -60,6 +60,8 @@ Test Suite Setup
 
     #Onboard device
     Device Onboard
+    Create Network Policy and Update to AP
+    
     Set Suite Variable              ${POLICY_NAME}
     Set Suite Variable              ${SSID_NAME}
 
@@ -104,19 +106,7 @@ Delete and Disconnect Device From Cloud
     delete device   device_serial=${device1.serial}
     disconnect device from cloud     ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
 
-*** Test Cases ***
-TCCS-7284: Assign Location to AP Device
-    [Documentation]                 Assigns a location to the AP being tested and confirms the action was successful
-    ...                             Steps:
-    ...                             Login
-    ...                             Create a open network policy
-    ...                             Assign above policy to the AP
-    ...                             Assign Location
-    ...                             Update Delta config to AP
-    ...                             Validate Update result, AP's Location & Policy from Devices Grid
-
-    [Tags]                          development      tccs_7284
-
+Create Network Policy and Update to AP
     ${POLICY_RESULT}                Create Open Auth Express Network Policy     ${POLICY_NAME}      ${SSID_NAME}
     Should Be Equal As Integers     ${POLICY_RESULT}        1
 
@@ -129,19 +119,11 @@ TCCS-7284: Assign Location to AP Device
     ${CONNECTED_STATUS}=    Wait Until Device Online                ${device1.serial}
     Should Be Equal as Integers             ${CONNECTED_STATUS}          1
 
-    ${loc_result}=                  Get Device Details      ${device1.serial}       LOCATION
-    Should Contain                  ${loc_result}           ${LOCATION_DISPLAY}
-
-    ${NP_FROM_UI}=                  Get Device Details      ${device1.serial}       POLICY
-    should be equal as strings      ${NP_FROM_UI}           ${POLICY_NAME}
-
-
+*** Test Cases ***
 TCCS-11596: Verify AP Hostname in ML Insights Plan Tab
     [Documentation]                 Verify AP Hostname in ML Insights Plan Tab
 
     [Tags]                          development      tccs_11596
-
-    Depends On          TCCS-7284
 
     ${FLOOR_SEARCH}=                search_floor_in_network360Plan                  ${FLOOR}
     Save Screen shot
@@ -156,7 +138,11 @@ TCCS-11597: Verify AP Hostname and Client in ML Insights Monitor Tab
 
     [Tags]                          production      tccs_11597
 
-    Depends On      TCCS-11596
+    ${loc_result}=                  Get Device Details      ${device1.serial}       LOCATION
+    Should Contain                  ${loc_result}           ${LOCATION_DISPLAY}
+
+    ${NP_FROM_UI}=                  Get Device Details      ${device1.serial}       POLICY
+    should be equal as strings      ${NP_FROM_UI}           ${POLICY_NAME}
 
     ${CONNECT_STATUS}=              MU1.connect_open_network         ${SSID_NAME}
     should be equal as strings      '${CONNECT_STATUS}'    '1'

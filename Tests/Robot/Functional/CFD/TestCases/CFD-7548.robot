@@ -19,13 +19,8 @@ ${AIO_IP}                   10.16.231.72
 ${ELEMENT_INFO}             None
 ${BROWSER}                  chrome
 ######### For Local AIO testbed End #########
-${DEVICE_TYPE}              AP410C
-${SIM_AP_COUNT}             1
 
 ${CWP_CLI}      security additional-auth-method captive-web-portal
-#Variables    TestBeds/${TESTBED}
-#Variables    Environments/${TOPO}
-#Variables    Environments/${ENV}
 
 *** Settings ***
 
@@ -48,7 +43,6 @@ Library     xiq/flows/configure/UserGroups.py
 
 
 Variables    Environments/Config/waits.yaml
-
 Resource    ../Resources/location_config.robot
 Resource    ../Resources/wireless_networks_related_config.robot
 Force Tags      testbed_none
@@ -59,6 +53,16 @@ Suite Teardown   Suite Clean Up
 Pre Condition
     [Documentation]   Login XIQ, create 1st location and Network Policy with PPSK SSID with cloud and local user groups, onboard simulate AP and assign Network Policy to it
     [Tags]                      cfd-7548     development    pre-condition
+
+    ${device}=      Create Dictionary
+    ...     name=simulated_dut02
+    ...     model=AP410C
+    ...     simulated_count=1
+    ...     onboard_device_type=Simulated
+    ...     location=auto_location_01, Santa Clara, building_02, floor_04
+
+    set suite variable    ${device}
+
 # Login AIO
     ${Login_XIQ}=                  Login User              ${TENANT_USERNAME}      ${TENANT_PASSWORD}
     Should Be Equal As Integers    ${Login_XIQ}             1
@@ -67,12 +71,15 @@ Pre Condition
     Should Be Equal As Integers    ${FIRST_MAP_CREATION}             1
 
 # Create Network Policy
-    ${NW_POLICY_CREATION}=  Create Network Policy   ${NW_POLICY_NAME1}   &{WIRELESS_PPSK_WPA2CCMP_1}
+    ${NW_POLICY_CREATION}=  Create Network Policy   ${NW_POLICY_NAME1}   ${WIRELESS_PPSK_WPA2CCMP_1}
     Should Be Equal As Strings   '${NW_POLICY_CREATION}'   '1'
     add_user_group_to_network_policy_ssid       ${NW_POLICY_NAME1}    &{WIRELESS_PPSK_WPA2CCMP_1}    &{PPSK_AUTH_PROFILE_LOCAL_BULK}
 
 # Onboard 1 simulator
-    ${ONBOARD_AP_SERIAL}=      Onboard Simulated Device    ${DEVICE_TYPE}      count=${SIM_AP_COUNT}    location=${1st_LOCATION_ORG},${1st_LOCATION_CITY_STATE},${1st_LOCATION_STREET},Floor 1
+    ${ONBOARD_RESULT}=        onboard device quick    ${device}
+    Should Be Equal As Strings          ${ONBOARD_RESULT}       1
+
+    ${ONBOARD_AP_SERIAL}=    set variable    ${${device.name}.serial}
     Set Suite Variable    ${ONBOARD_AP_SERIAL}
 # Assign Network Policy to all devices
     Assign Network Policy To All Devices     ${NW_POLICY_NAME1}

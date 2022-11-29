@@ -32,8 +32,7 @@ TCCS-13205_Step1: Perform Backup VIQ
     ${BACKUP_VIQ_DATA}=             Backup VIQ Data
     Should Be Equal As Strings      '${BACKUP_VIQ_DATA}'              '1'
 
-    [Teardown]   run keywords       Logout User
-    ...                             Quit Browser
+    [Teardown]      Quit Browser
 
 TCCS-13205_Step2: Perform Reset VIQ
     [Documentation]         Resets VIQ
@@ -48,9 +47,8 @@ TCCS-13205_Step2: Perform Reset VIQ
     ${RESET_VIQ_DATA}=              Reset VIQ Data
     Should Be Equal As Strings      '${RESET_VIQ_DATA}'              '1'
 
-    [Teardown]   run keywords       Logout User
-    ...                             Quit Browser
-
+    [Teardown]          Quit Browser
+    
 TCCS-13205_Step3: Import Map
     [Documentation]         Imports map
 

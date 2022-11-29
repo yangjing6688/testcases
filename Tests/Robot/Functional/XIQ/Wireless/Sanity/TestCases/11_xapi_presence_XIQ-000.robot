@@ -78,9 +78,9 @@ Pre Condition
     ${OWNER_ID}=                    Get Viq Id
     set global variable             ${OWNER_ID}
 
-    Create Network Policy           OPEN_AUTO               &{DEFAULT_NETWORK}
+    Create Network Policy           OPEN_AUTO               ${DEFAULT_NETWORK}
 
-    Create Network Policy           ${XAPI_NW}              &{XAPI_NETWORK}
+    Create Network Policy           ${XAPI_NW}              ${XAPI_NETWORK}
     Enable Nw Presence Analytics    ${XAPI_NW}
 
     Update Network Policy To Ap     policy_name=XAPI_NW      ap_serial=${ap1.serial}

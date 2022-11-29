@@ -72,6 +72,9 @@ Test Suite Setup
     # log in the user
     Login User      ${tenant_username}      ${tenant_password}
 
+    # make sure the feature is enabled
+    enable ssh availability
+
 Test Suite Teardown
     Clean Up Device
     ${DLT_NW_POLICIES}=             Delete Network Polices      ${PUSH_CONFIG_POLICY_01}        ${VOSS_POLICY_NAME}    ignore_cli_feedback=true
@@ -93,6 +96,12 @@ Delete and Disconnect Device From Cloud
     delete device   device_serial=${device1.serial}
     disconnect device from cloud     ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
 
+SSH to the connection
+    [Arguments]     ${ip}   ${port}
+    ${ssh_spawn}=                       Open Spawn    ${ip}  ${port}  ${device1.username}  ${device1.password}  ${device1.cli_type}  pxssh=True
+
+    Should Be Equal As Strings     ${ssh_spawn}        -1
+
 Disable SSH and Close Device360 Window
     ${DISABLE_SSH}=                     Device360 Disable SSH Connectivity   ${device1.mac}
     Should Be Equal As Integers         ${DISABLE_SSH}     1
@@ -112,16 +121,6 @@ Validate Device Managment IP Information
     ${DEVICE_IP}=                  Get From Dictionary      ${DEVICE_INFOMATION}    MGT_IP_ADDRESS
     Should Be Equal As Strings    '${DEVICE_IP}'           '${device1.ip}'
 
-clean up auto provisioning
-    ${DLT_ALL_AUTOPROV_POLICIES}=       Delete All Auto Provision Policies
-    should be equal as integers         ${DLT_ALL_AUTOPROV_POLICIES}               1
-
-    ${DLT_NW_POLICIES}=             Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}    ${XR_NW_POLICY_NAME}  ${VOSS_POLICY_NAME}
-    should be equal as integers     ${DLT_NW_POLICIES}          1
-
-    ${DELETE_SSIDS}=                Delete SSIDs                            ${SSID_NAME_01}             ${SSID_NAME_02}
-    should be equal as integers     ${DELETE_SSIDS}             1
-
 Confirm Device Status
     [Documentation]     Checks the status of the specified device and confirms it matches the expected value
     [Arguments]         ${serial}  ${expected_status}
@@ -138,10 +137,10 @@ Clean Up Test Device and Confirm Success
     Should Be Equal As Integers     ${del_result}  1
 
 *** Test Cases ***
-TCCS-13512-Testcase1: Advanced Onboard Device on XIQ
+TCCS-13684: Advanced Onboard Device on XIQ
     [Documentation]         Checks for Advanced Device onboarding on XIQ
 
-    [Tags]                  advanced_onboard      development   tccs_13512     tccs_13512_testcase1   tccs_13512_testcase2
+    [Tags]                  advanced_onboard      development   tccs_13684
 
     Clean Up Device
 
@@ -159,19 +158,12 @@ TCCS-13512-Testcase1: Advanced Onboard Device on XIQ
     ${DEVICE_STATUS_RESULT}=    get device status      ${device1.serial}
     Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
 
-
-TCCS-13512-Testcase2: Verify Information on Device page (Advanced onboarding)
-    [Documentation]         Verify Information on Device page
-
-    [Tags]                  advanced_onboard     development    tccs_13512     tccs_13512_testcase2
-
-    Depends On              TCCS-13512-Testcase1
     Validate Device Information
 
-TCCS-13512-Testcase3: Simple Onboard Device on XIQ
+TCCS-13685: Simple Onboard Device on XIQ
     [Documentation]         Checks for Device onboarding on XIQ
 
-    [Tags]                  onboard      development   onboard-fast     tccs_13512     tccs_13512_testcase3   tccs_13512_testcase4   tccs_13512_testcase5   tccs_13512_testcase6   tccs_13512_testcase7     tccs_13512_testcase8
+    [Tags]                  onboard      development   onboard-fast     tccs_13685      tccs_13686      tccs_13687      tccs_13688      tccs_13689
 
     Clean Up Device
 
@@ -189,23 +181,14 @@ TCCS-13512-Testcase3: Simple Onboard Device on XIQ
     ${DEVICE_STATUS_RESULT}=    get device status      ${device1.serial}
     Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
 
-TCCS-13512-Testcase4: Verify Information on Device page (Simple onboaring)
-    [Documentation]         Verify Information on Device page
-
-    [Tags]                  onboard      development    tccs_13512     tccs_13512_testcase4
-
-    Depends On              TCCS-13512-Testcase3
     Validate Device Information
 
-TCCS-13512-Testcase5: Enable SSH on Device and Confirm Only a Single SSH Session Can Be Established
+TCCS-13686: Enable SSH on Device and Confirm Only a Single SSH Session Can Be Established
     [Documentation]     Enable SSH on Switch and Confirm Only a Single SSH Session Can Be Established
 
-    [Tags]              ssh      development    tccs_13512     tccs_13512_testcase5
+    [Tags]              ssh      development    tccs_13686
 
-    Depends On           TCCS-13512-Testcase3
-
-    # make sure the feature is enabled
-    enable ssh availability
+    Depends On           TCCS-13685
 
     # Create the SSH connection
     &{ip_port_info}=                    Device360 Enable SSH CLI Connectivity   ${device1.mac}  run_time=30
@@ -214,21 +197,24 @@ TCCS-13512-Testcase5: Enable SSH on Device and Confirm Only a Single SSH Session
 
     Should not be Empty     ${ip}
     Should not be Empty     ${port}
-    # SSH to the connection
+
     ${ssh_spawn}=                       Open Spawn    ${ip}  ${port}  ${device1.username}  ${device1.password}  ${device1.cli_type}  pxssh=True
+    Should Not Be Equal As Strings     ${ssh_spawn}        -1
+
     # Close the connection
     ${close_result}=                    Close Spawn   ${ssh_spawn}  pxssh=True
-    # Try to ssh again ( this should fail )
-    ${ssh_spawn}=                       Open Spawn    ${ip}  ${port}  ${device1.username}  ${device1.password}  ${device1.cli_type}  pxssh=True  expect_error=true
+
+    # Try to ssh again only for VOSS device model ( this should fail )
+    Run Keyword If  '${device1.cli_type}' == 'VOSS'     SSH to the connection   ${ip}   ${port}
 
     [Teardown]  Disable SSH and Close Device360 Window
 
-TCCS-13512-Testcase6: Firmware upgrade to lastest version (AH-AP Only)
+TCCS-13687: Firmware upgrade to lastest version (AH-AP Only)
     [Documentation]         Verify IQ engine upgrade to lastest version ( we should just make sure it was upgraded )
 
-    [Tags]			        push_config     development     tccs_13512      tccs_13512_testcase6
+    [Tags]			        push_config     development     tccs_13687
 
-    Depends On             TCCS-13512-Testcase3
+    Depends On              TCCS-13685
 
     @{supported_cli_types}=    Create List   AH-AP
     check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
@@ -267,12 +253,12 @@ TCCS-13512-Testcase6: Firmware upgrade to lastest version (AH-AP Only)
 
     Close Spawn        ${SPAWN2}
 
-TCCS-13512-Testcase7: Verification of config push complete config update (AH-AP Only)
+TCCS-13688: Verification of config push complete config update (AH-AP Only)
     [Documentation]             Verification of config push complete config update
 
-    [Tags]                      push_config     development     tccs_13512     tccs_13512_testcase7   tccs_13512_testcase8
+    [Tags]                      push_config     development     tccs_13688      tccs_13689
 
-    Depends On                  TCCS-13512-Testcase3
+    Depends On                  TCCS-13685
 
     @{supported_cli_types}=    Create List   AH-AP
     check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
@@ -280,7 +266,7 @@ TCCS-13512-Testcase7: Verification of config push complete config update (AH-AP 
     Set To Dictionary           ${CONFIG_PUSH_OPEN_NW_01}    ssid_name=${PUSH_CONFIG_SSID_01}
     Log to Console              ${CONFIG_PUSH_OPEN_NW_01}
 
-    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy   policy=${PUSH_CONFIG_POLICY_01}      &{CONFIG_PUSH_OPEN_NW_01}
+    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy   ${PUSH_CONFIG_POLICY_01}    ${CONFIG_PUSH_OPEN_NW_01}
     should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
 
     ${DEPLOY_STATUS}=               Deploy Network Policy with Complete Update      ${PUSH_CONFIG_POLICY_01}          ${device1.serial}
@@ -293,12 +279,12 @@ TCCS-13512-Testcase7: Verification of config push complete config update (AH-AP 
     Should Contain                          ${OUTPUT1}                  ${PUSH_CONFIG_SSID_01}
 
 
-TCCS-13512-Testcase8: Verification of config push delta update (AH-AP Only)
+TCCS-13689: Verification of config push delta update (AH-AP Only)
     [Documentation]         Verification of config push delta update
 
-    [Tags]                  push_config     development     tccs_13512     tccs_13512_testcase8
+    [Tags]                  push_config     development     tccs_13689
 
-    Depends On              TCCS-13512-Testcase7
+    Depends On              TCCS-13688
 
     @{supported_cli_types}=    Create List   AH-AP
     check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}

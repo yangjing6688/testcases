@@ -20,7 +20,9 @@
 *** Settings ***
 Resource         ../../DigitalTwin/Resources/AllResources.robot
 
-Force Tags       testbed_not_required
+Variables    TestBeds/${TESTBED}
+Variables    Environments/${TOPO}
+Variables    Environments/${ENV}
 
 Suite Setup      Log In and Set Up Test
 Suite Teardown   Tear Down Test and Close Session
@@ -34,19 +36,13 @@ ${XIQ_PASSWORD}             ${tenant_password}
 ${ENABLE_DT_FEATURE}        ${XIQ_URL}/hm-webapp/?digitalTwin=true#/devices
 ${DISABLE_DT_FEATURE}       ${XIQ_URL}/hm-webapp/?digitalTwin=false#/devices
 
-${DT_PERSONA}               SwitchEngine
-${DT_MAKE}                  Switch Engine
-${DT_MODEL}                 5320-24T-8XE
-${DT_VERSION}               32.1.1.6
-${DT_POLICY}
-${DT_SERIAL}
-${DT_MAC}
-${DT_IP_ADDRESS}            10.0.2.15
-${DT_IQAGENT}               0.5.61
-
-${LOCATION}                 San Jose, building_01, floor_02
-${DEFAULT_DEVICE_PWD}       Aerohive123
-${POLICY_NAME}              Automation_Policy
+${DT_PERSONA}               ${netelem1.digital_twin_persona}
+${DT_MAKE}                  ${netelem1.make}
+${DT_MODEL}                 ${netelem1.model}
+${DT_VERSION}               ${netelem1.digital_twin_version}
+${DT_IP_ADDRESS}            ${netelem1.ip}
+${LOCATION}                 ${netelem1.location}
+${DT_IQAGENT}               ${capwap_url}
 
 
 *** Test Cases ***
@@ -67,9 +63,10 @@ Test 2: Onboard Digital Twin Device
 
     Navigate to Devices and Confirm Success
 
-    ${dt_serial}=  Onboard Device DT                        device_type=Digital_Twin        os_persona=${DT_PERSONA}
-    ...                                                     device_model=${DT_MODEL}     os_version=${DT_VERSION}
-    ...                                                     policy=${DT_POLICY}
+    ${ONBOARD_RESULT}=      onboard device quick                 ${netelem1}
+    Should Be Equal As Strings                              ${ONBOARD_RESULT}     1
+
+    ${dt_serial}=           set variable                    ${${netelem1.name}.serial}
     Set Suite Variable                                      ${DT_SERIAL}    ${dt_serial}
 
     Confirm Digital Twin Serial Number                      ${DT_SERIAL}

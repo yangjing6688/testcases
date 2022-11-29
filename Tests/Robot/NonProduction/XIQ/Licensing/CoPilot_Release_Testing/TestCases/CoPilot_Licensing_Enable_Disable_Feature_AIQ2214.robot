@@ -81,7 +81,7 @@ Test 3: Onboard First Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT1_SERIAL}  ${DUT1_MAKE}  ${LOCATION}  ${DUT1_MAC}  ${netelem1}
+    Onboard New Test Device                     ${DUT1_SERIAL}  ${netelem1}
 
     ${selected}=    Column Picker Select        ${COLUMN_1}     ${COLUMN_2}    ${COLUMN_3}
     Should Be Equal As Integers                 ${selected}     1
@@ -145,23 +145,23 @@ Test 9: Onboard Second Device and Verify Success
     Depends On          Test 1
 
     # Downgrade the device's iqagent if needed
-    ${SPAWN_CONNECTION}=      Open Spawn        ${DUT1_IP}   ${DUT1_PORT}   ${DUT1_USERNAME}   ${DUT1_PASSWORD}   ${DUT1_CLI_TYPE}
-    ${DOWNGRADE_IQAGENT}=     Downgrade Iqagent              ${DUT1_CLI_TYPE}         ${SPAWN_CONNECTION}
+    ${SPAWN_CONNECTION}=      Open Spawn        ${DUT2_IP}   ${DUT2_PORT}   ${DUT2_USERNAME}   ${DUT2_PASSWORD}   ${DUT2_CLI_TYPE}
+    ${DOWNGRADE_IQAGENT}=     Downgrade Iqagent              ${DUT2_CLI_TYPE}         ${SPAWN_CONNECTION}
     Should Be Equal As Integers      ${DOWNGRADE_IQAGENT}     1
 
-    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud        ${DUT1_CLI_TYPE}    ${IQAGENT}   ${SPAWN_CONNECTION}    vr=${DUT1_VR}
+    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud        ${DUT2_CLI_TYPE}    ${IQAGENT}   ${SPAWN_CONNECTION}    vr=${DUT2_VR}
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT1_SERIAL}  ${DUT1_MAKE}  ${LOCATION}  ${DUT1_MAC}  ${netelem1}
+    Onboard New Test Device                     ${DUT2_SERIAL}  ${netelem2}
 
     ${selected}=    Column Picker Select        ${COLUMN_1}     ${COLUMN_2}    ${COLUMN_3}
     Should Be Equal As Integers                 ${selected}     1
 
     Refresh Devices Page
-    Verify and Wait Until Device Online         ${DUT1_SERIAL}
-    Verify and Wait Until Device Managed        ${DUT1_SERIAL}
-    Verify Device Status Green                  ${DUT1_SERIAL}
+    Verify and Wait Until Device Online         ${DUT2_SERIAL}
+    Verify and Wait Until Device Managed        ${DUT2_SERIAL}
+    Verify Device Status Green                  ${DUT2_SERIAL}
 
 Test 10: Verify Second Device Consumes Pilot and CoPilot License Within Global Settings License Management
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
@@ -243,7 +243,7 @@ Disable CoPilot Feature For This VIQ and Confirm Success
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
-    [Arguments]         ${serial}  ${make}  ${location}  ${mac}    ${device}
+    [Arguments]         ${serial}  ${netelem}
 
     Navigate to Devices and Confirm Success
 
@@ -252,7 +252,7 @@ Onboard New Test Device
     Confirm Device Serial Not Present  ${serial}
 
     # Onboard the device
-    onboard device quick    ${device}
+    onboard device quick    ${netelem}
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 

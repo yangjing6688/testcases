@@ -89,7 +89,7 @@ TC-7281: Check for Subscription and Validate XLOC Config for New Customer
     Depends On          TC-10862
     ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
 
-    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      &{LOCATION_OPEN_NW}
+    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${LOCATION_OPEN_NW}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
     ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    &{AP_TEMPLATE_CONFIG}

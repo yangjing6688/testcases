@@ -1,0 +1,165 @@
+data:
+  setting_1: 1
+  setting_2: 2
+  setting_3: 3
+  setting_4: 4
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  NewTestbedOneNodeTests::test_1:
+    author: vstefan
+    tc: tcxm_201
+    title: New test
+    description: The description of the new test
+    steps:
+      - step_1
+      - step_2
+
+  NewTestbedOneNodeTests::test_2:
+    author: vstefan
+    tc: tcxm_202
+    title: New test
+    description: The description of the new test
+    steps:
+      - step_1
+      - step_2
+
+  NewTestbedOneNodeTests::test_3:
+    author: vstefan
+    tc: tcxm_203
+    title: New test
+    description: The description of the new test
+    steps:
+      - step_1
+      - step_2
+
+  NewTestbedOneNodeTests::test_4:
+    author: vstefan
+    tests:
+      - tc: tcxm_204
+        title: New test
+        description: The description of the new test
+        steps:
+          - step_1
+          - step_2
+      - tc: tcxm_205
+        title: New test
+        description: The description of the new test
+        steps:
+          - step_1
+          - step_2
+
+  #################### TESTBED 1 NODE ##########################
+
+  #################### TESTBED NONE ##########################
+
+  NewTestbedNoneTests::test_6:
+    author: vstefan
+    tc: tcxm_206
+    title: New test
+    description: The description of the new test
+    steps:
+      - step_1
+      - step_2
+
+  NewTestbedNoneTests::test_7:
+    author: vstefan
+    tc: tcxm_207
+    title: New test
+    description: The description of the new test
+    steps:
+      - step_1
+      - step_2
+
+  #################### TESTBED NONE ##########################
+
+  #################### TESTBED 2 NODE ##########################
+
+  NewTestbedTwoNodeTests::test_8:
+    author: vstefan
+    tc: tcxm_208
+    title: New test
+    description: The description of the new test
+    steps:
+      - step_1
+      - step_2
+
+  NewTestbedTwoNodeTests::test_9:
+    author: vstefan
+    tc: tcxm_209
+    title: New test
+    description: The description of the new test
+    steps:
+      - step_1
+      - step_2
+
+  #################### TESTBED 2 NODE ##########################
+
+  #################### TESTBED STACK ##########################
+
+  NewTestbedStackTests::test_10:
+    author: vstefan
+    tc: tcxm_210
+    title: New test
+    description: The description of the new test
+    steps:
+      - step_1
+      - step_2
+
+  NewTestbedStackTests::test_11:
+    author: vstefan
+    tc: tcxm_211
+    title: New test
+    description: The description of the new test
+    steps:
+      - step_1
+      - step_2
+
+  #################### TESTBED STACK ##########################
+
+  #################### TESTBED 2 NODE ##########################
+
+  NewCascadeTests::test_12:
+    author: vstefan
+    tc: tcxm_212
+    title: New test
+    description: The description of the new test
+    steps:
+      - step_1
+      - step_2
+
+  NewCascadeTests::test_13:
+    author: vstefan
+    tc: tcxm_213
+    title: New test
+    description: The description of the new test
+    steps:
+      - step_1
+      - step_2
+
+  NewCascadeTests::test_14:
+    author: vstefan
+    tc: tcxm_214
+    title: New test
+    description: The description of the new test
+    steps:
+      - step_1
+      - step_2
+
+  #################### TESTBED 2 NODE ##########################

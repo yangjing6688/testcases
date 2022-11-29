@@ -91,7 +91,7 @@ Confirm Main Side Nav Menu Item
     [Arguments]         ${tag}   ${order}   ${icon_class}
 
     # check tab is visible
-    ${nav_visible}=     Is Nav Menu Item Visible   ${tag}
+    ${nav_visible}=     Verify Nav Menu Item Visible   ${tag}
     Should Be Equal As Integers   ${nav_visible}   1
     # check tab is in the expected order number
     ${nav_order}=       Get Order Number Of Main Nav Tab   ${tag}
@@ -104,26 +104,26 @@ Confirm Main Side Nav Menu Item Is Not There
     [Documentation]     Confirm main menu item is not visible
     [Arguments]         ${tag}
 
-    ${nav_visible}=     Is Nav Menu Item Visible   ${tag}
-    Should Be Equal As Integers   ${nav_visible}   -1
+    ${nav_visible}=     Verify Nav Menu Item Not Visible   ${tag}
+    Should Be Equal As Integers   ${nav_visible}   1
 
 Confirm Side Nav Menu Item
     [Documentation]     Confirm side menu item is visible, enabled and in the expected location
     [Arguments]         ${tag}   ${order}
 
     # check that menu item is visible
-    ${nav_visible}=     Is Nav Menu Item Visible   ${tag}
+    ${nav_visible}=     Verify Nav Menu Item Visible   ${tag}
     Should Be Equal As Integers   ${nav_visible}   1
     # check that menu item is in the expected order number
     ${nav_order}=       Get Order Number Of Side Nav Menu Item   ${tag}
     Should Be Equal As Integers   ${nav_order}   ${order}
     # check tab is enabled
-    ${nav_enabled}      Is Nav Menu Item Enabled   ${tag}
+    ${nav_enabled}      Verify Nav Menu Item Enabled   ${tag}
     Should Be Equal As Integers   ${nav_enabled}   1
 
 Confirm Side Nav Menu Item Is Not There
     [Documentation]     Confirm side menu item is not visible
     [Arguments]         ${tag}
 
-    ${nav_visible}=     Is Nav Menu Item Visible   ${tag}
-    Should Be Equal As Integers   ${nav_visible}   -1
+    ${nav_visible}=     Verify Nav Menu Item Not Visible   ${tag}
+    Should Be Equal As Integers   ${nav_visible}   1
