@@ -745,7 +745,7 @@ jobs:
         #
         python .github/workflows/skip_handler.py --actor "${{ github.actor }}" --title '${{ github.event.pull_request.title }}' --check tags | tee -a ${{ env.tag_marker_report_path }}
 
-        SKIP_RESERVED_TAGS=true
+        echo "SKIP_RESERVED_TAGS=true" >> $GITHUB_ENV
     ### 11/29/22 by peter sadej
     ### The reserved tags check has become cumbersome for our users. Always skip the check until we make a decision on if or how it should work in the future
     ### # Handle skipping entire only reserved tags checks (sanity, p1, p2, etc.)
