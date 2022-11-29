@@ -96,6 +96,12 @@ Delete and Disconnect Device From Cloud
     delete device   device_serial=${device1.serial}
     disconnect device from cloud     ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
 
+SSH to the connection
+    [Arguments]     ${ip}   ${port}
+    ${ssh_spawn}=                       Open Spawn    ${ip}  ${port}  ${device1.username}  ${device1.password}  ${device1.cli_type}  pxssh=True
+
+    Should Be Equal As Strings     ${ssh_spawn}        -1
+
 Disable SSH and Close Device360 Window
     ${DISABLE_SSH}=                     Device360 Disable SSH Connectivity   ${device1.mac}
     Should Be Equal As Integers         ${DISABLE_SSH}     1
@@ -191,12 +197,15 @@ TCCS-13686: Enable SSH on Device and Confirm Only a Single SSH Session Can Be Es
 
     Should not be Empty     ${ip}
     Should not be Empty     ${port}
-    # SSH to the connection
+
     ${ssh_spawn}=                       Open Spawn    ${ip}  ${port}  ${device1.username}  ${device1.password}  ${device1.cli_type}  pxssh=True
+    Should Not Be Equal As Strings     ${ssh_spawn}        -1
+
     # Close the connection
     ${close_result}=                    Close Spawn   ${ssh_spawn}  pxssh=True
-    # Try to ssh again ( this should fail )
-    ${ssh_spawn}=                       Open Spawn    ${ip}  ${port}  ${device1.username}  ${device1.password}  ${device1.cli_type}  pxssh=True  expect_error=true
+
+    # Try to ssh again only for VOSS device model ( this should fail )
+    Run Keyword If  '${device1.cli_type}' == 'VOSS'     SSH to the connection   ${ip}   ${port}
 
     [Teardown]  Disable SSH and Close Device360 Window
 
