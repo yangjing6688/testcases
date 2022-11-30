@@ -102,18 +102,20 @@ class xiqTests():
                 cls.udks.setupTeardownUdks.networkElementConnectionManager.connect_to_all_network_elements()
 
             # Preparing the mapo add the device into the proper location building and floor
-            def createLocation (cls):
+            def cleanupDevice (cls):
                 # Delete the netelement-1 device from XIQ if it is already onboarded prior to delete the location buildig floor
-                result = cls.xiq.xflowscommonDevices.delete_device(device_mac = dutMac)
-                if result != 1:
-                    pytest.fail("Could not delete the device with mac {}".format(dutMac))
+                if cls.xiq.xflowscommonDevices.search_device(device_mac=dutMac) == 1:
+                    print(f'Found device using mac-address {dutMac}')
+                    cls.xiq.xflowscommonDevices.delete_device(device_mac=dutMac)
+                else:
+                    for a_serial in cls.tb.dut1_serial.split(","):
+                        if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                            print(f'Found device using serial-number {a_serial}')
+                            cls.xiq.xflowscommonDevices.delete_device(a_serial)
+                        else:
+                            print(f'Did not find device with mac-address {dutMac} or serial number(s) {cls.tb.dut1_serial}')
 
-                # Creating a location building floor. Creating the org prior to create any location information.
-                cls.xiq.xflowsmanageLocation.create_first_organization("Extreme", "broadway", "newyork", "Romania")
 
-                # Creating the above mentioned location building and floor
-                cls.xiq.xflowsmanageLocation.create_location_building_floor(location, building, floor)
-                time.sleep(5)
 
             # Onboarding EXOS device(s)
             def exosDeviceOnboard (cls):
@@ -145,9 +147,6 @@ class xiqTests():
                 # Waiting for 60 seconds, stack master to communicate XIQ
                 time.sleep(60)
 
-                # Refreshing the XIQ device page before checking the stack status
-                cls.xiq.xflowsmanageDevices.refresh_devices_page()
-                time.sleep(10)
 
                 # Step-1: # Wait until the stack icon turn to 'blue' it is in 'red'
                 result =  cls.xiq.xflowscommonDevices.get_exos_stack_status(device_mac=dutMac)
@@ -218,7 +217,7 @@ class xiqTests():
             def onboardStack (cls):
                 # The following functions are used to onboard the stack device in XIQ and check the Status of the device is managed.
                 suite_setup (cls)
-                createLocation (cls)
+                cleanupDevice (cls)
                 exosDeviceOnboard (cls)
                 netelementIqagentConfig (cls)
                 checkStackStatusInxiq (cls)
@@ -245,16 +244,16 @@ class xiqTests():
         time.sleep(5)
 
         # Delete the dut1 switch if it is already onboarded in to the XIQ environment
-        result = cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
-        if result != 1:
-            pytest.fail("Could not delete the device with mac {}".format(cls.tb.dut1.mac))
-
-        # This is to delete the stack member node(s) which is not stacked under the stack master
-        for serial in device_serial_list:
-            result = cls.xiq.xflowscommonDevices.delete_device(device_serial=serial)
-            time.sleep(5)
-            if result != 1:
-                pytest.fail("Could not delete the device with serial {}".format(serial))
+        if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac) == 1:
+            print(f'Found device using mac-address {cls.tb.dut1.mac}')
+            cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
+        else:
+            for a_serial in cls.tb.dut1_serial.split(","):
+                if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                    print(f'Found device using serial-number {a_serial}')
+                    cls.xiq.xflowscommonDevices.delete_device(a_serial)
+                else:
+                    print(f'Did not find device with mac-address {cls.tb.dut1.mac} or serial number(s) {cls.tb.dut1_serial}')
 
         # Reseting the column selection back to it's default value.
         cls.xiq.xflowscommonDevices.column_picker_select("MGT IP Address",
@@ -273,10 +272,6 @@ class xiqTests():
                                                          "MGT VLAN")
         time.sleep(5)
 
-        floor = "Fourth_"+str(cls.tb.dut1.mac)           # Mac address is appended in floor
-        # To Delete the location building floor that was created in the setup_class
-        cls.xiq.xflowsmanageLocation.delete_location_building_floor(location, building, floor)
-        time.sleep(5)
 
         # Logout XIQ and close the browser
         cls.xiq.login.logout_user()
