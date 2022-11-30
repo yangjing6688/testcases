@@ -135,3 +135,49 @@ XIQ-10314 - TCXM-25835 - Automation: XIQ Measure time taken to Onboard device
 
     [Teardown]  Run Keywords   Logout User
     ...                        Quit Browser
+
+XIQ-10316 - TCXM-25837 - Automation: XIQ Measure time taken to upgrade the firmware of a device
+    [Documentation]         XIQ Measure time taken to upgrade the firmware of a device
+    [Tags]                  development       tcxm-25837   client-experience
+
+    ${LOGIN_STATUS}=        Login User          ${tenant_username}      ${tenant_password}
+    Should Be Equal As Integers             ${LOGIN_STATUS}               1
+
+    Save Screen Shot
+
+    ${DEVICE_STATUS}=        Get Device Status       device_mac=${ap1.mac}
+    Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
+
+    ${START_TIME}=           Get Current Date Time   time_format=${TIME_FORMAT}
+
+    ${UPGRADE_DEVICE_STATUS}=       Upgrade Device To Latest Version       ${ap1.serial}
+    Should Not be equal as Strings      '${UPGRADE_DEVICE_STATUS}'        '-1'
+
+    ${WAIT_DEVICE_UPDATE}=        Wait Until Device Update Done         device_serial=${ap1.serial}
+    should be equal as integers     ${WAIT_DEVICE_UPDATE}             1
+
+    ${DEVICE_STATUS}=        Get Device Status       device_mac=${ap1.mac}
+    Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
+
+    ${END_TIME}=             Get Current Date Time   time_format=${TIME_FORMAT}
+
+    Save Screen Shot
+
+    ${ELAPSED_TIME}=         Subtract Date From Date   ${END_TIME}  ${START_TIME}
+    ${ELAPSED_TIME} =        Convert To Integer   ${ELAPSED_TIME}
+
+    Log To Console  \n\n#############################################################################\n
+
+    Log To Console  Testcase Name : ${TEST NAME}\n
+    Log To Console  Start Time : ${START_TIME}\n
+    Log To Console  End Time : ${END_TIME}\n
+    Log To Console  Elaspsed Time : ${ELAPSED_TIME} Seconds\n
+    Log To Console  Testbed : ${TESTBED}
+    Log To Console  VIQ ID : ${VIQID}
+
+    Log To Console  \n################################################################################
+
+    ${ADD_INFO_TO_FILE}=    Append to file    ${FILE_NAME}    Tescase Name: ${TEST NAME},Start Time: ${START_TIME},End Time: ${END_TIME},Elapsed Time: ${ELAPSED_TIME} Seconds,Testbed: ${TESTBED}, Viq ID: ${VIQID}\n
+
+    [Teardown]  Run Keywords   Logout User
+    ...                        Quit Browser
