@@ -297,6 +297,8 @@ XIQSE Perform IP Range Discovery and Confirm Success
     ${result}=  XIQSE Wait Until Devices Present  ${DEVICE_COUNT}
     Should Be Equal As Integers  ${result}  1
 
+    Wait For Operations Panel Operation To Complete     Discover Site Actions
+
 XIQSE Delete All Site Devices and Confirm Success
     [Documentation]     Deletes all devices in the specified site and confirms the action is successful
     [Arguments]         ${site}
