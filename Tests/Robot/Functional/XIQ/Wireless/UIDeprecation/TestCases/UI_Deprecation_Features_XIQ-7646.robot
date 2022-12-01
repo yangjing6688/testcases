@@ -6,7 +6,7 @@
 #Execution Command: robot -v TOPO:topo.uideprecate.yaml -v ENV:environment.remote.win10.chrome.yaml -v TESTBED:BANGALORE/Dev/testbed-hunise-all.yaml UI_Deprecation_Features_XIQ-7646.robot
 
 *** Settings ***
-Force Tags   testbed_3_node
+Force Tags   testbed_1_node
 
 Library      String
 Library      Collections
@@ -29,7 +29,7 @@ TCXM-21457 : Verify that VPN Management is restored under Manage Page
 
     [Tags]       tcxm_21457         development
 
-    ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
+    ${result}=                 Login User             ${tenant_username}    ${tenant_password}
     should be equal as strings       '${result}'                    '1'
 
     ${vpn_management_tab}        Navigate To VPN Management Tab
@@ -50,7 +50,7 @@ TCXM-21555 : Verify that VPN Services is restored under Common Objects > Network
 
     [Tags]       tcxm_21555         development
 
-    ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
+    ${result}=                 Login User             ${tenant_username}       ${tenant_password}
     should be equal as strings       '${result}'                    '1'
 
     Navigate Configure Common Objects

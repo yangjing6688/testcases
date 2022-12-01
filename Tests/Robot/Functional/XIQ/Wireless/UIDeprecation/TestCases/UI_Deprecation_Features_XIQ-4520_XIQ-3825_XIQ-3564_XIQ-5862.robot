@@ -73,7 +73,7 @@ Test Suite Setup
     # netelem1  => device1 (EXOS / VOSS)
     convert to generic device object   device  index=1
 
-    ${login_status}=                  Login User               ${tenant_username}  ${tenant_password}  url=${test_url}
+    ${login_status}=                  Login User               ${tenant_username}     ${tenant_password}
     should be equal as integers       ${login_status}          1
 
     ${delete_ap}=                     Delete Device            device_serial=${device1.serial}
@@ -145,7 +145,7 @@ TCXM-17532 : Relocate Supplemental CLI under Switch Template
 
     [Tags]       tcxm_17532         development
 
-    ${result}=                 Login User             ${tenant_username}  ${tenant_password}  url=${test_url}
+    ${result}=                 Login User             ${tenant_username}      ${tenant_password}
     should be equal as strings       '${result}'                   '1'
 
     Delete Network Policy             ${SWITCH_POLICY_NAME}
@@ -167,7 +167,7 @@ TCXM-17534 : Relocate Supplemental CLI under AP Template
 
     [Tags]       tcxm_17534         development
 
-    ${result}=                 Login User             ${tenant_username}  ${tenant_password}  url=${test_url}
+    ${result}=                 Login User             ${tenant_username}     ${tenant_password}
     should be equal as strings       '${result}'                   '1'
 
     Delete Network Policy             ${AP_POLICY_NAME}
@@ -189,7 +189,7 @@ TCXM-20275 : Enable PING for Installer user for Aerohive AP
 
     [Tags]       tcxm_20275         development
 
-    ${result}=                 Login User             ${tenant_username_installer}  ${tenant_password}  url=${test_url}
+    ${result}=                 Login User             ${tenant_username_installer}     ${tenant_password}
     should be equal as strings       '${result}'                   '1'
 
     ${select_ap}               Select AP                         ${device1.serial}
@@ -213,7 +213,7 @@ TCXM-17544 : Point client hyperlink to Client 360 page
 
     [Tags]       tcxm_17544         development
 
-    ${result}=                        Login User             ${tenant_username}  ${tenant_password}  url=${test_url}
+    ${result}=                        Login User             ${tenant_username}     ${tenant_password}
     should be equal as strings       '${result}'                   '1'
 
     ${CONNECT_STATUS}=              MU1.Connect Open Network        ${SSID_NAME}

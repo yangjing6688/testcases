@@ -8,7 +8,7 @@
 
 
 *** Settings ***
-Force Tags   testbed_3_node
+Force Tags   testbed_1_node
 
 Library      String
 Library      Collections
@@ -17,6 +17,10 @@ Library      extauto.xiq.flows.common.Navigator
 Library      extauto/xiq/flows/common/Login.py
 
 Resource    ../../UIDeprecation/Resources/AllResources.robot
+
+Variables    TestBeds/${TESTBED}
+Variables    Environments/${TOPO}
+Variables    Environments/${ENV}
 
 
 
@@ -30,7 +34,7 @@ TC-15158: Verify Navigation to 'Network 360 Plan' page
 
     [Tags]       tcxm_15158            development
 
-    ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
+    ${result}=                 Login User             ${tenant_username}     ${tenant_password}
     should be equal as strings       '${result}'        '1'
 
     ${network_360_plan}         Navigate To Network360plan
@@ -48,7 +52,7 @@ TC-15188: Verify Navigation to 'Unbind MAC/PPSK binding' page
 
     [Tags]        tcxm_15188           development
 
-    ${result}=              Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
+    ${result}=              Login User             ${tenant_username}      ${tenant_password}
     should be equal as strings       '${result}'        '1'
 
     ${unbind_devices_tab}      Navigate To Unbind Device Tab
@@ -66,7 +70,7 @@ TC-15146: Verify Navigation to Configure > Users > User management > 'Locked Use
 
     [Tags]        tcxm_15146           development
 
-    ${result}=              Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
+    ${result}=              Login User             ${tenant_username}      ${tenant_password}
     should be equal as strings       '${result}'        '1'
 
     ${locked_user_tab}      Navigate To Locked Users Tab

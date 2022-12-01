@@ -12,7 +12,7 @@ ${WAIT}                        5
 
 
 *** Settings ***
-Force Tags   testbed_3_node
+Force Tags   testbed_1_node
 Suite Setup  Test Suite Setup
 
 Library      String
@@ -44,7 +44,7 @@ TCXM-18052 : Verify Navigation to 'Client Monitor and Diagnosis' page
 
     [Tags]       tcxm_18052         development
 
-    ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
+    ${result}=                 Login User             ${tenant_username}    ${tenant_password}
     should be equal as strings       '${result}'                    '1'
 
     ${client_monitor_tab}      Navigate To Client Monitor And Diagnosis Tab
@@ -65,7 +65,7 @@ TCXM-17452 : Verify Navigation to 'Applications' page
 
     [Tags]       tcxm_17452         development
 
-    ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
+    ${result}=                 Login User             ${tenant_username}  ${tenant_password}
 
     should be equal as strings       '${result}'                   '1'
 
@@ -87,7 +87,7 @@ TCXM-17491 : Create Custom Application
 
     [Tags]       tcxm_17491         development
 
-    ${result}=                Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
+    ${result}=                Login User             ${tenant_username}    ${tenant_password}
 
     should be equal as strings       '${result}'                   '1'
 
@@ -115,7 +115,7 @@ TCXM-17493 : Edit Custom Application
 
     [Tags]       tcxm_17493         development
 
-    ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
+    ${result}=                 Login User             ${tenant_username}     ${tenant_password}
 
     should be equal as strings       '${result}'                   '1'
 
@@ -143,7 +143,7 @@ TCXM-17494 : Delete Custom Application
 
     [Tags]       tcxm_17493         development
 
-    ${result}=                 Login User             ${xiq.tenant_username}  ${xiq.tenant_password}  url=${xiq.test_url}
+    ${result}=                 Login User             ${tenant_username}    ${tenant_password}
 
     should be equal as strings       '${result}'                   '1'
 
@@ -156,6 +156,7 @@ TCXM-17494 : Delete Custom Application
     ${delete_custom}             Delete Custom Applications     ${APPLICATION_NAME_MODIFIED}
 
     should be equal as strings       '${delete_custom}'                '1'
+
 
     Log                               ${delete_custom}
 

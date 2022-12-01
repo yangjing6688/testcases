@@ -1,0 +1,5 @@
+test_url:                    "https://g2.qa.xcloudiq.com/login"
+capwap_url:                  "qa-redirector.extremecloudiq.com"
+tenant_username:             "xiqextremeqa+auto1-tb1-co-pilot-iq-g2r1@gmail.com"
+tenant_username_installer:   "xiqextremeqa+autoinstaller@gmail.com"
+tenant_password:             "Extreme@123"
