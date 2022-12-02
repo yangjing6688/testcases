@@ -30,6 +30,7 @@ Force Tags      testbed_none
 
 Variables       Environments/${ENV}
 Variables       Environments/${TOPO}
+Variables       TestBeds/${TESTBED}
 Variables       Environments/Config/waits.yaml
 
 Suite Setup     Log In and Set Up Test
@@ -42,12 +43,11 @@ ${XIQ_USER}                 ${tenant_username}
 ${XIQ_PASSWORD}             ${tenant_password}
 
 ${DT_PERSONA}               ${netelem1.digital_twin_persona}
-${DT_MAKE}                  ${netelem1.make}
 ${DT_MODEL}                 ${netelem1.model}
 ${DT_VERSION}               ${netelem1.digital_twin_version}
 ${DT_IP_ADDRESS}            ${netelem1.ip}
 ${LOCATION}                 ${netelem1.location}
-${DT_IQAGENT}               ${capwap_url}
+${DT_IQAGENT}
 
 *** Test Cases ***
 TCCS-13497: Enable Digital Twin Feature
@@ -132,11 +132,11 @@ TCCS-13499: Digital Twin Device D360 Overview panel
     ${nav_result}=  Navigate To Device360 Page With MAC     ${DT_MAC}
     Should Be Equal As Integers                             ${nav_result}   1
 
-    ${refresh}=   Device360 Refresh Page
-    Should Be Equal As Integers                             ${refresh}      1
-
     ${status}=   Get Device360 Digital Twin Device Status
     Should Be Equal As Strings                              ${status}       connected
+
+    ${dt_button}=  Is Device360 Shutdown Digital Twin Button Visible
+    Should Be Equal As Strings                              ${dt_button}    True
 
     Confirm Device360 Top Bar Information for Digital Twin Device
 
@@ -213,7 +213,6 @@ Confirm Device360 Top Bar Information for Digital Twin Device
     ${topbar_version}=  Get From Dictionary  ${topbar_info}  software_version
     ${topbar_model}=    Get From Dictionary  ${topbar_info}  device_model
     ${topbar_serial}=   Get From Dictionary  ${topbar_info}  serial_number
-    ${topbar_make}=     Get From Dictionary  ${topbar_info}  device_make
     ${topbar_iqagent}=  get from dictionary  ${topbar_info}  IQAgent_version
 
     Should Be Equal                 ${topbar_ip}        ${DT_IP_ADDRESS}
@@ -221,5 +220,4 @@ Confirm Device360 Top Bar Information for Digital Twin Device
     Should Be Equal                 ${topbar_version}   ${DT_VERSION}
     Should Contain                  ${topbar_model}     ${DT_MODEL}
     Should Be Equal                 ${topbar_serial}    ${DT_SERIAL}
-    Should Be Equal                 ${topbar_make}      ${DT_MAKE}
     Should Be Equal                 ${topbar_iqagent}   ${DT_IQAGENT}

@@ -1,0 +1,9 @@
+netelem1:
+  name:                   "5420M-48W-4YE-FabricEngine"
+  make:                   "VOSS"
+  model:                  "5420M-48W-4YE"
+  ip:                     "10.0.2.15"
+  digital_twin_persona:   "FabricEngine"
+  digital_twin_version:   "8.8.0.0"
+  location:               "auto_location_01, Santa Clara, building_02, floor_04"
+  onboard_device_type:    "Digital Twin"
