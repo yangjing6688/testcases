@@ -61,7 +61,16 @@ def xiq_teardown_long_config(request):
                                                                                         device_mac=request.instance.tb.dut1.mac)
             request.instance.xiq.xflowscommonDevices.check_device_update_status_by_using_mac(device_mac=request.instance.tb.dut1.mac)
 
-        request.instance.xiq.xflowscommonDevices.delete_device(device_mac=request.instance.tb.dut1.mac)
+        if request.instance.xiq.xflowscommonDevices.search_device(device_mac=request.instance.tb.dut1.mac) == 1:
+            print(f'Found device using mac-address {request.instance.tb.dut1.mac}')
+            request.instance.xiq.xflowscommonDevices.delete_device(device_mac=request.instance.tb.dut1.mac)
+        else:
+            for a_serial in request.instance.tb.dut1_serial.split(","):
+                if request.instance.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                    print(f'Found device using serial-number {a_serial}')
+                    request.instance.xiq.xflowscommonDevices.delete_device(a_serial)
+                else:
+                    print(f'Did not find device with mac-address {request.instance.tb.dut1.mac} or serial number(s) {request.instance.tb.dut1_serial}')
         time.sleep(10)
         request.instance.xiq.xflowscommonDevices.onboard_device_quick(request.instance.tb.dut1)
         time.sleep(60)
@@ -90,7 +99,16 @@ def xiq_teardown_small_config(request):
                                                                                         device_mac=request.instance.tb.dut1.mac)
             request.instance.xiq.xflowscommonDevices.check_device_update_status_by_using_mac(device_mac=request.instance.tb.dut1.mac)
 
-        request.instance.xiq.xflowscommonDevices.delete_device(device_mac=request.instance.tb.dut1.mac)
+        if request.instance.xiq.xflowscommonDevices.search_device(device_mac=request.instance.tb.dut1.mac) == 1:
+            print(f'Found device using mac-address {request.instance.tb.dut1.mac}')
+            request.instance.xiq.xflowscommonDevices.delete_device(device_mac=request.instance.tb.dut1.mac)
+        else:
+            for a_serial in request.instance.tb.dut1_serial.split(","):
+                if request.instance.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                    print(f'Found device using serial-number {a_serial}')
+                    request.instance.xiq.xflowscommonDevices.delete_device(a_serial)
+                else:
+                    print(f'Did not find device with mac-address {request.instance.tb.dut1.mac} or serial number(s) {request.instance.tb.dut1_serial}')
         time.sleep(10)
         request.instance.xiq.xflowscommonDevices.onboard_device_quick(request.instance.tb.dut1)
         time.sleep(60)
@@ -429,7 +447,6 @@ class xiqTests():
                                             cls.cfg['tenant_password'],
                                             url=cls.cfg['test_url'])
             cls.save_initial_configuration(cls)
-            cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
             cls.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(policy="policy_test_" + cls.tb.dut1.mac[:-2])
             if cls.tb.dut1.platform.lower() == "stack":
                 slots = cls.get_stack_slots(cls)
@@ -437,11 +454,16 @@ class xiqTests():
                     if cls.xiq.xflowsconfigureCommonObjects.delete_switch_template(template_name="Template_" + cls.tb.dut1.mac[:-2]+f"-{slot}") != 1:
                         pytest.fail("Cannot delete the template in Common Objects")
             cls.xiq.xflowscommonNavigator.navigate_to_devices()
-            if cls.tb.dut1_platform.lower() == "stack":
-                solo_serial = cls.tb.dut1.serial.split(',')
-                for eachdevice in solo_serial:
-                    cls.xiq.xflowscommonDevices.delete_device(device_serial=eachdevice)
-
+            if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac) == 1:
+                print(f'Found device using mac-address {cls.tb.dut1.mac}')
+                cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
+            else:
+                for a_serial in cls.tb.dut1_serial.split(","):
+                    if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                        print(f'Found device using serial-number {a_serial}')
+                        cls.xiq.xflowscommonDevices.delete_device(a_serial)
+                    else:
+                        print(f'Did not find device with mac-address {cls.tb.dut1.mac} or serial number(s) {cls.tb.dut1_serial}')
             cls.iqagent(cls, os=cls.tb.dut1.cli_type, dut_name=cls.tb.dut1_name)
 
             res = -1
@@ -492,11 +514,17 @@ class xiqTests():
         cls.cfg['${TEST_NAME}'] = 'Teardown'
         time.sleep(5)
         cls.xiq.xflowscommonNavigator.navigate_to_devices()
-        cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
+        if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac) == 1:
+            print(f'Found device using mac-address {cls.tb.dut1.mac}')
+            cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
+        else:
+            for a_serial in cls.tb.dut1_serial.split(","):
+                if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                    print(f'Found device using serial-number {a_serial}')
+                    cls.xiq.xflowscommonDevices.delete_device(a_serial)
+                else:
+                    print(f'Did not find device with mac-address {cls.tb.dut1.mac} or serial number(s) {cls.tb.dut1_serial}')
         if cls.tb.dut1.platform.lower() == "stack":
-            solo_serial = cls.tb.dut1.serial.split(',')
-            for eachdevice in solo_serial:
-                cls.xiq.xflowscommonDevices.delete_device(device_serial=eachdevice)
             if cls.xiq.xflowsconfigureSwitchTemplate.delete_stack_switch_template(nw_policy="policy_test_" + cls.tb.dut1.mac[:-2],
                                                                                   sw_template_name="Template_" + cls.tb.dut1.mac[:-2]) != 1:
                 pytest.fail("Cannot delete the template")
