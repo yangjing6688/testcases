@@ -127,7 +127,7 @@ Step2: Verify device configure wireless interface wifi0-1-2 details and wired in
     ...                                             wifi2_configuration=&{AP_TEMPLATE_1_WIFI2}   wired_configuration=&{AP_TEMPLATE_1_WIRED}
     ${ITEM_2}   create list
 
-    ${OUT}    Get Override AP Configure Wifi Details    ${ap1.mac}     &{AP_TEMPLATE_1}
+    ${OUT}    Get Override AP Configure Wifi Details    ${ap1.mac}     ${AP_TEMPLATE_1}
     log       ${OUT}
     log       ${AP_TEMPLATE_2}
     FOR     ${item}     IN      &{OUT}
