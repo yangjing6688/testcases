@@ -73,23 +73,19 @@ Suite Teardown   Post_condition
 Step0: Onboard AP
     [Documentation]    Onboard AP
     [Tags]             tcxm-6847    tcxm-8582    development     step0    steps
-    ${STATUS}                      onboard device quick      ${ap1}
-    should be equal as integers    ${STATUS}         1
+    ${STATUS}       onboard device quick                            ${ap1}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    ${AP_SPAWN}     Open Spawn                                      ${ap1.ip}         ${ap1.port}      ${ap1.username}   ${ap1.password}   ${ap1.cli_type}
+    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
 
-    ${AP_SPAWN}   Open Spawn          ${ap1.ip}          ${ap1.port}      ${ap1.username}      ${ap1.password}     ${ap1.cli_type}
-    ${OUTPUT0}    Send Commands       ${AP_SPAWN}        capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
-    ${OUTPUT0}    Send                ${AP_SPAWN}        console page 0
-    ${OUTPUT0}    Send                ${AP_SPAWN}        show version detail
-    ${OUTPUT0}    Send                ${AP_SPAWN}        show capwap client
-    ${OUTPUT2}    Send                ${AP_SPAWN}        ${cmd_capwap_hm_primary_name}
-    ${OUTPUT3}    Send                ${AP_SPAWN}        ${cmd_capwap_server_ip}
-    ${OUTPUT1}    Wait For CLI Output                    ${AP_SPAWN}         ${cmd_capwap_client_state}          ${output_capwap_status}
-    Should Be Equal as Integers             ${OUTPUT1}          1
-    Close Spawn         ${AP_SPAWN}
-
-    Wait Until Device Online                ${ap1.serial}
-    ${AP_STATUS}=                           Get AP Status      ap_mac=${ap1.mac}
-    Should Be Equal As Strings             '${AP_STATUS}'      'green'
+    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    ${STATUS}       Wait Until Device Online                        ${ap1.serial}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    ${STATUS}       Get Device Status                               ${ap1.serial}
+    Should contain any                                              ${STATUS}          green           config audit mismatch
+    [Teardown]      Close Spawn                                     ${AP_SPAWN}
 
 Step1: Create Policy
     [Documentation]     Creat Policy, User Profile, VLAN Profile, and Classification Rule.
@@ -113,7 +109,7 @@ Step1: Create Policy
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      Add Classification Rule to User Profile    ${USER_PROFILE_00}[profile_name]   ${USER_PROFILE_01}[vlan_id]     ${USER_PROFILE_01}[classification_rule_name]
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      Create Network Policy                              ${POLICY}         ${WIRELESS_PESRONAL_00}
+    ${STATUS}                      create network policy if does not exist            ${POLICY}         &{WIRELESS_PESRONAL_00}
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      create ssid to policy                              ${POLICY}         &{WIRELESS_PESRONAL_01}
     should be equal as strings     '${STATUS}'        '1'
@@ -131,10 +127,11 @@ Step2: Assign network policy with VLANs to AP1
     [Tags]              tcxm-6847   development     step2      steps
     Depends On          Step1
     ${UPDATE}                      Update Network Policy To Ap     ${POLICY}     ${ap1.serial}    Complete
-    should be equal as strings     '${UPDATE}'       '1'
-    Wait Until Device Online       ${ap1.serial}
-    ${AP_STATUS}                   Get AP Status     ap_mac=${ap1.mac}
-    Should Be Equal As Strings    '${AP_STATUS}'    'green'
+    should be equal as strings     '${UPDATE}'        '1'
+    ${STATUS}                      Wait Until Device Online                ${ap1.serial}
+    Should Be Equal As Strings     '${STATUS}'        '1'
+    ${STATUS}                      Get Device Status                       ${ap1.serial}
+    Should Be Equal As Strings     '${STATUS}'        'green'
 
 Step3: Verify (105) cli user-profile attr and ssid security object attr - Default User Profile
     [Documentation]     Verify (105) cli user-profile attr and ssid security object attr - Default User Profile
@@ -226,7 +223,7 @@ Step10: Verify (101) cli location2 vlanid assigned to the client - Multiple User
 Pre_condition
     ${STATUS}                       Login User    ${tenant_username}   ${tenant_password}
     should be equal as strings      '${STATUS}'   '1'
-    ${failed}     ${success}        reset device to default    ${ap1.serial}
+    reset devices to default
     log to console                  Wait for 2 minutes for completing reboot....
     sleep                           2m
     delete all aps

@@ -75,9 +75,8 @@ Test1: Advance Onboard AP1 and AP2 - TCXM-15115
     [Tags]             tcxm-15115     development     test1     test
     ${aps}       Create List        ${ap1}        ${ap2}
     FOR     ${ap}   IN    @{aps}
-
-        ${ONBOARD_STATUS}=               onboard device quick     ${ap}
-        should be equal as integers      ${ONBOARD_STATUS}   1
+        ${ONBOARD_STATUS}             onboard device quick    ${ap}
+        should be equal as integers   ${ONBOARD_STATUS}       1
     END
 
 Test2: Config AP1 and AP2 Capwap to Report AIO - TCXM-15115
@@ -87,15 +86,11 @@ Test2: Config AP1 and AP2 Capwap to Report AIO - TCXM-15115
     ${aps}       Create List        ${ap1}        ${ap2}
     FOR    ${ap}    IN    @{aps}
         ${AP_SPAWN}        Open Spawn          ${ap}[ip]   ${ap}[port]   ${ap}[username]   ${ap}[password]   ${ap}[cli_type]
-        ${OUTPUT0}         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
-        ${OUTPUT0}         Send                ${AP_SPAWN}         console page 0
-        ${OUTPUT0}         Send                ${AP_SPAWN}         show version detail
-        ${OUTPUT0}         Send                ${AP_SPAWN}         show capwap client
-        ${OUTPUT2}         Send                ${AP_SPAWN}         ${cmd_capwap_hm_primary_name}
-        ${OUTPUT3}         Send                ${AP_SPAWN}         ${cmd_capwap_server_ip}
-        ${OUTPUT1}         Wait For CLI Output                     ${AP_SPAWN}         ${cmd_capwap_client_state}          ${output_capwap_status}
-        Should Be Equal as Integers             ${OUTPUT1}          1
-        Close Spawn         ${AP_SPAWN}
+        ${STATUS}          Configure Device To Connect To Cloud            ${ap}[cli_type]   ${capwap_url}    ${AP_SPAWN}
+        Should Be Equal As Strings      '${STATUS}'       '1'
+        ${STATUS}          Wait for Configure Device to Connect to Cloud   ${ap}[cli_type]   ${capwap_url}    ${AP_SPAWN}
+        Should Be Equal As Strings      '${STATUS}'       '1'
+        Close Spawn        ${AP_SPAWN}
     END
     [Teardown]      Run Keyword If Test Failed      Close Spawn     ${AP_SPAWN}
 
@@ -105,10 +100,12 @@ Test3: Check AP1 and AP2 Status On UI - TCXM-15115
     Depends On          Test2
     ${aps}=      Create List        ${ap1}        ${ap2}
     FOR    ${ap}    IN    @{aps}
-        Wait Until Device Reboots               ${ap}[serial]
-        Wait Until Device Online                ${ap}[serial]
-        ${AP_STATUS}                            Get AP Status       ap_mac=${ap}[mac]
-        Should Be Equal As Strings             '${AP_STATUS}'       'green'
+        ${STATUS}       Wait Until Device Reboots          ${ap}[serial]
+        Should Be Equal As Strings       '${STATUS}'       '1'
+        ${STATUS}       Wait Until Device Online           ${ap}[serial]
+        Should Be Equal As Strings       '${STATUS}'       '1'
+        ${STATUS}       Get Device Status                  ${ap}[serial]
+        Should contain any               ${STATUS}         green           config audit mismatch
     END
 
 Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15115
@@ -127,7 +124,7 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15115
     Set To Dictionary           ${WIRELESS_PESRONAL_CM}         ssid_name=${SSID_CM}
     Set Suite Variable          ${CLIENT_PROFLE_NAME_CM}        wifi0_${NUM}
 
-    Create Network Policy          ${POLICY}          ${WIRELESS_PESRONAL_ENT_00}
+    create network policy if does not exist          policy=${POLICY}          &{WIRELESS_PESRONAL_ENT_00}
     ${DHCP_STATUS}                 navigate to device config device config dhcp       ${ap1.mac}          enable
     Should Be Equal As Strings    '${DHCP_STATUS}'           '1'
     ${CREATE_AP_TEMPLATE}          add ap template from common object     ${ap1.model}         ${AP_TEMP_NAME}      &{AP_TEMPLATE_CONFIG_1}
@@ -135,7 +132,7 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15115
     ${SELECT_AP_TEMPLATE}          add ap template to network policy      ${AP_TEMP_NAME}      ${POLICY}
     Should Be Equal As Strings     '${SELECT_AP_TEMPLATE}'   '1'
 
-    Create Network Policy          ${POLICY_CM}       ${WIRELESS_PESRONAL_CM}
+    create network policy if does not exist          policy=${POLICY_CM}       &{WIRELESS_PESRONAL_CM}
     ${CREATE_AP_TEMPLATE}          add ap template from common object     ${ap2.model}            ${AP_TEMP_NAME_CM}      &{AP_TEMPLATE_CONFIG_2}
     Should Be Equal As Strings     '${CREATE_AP_TEMPLATE}'   '1'
     ${SELECT_AP_TEMPLATE}          add ap template to network policy      ${AP_TEMP_NAME_CM}      ${POLICY_CM}
@@ -143,10 +140,12 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15115
 
     ${UPDATE}                      Update Network Policy To Ap    policy_name=${POLICY_CM}    ap_serial=${ap2.serial}     update_method=Complete
     should be equal as strings     '${UPDATE}'               '1'
-    Wait Until Device Reboots      ${ap2.serial}
-    Wait Until Device Online       ${ap2.serial}
-    ${AP2_STATUS}                  Get AP Status              ap_mac=${ap2.mac}
-    Should Be Equal As Strings     '${AP2_STATUS}'            'green'
+    ${STATUS}                      Wait Until Device Reboots      ${ap2.serial}
+    Should Be Equal As Strings     '${STATUS}'               '1'
+    ${STATUS}                      Wait Until Device Online       ${ap2.serial}
+    Should Be Equal As Strings     '${STATUS}'               '1'
+    ${STATUS}                      Get Device Status              ${ap2.serial}
+    Should Be Equal As Strings     '${STATUS}'               'green'
 
 Test5: Client mode enable in device Configuration for AP2 - TCXM-15115
     [Documentation]     Client mode enable in device Configuration for AP2
@@ -160,17 +159,21 @@ Test5: Client mode enable in device Configuration for AP2 - TCXM-15115
     should be equal as strings           '${STATUS}'              '1'
     sleep                                20s
     update device delta configuration    ${ap2.serial}             update_method=Complete
-    Wait Until Device Reboots            ${ap2.serial}
-    Wait Until Device Online             ${ap2.serial}
-    ${AP2_STATUS}                        Get AP Status             ap_mac=${ap2.mac}
-    Should Be Equal As Strings           '${AP2_STATUS}'           'green'
+    ${STATUS}                            Wait Until Device Reboots      ${ap2.serial}
+    Should Be Equal As Strings           '${STATUS}'               '1'
+    ${STATUS}                            Wait Until Device Online       ${ap2.serial}
+    Should Be Equal As Strings           '${STATUS}'               '1'
+    ${STATUS}                            Get Device Status              ${ap2.serial}
+    Should Be Equal As Strings           '${STATUS}'               'green'
 
     ${UPDATE}                            Update Network Policy To Ap    policy_name=${POLICY}       ap_serial=${ap1.serial}     update_method=Complete
     should be equal as strings           '${UPDATE}'               '1'
-    Wait Until Device Reboots            ${ap1.serial}
-    Wait Until Device Online             ${ap1.serial}
-    ${AP1_STATUS}                        Get AP Status              ap_mac=${ap1.mac}
-    Should Be Equal As Strings           '${AP1_STATUS}'            'green'
+    ${STATUS}                            Wait Until Device Reboots      ${ap1.serial}
+    Should Be Equal As Strings           '${STATUS}'               '1'
+    ${STATUS}                            Wait Until Device Online       ${ap1.serial}
+    Should Be Equal As Strings           '${STATUS}'               '1'
+    ${STATUS}                            Get Device Status              ${ap1.serial}
+    Should Be Equal As Strings           '${STATUS}'               'green'
 
 Test6: Setup WIFI on STA2 and Connect to AP2 - TCXM-15115
     [Documentation]     Setup WIFI on STA2 and Connect to AP2 on Client Mode
@@ -240,7 +243,7 @@ Verify station
 Pre_condition
     ${STATUS}                           Login User    ${tenant_username}   ${tenant_password}
     should be equal as strings          '${STATUS}'   '1'
-    ${failed}     ${success}            reset device to default    ${ap1.serial}      ${ap2.serial}
+    reset devices to default
     log to console                      Wait for 2 minutes for completing reboot....
     sleep                               2m
     delete all aps

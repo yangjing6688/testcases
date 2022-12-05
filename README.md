@@ -61,7 +61,7 @@ The currently supported skips are: `Testbed`, `Dir`, `File`, `Reserved Tags`, `T
 `File`
     - Skips the entire "File name and location validation" section of the CI
 
-`Reserved Tags`
+`Reserved Tags` ***NOTE: this check is fully disabled until further notice***
     - Removes the restriction that disallowes adding certain reserved tags/markers to a testcase. ( production, regression, nightly, sanity, p1, p2, p3, p4 )
     - Also, removes the need to have a "development" tag on each testcase
 

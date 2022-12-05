@@ -183,7 +183,16 @@ class xiqTests():
 
             cls.delete_create_location_organization(cls)
 
-            cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
+            if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac) == 1:
+                print(f'Found device using mac-address {cls.tb.dut1.mac}')
+                cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
+            else:
+                for a_serial in cls.tb.dut1_serial.split(","):
+                    if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                        print(f'Found device using serial-number {a_serial}')
+                        cls.xiq.xflowscommonDevices.delete_device(a_serial)
+                    else:
+                        print(f'Did not find device with mac-address {cls.tb.dut1.mac} or serial number(s) {cls.tb.dut1_serial}')
 
             if cls.tb.dut1.make == "exos":
                 cls.get_virtual_router(cls,cls.tb.dut1_name, cls.tb.dut1.ip)
@@ -197,7 +206,16 @@ class xiqTests():
 
     @classmethod
     def teardown_class(cls):
-        cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
+        if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac) == 1:
+            print(f'Found device using mac-address {cls.tb.dut1.mac}')
+            cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
+        else:
+            for a_serial in cls.tb.dut1_serial.split(","):
+                if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                    print(f'Found device using serial-number {a_serial}')
+                    cls.xiq.xflowscommonDevices.delete_device(a_serial)
+                else:
+                    print(f'Did not find device with mac-address {cls.tb.dut1.mac} or serial number(s) {cls.tb.dut1_serial}')
         cls.screen.save_screen_shot()
         cls.xiq.xflowsmanageLocation.delete_location_building_floor(org, location, building)
         cls.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(nw_policy)

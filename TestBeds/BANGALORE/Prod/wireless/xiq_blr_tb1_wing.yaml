@@ -1,21 +1,21 @@
 wing1:
-  name:                     vx9000-C95C19
-  model:                    VX9000
+  name:                     ap505-134010
+  model:                    AP505
   device_template:
-  serial:                   100A405DFA4702C0
-  os_version:               7.6.3.0-012R
-  mac:                      000C29C95C19
+  serial:                   1902W-2012600000
+  os_version:               7.7.1.4-003R
+  mac:                      949B2C134010
   cli_type:                 "WING-AP"
   bssid:
   network_policy:           Test_np
   username:                 admin
   password:                 symbol
   platform:                 wing
-  ip:                       10.234.137.23
+  ip:                       10.234.178.67
   port:                     22
   connection_method:        "ssh"
-  console_ip:               10.234.137.23
-  console_port:             '22'
+  console_ip:               10.234.178.230
+  console_port:             7010
   country:                  United Kingdom
   make:                     Controllers
   location:                 auto_location_01, Santa Clara, building_02, floor_04

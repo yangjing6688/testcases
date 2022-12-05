@@ -62,6 +62,7 @@ netelem1:
   version:                  #(OPTIONAL)                         6.5
   neighbour_serial:         #(OPTIONAL)                         06301908310556
   neighbour_mac:            #(OPTIONAL)                         3485843A5CC0
+  ap_type:                  #(OPTIONAL)                         Example values: ”11ac”, “11ax”, “wifi6e”
   tgen:
     port_a:
       ifname:               #(REQUIRED)                         The netelem's interface name, as it would be entered on the device (i.e "5", "2:3" "ge.1.2" or "eth1')
