@@ -99,29 +99,25 @@ Suite Teardown   Post_condition
 Step0: Onboard AP
     [Documentation]    Onboard AP
     [Tags]             tcxm-17744     development     step0   steps
-    ${STATUS}                      onboard device quick    ${ap1}
-    should be equal as integers    ${STATUS}         1
+    ${STATUS}       onboard device quick                            ${ap1}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    ${AP_SPAWN}     Open Spawn                                      ${ap1.ip}         ${ap1.port}      ${ap1.username}   ${ap1.password}   ${ap1.cli_type}
+    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
 
-    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}           ${ap1.port}      ${ap1.username}      ${ap1.password}      ${ap1.cli_type}
-    ${OUTPUT0}=         Send Commands       ${AP_SPAWN}        capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
-    ${OUTPUT0}=         Send                ${AP_SPAWN}        console page 0
-    ${OUTPUT0}=         Send                ${AP_SPAWN}        show version detail
-    ${OUTPUT0}=         Send                ${AP_SPAWN}        show capwap client
-    ${OUTPUT2}=         Send                ${AP_SPAWN}        ${cmd_capwap_hm_primary_name}
-    ${OUTPUT3}=         Send                ${AP_SPAWN}        ${cmd_capwap_server_ip}
-    ${OUTPUT1}=         Wait For CLI Output                    ${AP_SPAWN}         ${cmd_capwap_client_state}          ${output_capwap_status}
-    Should Be Equal as Integers             ${OUTPUT1}          1
-    Close Spawn         ${AP_SPAWN}
-
-    Wait Until Device Online                ${ap1.serial}
-    ${AP_STATUS}=                           Get AP Status      ap_mac=${ap1.mac}
-    Should Be Equal As Strings             '${AP_STATUS}'      'green'
+    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    ${STATUS}       Wait Until Device Online                        ${ap1.serial}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    ${STATUS}       Get Device Status                               ${ap1.serial}
+    Should contain any                                              ${STATUS}          green           config audit mismatch
+    [Teardown]      Close Spawn                                     ${AP_SPAWN}
 
 Step1: Create Policy - Enterprise with Cloud and Radius auth
     [Documentation]     Create policy, select wifi0,1,2, and update policy to AP
     [Tags]              tcxm-17744    tcxm-17745    tcxm-17746    tcxm-17747    tcxm-17748    tcxm-17750    development     step1      steps
     Depends On          Step0
-    ${NUM}=                        Generate Random String     5    012345678
+    ${NUM}                         Generate Random String     5    012345678
     Set Suite Variable             ${POLICY}                       enterprise_${NUM}
     Set Suite Variable             ${SSID_00}                      w0_1_cld
     Set Suite Variable             ${SSID_01}                      w0_1_rad
@@ -133,7 +129,7 @@ Step1: Create Policy - Enterprise with Cloud and Radius auth
     Set To Dictionary              ${WIRELESS_ENTERPRISE_02}       ssid_name=${SSID_02}
     Set To Dictionary              ${WIRELESS_ENTERPRISE_03}       ssid_name=${SSID_03}
 
-    ${STATUS}                      Create Network Policy    ${POLICY}      ${WIRELESS_ENTERPRISE_00}
+    ${STATUS}                      create network policy if does not exist    ${POLICY}    &{WIRELESS_ENTERPRISE_00}
     should be equal as strings     '${STATUS}'       '1'
     ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_ENTERPRISE_01}
     should be equal as strings    '${STATUS}'        '1'
@@ -151,10 +147,12 @@ Step2: Assign network policy to AP
     [Tags]              tcxm-17744    tcxm-17745    tcxm-17746    tcxm-17747    tcxm-17748    tcxm-17750    development     step2      steps
     Depends On          Step1
     ${UPDATE}                      Update Network Policy To Ap             ${POLICY}          ${ap1.serial}      Complete
-    should be equal as strings     '${UPDATE}'       '1'
-    Wait Until Device Online       ${ap1.serial}
-    ${AP_STATUS}                   Get AP Status     ap_mac=${ap1.mac}
-    Should Be Equal As Strings    '${AP_STATUS}'    'green'
+    should be equal as strings     '${UPDATE}'        '1'
+    ${STATUS}                      Wait Until Device Online                ${ap1.serial}
+    Should Be Equal As Strings     '${STATUS}'        '1'
+    ${STATUS}                      Get Device Status                       ${ap1.serial}
+    Should Be Equal As Strings     '${STATUS}'        'green'
+    Enable disable client Wifi device                 ${mu1}
 
 Step3: MU connect to wifi0-1 - Cloud Auth service
     [Documentation]     MU connect to wifi0-1 - Enterprise SSID using cloud Auth service
@@ -228,8 +226,8 @@ Step10: Verify Client360 to wifi2 - Radius Auth service
 Pre_condition
     ${STATUS}                           Login User    ${tenant_username}   ${tenant_password}
     should be equal as strings          '${STATUS}'   '1'
-    ${failed}     ${success}      reset device to default    ${ap1.serial}
-    log to console                Wait for 2 minutes for completing reboot....
+    reset devices to default
+    log to console                      Wait for 2 minutes for completing reboot....
     sleep                               2m
     delete all aps
     delete all network policies
@@ -239,3 +237,9 @@ Pre_condition
 Post_condition
     Logout User
     Quit Browser
+
+Enable_disable_client_Wifi_device
+    [Arguments]     ${mu}
+    ${SPAWN}        Open Spawn    ${mu}[ip]     22    ${mu}[username]    ${mu}[password]    cli_type=MU-WINDOWS
+    Send Commands   ${SPAWN}      pnputil /disable-device /deviceid \"PCI\\CC_0280\", pnputil /enable-device /deviceid \"PCI\\CC_0280\"
+    [Teardown]      run keyword   Close Spawn   ${SPAWN}
