@@ -49,7 +49,7 @@ TCCS-13205_Step2: Perform Reset VIQ
 
     [Teardown]          Quit Browser
     
-TCCS-13205_Step3: Import Map
+TCCS-13205_Step3: Import Map and Change Device Password
     [Documentation]         Imports map
 
     [Tags]                  production  tccs_13205  tccs_13205_step3
@@ -60,8 +60,13 @@ TCCS-13205_Step3: Import Map
     ${LOGIN_STATUS}=                   Login User          ${tenant_username}     ${tenant_password}       check_warning_msg=True
     should be equal as integers         ${LOGIN_STATUS}               1
 
+    # This step is repeated to ensure if other map is imported in VIQ and so that Login User keyowrd failed to import default map.
     ${IMPORT_MAP}=                  Import Map In Network360Plan  ${MAP_FILE_NAME}
     Should Be Equal As Strings      '${IMPORT_MAP}'              '1'
+
+    # Add default login password for devices
+    ${CHANGE_PASSWORD_STATUS}=      Change Device Password                  Aerohive123
+    should be equal as integers     ${CHANGE_PASSWORD_STATUS}               1
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser

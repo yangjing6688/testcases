@@ -1,0 +1,9 @@
+netelem1:
+  name:                   "5320-16P-4XE-DC-SwitchEngine"
+  make:                   "EXOS"
+  model:                  "5320-16P-4XE-DC"
+  ip:                     "10.0.2.15"
+  digital_twin_persona:   "SwitchEngine"
+  digital_twin_version:   "32.1.1.6"
+  location:               "auto_location_01, Santa Clara, building_02, floor_04"
+  onboard_device_type:    "Digital Twin"

@@ -503,10 +503,31 @@ def pytest_collection_modifyitems(session, items):
         
         log_git()
 
+        logger_obj.info(f"Collected {len(items)} test functions from given test directory path(s).")
         logger_obj.info(f"Current runlist ('{pytest.runlist_name}') is located in this yaml file: '{pytest.runlist_path}'.")
         logger_obj.info(f"Found {len(pytest.runlist_tests)} tests in given runlist: " + "'" + "', '".join(pytest.runlist_tests) + "'.")
-        logger_obj.info(f"Collected {len(items)} test functions from given test directory path(s).")
+                
+        suitemap_tcs: List[TestCaseMarker] = []
+        
+        for _, test_info in pytest.suitemap_tests.items():
+            if tc := test_info.get("tc"):
+                suitemap_tcs.append(tc)
+            elif tcs := test_info.get("tests"):
+                for tc in tcs:
+                    suitemap_tcs.append(tc['tc'])
 
+        logger_obj.info(f"Found {len(suitemap_tcs)} test(s) defined in given suitemap yaml files: " + "'" + "', '".join(suitemap_tcs) + "'.")
+        
+        if tcs_found_in_runlist_but_not_in_suitemap := list(set(pytest.runlist_tests).difference(set(suitemap_tcs))):
+            logger_obj.warning(
+                f"Found {len(tcs_found_in_runlist_but_not_in_suitemap)} test case(s) in the runlist yaml file"
+                f" that do not have definitions in the given suitemap yaml files: " + "'" + "', '".join(tcs_found_in_runlist_but_not_in_suitemap) + "'.")
+        
+        if tcs_found_in_suitemap_but_not_in_runlist := list(set(suitemap_tcs).difference(set(pytest.runlist_tests))):
+            logger_obj.info(
+                f"Found {len(tcs_found_in_suitemap_but_not_in_runlist)} test case(s) defined in the suitemap yaml "
+                f"that are not used in the runlist yaml file: " + "'" + "', '".join(tcs_found_in_suitemap_but_not_in_runlist) + "'.")
+        
         for item in items:
             
             if (cls_markers := getattr(item.cls, "pytestmark", None)) is not None:
@@ -774,15 +795,6 @@ def pytest_collection_modifyitems(session, items):
 
                 temp_items[:] = filtered_by_priority_items
             
-            suitemap_tcs: List[TestCaseMarker] = []
-            
-            for test_identifier, test_info in pytest.suitemap_tests.items():
-                if (tc := test_info.get("tc")) is not None:
-                    suitemap_tcs.append(tc)
-                elif (tcs := test_info.get("tests")) is not None:
-                    for tc in tcs:
-                        suitemap_tcs.append(tc['tc'])
-
             for test in pytest.runlist_tests:
                 
                 test_found_in_suitemap: bool = test in suitemap_tcs
@@ -939,7 +951,13 @@ def pytest_sessionstart(session):
                 logger_obj.warning(f"Did not find this suitemap file: '{suitemap}'")
             else:
                 suitemap_dict = yaml.safe_load(output_suitemap)
-                suitemap_tests_dict = suitemap_dict['tests']
+                suitemap_tests_dict = suitemap_dict.get("tests", {})
+                
+                if not suitemap_tests_dict:
+                    logger_obj.warning(
+                        f"Did not find any tests defined in this suitemap file: '{suitemap}'."
+                        f"Make sure that the tests are placed under the 'tests' key in the suitemap file.")
+                    
                 suitemap_data_dict = suitemap_dict.get('data', {})
                 pytest.suitemap_tests = {**pytest.suitemap_tests, **suitemap_tests_dict}
                 pytest.suitemap_data = {**pytest.suitemap_data, **suitemap_data_dict}
@@ -2156,7 +2174,12 @@ def configure_network_policies(
             model_template = data['dut_model_template']
             units_model = data['units_model']
 
-            if onb_options.get('create_network_policy', True):
+            create_network_policy_flag = onb_options.get('create_network_policy', True)
+            create_switch_template_flag = onb_options.get('create_switch_template', True)
+            assign_network_policy_to_device_flag = onb_options.get('assign_network_policy_to_device', True)
+            logger.debug(f"{create_network_policy_flag=}, {create_switch_template_flag=}, {assign_network_policy_to_device_flag=}")
+
+            if create_network_policy_flag:
                 
                 logger.step(f"Create this network policy for '{dut}' dut (node: '{node_name}'): '{network_policy}'.")
                 assert xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
@@ -2165,9 +2188,9 @@ def configure_network_policies(
                 screen.save_screen_shot()
                 logger.info(f"Successfully created the network policy '{network_policy}' for dut '{dut}' (node: '{node_name}').")
                 
-                if onb_options.get('create_switch_template', True):
+                if create_switch_template_flag:
                     logger.step(f"Create and attach this switch template to '{dut}' dut (node: '{node_name}'): '{template_switch}'.")
-                    if dut_info.platform.upper() == "STACK":
+                    if node_name == "node_stack":
                         xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(
                             units_model, network_policy,
                             model_template, template_switch)
@@ -2175,9 +2198,11 @@ def configure_network_policies(
                         xiq.xflowsconfigureSwitchTemplate.add_sw_template(
                             network_policy, model_template, template_switch)
                         screen.save_screen_shot()
-                    logger.info(f"Successfully created and attached this switch template to the network policy '{network_policy}' of dut '{dut}' (node: '{node_name}').")
+                    logger.info(
+                        f"Successfully created and attached this switch template to the network policy"
+                        f"'{network_policy}' of dut '{dut}' (node: '{node_name}').")
 
-                if onb_options.get('assign_network_policy_to_device', True):
+                if assign_network_policy_to_device_flag:
                     assert xiq.xflowsmanageDevices.assign_network_policy_to_switch_mac(
                         policy_name=network_policy, mac=dut_info.mac) == 1, \
                         f"Couldn't assign policy {network_policy} to device '{dut}' (node: '{node_name}')."
@@ -2447,14 +2472,20 @@ def update_devices(
         wait_till(timeout=5)
 
         for dut in duts:
+            
             onb_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
             policy_name: str = policy_config[dut.name]['policy_name']
             
+            create_network_policy_flag = onb_options.get('create_network_policy', True)
+            assign_network_policy_to_device_flag = onb_options.get('assign_network_policy_to_device', True)
+            initial_network_policy_push_flag = onb_options.get('initial_network_policy_push', True)
+            logger.debug(f"{create_network_policy_flag=}, {assign_network_policy_to_device_flag=}, {initial_network_policy_push_flag=}")
+
             if all(
                 [
-                    onb_options.get('initial_network_policy_push', True),
-                    onb_options.get('assign_network_policy_to_device', True),
-                    onb_options.get('create_network_policy', True)
+                    create_network_policy_flag,
+                    assign_network_policy_to_device_flag,
+                    initial_network_policy_push_flag
                 ]
             ):
                 logger.step(f"Select switch row with serial '{dut.mac}'.")
@@ -2472,9 +2503,21 @@ def update_devices(
                 wait_till(timeout=2)
 
         for dut in duts:
+            
             onb_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
             policy_name = policy_config[dut.name]['policy_name']
-            if onb_options.get('initial_network_policy_push', True):
+
+            create_network_policy_flag = onb_options.get('create_network_policy', True)
+            assign_network_policy_to_device_flag = onb_options.get('assign_network_policy_to_device', True)
+            initial_network_policy_push_flag = onb_options.get('initial_network_policy_push', True)
+            
+            if all(
+                [
+                    create_network_policy_flag,
+                    assign_network_policy_to_device_flag,
+                    initial_network_policy_push_flag
+                ]
+            ):
                 if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac) != 1:
                     error_msg = f"It look like the update failed this switch: '{dut.mac}'."
                     logger.error(error_msg)
@@ -3039,7 +3082,6 @@ def run_options() -> Options:
 @pytest.fixture(scope="session")
 def node_1(
         request: fixtures.SubRequest,
-        logger: PytestLogger
 ) -> Node:
     if pytest.onboard_one_node or pytest.onboard_two_node:
         node_list: List[Node] = request.getfixturevalue("node_list")
@@ -3074,7 +3116,6 @@ def node_stack_onboarding_options(
 @pytest.fixture(scope="session")
 def node_2(
         request: fixtures.SubRequest,
-        logger: PytestLogger
 ) -> Node:
     if pytest.onboard_two_node:
         node_list: List[Node] = request.getfixturevalue("node_list")
@@ -3085,7 +3126,6 @@ def node_2(
 @pytest.fixture(scope="session")
 def node_stack(
         request: fixtures.SubRequest,
-        logger: PytestLogger
 ) -> Node:
     if pytest.onboard_stack:
         node_list: List[Node] = request.getfixturevalue("node_list")
@@ -3684,13 +3724,11 @@ class Testbed(metaclass=Singleton):
         self.get_xiq_library: GetXiqLibrary = request.getfixturevalue("get_xiq_library")
         self.deactivate_xiq_library: DeactivateXiqLibrary = request.getfixturevalue("deactivate_xiq_library")
         self.bounce_iqagent: BounceIqagent = request.getfixturevalue("bounce_iqagent")
-        self.dut_ports: Dict[str, List[str]] = request.getfixturevalue("dut_ports")
         self.login_xiq: LoginXiq = request.getfixturevalue("login_xiq")
         self.enter_switch_cli: EnterSwitchCli = request.getfixturevalue("enter_switch_cli")
         self.open_spawn: OpenSpawn = request.getfixturevalue("open_spawn")
         self.connect_to_all_devices: Callable[[], Iterator[NetworkElementCliSend]] = request.getfixturevalue("connect_to_all_devices")
         self.close_connection: CloseConnection = request.getfixturevalue("close_connection")
-        self.virtual_routers: Dict[str, str] = request.getfixturevalue("virtual_routers")
         self.configure_iq_agent: ConfigureIqAgent = request.getfixturevalue("configure_iq_agent")
         self.check_devices_are_reachable: CheckDevicesAreReachable = request.getfixturevalue("check_devices_are_reachable")
         self.dump_switch_logs: DumpSwitchLogs = request.getfixturevalue("dump_switch_logs")

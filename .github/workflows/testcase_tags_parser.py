@@ -181,9 +181,10 @@ def update_testcase_data():
 
             try:
                 json_response = r.json()
+                print(json_response)
                 if isinstance(json_response['result'], dict) and json_response['result'].get('status') == 'success':
                     print(f"{SUCCESS_PREFIX} Test Case [{testcase}] added to the AutoIQ Database")
-                elif isinstance(json_response['result'], list) and json_response['result'][0].get('status') == 'success':
+                elif json_response['result'] and isinstance(json_response['result'], list) and json_response['result'][0].get('status') == 'success':
                     print(f"{SUCCESS_PREFIX} Test Case [{testcase}] added to the AutoIQ Database")
                 elif 'Duplicate' in json_response['errors'][0]:
                     print(f"{SUCCESS_PREFIX} Test Case [{testcase}] is already in the AutoIQ Database")
