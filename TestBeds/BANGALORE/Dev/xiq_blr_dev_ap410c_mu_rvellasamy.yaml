@@ -1,0 +1,49 @@
+ap1:
+  name:                     bui-flo-0088
+  connection_method:        "ssh"
+  ip:                       10.234.135.110
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '04101912120088'
+  console_ip:               10.234.135.110
+  console_port:             '22'
+  mac:                      BCF3101EB280
+  cli_type:                 "AH-AP"
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP410C
+  template:                 AP_410C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           BLR_TB2_AP410C_01
+      ssid:                     AP410C_01
+      version:                  6.5
+      neighbour_serial:         24602001170042
+      neighbour_mac:            BCF3102A9880
+
+mu1:
+  ip:             10.234.178.227
+  port:           8270
+  username:       extreme
+  password:       Extreme@123
+  platform:       windows
+  interface:      wlan0
+  wifi_mac:       548D5A693CE6
+  ethernet_mac:   2CEA7F023CF7
+  wifi_network:   10.234.178
+  wifi_network_vlan10:    10.234.178
