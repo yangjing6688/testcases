@@ -32,6 +32,7 @@ ${DUT_IP}                   ${netelem1.ip}
 ${DUT_PORT}                 ${netelem1.port}
 ${DUT_USERNAME}             ${netelem1.username}
 ${DUT_PASSWORD}             ${netelem1.password}
+${DUT_VR}                   ${netelem1.vr}
 
 ${PILOT_ENTITLEMENT}        PRD-XIQ-PIL-S-C
 ${COPILOT_ENTITLEMENT}      PRD-XIQ-COPILOT-S-C
