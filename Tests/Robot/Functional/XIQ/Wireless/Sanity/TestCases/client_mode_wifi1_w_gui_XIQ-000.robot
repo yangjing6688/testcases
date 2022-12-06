@@ -127,7 +127,8 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15129 - TCXM-15131 -
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2_WIFI1}   client_mode_profile=${CLIENT_MODE_PROFILE_WIFI1}
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2}         wifi1_configuration=${AP_TEMPLATE_CONFIG_2_WIFI1}
 
-    create network policy if does not exist          policy=${POLICY}          &{WIRELESS_PESRONAL_ENT_01}
+    ${STATUS}                      create network policy if does not exist            ${POLICY}          ${WIRELESS_PESRONAL_ENT_01}
+    Should Be Equal As Strings     '${STATUS}'               '1'
     ${DHCP_STATUS}                 navigate to device config device config dhcp       ${ap1.mac}          enable
     Should Be Equal As Strings    '${DHCP_STATUS}'           '1'
     ${CREATE_AP_TEMPLATE}          add ap template from common object     ${ap1.model}         ${AP_TEMP_NAME}      &{AP_TEMPLATE_CONFIG_1}
@@ -135,7 +136,8 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15129 - TCXM-15131 -
     ${SELECT_AP_TEMPLATE}          add ap template to network policy      ${AP_TEMP_NAME}      ${POLICY}
     Should Be Equal As Strings     '${SELECT_AP_TEMPLATE}'   '1'
 
-    create network policy if does not exist          policy=${POLICY_CM}       &{WIRELESS_PESRONAL_CM}
+    ${STATUS}                      create network policy if does not exist            ${POLICY_CM}       ${WIRELESS_PESRONAL_CM}
+    Should Be Equal As Strings     '${STATUS}'               '1'
     ${CREATE_AP_TEMPLATE}          add ap template from common object      ${ap2.model}            ${AP_TEMP_NAME_CM}      &{AP_TEMPLATE_CONFIG_2}
     Should Be Equal As Strings     '${CREATE_AP_TEMPLATE}'   '1'
     ${SELECT_AP_TEMPLATE}          add ap template to network policy       ${AP_TEMP_NAME_CM}      ${POLICY_CM}
@@ -143,7 +145,7 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15129 - TCXM-15131 -
 
     ${UPDATE}                      Update Network Policy To Ap    policy_name=${POLICY}       ap_serial=${ap1.serial}     update_method=Complete
     should be equal as strings     '${UPDATE}'               '1'
-   ${STATUS}                       Wait Until Device Reboots      ${ap1.serial}
+    ${STATUS}                       Wait Until Device Reboots      ${ap1.serial}
     Should Be Equal As Strings     '${STATUS}'               '1'
     ${STATUS}                      Wait Until Device Online       ${ap1.serial}
     Should Be Equal As Strings     '${STATUS}'               '1'

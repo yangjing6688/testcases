@@ -129,7 +129,7 @@ Step1: Create Policy - Enterprise with Cloud and Radius auth
     Set To Dictionary              ${WIRELESS_ENTERPRISE_02}       ssid_name=${SSID_02}
     Set To Dictionary              ${WIRELESS_ENTERPRISE_03}       ssid_name=${SSID_03}
 
-    ${STATUS}                      create network policy if does not exist    ${POLICY}    &{WIRELESS_ENTERPRISE_00}
+    ${STATUS}                      create network policy if does not exist    ${POLICY}    ${WIRELESS_ENTERPRISE_00}
     should be equal as strings     '${STATUS}'       '1'
     ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_ENTERPRISE_01}
     should be equal as strings    '${STATUS}'        '1'
