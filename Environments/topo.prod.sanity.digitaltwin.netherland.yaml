@@ -1,0 +1,8 @@
+test_url:                   "https://extremecloudiq.com"
+capwap_url:                 "nl-gcp-cwm.extremecloudiq.com"
+sw_connection_host:         "nl-gcp.extremecloudiq.com"
+tenant_username:            "xiqprodautonlgcp@gmail.com"
+tenant_password:            "Aerohive123"
+pilot_entitlements:         "3"
+copilot_entitlements:       "2"
+navigator_entitlements:     "2"
