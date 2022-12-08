@@ -115,6 +115,9 @@ Create Network Policies
     ${CREATE_POLICY7}=              Create Network Policy   ${NW_POLICY_NAME7}      ${GUEST_OPEN_NW7}
     Should Be Equal As Strings      '${CREATE_POLICY7}'   '1'
 
+    ${CREATE_POLICY8}=              Create Network Policy   ${NW_POLICY_NAME8}      ${GUEST_OPEN_NW8}
+    Should Be Equal As Strings      '${CREATE_POLICY8}'   '1'
+
 *** Test Cases ***
  
 TCCS-12991: Guest Enablement Pre-check
@@ -209,6 +212,10 @@ TCCS-13119: Clone Splash Template, Onboarding Policy and Onboarding Rules
 
     ${CLONE_USER_REG_TEMPLATE}=           clone user registration with social wifi template   template_name=${TEMPLATE9_NAME}
     Should Be Equal As Strings      '${CLONE_USER_REG_TEMPLATE}'     '1'
+
+    ${CLONE_SPONSOR_TEMPLATE}=             clone_sponsored_guest_access_template  template_name=${TEMPLATE7_NAME}
+    Should Be Equal As Strings      '${CLONE_ACCEPT_TEMPLATE}'     '1'
+
     save screen shot
     
     ${EG_POLICY_NAME_STATUS0}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME0}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE0}
@@ -222,6 +229,10 @@ TCCS-13119: Clone Splash Template, Onboarding Policy and Onboarding Rules
 
     ${EG_POLICY_NAME_STATUS3}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME3}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE4}
     Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS3}'     '1'
+
+    ${EG_POLICY_NAME_STATUS4}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME4}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE3}    condition_value=${CONDITION_VALUE}    action_type=${SEND_PASSCODE_ON_APPROVAL}    user_notifpolicy=${DEFAULT_NOTIFICATION_POLICY1}    sponsor_notifpolicy=${DEFAULT_NOTIFICATION_POLICY2}
+    Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS4}'     '1'
+
     save screen shot
 
     ${EG_RULE_NAME_0}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME0}  policy_name=${EG_POLICY_NAME0}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME0}
@@ -244,6 +255,10 @@ TCCS-13119: Clone Splash Template, Onboarding Policy and Onboarding Rules
 
     ${EG_RULE_NAME_6}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME6}  policy_name=${EG_POLICY_NAME3}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME7}
     Should Be Equal As Strings      '${EG_RULE_NAME_6}'     '1'
+
+    ${EG_RULE_NAME_7}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME7}  policy_name=${EG_POLICY_NAME4}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME8}
+    Should Be Equal As Strings      '${EG_RULE_NAME_7}'     '1'
+
 
     [Teardown]   run keywords       switch_to_extreme_guest_window
     ...                             close_extreme_guest_window
@@ -278,16 +293,16 @@ TCCS-12997: Verify User registration and authenticate CP with Facebook
     ${SEND_CMD_STATUS}=             send wg cmd to ap  ${SSID_NAME1}    @{fb_cli_obj}
     
     Log to Console      Sleep for ${CONFIG_PUSH_WAIT}
-    BuiltIn.Sleep                         ${CONFIG_PUSH_WAIT}
+    Sleep                         ${CONFIG_PUSH_WAIT}
 
     ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME1}
     Should Be Equal As Strings      '${CONNECT_CLIENT_OPEN_N/W}'     '1'
     Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
-    BuiltIn.Sleep                         ${CLIENT_CONNECT_WAIT}
+    Sleep                         ${CLIENT_CONNECT_WAIT}
     
     ${OPEN_GUEST_PORTAL}=             open guest portal browser    ${mu1.ip}
     Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
-    BuiltIn.Sleep  ${CP_PAGE_OPEN_WAIT}
+    Sleep  ${CP_PAGE_OPEN_WAIT}
 
     ${SOCIAL_AUTH_STATUS}=                 validate eguest social login with facebook     ${MAIL_ID3}      ${MAIL_ID3_PASS}
     
@@ -300,7 +315,7 @@ TCCS-12997: Verify User registration and authenticate CP with Facebook
     Should Be Equal As Strings      '${WIFI_DISCONNECT}'     '1'
 
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
-    BuiltIn.Sleep  ${CLIENT_DISCONNECT_WAIT}
+    Sleep  ${CLIENT_DISCONNECT_WAIT}
 
     ${NAVIGATE_TO_CONFIGURE_PAGE}=             go to configure users page
     Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'     '1'
@@ -353,16 +368,16 @@ TCCS-12998: Verify User registration and authenticate CP with LinkedIn
     ${SEND_CMD_STATUS}=             send wg cmd to ap  ${SSID_NAME2}    @{lnkd_cli_obj}
     
     Log to Console      Sleep for ${CONFIG_PUSH_WAIT}
-    BuiltIn.Sleep                         ${CONFIG_PUSH_WAIT}
+    Sleep                         ${CONFIG_PUSH_WAIT}
 
     ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME2}
     Should Be Equal As Strings      '${CONNECT_CLIENT_OPEN_N/W}'     '1'
     Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
-    BuiltIn.Sleep                         ${CLIENT_CONNECT_WAIT}
+    Sleep                         ${CLIENT_CONNECT_WAIT}
     
     ${OPEN_GUEST_PORTAL}=             open guest portal browser    ${mu1.ip}
     Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
-    BuiltIn.Sleep  ${CP_PAGE_OPEN_WAIT}
+    Sleep  ${CP_PAGE_OPEN_WAIT}
 
     ${SOCIAL_AUTH_STATUS}=                 validate eguest social login with linkedin    ${MAIL_ID3}      ${MAIL_ID3_PASS}
     
@@ -374,7 +389,7 @@ TCCS-12998: Verify User registration and authenticate CP with LinkedIn
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
     Should Be Equal As Strings      '${WIFI_DISCONNECT}'     '1'
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
-    BuiltIn.Sleep  ${CLIENT_DISCONNECT_WAIT}
+    Sleep  ${CLIENT_DISCONNECT_WAIT}
 
     ${NAVIGATE_TO_CONFIGURE_PAGE}=             go to configure users page
     Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
@@ -416,11 +431,11 @@ TCCS-13014: Verify Default System template (Accept and Connect)
     ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME4}
     Should Be Equal As Strings      '${CONNECT_CLIENT_OPEN_N/W}'       '1'
     Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
-    BuiltIn.Sleep                         ${CLIENT_CONNECT_WAIT}
+    Sleep                         ${CLIENT_CONNECT_WAIT}
     
     ${OPEN_GUEST_PORTAL}=             open guest portal browser    ${mu1.ip}
     Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
-    BuiltIn.Sleep       ${CP_PAGE_OPEN_WAIT}
+    Sleep       ${CP_PAGE_OPEN_WAIT}
 
     ${USER_AUTH_STATUS}=                 validate eguest default template with no mapping
 
@@ -429,7 +444,7 @@ TCCS-13014: Verify Default System template (Accept and Connect)
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
     Should Be Equal As Strings      '${WIFI_DISCONNECT}'       '1'
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
-    BuiltIn.Sleep       ${CLIENT_DISCONNECT_WAIT}
+    Sleep       ${CLIENT_DISCONNECT_WAIT}
 
     Should Be Equal As Strings      '${USER_AUTH_STATUS}'       '1'
 
@@ -469,18 +484,18 @@ TCCS-12994: Verify Device registration and authenticate CP with OTP notified ove
     ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME5}
     Should Be Equal As Strings      '${CONNECT_CLIENT_OPEN_N/W}'     '1'
     Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
-    BuiltIn.Sleep                         ${CLIENT_CONNECT_WAIT}
+    Sleep                         ${CLIENT_CONNECT_WAIT}
     
     ${OPEN_GUEST_PORTAL}=             Open Guest Portal Browser    ${mu1.ip}
     Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
-    BuiltIn.Sleep  ${CP_PAGE_OPEN_WAIT}
+    Sleep  ${CP_PAGE_OPEN_WAIT}
 
     ${REGISTRATION_STATUS}=                 Register Device for Guest Access    ${USER_NAME}    ${USER_EMAIL}
     get gp page screen shot
     Should Be Equal As Strings     '${REGISTRATION_STATUS}'  '1'
 
     Log to Console      Sleep for ${RECEIVE_MAIL}
-    BuiltIn.Sleep                         ${RECEIVE_MAIL}
+    Sleep                         ${RECEIVE_MAIL}
 
     ${ACCESS_STATUS}=    Validate Sponsored Guest Access    ${USER_EMAIL}    ${USER_PASSWORD}    ${SEND_OTP_TO_USER}
     get gp page screen shot
@@ -488,7 +503,7 @@ TCCS-12994: Verify Device registration and authenticate CP with OTP notified ove
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
     Should Be Equal As Strings      '${WIFI_DISCONNECT}'     '1'
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
-    BuiltIn.Sleep  ${CLIENT_DISCONNECT_WAIT}
+    Sleep  ${CLIENT_DISCONNECT_WAIT}
 
     ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
     Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
@@ -533,18 +548,18 @@ TCCS-13012: Verify User registration and authenticate CP with passcode notified 
     ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME6}
     Should Be Equal As Strings     '${CONNECT_CLIENT_OPEN_N/W}'  '1'
     Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
-    BuiltIn.Sleep                         ${CLIENT_CONNECT_WAIT}
+    Sleep                         ${CLIENT_CONNECT_WAIT}
 
     ${OPEN_GUEST_PORTAL}=             Open Guest Portal Browser    ${mu1.ip}
     Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
-    BuiltIn.Sleep  ${CP_PAGE_OPEN_WAIT}
+    Sleep  ${CP_PAGE_OPEN_WAIT}
 
     ${REGISTRATION_STATUS}=                 Register Device for Guest Access    ${USER_NAME}    ${USER_EMAIL}
     get gp page screen shot
     Should Be Equal As Strings     '${REGISTRATION_STATUS}'  '1'
 
     Log to Console      Sleep for ${RECEIVE_MAIL}
-    BuiltIn.Sleep                         ${RECEIVE_MAIL}
+    Sleep                         ${RECEIVE_MAIL}
 
     ${ACCESS_STATUS}=    Validate Sponsored Guest Access    ${USER_EMAIL}    ${USER_PASSWORD}    ${SEND_OTP_TO_USER}
     get gp page screen shot
@@ -552,7 +567,7 @@ TCCS-13012: Verify User registration and authenticate CP with passcode notified 
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
     Should Be Equal As Strings     '${WIFI_DISCONNECT}'  '1'
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
-    BuiltIn.Sleep  ${CLIENT_DISCONNECT_WAIT}
+    Sleep  ${CLIENT_DISCONNECT_WAIT}
 
     ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
     Should Be Equal As Strings     '${NAVIGATE_TO_CONFIGURE_PAGE}'  '1'
@@ -561,6 +576,86 @@ TCCS-13012: Verify User registration and authenticate CP with passcode notified 
     Should Be Equal As Strings     '${DELETE_USER_EMAIL}'  '1'
 
     Should Be Equal As Strings     '${ACCESS_STATUS}'  '1'
+
+    [Teardown]   run keywords       switch_to_extreme_guest_window
+    ...                             close_extreme_guest_window
+    ...                             close gp browser
+    ...                             AP Cleanup
+    ...                             go back to xiq
+
+
+TCCS-13694: Sponsor Approval-Verify on sponsor Permit login passcode sent to user mail
+
+    [Documentation]     Sponsor Approval-Verify on sponsor Permit login passcode sent to user mail
+
+    [Tags]              development    greenfield    brownfield    sponsor_flow    tccs_13694
+    
+    Depends On              TCCS-12993    TCCS-13119
+
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME8}          ${device1.serial}
+    Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
+
+    ${DEVICE_STATUS}=           Wait Until Device Online       ${device1.serial}
+    Should Be Equal As Strings     '${DEVICE_STATUS}'  '1'
+
+    ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
+    Should Be Equal As Strings     '${NAVIGATE_TO_EXTREME_GUEST_PAGE}'  '1'
+
+    ${NAVIGATE_TO_CONFIGURE_PAGE}=             go to configure page
+    Should Be Equal As Strings     '${NAVIGATE_TO_CONFIGURE_PAGE}'  '1'
+
+    save screen shot
+
+    ${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}=             go to configure splash system template tab
+
+    Should Be Equal As Strings      '${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}'       '1'
+
+    ${APPLY_USER_TEMPLATE}=             apply network to user template  network_name=${SSID_NAME8}      template_name=${TEMPLATE7_NAME}     location=${LOCATION_TREE}
+
+    Should Be Equal As Strings      '${APPLY_USER_TEMPLATE}'     '1'
+
+    Remote_Server.Connect Open Network    ${SSID_NAME8}
+
+    Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
+
+    Sleep                         ${CLIENT_CONNECT_WAIT}
+
+    Open Guest Portal Browser    ${mu1.ip}
+
+    Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
+
+    Sleep  ${CP_PAGE_OPEN_WAIT}
+
+    ${REGISTRATION_STATUS}=                 Register Sponsored Guest User    ${USER_NAME}    ${USER_EMAIL}    ${USER_MOBILE}    ${SPONSOR_NAME}     ${SPONSOR_EMAIL}     ${ACCESS_PURPOSE}
+
+    Log to Console      Sleep for ${RECEIVE_MAIL}
+    Sleep                         ${RECEIVE_MAIL}
+
+    ${APPROVAL_URL}=        Get Sponsor Action URL      ${SPONSOR_EMAIL}    ${SPONSOR_PASSWORD}    ${SPONSOR_PERMIT}
+
+    ${DRIVER}=    Load Browser    ${APPROVAL_URL}    program=${PROGRAM}
+
+    ${TEXT}=    Check Approval Success Text    ${DRIVER}
+
+    Quit Browser    ${DRIVER}
+
+    ${ACCESS_STATUS}=    Validate Sponsored Guest Access    ${USER_EMAIL}    ${USER_PASSWORD}    ${SEND_PASSCODE_ON_APPROVAL}
+
+    ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
+
+    Should Be Equal As Strings      '${WIFI_DISCONNECT}'     '1'
+
+    Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
+
+    Sleep  ${CLIENT_DISCONNECT_WAIT}
+
+    ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
+
+    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
+
+    ${DELETE_USER_EMAIL}=             Delete User  ${USER_EMAIL}
+
+    Should Be Equal As Strings     '${DELETE_USER_EMAIL}'  '1'
 
     [Teardown]   run keywords       switch_to_extreme_guest_window
     ...                             close_extreme_guest_window
@@ -609,11 +704,11 @@ TCCS-12995: Verify user authentication with guest bulk vouchers
     ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME0}
     Should Be Equal As Strings      '${CONNECT_CLIENT_OPEN_N/W}'       '1'
     Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
-    BuiltIn.Sleep                         ${CLIENT_CONNECT_WAIT}
+    Sleep                         ${CLIENT_CONNECT_WAIT}
 
     ${OPEN_GUEST_PORTAL}=             open guest portal browser    ${mu1.ip}
     Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
-    BuiltIn.Sleep       ${CP_PAGE_OPEN_WAIT}
+    Sleep       ${CP_PAGE_OPEN_WAIT}
 
     ${USER_AUTH_STATUS}=                 validate eguest user login with voucher credentials    ${VOUCHER_CREDENTIALS}
     get gp page screen shot
@@ -621,7 +716,7 @@ TCCS-12995: Verify user authentication with guest bulk vouchers
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
     Should Be Equal As Strings      '${WIFI_DISCONNECT}'       '1'
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
-    BuiltIn.Sleep  ${CLIENT_DISCONNECT_WAIT}
+    Sleep  ${CLIENT_DISCONNECT_WAIT}
 
     ${USERNAME1}=                 Get Username from vouchers   ${VOUCHER_CREDENTIALS}
     ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
@@ -673,11 +768,11 @@ TCCS-12996: Verify User registration and get CP access using E-mail
     ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME7}
     Should Be Equal As Strings     '${CONNECT_CLIENT_OPEN_N/W}'  '1'
     Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
-    BuiltIn.Sleep                         ${CLIENT_CONNECT_WAIT}
+    Sleep                         ${CLIENT_CONNECT_WAIT}
 
     ${OPEN_GUEST_PORTAL}=             Open Guest Portal Browser    ${mu1.ip}
     Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
-    BuiltIn.Sleep  ${CP_PAGE_OPEN_WAIT}
+    Sleep  ${CP_PAGE_OPEN_WAIT}
 
     ${REGISTRATION_STATUS}=                 Register Device with Email for Guest Access    ${USER_EMAIL}
     get gp page screen shot
@@ -968,11 +1063,9 @@ TCCS-13022: Reset VIQ
     ${BACKUP_VIQ_DATA}=             Backup VIQ Data
     Should Be Equal As Strings      '${BACKUP_VIQ_DATA}'              '1'
 
-    ${LOGOUT_XIQ}=                   Logout User
-
     ${QUIT_BROWSER}=                   Quit Browser
 
-    BuiltIn.Sleep  30 seconds
+    Sleep  30 seconds
 
     #Step2: Perform Reset VIQ
     ${LOGIN_XIQ}=                   Login User          ${TENANT_USERNAME}      ${TENANT_PASSWORD}      url=${TEST_URL}
@@ -985,12 +1078,10 @@ TCCS-13022: Reset VIQ
 
     Should Be Equal As Strings      '${RESET_VIQ_DATA}'              '1'
 
-    ${LOGOUT_XIQ}=                   Logout User
-
     ${QUIT_BROWSER}=                   Quit Browser
 
     #Step3: Verify Reset
-    BuiltIn.Sleep  30 seconds
+    Sleep  30 seconds
 
     ${LOGIN_XIQ}=                       Login User          ${TENANT_USERNAME}     ${TENANT_PASSWORD}   url=${TEST_URL}    map_override=${MAP_FILE_NAME}
 
