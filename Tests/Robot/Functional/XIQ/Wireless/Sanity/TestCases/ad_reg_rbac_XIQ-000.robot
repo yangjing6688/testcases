@@ -113,7 +113,7 @@ Test1: Onboard Sensor AP
     ${LOGIN_XIQ}=               Login User          ${tenant_username}     ${tenant_password}
     ${ONBOARD_RESULT}=          Onboard Device      ${ap1.serial}           ${ap1.make}       location=${ap1.location}      device_os=${ap1.cli_type}
     should be equal as integers        ${ONBOARD_RESULT}       1
-    ${AP_SPAWN}=                open spawn       ${ap1.ip}      ${ap1.port}   ${ap1.username}     ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=                open spawn       ${ap1.ip}      ${ap1.port}   ${ap1.username}     ${ap1.password}     ${ap1.cli_type}
     Set Suite Variable          ${AP_SPAWN}
     ${OUTPUT0}=                 send commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
     sleep  240s
@@ -131,7 +131,7 @@ Test 2: Verify Login till config push
           Login User                      ${TENANT_USERNAME}     ${TENANT_PASSWORD}
           ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${ADSP_OPEN_NW}
          Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
-         ${CREATE_AP_TEMPLATE}=            Add AP Template     ${ap1.model}     ${AP1_TEMPLATE_NAME}        &{AP_TEMPLATE_CONFIG}
+         ${CREATE_AP_TEMPLATE}=            Add AP Template     ${ap1.model}     ${AP1_TEMPLATE_NAME}        ${AP_TEMPLATE_CONFIG}
          Should Be Equal As Strings      '${CREATE_AP_TEMPLATE}'   '1'
          ${CONFIG_WIPS_POLICY}           Configure WIPS Policy On Common Objects   ${WIPS_POLICY_NAME}
          Should Be Equal As Strings      '${CONFIG_WIPS_POLICY}'   '1'

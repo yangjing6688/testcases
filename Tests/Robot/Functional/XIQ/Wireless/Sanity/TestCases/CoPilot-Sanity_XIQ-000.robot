@@ -1,5 +1,5 @@
 # Author        : Shrisha
-# Date          : Aug24,2022
+# Date          : Aug 24,2022
 # Description   : Co-Pilot Wireless client Experience
 #
 # Topology      :
@@ -81,7 +81,7 @@ Test Suite Clean Up
     Remote_Server.Disconnect WiFi
     Delete Device  device_serial=${ap1.serial}
     Delete Network Polices         ${NW_POLICY_NAME}
-    delete ap template profile     ${ap1.template_name}
+    delete ap template profile     ${ap1.template}
     Delete ssids                   ${SSID_NAME}
     #delete_location_building_floor      ${LOCATION_2}    ${BUILDING_NAME_2}    ${BULDING_FLOOR_NAME_2_1}
     #delete_location_building_floor      ${LOCATION_2}    ${BUILDING_NAME_2}    ${BULDING_FLOOR_NAME_2_2}
@@ -124,7 +124,7 @@ TCCS-13495_Step2 : Create Network policy and Attach Network policy to AP
     ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${LOCATION_OPEN_NW}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${ap1.template_name}    &{AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${ap1.template}    ${AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings      '${CREATE_AP_TEMPLATE}'   '1'
 
     ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME}     ap_serial=${ap1.serial}   update_method=Complete

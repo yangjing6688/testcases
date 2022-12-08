@@ -115,7 +115,7 @@ Test1: Onboard Dual Radio AP305C, Assign policy, template with WIPS ON as ADEss 
     ${CREATE_POLICY2}=         Create Network Policy    ${NW_DUAL_POLICY_NAME}       ${ADSP_DUAL_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY2}'   '1'
 
-    ${CREATE_AP_TEMPLATE2}=     Add AP Template     ${ap3.model}     ${ap3.template_name}        &{AP_DUAL_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE2}=     Add AP Template     ${ap3.model}     ${ap3.template_name}        ${AP_DUAL_TEMPLATE_CONFIG}
     Should Be Equal As Strings   '${CREATE_AP_TEMPLATE2}'   '1'
 
     ${CONFIG_WIPS_POLICY2}      Configure WIPS Policy On Common Objects   ${WIPS_DUAL_POLICY_NAME}
@@ -154,7 +154,7 @@ Test2: Onboard WiFi6 AP4000U, Assign policy, template with WIPS ON as ADEss Enab
     ${CREATE_POLICY3}=         Create Network Policy    ${NW_WIFI6_POLICY_NAME}       ${ADSP_WIFI6_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY3}'   '1'
 
-    ${CREATE_AP_TEMPLATE3}=     Add AP Template     ${ap4.model}     ${ap4.template_name}        &{AP_WIFI6_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE3}=     Add AP Template     ${ap4.model}     ${ap4.template_name}        ${AP_WIFI6_TEMPLATE_CONFIG}
     Should Be Equal As Strings   '${CREATE_AP_TEMPLATE3}'   '1'
 
     ${CONFIG_WIPS_POLICY3}      Configure WIPS Policy On Common Objects   ${WIPS_WIFI6_POLICY_NAME}
@@ -258,7 +258,7 @@ Test7: Verify AD on-prem, XLOC and Eguest works together with one AP and one XIQ
     ${CREATE_POLICY1}=         Create Network Policy    ${NW_ONPREM_POLICY_NAME}       ${ADSP_ONPREM_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap1.model}     ${ap1.template_onprem_name}        &{AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap1.model}     ${ap1.template_onprem_name}        ${AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings   '${CREATE_AP_TEMPLATE}'   '1'
 
     Enable Nw Presence Analytics    ${NW_ONPREM_POLICY_NAME}

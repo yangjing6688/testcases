@@ -65,10 +65,10 @@ Suite Teardown   Test Suite Clean Up
 Pre Condition
     [Documentation]   AP Should be onboarded  and it is online
     ${result}=                      Login User          ${tenant_username}     ${tenant_password}
-     click advanced onboard popup
-     import map in network360plan       ${MAP_FILE_NAME}
-      Logout User
-      Quit Browser
+    click advanced onboard popup
+    import map in network360plan       ${MAP_FILE_NAME}
+    Logout User
+    Quit Browser
 
 Test Suite Clean Up
     [Documentation]         Test Suite Clean Up: Reset Customer Account Data
@@ -154,7 +154,7 @@ Test4: Configure ADSP on AP
     ${CREATE_POLICY1}=         Create Network Policy   ${NW_POLICY_NAME}       ${ADSP_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap1.model}     AP410C-ADSP_Prod       &{AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=     Add AP Template     ${ap1.model}     AP410C-ADSP_Prod       ${AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings   '${CREATE_AP_TEMPLATE}'   '1'
 
     ${CONFIG_WIPS_POLICY}      Configure WIPS Policy On Common Objects   ${WIPS_POLICY_NAME}
