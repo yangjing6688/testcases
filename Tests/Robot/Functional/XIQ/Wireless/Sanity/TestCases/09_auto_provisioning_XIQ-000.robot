@@ -112,7 +112,7 @@ TCCS-7632: Configure AP Auto Provision Profile
     ${POLICY_STATUS}=           Create Open Auth Express Network Policy     ${POLICY_NAME_01}      ${SSID_NAME_01}
     should be equal as integers             ${POLICY_STATUS}                1
 
-    ${APP_BASIC_STGS_STATUS}=   Auto Provision Basic Settings                   ${APP_POLICY_NAME_AP_01}        ${ap1.country}          &{APP_AP_01}
+    ${APP_BASIC_STGS_STATUS}=   Auto Provision Basic Settings                   ${APP_POLICY_NAME_AP_01}      ${APP_AP_01}      ${ap1.country}
     should be equal as integers             ${APP_BASIC_STGS_STATUS}        1
 
     Auto Provision Advanced Settings                &{AP_ADVANCED_SETTINGS_04}
@@ -138,7 +138,7 @@ TCCS-7632: Configure AP Auto Provision Profile
     ${CONNECTED_STATUS}=    Wait Until Device Online                ${ap1.serial}   retry_count=15
     Should Be Equal as Integers             ${CONNECTED_STATUS}          1
 
-    ${verify_result}=   Verify Auto Provision Policy Update     ${ap1.serial}     ${ap1.country}     &{APP_AP_01}
+    ${verify_result}=   Verify Auto Provision Policy Update     ${ap1.serial}   ${APP_AP_01}     ${ap1.country}
     Should Be Equal As Integers                     ${verify_result}        1
 
     Sleep       ${max_config_push_time}
@@ -153,10 +153,10 @@ TCCS-7571: Configure Switch Auto Provision Profile
     should be equal as integers             ${POLICY_STATUS}                1
 
     IF  '${aerohive_sw1.cli_type}'=='AH-FASTPATH'
-        ${APP_BASIC_STGS_STATUS}=     Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR22_SR23_01}
+        ${APP_BASIC_STGS_STATUS}=     Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        ${SW_SR22_SR23_01}
         should be equal as integers             ${APP_BASIC_STGS_STATUS}        1
     ELSE IF     '${aerohive_sw1.cli_type}'=='AH-AP'
-        ${APP_BASIC_STGS_STATUS}=   Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR20_SR21_01}
+        ${APP_BASIC_STGS_STATUS}=   Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        ${SW_SR20_SR21_01}
         should be equal as integers             ${APP_BASIC_STGS_STATUS}        1
     END
 
@@ -184,7 +184,7 @@ TCCS-7571: Configure Switch Auto Provision Profile
     ${CONNECTED_STATUS}=    Wait Until Device Online                ${aerohive_sw1.serial}   retry_count=15
     Should Be Equal as Integers             ${CONNECTED_STATUS}          1
 
-    ${verify_result}=   Verify Auto Provision Policy Update     serial=${aerohive_sw1.serial}       country_code=NA    &{SW_SR22_SR23_01}
+    ${verify_result}=   Verify Auto Provision Policy Update     ${aerohive_sw1.serial}   ${SW_SR22_SR23_01}
     Should Be Equal As Integers                     ${verify_result}        1
 
     ${update_result}=   Wait Until device update done   device_serial=${aerohive_sw1.serial}

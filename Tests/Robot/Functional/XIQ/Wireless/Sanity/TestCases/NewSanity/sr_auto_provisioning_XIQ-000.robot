@@ -136,10 +136,10 @@ TCCS-7571: Configure Switch Auto Provision Profile
 
     IF  '${aerohive_sw1.cli_type}'=='AH-FASTPATH'
         &{SW_SR22_SR23_01}=    Create Dictionary      device_function=Extreme Networks SR22xx / SR23xx Switches       device_model=${aerohive_sw1.model}     service_tags=Disable   ip_subnetworks=Disable      network_policy=${POLICY_NAME_02}
-        ${APP_BASIC_STGS_STATUS}=     Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR22_SR23_01}
+        ${APP_BASIC_STGS_STATUS}=     Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        ${SW_SR22_SR23_01}
         should be equal as integers             ${APP_BASIC_STGS_STATUS}        1
     ELSE IF     '${aerohive_sw1.cli_type}'=='AH-AP'
-        ${APP_BASIC_STGS_STATUS}=   Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        &{SW_SR20_SR21_01}
+        ${APP_BASIC_STGS_STATUS}=   Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        ${SW_SR20_SR21_01}
         should be equal as integers             ${APP_BASIC_STGS_STATUS}        1
     END
 
@@ -153,7 +153,7 @@ TCCS-7571: Configure Switch Auto Provision Profile
 
     Device Onboard   ${aerohive_sw1}  ${MAIN_DEVICE_SPAWN_SW}  ${sw_capwap_url}
 
-    ${verify_result}=   Verify Auto Provision Policy Update     serial=${aerohive_sw1.serial}       country_code=NA    &{SW_SR22_SR23_01}
+    ${verify_result}=   Verify Auto Provision Policy Update     ${aerohive_sw1.serial}      ${SW_SR22_SR23_01}
     Should Be Equal As Integers                     ${verify_result}        1
 
     ${update_result}=   Wait Until device update done   device_serial=${aerohive_sw1.serial}

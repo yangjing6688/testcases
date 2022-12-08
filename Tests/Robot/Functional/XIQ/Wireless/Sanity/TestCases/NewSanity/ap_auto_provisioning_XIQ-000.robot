@@ -135,7 +135,7 @@ TCCS-7632: Configure AP Auto Provision Profile
     ${POLICY_STATUS}=           Create Open Auth Express Network Policy     ${POLICY_NAME_01}      ${SSID_NAME_01}
     should be equal as integers             ${POLICY_STATUS}                1
 
-    ${APP_BASIC_STGS_STATUS}=   Auto Provision Basic Settings                   ${APP_POLICY_NAME_AP_01}        ${ap1.country}          &{APP_AP_01}
+    ${APP_BASIC_STGS_STATUS}=   Auto Provision Basic Settings                   ${APP_POLICY_NAME_AP_01}    ${APP_AP_01}    ${ap1.country}
     should be equal as integers             ${APP_BASIC_STGS_STATUS}        1
 
     Auto Provision Advanced Settings                &{AP_ADVANCED_SETTINGS_04}
@@ -148,7 +148,7 @@ TCCS-7632: Configure AP Auto Provision Profile
 
     Device Onboard   ${ap1}  ${MAIN_DEVICE_SPAWN_AP}  ${capwap_url}
 
-    ${verify_result}=   Verify Auto Provision Policy Update     ${ap1.serial}     ${ap1.country}     &{APP_AP_01}
+    ${verify_result}=   Verify Auto Provision Policy Update     ${ap1.serial}   ${APP_AP_01}    ${ap1.country}
     Should Be Equal As Integers                     ${verify_result}        1
 
     ${update_result}=   Wait Until device update done   device_serial=${ap1.serial}

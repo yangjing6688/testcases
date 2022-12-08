@@ -99,7 +99,7 @@ Step1: Verify device template wireless interface wifi0-1-2 details and wired int
     ${ITEM_1}   create list
     ${ITEM_2}   create list
 
-    ${OUT}    Get AP Template Wifi     ${ap1.template}   &{AP_TEMPLATE_1}
+    ${OUT}    Get AP Template Wifi     ${ap1.template}   ${AP_TEMPLATE_1}
     log       ${OUT}
     log       ${AP_TEMPLATE_2}
     FOR     ${item}     IN      &{AP_TEMPLATE_2}
@@ -169,7 +169,7 @@ Step3: Create and Assign network policy to AP
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_PESRONAL_02}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      add ap template from common object      ${ap1.model}       ${AP_TEMP_NAME}   &{AP_TEMPLATE_3}
+    ${STATUS}                      add ap template from common object      ${ap1.model}       ${AP_TEMP_NAME}   ${AP_TEMPLATE_3}
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      add ap template to network policy       ${AP_TEMP_NAME}    ${POLICY}
     Should Be Equal As Strings     '${STATUS}'        '1'

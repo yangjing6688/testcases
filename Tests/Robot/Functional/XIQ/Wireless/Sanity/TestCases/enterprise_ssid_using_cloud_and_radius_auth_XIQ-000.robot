@@ -137,7 +137,7 @@ Step1: Create Policy - Enterprise with Cloud and Radius auth
     should be equal as strings    '${STATUS}'        '1'
     ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_ENTERPRISE_03}
     should be equal as strings    '${STATUS}'        '1'
-    ${STATUS}                      add ap template from common object      ${ap1.model}        ${AP_TEMP_NAME}   &{AP_TEMPLATE_1}
+    ${STATUS}                      add ap template from common object      ${ap1.model}        ${AP_TEMP_NAME}   ${AP_TEMPLATE_1}
     Should Be Equal As Strings     '${STATUS}'       '1'
     ${STATUS}                      add ap template to network policy       ${AP_TEMP_NAME}    ${POLICY}
     Should Be Equal As Strings     '${STATUS}'       '1'
