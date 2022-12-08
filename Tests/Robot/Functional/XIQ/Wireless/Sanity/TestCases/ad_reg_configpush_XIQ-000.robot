@@ -92,7 +92,7 @@ Test1: Verify Network policy with wireless and routing mode enabled
     ${CREATE_POLICY1} =              Create Network Policy               ${NW_POLICY_NAME}        ${ADESS_NWP}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_AP_TEMPLATE}=           Add AP Template     ${ap2.model}     ${ap2.template_name}    &{AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=           Add AP Template     ${ap2.model}     ${ap2.template_name}    ${AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings       '${CREATE_AP_TEMPLATE}'   '1'
 
     ${CONFIG_WIPS_POLICY}            Create Wips Policy Adess Status On Common Objects  ${WIPS_POLICY_NAME}    Enable

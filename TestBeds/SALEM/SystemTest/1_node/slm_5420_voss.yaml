@@ -14,8 +14,10 @@ netelem1:
   platform:                 "5420"
   model:                    "FabricEngine5520M_48T_4YE"
   make:                     "voss"
-  location:
-    location1:              "San Jose,building_01,floor_01"
-    location2:              "San Jose,building_01,floor_02"
+  location:              "San Jose,building_01,floor_01"
+  #location:
+  #  location1:              "San Jose,building_01,floor_01"
+  #  location2:              "San Jose,building_01,floor_02"
+  onboard_device_type:      "Real"
 
 

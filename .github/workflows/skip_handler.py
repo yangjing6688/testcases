@@ -76,6 +76,6 @@ if __name__ == "__main__":
     #
     try:
         with open(environ["GITHUB_ENV"], "a") as f:
-            f.write(f"\n{args.envvar}={skip_check}")
+            f.write(f"{args.envvar}={skip_check}\n")
     except Exception as e:
         raise Exception("The CI script encountered a problem loading Github environment. Please alert the AutoIQ team!") from e

@@ -99,9 +99,10 @@ Step1: Create Policy
     Set To Dictionary              ${WIRELESS_PESRONAL_00}         ssid_name=${SSID_00}
     Set To Dictionary              ${WIRELESS_PESRONAL_01}         ssid_name=${SSID_01}
 
-    ${STATUS}                      Add Classification Rule with Location      ${USER_PROFILE_00}[classification_rule_name]   ${USER_PROFILE_00}[description]   &{LOC_TEST_00}
+
+    ${STATUS}                      Add Classification Rule with Location      ${USER_PROFILE_00}[classification_rule_name]   ${USER_PROFILE_00}[description]   ${LOC_TEST_00}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      Add Classification Rule with Location      ${USER_PROFILE_01}[classification_rule_name]   ${USER_PROFILE_01}[description]   &{LOC_TEST_01}
+    ${STATUS}                      Add Classification Rule with Location      ${USER_PROFILE_01}[classification_rule_name]   ${USER_PROFILE_01}[description]   ${LOC_TEST_01}
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      Add User Profile                           ${USER_PROFILE_00}[profile_name]   ${USER_PROFILE_00}[vlan_name]   1
     should be equal as strings     '${STATUS}'        '1'
@@ -117,7 +118,7 @@ Step1: Create Policy
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      Apply Different User Profile to Various Clients    ${SSID_01}        &{USER_PROFILE_03}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      add ap template from common object                 ${ap1.model}      ${AP_TEMP_NAME}      &{AP_TEMPLATE_1}
+    ${STATUS}                      add ap template from common object                 ${ap1.model}      ${AP_TEMP_NAME}      ${AP_TEMPLATE_1}
     Should Be Equal As Strings     '${STATUS}'        '1'
     ${STATUS}                      add ap template to network policy                  ${AP_TEMP_NAME}   ${POLICY}
     Should Be Equal As Strings     '${STATUS}'        '1'

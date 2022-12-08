@@ -325,8 +325,8 @@ Test 16: Verify All Pilot and CoPilot Licenses Consumed
     [Documentation]     Confirms license counts are all revoked since all devices managed
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test16
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       0    3    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     0    2    2
 
 Test 17: Verify Device License and CoPilot Column Values - First and Second Onboarded Consume Licenses
     [Documentation]     Confirms the Device License and CoPilot columns for all devices to verify the oldest onboarding devices consumed licenses
@@ -388,6 +388,7 @@ Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
 
     Disable CoPilot Feature and Confirm Success
+    Delete All devices and Confirm Success
     Log Out of XIQ and Quit Browser
 
 Enable CoPilot Feature and Confirm Success

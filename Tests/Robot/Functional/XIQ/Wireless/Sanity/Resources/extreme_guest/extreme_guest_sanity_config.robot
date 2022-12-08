@@ -37,6 +37,9 @@ ${gle_web_obj}  *.google.com, accounts.google.com, *.geotrust.com, *.comodoca.co
 &{GUEST_OPEN_NW7}              ssid_name=${SSID_NAME7}                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
 ...                              auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
 
+&{GUEST_OPEN_NW8}              ssid_name=${SSID_NAME8}                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
+...                              auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
+
 &{BORADCAST_SSID_DEFAULT}=       WIFI0=Enable        WIFI1=Enable
 
 &{OPEN_AUTHENTICATION_PROFILE0}     auth_type=Open    cwp_profile=&{OPEN_CWP0}
