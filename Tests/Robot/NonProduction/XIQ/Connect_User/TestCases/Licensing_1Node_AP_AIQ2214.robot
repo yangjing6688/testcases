@@ -5,12 +5,12 @@
 #----------------------------------------------------------------------
 #
 # Author        : David W. Truesdell
-# Description   : Test Suite for testing CoPilot licensing using 1 node WiNG
-#               : This is qTest test case tcxm-21002 in the CSIT project.
+# Description   : Test Suite for testing Connect user licensing using 1 node AP
+#               : This is qTest test case tccs-13704 in the CSIT project.
 
 
 *** Settings ***
-Resource         ../../CoPilot_Sanity_Testing/Resources/AllResources.robot
+Resource         ../../Connect_User/Resources/AllResources.robot
 
 Force Tags       testbed_1_node
 
@@ -22,11 +22,10 @@ Suite Teardown   Tear Down Test and Close Session
 ${XIQ_URL}                  ${test_url}
 ${XIQ_USER}                 ${tenant_username}
 ${XIQ_PASSWORD}             ${tenant_password}
-${IQAGENT}                  ${wing_sw_connection_host}
+${IQAGENT}                  ${capwap_url}
 
 ${DUT_SERIAL}               ${netelem1.serial}
 ${DUT_MAKE}                 ${netelem1.make}
-${DUT_MAC}                  ${netelem1.mac}
 ${DUT_CLI_TYPE}             ${netelem1.cli_type}
 ${DUT_IP}                   ${netelem1.ip}
 ${DUT_PORT}                 ${netelem1.port}
@@ -34,12 +33,8 @@ ${DUT_USERNAME}             ${netelem1.username}
 ${DUT_PASSWORD}             ${netelem1.password}
 ${DUT_VR}                   ${netelem1.vr}
 
-${PILOT_ENTITLEMENT}        PRD-XIQ-PIL-S-C
-${COPILOT_ENTITLEMENT}      PRD-XIQ-COPILOT-S-C
-${NAV_ENTITLEMENT}          PRD-XIQ-NAV-S-C
-${COPILOT_NONE}             None
-${NAV_LICENSE}              Navigator
-${NO_NAV_LICENSE}           Not Required
+${COPILOT_LICENSE}          None
+${PILOT_LICENSE}            None
 
 ${COLUMN_1}                 CoPilot
 ${COLUMN_2}                 Managed
@@ -47,27 +42,14 @@ ${COLUMN_3}                 Device License
 
 
 *** Test Cases ***
-Test 1: Verify Pilot and CoPilot Baseline License Counts
-    [Documentation]     Confirms license counts are at expected values in XIQ to begin with (nothing consumed)
-    [Tags]              tcxm-21002    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test1
-
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}         2    0    0
-
-Test 2: Onboard Device and Verify Success
+Test 1: Onboard Device and Verify Success
     [Documentation]     Onboards test device and verifies success
-    [Tags]              tcxm-21002    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test2
-
-    Depends On          Test 1
+    [Tags]              tccs-13704    connect_release_testing    connect_sanity_testing    aiq-2214    development    xiq    copilot    test1
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT_IP}   ${DUT_PORT}   ${DUT_USERNAME}   ${DUT_PASSWORD}   ${DUT_CLI_TYPE}
     ${DOWNGRADE_IQAGENT}=     Downgrade Iqagent              ${DUT_CLI_TYPE}        ${SPAWN_CONNECTION}
     Should Be Equal As Integers      ${DOWNGRADE_IQAGENT}     1
-
-    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud        ${DUT_CLI_TYPE}    ${IQAGENT}   ${SPAWN_CONNECTION}    vr=${DUT_VR}
-    Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
     Onboard New Test Device                     ${DUT_SERIAL}  ${netelem1}
@@ -80,36 +62,26 @@ Test 2: Onboard Device and Verify Success
     Verify and Wait Until Device Managed        ${DUT_SERIAL}
     Verify Device Status Green                  ${DUT_SERIAL}
 
-Test 3: Verify Device Does Not Consume Pilot or CoPilot License But Does Consume Navigagor License Within Global Settings License Management
-    [Documentation]     Confirms the license counts for Pilot, CoPilot and Navigator within Global Settings->License Management
-    [Tags]              tcxm-21002    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test3
+Test 2: Verify Device License and CoPilot Column Values
+    [Documentation]     Confirms the Device License and CoPilot columns to verify they are set to None
+    [Tags]              tccs-13704    connect_release_testing    connect_sanity_testing    aiq-2214    development    xiq    copilot    test2
 
     Depends On          Test 1
 
-    Log To Console  Sleeping for 10 minutes to wait for the maximum 10 minute license update to come in
-    Count Down in Minutes  10
-
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}         1    1    1
-
-Test 4: Verify Device License and CoPilot Column Values
-    [Documentation]     Confirms the Device License and CoPilot columns to verify device consumed the appropriate license or not
-    [Tags]              tcxm-21002    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test4
-
-    Depends On          Test 1
+    Navigate to Devices and Confirm Success
+    Refresh Devices Page
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT_SERIAL}    DEVICE LICENSE
-    Should Contain         ${pilot1_result}      ${NAV_LICENSE}
+    Should Contain         ${pilot1_result}      ${PILOT_LICENSE}
 
     # Confirm the device row shows the correct copilot license status
     ${copilot1_result}=    Get Device Details    ${DUT_SERIAL}    COPILOT
-    Should Contain         ${copilot1_result}    ${COPILOT_NONE}
+    Should Contain         ${copilot1_result}    ${COPILOT_LICENSE}
 
-Test 5: Unmanage Device and Confirm Success
+Test 3: Unmanage Device and Confirm Success
     [Documentation]     Sets MANAGED state to UNMANAGE and verifies success
-    [Tags]              tcxm-21002    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test5
+    [Tags]              tccs-13704    connect_release_testing    connect_sanity_testing    aiq-2214    development    xiq    copilot    test3
 
     Depends On          Test 1
 
@@ -119,40 +91,28 @@ Test 5: Unmanage Device and Confirm Success
     ${pilot1_result}=      Get Device Details    ${DUT_SERIAL}         MANAGED
     Should Contain         ${pilot1_result}      Unmanaged
 
-Test 6: Verify Unmanaged Device Revokes Navigator License in Global Settings License Management
-    [Documentation]     Confirms the license counts for Pilot, CoPilot and Navigator within Global Settings->License Management
-    [Tags]              tcxm-21002    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test6
+Test 4: Verify Device License and CoPilot Column Values
+    [Documentation]     Confirms the Device License and CoPilot columns to verify they are set to None
+    [Tags]              tccs-13704    connect_release_testing    connect_sanity_testing    aiq-2214    development    xiq    copilot    test4
 
     Depends On          Test 1
 
-    Log To Console  Sleeping for 10 minutes to wait for the maximum 10 minute license update to come in
-    Count Down in Minutes  10
-
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}         2    0    0
-
-Test 7: Verify Unmanaged Device License and CoPilot Column Values
-    [Documentation]     Confirms the Device License and CoPilot columns for unmanaged device to verify device revoked the copilot and pilot licenses
-    [Tags]              tcxm-21002    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test7
-
-    Depends On          Test 1
+    Navigate to Devices and Confirm Success
+    Refresh Devices Page
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT_SERIAL}    DEVICE LICENSE
-    Should Contain         ${pilot1_result}      ${NO_NAV_LICENSE}
+    Should Contain         ${pilot1_result}      ${PILOT_LICENSE}
 
     # Confirm the device row shows the correct copilot license status
     ${copilot1_result}=    Get Device Details    ${DUT_SERIAL}    COPILOT
-    Should Contain         ${copilot1_result}    ${COPILOT_NONE}
+    Should Contain         ${copilot1_result}    ${COPILOT_LICENSE}
 
-Test 8: Manage Device and Confirm Success
+Test 5: Manage Device and Confirm Success
     [Documentation]     Sets MANAGED state to MANAGE and verifies success
-    [Tags]              tcxm-21002    known_issue    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test8
+    [Tags]              tccs-13704    connect_release_testing    connect_sanity_testing    aiq-2214    development    xiq    copilot    test5
 
     Depends On          Test 1
-
-    Log To Console  KNOWN_ISSUE WING-44038
 
     Navigate to Devices and Confirm Success
     Change Management Status and Confirm Success        MANAGE       ${DUT_SERIAL}
@@ -160,55 +120,30 @@ Test 8: Manage Device and Confirm Success
     ${manage1_result}=      Get Device Details    ${DUT_SERIAL}         MANAGED
     Should Contain         ${manage1_result}      Managed
 
-Test 9: Verify Managed Device Does Not Consume Pilot or CoPilot License But Does Consume Navigator License Within Global Settings License Management
-    [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
-    [Tags]              tcxm-21002    known_issue    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test9
+Test 6: Verify Managed Device License and CoPilot Column Values
+    [Documentation]     Confirms the Device License and CoPilot columns to verify they are set to None
+    [Tags]              tccs-13704    connect_release_testing    connect_sanity_testing    aiq-2214    development    xiq    copilot    test6
 
     Depends On          Test 1
 
-    Log To Console  KNOWN_ISSUE WING-44038
-
-    Log To Console  Sleeping for 10 minutes to wait for the maximum 10 minute license update to come in
-    Count Down in Minutes  10
-
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}         1    1    1
-
-Test 10: Verify Managed Device License and CoPilot Column Values
-    [Documentation]     Confirms the Device License and CoPilot columns to verify device consumed the appropriate license or not
-    [Tags]              tcxm-21002    known_issue    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test10
-
-    Depends On          Test 1
-
-    Log To Console  KNOWN_ISSUE WING-44038
+    Navigate to Devices and Confirm Success
+    Refresh Devices Page
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT_SERIAL}    DEVICE LICENSE
-    Should Contain         ${pilot1_result}      ${NAV_LICENSE}
+    Should Contain         ${pilot1_result}      ${PILOT_LICENSE}
 
     # Confirm the device row shows the correct copilot license status
     ${copilot1_result}=    Get Device Details    ${DUT_SERIAL}    COPILOT
-    Should Contain         ${copilot1_result}    ${COPILOT_NONE}
+    Should Contain         ${copilot1_result}    ${COPILOT_LICENSE}
 
-Test 11: Delete Device and Verify Success
+Test 7: Delete Device and Verify Success
     [Documentation]     Deletes the device and verifies success
-    [Tags]              tcxm-21002    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test11
+    [Tags]              tccs-13704    connect_release_testing    connect_sanity_testing    aiq-2214    development    xiq    copilot    test7
 
     Depends On          Test 1
 
-    Refresh Page
     Delete Test Device and Confirm Success          ${DUT_SERIAL}
-
-Test 12: Verify Pilot and CoPilot Licenses Revoked Within Global Settings License Management
-    [Documentation]     Confirms the Pilot and CoPilot licenses are revoked
-    [Tags]              tcxm-21002    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test12
-
-    Depends On          Test 1
-
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}         2    0    0
 
 
 *** Keywords ***
@@ -222,25 +157,11 @@ Log Into XIQ and Set Up Test
     convert to generic device object            device  index=1
 
     Log Into XIQ and Confirm Success            ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
-    Enable CoPilot Feature and Confirm Success
 
 Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
 
-    Disable CoPilot Feature and Confirm Success
     Log Out of XIQ and Quit Browser
-
-Enable CoPilot Feature and Confirm Success
-    [Documentation]     Enables CoPilot feature in Global Settings -> VIQ Management and verifies success
-
-    ${result_enable}=    Enable CoPilot Feature For This VIQ
-    Should Be Equal As Integers     ${result_enable}     1
-
-Disable CoPilot Feature and Confirm Success
-    [Documentation]     Disables CoPilot feature in Global Settings -> VIQ Management and verifies success
-
-    ${result_disable}=    Disable CoPilot Feature For This VIQ
-    Should Be Equal As Integers     ${result_disable}     1
 
 Onboard New Test Device
     [Documentation]     Onboards the specified test device, deleting it first if it already exists
@@ -254,6 +175,12 @@ Onboard New Test Device
 
     # Onboard the device
     Onboard Device Quick           ${netelem}
+
+    ${SPAWN_CONNECTION}=      Open Spawn        ${DUT_IP}   ${DUT_PORT}   ${DUT_USERNAME}   ${DUT_PASSWORD}   ${DUT_CLI_TYPE}
+    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud        ${DUT_CLI_TYPE}    ${IQAGENT}   ${SPAWN_CONNECTION}    vr=${DUT_VR}
+    Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
+    Close Spawn         ${SPAWN_CONNECTION}
+
     sleep   ${DEVICE_ONBOARDING_WAIT}
     Confirm Device Serial Present  ${serial}
 
