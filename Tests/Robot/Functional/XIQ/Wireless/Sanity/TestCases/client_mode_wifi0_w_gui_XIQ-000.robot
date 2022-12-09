@@ -100,8 +100,6 @@ Test3: Check AP1 and AP2 Status On UI - TCXM-15129 - TCXM-15131
     Depends On          Test2
     ${aps}       Create List        ${ap1}        ${ap2}
     FOR    ${ap}    IN    @{aps}
-        ${STATUS}       Wait Until Device Reboots          ${ap}[serial]
-        Should Be Equal As Strings       '${STATUS}'       '1'
         ${STATUS}       Wait Until Device Online           ${ap}[serial]
         Should Be Equal As Strings       '${STATUS}'       '1'
         ${STATUS}       Get Device Status                  ${ap}[serial]
@@ -145,8 +143,6 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15129 - TCXM-15131 -
 
     ${UPDATE}                      Update Network Policy To Ap    policy_name=${POLICY}       ap_serial=${ap1.serial}     update_method=Complete
     should be equal as strings     '${UPDATE}'               '1'
-   ${STATUS}                       Wait Until Device Reboots      ${ap1.serial}
-    Should Be Equal As Strings     '${STATUS}'               '1'
     ${STATUS}                      Wait Until Device Online       ${ap1.serial}
     Should Be Equal As Strings     '${STATUS}'               '1'
     ${STATUS}                      Get Device Status              ${ap1.serial}
@@ -154,8 +150,6 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15129 - TCXM-15131 -
 
     ${UPDATE}                      Update Network Policy To Ap    policy_name=${POLICY_CM}    ap_serial=${ap2.serial}     update_method=Complete
     should be equal as strings     '${UPDATE}'               '1'
-    ${STATUS}                      Wait Until Device Reboots      ${ap2.serial}
-    Should Be Equal As Strings     '${STATUS}'               '1'
     ${STATUS}                      Wait Until Device Online       ${ap2.serial}
     Should Be Equal As Strings     '${STATUS}'               '1'
     ${STATUS}                      Get Device Status              ${ap2.serial}
