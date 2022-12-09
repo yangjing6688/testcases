@@ -709,7 +709,8 @@ jobs:
   check_tags:
     needs: [check_changes, check_names]
     name: Tags/Markers validation
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: Ubuntu-20.04
     outputs:
       status: ${{ steps.set-output.outputs.status }}
     env:

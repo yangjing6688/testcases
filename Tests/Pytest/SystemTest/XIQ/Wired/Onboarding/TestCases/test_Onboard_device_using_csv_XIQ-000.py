@@ -1,213 +1,178 @@
-from pytest_testconfig import config, load_yaml
-from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary
-from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
-from pytest import mark
-from pytest import fixture
 import pytest
 import os
-import os.path
-import re
-import sys
-import time
-from pprint import pprint
-from ExtremeAutomation.Imports.pytestExecutionHelper import PytestExecutionHelper
-from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
-from ExtremeAutomation.Imports.XiqLibraryHelper import XiqLibraryHelper
+
 from Tests.Pytest.SystemTest.XIQ.Wired.Resources.SuiteUdks import SuiteUdks
 
 
-needToDeleteDevice = False
-current_directory = os.path.dirname(os.path.abspath(__file__))
-print(current_directory)
+@pytest.mark.p1
+@pytest.mark.development
+@pytest.mark.testbed_1_node
+class OnboardDeviceVSP4900UsingCsvTests:
+    """ Make sure that the location which is provided in the yaml file for dut1 is created in XIQ before the run of these tests.
 
+    Ran these test cases when the location of dut1 is 'auto_location_01, Santa Clara, building_02, floor_04'.
+    """
 
-@mark.testbed_1_node
-class onboardDeviceVSP4900UsingCsvTests():
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    suite_udks = SuiteUdks()
 
-    @classmethod
-    def setup_class(cls):
+    @pytest.fixture(scope="class")
+    def csv_file_location_1(self, dut1):
         try:
-            cls.executionHelper = PytestExecutionHelper()
-            # Create an instance of the helper class that will read in the test bed yaml file and provide basic methods and variable access.
-            # The user can also get to the test bed yaml by using the config dictionary
-            cls.tb = PytestConfigHelper(config)
-            cls.cfg = config
-            cls.cfg['${OUTPUT DIR}'] = os.getcwd()
-            cls.cfg['${TEST_NAME}'] = 'SETUP'
+            csv_file_location = self.suite_udks.create_csv_file(work_dir=self.current_directory,
+                                        dut_serial=dut1.serial,
+                                        platform=dut1.platform)
+            yield csv_file_location
+        finally:
+            self.suite_udks.delete_csv(csv_file_location)
 
-            # Create new objects to use in test. Here we will import everything from the default library
-            cls.defaultLibrary = DefaultLibrary()
-            cls.udks = cls.defaultLibrary.apiUdks
-            cls.suiteUdks  = SuiteUdks()
-            cls.devCmd = cls.defaultLibrary.deviceNetworkElement.networkElementCliSend
+    @pytest.fixture(scope="class")
+    def csv_file_location_2(self, dut1):
+        try:
+            csv_file_location = self.suite_udks.create_csv_file(work_dir=self.current_directory,
+                                                    dut_serial=dut1.serial,
+                                                    platform=dut1.platform,
+                                                    location=",".join(dut1.location.split(", ")[1:]))
+            yield csv_file_location
+        finally:
+            self.suite_udks.delete_csv(csv_file_location)
 
-            # Create the new object for the XIQ / XIQSE Libraries
-            cls.xiq = XiqLibrary()
-            spawn_connection = cls.xiq.Cli.open_spawn(cls.tb.dut1_ip, cls.tb.dut1_port, cls.tb.dut1_username,
-                                                      cls.tb.dut1_password, cls.tb.dut1_cli_type)
-            cls.xiq.Cli.downgrade_iqagent(cls.tb.dut1_cli_type, spawn_connection)
-            cls.xiq.Cli.close_spawn(spawn_connection)
+    @pytest.fixture(scope="class", autouse=True)
+    def setup(self, dut1, cli, open_spawn, loaded_config, check_devices_are_reachable):
 
-            cls.xiq.login.login_user(cls.tb.config.tenant_username,
-                                     cls.tb.config.tenant_password,
-                                     url=cls.tb.config.test_url,
-                                     IRV=True)
+        check_devices_are_reachable([dut1])
 
-            global csv_file_location
-            csv_file_location = cls.suiteUdks.create_csv_file(work_dir=current_directory,
-                                                              dut_serial=cls.tb.dut1_serial,
-                                                              platform=cls.tb.dut1_platform)
-            global csv_file_location2
-            csv_file_location2 = cls.suiteUdks.create_csv_file(work_dir=current_directory,
-                                                               dut_serial=cls.tb.dut1_serial,
-                                                               platform=cls.tb.dut1_platform,
-                                                               location=cls.tb.dut1_location2)
+        with open_spawn(dut1) as spawn_connection:
+            if loaded_config.get("lab", "").upper() == "SALEM":
+                cli.downgrade_iqagent(dut1.cli_type, spawn_connection)
 
-            cls.udks.setupTeardownUdks.networkElementConnectionManager.connect_to_all_network_elements()
+            cli.configure_device_to_connect_to_cloud(
+                dut1.cli_type, loaded_config['sw_connection_host'],
+                spawn_connection, vr=dut1.mgmt_vr, retry_count=30
+            )
 
-        except Exception as e:
-            cls.executionHelper.setSetupFailure(True)
+            if dut1.cli_type.upper() == "EXOS":
+                cli.send(spawn_connection, "enable iqagent")
 
+    @pytest.fixture
+    def cleanup(self, xiq_library_at_class_level, dut1):
+        try:
+            xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=dut1.serial)
+            yield
+        finally:
+            xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=dut1.serial)
 
-    @classmethod
-    def teardown_class(cls):
-
-
-        if needToDeleteDevice:
-            cls.xiq.xflowscommonDevices.delete_device(device_serial=cls.tb.dut1_serial)
-        cls.suiteUdks.delete_csv(csv_file_location)
-        cls.suiteUdks.delete_csv(csv_file_location2)
-        cls.xiq.login.logout_user()
-        cls.xiq.login.quit_browser()
-        cls.defaultLibrary.apiUdks.setupTeardownUdks.Base_Test_Suite_Cleanup()
-
-    # """ Test Cases """
-    @mark.development
-    @mark.tccs_7651
-    def test_onboard_device_using_csv_without_location(self,test_case_skip_check,test_case_started_ended_print):
+    @pytest.mark.tccs_7651
+    def test_onboard_device_using_csv_without_location(self, test_data, xiq_library_at_class_level, dut1, logger, csv_file_location_1, cleanup):
         '''[Documentation]  Test_Objective: Verify a device can be onboared using a csv file'''
-        global needToDeleteDevice
 
-        res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.cli_type, csv_location=csv_file_location)
+        res = xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick(
+            {**dut1, "csv_location": csv_file_location_1, "device_make": dut1.make})
 
         if res != 1:
-            pytest.fail(f'Could not onboard device {self.tb.dut1_platform} with serial {self.tb.dut1_serial}')
-        else:
-            print(f'Device {self.tb.dut1_platform} with serial {self.tb.dut1_serial} has been onboarded')
-            needToDeleteDevice = True
+            pytest.fail(f'Could not onboard device {dut1.platform} with serial {dut1.serial}')
 
-        self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial)
+        logger.info(f'Device {dut1.platform} with serial {dut1.serial} has been onboarded')
 
-        managed_res = self.xiq.xflowscommonDevices.wait_until_device_managed(self.tb.dut1_serial)
+        xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(dut1.serial)
+
+        managed_res = xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(dut1.serial)
 
         if managed_res == 1:
-            print('Status for device with serial number: {} is equal to managed'.format(self.tb.dut1_serial))
+            logger.info('Status for device with serial number: {} is equal to managed'.format(dut1.serial))
         else:
-            pytest.fail('Status for serial {} not equal to managed: {}'.format(self.tb.dut1_serial, managed_res))
+            pytest.fail('Status for serial {} not equal to managed: {}'.format(dut1.serial, managed_res))
 
-        res = self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1_serial)
+        res = xiq_library_at_class_level.xflowscommonDevices.get_device_status(device_serial=dut1.serial)
         if res != 'green':
-            pytest.fail('Status for serial {} not equal to Green: {}'.format(self.tb.dut1_serial, res))
+            pytest.fail('Status for serial {} not equal to Green: {}'.format(dut1.serial, res))
         else:
-            print('Status for device with serial number: {} is equal to Green'.format(self.tb.dut1_serial))
+            logger.info('Status for device with serial number: {} is equal to Green'.format(dut1.serial))
 
-        device_location = self.suiteUdks.get_value_specific_column(self.xiq, self.tb.dut1_serial, "LOCATION")
+        device_location = self.suite_udks.get_value_specific_column(xiq_library_at_class_level, dut1.serial, "LOCATION")
 
         location_to_verify = "Assign Location"
         if device_location != location_to_verify:
             pytest.fail('Current location {} did not match the expected location {} assigned to device {} having serial {}'.format(
-                    device_location, location_to_verify, self.tb.dut1_platform, self.tb.dut1_serial))
+                    device_location, location_to_verify, dut1.platform, dut1.serial))
         else:
-            print('Current location {} matched the expected location {} assigned to device {} having serial {}'.format(
-                device_location, location_to_verify, self.tb.dut1_platform, self.tb.dut1_serial))
+            logger.info('Current location {} matched the expected location {} assigned to device {} having serial {}'.format(
+                device_location, location_to_verify, dut1.platform, dut1.serial))
 
-        self.xiq.xflowscommonDevices.delete_device(device_serial=self.tb.dut1_serial)
-        needToDeleteDevice = False
-
-    @mark.development
-    @mark.tccs_7651
-    def test_onboard_device_using_csv_with_location(self,test_case_skip_check,test_case_started_ended_print):
+    @pytest.mark.tccs_7651
+    def test_onboard_device_using_csv_with_location(self, test_data, xiq_library_at_class_level, dut1, logger, csv_file_location_1, cleanup):
         '''[Documentation]  Test_Objective: Verify a device can be onboared using a csv file and selecting the location field'''
-        global needToDeleteDevice
 
-        res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.cli_type,
-                                                                      location=self.tb.dut1_location1, csv_location=csv_file_location)
+        res = xiq_library_at_class_level.xflowscommonDevices.quick_onboarding_cloud_csv(
+            csv_location=csv_file_location_1, location=",".join(dut1.location.split(", ")[1:]), device_make=dut1.make)
+
         if res != 1:
-            pytest.fail(f'Could not onboard device {self.tb.dut1_platform} with serial {self.tb.dut1_serial}')
+            pytest.fail(f'Could not onboard device {dut1.platform} with serial {dut1.serial}')
         else:
-            print(f'Device {self.tb.dut1_platform} with serial {self.tb.dut1_serial} has been onboarded')
-            needToDeleteDevice = True
+            logger.info(f'Device {dut1.platform} with serial {dut1.serial} has been onboarded')
 
-        self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial)
+        xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(dut1.serial)
 
-        managed_res = self.xiq.xflowscommonDevices.wait_until_device_managed(self.tb.dut1_serial)
+        managed_res = xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(dut1.serial)
 
         if managed_res == 1:
-            print('Status for device with serial number: {} is equal to managed'.format(self.tb.dut1_serial))
+            logger.info('Status for device with serial number: {} is equal to managed'.format(dut1.serial))
         else:
-            pytest.fail('Status for serial {} not equal to managed: {}'.format(self.tb.dut1_serial, managed_res))
+            pytest.fail('Status for serial {} not equal to managed: {}'.format(dut1.serial, managed_res))
 
-        res = self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1_serial)
+        res = xiq_library_at_class_level.xflowscommonDevices.get_device_status(device_serial=dut1.serial)
         if res != 'green':
-            pytest.fail('Status for serial {} not equal to Green: {}'.format(self.tb.dut1_serial, res))
+            pytest.fail('Status for serial {} not equal to Green: {}'.format(dut1.serial, res))
         else:
-            print('Status for device with serial number: {} is equal to Green'.format(self.tb.dut1_serial))
+            logger.info('Status for device with serial number: {} is equal to Green'.format(dut1.serial))
 
-        location_to_verify = self.suiteUdks.expected_location_in_gui(self.tb.dut1_location1)
+        location_to_verify = self.suite_udks.expected_location_in_gui(",".join(dut1.location.split(", ")[1:]))
 
-        device_location = self.suiteUdks.get_value_specific_column(self.xiq, self.tb.dut1_serial, "LOCATION")
+        device_location = self.suite_udks.get_value_specific_column(xiq_library_at_class_level, dut1.serial, "LOCATION")
 
         if location_to_verify not in device_location:
             pytest.fail('Current location {} did not match the expected location {} assigned to device {}'.format(
-                device_location, location_to_verify, self.tb.dut1_serial))
+                device_location, location_to_verify, dut1.serial))
         else:
-            print('Current location {} matched the expected location {} assigned to device {}'.format(
-                device_location, location_to_verify, self.tb.dut1_serial))
+            logger.info('Current location {} matched the expected location {} assigned to device {}'.format(
+                device_location, location_to_verify, dut1.serial))
 
-        self.xiq.xflowscommonDevices.delete_device(device_serial=self.tb.dut1_serial)
-        needToDeleteDevice = False
-
-    @mark.development
-    @mark.tccs_7651
-    def test_onboard_device_using_csv_with_location_in_csv(self, test_case_skip_check,test_case_started_ended_print):
+    @pytest.mark.tccs_7651
+    def test_onboard_device_using_csv_with_location_in_csv(self, test_data, xiq_library_at_class_level, dut1, logger, csv_file_location_2, cleanup):
         '''[Documentation]  Test_Objective: Verify a device can be onboared using a csv file with location in csv file
         Starting in 22R5 version of XIQ the location in the csv file will be ignore, updated test case to check that the
         location is equal to Assign Location'''
-        global needToDeleteDevice
 
-        res = self.xiq.xflowscommonDevices.quick_onboarding_cloud_csv(device_make=self.tb.dut1.cli_type,
-                                                                      csv_location=csv_file_location2)
+        res = xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick(
+            {**dut1, "csv_location": csv_file_location_2, "device_make": dut1.make})
+
         if res != 1:
-            pytest.fail(f'Could not onboard device {self.tb.dut1_platform} with serial {self.tb.dut1_serial}')
+            pytest.fail(f'Could not onboard device {dut1.platform} with serial {dut1.serial}')
         else:
-            print(f'Device {self.tb.dut1_platform} with serial {self.tb.dut1_serial} has been onboarded')
-            needToDeleteDevice = True
+            logger.info(f'Device {dut1.platform} with serial {dut1.serial} has been onboarded')
 
-        self.xiq.xflowscommonDevices.wait_until_device_online(self.tb.dut1_serial)
+        xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(dut1.serial)
 
-        managed_res = self.xiq.xflowscommonDevices.wait_until_device_managed(self.tb.dut1_serial)
+        managed_res = xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(dut1.serial)
 
         if managed_res == 1:
-            print('Status for device with serial number: {} is equal to managed'.format(self.tb.dut1_serial))
+            logger.info('Status for device with serial number: {} is equal to managed'.format(dut1.serial))
         else:
-            pytest.fail('Status for serial {} not equal to managed: {}'.format(self.tb.dut1_serial, managed_res))
+            pytest.fail('Status for serial {} not equal to managed: {}'.format(dut1.serial, managed_res))
 
-        res = self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1_serial)
+        res = xiq_library_at_class_level.xflowscommonDevices.get_device_status(device_serial=dut1.serial)
         if res != 'green':
-            pytest.fail('Status for serial {} not equal to Green: {}'.format(self.tb.dut1_serial, res))
+            pytest.fail('Status for serial {} not equal to Green: {}'.format(dut1.serial, res))
         else:
-            print('Status for device with serial number: {} is equal to Green'.format(self.tb.dut1_serial))
+            logger.info('Status for device with serial number: {} is equal to Green'.format(dut1.serial))
 
         location_to_verify = "Assign Location"
 
-        device_location = self.suiteUdks.get_value_specific_column(self.xiq, self.tb.dut1_serial, "LOCATION")
+        device_location = self.suite_udks.get_value_specific_column(xiq_library_at_class_level, dut1.serial, "LOCATION")
 
         if location_to_verify not in device_location:
             pytest.fail('Current location {} did not match the expected location {} assigned to device {}'.format(
-                device_location, location_to_verify, self.tb.dut1_serial))
+                device_location, location_to_verify, dut1.serial))
         else:
-            print('Current location {} matched the expected location {} assigned to device {}'.format(
-                device_location, location_to_verify, self.tb.dut1_serial))
-
-        self.xiq.xflowscommonDevices.delete_device(device_serial=self.tb.dut1_serial)
-        needToDeleteDevice = False
+            logger.info('Current location {} matched the expected location {} assigned to device {}'.format(
+                device_location, location_to_verify, dut1.serial))
