@@ -161,7 +161,7 @@ Test 4: Verify creation of RBAC users--Operator
 
     ${result1}=             login user  ${TENANT_USERNAME}    ${TENANT_PASSWORD}
 
-    ${create_account}=      Create Role Based Account        &{OPERATOR_ROLE}
+    ${create_account}=      Create Role Based Account        ${OPERATOR_ROLE}
                             logout user
                             sleep   4s
     ${URL}=                 get_url_to_set_password_for_new_user     automationadessreg@gmail.com    wbdofhkkleinjxkw
@@ -176,7 +176,7 @@ Test 5: Verify creation of RBAC users--Monitor
     [Tags]                    tccs_13240   adsp        development
     ${result2}=              login user  ${TENANT_USERNAME}    ${TENANT_PASSWORD}
 
-    ${create_account}=        Create Role Based Account        &{MONITOR_ROLE}
+    ${create_account}=        Create Role Based Account        ${MONITOR_ROLE}
                                 logout user
                             sleep   4s
     ${URL}=                 get_url_to_set_password_for_new_user     automationadessreg@gmail.com    wbdofhkkleinjxkw
@@ -191,7 +191,7 @@ Test 6: Verify creation of RBAC users--HD
     [Tags]              tccs_13241  adsp        development
     ${result3}=             login user  ${TENANT_USERNAME}    ${TENANT_PASSWORD}
 
-    ${create_account}=       Create Role Based Account        &{HELPDESK_ROLE}
+    ${create_account}=       Create Role Based Account        ${HELPDESK_ROLE}
                                 logout user
                             sleep   4s
     ${URL}=                 get_url_to_set_password_for_new_user     automationadessreg@gmail.com    wbdofhkkleinjxkw

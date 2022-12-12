@@ -1018,7 +1018,7 @@ TCCS-13016: Guest Management Role - Adding users
 
     [Tags]                  development    greenfield    guest_management_role    tccs_13016
 
-    ${CREATE_ACCOUNT}=              Create Role Based Account   &{GUEST_MANAGEMENT_ROLE}
+    ${CREATE_ACCOUNT}=              Create Role Based Account   ${GUEST_MANAGEMENT_ROLE}
     should be equal as strings      '${CREATE_ACCOUNT}'    '1'
 
     ${LOGOUT_USER}=              Logout User
