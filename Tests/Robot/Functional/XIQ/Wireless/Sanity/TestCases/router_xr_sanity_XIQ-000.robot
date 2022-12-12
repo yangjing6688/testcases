@@ -235,7 +235,7 @@ TCCS-12330: Create Router XR Template
     ${CREATE_NW_POLICY}=        Create Network Policy   ${NW_POLICY_NAME}   ${XR_ROUTER_NW_01}
     Should Be Equal As Integers     ${CREATE_NW_POLICY}         1
 
-    ${CREATE_ROUTER_TEMPLATE}=  Add Router Template     ${NW_POLICY_NAME}   &{ROUTER_TEMPLATE_CONFIG1}
+    ${CREATE_ROUTER_TEMPLATE}=  Add Router Template     ${NW_POLICY_NAME}   ${ROUTER_TEMPLATE_CONFIG1}
     Should Be Equal As Integers     ${CREATE_ROUTER_TEMPLATE}   1
 
     Push XR Router Template     ${NW_POLICY_NAME}

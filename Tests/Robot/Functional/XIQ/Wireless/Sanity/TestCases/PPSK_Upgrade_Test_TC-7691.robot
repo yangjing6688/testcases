@@ -287,7 +287,7 @@ TC-6759_Step8: Revert Changes for User3 and User4
     ${USER_PASSWORD_CHANGED}=         edit single user password       ${user4}          ${pass4}
     should be equal as strings       '${USER_PASSWORD_CHANGED}'   '1'
 
-    ${USER3_ADD}                      create add user to user group    ${MULTIPLE_CLOUD_USER_GROUP}        user_config=&{single_user3_info}
+    ${USER3_ADD}                      create add user to user group    ${MULTIPLE_CLOUD_USER_GROUP}        ${single_user3_info}
     should be equal as strings       '${USER3_ADD}'   '1'
 
     ${DELTA_UPDATE}=                  Update Network Policy To Ap    policy_name=${PPSK_UPGRADE_TEST_NW}    ap_serial=${ap1.serial}
