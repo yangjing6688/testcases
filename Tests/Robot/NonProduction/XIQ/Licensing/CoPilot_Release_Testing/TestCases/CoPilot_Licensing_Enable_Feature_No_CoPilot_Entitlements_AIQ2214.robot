@@ -217,7 +217,7 @@ Delete Device and Confirm Success
 Enable CoPilot Menu Feature and Confirm No CoPilot Entitlements
     [Documentation]     Verifies user is not able to click on "Enable CoPilot" feature in main CoPilot web page since user has no copilot entitlements
 
-    ${result_enable}=               Enable CoPilot Menu Feature
+    ${result_enable}=               Enable CoPilot Menu Feature     expect_error=True
     Should Be Equal As Strings      ${result_enable}     False
 
 Confirm Entitlements Table Does Not Contain Feature
@@ -237,13 +237,5 @@ Confirm Entitlements Table Does Contain Feature
 Enable CoPilot Feature For This VIQ and Confirm User Unable To Enable
     [Documentation]     Verifies user is unable to Enables CoPilot feature in Global Settings -> VIQ Management, warning banner is displayed and verifies success
 
-    ${result_enable}=    Enable CoPilot Feature For This VIQ
-    Should Be Equal As Integers     ${result_enable}     1
-
-    Verify CoPilot Deactivate Banner Message Displayed
-
-Verify CoPilot Deactivate Banner Message Displayed
-    [Documentation]     Verifies the "CoPilot deactivated due to lack of licenses" banner is displayed
-
-    ${banner_result}=  Confirm CoPilot Deactivated Due To Lack Of Licenses Banner Displayed
-    Should Be Equal As Strings                       ${banner_result}      True
+    ${result_enable}=    Enable CoPilot Feature For This VIQ     expect_error=True
+    Should Be Equal As Integers     ${result_enable}     -1
