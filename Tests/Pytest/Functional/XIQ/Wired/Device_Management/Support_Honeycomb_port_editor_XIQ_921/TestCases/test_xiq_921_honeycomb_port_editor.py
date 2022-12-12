@@ -207,7 +207,6 @@ class xiqTests():
                 return '2'
 
     def get_sw_model(self):
-        self.xiq.xflowscommonDevices.column_picker_select('Model')
         sw_model = self.xiq.xflowsmanageDevices.get_device_model(self.tb.dut1.mac)
         if not sw_model:
             pytest.fail("Fail on getting the device's model")
