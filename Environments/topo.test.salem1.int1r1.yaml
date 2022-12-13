@@ -1,4 +1,4 @@
-test_url:                   "https://int1r1.qa.xcloudiq.com"
+test_url:                   "https://int1.qa.xcloudiq.com"
 capwap_url:                 "int1r1-cwpm-01.qa.xcloudiq.com"
 sw_connection_host:         "int1r1.qa.xcloudiq.com"
 wing_sw_connection_host:    "int1r1-wing.qa.xcloudiq.com"

@@ -10,6 +10,9 @@ on:
     branches: [main, RELEASE-**, 2022_Q1r2]
 
 env:
+  fail_prefix:                  '\033[1;31mFAIL -\033[0m'
+  error_prefix:                 '\033[1;31mERROR -\033[0m'
+  pass_prefix:                  '\033[1;32mPASS -\033[0m'
   pytest_func_path:             pytest_func_tests.txt
   pytest_non_prod_path:         pytest_non_prod_tests.txt
   pytest_libs_path:             pytest_libs.txt
@@ -250,7 +253,7 @@ jobs:
     - name: Check non-production test bed files
       if: ${{env.SKIP_CHECK == 'false'}}
       run: |
-        printf '%s\n' "[*] Checking non-production testbed files..."
+        printf '%b\n' "[*] Checking non-production testbed files..."
         python .github/workflows/testbed_yaml_parser.py ${{ env.testbed_non_prod_path }} | tee -a ${{ env.testbed_files_report_path }}
 
     - name: Upload test results to GH artifacts
@@ -313,35 +316,35 @@ jobs:
           errors=0
           f=$( basename "$path" )
           let "files_tested += 1"
-          printf "[*] Processing Pytest file: $path ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          printf '\n%b\n' "[*] Processing Pytest file: $path ..." | tee -a ${{ env.testcase_files_report_path }}
 
           # Test for .py file extension
           if [[ ! $f =~ .*\.py$ ]] ; then
-              printf "[**] FAIL: $path is NOT a Pytest file!  Only .py files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${fail_prefix} $path is NOT a Pytest file!  Only .py files are allowed in this directory." | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
 
           # Test for "test_" prefix. Ignore __init__.py, conftest.py, .pylintrc files
           if [[ ! $f =~ ^test_.*\.py$|__init__\.py$|conftest\.py$|\.pylintrc$ ]] ; then
-              echo "[**] FAIL: $path is missing the \"test_\" prefix!" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${fail_prefix} $path is missing the \"test_\" prefix!" | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
 
           # Check for valid Jira ID suffix. Ignore __init__.py, conftest.py, .pylintrc files
           if [[ ! $f =~ ^test_.*_[a-zA-Z]+[\-_]?[0-9]+(_[0-9]+)?\.py$|__init__\.py$|conftest\.py$|\.pylintrc$ ]] ; then
-              echo "[**] FAIL: $path does not contain a valid Jira ID suffix!" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${fail_prefix} $path does not contain a valid Jira ID suffix!" | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
 
           if (( errors == 0 )); then
-              printf "[**] PASS: $path\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${pass_prefix} $path" | tee -a ${{ env.testcase_files_report_path }}
           else
-              echo '[**] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' '[**] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
           fi
         done
         unset IFS
         if (( files_tested == 0 )); then
-          echo "[*] No Pytest Production files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
+          printf '%b\n' "[*] No Pytest Production files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
         fi
         exit $rc
 
@@ -355,29 +358,29 @@ jobs:
           errors=0
           f=$( basename "$path" )
           let "files_tested += 1"
-          printf "[*] Processing Pytest file: $path ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          printf '\n%b\n' "[*] Processing Pytest file: $path ..." | tee -a ${{ env.testcase_files_report_path }}
           # Test for .py file extension
           if [[ ! $f =~ .*\.py$ ]] ; then
-              printf "[**] FAIL: $path is NOT a Pytest file! Only .py files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${fail_prefix} $path is NOT a Pytest file! Only .py files are allowed in this directory." | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
 
           # Only allow files that conform to "test_<testname>.py". Ignore __init__.py, conftest.py, .pylintrc files
           # Note: inside bash [[ ]] you need to use extended regex format
           if [[ ! "$f" =~ ^test_.*\.py$|__init__\.py$|conftest\.py$|\.pylintrc$ ]] ; then
-              echo "[**] FAIL: $path is missing the \"test_\" prefix!" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${fail_prefix} $path is missing the \"test_\" prefix!" | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
 
           if (( errors == 0 )); then
-              printf "[**] PASS: $path\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${pass_prefix} $path" | tee -a ${{ env.testcase_files_report_path }}
           else
-              echo '[**] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' '[**] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
           fi
         done
         unset IFS
         if (( files_tested == 0 )); then
-          echo "[*] No Pytest Non-Production files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
+          printf '%b\n' "[*] No Pytest Non-Production files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
         fi
         exit $rc
 
@@ -390,17 +393,17 @@ jobs:
         for path in $( cat ${{ env.pytest_libs_path }} | sed -e 's/ //g' ); do
           f=$( basename "$path" )
           let "files_tested += 1"
-          printf "\n[*] Processing Python file: $path ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          printf '\n%b\n' "[*] Processing Python file: $path ..." | tee -a ${{ env.testcase_files_report_path }}
           if [[ ! $f =~ .*\.py$ ]] ; then
-              printf "[**] FAIL: $path is NOT a Python file! Only .py files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${fail_prefix} $path is NOT a Python file! Only .py files are allowed in this directory." | tee -a ${{ env.testcase_files_report_path }}
               rc=1;
           else
-              printf "[**] PASS: $path\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${pass_prefix} $path" | tee -a ${{ env.testcase_files_report_path }}
           fi
         done
         unset IFS
         if (( files_tested == 0 )); then
-          echo "[*] No Pytest Library files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
+          printf '%b\n' "[*] No Pytest Library files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
         fi
         exit $rc
 
@@ -414,28 +417,28 @@ jobs:
           errors=0
           f=$( basename "$path" )
           let "files_tested += 1"
-          printf "\n[*] Processing file: $path ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          printf '\n%b\n' "[*] Processing file: $path ..." | tee -a ${{ env.testcase_files_report_path }}
           if [[ ! $f =~ .*\.ya?ml$ ]] ; then
-              printf "[**] FAIL: $path is NOT a YAML file! Only .yaml/.yml files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${fail_prefix} $path is NOT a YAML file! Only .yaml/.yml files are allowed in this directory." | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
 
           # Only allow YAML files that contain "suitemap" or "runlist".
           # Note: inside bash [[ ]] you need to use extended regex format
           if [[ ! "$f" =~ .*suitemap.*\.ya?ml$|.*runlist.*\.ya?ml$ ]] ; then
-              echo "[**] FAIL: $path does not contain 'suitemap' or 'runlist'!" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${fail_prefix} $path does not contain 'suitemap' or 'runlist'!" | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
 
           if (( errors == 0 )); then
-              printf "[**] PASS: $path\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${pass_prefix} $path" | tee -a ${{ env.testcase_files_report_path }}
           else
-              echo '[**] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' '[**] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
           fi
         done
         unset IFS
         if (( files_tested == 0 )); then
-          echo "[*] No Pytest Runlist & Suitemap files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
+          printf '%b\n' "[*] No Pytest Runlist & Suitemap files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
         fi
         exit $rc
 
@@ -452,29 +455,29 @@ jobs:
           errors=0
           f=$( basename "$path" )
           let "files_tested += 1"
-          printf "[*] Processing Robot file: $path ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          printf '\n%b\n' "[*] Processing Robot file: $path ..." | tee -a ${{ env.testcase_files_report_path }}
 
           # Test for .robot file extension
           if [[ ! $f =~ .*\.robot$ ]] ; then
-              printf "[**] FAIL: $path is NOT a Robot file! Only .robot files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${fail_prefix} $path is NOT a Robot file! Only .robot files are allowed in this directory." | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
 
           # Check for Jira ID suffix. Ignore __init__.robot files
           if [[ ! $f =~ _[a-zA-Z]+[\-_]?[0-9]+(_[0-9]+)?\.robot$|__init__\.robot$ ]] ; then
-              echo "[**] FAIL: $path does not contain a valid Jira ID suffix!" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${fail_prefix} $path does not contain a valid Jira ID suffix!" | tee -a ${{ env.testcase_files_report_path }}
               rc=1; let "errors += 1"
           fi
 
           if (( errors == 0 )); then
-              printf "[**] PASS: $path\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${pass_prefix} $path" | tee -a ${{ env.testcase_files_report_path }}
           else
-              echo '[**] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' '[**] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
           fi
         done
         unset IFS
         if (( files_tested == 0 )); then
-          echo "[*] No Robot Production files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
+          printf '%b\n' "[*] No Robot Production files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
         fi
         exit $rc
 
@@ -487,17 +490,17 @@ jobs:
         for path in $( cat ${{ env.robot_non_prod_path }} | sed -e 's/ //g' ); do
           f=$( basename "$path" )
           let "files_tested += 1"
-          printf "[*] Processing Robot file: $path ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          printf '\n%b\n' "[*] Processing Robot file: $path ..." | tee -a ${{ env.testcase_files_report_path }}
           if [[ ! $f =~ .*\.robot$ ]] ; then
-              printf "[**] FAIL: $path is NOT a Robot file! Only .robot files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${fail_prefix} $path is NOT a Robot file! Only .robot files are allowed in this directory." | tee -a ${{ env.testcase_files_report_path }}
               rc=1
           else
-              printf "[**] PASS: $path\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${pass_prefix} $path" | tee -a ${{ env.testcase_files_report_path }}
           fi
         done
         unset IFS
         if (( files_tested == 0 )); then
-          echo "[*] No Robot Non-Production files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
+          printf '%b\n' "[*] No Robot Non-Production files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
         fi
         exit $rc
 
@@ -510,17 +513,17 @@ jobs:
         for path in $( cat ${{ env.robot_libs_path }} | sed -e 's/ //g' ); do
           f=$( basename "$path" )
           let "files_tested += 1"
-          printf "[*] Processing Robot file: $path ...\n" | tee -a ${{ env.testcase_files_report_path }}
+          printf '\n%b\n' "[*] Processing Robot file: $path ..." | tee -a ${{ env.testcase_files_report_path }}
           if [[ ! $f =~ .*\.robot$ ]] ; then
-              printf "[**] FAIL: $path is NOT a Robot file! Only .robot files are allowed in this directory.\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${fail_prefix} $path is NOT a Robot file! Only .robot files are allowed in this directory." | tee -a ${{ env.testcase_files_report_path }}
               rc=1
           else
-              printf "[**] PASS: $path\n" | tee -a ${{ env.testcase_files_report_path }}
+              printf '%b\n' "[**] ${pass_prefix} $path" | tee -a ${{ env.testcase_files_report_path }}
           fi
         done
         unset IFS
         if (( files_tested == 0 )); then
-          echo "[*] No Robot Library files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
+          printf '%b\n' "[*] No Robot Library files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
         fi
         exit $rc
 
@@ -572,20 +575,20 @@ jobs:
       run: |
         trimmed_files=$(cat ${{ env.other_files_path }} | tr -d [:space:])
         if [[ $trimmed_files ]]; then
-          echo "[*] FAIL: New directories and files not allowed in protected areas." | tee -a ${{ env.directory_struct_report_path }}
-          echo "[*] Common reasons for seeing this error:" | tee -a ${{ env.directory_struct_report_path }}
-          echo "[*]   - Adding files outside of TestCases or Resource directories. (Except: __init__.py, .pylintrc, readme.md)" | tee -a ${{ env.directory_struct_report_path }}
-          echo "[*]   - Adding directories outisde of /Tests/<framework>/<test type>/ " | tee -a ${{ env.directory_struct_report_path }}
-          echo '[*] For more information see the Test Suite Location section of ${{ env.documentation_url }}' | tee -a ${{ env.directory_struct_report_path }}
-          echo "[*] Offending files/directories:" | tee -a ${{ env.directory_struct_report_path }}
+          printf '%b\n' "[*] ${fail_prefix} New directories and files not allowed in protected areas." | tee -a ${{ env.directory_struct_report_path }}
+          printf '%b\n' "[*] Common reasons for seeing this error:" | tee -a ${{ env.directory_struct_report_path }}
+          printf '%b\n' "[*]   - Adding files outside of TestCases or Resource directories. (Except: __init__.py, .pylintrc, readme.md)" | tee -a ${{ env.directory_struct_report_path }}
+          printf '%b\n' "[*]   - Adding directories outisde of /Tests/<framework>/<test type>/ " | tee -a ${{ env.directory_struct_report_path }}
+          printf '%b\n' '[*] For more information see the Test Suite Location section of ${{ env.documentation_url }}' | tee -a ${{ env.directory_struct_report_path }}
+          printf '%b\n' "[*] Offending files/directories:" | tee -a ${{ env.directory_struct_report_path }}
 
           IFS=','
           for path in $trimmed_files ; do
-            echo "[**] $path" | tee -a ${{ env.directory_struct_report_path }}
+            printf '%b\n' "[**] $path" | tee -a ${{ env.directory_struct_report_path }}
           done
           exit 1
         else
-          echo "[*] PASS: No files/directories found in protected areas." | tee -a ${{ env.directory_struct_report_path }}
+          printf '%b\n' "[*] ${pass_prefix} No files/directories found in protected areas." | tee -a ${{ env.directory_struct_report_path }}
         fi
 
     - name: Upload test results to GH artifacts
@@ -634,28 +637,28 @@ jobs:
         for path in $( cat ${{ env.pytest_res }} | tr ',' '\n' ) ; do
             filename=$( basename "$path" )
             let "files_tested += 1"
-            echo "[*] Processing Pytest Resources file: $path ..." | tee -a ${{ env.testcase_naming_report_path }}
+            printf '\n%b\n' "[*] Processing Pytest Resources file: $path ..." | tee -a ${{ env.testcase_naming_report_path }}
 
             # Skip __init__.py, conftest.py, .pylintrc files
             #
             if [[ ${filename} =~ __init__\.py$|conftest\.py$|\.pylintrc$ ]] ; then
-                echo "[**] PASS - File: ${path}" | tee -a ${{ env.testcase_naming_report_path }}
+                printf '%b\n' "[**] ${pass_prefix} File: ${path}" | tee -a ${{ env.testcase_naming_report_path }}
                 continue
             fi
 
             for func in $( grep -w def $path | awk '{print $2}' ); do
-                echo "Testing Function: ${func} ..." | tee -a ${{ env.testcase_naming_report_path }}
+                printf '%b\n' "Testing Function: ${func} ..." | tee -a ${{ env.testcase_naming_report_path }}
 
                 if [[ ${func} =~ ^test_.*$ ]] ; then
-                  echo "[**] FAIL - Function: ${func}" | tee -a ${{ env.testcase_naming_report_path }}
+                  printf '%b\n' "[**] ${fail_prefix} Function: ${func}" | tee -a ${{ env.testcase_naming_report_path }}
                   rc=1
                 else
-                  echo "[**] PASS - Function: ${func}" | tee -a ${{ env.testcase_naming_report_path }}
+                  printf '%b\n' "[**] ${pass_prefix} Function: ${func}" | tee -a ${{ env.testcase_naming_report_path }}
                 fi
             done
         done
         if (( files_tested == 0 )); then
-          echo "[*] No Pytest Resource files found. Skipping these tests..." | tee -a ${{ env.testcase_naming_report_path }}
+          printf '%b\n' "[*] No Pytest Resource files found. Skipping these tests..." | tee -a ${{ env.testcase_naming_report_path }}
         fi
         exit $rc
 
@@ -667,25 +670,25 @@ jobs:
         for path in $( cat ${{ env.pytest_func_path }} ${{ env.pytest_non_prod_path }} | tr ',' '\n' ) ; do
             filename=$( basename "$path" )
             let "files_tested += 1"
-            echo "[*] Processing Pytest Test file: $path ..." | tee -a ${{ env.testcase_naming_report_path }}
+            printf '\n%b\n' "[*] Processing Pytest Test file: $path ..." | tee -a ${{ env.testcase_naming_report_path }}
 
             # Skip __init__.py, conftest.py, .pylintrc files
             #
             if [[ ${filename} =~ __init__\.py$|conftest\.py$|\.pylintrc$ ]] ; then
-                echo "[**] PASS - File: ${path}" | tee -a ${{ env.testcase_naming_report_path }}
+                printf '%b\n' "[**] ${pass_prefix} File: ${path}" | tee -a ${{ env.testcase_naming_report_path }}
                 continue
             fi
 
             func=$( grep -w def $path | awk '{print $2}' | grep ^test_ )
             if [[ ${func-} ]] ; then
-              echo "[**] PASS - File: ${path}" | tee -a ${{ env.testcase_naming_report_path }}
+              printf '%b\n' "[**] ${pass_prefix} File: ${path}" | tee -a ${{ env.testcase_naming_report_path }}
             else
-              echo "[**] FAIL - File: ${path}" | tee -a ${{ env.testcase_naming_report_path }}
+              printf '%b\n' "[**] ${fail_prefix} File: ${path}" | tee -a ${{ env.testcase_naming_report_path }}
               rc=1
             fi
         done
         if (( files_tested == 0 )); then
-          echo "[*] No Pytest Test files found. Skipping these tests..." | tee -a ${{ env.testcase_naming_report_path }}
+          printf '%b\n' "[*] No Pytest Test files found. Skipping these tests..." | tee -a ${{ env.testcase_naming_report_path }}
         fi
         exit $rc
 
@@ -706,7 +709,8 @@ jobs:
   check_tags:
     needs: [check_changes, check_names]
     name: Tags/Markers validation
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: Ubuntu-20.04
     outputs:
       status: ${{ steps.set-output.outputs.status }}
     env:
@@ -746,6 +750,8 @@ jobs:
         python .github/workflows/skip_handler.py --actor "${{ github.actor }}" --title '${{ github.event.pull_request.title }}' --check tags | tee -a ${{ env.tag_marker_report_path }}
 
         echo "SKIP_RESERVED_TAGS=true" >> $GITHUB_ENV
+        printf '\n%s\n%s\n' "====== Shell environment variables ======" "$(env)"
+        printf '\n%s\n%s\n' "====== GitHub environment variables ======" "$(cat $GITHUB_ENV)"
     ### 11/29/22 by peter sadej
     ### The reserved tags check has become cumbersome for our users. Always skip the check until we make a decision on if or how it should work in the future
     ### # Handle skipping entire only reserved tags checks (sanity, p1, p2, etc.)
@@ -785,7 +791,7 @@ jobs:
 
         # Check if inventory tool had problems
         if [[ ! -f "${{ env.pytest_result_file }}" ]]; then
-            echo "Error: output file not found. Check above exception."
+            printf '%b\n' "${error_prefix} output file not found. Check above exception."
             exit 1
         fi
 
@@ -804,7 +810,7 @@ jobs:
 
         # Check if inventory tool had problems
         if [[ ! -f "${{ env.robot_result_file }}" ]]; then
-            echo "Error: output file not found. Check above exception."
+            printf '%b\n' "${error_prefix} output file not found. Check above exception."
             exit 1
         fi
 

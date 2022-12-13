@@ -65,7 +65,7 @@ Pre Condition
 ####### You can go to /Resources/location_config.robot to change related parameters
     FOR     ${index}    IN RANGE    ${RANGE_START}       ${RANGE_END}
         Create Location Building Floor      ${LOCATION_${index}}   ${BUILDING_${index}}    ${FLOOR_${index}}  width=${MAP_WIDTH}   height=${MAP_HIGHT}
-        Add Classification Rule with Location       cls_rule_location_${index}      cls_rule_location_${index}      &{LOC_TEST_${index}}
+        Add Classification Rule with Location       cls_rule_location_${index}      cls_rule_location_${index}      ${LOC_TEST_${index}}
     END
 
 Suite Clean Up

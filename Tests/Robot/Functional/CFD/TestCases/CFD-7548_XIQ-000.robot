@@ -73,7 +73,7 @@ Pre Condition
 # Create Network Policy
     ${NW_POLICY_CREATION}=  Create Network Policy   ${NW_POLICY_NAME1}   ${WIRELESS_PPSK_WPA2CCMP_1}
     Should Be Equal As Strings   '${NW_POLICY_CREATION}'   '1'
-    add_user_group_to_network_policy_ssid       ${NW_POLICY_NAME1}    &{WIRELESS_PPSK_WPA2CCMP_1}    &{PPSK_AUTH_PROFILE_LOCAL_BULK}
+    add_user_group_to_network_policy_ssid       ${NW_POLICY_NAME1}    ${WIRELESS_PPSK_WPA2CCMP_1}    ${PPSK_AUTH_PROFILE_LOCAL_BULK}
 
 # Onboard 1 simulator
     ${ONBOARD_RESULT}=        onboard device quick    ${device}

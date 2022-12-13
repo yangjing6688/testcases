@@ -143,7 +143,6 @@ class Cleanup(Protocol):
         location: str, 
         network_policies: List[str],
         templates_switch: List[str],
-        slots: int
         ) -> None: ...
 
 
@@ -491,6 +490,8 @@ def pytest_configure(config):
     pytest.onboarding_test_name: str = "tcxm_xiq_onboarding"
     pytest.onboarding_cleanup_test_name: str = "tcxm_xiq_onboarding_cleanup"
     pytest.created_onboarding_locations: List[str] = []
+    pytest.created_network_policies: List[str] = []
+    pytest.created_switch_templates: List[str] = []
     pytest.items: List[pytest.Function] = []
     pytest.testbed_one_node_items: List[pytest.Function] = []
     pytest.testbed_two_node_items: List[pytest.Function] = []
@@ -1258,21 +1259,21 @@ def reset_switch(
             node: Node
             ) -> None:
             
-            if node.node_name == "node_stack":
-                logger.warning("Currently reset switch to factory defaults for stack is not implemented.")
-                return
-                
             onboarding_options: Options = request.getfixturevalue(f"{node.node_name}_onboarding_options")
             
             if onboarding_options.get("reset_switch_to_factory_defaults", False):
+                
+                logger.info(f"The 'reset_switch_to_factory_defaults' flag is enabled for the '{node.node_name}' node.")
                 
                 if not (node.get("console_ip") and node.get("console_port")):
                     logger.warning(
                         f"The 'reset_switch_to_factory_defaults' flag is enabled for the '{node.node_name}' node "
                         f"but this node does not have the console ip/console port configured in the yaml file.")
                     return
-                            
-                logger.info(f"The 'reset_switch_to_factory_defaults' flag is enabled for the '{node.node_name}' node.")
+
+                if node.node_name == "node_stack":
+                    logger.warning("Currently reset switch to factory defaults for stack is not implemented.")
+                    return
 
                 try:
                     if node.cli_type.upper() == "EXOS":
@@ -2077,7 +2078,8 @@ def check_devices_are_onboarded(
 def cleanup(
         logger: PytestLogger,
         screen: Screen, 
-        debug: Callable
+        debug: Callable,
+        request: fixtures.SubRequest
 ) -> Cleanup:
     """
     Fixture that does the cleanup in XIQ.
@@ -2090,7 +2092,6 @@ def cleanup(
             locations: List[str]=[], 
             network_policies: List[str]=[],
             templates_switch: List[str]=[],
-            slots: int=1
     ) -> None:
             
             xiq.xflowscommonDevices._goto_devices()
@@ -2098,10 +2099,11 @@ def cleanup(
             for dut in duts:
                 try:
                     screen.save_screen_shot()
-                    logger.info(f"Delete this device: '{dut.name}', '{dut.mac}'.")
+                    logger.step(f"Delete this device: '{dut.name}' (mac='{dut.mac}').")
                     xiq.xflowscommonDevices._goto_devices()
                     xiq.xflowscommonDevices.delete_device(
                         device_mac=dut.mac)
+                    logger.info(f"Successfully deleted this device: '{dut.name}' (mac='{dut.mac}').")
                     screen.save_screen_shot()
                 except Exception as exc:
                     screen.save_screen_shot()
@@ -2109,9 +2111,10 @@ def cleanup(
                     
             for location in locations:
                 try:
-                    logger.info(f"Delete this location: '{location}'.")
+                    logger.step(f"Delete this location: '{location}'.")
                     xiq.xflowsmanageLocation.delete_location_building_floor(
                         *location.split(","))
+                    logger.info(f"Successfully deleted this location: '{location}'.")
                     screen.save_screen_shot()
                 except Exception as exc:
                     screen.save_screen_shot()
@@ -2120,16 +2123,28 @@ def cleanup(
             for network_policy in network_policies:
                 try:
                     screen.save_screen_shot()
-                    logger.info(f"Delete this network policy: '{network_policy}'.")
+                    logger.step(f"Delete this network policy: '{network_policy}'.")
                     xiq.xflowsconfigureNetworkPolicy.delete_network_policy(
                         network_policy)
+                    logger.info(f"Successfully deleted this network policy: '{network_policy}'")
                     screen.save_screen_shot()
                 except Exception as exc:
                     screen.save_screen_shot()
                     logger.warning(repr(exc))   
                     
             for template_switch in templates_switch:
-                logger.info(f"Delete this switch template: '{template_switch}'.")
+                          
+                logger.step(f"Delete this switch template: '{template_switch}'.")
+                
+                # for node_stack
+                # we need to delete multiple switch templates - f"{template_switch}-{i}" where i is in range (1, number_of_slots + 1)
+                slots = 1
+                node_stack_template_name = request.getfixturevalue("node_stack_template_name")
+                
+                if template_switch == node_stack_template_name:
+                    node_stack = request.getfixturevalue("node_stack")
+                    slots = len(node_stack.stack)
+                    
                 for _ in range(slots):
                     try:
                         screen.save_screen_shot()
@@ -2138,7 +2153,10 @@ def cleanup(
                         screen.save_screen_shot()
                     except Exception as exc:
                         screen.save_screen_shot()
-                        logger.warning(repr(exc))   
+                        logger.warning(repr(exc))
+                    else:
+                        logger.info(f"Successfully deleted this switch template: '{template_switch}'.")
+                        
     return cleanup_func
 
 
@@ -2188,6 +2206,8 @@ def configure_network_policies(
                 screen.save_screen_shot()
                 logger.info(f"Successfully created the network policy '{network_policy}' for dut '{dut}' (node: '{node_name}').")
                 
+                pytest.created_network_policies.append(network_policy)
+
                 if create_switch_template_flag:
                     logger.step(f"Create and attach this switch template to '{dut}' dut (node: '{node_name}'): '{template_switch}'.")
                     if node_name == "node_stack":
@@ -2201,6 +2221,8 @@ def configure_network_policies(
                     logger.info(
                         f"Successfully created and attached this switch template to the network policy"
                         f"'{network_policy}' of dut '{dut}' (node: '{node_name}').")
+                    
+                    pytest.created_switch_templates.append(template_switch)
 
                 if assign_network_policy_to_device_flag:
                     assert xiq.xflowsmanageDevices.assign_network_policy_to_switch_mac(
@@ -3055,16 +3077,14 @@ def onboard_cleanup(
     stack_nodes: List[Node] = request.getfixturevalue("stack_nodes")
     cleanup: Cleanup = request.getfixturevalue("cleanup")
     node_list: List[Node] = request.getfixturevalue("node_list")
-    policy_config: PolicyConfig = request.getfixturevalue("policy_config")
     
     with login_xiq() as xiq:
 
         cleanup(
             xiq=xiq, 
             duts=node_list, 
-            network_policies=[dut_info['policy_name'] for dut_info in policy_config.values()],
-            templates_switch=[dut_info['template_name'] for dut_info in policy_config.values()],
-            slots=len(stack_nodes[0].stack) if len(stack_nodes) > 0 else 1,
+            network_policies=pytest.created_network_policies,
+            templates_switch=pytest.created_switch_templates,
             locations=pytest.created_onboarding_locations
         )
 

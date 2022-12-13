@@ -148,11 +148,11 @@ Test 7: Verify Unmanaged Device License and CoPilot Column Values
 
 Test 8: Manage Device and Confirm Success
     [Documentation]     Sets MANAGED state to MANAGE and verifies success
-    [Tags]              tcxm-21002    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test8
+    [Tags]              tcxm-21002    known_issue    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test8
 
     Depends On          Test 1
 
-    Log To Console  Test 8 through 10 will fail until WING-44038 is fixed
+    Log To Console  KNOWN_ISSUE WING-44038
 
     Navigate to Devices and Confirm Success
     Change Management Status and Confirm Success        MANAGE       ${DUT_SERIAL}
@@ -162,9 +162,11 @@ Test 8: Manage Device and Confirm Success
 
 Test 9: Verify Managed Device Does Not Consume Pilot or CoPilot License But Does Consume Navigator License Within Global Settings License Management
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
-    [Tags]              tcxm-21002    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test9
+    [Tags]              tcxm-21002    known_issue    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test9
 
     Depends On          Test 1
+
+    Log To Console  KNOWN_ISSUE WING-44038
 
     Log To Console  Sleeping for 10 minutes to wait for the maximum 10 minute license update to come in
     Count Down in Minutes  10
@@ -175,9 +177,11 @@ Test 9: Verify Managed Device Does Not Consume Pilot or CoPilot License But Does
 
 Test 10: Verify Managed Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify device consumed the appropriate license or not
-    [Tags]              tcxm-21002    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test10
+    [Tags]              tcxm-21002    known_issue    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test10
 
     Depends On          Test 1
+
+    Log To Console  KNOWN_ISSUE WING-44038
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT_SERIAL}    DEVICE LICENSE
@@ -193,6 +197,7 @@ Test 11: Delete Device and Verify Success
 
     Depends On          Test 1
 
+    Refresh Page
     Delete Test Device and Confirm Success          ${DUT_SERIAL}
 
 Test 12: Verify Pilot and CoPilot Licenses Revoked Within Global Settings License Management

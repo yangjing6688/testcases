@@ -1,0 +1,36 @@
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  OnboardDeviceVSP4900UsingCsvTests::test_onboard_device_using_csv_without_location:
+    author: jsubler93
+    tc: tccs_7651a
+    title: Verify a device can be onboared using a csv file
+
+  OnboardDeviceVSP4900UsingCsvTests::test_onboard_device_using_csv_with_location:
+    author: jsubler93
+    tc: tccs_7651b
+    title: Verify a device can be onboared using a csv file and selecting the location field
+
+  OnboardDeviceVSP4900UsingCsvTests::test_onboard_device_using_csv_with_location_in_csv:
+    author: jsubler93
+    tc: tccs_7651c
+    title: "Verify a device can be onboared using a csv file with location in csv file
+        Starting in 22R5 version of XIQ the location in the csv file will be ignore, updated test case to check that the
+        location is equal to Assign Location"
+
+  #################### TESTBED 1 NODE ##########################

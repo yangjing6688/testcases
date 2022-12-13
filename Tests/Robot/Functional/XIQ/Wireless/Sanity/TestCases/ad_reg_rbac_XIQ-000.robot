@@ -113,7 +113,7 @@ Test1: Onboard Sensor AP
     ${LOGIN_XIQ}=               Login User          ${tenant_username}     ${tenant_password}
     ${ONBOARD_RESULT}=          Onboard Device      ${ap1.serial}           ${ap1.make}       location=${ap1.location}      device_os=${ap1.cli_type}
     should be equal as integers        ${ONBOARD_RESULT}       1
-    ${AP_SPAWN}=                open spawn       ${ap1.ip}      ${ap1.port}   ${ap1.username}     ${ap1.password}        ${ap1.platform}
+    ${AP_SPAWN}=                open spawn       ${ap1.ip}      ${ap1.port}   ${ap1.username}     ${ap1.password}     ${ap1.cli_type}
     Set Suite Variable          ${AP_SPAWN}
     ${OUTPUT0}=                 send commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
     sleep  240s
@@ -131,7 +131,7 @@ Test 2: Verify Login till config push
           Login User                      ${TENANT_USERNAME}     ${TENANT_PASSWORD}
           ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${ADSP_OPEN_NW}
          Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
-         ${CREATE_AP_TEMPLATE}=            Add AP Template     ${ap1.model}     ${AP1_TEMPLATE_NAME}        &{AP_TEMPLATE_CONFIG}
+         ${CREATE_AP_TEMPLATE}=            Add AP Template     ${ap1.model}     ${AP1_TEMPLATE_NAME}        ${AP_TEMPLATE_CONFIG}
          Should Be Equal As Strings      '${CREATE_AP_TEMPLATE}'   '1'
          ${CONFIG_WIPS_POLICY}           Configure WIPS Policy On Common Objects   ${WIPS_POLICY_NAME}
          Should Be Equal As Strings      '${CONFIG_WIPS_POLICY}'   '1'
@@ -161,7 +161,7 @@ Test 4: Verify creation of RBAC users--Operator
 
     ${result1}=             login user  ${TENANT_USERNAME}    ${TENANT_PASSWORD}
 
-    ${create_account}=      Create Role Based Account        &{OPERATOR_ROLE}
+    ${create_account}=      Create Role Based Account        ${OPERATOR_ROLE}
                             logout user
                             sleep   4s
     ${URL}=                 get_url_to_set_password_for_new_user     automationadessreg@gmail.com    wbdofhkkleinjxkw
@@ -176,7 +176,7 @@ Test 5: Verify creation of RBAC users--Monitor
     [Tags]                    tccs_13240   adsp        development
     ${result2}=              login user  ${TENANT_USERNAME}    ${TENANT_PASSWORD}
 
-    ${create_account}=        Create Role Based Account        &{MONITOR_ROLE}
+    ${create_account}=        Create Role Based Account        ${MONITOR_ROLE}
                                 logout user
                             sleep   4s
     ${URL}=                 get_url_to_set_password_for_new_user     automationadessreg@gmail.com    wbdofhkkleinjxkw
@@ -191,7 +191,7 @@ Test 6: Verify creation of RBAC users--HD
     [Tags]              tccs_13241  adsp        development
     ${result3}=             login user  ${TENANT_USERNAME}    ${TENANT_PASSWORD}
 
-    ${create_account}=       Create Role Based Account        &{HELPDESK_ROLE}
+    ${create_account}=       Create Role Based Account        ${HELPDESK_ROLE}
                                 logout user
                             sleep   4s
     ${URL}=                 get_url_to_set_password_for_new_user     automationadessreg@gmail.com    wbdofhkkleinjxkw

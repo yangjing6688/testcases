@@ -129,7 +129,7 @@ Step1: Create Policy - Enterprise with Cloud and Radius auth
     Set To Dictionary              ${WIRELESS_ENTERPRISE_02}       ssid_name=${SSID_02}
     Set To Dictionary              ${WIRELESS_ENTERPRISE_03}       ssid_name=${SSID_03}
 
-    ${STATUS}                      create network policy if does not exist    ${POLICY}    &{WIRELESS_ENTERPRISE_00}
+    ${STATUS}                      create network policy if does not exist    ${POLICY}    ${WIRELESS_ENTERPRISE_00}
     should be equal as strings     '${STATUS}'       '1'
     ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_ENTERPRISE_01}
     should be equal as strings    '${STATUS}'        '1'
@@ -137,7 +137,7 @@ Step1: Create Policy - Enterprise with Cloud and Radius auth
     should be equal as strings    '${STATUS}'        '1'
     ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_ENTERPRISE_03}
     should be equal as strings    '${STATUS}'        '1'
-    ${STATUS}                      add ap template from common object      ${ap1.model}        ${AP_TEMP_NAME}   &{AP_TEMPLATE_1}
+    ${STATUS}                      add ap template from common object      ${ap1.model}        ${AP_TEMP_NAME}   ${AP_TEMPLATE_1}
     Should Be Equal As Strings     '${STATUS}'       '1'
     ${STATUS}                      add ap template to network policy       ${AP_TEMP_NAME}    ${POLICY}
     Should Be Equal As Strings     '${STATUS}'       '1'

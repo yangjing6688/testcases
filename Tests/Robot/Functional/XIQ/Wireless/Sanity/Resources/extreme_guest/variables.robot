@@ -33,10 +33,12 @@ ${NW_POLICY_NAME4}  auto_eguest_nw_policy4
 ${NW_POLICY_NAME5}  auto_eguest_nw_policy5
 ${NW_POLICY_NAME6}  auto_eguest_nw_policy6
 ${NW_POLICY_NAME7}  auto_eguest_nw_policy7
+${NW_POLICY_NAME8}  auto_eguest_nw_policy8
 ${EG_POLICY_NAME0}  auto_eguest_onboarding_policy0
 ${EG_POLICY_NAME1}  auto_eguest_onboarding_policy1
 ${EG_POLICY_NAME2}  auto_eguest_onboarding_policy2
 ${EG_POLICY_NAME3}  auto_eguest_onboarding_policy3
+${EG_POLICY_NAME4}  auto_eguest_onboarding_policy4
 ${GROUP_NAME}       GuestAccess
 ${CONDITION_TYPE0}   Any
 ${CONDITION_TYPE1}   Social Type
@@ -50,6 +52,7 @@ ${EG_RULE_NAME3}    auto_eguest_onboarding_rule3
 ${EG_RULE_NAME4}    auto_eguest_onboarding_rule4
 ${EG_RULE_NAME5}    auto_eguest_onboarding_rule5
 ${EG_RULE_NAME6}    auto_eguest_onboarding_rule6
+${EG_RULE_NAME7}    auto_eguest_onboarding_rule7
 ${SEND_OTP_ON_APPROVAL}    Send One-Time-Passcode on Sponsor Approval
 ${SEND_PASSCODE_ON_APPROVAL}    Send Passcode on Sponsor Approval
 ${SEND_OTP_TO_SPONSOR}    Send One-Time-Passcode to Sponsor
@@ -63,6 +66,7 @@ ${SSID_NAME4}       auto_eguest_open_ssid4
 ${SSID_NAME5}       auto_eguest_open_ssid5
 ${SSID_NAME6}       auto_eguest_open_ssid6
 ${SSID_NAME7}       auto_eguest_open_ssid7
+${SSID_NAME8}       auto_eguest_open_ssid8
 ${NO_OF_VOUCHERS}   5
 ${ACCESS_GROUP}     GuestAccess
 ${LOCATION_TREE}    auto_location_03, Bengaluru, Ecospace, Floor_01

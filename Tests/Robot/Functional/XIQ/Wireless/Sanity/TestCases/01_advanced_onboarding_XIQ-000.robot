@@ -123,7 +123,7 @@ TCCS-7709_Step3: Check AP Status On UI
     ${CONNECTED_STATUS}=    Wait Until Device Online                ${ap1.serial}
     Should Be Equal as Integers             ${CONNECTED_STATUS}          1
 
-    ${DEVICE_STATUS}=       Get Device Status       device_mac=${ap1.mac}
+    ${DEVICE_STATUS}=       Get Device Status       device_mac=${ap1.serial}
     Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
 
     [Teardown]         run keywords    logout user

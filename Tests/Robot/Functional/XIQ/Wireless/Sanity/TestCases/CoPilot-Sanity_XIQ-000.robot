@@ -1,5 +1,5 @@
 # Author        : Shrisha
-# Date          : Aug24,2022
+# Date          : Aug 24,2022
 # Description   : Co-Pilot Wireless client Experience
 #
 # Topology      :
@@ -52,6 +52,8 @@ Library     xiq/flows/configure/NetworkPolicy.py
 Library     xiq/flows/configure/CommonObjects.py
 Library     xiq/flows/configure/DeviceTemplate.py
 
+Library     ExtremeAutomation/Imports/CommonObjectUtils.py
+
 Library     xiq/flows/globalsettings/GlobalSetting.py
 Library     xiq/flows/mlinsights/Network360Plan.py
 Library     xiq/flows/common/MuCaptivePortal.py
@@ -69,10 +71,17 @@ Library	     Remote   http://${mu1.ip}:${mu1.port}  WITH NAME   Remote_Server
 
 Force Tags   testbed_1_node
 
-#Suite Setup     Pre Condition
+Suite Setup     Test Suite Setup
 Suite Teardown  Test Suite Clean Up
 
 *** Keywords ***
+Test Suite Setup
+    # Use this method to convert the ap, wing, netelem to a generic device object
+    # ap1       => device1
+    # wing1     => device1
+    # netelem1  => device1 (EXOS / VOSS)
+    convert to generic device object   device  index=1
+
 Test Suite Clean Up
     [Documentation]    delete created network policies,ssid
 
@@ -81,7 +90,7 @@ Test Suite Clean Up
     Remote_Server.Disconnect WiFi
     Delete Device  device_serial=${ap1.serial}
     Delete Network Polices         ${NW_POLICY_NAME}
-    delete ap template profile     ${ap1.template_name}
+    delete ap template profile     ${ap1.template}
     Delete ssids                   ${SSID_NAME}
     #delete_location_building_floor      ${LOCATION_2}    ${BUILDING_NAME_2}    ${BULDING_FLOOR_NAME_2_1}
     #delete_location_building_floor      ${LOCATION_2}    ${BUILDING_NAME_2}    ${BULDING_FLOOR_NAME_2_2}
@@ -98,8 +107,8 @@ TCCS-13495_Step1 : Login and Onboard AP on XIQ Account
     #${IMPORT_MAP}=                Import Map In Network360Plan  ${MAP_FILE_NAME}
     #Should Be Equal As Strings    ${IMPORT_MAP}       1
 
-    ${ONBOARD_RESULT}=      onboard device quick      ${ap1}
-    Should be equal as integers                 ${ONBOARD_RESULT}       1
+    ${ONBOARD_RESULT}=          onboard device quick      ${device1}
+    Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
     ${AP_SPAWN}=                Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
     Set Suite Variable          ${AP_SPAWN}
@@ -124,7 +133,7 @@ TCCS-13495_Step2 : Create Network policy and Attach Network policy to AP
     ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${LOCATION_OPEN_NW}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${ap1.template_name}    &{AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${ap1.template}    ${AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings      '${CREATE_AP_TEMPLATE}'   '1'
 
     ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME}     ap_serial=${ap1.serial}   update_method=Complete
@@ -186,9 +195,14 @@ TCCS-13495_Step4: Verify wireless client experience quality index by location
     ${LOGIN_XIQ}=                  Login User          ${tenant_username}     ${tenant_password}
 
     ${return_Quality_Index_val}=     get wirless clientexp quality index by location    ${BUILDING_NAME}    ${VIEW_BY_LOCATION}    ${DURATION_OPTION}
-    #${return_Quality_Index_val}=     get wirless clientexp quality index by ssid    ${SSID_NAME}    ${VIEW_BY_SSID}    ${DURATION_OPTION}
-    #Should Be Equal As Strings      '${return_Quality_Index_val}'       '${QUALITY_INDEX}'
     should contain match    ${Quality_index_list}   ${return_Quality_Index_val}
+
+    navigate_to_devices
+
+    ${return_Quality_Index_val_ssid}=     get wirless clientexp quality index by ssid    ${SSID_NAME}    ${VIEW_BY_SSID}    ${DURATION_OPTION}
+    should contain match    ${Quality_index_list}   ${return_Quality_Index_val_ssid}
+
+    navigate_to_devices
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser

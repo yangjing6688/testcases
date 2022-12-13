@@ -9,7 +9,7 @@ ap1:
   console_ip:               10.234.201.225
   console_port:             7029
   mac:                      BCF3105E2F40
-  cli_type:                  AH-AP
+  cli_type:                 AH-AP
   platform:                 aerohive
   model:                    AP410C
   template:                 AP_410C-default-template
@@ -45,6 +45,7 @@ ap2:
   platform:                 aerohive
   model:                    AP460C
   template:                 AP_460C-default-template
+  template_name:            AP_460C-ADSP_Prod
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States

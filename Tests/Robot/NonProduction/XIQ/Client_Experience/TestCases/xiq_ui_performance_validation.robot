@@ -6,9 +6,10 @@
 # Aerohive AP ----- Cloud
 
 *** Variables ***
-${FILE_NAME}               ${CURDIR}/performance.txt
+${FILE_NAME}               ${CURDIR}/performance.csv
 ${TIME_FORMAT}             %Y-%m-%d %H:%M:%S
 ${LOCATION}                auto_location_01, Santa Clara, building_02, floor_04
+${COLUMNS}                 Tescase Name, Start Time, End Time, Elapsed Time, Testbed, VIQ ID, Datacenter Name, XIQ Version\n
 
 *** Settings ***
 Library     OperatingSystem
@@ -27,22 +28,36 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/device_commands.yaml
 
 Force Tags   testbed_1_node
-
-Suite Setup     Cleanup-Delete Device   ${ap1.serial}
+Suite Setup     Test Suite Setup
 
 *** Keywords ***
-Cleanup-Delete Device
-    [Arguments]             ${SERIAL}
+Test Suite Setup
     ${LOGIN_STATUS}=              Login User          ${tenant_username}      ${tenant_password}
     should be equal as integers             ${LOGIN_STATUS}               1
 
+    ${FLAG}=          File Exists    ${FILE_NAME}
+    Run Keyword If    ${FLAG} != True     Append to file    ${FILE_NAME}  ${COLUMNS}
+
     ${DELETE_DEVICE}=               Delete Device                  device_serial=${ap1.serial}
     should be equal as integers     ${DELETE_DEVICE}    1
+
+    ${DATACENTER_NAME}=             Get Data Center Name
+    Should Not be equal as Strings      '${DATACENTER_NAME}'        ${EMPTY}
+    Set Global Variable  ${DATACENTER_NAME}
+
+    ${XIQ_BUILD}=             Get Xiq Version
+    Should Match Regexp      ${XIQ_BUILD}   [0-9]{1,2}\.([0-9]+\.){2}[0-9]
+    Set Global Variable      ${XIQ_BUILD}
+
+    ${VIQ_ID}=               Get VIQ ID
+    Should Match Regexp      ${VIQ_ID}   [0-9]{1,4}
+    Set Global Variable      ${VIQ_ID}
 
     [Teardown]   run keywords       logout user
     ...                             quit browser
 
 *** Test Cases ***
+
 XIQ-10313 - TCXM-25834 - Automation: XIQ Measure time taken to login and traverse to Manage device Page
     [Documentation]         XIQ Measure time taken to login and traverse to Manage device Page
     [Tags]                  development      tcxm-25834    client-experience
@@ -65,11 +80,6 @@ XIQ-10313 - TCXM-25834 - Automation: XIQ Measure time taken to login and travers
 
     ${ELAPSED_TIME} =        Convert To Integer   ${ELAPSED_TIME}
 
-    ${VIQ_ID}=               Get VIQ ID
-    Should Match Regexp      ${VIQ_ID}   [0-9]{1,4}
-    Set Global Variable  ${VIQ_ID}
-
-
     Log To Console  \n\n#############################################################################\n
 
     Log To Console  Testcase Name : ${TEST NAME}\n
@@ -78,10 +88,12 @@ XIQ-10313 - TCXM-25834 - Automation: XIQ Measure time taken to login and travers
     Log To Console  Elaspsed Time : ${ELAPSED_TIME} Seconds\n
     Log To Console  Testbed : ${TESTBED}
     Log To Console  VIQ ID : ${VIQID}
+    Log To Console  DataCenter Name : ${DATACENTER_NAME}
+    Log To Console  XIQ Version : ${XIQ_BUILD}
 
     Log To Console  \n################################################################################
 
-    ${ADD_INFO_TO_FILE}=    Append to file    ${FILE_NAME}    Tescase Name: ${TEST NAME},Start Time: ${START_TIME},End Time: ${END_TIME},Elapsed Time: ${ELAPSED_TIME} Seconds,Testbed: ${TESTBED},Viq ID: ${VIQID}\n
+    ${ADD_INFO_TO_FILE}=    Append to file    ${FILE_NAME}    ${TEST NAME}, ${START_TIME}, ${END_TIME}, ${ELAPSED_TIME} Seconds, ${TESTBED}, ${VIQID}, ${DATACENTER_NAME}, ${XIQ_BUILD}\n
 
     [Teardown]  Run Keywords   Logout User
     ...                        Quit Browser
@@ -128,10 +140,12 @@ XIQ-10314 - TCXM-25835 - Automation: XIQ Measure time taken to Onboard device
     Log To Console  Elaspsed Time : ${ELAPSED_TIME} Seconds\n
     Log To Console  Testbed : ${TESTBED}
     Log To Console  VIQ ID : ${VIQID}
+    Log To Console  DataCenter Name : ${DATACENTER_NAME}
+    Log To Console  XIQ Version : ${XIQ_BUILD}
 
     Log To Console  \n################################################################################
 
-    ${ADD_INFO_TO_FILE}=    Append to file    ${FILE_NAME}    Tescase Name: ${TEST NAME},Start Time: ${START_TIME},End Time: ${END_TIME},Elapsed Time: ${ELAPSED_TIME} Seconds,Testbed: ${TESTBED}, Viq ID: ${VIQID}\n
+    ${ADD_INFO_TO_FILE}=    Append to file    ${FILE_NAME}    ${TEST NAME}, ${START_TIME}, ${END_TIME}, ${ELAPSED_TIME} Seconds, ${TESTBED}, ${VIQID}, ${DATACENTER_NAME}, ${XIQ_BUILD}\n
 
     [Teardown]  Run Keywords   Logout User
     ...                        Quit Browser
@@ -174,10 +188,13 @@ XIQ-10316 - TCXM-25837 - Automation: XIQ Measure time taken to upgrade the firmw
     Log To Console  Elaspsed Time : ${ELAPSED_TIME} Seconds\n
     Log To Console  Testbed : ${TESTBED}
     Log To Console  VIQ ID : ${VIQID}
+    Log To Console  DataCenter Name : ${DATACENTER_NAME}
+    Log To Console  XIQ Version : ${XIQ_BUILD}
+
 
     Log To Console  \n################################################################################
 
-    ${ADD_INFO_TO_FILE}=    Append to file    ${FILE_NAME}    Tescase Name: ${TEST NAME},Start Time: ${START_TIME},End Time: ${END_TIME},Elapsed Time: ${ELAPSED_TIME} Seconds,Testbed: ${TESTBED}, Viq ID: ${VIQID}\n
+    ${ADD_INFO_TO_FILE}=    Append to file   ${FILE_NAME}    ${TEST NAME}, ${START_TIME}, ${END_TIME}, ${ELAPSED_TIME} Seconds, ${TESTBED}, ${VIQID}, ${DATACENTER_NAME}, ${XIQ_BUILD}\n
 
     [Teardown]  Run Keywords   Logout User
     ...                        Quit Browser

@@ -1,0 +1,21 @@
+netelem1:
+  name:                     "VOSS"
+  hostname:                 ""
+  serial:                   "AR032207Q-40036"
+  mac:                      "F4CE48045800"
+  ip:                       "10.139.121.46"
+  port:                     "22"
+  console_ip:               "10.139.120.8"
+  console_port:             "5042"
+  username:                 "rwa"
+  password:                 "rwa"
+  connection_method:        "ssh"
+  cli_type:                 "voss"
+  platform:                 "5720"
+  model:                    "FabricEngine5720_48MW"
+  make:                     "voss"
+  location:                 "San Jose,building_01,floor_01"
+  onboard_device_type:      "Real"
+
+
+

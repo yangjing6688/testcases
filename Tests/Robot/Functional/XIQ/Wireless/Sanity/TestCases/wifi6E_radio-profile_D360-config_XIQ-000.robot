@@ -10,6 +10,7 @@
 Library     extauto/common/Cli.py
 Library     extauto/common/TestFlow.py
 Library     extauto/xiq/flows/common/Login.py
+Library     extauto/a3/flows/common/Login.py
 Library     extauto/xiq/flows/configure/NetworkPolicy.py
 Library     extauto/xiq/flows/common/Navigator.py
 Library     extauto/xiq/flows/manage/Client.py
@@ -97,6 +98,39 @@ Navigate To Device Config Wireless wifi2
 
 
 *** Test Cases ***
+
+Step0: Onboard AP1
+    [Documentation]    Onboard AP
+    [Tags]             tcxm-17044    development     step0    steps
+    delete all aps
+    sleep  60s
+    ${STATUS}                      onboard device quick      ${ap1}
+    should be equal as integers    ${STATUS}         1
+
+    ${AP_SPAWN}   Open Spawn          ${ap1.ip}          ${ap1.port}      ${ap1.username}      ${ap1.password}     ${ap1.cli_type}
+    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+
+    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    ${STATUS}       Wait Until Device Online                        ${ap1.serial}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    ${STATUS}       Get Device Status                               ${ap1.serial}
+    Should contain any                                              ${STATUS}          green           config audit mismatch
+    [Teardown]      Close Spawn                                     ${AP_SPAWN}
+
+
+Step1: Assign network policy to AP1
+    [Documentation]     Assign network policy with VLAN 105 to AP1
+    [Tags]              tcxm-17044   development     step1      steps
+    Depends On          Step0
+    ${UPDATE}                      Update Network Policy To Ap     ${POLICY_01}     ${ap1.serial}    Complete
+    should be equal as strings     '${UPDATE}'       '1'
+    ${ONLINE_STATUS_RESULT}     Wait Until Device Online                ${ap1.serial}
+    Should Be Equal as Integers             ${ONLINE_STATUS_RESULT}          1
+    ${AP_STATUS}                   Get AP Status     ap_mac=${ap1.mac}
+    Should Be Equal As Strings    '${AP_STATUS}'    'green'
+
 
 TCXM-17044: Precondition - Setting default radio profiles on AP4000 at d360 configuration page on AP4000
    [Documentation]      Setting default radio profiles on AP4000 at d360 configuration page on AP4000
@@ -659,3 +693,5 @@ TCXM-18412: cleanup - Setting default radio profiles
 
     update_override_configuration_to_device  device_serial=${ap1.serial}
     sleep  60s
+
+    delete all aps

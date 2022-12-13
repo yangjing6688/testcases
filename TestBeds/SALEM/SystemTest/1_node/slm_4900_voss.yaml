@@ -14,6 +14,5 @@ netelem1:
   platform:                 "4900"
   model:                    "VSP4900_24S"
   make:                     "voss"
-  location:
-    location1:              "San Jose,building_01,floor_01"
-    location2:              "San Jose,building_01,floor_02"
+  location:                 "San Jose,building_01,floor_01"
+  onboard_device_type:      "Real"

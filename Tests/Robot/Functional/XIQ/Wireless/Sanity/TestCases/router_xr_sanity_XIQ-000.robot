@@ -184,8 +184,11 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     ${CONNECTED_STATUS}=            Wait Until Device Online                        ${router1.serial}
     Should Be Equal As Integers     ${CONNECTED_STATUS}             1
 
-    ${DEVICE_STATUS}=               Get Device Status       device_mac=${router1.mac}
-    Should Contain Any              ${DEVICE_STATUS}        green       config audit mismatch
+    ${DEVICE_STATUS}=       Get Device Status       device_mac=${router1.mac}
+    Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
+
+    ${CAPWAP_STATUS}=       Send            ${ROUTER_SPAWN}         ${cmd_capwap_client_state}
+    Should Contain                          ${CAPWAP_STATUS}        ${output_capwap_status}
 
     [Teardown]
     Close Spawn     ${ROUTER_SPAWN}
@@ -232,7 +235,7 @@ TCCS-12330: Create Router XR Template
     ${CREATE_NW_POLICY}=        Create Network Policy   ${NW_POLICY_NAME}   ${XR_ROUTER_NW_01}
     Should Be Equal As Integers     ${CREATE_NW_POLICY}         1
 
-    ${CREATE_ROUTER_TEMPLATE}=  Add Router Template     ${NW_POLICY_NAME}   &{ROUTER_TEMPLATE_CONFIG1}
+    ${CREATE_ROUTER_TEMPLATE}=  Add Router Template     ${NW_POLICY_NAME}   ${ROUTER_TEMPLATE_CONFIG1}
     Should Be Equal As Integers     ${CREATE_ROUTER_TEMPLATE}   1
 
     Push XR Router Template     ${NW_POLICY_NAME}
