@@ -43,6 +43,7 @@ mu1:
   username:       admin
   password:       symbol
   platform:       windows
+  cli_type:       "MU-WINDOWS"
   interface:      wlan0
   wifi_mac:       2CDB073D8547
   ethernet_mac:   8C47BE4F65C2
