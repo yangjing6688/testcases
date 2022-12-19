@@ -41,6 +41,7 @@ mu1:
   username:       extreme
   password:       Extreme@123
   platform:       windows
+  cli_type:       "MU-WINDOWS"
   interface:      wlan0
   wifi_mac:       548D5A693CE6
   ethernet_mac:   D067E5429420
