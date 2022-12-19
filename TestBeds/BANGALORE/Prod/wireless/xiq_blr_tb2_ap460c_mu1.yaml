@@ -40,9 +40,10 @@ mu1:
   ip:             10.234.105.226
   port:           8270
   connection_method:    "console"
-  username:       admin
-  password:       symbol
+  username:       extreme
+  password:       Extreme@123
   platform:       windows
+  cli_type:       "MU-WINDOWS"
   interface:      wlan0
   wifi_mac:       2477034E9470
   ethernet_mac:   D067E541F504

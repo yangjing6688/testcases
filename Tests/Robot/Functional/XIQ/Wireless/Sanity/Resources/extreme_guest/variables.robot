@@ -88,7 +88,7 @@ ${SAVE_TYPE1}       save
 ${SAVE_TYPE2}       run
 ${SAVE_TYPE3}       save-run
 ${USER_NAME}        extreme.guest.user
-${USER_MOBILE}        Enter User Mobile
+${USER_MOBILE}        8667218052
 ${SPONSOR_NAME}       extreme.guest.sponsor
 ${ACCESS_PURPOSE}     NA
 ${SPONSOR_PERMIT}    permit

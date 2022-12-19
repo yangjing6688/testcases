@@ -60,10 +60,6 @@ TCCS-13205_Step3: Import Map and Change Device Password
     ${LOGIN_STATUS}=                   Login User          ${tenant_username}     ${tenant_password}       check_warning_msg=True
     should be equal as integers         ${LOGIN_STATUS}               1
 
-    # This step is repeated to ensure if other map is imported in VIQ and so that Login User keyowrd failed to import default map.
-    ${IMPORT_MAP}=                  Import Map In Network360Plan  ${MAP_FILE_NAME}
-    Should Be Equal As Strings      '${IMPORT_MAP}'              '1'
-
     # Add default login password for devices
     ${CHANGE_PASSWORD_STATUS}=      Change Device Password                  Aerohive123
     should be equal as integers     ${CHANGE_PASSWORD_STATUS}               1

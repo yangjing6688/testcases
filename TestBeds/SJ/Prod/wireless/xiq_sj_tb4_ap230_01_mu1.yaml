@@ -41,6 +41,7 @@ mu1:
   username:       admin
   password:       aerohive
   platform:       mac
+  cli_type:       "MU-MAC"
   mac_wifi_port:  en1
   wifi_mac:       F018988C2173
   interface:      wlan0
