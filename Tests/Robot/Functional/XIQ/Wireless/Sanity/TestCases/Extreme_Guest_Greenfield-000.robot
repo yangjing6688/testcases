@@ -118,6 +118,28 @@ Create Network Policies
     ${CREATE_POLICY8}=              Create Network Policy   ${NW_POLICY_NAME8}      ${GUEST_OPEN_NW8}
     Should Be Equal As Strings      '${CREATE_POLICY8}'   '1'
 
+Test Case Level Cleanup
+    [Documentation]    Test case index clean up
+
+    ${SWITCH_WINDOW}=             switch_to_extreme_guest_window
+    Should Be Equal As Strings      '${SWITCH_WINDOW}'     '1'
+    ${CLOSE_WINDOW}=              close_extreme_guest_window
+    Should Be Equal As Strings      '${CLOSE_WINDOW}'     '1'
+    ${XIQ_PAGE}=                  go back to xiq
+    Should Be Equal As Strings      '${XIQ_PAGE}'     '1'
+
+Test Case Level AP Cleanup
+    [Documentation]    Test case AP clean up
+
+    ${SWITCH_WINDOW}=             switch_to_extreme_guest_window
+    Should Be Equal As Strings      '${SWITCH_WINDOW}'     '1'
+    ${CLOSE_WINDOW}=              close_extreme_guest_window
+    Should Be Equal As Strings      '${CLOSE_WINDOW}'     '1'
+    ${CLOSE_GP_BROWSER}=          close gp browser
+    ${AP_CLEAN_UP}=               AP Cleanup
+    ${XIQ_PAGE}=                  go back to xiq
+    Should Be Equal As Strings      '${XIQ_PAGE}'     '1'
+
 *** Test Cases ***
  
 TCCS-12991: Guest Enablement Pre-check
@@ -178,9 +200,7 @@ TCCS-13118: Add Bulk Vouchers
     Log to Console     Nuselect_drop_down_options_partial_matchmber of Guest Users: ${USER_COUNT2}
 
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             go back to xiq
+    [Teardown]   run keywords       Test Case Level Cleanup
 
 TCCS-13119: Clone Splash Template, Onboarding Policy and Onboarding Rules
 
@@ -260,9 +280,7 @@ TCCS-13119: Clone Splash Template, Onboarding Policy and Onboarding Rules
     Should Be Equal As Strings      '${EG_RULE_NAME_7}'     '1'
 
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             go back to xiq
+    [Teardown]   run keywords       Test Case Level Cleanup
 
 TCCS-12997: Verify User registration and authenticate CP with Facebook
 
@@ -325,11 +343,7 @@ TCCS-12997: Verify User registration and authenticate CP with Facebook
     
     Should Be Equal As Strings     '${SOCIAL_AUTH_STATUS}'  '1'
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             close gp browser
-    ...                             AP Cleanup
-    ...                             go back to xiq
+    [Teardown]   run keywords       Test Case Level AP Cleanup
 
 TCCS-13695: Verify Number of Facebook Registration
 
@@ -399,11 +413,7 @@ TCCS-12998: Verify User registration and authenticate CP with LinkedIn
 
     Should Be Equal As Strings      '${SOCIAL_AUTH_STATUS}'       '1'
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             close gp browser
-    ...                             AP Cleanup
-    ...                             go back to xiq
+    [Teardown]   run keywords       Test Case Level AP Cleanup
 
 TCCS-13696: Verify Number of LinkedIn Registration
 
@@ -448,11 +458,7 @@ TCCS-13014: Verify Default System template (Accept and Connect)
 
     Should Be Equal As Strings      '${USER_AUTH_STATUS}'       '1'
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             close gp browser
-    ...                             AP Cleanup
-    ...                             go back to xiq
+    [Teardown]   run keywords       Test Case Level AP Cleanup
 
 
 TCCS-12994: Verify Device registration and authenticate CP with OTP notified over email
@@ -513,11 +519,7 @@ TCCS-12994: Verify Device registration and authenticate CP with OTP notified ove
 
     Should Be Equal As Strings     '${ACCESS_STATUS}'  '1'
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             close gp browser
-    ...                             AP Cleanup
-    ...                             go back to xiq
+    [Teardown]   run keywords       Test Case Level AP Cleanup
 
 TCCS-13012: Verify User registration and authenticate CP with passcode notified over email
 
@@ -577,11 +579,7 @@ TCCS-13012: Verify User registration and authenticate CP with passcode notified 
 
     Should Be Equal As Strings     '${ACCESS_STATUS}'  '1'
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             close gp browser
-    ...                             AP Cleanup
-    ...                             go back to xiq
+    [Teardown]   run keywords       Test Case Level AP Cleanup
 
 
 TCCS-13694: Sponsor Approval-Verify on sponsor Permit login passcode sent to user mail
@@ -657,11 +655,7 @@ TCCS-13694: Sponsor Approval-Verify on sponsor Permit login passcode sent to use
 
     Should Be Equal As Strings     '${DELETE_USER_EMAIL}'  '1'
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             close gp browser
-    ...                             AP Cleanup
-    ...                             go back to xiq
+    [Teardown]   run keywords       Test Case Level AP Cleanup
 
 
 TCCS-12995: Verify user authentication with guest bulk vouchers
@@ -729,11 +723,7 @@ TCCS-12995: Verify user authentication with guest bulk vouchers
 
     [Teardown]   run keywords       switch_to_extreme_guest_window
     ...                             close_extreme_guest_window
-    ...                             switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             close gp browser
-    ...                             AP Cleanup
-    ...                             go back to xiq
+    ...                             Test Case Level AP Cleanup
 
 
 TCCS-12996: Verify User registration and get CP access using E-mail
@@ -756,9 +746,6 @@ TCCS-12996: Verify User registration and get CP access using E-mail
     ${NAVIGATE_TO_CONFIGURE_PAGE}=             go to configure page
     Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
 
-    # ${EG_POLICY_NAME_STATUS1}=             ADD ONBOARDING POLICY EXISTING ONE   policy_name=${EG_POLICY_NAME2}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE4}    condition_value=${CONDITION_VALUE}
-    # Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS1}'     '1'
-
     ${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}=             go to configure splash system template tab
     Should Be Equal As Strings      '${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}'       '1'
 
@@ -780,10 +767,8 @@ TCCS-12996: Verify User registration and get CP access using E-mail
 
     Set Suite Variable    ${USERNAME}        ${USER_EMAIL}
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
+    [Teardown]   run keywords       Test Case Level Cleanup
     ...                             close gp browser
-    ...                             go back to xiq
 
 TCCS-13019: Verify Analyze users UI
 
@@ -802,9 +787,7 @@ TCCS-13019: Verify Analyze users UI
     ${USER_EXISTS}=              Check If The User Exists        ${USERNAME}        ${LOCATION_TREE}
     Should Be Equal As Strings      '${USER_EXISTS}'       '1'
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             Go back To XIQ
+    [Teardown]   run keywords       Test Case Level Cleanup
 
 TCCS-13020: Verify Analyze Clients UI
 
@@ -823,9 +806,7 @@ TCCS-13020: Verify Analyze Clients UI
     ${CLIENT_EXISTS}=              Check If The Client Exists        ${mu1.wifi_mac}        ${LOCATION_TREE}
     Should Be Equal As Strings      '${CLIENT_EXISTS}'       '1'
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             Go back To XIQ
+    [Teardown]   run keywords       Test Case Level Cleanup
 
 TCCS-13000: Verify Summary Analytics Dashboard Widgets
 
@@ -854,9 +835,7 @@ TCCS-13008: Verify Summary More Insights Dashboard Widgets
     Save Screen shot
     Should Be Equal As Strings      '${CHACK_SUMMARY_PAGE}'     '1'
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             Go back To XIQ
+    [Teardown]   run keywords       Test Case Level Cleanup
 
 TCCS-13009: Verify All the counters of KMS at Root Level
     [Documentation]         Verify all KMS count
@@ -879,9 +858,7 @@ TCCS-13009: Verify All the counters of KMS at Root Level
 
     Save Screen shot
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             Go back To XIQ
+    [Teardown]   run keywords       Test Case Level Cleanup
 
 TCCS-13018: Online users by location widget
     [Documentation]        Online users by location widget
@@ -896,9 +873,7 @@ TCCS-13018: Online users by location widget
     ${WIDGET}=        Check Map Location Widget
     Should Be Equal As Strings      '${WIDGET}'     '1'
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             Go back To XIQ
+    [Teardown]   run keywords       Test Case Level Cleanup
 
 TCCS-13004: Guest-Essentials -Summary-Visitors widget
     [Documentation]         Check Summary Visitors Widget
@@ -914,9 +889,7 @@ TCCS-13004: Guest-Essentials -Summary-Visitors widget
     Should Be Equal As Strings      '${CHECK_VISITOR_DATA}'     '1'
 
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             Go back To XIQ
+    [Teardown]   run keywords       Test Case Level Cleanup
 
 TCCS-13005: Guest-Essentials -Summary-New Users Widget
     [Documentation]         Check Summary New users Widget
@@ -931,9 +904,7 @@ TCCS-13005: Guest-Essentials -Summary-New Users Widget
     ${CHECK_USER_WIDGET_DATA}=             check summary page new user widget data
     Should Be Equal As Strings      '${CHECK_USER_WIDGET_DATA}'     '1'
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             Go back To XIQ
+    [Teardown]   run keywords       Test Case Level Cleanup
 
 TCCS-13006: Guest-Essentials -Summary-Conversion Widget
     [Documentation]         Check Summary Conversion Widget
@@ -948,9 +919,7 @@ TCCS-13006: Guest-Essentials -Summary-Conversion Widget
     ${CHECK_SUMMARY_PAGE}=             check summary page conversion widget data
     Should Be Equal As Strings      '${CHECK_SUMMARY_PAGE}'     '1'
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             Go back To XIQ
+    [Teardown]   run keywords       Test Case Level Cleanup
 
 TCCS-13007: Guest-Essentials -Summary-Gender distribution widget
 
@@ -966,9 +935,7 @@ TCCS-13007: Guest-Essentials -Summary-Gender distribution widget
     ${CHECK_SUMMARY_PAGE}=             check summary page gender widget data
     Should Be Equal As Strings      '${CHECK_SUMMARY_PAGE}'     '1'
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             Go back To XIQ
+    [Teardown]   run keywords       Test Case Level Cleanup
 
 TCCS-13017: Adding Dashboards
 
@@ -992,9 +959,7 @@ TCCS-13017: Adding Dashboards
     Should Be Equal As Strings      '${CHECK_DASHBOARD_PAGE}'     '1'
     Save Screen shot
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             Go back To XIQ
+    [Teardown]   run keywords       Test Case Level Cleanup
 
 TCCS-13021: Adding of reports [Dashboard Report-PDF]
 
@@ -1008,9 +973,7 @@ TCCS-13021: Adding of reports [Dashboard Report-PDF]
     save screen shot
     Should Be Equal As Strings      '${CREATE_REPORT}'     '1'
 
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             Go back To XIQ
+    [Teardown]   run keywords       Test Case Level Cleanup
 
 TCCS-13016: Guest Management Role - Adding users
 
@@ -1057,8 +1020,8 @@ TCCS-13022: Reset VIQ
     [Tags]                  development    greenfield    reset    tccs_13022
 
     #Step1: Perform BackUp VIQ
-    ${LOGIN_XIQ}=                   Login User          ${TENANT_USERNAME}      ${TENANT_PASSWORD}      url=${TEST_URL}
-    Should Be Equal As Strings      '${LOGIN_XIQ}'     '1'
+    ${LOGIN_XIQ}=             Login User          ${TENANT_USERNAME}      ${TENANT_PASSWORD}      url=${TEST_URL}    ignore_map=True
+    should be equal as strings      '${LOGIN_XIQ}'    '1'
 
     ${BACKUP_VIQ_DATA}=             Backup VIQ Data
     Should Be Equal As Strings      '${BACKUP_VIQ_DATA}'              '1'
@@ -1068,8 +1031,8 @@ TCCS-13022: Reset VIQ
     Sleep  30 seconds
 
     #Step2: Perform Reset VIQ
-    ${LOGIN_XIQ}=                   Login User          ${TENANT_USERNAME}      ${TENANT_PASSWORD}      url=${TEST_URL}
-    Should Be Equal As Strings      '${LOGIN_XIQ}'     '1'
+    ${LOGIN_XIQ}=             Login User          ${TENANT_USERNAME}      ${TENANT_PASSWORD}      url=${TEST_URL}    ignore_map=True
+    should be equal as strings      '${LOGIN_XIQ}'    '1'
 
     ${DELETE_ACCOUNT}=                   Delete Guest Management Accounts
     Should Be Equal As Strings      '${DELETE_ACCOUNT}'     '1'
@@ -1083,9 +1046,8 @@ TCCS-13022: Reset VIQ
     #Step3: Verify Reset
     Sleep  30 seconds
 
-    ${LOGIN_XIQ}=                       Login User          ${TENANT_USERNAME}     ${TENANT_PASSWORD}   url=${TEST_URL}    map_override=${MAP_FILE_NAME}
-
-    Should Be Equal As Strings      '${LOGIN_XIQ}'     '1'
+    ${LOGIN_XIQ}=             Login User          ${TENANT_USERNAME}      ${TENANT_PASSWORD}      url=${TEST_URL}    ignore_map=True
+    should be equal as strings      '${LOGIN_XIQ}'    '1'
 
     ${GUEST_SUBSCRPTION_PAGE}=          Check Guest Subscription
     Should Be Equal As Strings      '${GUEST_SUBSCRPTION_PAGE}'              '1'
