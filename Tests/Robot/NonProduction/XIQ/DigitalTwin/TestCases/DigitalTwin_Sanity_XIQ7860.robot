@@ -140,8 +140,7 @@ TCCS-13499: Digital Twin Device D360 Overview panel
 
     Confirm Device360 Top Bar Information for Digital Twin Device
 
-    [Teardown]    Run Keywords          Close Device360 Window
-    ...                                 Refresh Page
+    [Teardown]    Run Keywords          Refresh Page
 
 TCCS-13500: Disable Digital Twin Feature
     [Documentation]     Disables the "Digital Twin" feature by disabling CoPilot. (Required for 22R6)
