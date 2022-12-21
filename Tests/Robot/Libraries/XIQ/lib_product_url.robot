@@ -49,3 +49,33 @@ Generate Product URL
     END
 
     [return]    ${product_url}      ${ENV_TYPE}
+
+Generate Developer Portal URL
+    [Documentation]     Generate Developer Portal URL
+    [Arguments]         ${XIQ_Instance}   ${length}
+
+    IF  ${length} == 0
+        ${ENV_TYPE}=        Set Variable    Production
+
+        ${developer_portal}                 Set Variable    https://developer.extremecloudiq.com/
+        ${developer_portal_documentation}   Set Variable    https://developer.extremecloudiq.com/documentation/
+        ${developer_portal_api_docs}        Set Variable    https://extremecloudiq.com/api-docs/api-docs.html
+        ${developer_portal_swagger_ui}      Set Variable    https://api.extremecloudiq.com/swagger-ui/index.html
+
+    ELSE IF  "${length}" > "0" and "${XIQ_Instance}" == "a-cloud"
+        ${ENV_TYPE}=        Set Variable    Staging
+
+        ${developer_portal}                 Set Variable    https://${XIQ_Instance}-developer.extremecloudiq.com/
+        ${developer_portal_documentation}   Set Variable    https://${XIQ_Instance}-developer.extremecloudiq.com/documentation/
+        ${developer_portal_api_docs}        Set Variable    https://${XIQ_Instance}.extremecloudiq.com/api-docs/api-docs.html
+        ${developer_portal_swagger_ui}      Set Variable    https://${XIQ_Instance}-api.extremecloudiq.com/swagger-ui/index.html
+    ELSE
+        ${ENV_TYPE}=        Set Variable    Test
+
+        ${developer_portal}                 Set Variable    https://${XIQ_Instance}-developer.qa.xcloudiq.com/
+        ${developer_portal_documentation}   Set Variable    https://${XIQ_Instance}-developer.qa.xcloudiq.com/documentation/
+        ${developer_portal_api_docs}        Set Variable    https://${XIQ_Instance}.qa.xcloudiq.com/api-docs/api-reference.html
+        ${developer_portal_swagger_ui}      Set Variable    https://${XIQ_Instance}-api.qa.xcloudiq.com/swagger-ui/index.html
+    END
+
+    [return]    ${developer_portal}     ${developer_portal_documentation}   ${developer_portal_api_docs}     ${developer_portal_swagger_ui}     ${ENV_TYPE}
