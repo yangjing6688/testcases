@@ -183,11 +183,11 @@ Suite Teardown
     Remote_Server.Disconnect WiFi
 
 Negative Internet Connectivity Check
-    ${FLAG}=        Remote_Server.Connectivity Check        https://www.cnn.com
+    ${FLAG}=        Remote_Server.Connectivity Check        https://www.extremenetworks.com
     Should Be Equal As Integers     ${FLAG}     -1
 
 Positive Internet Connectivity Check
-    ${FLAG}=        Remote_Server.Connectivity Check        https://www.cnn.com
+    ${FLAG}=        Remote_Server.Connectivity Check        https://www.extremenetworks.com
     Should Be Equal As Integers     ${FLAG}     1
 
 *** Test Cases ***
@@ -225,8 +225,6 @@ TCCS-11614: Social login with facebook
     ${SOCIAL_AUTH_STATUS}=          Validate CWP Social Login With Facebook     ${MAIL_ID3}     ${MAIL_ID3_PASS}
     Should Be Equal As Integers     ${SOCIAL_AUTH_STATUS}       1
 
-    Positive Internet Connectivity Check
-
     ${CURRENT_DATE_TIME}=           Get Current Date Time
     Log To Console      Current date and time: ${CURRENT_DATE_TIME}
     Log to Console      Sleep for ${auth_logs_duration_wait} seconds
@@ -239,6 +237,8 @@ TCCS-11614: Social login with facebook
     END
     Log To Console          ${AUTH_LOGS}
     Should Not Be Empty     ${AUTH_LOGS}
+
+    Positive Internet Connectivity Check
 
     # Logs Verification
     ${AUTH_STATUS}=                 Get From Dictionary     ${AUTH_LOGS}        reply
