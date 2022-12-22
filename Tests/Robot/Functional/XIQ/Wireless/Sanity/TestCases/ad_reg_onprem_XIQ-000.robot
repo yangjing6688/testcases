@@ -100,7 +100,7 @@ Test1: Configure on-prem ADSP ip address in WIPS profile
     Should Be Equal As Strings       '${IBEACON_STATUS}'   '1'
     ${ONPREM_CONFIG}=       Wips onprem adsp serverip configuration on Network Policy  ${NW_POLICY_NAME}  ${WIPS_POLICY_NAME}  enable  &{ON_PREM_ADSP_SERVER_IP_CONFIG}
     Should Be Equal As Strings       '${ONPREM_CONFIG}'   '1'
-    Onboard AP                       ${ap2.serial}       aerohive       ${LOCATION}
+    Onboard Device Quick             ${ap2}
     ${AP_SPAWN}=                     open spawn       ${ap2.ip}      ${ap2.port}   ${ap2.username}     ${ap2.password}        ${ap2.platform}
     Set Suite Variable               ${AP_SPAWN}
     ${OUTPUT0}=                      Send Commands       ${AP_SPAWN}         capwap client server name ${CAPWAP_URL}, capwap client default-server-name ${CAPWAP_URL}, capwap client server backup name ${CAPWAP_URL}, no capwap client enable, capwap client enable, save config
