@@ -18,6 +18,6 @@
 /Tests/Pytest/Functional/XIQ/Wired/     @extremenetworks/xiq-wired-it @jsubler93
 
 # XIQ Cloud directories
-/TestBeds/BANGALORE/Prod                @extremenetworks/autoiq-framework @shreenbanu
-/Environments/XIQ-Mainline-Sanity       @extremenetworks/autoiq-framework @shreenbanu @pdungdo
+/TestBeds/BANGALORE/Prod                @extremenetworks/autoiq-framework @shreenbanu @rvellasamy
+/Environments/XIQ-Mainline-Sanity       @extremenetworks/autoiq-framework @shreenbanu @pdungdo @rvellasamy
 /TestBeds/BANGALORE/Dev                 @shreenbanu @rvellasamy
