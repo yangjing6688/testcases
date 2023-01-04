@@ -16,19 +16,19 @@ tests:
 
   #################### TESTBED 1 NODE ##########################
 
-  OnboardDeviceVSP4900UsingCsvTests::test_onboard_device_using_csv_without_location:
+  OnboardDeviceUsingCsvTests::test_onboard_device_using_csv_without_location:
     author: jsubler93
-    tc: tccs_7651a
+    tc: tccs_7651
     title: Verify a device can be onboared using a csv file
 
-  OnboardDeviceVSP4900UsingCsvTests::test_onboard_device_using_csv_with_location:
+  OnboardDeviceUsingCsvTests::test_onboard_device_using_csv_with_location:
     author: jsubler93
-    tc: tccs_7651b
+    tc: tccs_7652
     title: Verify a device can be onboared using a csv file and selecting the location field
 
-  OnboardDeviceVSP4900UsingCsvTests::test_onboard_device_using_csv_with_location_in_csv:
+  OnboardDeviceUsingCsvTests::test_onboard_device_using_csv_with_location_in_csv:
     author: jsubler93
-    tc: tccs_7651c
+    tc: tccs_7653
     title: "Verify a device can be onboared using a csv file with location in csv file
         Starting in 22R5 version of XIQ the location in the csv file will be ignore, updated test case to check that the
         location is equal to Assign Location"
