@@ -21,6 +21,7 @@ ${VIEW_BY_LOCATION}         Location
 ${VIEW_BY_SSID}             SSID
 ${QUALITY_INDEX}            10
 @{Quality_index_list}=                    5    6    7    8    9    10
+@{performance_index_list}=                    5    6    7    8    9    10
 
 ${LOCATION_2}       Sant Clara
 ${BUILDING_NAME_2}            building_02
@@ -218,12 +219,26 @@ TCCS-13495_Step4: Verify wireless client experience quality index by location
     ${return_Quality_Index_val}=     get wirless clientexp quality index by location    ${BUILDING_NAME}    ${VIEW_BY_LOCATION}    ${DURATION_OPTION}
     should contain match    ${Quality_index_list}   ${return_Quality_Index_val}
 
-    navigate_to_devices
+    ${DEVICE_PAGE_NAVIGATION}=  navigate_to_devices
+    should be equal as strings       '${DEVICE_PAGE_NAVIGATION}'    '1'
 
     ${return_Quality_Index_val_ssid}=     get wirless clientexp quality index by ssid    ${SSID_NAME}    ${VIEW_BY_SSID}    ${DURATION_OPTION}
     should contain match    ${Quality_index_list}   ${return_Quality_Index_val_ssid}
 
-    navigate_to_devices
+    ${DEVICE_PAGE_NAVIGATION}=  navigate_to_devices
+    should be equal as strings       '${DEVICE_PAGE_NAVIGATION}'    '1'
+
+    ${return_performance_Index_val}=     get wirless clientexp performance index by location    ${BUILDING_NAME}    ${VIEW_BY_LOCATION}    ${DURATION_OPTION}
+    should contain match    ${performance_index_list}   ${return_performance_Index_val}
+
+    ${DEVICE_PAGE_NAVIGATION}=  navigate_to_devices
+    should be equal as strings       '${DEVICE_PAGE_NAVIGATION}'    '1'
+
+    ${return_performance_Index_val_ssid}=     get wirless clientexp performance index by ssid    ${SSID_NAME}    ${VIEW_BY_SSID}    ${DURATION_OPTION}
+    should contain match    ${performance_index_list}   ${return_performance_Index_val_ssid}
+
+    ${DEVICE_PAGE_NAVIGATION}=  navigate_to_devices
+    should be equal as strings       '${DEVICE_PAGE_NAVIGATION}'    '1'
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
