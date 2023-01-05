@@ -57,6 +57,14 @@ Pre Condition
     ${login_status}=                  Login User                              ${tenant_username}          ${tenant_password}
     should be equal as integers       ${login_status}                1
 
+    ${AP_SPAWN}=                      Open Spawn                               ${device1.ip}          ${device1.port}           ${device1.username}        ${device1.password}     ${device1.cli_type}
+    Should not be equal as Strings    '${AP_SPAWN}'                 '-1'
+    
+    Set Global Variable               ${AP_SPAWN}
+    
+    ${disconnect_ap}=                 Disconnect Device From Cloud      ${device1.cli_type}      ${AP_SPAWN}
+    should be equal as integers       ${disconnect_ap}             1
+    
     ${delete_ap}=                     Delete Device                           device_serial=${device1.serial}
     should be equal as integers       ${delete_ap}                   1
 
@@ -71,8 +79,11 @@ Test suite Cleanup
 
     [Documentation]    delete device, AP Template, and Network Policy
 
-    ${delete_ap1}=                     Delete Device                           device_serial=${device1.serial}
+    ${delete_ap1}=                    Delete Device                           device_serial=${device1.serial}
     should be equal as integers       ${delete_ap1}                   1
+    
+    ${disconnect_device}=             Disconnect Device From Cloud      ${device1.cli_type}      ${AP_SPAWN}
+    should be equal as integers       ${disconnect_device}             1
 
     ${remove_ap_template}=            Remove AP Template From Network Policy    ${AP_TEMPLATE_NAME}   ${NW_POLICY_NAME}
     ${delete_np}=                     Delete Network Policy                     ${NW_POLICY_NAME}
@@ -98,11 +109,8 @@ TCXM-21577: Unhide Country Code - AP templates
     ${onboard_status}=                onboard device quick                         ${device1}
     should be equal as integers       ${onboard_status}              1
 
-    ${assign_np}=                     Assign Network Policy To All Devices    ${NW_POLICY_NAME}
+    ${assign_np}=                     Assign Network Policy To A Device        ${device1.serial}      ${NW_POLICY_NAME}
     should be equal as integers       ${assign_np}                   1
-
-    ${AP_SPAWN}=                      Open Spawn                               ${device1.ip}          ${device1.port}           ${device1.username}        ${device1.password}     ${device1.cli_type}
-    Should not be equal as Strings    '${AP_SPAWN}'                 '-1'
 
     ${connect_cloud}=                 Configure Device To Connect To Cloud     ${device1.cli_type}        ${capwap_url}     ${AP_SPAWN}
     should be equal as integers       ${connect_cloud}                1

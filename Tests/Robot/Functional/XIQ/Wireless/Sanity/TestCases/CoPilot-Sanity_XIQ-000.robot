@@ -21,6 +21,7 @@ ${VIEW_BY_LOCATION}         Location
 ${VIEW_BY_SSID}             SSID
 ${QUALITY_INDEX}            10
 @{Quality_index_list}=                    5    6    7    8    9    10
+@{performance_index_list}=                    5    6    7    8    9    10
 
 ${LOCATION_2}       Sant Clara
 ${BUILDING_NAME_2}            building_02
@@ -57,9 +58,11 @@ Library     ExtremeAutomation/Imports/CommonObjectUtils.py
 Library     xiq/flows/globalsettings/GlobalSetting.py
 Library     xiq/flows/mlinsights/Network360Plan.py
 Library     xiq/flows/common/MuCaptivePortal.py
+Library     ExtremeAutomation/Keywords/UserDefinedKeywords/NetworkElements/SetupTeardown/SetupTeardownUdks.py
 
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
+
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -80,7 +83,12 @@ Test Suite Setup
     # ap1       => device1
     # wing1     => device1
     # netelem1  => device1 (EXOS / VOSS)
-    convert to generic device object   device  index=1
+    Convert To Generic Device Object    device      index=1     look_for_device_type=ap     set_to_index=1
+
+    # Create the connection to the device
+    Base Test Suite Setup
+    Set Global Variable     ${MAIN_DEVICE_SPAWN}            ${device1.name}
+
 
 Test Suite Clean Up
     [Documentation]    delete created network policies,ssid
@@ -90,10 +98,8 @@ Test Suite Clean Up
     Remote_Server.Disconnect WiFi
     Delete Device  device_serial=${ap1.serial}
     Delete Network Polices         ${NW_POLICY_NAME}
-    delete ap template profile     ${ap1.template}
+    delete ap template profile     ${ap1.template_name}
     Delete ssids                   ${SSID_NAME}
-    #delete_location_building_floor      ${LOCATION_2}    ${BUILDING_NAME_2}    ${BULDING_FLOOR_NAME_2_1}
-    #delete_location_building_floor      ${LOCATION_2}    ${BUILDING_NAME_2}    ${BULDING_FLOOR_NAME_2_2}
     Logout User
     Quit Browser
 
@@ -104,19 +110,34 @@ TCCS-13495_Step1 : Login and Onboard AP on XIQ Account
 
     ${LOGIN_XIQ}=               Login User          ${tenant_username}     ${tenant_password}
 
-    #${IMPORT_MAP}=                Import Map In Network360Plan  ${MAP_FILE_NAME}
-    #Should Be Equal As Strings    ${IMPORT_MAP}       1
+    # Enable the Co-pilot if not enabled.
+    ${copilot_enable_status}    enable_copilot_feature_for_this_viq
+    Should Be Equal As Strings      ${copilot_enable_status}       1
 
-    ${ONBOARD_RESULT}=          onboard device quick      ${device1}
-    Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
+    # Check if devices exist and disconnect and delete
+    ${SEARCH_RESULT}=           Search Device               device_serial=${device1.serial}     ignore_cli_feedback=true
+    IF  ${SEARCH_RESULT} == 1
+        ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}      ${MAIN_DEVICE_SPAWN}
+        Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
 
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
-    Set Suite Variable          ${AP_SPAWN}
-    ${OUTPUT0}=                 Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
+        ${DELETE_DEVICE_RESULT}=        Delete Device                       device_serial=${device1.serial}
+        Should Be Equal As Integers     ${DELETE_DEVICE_RESULT}             1
+    END
 
-    Wait Until Device Online    ${ap1.serial}
+    ${ONBOARD_RESULT}=      Onboard Device Quick        ${device1}
+    Should Be Equal As Strings      ${ONBOARD_RESULT}       1
 
-    Refresh Devices Page
+    ${CONF_RESULT}=         Configure Device To Connect To Cloud            ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${CONF_RESULT}          1
+
+    ${WAIT_CONF_RESULT}=    Wait For Configure Device To Connect To Cloud   ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${WAIT_CONF_RESULT}     1
+
+    ${ONLINE_STATUS}=       Wait Until Device Online    ${device1.serial}
+    Should Be Equal As Integers     ${ONLINE_STATUS}        1
+
+    ${MANAGED_STATUS}=      Wait Until Device Managed   ${device1.serial}
+    Should Be Equal As Integers     ${MANAGED_STATUS}       1
 
     ${AP1_STATUS}=               Get AP Status       ap_mac=${ap1.mac}
     Should Be Equal As Strings  '${AP1_STATUS}'     'green'
@@ -133,13 +154,14 @@ TCCS-13495_Step2 : Create Network policy and Attach Network policy to AP
     ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${LOCATION_OPEN_NW}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${ap1.template}    ${AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${ap1.template_name}    ${AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings      '${CREATE_AP_TEMPLATE}'   '1'
 
     ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME}     ap_serial=${ap1.serial}   update_method=Complete
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
-    Wait Until Device Online    ${ap1.serial}
+    ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial}
+    Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}                1
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
@@ -197,12 +219,26 @@ TCCS-13495_Step4: Verify wireless client experience quality index by location
     ${return_Quality_Index_val}=     get wirless clientexp quality index by location    ${BUILDING_NAME}    ${VIEW_BY_LOCATION}    ${DURATION_OPTION}
     should contain match    ${Quality_index_list}   ${return_Quality_Index_val}
 
-    navigate_to_devices
+    ${DEVICE_PAGE_NAVIGATION}=  navigate_to_devices
+    should be equal as strings       '${DEVICE_PAGE_NAVIGATION}'    '1'
 
     ${return_Quality_Index_val_ssid}=     get wirless clientexp quality index by ssid    ${SSID_NAME}    ${VIEW_BY_SSID}    ${DURATION_OPTION}
     should contain match    ${Quality_index_list}   ${return_Quality_Index_val_ssid}
 
-    navigate_to_devices
+    ${DEVICE_PAGE_NAVIGATION}=  navigate_to_devices
+    should be equal as strings       '${DEVICE_PAGE_NAVIGATION}'    '1'
+
+    ${return_performance_Index_val}=     get wirless clientexp performance index by location    ${BUILDING_NAME}    ${VIEW_BY_LOCATION}    ${DURATION_OPTION}
+    should contain match    ${performance_index_list}   ${return_performance_Index_val}
+
+    ${DEVICE_PAGE_NAVIGATION}=  navigate_to_devices
+    should be equal as strings       '${DEVICE_PAGE_NAVIGATION}'    '1'
+
+    ${return_performance_Index_val_ssid}=     get wirless clientexp performance index by ssid    ${SSID_NAME}    ${VIEW_BY_SSID}    ${DURATION_OPTION}
+    should contain match    ${performance_index_list}   ${return_performance_Index_val_ssid}
+
+    ${DEVICE_PAGE_NAVIGATION}=  navigate_to_devices
+    should be equal as strings       '${DEVICE_PAGE_NAVIGATION}'    '1'
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser

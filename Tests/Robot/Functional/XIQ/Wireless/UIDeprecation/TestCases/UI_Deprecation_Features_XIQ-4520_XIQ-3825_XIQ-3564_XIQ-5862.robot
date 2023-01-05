@@ -75,10 +75,18 @@ Test Suite Setup
 
     ${login_status}=                  Login User               ${tenant_username}     ${tenant_password}
     should be equal as integers       ${login_status}          1
+    
+    ${AP_SPAWN}=                      Open Spawn         ${device1.ip}    ${device1.port}    ${device1.username}    ${device1.password}     ${device1.cli_type}
+    Should not be equal as Strings    '${AP_SPAWN}'      '-1'
+
+    Set Global Variable               ${AP_SPAWN}
 
     ${delete_ap}=                     Delete Device            device_serial=${device1.serial}
     should be equal as integers       ${delete_ap}             1
 
+    ${disconnect_ap}=                 Disconnect Device From Cloud      ${device1.cli_type}      ${AP_SPAWN}
+    should be equal as integers       ${disconnect_ap}             1
+    
     ${delete_ap_nw_policies}=         Delete Network Polices    ${AP_POLICY_NAME}    ${SWITCH_POLICY_NAME}
     should be equal as integers       ${delete_ap_nw_policies}   1
 
@@ -87,9 +95,6 @@ Test Suite Setup
 
     ${onboard_status}=                Onboard Device Quick     ${device1}
     should be equal as integers       ${onboard_status}        1
-
-    ${AP_SPAWN}=                      Open Spawn         ${device1.ip}    ${device1.port}    ${device1.username}    ${device1.password}     ${device1.cli_type}
-    Should not be equal as Strings    '${AP_SPAWN}'      '-1'
 
     ${connect_cloud}=                 Configure Device To Connect To Cloud   ${device1.cli_type}    ${capwap_url}     ${AP_SPAWN}
     should be equal as integers       ${connect_cloud}                       1
@@ -118,6 +123,9 @@ Test suite Cleanup
 
     ${delete_device}=                 Delete Device            device_serial=${device1.serial}
     should be equal as integers       ${delete_device}         1
+    
+    ${disconnect_device}=             Disconnect Device From Cloud      ${device1.cli_type}      ${AP_SPAWN}
+    should be equal as integers       ${disconnect_device}              1
 
     ${delete_sw_np}=                  Delete Network Polices         ${SWITCH_POLICY_NAME}    ${AP_POLICY_NAME}    ${POLICY_NAME}
     should be equal as integers       ${delete_sw_np}          1

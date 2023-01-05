@@ -100,7 +100,7 @@ class rebootTests():
         else:
             print('Status for device with serial number: {} is equal to Green'.format(self.tb.dut1_serial))
 
-        self.xiq.xflowscommonDevices.device_reboot(device_serial=self.tb.dut1_serial)
+        self.xiq.xflowscommonDevices.reboot_device(device_serial=self.tb.dut1_serial)
 
         device_offline_result = self.xiq.xflowscommonDevices.wait_until_device_offline(self.tb.dut1_serial, retry_duration=15,
                                                                retry_count=12)

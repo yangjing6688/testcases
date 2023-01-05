@@ -23,233 +23,279 @@
 # Policy,SSID and Group variables Moved to Resources python file for randomization 2022-08-31
 # !!!!!
 
-${PAGE_TITLE}                       End-to-End Cloud Driven Networking Solutions - Extreme Networks
-${LOCATION}                 auto_location_01, Santa Clara, building_02, floor_04
+${PAGE_TITLE}       End-to-End Cloud Driven Networking Solutions - Extreme Networks
+${LOCATION}         auto_location_01, Santa Clara, building_02, floor_04
 
 *** Settings ***
 Library     Collections
-
-Library     extauto/common/GmailHandler.py
-Library     extauto/common/Utils.py
-Library     extauto/common/LoadBrowser.py
 Library     extauto/common/Cli.py
+Library     extauto/common/GmailHandler.py
+Library     extauto/common/LoadBrowser.py
 Library     extauto/common/TestFlow.py
-
+Library     extauto/common/Utils.py
 Library     extauto/xiq/flows/common/Login.py
 Library     extauto/xiq/flows/common/MuCaptivePortal.py
-
+Library     extauto/xiq/flows/common/Navigator.py
+Library     extauto/xiq/flows/configure/CommonObjects.py
+Library     extauto/xiq/flows/configure/NetworkPolicy.py
+Library     extauto/xiq/flows/configure/UserGroups.py
+Library     extauto/xiq/flows/globalsettings/GlobalSetting.py
+Library     extauto/xiq/flows/manage/Client.py
+Library     extauto/xiq/flows/manage/ClientMonitor.py
 Library     extauto/xiq/flows/manage/Devices.py
 Library     extauto/xiq/flows/manage/DeviceCliAccess.py
-Library     extauto/xiq/flows/manage/ClientMonitor.py
-Library     extauto/xiq/flows/manage/Client.py
-Library     extauto/xiq/flows/common/Navigator.py
-
-Library     extauto/xiq/flows/configure/UserGroups.py
-Library     extauto/xiq/flows/configure/NetworkPolicy.py
-Library     extauto/xiq/flows/configure/CommonObjects.py
-
 Library     extauto/xiq/flows/mlinsights/MLInsightClient360.py
-Library     extauto/xiq/flows/globalsettings/GlobalSetting.py
-Library     extauto/common/Utils.py
 Library     ExtremeAutomation/Imports/CommonObjectUtils.py
+Library     ExtremeAutomation/Keywords/UserDefinedKeywords/NetworkElements/SetupTeardown/SetupTeardownUdks.py
 
-Variables    TestBeds/${TESTBED}
-Variables    Environments/${TOPO}
-Variables    Environments/${ENV}
-Variables    Environments/Config/waits.yaml
-Variables    Environments/Config/device_commands.yaml
-Variables    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/test_email_ids.py
-Variables    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/private_pre_shared_key_config.py
-Library      ExtremeAutomation/Keywords/UserDefinedKeywords/NetworkElements/SetupTeardown/SetupTeardownUdks.py
+Variables   TestBeds/${TESTBED}
+Variables   Environments/${TOPO}
+Variables   Environments/${ENV}
+Variables   Environments/Config/device_commands.yaml
+Variables   Environments/Config/waits.yaml
+Variables   Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/private_pre_shared_key_config.py
+Variables   Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/test_email_ids.py
 
 Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   mu1
 
-Force Tags   testbed_1_node
+Force Tags  testbed_1_node
 
-Suite Setup      Pre Condition
-Suite Teardown   Test Suite Clean Up
+Suite Setup      Suite Setup
+Suite Teardown   Suite Teardown
 
 *** Keywords ***
-Pre Condition
-    [Documentation]   AP will be onboarded
+Suite Setup
+    [Documentation]     Cleanup before running the suite
+    [Tags]      production  cleanup
+
+    Log To Console      DOING CLEANUP BEFORE RUNNING THE SUITE!
+    Set Suite Variable     ${BULK_CLOUD_NW_SSID}
 
     # Use this method to convert the ap, wing, netelem to a generic device object
-    # ap1       => device1
-    # wing1     => device1
-    # netelem1  => device1 (EXOS / VOSS)
-    convert to generic device object   device  index=1  look_for_device_type=ap  set_to_index=1
+    # ap1      => device1
+    # wing1    => device1
+    # netelem1 => device1 (EXOS/VOSS)
+    Convert To Generic Device Object    device      index=1     look_for_device_type=ap     set_to_index=1
 
-    # Create the connection to the device(s)
+    # Create the connection to the device
     Base Test Suite Setup
-    Set Global Variable    ${MAIN_DEVICE_SPAWN}    ${device1.name}
+    Set Global Variable     ${MAIN_DEVICE_SPAWN}            ${device1.name}
 
-    # downgrade the device if needed
-    downgrade iqagent      ${device1.cli_type}  ${MAIN_DEVICE_SPAWN}
+    # Downgrade the device if needed
+    ${DOWNGRADE_RESULT}=        Downgrade IQAgent           ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${DOWNGRADE_RESULT}     1
 
-    # log in the user
-    Login User      ${tenant_username}      ${tenant_password}
+    ${LOGIN_RESULT}=            Login User                  ${tenant_username}      ${tenant_password}      check_warning_msg=True
+    Should Be Equal As Integers     ${LOGIN_RESULT}         1
 
-    # onboard the device
-    Clean Up Device
+    ${SEARCH_RESULT}=           Search Device               device_serial=${device1.serial}     ignore_cli_feedback=true
+    IF  ${SEARCH_RESULT} == 1
+        ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}      ${MAIN_DEVICE_SPAWN}
+        Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
 
-    ${ONBOARD_RESULT}=          onboard device quick     ${device1}
-    Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
+        ${DELETE_DEVICE_RESULT}=        Delete Device                       device_serial=${device1.serial}
+        Should Be Equal As Integers     ${DELETE_DEVICE_RESULT}             1
+    END
 
-    configure device to connect to cloud    ${device1.cli_type}   ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    ${ONBOARD_RESULT}=      Onboard Device Quick        ${device1}
+    Should Be Equal As Strings      ${ONBOARD_RESULT}       1
 
-    ${ONLINE_STATUS_RESULT}=    wait until device online     ${device1.serial}
-    Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1
+    ${CONF_RESULT}=         Configure Device To Connect To Cloud            ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${CONF_RESULT}          1
 
-    ${MANAGED_STATUS_RESULT}=   wait until device managed   ${device1.serial}
-    Should Be Equal As Strings                  ${MANAGED_STATUS_RESULT}      1
+    ${WAIT_CONF_RESULT}=    Wait For Configure Device To Connect To Cloud   ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${WAIT_CONF_RESULT}     1
 
-    ${DEVICE_STATUS_RESULT}=    get device status      ${device1.serial}
-    Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
+    ${ONLINE_STATUS}=       Wait Until Device Online    ${device1.serial}
+    Should Be Equal As Integers     ${ONLINE_STATUS}        1
 
-    # Setup the test
-    ${CREATE_NW_POLICY_STATUS}=     Create Network Policy          ${OPEN_POLICY}            ${CONFIG_PUSH_OPEN_NW_01}
-    should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
+    ${MANAGED_STATUS}=      Wait Until Device Managed   ${device1.serial}
+    Should Be Equal As Integers     ${MANAGED_STATUS}       1
 
-    ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To Ap    policy_name=${OPEN_POLICY}   ap_serial=${device1.serial}
-    should be equal as integers     ${UPDATE_NW_POLICY_STATUS}               1
+    ${DEVICE_STATUS}=       Get Device Status           device_mac=${device1.mac}
+    Should Contain Any              ${DEVICE_STATUS}    green   config audit mismatch
 
-    ${DELETE_STATUS}=               Delete network polices      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
-    should be equal as strings     '${DELETE_STATUS}'           '1'     ppsk network policy assigned to other AP,disassociate it or issue with deleting policy
+    ${DELETE_POLICIES_RESULT}=      Delete Network Polices          ${OPEN_POLICY}      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
+    Should Be Equal As Integers     ${DELETE_POLICIES_RESULT}           1
 
-    ${SSID_DLT_STATUS}=             Delete ssids                ${BULK_CLOUD_NW_SSID}       ${BULK_LOCAL_NW_SSID}
-    should be equal as strings      '1'                        '${SSID_DLT_STATUS}'       Issue with deleting the SSID's
+    ${DELETE_SSID_RESULT}=          Delete SSIDs                    ${OPEN_SSID}        ${BULK_CLOUD_NW_SSID}       ${BULK_LOCAL_NW_SSID}
+    Should Be Equal As Integers     ${DELETE_SSID_RESULT}               1
 
-    ${DELETE_CWP_STATUS}=           Delete captive web portal      ${SELF_REG_RETURN_PPSK_CWP}
-    should be equal as integers     ${DELETE_CWP_STATUS}               1
+    ${DELETE_UG_RESULT}=            Delete User Groups              ${BULK_CLOUD_USER_GROUP}        ${BULK_LOCAL_USER_GROUP}
+    Should Be Equal As Integers     ${DELETE_UG_RESULT}                 1
 
-    ${DELETE_UGS}=                  Delete user groups              ${BULK_CLOUD_USER_GROUP}    ${BULK_LOCAL_USER_GROUP}
-    should be equal as integers     ${DELETE_UGS}               1
+    ${CREATE_POLICY_RESULT}=        Create Network Policy           ${OPEN_POLICY}      ${CONFIG_PUSH_OPEN_NW_01}       cli_type=${device1.cli_type}
+    Should Be Equal As Integers     ${CREATE_POLICY_RESULT}             1
 
-Test Suite Clean Up
-    [Documentation]    delete created network policies, usergroups, radius server
-    [Tags]             development       cleanup
+    ${UPDATE_POLICY_RESULT}=        Update Network Policy To AP     ${OPEN_POLICY}      ap_serial=${device1.serial}
+    Should Be Equal As Integers     ${UPDATE_POLICY_RESULT}             1
 
-    Navigate To Devices
+    ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial}
+    Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}                1
 
-    ${DELETE_DEVICE_STATUS}=        Delete Device       device_serial=${device1.serial}
-    should be equal as integers         ${DELETE_DEVICE_STATUS}               1
+    mu1.Disconnect WiFi
 
-    ${DELETE_STATUS}=              delete network polices    ${BULK_CLOUD_NW_POLICY}  ${BULK_LOCAL_NW_POLICY}
-    should be equal as strings    '${DELETE_STATUS}'           '1'     ppsk network policy assigned to other AP,disassociate it or issue with deleting policy
+Suite Teardown
+    [Documentation]     Cleanup after running the suite
+    [Tags]      production  cleanup
 
-    ${SSID_DLT_STATUS}=            Delete ssids              ${BULK_CLOUD_NW_SSID}       ${BULK_LOCAL_NW_SSID}
-    should be equal as strings      '1'                        '${SSID_DLT_STATUS}'       Issue with deleting the SSID's
+    Log To Console      DOING CLEANUP AFTER RUNNING THE SUITE!
 
-    ${DELETE_CWP_STATUS}=           Delete captive web portal      ${SELF_REG_RETURN_PPSK_CWP}
-    should be equal as integers     ${DELETE_CWP_STATUS}               1
+    ${SEARCH_RESULT}=   Search Device               device_serial=${device1.serial}     ignore_cli_feedback=true
+    IF  ${SEARCH_RESULT} == 1
+        ${CREATE_POLICY_RESULT}=        Create Network Policy If Does Not Exist     ${OPEN_POLICY}      ${CONFIG_PUSH_OPEN_NW_01}       cli_type=${device1.cli_type}
+        Should Be Equal As Integers     ${CREATE_POLICY_RESULT}             1
 
-    ${DELETE_UGS}=                  Delete user groups              ${BULK_CLOUD_USER_GROUP}    ${BULK_LOCAL_USER_GROUP}
-    should be equal as integers     ${DELETE_UGS}               1
+        ${UPDATE_POLICY_RESULT}=        Update Network Policy To AP         ${OPEN_POLICY}      ap_serial=${device1.serial}
+        Should Be Equal As Integers     ${UPDATE_POLICY_RESULT}             1
 
-    [Teardown]   run keywords      logout user
-    ...                            quit browser
+        ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done       device_serial=${device1.serial}
+        Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}                1
 
-Clean Up Device
-    ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_cli_feedback=true
-    # Disconnect from Extreme Cloud IQ
-    Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud
+        ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
+        Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
 
-Connect Ppsk Wireless Network
-    [Arguments]    ${NETWORK}    ${KEY}
-    ${CONNECT_STATUS}=   mu1.connect_wpa2_ppsk_network    ${NETWORK}    ${KEY}
-    should be equal as strings  '${CONNECT_STATUS}'    '1'
+        ${DELETE_DEVICE_RESULT}=        Delete Device                       device_serial=${device1.serial}
+        Should Be Equal As Integers     ${DELETE_DEVICE_RESULT}             1
+    END
+
+    ${DELETE_POLICIES_RESULT}=      Delete Network Polices          ${OPEN_POLICY}      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
+    Should Be Equal As Integers     ${DELETE_POLICIES_RESULT}       1
+
+    ${DELETE_SSID_RESULT}=          Delete SSIDs                    ${OPEN_SSID}        ${BULK_CLOUD_NW_SSID}       ${BULK_LOCAL_NW_SSID}
+    Should Be Equal As Integers     ${DELETE_SSID_RESULT}           1
+
+    ${DELETE_UG_RESULT}=            Delete User Groups              ${BULK_CLOUD_USER_GROUP}        ${BULK_LOCAL_USER_GROUP}
+    Should Be Equal As Integers     ${DELETE_UG_RESULT}             1
+
+    ${LOGOUT_RESULT}=               Logout User
+    Should Be Equal As Integers     ${LOGOUT_RESULT}                1
+
+    ${QUIT_BROWSER_RESULT}=         Quit Browser
+    Should Be Equal As Integers     ${QUIT_BROWSER_RESULT}          1
+
+    mu1.Disconnect WiFi
+
+Connect To PPSK Wireless Network
+    [Arguments]     ${SSID}     ${KEY}
+    ${CONNECT_RESULT}=      mu1.Connect WPA2 PPSK Network       ${SSID}     ${KEY}
+    Should Be Equal As Integers     ${CONNECT_RESULT}           1
+
+Reconnect To PPSK Wireless Network
+    [Arguments]     ${SSID}     ${KEY}
+    mu1.Disconnect WiFi
+    Log to Console      Sleep for ${client_disconnect_wait} seconds
+    Sleep               ${client_disconnect_wait}
+
+    Connect To PPSK Wireless Network        ${SSID}             ${KEY}
+    Log to Console      Sleep for ${client_connect_wait} seconds
+    Sleep               ${client_connect_wait}
+
+    ${URL_TITLE}=       Check Internet Connectivity             ${mu1.ip}
+    Should Be Equal As Strings              ${URL_TITLE}'      '${PAGE_TITLE}'
 
 Wi-Fi Interface IP Address Check
-    ${IP}=   mu1.Get Wi Fi Interface Ip Address
-    should contain any  ${IP}     ${mu1.wifi_network}    ${mu1.wifi_network_vlan10}
+    ${WIFI_IP_ADDRESS}=     mu1.Get Wi Fi Interface Ip Address
+    Should Contain Any      ${WIFI_IP_ADDRESS}           ${mu1.wifi_network}     ${mu1.wifi_network_vlan10}
 
-Re Connect To Open Network
-    [Arguments]    ${NETWORK}
-    close_cp_browser
-    mu1.disconnect_wifi
-    sleep                        ${client_disconnect_wait}
-    ${CONNECT_STATUS}=           mu1.connect_open_network     ${NETWORK}
-    should be equal as strings  '${CONNECT_STATUS}'           '1'
-    sleep                        ${client_connect_wait}
-    ${TITLE}=                    Open Cp Browser              ${mu1.ip}
+Test Case Teardown
+    [Arguments]     ${POLICY}   ${SSID}     ${USER_GROUP}
+    ${UPDATE_POLICY_RESULT}=        Update Network Policy To AP     ${OPEN_POLICY}      ap_serial=${device1.serial}
+    Should Be Equal As Integers     ${UPDATE_POLICY_RESULT}         1
 
-Re Connect To PPSK Network
-    [Arguments]    ${NETWORK}     ${KEY}
-    mu1.disconnect_wifi
-    sleep                            ${client_disconnect_wait}
-    Connect Ppsk Wireless Network    ${NETWORK}   ${KEY}
-    ${URL_TITLE}=                    Check Internet Connectivity     ${mu1.ip}
-    should be equal as strings       '${URL_TITLE}'   '${PAGE_TITLE}'
+    ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial}
+    Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}            1
 
-Test Case Level Cleanup
-     mu1.disconnect_wifi
+    ${DELETE_POLICY_RESULT}=        Delete Network Polices          ${POLICY}
+    Should Be Equal As Integers     ${DELETE_POLICY_RESULT}         1
+
+    ${DELETE_SSID_RESULT}=          Delete SSIDs                    ${SSID}
+    Should Be Equal As Integers     ${DELETE_SSID_RESULT}           1
+
+    ${DELETE_UG_RESULT}=            Delete User Groups              ${USER_GROUP}
+    Should Be Equal As Integers     ${DELETE_UG_RESULT}             1
+
+    mu1.Disconnect WiFi
+    mu1.Delete WLAN Profile         ${SSID}
 
 *** Test Cases ***
 TCCS-7678: Cloud DB PPSK Network Client Connectivity With Bulk Users Group
-    [Documentation]    Check ppsk network client connectivity with group user and cloud passwd db location
+    [Documentation]     Check client connectivity to Wi-Fi PPSK network with user group and cloud password DB
+    [Tags]              development     tccs_7678
 
-    [Tags]             development       tccs_7678
+    ${USER_GROUP_CREATE_RESULT}=    Create User Group               ${BULK_CLOUD_USER_GROUP}    user_group_profile=&{USER_GROUP_PROFILE_CLOUD_BULK}
+    Should Be Equal As Integers     ${USER_GROUP_CREATE_RESULT}     1
 
-    ${USER_GROUP_CREATE}=           Create User Group   ${BULK_CLOUD_USER_GROUP}   user_group_profile=&{USER_GROUP_PROFILE_CLOUD_BULK}
-    should be equal as strings     '${USER_GROUP_CREATE}'     '1'
+    ${CREATE_POLICY_RESULT}=        Create Network Policy           ${BULK_CLOUD_NW_POLICY}     ${WIRELESS_PPSK_NW_CLOUD_BULK}
+    Should Be Equal As Integers     ${CREATE_POLICY_RESULT}         1
 
-    ${NW_STATUS}=                   Create Network Policy   ${BULK_CLOUD_NW_POLICY}   ${WIRELESS_PPSK_NW_CLOUD_BULK}
-    should be equal as strings     '${NW_STATUS}'           '1'
+    ${UPDATE_POLICY_RESULT}=        Update Network Policy To Ap     policy_name=${BULK_CLOUD_NW_POLICY}    ap_serial=${device1.serial}
+    Should Be Equal As Integers     ${UPDATE_POLICY_RESULT}         1
 
-    ${DELTA_UPDATE}=                Update Network Policy To Ap    policy_name=${BULK_CLOUD_NW_POLICY}    ap_serial=${device1.serial}
-    should be equal as strings     '${DELTA_UPDATE}'           '1'
-    sleep                           ${config_push_wait}
+    ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial}
+    Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}            1
 
-    ${URL_TITLE}=                    Check Internet Connectivity    ${mu1.ip}
-    should not be equal as strings   '${URL_TITLE}'               '${PAGE_TITLE}'
+    # wait for SSID to become available
+    Log to Console      Sleep for ${client_connect_wait} seconds
+    Sleep               ${client_connect_wait}
 
-    ${CREDENTIALS}=                 Get Login Credential From Attachments    ${MAIL_ID1}     ${MAIL_ID1_PASS}
-    set global variable             ${CREDENTIALS}
+    ${URL_TITLE}=       Check Internet Connectivity     ${mu1.ip}
+    Should Not Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
 
-    Connect Ppsk Wireless Network   ${BULK_CLOUD_NW_SSID}     ${CREDENTIALS['user_1']['Access Key']}
-    ${LOGIN_TIME}=                  Get Current Date Time
-    ${LOGIN_UTC_TIME}=              Get Utc Time              %Y-%m-%d %H:%M
-    set global variable             ${LOGIN_TIME}
-    set global variable             ${LOGIN_UTC_TIME}
-    sleep                           ${client_connect_wait}
+    ${CREDENTIALS}=     Get Login Credential From Attachments       ${MAIL_ID1}     ${MAIL_ID1_PASS}
 
-    WI-FI INTERFACE IP ADDRESS CHECK
+    Connect To PPSK Wireless Network        ${BULK_CLOUD_NW_SSID}       ${CREDENTIALS['user_1']['Access Key']}
 
-    ${URL_TITLE}=                   Check Internet Connectivity     ${mu1.ip}
-    Run keyword if  "${URL_TITLE}" != "${PAGE_TITLE}"  Re Connect To PPSK Network  ${BULK_CLOUD_NW_SSID}  ${CREDENTIALS['user_1']['Access Key']}
-
-    [Teardown]    run keywords    Test Case Level Cleanup
-    ...           AND             mu1.delete_wlan_profile   ${BULK_CLOUD_NW_SSID}
-
-TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
-    [Documentation]    Check ppsk network client connectivity with group user and local passwd db location
-
-    [Tags]             development       tccs_7691
-
-    ${USER_GROUP_CREATE}=           Create User Group        ${BULK_LOCAL_USER_GROUP}  user_group_profile=&{USER_GROUP_PROFILE_LOCAL_BULK}
-    should be equal as strings     '${USER_GROUP_CREATE}'    '1'
-
-    ${NW_STATUS}=                   Create Network Policy    ${BULK_LOCAL_NW_POLICY}   ${WIRELESS_PPSK_NW_LOCAL_BULK}
-    should be equal as strings     '${NW_STATUS}'      '1'
-
-    ${DELTA_UPDATE}=                Update Network Policy To Ap    policy_name=${BULK_LOCAL_NW_POLICY}    ap_serial=${device1.serial}
-    should be equal as strings     '${DELTA_UPDATE}'           '1'
-    sleep                           ${config_push_wait}
-
-    ${URL_TITLE}=                   Check Internet Connectivity    ${mu1.ip}
-    should not be equal as strings   '${URL_TITLE}'               '${PAGE_TITLE}'
-
-    ${CREDENTIALS}=                 Get Login Credential From Attachments    ${MAIL_ID1}     ${MAIL_ID1_PASS}
-
-    Connect Ppsk Wireless Network   ${BULK_LOCAL_NW_SSID}     ${CREDENTIALS['user2_1']['Access Key']}
-    sleep                           ${client_connect_wait}
+    # wait for client to connect to SSID
+    Log to Console      Sleep for ${client_connect_wait} seconds
+    Sleep               ${client_connect_wait}
 
     Wi-Fi Interface IP Address Check
 
-    ${URL_TITLE}=                   Check Internet Connectivity     ${mu1.ip}
-    Run keyword if  "${URL_TITLE}" != "${PAGE_TITLE}"  Re Connect To PPSK Network  ${BULK_LOCAL_NW_SSID}  ${CREDENTIALS['user2_1']['Access Key']}
+    ${URL_TITLE}=       Check Internet Connectivity     ${mu1.ip}
+    Run keyword If  '${URL_TITLE}' != '${PAGE_TITLE}'
+    ...     Reconnect To PPSK Wireless Network      ${BULK_CLOUD_NW_SSID}       ${CREDENTIALS['user_1']['Access Key']}
 
-    [Teardown]   run keywords       Test Case Level Cleanup
-    ...          AND                mu1.delete_wlan_profile   ${BULK_LOCAL_NW_SSID}
+    [Teardown]
+    Test Case Teardown      ${BULK_CLOUD_NW_POLICY}     ${BULK_CLOUD_NW_SSID}   ${BULK_CLOUD_USER_GROUP}
 
 
+TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
+    [Documentation]     Check client connectivity to Wi-Fi PPSK network with user group and local password DB
+    [Tags]              development     tccs_7691
+
+    ${USER_GROUP_CREATE_RESULT}=    Create User Group               ${BULK_LOCAL_USER_GROUP}    user_group_profile=&{USER_GROUP_PROFILE_LOCAL_BULK}
+    Should Be Equal As Integers     ${USER_GROUP_CREATE_RESULT}     1
+
+    ${CREATE_POLICY_RESULT}=        Create Network Policy           ${BULK_LOCAL_NW_POLICY}     ${WIRELESS_PPSK_NW_LOCAL_BULK}
+    Should Be Equal As Integers     ${CREATE_POLICY_RESULT}         1
+
+    ${UPDATE_POLICY_RESULT}=        Update Network Policy To Ap     policy_name=${BULK_LOCAL_NW_POLICY}    ap_serial=${device1.serial}
+    Should Be Equal As Integers     ${UPDATE_POLICY_RESULT}         1
+
+    ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial}
+    Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}            1
+
+    # wait for SSID to become available
+    Log to Console      Sleep for ${client_connect_wait} seconds
+    Sleep               ${client_connect_wait}
+
+    ${URL_TITLE}=       Check Internet Connectivity     ${mu1.ip}
+    Should Not Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
+
+    ${CREDENTIALS}=     Get Login Credential From Attachments       ${MAIL_ID1}     ${MAIL_ID1_PASS}
+
+    Connect To PPSK Wireless Network        ${BULK_LOCAL_NW_SSID}       ${CREDENTIALS['user2_1']['Access Key']}
+
+    # wait for client to connect to SSID
+    Log to Console      Sleep for ${client_connect_wait} seconds
+    Sleep               ${client_connect_wait}
+
+    Wi-Fi Interface IP Address Check
+
+    ${URL_TITLE}=       Check Internet Connectivity     ${mu1.ip}
+    Run keyword If  '${URL_TITLE}' != '${PAGE_TITLE}'
+    ...     Reconnect To PPSK Wireless Network      ${BULK_LOCAL_NW_SSID}       ${CREDENTIALS['user2_1']['Access Key']}
+
+    [Teardown]
+    Test Case Teardown      ${BULK_LOCAL_NW_POLICY}     ${BULK_LOCAL_NW_SSID}   ${BULK_LOCAL_USER_GROUP}

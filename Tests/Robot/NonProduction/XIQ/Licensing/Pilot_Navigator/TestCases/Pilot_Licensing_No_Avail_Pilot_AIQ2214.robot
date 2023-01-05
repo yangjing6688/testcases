@@ -272,7 +272,7 @@ Onboard New Test Device When License Limit Exceeded
 
     Navigate to Devices and Confirm Success
 
-    onboard device quick          ${netelem}
+    onboard device quick          ${netelem}    expect_error=True
 
 Verify and Wait Until Device Online
     [Documentation]     Confirms that the device is online in XIQ

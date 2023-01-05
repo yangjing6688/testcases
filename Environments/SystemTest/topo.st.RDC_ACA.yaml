@@ -6,6 +6,6 @@ tenant_username:          "releaseextreme+aca@gmail.com"
 tenant_password:          "PASprt86"
 rdc:                      "Extreme_ACA"
 data_center_name:         "Azure_CANADA_CENTRAL"
-build_version:            "22.6.0.42"
+build_version:            "22.7.1.1"
 
 

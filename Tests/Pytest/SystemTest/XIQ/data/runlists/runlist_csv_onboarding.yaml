@@ -2,15 +2,16 @@ runlist_csv_onboarding:
   suitemap: 
     - extreme_automation_tests/Tests/Pytest/SystemTest/XIQ/data/suitemaps/suitemap_csv_onboarding.yaml
   tests:
-    - tccs_7651a # testbed_1_node
-    - tccs_7651b # testbed_1_node
-    - tccs_7651c # testbed_1_node
+    - tccs_7651 # testbed_1_node
+    - tccs_7652 # testbed_1_node
+    - tccs_7653 # testbed_1_node
 
 # run from within /automation/tests
 #
 # pytest 
 # --runlist extreme_automation_tests/Tests/Pytest/SystemTest/XIQ/data/runlists/runlist_csv_onboarding.yaml
 # extreme_automation_tests/Tests/Pytest/SystemTest/XIQ/Wired/Onboarding
-# --tc-file extreme_automation_tests/vstefan/topo.yaml
-# --tc-file extreme_automation_tests/vstefan/env.yaml
-# --tc-file extreme_automation_tests/vstefan/devices.yaml
+# --topo=topo.st.RDC_AVA.yaml
+# --env=environment.local.chrome.yaml
+# --testbed=slm_4900_voss.yaml
+

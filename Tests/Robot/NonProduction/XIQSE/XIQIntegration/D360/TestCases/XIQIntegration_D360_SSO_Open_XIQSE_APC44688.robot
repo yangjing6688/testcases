@@ -204,18 +204,11 @@ XIQ Device360 Click Open Site Engine Link
     XIQ Navigate to Devices and Confirm Success
 
     ${result}    Set Variable    0
-    FOR    ${i}    IN RANGE    12
-        ${nav_result}=    Navigate to Device360 Page with MAC  ${mac}
-        IF    '${nav_result}' == '1'
-            ${result}=  Device360 Click Open Site Engine Link
-            Exit For Loop If     '${result}' == '1'
-            Close XIQ Device360 Window and Confirm Success
-        ELSE
-            Log To Console    Failed to Navigate to Device360 - attempts ${i}
-        END
-        Sleep    10
-        Log To Console    Retrying to find Open Site Engine Link - attempts ${i}
+    ${nav_result}=    Navigate to Device360 Page with MAC  ${mac}
+    IF    '${nav_result}' == '1'
+        ${result}=  Device360 Click Open Site Engine Link
     END
+
     Should Be Equal As Integers     ${result}   1
 
     # Allow the XIQ Site Engine "OneView > Network > DeviceView" page to open and load.
