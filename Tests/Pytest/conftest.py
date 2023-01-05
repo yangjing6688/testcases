@@ -12,6 +12,7 @@ import platform
 import yaml
 import sys
 import pexpect
+import imp
 
 from pytest import FixtureRequest
 from pexpect.pxssh import pxssh
@@ -20,6 +21,7 @@ from collections import defaultdict
 from pytest_testconfig import config
 from contextlib import contextmanager
 from typing import List, Dict, DefaultDict, Callable, Tuple, Iterator, Protocol, NewType, Union
+from pathlib import Path
 
 from ExtremeAutomation.Library.Utils.Singleton import Singleton
 from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
@@ -931,11 +933,31 @@ def pytest_sessionstart(session):
     pytest.runlist_path = session.config.option.runlist
     
     if pytest.runlist_path != "default":
+
+        if os.path.isfile(pytest.runlist_path):
+            # the pytest.runlist_path variable is given in this form: 'extreme_automation_tests/data/NonProduction/XIQ/runlists/smoke_runlist.yaml'
+            # there is no need to do a lookup for it in the data/ directory as it already contains the path to the runlist
+            pass
+        
+        else:
+            # here we will try to search in the data/ directory for the given runlist name
+            # e.g. 
+            #           --runlist smoke_runlist.yaml 
+            #                 is equivalent to
+            #           --runlist extreme_automation_tests/data/NonProduction/XIQ/runlists/smoke_runlist.yaml
+            try:
+                [pytest.runlist_path] = list(Path(os.path.join(imp.find_module("extreme_automation_tests")[1], "data")).rglob(pytest.runlist_path))
+                pytest.runlist_path = str(pytest.runlist_path)
+            except ValueError:
+                error = f"Failed to find this runlist yaml: '{pytest.runlist_path}'."
+                logger_obj.error(error)
+                pytest.fail(error)
+
         try:
             with open(pytest.runlist_path, "r") as run_list:
                 output_runlist = run_list.read()
-        except FileNotFoundError:
-            error = f"Did not find this runlist file: '{pytest.runlist_path}'."
+        except:
+            error = f"Failed to read the content of this runlist file: '{pytest.runlist_path}'."
             logger_obj.error(error)
             pytest.fail(error)
 
@@ -1792,24 +1814,45 @@ def configure_iq_agent(
         
         virtual_routers: Dict[str, str] = request.getfixturevalue("virtual_routers")
 
-        logger.step(
-            f"Configure IQAGENT with IP-Address='{ipaddress}' on these devices: {', '.join([d.name for d in node_list])}.")
-
         def worker(dut: Node):
             
+            onboarding_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
+            downgrade_iqagent_flag: bool = onboarding_options.get("downgrade_iqagent", True)
+            logger.info(f"The 'downgrade_iqagent' flag is '{'enabled' if downgrade_iqagent_flag else 'disabled'}' for node '{dut.node_name}' .")
+
+            configure_iqagent_flag: bool = onboarding_options.get("configure_iqagent", True)
+            logger.info(f"The 'configure_iqagent' flag is '{'enabled' if configure_iqagent_flag else 'disabled'}' for node '{dut.node_name}' .")
+
             with open_spawn(dut) as spawn_connection:
-                if loaded_config.get("lab", "").upper() == "SALEM":
+
+                if loaded_config.get("lab", "Salem").upper() != "SALEM":
+                    logger.warning(f"iqagent won't be downgraded because lab is not 'Salem' (found lab '{loaded_config.get('lab', '')}').")
+
+                elif not downgrade_iqagent_flag:
+                    logger.info(f"iqagent won't be downgraded because the 'downgrade_iqagent' flag is disabled for node '{dut.node_name}'.")
+
+                else:
+                    logger.step(f"Downgrade iqagent on node '{dut.node_name}'.")
                     cli.downgrade_iqagent(dut.cli_type, spawn_connection)
+                    logger.info(f"Successfully downgraded iqagent on node '{dut.node_name}'.")
+
+                if not configure_iqagent_flag:
+                    logger.info(f"iqagent won't be configured because the 'configure_iqagent' flag is disabled for node '{dut.node_name}'.")
+                    return
                 
+                logger.step(f"Configure iqagent on node '{dut.node_name}' (XIQ ip address: '{loaded_config['sw_connection_host']}').")
                 cli.configure_device_to_connect_to_cloud(
                     dut.cli_type, loaded_config['sw_connection_host'],
                     spawn_connection, vr=virtual_routers.get(dut.name, 'VR-Mgmt'), retry_count=30
                 )
                 
                 if dut.cli_type.upper() == "EXOS":
-                    spawn_connection.sendline("enable iqagent")
+                    cli.send(spawn_connection, "enable iqagent")
+
+                logger.info(f"Successfully configured iqagent on node '{dut.node_name}'.")
 
         threads: List[threading.Thread] = []
+
         try:
             for dut in duts:
                 thread = threading.Thread(target=worker, args=(dut, ))
@@ -1964,8 +2007,8 @@ def loaded_config() -> Dict[str, str]:
     config['${EXIT_LEVEL}'] = -600
 
     for word in ["tenant_username", "tenant_password", "test_url"]:
-        config[f"${{{word.upper()}}}"] = config[word]
-
+        if word in config:
+            config[f"${{{word.upper()}}}"] = config[word]
     return config
 
 

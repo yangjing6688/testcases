@@ -1,7 +1,7 @@
 # How to run this runlist
 #
 # pytest 
-# --runlist extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/data/runlists/runlist_XIQ_200.yaml
+# --runlist extreme_automation_tests/data/NonProduction/XIQ/XIQ_200/runlist_XIQ_200.yaml
 # extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/Wired/template_XIQ_200
 # --tc-file extreme_automation_tests/vstefan/topo.yaml
 # --tc-file extreme_automation_tests/vstefan/env.yaml
@@ -12,7 +12,7 @@
 
 runlist_XIQ_200:
   suitemap: 
-    - extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/data/suitemaps/suitemap_XIQ_200.yaml
+    - extreme_automation_tests/data/NonProduction/XIQ/XIQ_200/suitemap_XIQ_200.yaml
   onboarding_options:
     standalone:
       node_1:
@@ -65,7 +65,7 @@ runlist_XIQ_200:
 #
 # runlist_XIQ_200:
 #   suitemap: 
-#     - extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/data/suitemaps/suitemap_XIQ_200.yaml
+#     - extreme_automation_tests/data/NonProduction/XIQ/XIQ_200/suitemap_XIQ_200.yaml
 #   tests:
 #     - tcxm_xiq_onboarding
 #     - tcxm_201 # 1 node
@@ -90,7 +90,7 @@ runlist_XIQ_200:
 #
 # runlist_XIQ_200:
 #   suitemap: 
-#     - extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/data/suitemaps/suitemap_XIQ_200.yaml
+#     - extreme_automation_tests/data/NonProduction/XIQ/XIQ_200/suitemap_XIQ_200.yaml
 #   tests:
 #     - tcxm_206 # none
 #     - tcxm_207 # none

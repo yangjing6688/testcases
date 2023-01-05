@@ -118,7 +118,7 @@ class NewTestbedOneNodeTests:
 
     @pytest.mark.tcxm_202
     @pytest.mark.p1
-    def test_2(self, test_data, logger, test_bed):
+    def test_2(self, test_data, logger, test_bed, virtual_routers):
         
         logger.info(f"This test is {test_data['tc']}")
         logger.info(f"This test is writen by {test_data['author']}")
@@ -129,7 +129,7 @@ class NewTestbedOneNodeTests:
             
             test_bed.cli.configure_device_to_connect_to_cloud(
                 test_bed.node_1.cli_type, test_bed.config['sw_connection_host'],
-                spawn_connection, vr=test_bed.virtual_routers.get(test_bed.node_1.name, 'VR-Mgmt'), retry_count=30
+                spawn_connection, vr=virtual_routers.get(test_bed.node_1.name, 'VR-Mgmt'), retry_count=30
             )
 
     @pytest.mark.tcxm_203
@@ -147,7 +147,7 @@ class NewTestbedOneNodeTests:
     @pytest.mark.tcxm_204
     @pytest.mark.tcxm_205
     @pytest.mark.p1
-    def test_4(self, test_data, logger, test_bed):
+    def test_4(self, test_data, logger, test_bed, virtual_routers):
         
         """
         This test function will run twice, each time as a different test.
@@ -167,7 +167,7 @@ class NewTestbedOneNodeTests:
             
             test_bed.cli.configure_device_to_connect_to_cloud(
                 test_bed.node_1.cli_type, test_bed.config['sw_connection_host'],
-                spawn_connection, vr=test_bed.virtual_routers.get(test_bed.node_1.name, 'VR-Mgmt'), retry_count=30
+                spawn_connection, vr=virtual_routers.get(test_bed.node_1.name, 'VR-Mgmt'), retry_count=30
             )
 
 
@@ -228,7 +228,7 @@ class NewTestbedTwoNodeTests:
 
     @pytest.mark.tcxm_209
     @pytest.mark.p1
-    def test_9(self, test_data, logger, test_bed):
+    def test_9(self, test_data, logger, test_bed, virtual_routers):
         
         logger.info(f"This test is {test_data['tc']}")
         logger.info(f"This test is writen by {test_data['author']}")
@@ -239,7 +239,7 @@ class NewTestbedTwoNodeTests:
             
             test_bed.cli.configure_device_to_connect_to_cloud(
                 test_bed.node_1.cli_type, test_bed.config['sw_connection_host'],
-                spawn_connection, vr=test_bed.virtual_routers.get(test_bed.node_1.name, 'VR-Mgmt'), retry_count=30
+                spawn_connection, vr=virtual_routers.get(test_bed.node_1.name, 'VR-Mgmt'), retry_count=30
             )
 
         with test_bed.open_spawn(test_bed.node_2) as spawn_connection:
@@ -248,7 +248,7 @@ class NewTestbedTwoNodeTests:
             
             test_bed.cli.configure_device_to_connect_to_cloud(
                 test_bed.node_2.cli_type, test_bed.config['sw_connection_host'],
-                spawn_connection, vr=test_bed.virtual_routers.get(test_bed.node_2.name, 'VR-Mgmt'), retry_count=30
+                spawn_connection, vr=virtual_routers.get(test_bed.node_2.name, 'VR-Mgmt'), retry_count=30
             )
 
 
