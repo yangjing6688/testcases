@@ -23,16 +23,16 @@ netelem1:
   onboard_device_type:      "Real"
   tgen:
     port_a:
-      ifname: &netelem1_tgen_port_a_ifname "1/1"
+      ifname: &netelem1_tgen_port_a_ifname "1"
       intnet: "intnet1"
     port_b:
-      ifname: &netelem1_tgen_port_b_ifname "1/12"
+      ifname: &netelem1_tgen_port_b_ifname "12"
       intnet: "intnet2"
     port_c:
-      ifname: &netelem1_tgen_port_c_ifname "1/13"
+      ifname: &netelem1_tgen_port_c_ifname "13"
       intnet: "intnet3"
     port_d:
-      ifname: &netelem1_tgen_port_d_ifname "1/24"
+      ifname: &netelem1_tgen_port_d_ifname "24"
       intnet: "intnet4"
 
 tgen1:

@@ -1,0 +1,46 @@
+ap1:
+  name:                     bui-flo-0262
+  connection_method:        "telnet"
+  ip:                       10.234.206.4
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '24602005230262'
+  console_ip:               10.234.206.230
+  console_port:             7009
+  mac:                      BCF310654780
+  os:                       Cloud IQ Engine
+  platform:                 aerohive
+  model:                    AP460C
+  template:                 AP_460C-default-template
+  template_name:            xloc_prod_sanity_ap460template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  rf-env:                   true
+  country:                  Korea
+  location:                 auto_location_01, San Jose, building_01, floor_02
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+
+
+mu5:
+  ip:             10.234.206.223
+  port:           22
+  remote_port:    8270
+  hostname:       CloudMU1
+  username:       root
+  password:       extreme
+  platform:       linux
+  interface:      wlo1
+  wifi_mac:       58946B6511DC
+  ethernet_mac:   68B599F0B92B
+  delete_mac:     58946B6511DC
+  rf-mu-env:      true
+

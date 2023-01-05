@@ -19,7 +19,16 @@ ${MAP_FILE_NAME}            auto_location_01_1595321828282.tar.gz
 ${service_name}             greenfield_ibeacon
 ${uuid}                     123e4567e89b12d3a456426655440000
 
+${XLOC_SITE_NAME}                building_01
+${AS_CATEGORY_NAME}              automation_xloc_assetcat
+${IBEACON_NAME_WORK}             automation_xloc_ibeacon
+${UUID_WORK}                     4165726f-6869-7665-4e65-74776f726b73
+${BEACON_MAC_ADDRESS_WORK}       bcf31065144f
+
 *** Settings ***
+
+Force Tags   testbed_3_node
+
 Library     Collections
 Library     String
 Library     Dialogs
@@ -54,48 +63,70 @@ Variables    Environments/Config/device_commands.yaml
 
 Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_location_sanity_config.robot
 
+Suite Setup      Pre Condition
+Suite Teardown   Test Suite Clean Up
+
+*** Keywords ***
+Pre Condition
+    [Documentation]   AP onboarding  and check is online
+    ${result}=                      Login User          ${tenant1_username}     ${tenant_password}
+
+    ${IMPORT_MAP}=                  Import Map In Network360Plan  ${MAP_FILE_NAME}
+    Should Be Equal As Strings      '${IMPORT_MAP}'              '1'
+
+    ${ONBOARD_RESULT}=              onboard device quick      ${ap1}
+    Should be equal as integers     ${ONBOARD_RESULT}       1
+
+    ${AP_SPAWN}=        Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
+    Should not be equal as Strings      '${AP_SPAWN}'        '-1'
+
+    ${CONF_STATUS_RESULT}=      Configure Device To Connect To Cloud      ${ap1.cli_type}         ${capwap_url}       ${AP_SPAWN}
+    Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
+
+    ${WAIT_STATUS_RESULT}=      Wait for Configure Device to Connect to Cloud       ${ap1.cli_type}         ${capwap_url}       ${AP_SPAWN}
+    Should Be Equal As Strings                  ${WAIT_STATUS_RESULT}       1
+
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${ap1.serial}
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
+
+    ${DEVICE_STATUS}=       Get Device Status       device_serial=${ap1.serial}
+    Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
+
+    ${LATEST_VERSION}=      Upgrade Device To Latest Version            ${ap1.serial}
+    Should Not be Empty     ${LATEST_VERSION}
+    
+    Sleep                   ${ap_reboot_wait}
+
+    ${REBOOT_STATUS}=    Wait Until Device Reboots               ${ap1.serial}
+    Should Be Equal as Integers             ${REBOOT_STATUS}          1
+
+    Close Spawn    ${AP_SPAWN}
+
+Test Suite Clean Up
+    [Documentation]    Check XLOC Subscription after resetviq
+    Sleep    2 minutes
+    ${result}=    Login User        ${tenant1_username}     ${tenant_password}
+
+    ${XLOC_SUBSCRIPTION_STATUS}=           Check Subscription of Extreme Location Page
+    Should Be Equal As Strings      '${XLOC_SUBSCRIPTION_STATUS}'              '1'
+
+    Logout User
+    Quit Browser
+
 *** Test Cases ***
 
-TC-10862: Onboard AP on New customer Account
-    [Documentation]         New Customer - GreenField Scenario with onboarding and assigning location to AP
-    [Tags]                  production  sanity  onboard  greenfield   TC-10862
-
-    ${LOGIN_XIQ}=               Login User          ${tenant_username}     ${tenant_password}
-
-    ${IMPORT_MAP}=                Import Map In Network360Plan  ${MAP_FILE_NAME}
-    Should Be Equal As Strings    ${IMPORT_MAP}       1
-
-    #Onboard AP                  ${ap1.serial}       aerohive
-    ${ONBOARD_RESULT}=      onboard device quick     ${ap1}
-    Should be equal as integers                 ${ONBOARD_RESULT}       1
-
-    ${AP_SPAWN}=                Open Spawn          ${ap1.ip}       ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
-    Set Suite Variable          ${AP_SPAWN}
-    ${OUTPUT0}=                 Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
-
-    Wait Until Device Online    ${ap1.serial}
-
-    Refresh Devices Page
-
-    ${AP1_STATUS}=               Get AP Status       ap_mac=${ap1.mac}
-    Should Be Equal As Strings  '${AP1_STATUS}'     'green'
-
-    [Teardown]   run keywords       Logout User
-    ...                             Quit Browser
-
-TC-7281: Check for Subscription and Validate XLOC Config for New Customer
+Test1: Check for Subscription and Validate XLOC Config for New Customer
     [Documentation]         New Customer - GreenField Scenario with subscription and XLOC Config validation
-    [Tags]                  production  sanity  subscription  config  greenfield   TC-7281
-    Depends On          TC-10862
-    ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
+    [Tags]                  tccs_7281            development
 
-    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${LOCATION_OPEN_NW}
+    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      &{LOCATION_OPEN_NW}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${ap1.template_name}    &{AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings      '${CREATE_AP_TEMPLATE}'   '1'
 
-    Enable Nw Presence Analytics    ${NW_POLICY_NAME}
+    ${ENABLE_PRESENCE}=          Enable Nw Presence Analytics    ${NW_POLICY_NAME}
+    Should Be Equal As Strings      '${ENABLE_PRESENCE}'    '1'
 
     ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME}     ap_serial=${ap1.serial}   update_method=Complete
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
@@ -106,15 +137,17 @@ TC-7281: Check for Subscription and Validate XLOC Config for New Customer
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
 
-TC-10847: Validate Presence TC after connecting client in new customer account
+Test2: Validate Presence TC after connecting client in new customer account
     [Documentation]         New Customer - GreenField Scenario with presence validation after connecting client
-    [Tags]                  production  sanity  presence  greenfield   TC-10847
-    Depends On          TC-7281
-    ${LOGIN_XIQ}=                  Login User          ${tenant_username}     ${tenant_password}
+    [Tags]                  tccs_10847             development
+    Depends On          Test1
+    ${LOGIN_XIQ}=                  Login User          ${tenant1_username}     ${tenant_password}
     ${CLIENT_MAC_FORMAT}=          Convert To Client MAC  ${mu5.wifi_mac}
     ${MU5_SPAWN}=                  Open Spawn                  ${mu5.ip}               ${mu5.port}             ${mu5.username}      ${mu5.password}      ${mu5.cli_type}
-    Set Suite Variable             ${MU5_SPAWN}
-    Connect MU5 To Open Network    ${SSID_NAME}
+    Should not be equal as Strings      '${MU5_SPAWN}'        '-1'
+
+    ${CONNECT_MU5_OPEN}=           Connect MU5 To Open Network    ${SSID_NAME}
+    Should not be equal as Strings      '${CONNECT_MU5_OPEN}'        '-1'
 
     Log to Console      Sleep for ${client_connect_wait}
     sleep                         ${client_connect_wait}
@@ -122,9 +155,10 @@ TC-10847: Validate Presence TC after connecting client in new customer account
     ${CLIENT_STATUS}=                Get Client Status   client_mac=${mu5.wifi_mac}
     Should Be Equal As Strings       '${CLIENT_STATUS}'      '1'
 
-    ${PING_TRAFFIC}=            Send               ${MU5_SPAWN}        nohup timeout 360 ping google.com -I wlo1 &
+    ${PING_TRAFFIC}=            Send               ${MU5_SPAWN}        nohup timeout 360 ping google.com -I ${mu5.interface} &
 
-    Go To Extreme Location Devices Wireless Devices Menu
+    ${GO_TO_XLOC_DEVICES}=    Go To Extreme Location Devices Wireless Devices Menu
+    Should Be Equal As Strings       '${GO_TO_XLOC_DEVICES}'      '1'
 
     ${CLIENT_INFO}=                Get Client Information In Extreme Location Devices Page   ${CLIENT_MAC_FORMAT}   ${BUILDING_NAME}
 
@@ -138,26 +172,44 @@ TC-10847: Validate Presence TC after connecting client in new customer account
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
 
-TC-10865 Step1: Perform BackUp VIQ
-    [Documentation]         New Customer - GreenField Scenario with BackUp Customer Account Data
-    [Tags]                  production  sanity  backup  greenfield   TC-10865
+Test3: Validate BLE Asset
+    [Documentation]         New Customer - GreenField Scenario BLE Asset validation
+    [Tags]                  tccs_10847             development
+    Depends On          Test1
+    ${LOGIN_XIQ}=                  Login User          ${tenant1_username}     ${tenant_password}
 
-    ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
+    ${CREATE_ASSEST_XLOC}=          Create Asset Category XLOC    ${AS_CATEGORY_NAME}     ${XLOC_SITE_NAME}
+    Should Be Equal As Strings      '${CREATE_ASSEST_XLOC}'   '1'
+
+    ${CREATE_BECON}=           Create XLOC Third Party Ibeacon   ${IBEACON_NAME_WORK}    ${UUID_WORK}   ${XLOC_SITE_NAME}   ${AS_CATEGORY_NAME}   ${BEACON_MAC_ADDRESS_WORK}    major_version=1    minor_version=1
+
+    Sleep    30s
+
+    ${DEVICE_STATUS}=           Get ibeacon Status       ${BEACON_MAC_ADDRESS_WORK}
+    Should Be Equal As Strings      '${DEVICE_STATUS}'       '1'
+
+    [Teardown]   run keywords       Logout User
+    ...                             Quit Browser
+
+Test4: Perform BackUp VIQ
+    [Documentation]         New Customer - GreenField Scenario with BackUp Customer Account Data
+    [Tags]                  tccs_10865             development
+
+    ${LOGIN_XIQ}=                   Login User          ${tenant1_username}     ${tenant_password}
     ${BACKUP_VIQ_DATA}=             Backup VIQ Data
     Should Be Equal As Strings      '${BACKUP_VIQ_DATA}'              '1'
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
 
-TC-10865 Step2: Perform Reset VIQ
+Test5: Perform Reset VIQ
     [Documentation]         New Customer - GreenField Scenario with Reset Customer Account Data
-    [Tags]                  production  sanity  reset  greenfield
+    [Tags]                  tccs_10865             development
 
     Sleep    2 minutes
-    ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
+    ${LOGIN_XIQ}=                   Login User          ${tenant1_username}     ${tenant_password}
     ${RESET_VIQ_DATA}=               Reset VIQ Data
     Should Be Equal As Strings      '${RESET_VIQ_DATA}'              '1'
 
     [Teardown]   run keywords       Logout User
     ...                             Quit Browser
-

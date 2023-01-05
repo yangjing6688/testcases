@@ -167,14 +167,14 @@ class SuiteUdks():
         :return: The full path of the newly created csv file
         """
         if location == None:
-            filename = "slm_" + platform + ".csv"
+            filename = "slm_without_location_" + platform + ".csv"
             filepath = os.path.join(work_dir, filename)
             f = open(filepath, "w+")
             f.write("SerialNumber,ServiceTag,BranchId,HostName,Location,StaticIPAddress,Netmask,DefaultGateway,Wifi0RadioProfile,Wifi0AdminState,Wifi0OperationMode,Wifi0Channel,Wifi0Power,Wifi1RadioProfile,Wifi1AdminState,Wifi1OperationMode,Wifi1Channel,Wifi1Power,SDRProfile" + "\n")
             f.write(dut_serial + "\n")
             f.close()
         else:
-            filename = "slm_" + platform + "_location.csv"
+            filename = "slm_with_location_" + platform + ".csv"
             filepath = os.path.join(work_dir, filename)
             f = open(filepath, "w+")
             f.write("SerialNumber,ServiceTag,BranchId,HostName,Location,StaticIPAddress,Netmask,DefaultGateway,Wifi0RadioProfile,Wifi0AdminState,Wifi0OperationMode,Wifi0Channel,Wifi0Power,Wifi1RadioProfile,Wifi1AdminState,Wifi1OperationMode,Wifi1Channel,Wifi1Power,SDRProfile" + "\n")

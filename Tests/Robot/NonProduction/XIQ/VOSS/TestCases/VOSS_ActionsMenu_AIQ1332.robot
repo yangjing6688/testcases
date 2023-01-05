@@ -76,7 +76,7 @@ Test 3: Confirm Action Reboot
     [Tags]              tccs_8387    aiq_1332    development    xiq    voss    actions_menu    reboot    test3
 
     # Reboot the device
-    ${action_result}=  Device Reboot                ${DUT_SERIAL}
+    ${action_result}=  Reboot Device                ${DUT_SERIAL}
     Should Be Equal As Integers                     ${action_result}     1
 
     # Confirm the device reboots

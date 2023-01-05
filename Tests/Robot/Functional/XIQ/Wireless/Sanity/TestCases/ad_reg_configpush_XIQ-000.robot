@@ -109,7 +109,7 @@ Test1: Verify Network policy with wireless and routing mode enabled
     ${IBEACON_STATUS}=               Enable IBeacon Service In Network Policy  ${NW_POLICY_NAME}  ${BEACON_SERVICE_NAME}  ${UUID}   monitoring=enable
     Should Be Equal As Strings       '${IBEACON_STATUS}'   '1'
 
-    ${ONBOARD_RESULT}=             Onboard AP                       ${ap2.serial}       aerohive       ${LOCATION}
+    ${ONBOARD_RESULT}=             Onboard Device Quick     ${ap2}
     should be equal as integers        ${ONBOARD_RESULT}       1
 
     ${AP_SPAWN}=                     open spawn       ${ap2.ip}      ${ap2.port}   ${ap2.username}     ${ap2.password}        ${ap2.platform}

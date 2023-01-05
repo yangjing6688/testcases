@@ -33,10 +33,6 @@ def random_word(x=12):
     randword = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(x))
     return randword
 
-
-location = "Location_" + random_word()
-building = "Building_" + random_word()
-floor = "Floor_" + random_word()
 sw_template_name_original = "Template_" + random_word()
 network_policy_name = 'Policy_' + random_word()
 stack_template_name_original = sw_template_name_original
@@ -48,6 +44,18 @@ setup_xiq_connect_fail = 0
 
 @mark.testbed_1_node
 class xiqTests():
+
+    def cleanup_device(self):
+        if self.xiq.xflowscommonDevices.search_device(device_mac=self.tb.dut1.mac) == 1:
+            print(f'Found device using mac-address {self.tb.dut1.mac}')
+            self.xiq.xflowscommonDevices.delete_device(device_mac=self.tb.dut1.mac)
+        else:
+            for a_serial in self.tb.dut1_serial.split(","):
+                if self.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                    print(f'Found device using serial-number {a_serial}')
+                    self.xiq.xflowscommonDevices.delete_device(a_serial)
+                else:
+                    print(f'Did not find device with mac-address {self.tb.dut1.mac} or serial number(s) {self.tb.dut1_serial}')
 
     def get_virtual_router(self, dut_name):
         global vr_name, slot, port, dut_vlan_name
@@ -107,11 +115,6 @@ class xiqTests():
         self.xiq.login.quit_browser()
         self.xiq = None
 
-    def delete_create_location_organization(self):
-        self.xiq.xflowsmanageLocation.create_first_organization("Extreme", "broadway", "newyork", "Romania")
-        self.xiq.xflowsmanageLocation.delete_location_building_floor(location, building, floor)
-        self.xiq.xflowsmanageLocation.create_location_building_floor(location, building, floor)
-
     def delete_device_local(self, mac):
         # Check if device is onboarded and delete it.
         nav = self.xiq.xflowscommonNavigator.navigate_to_devices()
@@ -119,10 +122,7 @@ class xiqTests():
         time.sleep(10)
         if nav == -1:
             pytest.fail("Could not navigate to devices.")
-        check_delete = self.xiq.xflowscommonDevices.delete_device(device_mac=mac)
-
-        if check_delete != 1:
-            pytest.fail("Could not delete the device.")
+        self.cleanup_device(self)
 
     def verify_poe_supported(self, dut_name, os):
         check_poe = False
@@ -234,7 +234,6 @@ class xiqTests():
         self.xiq.xflowsconfigureSwitchTemplate.save_stack_template(generic_name)
 
     def delete_port_type_local(self, delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name):
-        self.xiq.xflowsmanageDevice360.close_device360_window()
         if self.tb.dut1.cli_type.lower() == 'voss' and delete_port_type:
             self.get_delete_port_type(port_type_voss_auto_sense_off_name)
         elif self.tb.dut1.cli_type.lower() == 'exos' and delete_port_type:
@@ -346,7 +345,6 @@ class xiqTests():
         # TEMPORARY SLEEP UNTIL XIQ 9267 BUG IS FIXED
         time.sleep(10)
         self.delete_device_local(self, mac=mac)
-        dut_location = f'{location},{building},{floor}'
 
         ##Onboard device on cloud
         self.get_virtual_router(self, self.tb.dut1.name)
@@ -412,8 +410,6 @@ class xiqTests():
             cls.init_xiq_libaries_and_login(cls, cls.cfg['tenant_username'], cls.cfg['tenant_password'],
                                             url=cls.cfg['test_url'])
             cls.xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings("disable", "EXOS")
-            # delete and create location
-            cls.delete_create_location_organization(cls)
             cls.xiq.xflowscommonNavigator.navigate_to_devices()
             # Onboard device
             cls.onboard_local(cls, cls.tb.dut1.mac, cls.tb.dut1.cli_type, cls.tb.dut1.ip,
@@ -455,20 +451,6 @@ class xiqTests():
     def teardown_class(cls):
         cls.cfg['${TEST_NAME}'] = 'Teardown'
 
-        if setup_onboard_fail_flag:
-            cls.xiq.login.quit_browser()
-            pytest.exit("Failed to onboard the device. Exiting...")
-
-        if setup_xiq_connect_fail:
-            cls.xiq.xflowscommonNavigator.navigate_to_devices()
-            # TEMPORARY SLEEP UNTIL XIQ 9267 BUG IS FIXED
-            time.sleep(10)
-            for slot_serial in cls.tb.dut1.serial.split(','):
-                cls.xiq.xflowscommonDevices.delete_device(device_serial=slot_serial)
-            cls.xiq.xflowsmanageLocation.delete_location_building_floor(location, building, floor)
-            cls.deactivate_xiq_libaries_and_logout(cls)
-            pytest.exit("Device failed to connect to cloud. Exiting...")
-
         # Delete device
         cls.delete_device_local(cls, mac=cls.tb.dut1.mac)
         cls.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(network_policy_name)
@@ -478,7 +460,6 @@ class xiqTests():
                                                                             '-' + str(slot))
         else:
             cls.xiq.xflowsconfigureCommonObjects.delete_switch_template(sw_template_name_original)
-        cls.xiq.xflowsmanageLocation.delete_location_building_floor(location, building, floor)
         # Logout
         cls.deactivate_xiq_libaries_and_logout(cls)
 
@@ -557,6 +538,7 @@ class xiqTests():
         if delete_port_type != 1:
             pytest.fail('Failed to configure port type.')
         # Delete port type
+        self.xiq.xflowsmanageDevice360.close_device360_window()
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
     @mark.tcxm_18420
@@ -634,6 +616,7 @@ class xiqTests():
         if delete_port_type != 1:
             pytest.fail('Failed to configure port type.')
         # Delete port type
+        self.xiq.xflowsmanageDevice360.close_device360_window()
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
     @mark.tcxm_18423
@@ -721,6 +704,7 @@ class xiqTests():
         if delete_port_type != 1:
             pytest.fail('Failed to configure port type.')
         # Delete port type
+        self.xiq.xflowsmanageDevice360.close_device360_window()
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
     @mark.tcxm_18426
@@ -807,6 +791,7 @@ class xiqTests():
         if delete_port_type != 1:
             pytest.fail('Failed to configure port type.')
         # Delete port type
+        self.xiq.xflowsmanageDevice360.close_device360_window()
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
     @mark.tcxm_18429
@@ -898,6 +883,7 @@ class xiqTests():
         if delete_port_type != 1:
             pytest.fail('Failed to configure port type.')
         # Delete port type
+        self.xiq.xflowsmanageDevice360.close_device360_window()
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
     @mark.tcxm_18432
@@ -1002,6 +988,7 @@ class xiqTests():
         if delete_port_type != 1:
             pytest.fail('Failed to configure port type.')
         # Delete port type
+        self.xiq.xflowsmanageDevice360.close_device360_window()
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_off_name, port_type_exos_name)
 
     @mark.tcxm_18440
@@ -1055,6 +1042,7 @@ class xiqTests():
         if delete_port_type != 1:
             pytest.fail('Failed to configure port type.')
         # Delete port type
+        self.xiq.xflowsmanageDevice360.close_device360_window()
         self.delete_port_type_local(delete_port_type, port_type_voss_auto_sense_on_name, port_type_exos_name)
 
     @mark.tcxm_18473
@@ -2302,7 +2290,7 @@ class xiqTests():
         self.verify_poe_supported(self.tb.dut1.name, self.tb.dut1.cli_type)
 
         self.xiq.CloudDriver.refresh_page()
-        
+
         def _check_page_after_refresh():
             try:
                 self.xiq.xflowscommonNavigator.navigate_to_devices()
