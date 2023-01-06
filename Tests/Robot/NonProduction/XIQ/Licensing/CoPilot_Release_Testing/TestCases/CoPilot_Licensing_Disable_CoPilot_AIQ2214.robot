@@ -44,8 +44,8 @@ ${DUT2_USERNAME}            ${netelem2.username}
 ${DUT2_PASSWORD}            ${netelem2.password}
 ${DUT2_VR}                  ${netelem2.vr}
 
-${PILOT_ENTITLEMENT}        PRD-XIQ-PIL-S-C
-${COPILOT_ENTITLEMENT}      PRD-XIQ-COPILOT-S-C
+${PILOT_ENTITLEMENT}        XIQ-PIL-S-C
+${COPILOT_ENTITLEMENT}      XIQ-COPILOT-S-C
 ${COPILOT_ACTIVE}           Active
 ${COPILOT_NONE}             None
 ${PILOT_LICENSE}            Pilot
@@ -62,8 +62,8 @@ Test 1: Verify Pilot and CoPilot Baseline License Counts
     [Documentation]     Confirms license counts are at expected values in XIQ to begin with (nothing consumed)
     [Tags]              tccs-13494    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 Test 2: Onboard First Device and Verify Success
     [Documentation]     Onboards first test device and verifies success
@@ -118,7 +118,7 @@ Test 4: Verify Devices Consumed Pilot and CoPilot License Within Global Settings
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       1    2    2
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       1    2    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     0    2    2
 
 Test 5: Verify Device License and CoPilot Column Values On All Devices
@@ -157,7 +157,7 @@ Test 7: Verify Device CoPilot License Revoked Within Global Settings License Man
 
     Depends On          Test 1
     
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 Test 8: Verify Device CoPilot Column Values On All Devices
     [Documentation]     Confirms the CoPilot column for device to verify copilot license is revoked
@@ -223,8 +223,8 @@ Test 14: Verify Pilot and CoPilot Licenses Revoked Within Global Settings Licens
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 
 *** Keywords ***

@@ -37,8 +37,8 @@ ${DUT1_VR}                      ${netelem1.vr}
 
 ${COPILOT_ENTITLEMENT_VALUE}    ${copilot_entitlements}
 
-${PILOT_ENTITLEMENT}            PRD-XIQ-PIL-S-C
-${COPILOT_ENTITLEMENT}          PRD-XIQ-COPILOT-S-C
+${PILOT_ENTITLEMENT}            XIQ-PIL-S-C
+${COPILOT_ENTITLEMENT}          XIQ-COPILOT-S-C
 ${COPILOT_ACTIVE}               Active
 ${COPILOT_NONE}                 None
 ${PILOT_LICENSE}                Pilot
@@ -55,8 +55,8 @@ Test 1: Verify Pilot and CoPilot Baseline License Counts
     [Documentation]     Confirms license counts are at expected values in XIQ to begin with (nothing consumed)
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 Test 2: Enable CoPilot Within Global Settings->VIQ Management
     [Documentation]     Enables CoPilot feature from Global Settings->VIQ Management page
@@ -97,8 +97,8 @@ Test 4: Verify First Device Consumes Pilot and CoPilot License Within Global Set
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    1
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    1
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    2
 
 Test 5: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify devices consumed the appropriate license or not
@@ -169,8 +169,8 @@ Test 10: Verify Second Device Consumes Pilot and CoPilot License Within Global S
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    1
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    1
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    2
 
 Test 11: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify devices consumed the appropriate license or not
@@ -198,8 +198,8 @@ Test 13: Verify Pilot and CoPilot Licenses Revoked
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test13
     # Confirm the device row shows the correct copilot license status
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 Test 14: Disable CoPilot Within Global Settings->VIQ Management
     [Documentation]     Disables CoPilot feature from Global Settings->VIQ Management page
