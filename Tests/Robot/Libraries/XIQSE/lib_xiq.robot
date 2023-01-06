@@ -198,18 +198,18 @@ Navigate Filter and Confirm Device MAC Not Present
 
 Confirm Entitlement Counts for Feature Matches Expected
     [Documentation]     Confirms the specified feature in the Entitlements table has the expected counts
-    [Arguments]         ${feature}  ${available}  ${activated}  ${devices}
+    [Arguments]         ${feature}  ${available}  ${activated}  ${total}
 
     # Wait until the entitlement counts match what we expect.
-    ${result}=  Wait Until Entitlement Counts for Feature Matches  ${feature}  ${available}  ${activated}  ${devices}
+    ${result}=  Wait Until Entitlement Counts for Feature Matches  ${feature}  ${available}  ${activated}  ${total}
     Should Be Equal As Integers  ${result}  1
 
-Confirm Entitlement Device Count for Feature Matches Expected
-    [Documentation]     Confirms the specified feature has the expected number of devices associated with it
+Confirm Entitlement Total Count for Feature Matches Expected
+    [Documentation]     Confirms the specified feature has the expected number of total devices associated with it
     [Arguments]         ${feature}  ${expected}
 
-    # Wait until the "Device Count" entitlement value matches what we expect.
-    ${result}=  Wait Until Entitlement Device Count for Feature Matches  ${expected}  feature=${feature}
+    # Wait until the "Total" entitlement value matches what we expect.
+    ${result}=  Wait Until Entitlement Total Count for Feature Matches  ${expected}  feature=${feature}
     Should Be Equal As Integers  ${result}  1
 
 Confirm Entitlement Available Count for Feature Matches Expected
@@ -517,7 +517,7 @@ Wait and Confirm Expected Navigator Licenses Available From CoPilot Dashboard
 
 Confirm Expected Pilot Licenses Consumed
     [Documentation]  Confirms the expected number of pilot licenses are consumed based on the entitlements
-    [Arguments]      ${entitlements}  ${consumed}  ${feature}=PRD-XIQ-PIL-S-C
+    [Arguments]      ${entitlements}  ${consumed}  ${feature}=XIQ-PIL-S-C
 
     ${available}=  Evaluate  ${entitlements} - ${consumed}
 
@@ -526,11 +526,11 @@ Confirm Expected Pilot Licenses Consumed
     Wait and Confirm Expected Pilot Licenses Available From CoPilot Dashboard  ${available}
 
     # Confirm counts on License Management page
-    Confirm Entitlement Counts for Feature Matches Expected  ${feature}  ${available}  ${consumed}  ${consumed}
+    Confirm Entitlement Counts for Feature Matches Expected  ${feature}  ${available}  ${consumed}  ${entitlements}
 
 Confirm Expected Navigator Licenses Consumed
     [Documentation]  Confirms the expected number of navigator licenses are consumed based on the entitlements
-    [Arguments]      ${entitlements}  ${consumed}  ${feature}=PRD-XIQ-NAV-S-C
+    [Arguments]      ${entitlements}  ${consumed}  ${feature}=XIQ-NAV-S-C
 
     ${available}=  Evaluate  ${entitlements} - ${consumed}
 
@@ -539,7 +539,7 @@ Confirm Expected Navigator Licenses Consumed
     Wait and Confirm Expected Navigator Licenses Available From CoPilot Dashboard  ${available}
 
     # Confirm counts on License Management page
-    Confirm Entitlement Counts for Feature Matches Expected  ${feature}  ${available}  ${consumed}  ${consumed}
+    Confirm Entitlement Counts for Feature Matches Expected  ${feature}  ${available}  ${consumed}  ${entitlements}
 
 Search XIQ Devices Table and Confirm Success
     [Documentation]     Performs a search on the Devices table in XIQ and confirms success.
