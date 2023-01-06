@@ -46,13 +46,12 @@ ${FLOOR_PLAN_2_PNG}                   Resources/floorplan-2.png
 ${FLOOR_PLAN_3_JPG}                   Resources/floorplan-3.jpg
 ${FLOOR_PLAN_4_JPEG}                  Resources/floorplan-4.jpeg
 ${FLOOR_PLAN_5_GIF}                   Resources/floorplan-5.gif
-${FLOOR_PLAN_3000KB_JPG}              Resources/floorplan-3000KB.jpg
+${FLOOR_PLAN_11MB_JPG}                Resources/floorplan_11MB.jpg
 ${FLOOR_PLAN_ERROR_MSG}               Failed to parse multipart servlet request
 ${FLOOR_PLAN_MAX_SIZE_ERROR_MSG}      Maximum upload size exceeded
 
 
 *** Settings ***
-
 Resource    Tests/Robot/Libraries/XAPI/XAPI-Authentication-Keywords.robot
 Resource    Tests/Robot/Libraries/XAPI/XAPI-Configuration-Deployment-Keywords.robot
 Resource    Tests/Robot/Libraries/XAPI/XAPI-Network-Policy-Keywords.robot
@@ -80,6 +79,10 @@ Pre Condition
 
     ${ROOT_LOCATION_ID}=    xapi get root location id
     set suite variable     ${ROOT_LOCATION_ID}
+
+    ${CUR_FEATURE_PATH}=         Get Feature Path           ${SUITE SOURCE}
+    set suite variable     ${CUR_FEATURE_PATH}
+    Log                     Current feature full path is: ${CUR_FEATURE_PATH}
 
     
 *** Test Cases ***
@@ -400,44 +403,44 @@ TCXM-6769: Topology-Update FLOOR by ID
 TCXM-6770: Topology-Delete FLOOR by ID
     [Documentation]  TCXM-6770: Topology-Delete FLOOR by ID
     [Tags]           development      tcxm_6770
-    Log     "This flow will be coverd as part of xapi delete floor keyword usage in other test cases"
+    log to console   "This flow will be coverd as part of xapi delete floor keyword usage in other test cases"
 
 
-#TCXM-6771: Topology-Upload floor plan
-#    [Documentation]     TCXM-6771: Topology-Upload floor plan
-#    [Tags]              development  tcxm_6771
-#    #Uploading floor plan image of type PNG
-#    Log                     Uploading ${FLOOR_PLAN_1_PNG} image
-#    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${FLOOR_PLAN_1_PNG}
-#    should not contain      ${RESPONSE_STRING}                              ${ERROR_CODE_STR}
+TCXM-6771: Topology-Upload floor plan
+    [Documentation]     TCXM-6771: Topology-Upload floor plan
+    [Tags]              development  tcxm_6771
+    #Uploading floor plan image of type PNG
+    Log                     Uploading ${FLOOR_PLAN_1_PNG} image
+    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${CUR_FEATURE_PATH}/${FLOOR_PLAN_1_PNG}
+    should not contain      ${RESPONSE_STRING}                              ${ERROR_CODE_STR}
 
 
-#TCXM-6772: Topology-Upload floor plan with various file types - JPG, PNG
-#    [Documentation]     TCXM-6771: Topology-Upload floor plan
-#    [Tags]              development  tcxm_6772
-#    #Uploading floor plan image of type JPG
-#    Log                     Uploading ${FLOOR_PLAN_3_JPG} image
-#    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${FLOOR_PLAN_3_JPG}
-#    should not contain      ${RESPONSE_STRING}                              ${ERROR_CODE_STR}
+TCXM-6772: Topology-Upload floor plan with various file types - JPG, PNG
+    [Documentation]     TCXM-6771: Topology-Upload floor plan
+    [Tags]              development  tcxm_6772
+    #Uploading floor plan image of type JPG
+    Log                     Uploading ${FLOOR_PLAN_3_JPG} image
+    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${CUR_FEATURE_PATH}/${FLOOR_PLAN_3_JPG}
+    should not contain      ${RESPONSE_STRING}                              ${ERROR_CODE_STR}
 
-#   #Uploading floor plan image of type PNG
-#    Log                     Uploading ${FLOOR_PLAN_1_PNG} image
-#    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${FLOOR_PLAN_1_PNG}
-#    should not contain      ${RESPONSE_STRING}                              ${ERROR_CODE_STR}
+   #Uploading floor plan image of type PNG
+    Log                     Uploading ${FLOOR_PLAN_1_PNG} image
+    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${CUR_FEATURE_PATH}/${FLOOR_PLAN_1_PNG}
+    should not contain      ${RESPONSE_STRING}                              ${ERROR_CODE_STR}
 
 
-#TCXM-6773: Topology-Upload multiple floor plan
-#    [Documentation]     TCXM-6771: Topology-Upload floor plan
-#    [Tags]              development  tcxm_6773
-#    #Uploading floor plan image of type PNG
-#    Log                     Uploading ${FLOOR_PLAN_1_PNG} image
-#    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${FLOOR_PLAN_1_PNG}
-#    should not contain      ${RESPONSE_STRING}          ${ERROR_CODE_STR}
+TCXM-6773: Topology-Upload multiple floor plan
+    [Documentation]     TCXM-6771: Topology-Upload floor plan
+    [Tags]              development  tcxm_6773
+    #Uploading floor plan image of type PNG
+    Log                     Uploading ${FLOOR_PLAN_1_PNG} image
+    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${CUR_FEATURE_PATH}/${FLOOR_PLAN_1_PNG}
+    should not contain      ${RESPONSE_STRING}          ${ERROR_CODE_STR}
 
-#    #Uploading floor plan image of type PNG
-#    Log                     Uploading ${FLOOR_PLAN_2_PNG} image
-#    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${FLOOR_PLAN_2_PNG}
-#    should not contain      ${RESPONSE_STRING}                              ${ERROR_CODE_STR}
+    #Uploading floor plan image of type PNG
+    Log                     Uploading ${FLOOR_PLAN_2_PNG} image
+    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${CUR_FEATURE_PATH}/${FLOOR_PLAN_2_PNG}
+    should not contain      ${RESPONSE_STRING}                              ${ERROR_CODE_STR}
 
 
 TCXM-6774: NEG-Topology-xapi create location with no PARENT ID and/or Location Name
@@ -829,24 +832,24 @@ TCXM-6794: NEG-Topology-Upload floor plan with no image file
     should contain          ${RESPONSE_STRING}                  ${FLOOR_PLAN_ERROR_MSG}
 
 
-#TCXM-6795: NEG-Topology-Upload floor plan with invalid file
-#    [Documentation]     TCXM-6795: NEG-Topology-Upload floor plan with invalid file
-#    [Tags]              development      tcxm_6795
-#    #Uploading floor plan with invalid file of type JPEG
-#    Log                     Uploading floor plan with invalid file ${FLOOR_PLAN_4_JPEG}
-#    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${FLOOR_PLAN_4_JPEG}
-#    should contain          ${RESPONSE_STRING}                              ${ERROR_CODE_STR}
+TCXM-6795: NEG-Topology-Upload floor plan with invalid file
+    [Documentation]     TCXM-6795: NEG-Topology-Upload floor plan with invalid file
+    [Tags]              development      tcxm_6795
+    #Uploading floor plan with invalid file of type JPEG
+    Log                     Uploading floor plan with invalid file ${FLOOR_PLAN_4_JPEG}
+    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${CUR_FEATURE_PATH}/${FLOOR_PLAN_4_JPEG}
+    should contain          ${RESPONSE_STRING}                              ${ERROR_CODE_STR}
 
-#    #Uploading floor plan with invalid file of type GIF
-#    Log                     Uploading floor plan with invalid file ${FLOOR_PLAN_5_GIF}
-#    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${FLOOR_PLAN_5_GIF}
-#    should contain          ${RESPONSE_STRING}                              ${ERROR_CODE_STR}
+    #Uploading floor plan with invalid file of type GIF
+    Log                     Uploading floor plan with invalid file ${FLOOR_PLAN_5_GIF}
+    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${CUR_FEATURE_PATH}/${FLOOR_PLAN_5_GIF}
+    should contain          ${RESPONSE_STRING}                              ${ERROR_CODE_STR}
 
 
-#TCXM-6796: NEG-Topology-Upload floor plan with file of large size
-#    [Documentation]     TCXM-6796: NEG-Topology-Upload floor plan with file of large size
-#    [Tags]              development  tcxm_6796
-#    Log                     Uploading floor plan with file of large size ${FLOOR_PLAN_3000KB_JPG}
-#    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${FLOOR_PLAN_3000KB_JPG}
-#    should contain          ${RESPONSE_STRING}                              ${ERROR_CODE_STR}
-#    should contain          ${RESPONSE_STRING}                              ${FLOOR_PLAN_MAX_SIZE_ERROR_MSG}
+TCXM-6796: NEG-Topology-Upload floor plan with file of large size
+    [Documentation]     TCXM-6796: NEG-Topology-Upload floor plan with file of large size
+    [Tags]              development  tcxm_6796
+    Log                     Uploading floor plan with file of large size ${FLOOR_PLAN_11MB_JPG}
+    ${RESPONSE_STRING}=     xapi upload floor plan get response string           ${CUR_FEATURE_PATH}/${FLOOR_PLAN_11MB_JPG}
+    should contain          ${RESPONSE_STRING}                              ${ERROR_CODE_STR}
+    should contain          ${RESPONSE_STRING}                              ${FLOOR_PLAN_MAX_SIZE_ERROR_MSG}
