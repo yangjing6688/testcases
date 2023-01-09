@@ -196,7 +196,7 @@ XIQ-10316 - TCXM-25837 - Automation: XIQ Measure time taken to upgrade the firmw
 
     ${START_TIME}=           Get Current Date Time   time_format=${TIME_FORMAT}
 
-    ${UPGRADE_DEVICE_STATUS}=       Upgrade Device To Latest Version       ${ap1.serial}
+    ${UPGRADE_DEVICE_STATUS}=       Upgrade Device      ${ap1}
     Should Not be equal as Strings      '${UPGRADE_DEVICE_STATUS}'        '-1'
 
     ${WAIT_DEVICE_UPDATE}=        Wait Until Device Update Done         device_serial=${ap1.serial}

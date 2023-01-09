@@ -86,6 +86,11 @@ Suite Teardown   Suite Clean Up
 Pre Condition
     [Documentation]   Login XIQ, create 1st location and Network Policy with PPSK SSID with cloud and local user groups, onboard simulate AP and assign Network Policy to it
     [Tags]                      cfd-7586     development    pre-condition
+
+    ${device}=      Create Dictionary
+    ...     serial=01501807130357
+    ...     mac=123456
+
 #### Login AIO
     ${Login_XIQ}=                  Login User              ${TENANT_USERNAME}      ${TENANT_PASSWORD}
     Should Be Equal As Integers    ${Login_XIQ}             1
@@ -115,7 +120,7 @@ Pre Condition
     ${WAIT_ONLINE}=         Wait Until Device Online       ${SERIAL}
     Should Be Equal As Integers    ${WAIT_ONLINE}    1
 
-    ${UPGRADE_VERSION}=     Upgrade Device To Specific Version     ${SERIAL}   version=${VERSION}
+    ${UPGRADE_VERSION}=     Upgrade Device     ${device}   version=${VERSION}
     wait_until_device_update_done   device_serial=${SERIAL}
 
 ### Change AP150W device funtion as ApAsRouter mode

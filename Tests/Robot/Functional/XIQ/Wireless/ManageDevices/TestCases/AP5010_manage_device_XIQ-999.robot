@@ -210,7 +210,7 @@ TCXM-19408 : verify upgrade device - single and multiple AP5010U/AP5010
     [Documentation]         verify upgrade device - single and multiple AP5010U/AP5010 from manage device
     [Tags]              development         tcxm-19408
     ${RESULT}=          Login User       ${TENANT_USERNAME}      ${TENANT_PASSWORD}
-    ${fw_version}=      upgrade_device_to_latest_version       ${AP1_SERIAL}
+    ${fw_version}=      upgrade device      ${ap1}
     Sleep               180s
     #${AP_SPAWN}=	Open Spawn  ${AP1_IP}  ${AP1_CONSOLE_PORT}   ${AP1_USERNAME}     ${AP1_PASSWORD}     ${AP1_PLATFORM}
     ${AP_SPAWN}=	Open Spawn      ${AP1_IP}   ${AP1_CONSOLE_PORT}   ${AP1_USERNAME}     ${AP1_PASSWORD}      ${AP1_Cli_Type}
