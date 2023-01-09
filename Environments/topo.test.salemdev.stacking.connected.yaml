@@ -6,10 +6,10 @@ xiqse:
   password:                "n7830466"
   version:                 "23"
   os_version:              "23"
-  name:                    "extauto-xiqse-91.extremenetworks.com"
-  serial:                  "XIQSE-C67F3E721CA54A1D80903B37853F9B07"
+  name:                    "extauto-xiqse-91"
+  serial:                  "XIQSE-4464725328CD4130B8D425187D44591"
   mac:                     "000C295E0CEE"
-  profile:                 "snmp_v3_profile"
+  profile:                 "ApplianceV3"
   platform:                "xiqse"
   make:                    "XIQSE"
   model:                   "XIQSE"
@@ -22,7 +22,7 @@ xiqse:
 appliance:
   user:                    "root"
   password:                "n7830466"
-  profile:                 "AnalyticsEngine_v3_Profile"
+  profile:                 "ApplianceV3"
 
 purview:
   ip:                      "10.139.33.93"
@@ -40,10 +40,10 @@ xiq:
   test_url:                "https://g2r1.qa.xcloudiq.com"
   capwap_url:              "g2r1-cwpm-01.qa.xcloudiq.com"
   sw_connection_host:      "g2r1.qa.xcloudiq.com"
-  tenant_username:         "xiqse1+automationB@gmail.com"
+  tenant_username:         "g2r1-automationStack@gmail.com"
   tenant_password:         "Aerohive123"
   pilot_entitlements:      "10"
-  navigator_entitlements:  "2"
+  navigator_entitlements:  "10"
 
 xiq2:
   test_url:                "https://g2r1.qa.xcloudiq.com"
@@ -61,21 +61,16 @@ xiq2:
 #     vim-cmd vmsvc/get.snapshotinfo <vmid>
 upgrades:
   install_mode:                "CONNECTED"
-  nsrelease_version:           "22.6.10.70"
+  nsrelease_version:           "23.2.10.51"
   esx:
     esx_ip:                    "10.139.33.16"
     esx_user:                  "root"
     esx_password:              "no-boneheads"
   xmc:
-    version:                   "8.5.5.32"
-    xiqse_vm_id:               "300"
-    nac_vm_id:                 "301"
-    purview_vm_id:             "302"
-    ng_analytics_vm_id:        "303"
   xiqse:
-    version:                   "22.6.10.70"
+    version:                   "22.10.10.62"
     xiqse_vm_id:               "10"
-    xiqse_snapshot_id:         "1"
+    xiqse_snapshot_id:         "9"
     nac_vm_id:                 "2"
     nac_snapshot_id:           "2"
     purview_vm_id:             "4"

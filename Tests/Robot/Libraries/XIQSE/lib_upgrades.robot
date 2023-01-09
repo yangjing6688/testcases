@@ -107,7 +107,7 @@ Install NAC Software
     ${output} =  Send Paramiko CMD        ${sshSession}  ./${NSRELEASE_NAC_FILE} -allowSameVersion -noprompts -keepalive  timeout=${INSTALL_DOWNLOAD_TIMEOUT_SEC}
 
 Install Purview Software
-    [Documentation]   Installs the downloaded binary on the Purview appliance
+    [Documentation]   Installs the downloaded binary on the PurviewSSH_PORT appliance
     [Arguments]    ${ip}  ${user}  ${password}  ${file}
 
     ${sshSession} =    open_paramiko_ssh_spawn  ${ip}  ${user}  ${password}  ${SSH_PORT}
