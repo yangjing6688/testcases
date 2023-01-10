@@ -6,7 +6,7 @@
 # Aerohive AP ----- Cloud
 
 *** Variables ***
-${FILE_NAME}               ${CURDIR}/performance.csv
+${FILE_NAME}               performance.csv
 ${TIME_FORMAT}             %Y-%m-%d %H:%M:%S
 ${LOCATION}                auto_location_01, Santa Clara, building_02, floor_04
 ${COLUMNS}                 Tescase Name, Start Time, End Time, Elapsed Time, Testbed, VIQ ID, Datacenter Name, XIQ Version\n
