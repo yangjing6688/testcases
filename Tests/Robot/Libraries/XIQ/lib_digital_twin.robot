@@ -30,14 +30,14 @@ Enable Digital Twin Feature
     [Documentation]     Use the soft launch URL to enable the Digital Twin feature.
     [Arguments]         ${xiq_url}
 
-    ${result}=   XIQ Soft Launch Feature Url                ${xiq_url}/hm-webapp/?digitalTwin=true#/devices
+    ${result}=   XIQ Soft Launch Feature Url                url=${xiq_url}/hm-webapp/?digitalTwin=true#/devices
     Should Be Equal As Integers                             ${result}           1
 
 Disable Digital Twin Feature
     [Documentation]     Use the soft launch URL to disable the Digital Twin feature.
     [Arguments]         ${xiq_url}
 
-    ${result}=   XIQ Soft Launch Feature Url                ${xiq_url}/hm-webapp/?digitalTwin=false#/devices
+    ${result}=   XIQ Soft Launch Feature Url                url=${xiq_url}/hm-webapp/?digitalTwin=false#/devices
     Should Be Equal As Integers                             ${result}           1
 
 Confirm Digital Twin Serial Number
