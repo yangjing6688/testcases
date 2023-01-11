@@ -12,7 +12,7 @@
 
 runlist_XIQ_200:
   suitemap: 
-    - extreme_automation_tests/data/NonProduction/XIQ/XIQ_200/suitemap_XIQ_200.yaml
+    - suitemap_XIQ_200.yaml
   onboarding_options:
     standalone:
       node_1:

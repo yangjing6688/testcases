@@ -40,7 +40,7 @@ from ExtremeAutomation.Imports.VirtualMachineUtils import VirtualMachineUtils
 from ExtremeAutomation.Imports.NetElementUtils import NetElementUtils
 from ExtremeAutomation.Imports.LowLevelTrafficApis import LowLevelTrafficApis
 from ExtremeAutomation.Imports.CommonObjectUtils import CommonObjectUtils
-
+from pytest_testconfig import config as pytest_config
 from extauto.common.Screen import Screen
 from extauto.common.Rest import Rest
 from extauto.common.WebElementHandler import WebElementHandler
@@ -417,7 +417,7 @@ def log_git():
                     git_repo = Repo(path)
                 except (InvalidGitRepositoryError, NoSuchPathError):
                     pass
-                finally:
+                else:
                     logger_obj.step(f"{repo_name} git dir: '{git_repo.git_dir}'.")
                     logger_obj.step(f"{repo_name} working tree dir: '{git_repo.working_tree_dir}'.")
                     logger_obj.step(f"{repo_name} feature branch: '{git_repo.active_branch.name}'.")
@@ -475,7 +475,7 @@ def is_onboarding_cleanup_test(
 
 def pytest_configure(config):
     pytest.runlist_name: str = ""
-    pytest.runlist_path: str = ""
+    pytest.runlist_path: str = "default"
     pytest.suitemaps_name: List[str] = []
     pytest.runlist_tests: List[TestCaseMarker] = []
     pytest.suitemap_tests: Dict[str, Union[str, Dict[str, str]]] = {}
@@ -488,7 +488,7 @@ def pytest_configure(config):
     pytest.all_nodes: List[Node] = []
     pytest.standalone_nodes: List[Node] = []
     pytest.stack_nodes: List[Node] = []
-    pytest.config_helper: PytestConfigHelper = PytestConfigHelper(config)
+    pytest.config_helper: PytestConfigHelper = PytestConfigHelper(pytest_config)
     pytest.onboarding_test_name: str = "tcxm_xiq_onboarding"
     pytest.onboarding_cleanup_test_name: str = "tcxm_xiq_onboarding_cleanup"
     pytest.created_onboarding_locations: List[str] = []
@@ -961,16 +961,32 @@ def pytest_sessionstart(session):
             logger_obj.error(error)
             pytest.fail(error)
 
-        pytest.runlist = yaml.safe_load(output_runlist)
-        pytest.runlist_name = list(pytest.runlist)[0]
-        pytest.runlist_tests = pytest.runlist[pytest.runlist_name]['tests']
-        pytest.suitemaps_name = pytest.runlist[pytest.runlist_name]['suitemap']
+        try:
+            pytest.runlist = yaml.safe_load(output_runlist)
+            pytest.runlist_name = list(pytest.runlist)[0]
+        except:
+            logger_obj.fail(f"Failed to load the runlist yaml file: '{pytest.runlist_path}'.")
+        
+        try:
+            pytest.runlist_tests = pytest.runlist[pytest.runlist_name]['tests']
+        except:
+            logger_obj.fail(f"It seems that the runlist yaml does not have the 'tests' field: '{pytest.runlist_path}'.")
+        
+        try:
+            temp_suitemaps_name = pytest.runlist[pytest.runlist_name]['suitemap']
+        except:
+            logger_obj.fail(f"It seems that the runlist yaml does not have the 'suitemap' field: '{pytest.runlist_path}'.")
 
-        for suitemap in pytest.suitemaps_name:
+        for suitemap in temp_suitemaps_name:
             try:
+                [suitemap] = list(Path(os.path.join(imp.find_module("extreme_automation_tests")[1], "data")).rglob(suitemap))
+                suitemap = str(suitemap)
+
                 with open(suitemap, "r") as run_list:
                     output_suitemap = run_list.read()
-            except FileNotFoundError:
+                
+                pytest.suitemaps_name.append(suitemap)
+            except:
                 logger_obj.warning(f"Did not find this suitemap file: '{suitemap}'")
             else:
                 suitemap_dict = yaml.safe_load(output_suitemap)
@@ -989,6 +1005,7 @@ def pytest_sessionstart(session):
         pytest.run_options: Options = pytest.runlist[pytest.runlist_name].get("run_options", {}) or {}
 
 
+@pytest.hookimpl(tryfirst=True)
 def pytest_sessionfinish(session):
 
     if pytest.runlist_path != "default":
@@ -1041,6 +1058,35 @@ def pytest_sessionfinish(session):
 
         except:
             pass
+
+        repos = ['extreme_automation_framework', 'extreme_automation_tests']
+    
+        try:
+            from git import Repo
+            from git.exc import InvalidGitRepositoryError, NoSuchPathError
+        except:
+            pass
+        else:    
+            for repo_name in repos:
+                for path in sys.path:
+                    if re.search(rf"(.*/{repo_name})$", path):
+                        try:
+                            git_repo = Repo(path)
+                        except (InvalidGitRepositoryError, NoSuchPathError):
+                            pass
+                        else:
+                            session.config._metadata[f"{repo_name} git dir"] = git_repo.git_dir
+                            session.config._metadata[f"{repo_name} working tree dir"] = git_repo.working_tree_dir
+                            session.config._metadata[f"{repo_name} feature branch"] = git_repo.active_branch.name
+                            session.config._metadata[f"{repo_name} HEAD commit"] = git_repo.head.commit
+                            break
+
+        session.config._metadata["Runlist Path"] = pytest.runlist_path
+        session.config._metadata["Runlist Name"] = pytest.runlist_name
+        session.config._metadata["Suitemaps"] = pytest.suitemaps_name
+        
+        if run_options := pytest.run_options:
+            session.config._metadata["Run Options"] = run_options
 
 
 def pytest_generate_tests(metafunc):
@@ -1811,45 +1857,45 @@ def configure_iq_agent(
             duts: List[Node]=node_list,
             ipaddress: str=loaded_config['sw_connection_host']
     ) -> None:
-        
-        virtual_routers: Dict[str, str] = request.getfixturevalue("virtual_routers")
 
         def worker(dut: Node):
             
             onboarding_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
             downgrade_iqagent_flag: bool = onboarding_options.get("downgrade_iqagent", True)
-            logger.info(f"The 'downgrade_iqagent' flag is '{'enabled' if downgrade_iqagent_flag else 'disabled'}' for node '{dut.node_name}' .")
+            logger.info(f"The 'downgrade_iqagent' flag is '{'enabled' if downgrade_iqagent_flag else 'disabled'}' for node '{dut.node_name}'.")
 
             configure_iqagent_flag: bool = onboarding_options.get("configure_iqagent", True)
-            logger.info(f"The 'configure_iqagent' flag is '{'enabled' if configure_iqagent_flag else 'disabled'}' for node '{dut.node_name}' .")
+            logger.info(f"The 'configure_iqagent' flag is '{'enabled' if configure_iqagent_flag else 'disabled'}' for node '{dut.node_name}'.")
 
-            with open_spawn(dut) as spawn_connection:
+            if loaded_config.get("lab", "Salem").upper() != "SALEM":
+                if downgrade_iqagent_flag is True:
+                    logger.warning(f"iqagent won't be downgraded for node '{dut.node_name}' because lab is not 'Salem' (found lab '{loaded_config.get('lab', '')}').")
+                    downgrade_iqagent_flag = False
+            
+            if not downgrade_iqagent_flag:
+                logger.info(f"iqagent won't be downgraded because the 'downgrade_iqagent' flag is disabled for node '{dut.node_name}'.")
 
-                if loaded_config.get("lab", "Salem").upper() != "SALEM":
-                    logger.warning(f"iqagent won't be downgraded because lab is not 'Salem' (found lab '{loaded_config.get('lab', '')}').")
+            if not configure_iqagent_flag:
+                logger.info(f"iqagent won't be configured because the 'configure_iqagent' flag is disabled for node '{dut.node_name}'.")
 
-                elif not downgrade_iqagent_flag:
-                    logger.info(f"iqagent won't be downgraded because the 'downgrade_iqagent' flag is disabled for node '{dut.node_name}'.")
+            if downgrade_iqagent_flag or configure_iqagent_flag:
 
-                else:
-                    logger.step(f"Downgrade iqagent on node '{dut.node_name}'.")
-                    cli.downgrade_iqagent(dut.cli_type, spawn_connection)
-                    logger.info(f"Successfully downgraded iqagent on node '{dut.node_name}'.")
+                with open_spawn(dut) as spawn_connection:
 
-                if not configure_iqagent_flag:
-                    logger.info(f"iqagent won't be configured because the 'configure_iqagent' flag is disabled for node '{dut.node_name}'.")
-                    return
-                
-                logger.step(f"Configure iqagent on node '{dut.node_name}' (XIQ ip address: '{loaded_config['sw_connection_host']}').")
-                cli.configure_device_to_connect_to_cloud(
-                    dut.cli_type, loaded_config['sw_connection_host'],
-                    spawn_connection, vr=virtual_routers.get(dut.name, 'VR-Mgmt'), retry_count=30
-                )
-                
-                if dut.cli_type.upper() == "EXOS":
-                    cli.send(spawn_connection, "enable iqagent")
+                    if downgrade_iqagent_flag:
+                        logger.step(f"Downgrade iqagent on node '{dut.node_name}'.")
+                        cli.downgrade_iqagent(dut.cli_type, spawn_connection)
+                        logger.info(f"Successfully downgraded iqagent on node '{dut.node_name}'.")
 
-                logger.info(f"Successfully configured iqagent on node '{dut.node_name}'.")
+
+                    if configure_iqagent_flag:
+                        logger.step(f"Configure iqagent on node '{dut.node_name}' (XIQ ip address: '{loaded_config['sw_connection_host']}').")
+                        cli.configure_device_to_connect_to_cloud(
+                            dut.cli_type, loaded_config['sw_connection_host'],
+                            spawn_connection, vr=dut.get("mgmt_vr", 'VR-Mgmt').upper(), retry_count=30
+                        )
+
+                        logger.info(f"Successfully configured iqagent on node '{dut.node_name}'.")
 
         threads: List[threading.Thread] = []
 
@@ -2311,11 +2357,11 @@ def policy_config(
         
         onboarding_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
         
-        random_policy_name = f"{pytest.runlist_name}_np_{''.join(random.sample(pool, k=8))}"[:32]
-        random_template_name = f"{pytest.runlist_name}_template_{''.join(random.sample(pool, k=8))}"[:32]
+        random_policy_name = f"{pytest.runlist_name.replace('runlist_', '')}_np_{''.join(random.sample(pool, k=8))}"[:28]
+        random_template_name = f"{pytest.runlist_name.replace('runlist_', '')}_template_{''.join(random.sample(pool, k=8))}"[:28]
         
         policy_name: str = onboarding_options.get("policy_name", random_policy_name)
-        template_name: str = onboarding_options.get("template_name",random_template_name)
+        template_name: str = onboarding_options.get("template_name", random_template_name)
         
         dut_config[dut.name]["policy_name"] = policy_name
         dut_config[dut.name]['template_name'] = template_name

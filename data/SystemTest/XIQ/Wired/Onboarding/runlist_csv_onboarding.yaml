@@ -1,6 +1,6 @@
 runlist_csv_onboarding:
   suitemap: 
-    - extreme_automation_tests/data/SystemTest/XIQ/Wired/Onboarding/suitemap_csv_onboarding.yaml
+    - suitemap_csv_onboarding.yaml
   tests:
     - tccs_7651 # testbed_1_node
     - tccs_7652 # testbed_1_node
