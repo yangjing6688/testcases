@@ -1,9 +1,9 @@
-# Author        : Philip Do
+# Author        : Pranav Chauhan
 # Date          : December 2021
 # Description   : APC-45525 - WiFi 6E - d360 Device configuration for AP4000/AP4000U & APC-44617 - WiFi 6E - radio profile for AP4000/AP4000U
 
 # Pre-Condtion
-# 1. AP4000 should be onboarded and online, wireless policy "AP1-policy" should be assigned to AP4000. AP CLI should be reachable by console.
+# 1. Wireless policy "AP1-policy" should be assigned to AP4000. AP CLI should be reachable by SSH console.
 
 *** Settings ***
 
@@ -101,7 +101,7 @@ Navigate To Device Config Wireless wifi2
 
 Step0: Onboard AP1
     [Documentation]    Onboard AP
-    [Tags]             tcxm-17044    development     step0    steps
+    [Tags]             tcxm-17044    development     step0    steps    step01
     delete all aps
     sleep  60s
     ${STATUS}                      onboard device quick      ${ap1}
@@ -117,19 +117,26 @@ Step0: Onboard AP1
     Should Be Equal As Strings                                      '${STATUS}'       '1'
     ${STATUS}       Get Device Status                               ${ap1.serial}
     Should contain any                                              ${STATUS}          green           config audit mismatch
-    [Teardown]      Close Spawn                                     ${AP_SPAWN}
+    Close Spawn                                     ${AP_SPAWN}
 
 
 Step1: Assign network policy to AP1
     [Documentation]     Assign network policy with VLAN 105 to AP1
-    [Tags]              tcxm-17044   development     step1      steps
+    [Tags]              tcxm-17044   development     step1      steps   step01
     Depends On          Step0
-    ${UPDATE}                      Update Network Policy To Ap     ${POLICY_01}     ${ap1.serial}    Complete
-    should be equal as strings     '${UPDATE}'       '1'
+
+    Wait Until Device Reboots       ${ap1.serial}
     ${ONLINE_STATUS_RESULT}     Wait Until Device Online                ${ap1.serial}
     Should Be Equal as Integers             ${ONLINE_STATUS_RESULT}          1
-    ${AP_STATUS}                   Get AP Status     ap_mac=${ap1.mac}
-    Should Be Equal As Strings    '${AP_STATUS}'    'green'
+
+    ${UPDATE}                      Update Network Policy To Ap     ${POLICY_01}     ${ap1.serial}    Complete
+    should be equal as strings     '${UPDATE}'       '1'
+
+    Wait Until Device Reboots       ${ap1.serial}
+    ${ONLINE_STATUS_RESULT}     Wait Until Device Online                ${ap1.serial}
+    Should Be Equal as Integers             ${ONLINE_STATUS_RESULT}          1
+    ${STATUS}       Get Device Status                               ${ap1.serial}
+    Should contain any                                              ${STATUS}          green           config audit mismatch
 
 
 TCXM-17044: Precondition - Setting default radio profiles on AP4000 at d360 configuration page on AP4000
@@ -536,11 +543,11 @@ TCXM-18404: APC-44617: wifi0: Create new radio profile and verify settings - Tes
 
 TCXM-18405: APC-44617: Verify The Radio Profile Details with the radio mode ax (5GHz)
     [Documentation]     To verify default config for radio profile with ax (5GHz) mode under common objects.
-    [Tags]              tcxm_18405    development    xiq-mainline   tcxm-18405    t3     apc-44617    radio-profile
+    [Tags]              tcxm_18405    development    xiq-mainline   tcxm-18405    t3     apc-44617    radio-profile     maxdrop1
 
     &{fields_to_check1}=   Create Dictionary    supported_radio_modes=ax (5GHz)   radio_profile_maximum_transmit_power=20  radio_profile_transmit_power_floor=5
-    &{fields_to_check2}=   Create Dictionary    tranmission_power_max_drop=9     maximum_number_of_clients=100            channel_auto_or_manual=Auto
-    &{fields_to_check3}=   Create Dictionary    tranmission_power=Auto            transmission_power_control=OFF           background_scan=ON
+    &{fields_to_check2}=   Create Dictionary    transmission_power_max_drop=9     maximum_number_of_clients=100            channel_auto_or_manual=Auto
+    &{fields_to_check3}=   Create Dictionary    transmission_power=Auto            transmission_power_control=OFF           background_scan=ON
 
     navigate_to_radio_profile
     add_radio_profile   sample_radio_profile_abc
@@ -549,16 +556,20 @@ TCXM-18405: APC-44617: Verify The Radio Profile Details with the radio mode ax (
     Log To Console    ${radio_detail_info}
 
     Log To Console    Verify 1
-    ${rc}     verify_page_details   ${radio_detail_info}   ${fields_to_check1}
-    Should Be Equal    '${rc}'     '1'
+    ${rc1}     verify_page_details   ${radio_detail_info}   ${fields_to_check1}
+    Log To Console    ${rc1}
+    Should Be Equal    '${rc1}'     '1'
 
     Log To Console    Verify 2
-    ${rc}     verify_page_details   ${radio_detail_info}   ${fields_to_check2}
-    Should Be Equal    '${rc}'     '1'
+    sleep  30s
+    ${rc2}     verify_page_details   ${radio_detail_info}   ${fields_to_check2}
+    Log To Console    ${rc2}
+    Should Be Equal    '${rc2}'     '1'
 
     Log To Console    Verify 3
-    ${rc}     verify_page_details   ${radio_detail_info}   ${fields_to_check3}
-    Should Be Equal    '${rc}'     '1'
+    ${rc3}     verify_page_details   ${radio_detail_info}   ${fields_to_check3}
+    Log To Console    ${rc3}
+    Should Be Equal    '${rc3}'     '1'
 
 
 TCXM-18407: APC-44617: channels for UNII-1 and UNII-3 with channel width 20 MHz for ax (5GHz)
