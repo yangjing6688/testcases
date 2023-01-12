@@ -131,7 +131,7 @@ Test3 - TCXM-18644 - N360M_DeviceScoring_Config&FirmwareScore_80_1
 
     ${LOGIN_STATUS}=        Login User        ${tenant_username}      ${tenant_password}
     should be equal as integers               ${LOGIN_STATUS}         1
-    ${LATEST_VERSION}=      Upgrade Device To Latest Version          ${ap1.serial}
+    ${LATEST_VERSION}=      Upgrade Device          ${ap1}
     Sleep                   ${browser_load_wait}
 
     Wait Until Device Reboots                 ${ap1.serial}

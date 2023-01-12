@@ -150,8 +150,7 @@ def setup_switch(onboarding_location):
             assert res == 'green', f"The EXOS device did not come up successfully in the XIQ; Device: {dut}"
 
             if onboarding_is_successful:
-                assert xiq.xflowscommonDevices.select_version_and_upgrade_device_to_specific_version(
-                    device_serial=dut.serial, version=image_version) == 1, f"Failed to update device back to the initial firmware version"
+                assert xiq.xflowscommonDevices.upgrade_device(dut, version=image_version) != -1, f"Failed to update device back to the initial firmware version"
 
                 # Checking for the update column to reflect the firmware update status
                 status_after = xiq.xflowscommonDevices.get_device_updated_status(device_serial=dut.serial)

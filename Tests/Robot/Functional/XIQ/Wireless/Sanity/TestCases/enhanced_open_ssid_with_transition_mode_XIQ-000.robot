@@ -80,10 +80,7 @@ Step0: Onboard AP
 
     ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
     Should Be Equal As Strings                                      '${STATUS}'       '1'
-    ${STATUS}       Wait Until Device Online                        ${ap1.serial}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    ${STATUS}       Get Device Status                               ${ap1.serial}
-    Should contain any                                              ${STATUS}          green           config audit mismatch
+    Wait_device_online                                              ${ap1}
     [Teardown]      Close Spawn                                     ${AP_SPAWN}
 
 Step1: Create Policy - Enhanced open with transition mode
@@ -117,10 +114,7 @@ Step2: Assign network policy to AP
     Depends On          Step1
     ${UPDATE}                      Update Network Policy To Ap             ${POLICY}          ${ap1.serial}      Complete
     should be equal as strings     '${UPDATE}'        '1'
-    ${STATUS}                      Wait Until Device Online                ${ap1.serial}
-    Should Be Equal As Strings     '${STATUS}'        '1'
-    ${STATUS}                      Get Device Status                       ${ap1.serial}
-    Should Be Equal As Strings     '${STATUS}'        'green'
+    Wait_device_online             ${ap1}
     Enable disable client Wifi device                 ${mu1}
 
 Step3: MU connect to wifi0-1 - Transition mode disable
@@ -221,3 +215,10 @@ Enable_disable_client_Wifi_device
     ${SPAWN}        Open Spawn    ${mu}[ip]     22    ${mu}[username]    ${mu}[password]    cli_type=MU-WINDOWS
     Send Commands   ${SPAWN}      pnputil /disable-device /deviceid \"PCI\\CC_0280\", pnputil /enable-device /deviceid \"PCI\\CC_0280\"
     [Teardown]      run keyword   Close Spawn   ${SPAWN}
+
+Wait_device_online
+    [Arguments]    ${ap}
+    ${STATUS}                       Wait Until Device Online    ${ap}[serial]
+    Should Be Equal As Strings      '${STATUS}'    '1'
+    ${STATUS}                       Get Device Status           ${ap}[serial]
+    Should contain any              ${STATUS}      green        config audit mismatch

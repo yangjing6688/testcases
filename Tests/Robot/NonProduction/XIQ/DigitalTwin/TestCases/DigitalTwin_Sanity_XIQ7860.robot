@@ -135,7 +135,7 @@ TCCS-13499: Digital Twin Device D360 Overview panel
     ${status}=   Get Device360 Digital Twin Device Status
     Should Be Equal As Strings                              ${status}       connected
 
-    ${dt_button}=  Is Device360 Shutdown Digital Twin Button Visible
+    ${dt_button}=  Verify Device360 Shutdown Digital Twin Button Visible
     Should Be Equal As Strings                              ${dt_button}    True
 
     Confirm Device360 Top Bar Information for Digital Twin Device

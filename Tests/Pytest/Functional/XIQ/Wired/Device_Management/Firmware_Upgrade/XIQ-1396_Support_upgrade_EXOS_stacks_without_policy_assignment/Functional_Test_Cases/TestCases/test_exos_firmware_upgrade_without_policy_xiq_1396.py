@@ -295,7 +295,7 @@ class xiqTests():
         # self.executionHelper.testSkipCheck()
 
         # Check the firmware upgrade option is avilable for the stack device and close the image upgrade without perfrm upgrade.
-        latest_version = self.xiq.xflowscommonDevices.xiq_upgrade_device_to_latest_version(self.tb.dut1.mac,action="close")
+        latest_version = self.xiq.xflowscommonDevices.upgrade_device(self.tb.dut1, action="close")
         if latest_version == -1:
             pytest.fail("Either firmware upgrade option is not available or unable to get the latest firmware version!")
 
@@ -320,7 +320,7 @@ class xiqTests():
         self.devCmd.send_cmd(self.tb.dut1_name, 'clear log static', max_wait=10,interval=2)
 
         # Step-2 Check the firmware upgrade option is avilable for the stack device and able to perform the image upgrade.
-        latest_version = self.xiq.xflowscommonDevices.xiq_upgrade_device_to_latest_version(self.tb.dut1.mac)
+        latest_version = self.xiq.xflowscommonDevices.upgrade_device(self.tb.dut1)
         if latest_version == -1:
             pytest.fail("Either firmware upgrade option is not available or unable to get the latest firmware version!")
 

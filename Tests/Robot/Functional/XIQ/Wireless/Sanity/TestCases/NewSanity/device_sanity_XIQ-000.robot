@@ -225,7 +225,7 @@ TCCS-13687: Firmware upgrade to lastest version (AH-AP Only)
 
     ${AP_BUILD_VERSION1}=   Get AP Version              ${SPAWN1}
 
-    ${LATEST_VERSION}=      Upgrade Device To Latest Version            ${device1.serial}
+    ${LATEST_VERSION}=      Upgrade Device           ${device1}
     Should Not be Empty     ${LATEST_VERSION}
 
     Sleep                   ${ap_reboot_wait}

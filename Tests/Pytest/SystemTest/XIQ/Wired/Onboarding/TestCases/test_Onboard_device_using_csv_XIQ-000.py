@@ -43,10 +43,8 @@ class OnboardDeviceUsingCsvTests:
         check_devices_are_reachable([dut1])
 
         with open_spawn(dut1) as spawn_connection:
-            if loaded_config.get("lab", "").upper() == "SALEM":
+            if loaded_config.get("lab", "Salem").upper() == "SALEM":
                 cli.downgrade_iqagent(dut1.cli_type, spawn_connection)
-
-
 
     @pytest.fixture
     def cleanup(self, xiq_library_at_class_level, dut1):

@@ -30,14 +30,14 @@ Enable Digital Twin Feature
     [Documentation]     Use the soft launch URL to enable the Digital Twin feature.
     [Arguments]         ${xiq_url}
 
-    ${result}=   XIQ Soft Launch Feature Url                ${xiq_url}/hm-webapp/?digitalTwin=true#/devices
+    ${result}=   XIQ Soft Launch Feature Url                url=${xiq_url}/hm-webapp/?digitalTwin=true#/devices
     Should Be Equal As Integers                             ${result}           1
 
 Disable Digital Twin Feature
     [Documentation]     Use the soft launch URL to disable the Digital Twin feature.
     [Arguments]         ${xiq_url}
 
-    ${result}=   XIQ Soft Launch Feature Url                ${xiq_url}/hm-webapp/?digitalTwin=false#/devices
+    ${result}=   XIQ Soft Launch Feature Url                url=${xiq_url}/hm-webapp/?digitalTwin=false#/devices
     Should Be Equal As Integers                             ${result}           1
 
 Confirm Digital Twin Serial Number
@@ -102,23 +102,23 @@ Confirm D360 Digital Twin Status
 Confirm D360 Relaunch Digital Twin Option Visible
     [Documentation]     Confirm that the D360 "Relaunch Digital Twin" button is visible.
 
-    ${dt_button}=  Is Device360 Relaunch Digital Twin Button Visible
+    ${dt_button}=  Verify Device360 Relaunch Digital Twin Button Visible
     Should Be Equal As Strings                              ${dt_button}        True
 
 Confirm D360 Relaunch Digital Twin Option Hidden
     [Documentation]     Confirm that the D360 "Relaunch Digital Twin" button is hidden.
 
-    ${dt_button}=  Is Device360 Relaunch Digital Twin Button Visible
+    ${dt_button}=  Verify Device360 Relaunch Digital Twin Button Hidden
     Should Be Equal As Strings                              ${dt_button}        False
 
 Confirm D360 Shutdown Digital Twin Option Visible
     [Documentation]     Confirm that the D360 "Shutdown Digital Twin" button is visible.
 
-    ${dt_button}=  Is Device360 Shutdown Digital Twin Button Visible
+    ${dt_button}=  Verify Device360 Shutdown Digital Twin Button Visible
     Should Be Equal As Strings                              ${dt_button}        True
 
 Confirm D360 Shutdown Digital Twin Button Hidden
     [Documentation]     Confirm that the D360 "Shutdown Digital Twin" button is hidden.
 
-    ${dt_button}=  Is Device360 Shutdown Digital Twin Button Visible
+    ${dt_button}=  Verify Device360 Shutdown Digital Twin Button Hidden
     Should Be Equal As Strings                              ${dt_button}        False

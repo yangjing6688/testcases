@@ -60,7 +60,7 @@ ${DUT_3USERNAME}             ${netelem3.username}
 ${DUT3_PASSWORD}             ${netelem3.password}
 ${DUT_3VR}                   ${netelem3.vr}
 
-${NAV_ENTITLEMENT}           PRD-XIQ-NAV-S-C
+${NAV_ENTITLEMENT}           XIQ-NAV-S-C
 ${NAV_LICENSE}               Navigator
 ${PILOT_ENTITLEMENT}         PRD-XIQ-PIL-S-C
 ${PILOT_LICENSE}             Pilot
@@ -76,8 +76,8 @@ Test 1: Verify Navigator and Pilot Baseline License Counts
     [Documentation]     Confirms Pilot and Navigator license counts are at expected value in XIQ to begin with (nothing consumed)
     [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       2    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}     3    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       2    0    2
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}     3    0    3
 
 Test 2: Onboard First Device and Verify Success
     [Documentation]     Onboards first test device and verifies success
@@ -110,8 +110,8 @@ Test 3: Verify First Device Consumes Navigator License Within Global Settings Li
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       1    1    1
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}     3    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       1    1    2
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}     3    0    3
 
 Test 4: Onboard Second Device and Verify Success
     [Documentation]     Onboards second test device and verifies success
@@ -145,7 +145,7 @@ Test 5: Verify Second Device Consumes Navigator License Within Global Settings L
     Depends On          Test 1
 
     Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       0    2    2
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}     3    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}     3    0    3
 
 Test 6: Verify Device License Column Value
     [Documentation]     Checks the Device License column to verify devices consumed the appropriate license or not
@@ -189,7 +189,7 @@ Test 8: Verify Third Device Consumes Pilot License Within Global Settings Licens
     Depends On          Test 1
 
     Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       0    2    2
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}     2    1    1
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}     2    1    3
 
 Test 9: Verify Device License Column Value
     [Documentation]     Checks the Device License column to verify devices consumed the appropriate license or not
@@ -221,8 +221,8 @@ Test 11: Verify Navigator License Revoked Within Global Settings License Managem
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}        2    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}      3    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}        2    0    2
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}      3    0    3
 
 
 *** Keywords ***

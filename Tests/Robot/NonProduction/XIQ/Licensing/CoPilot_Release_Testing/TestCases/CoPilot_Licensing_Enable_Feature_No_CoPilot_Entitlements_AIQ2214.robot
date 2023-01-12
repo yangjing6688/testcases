@@ -37,8 +37,8 @@ ${DUT1_USERNAME}                ${netelem1.username}
 ${DUT1_PASSWORD}                ${netelem1.password}
 ${DUT1_VR}                      ${netelem1.vr}
 
-${PILOT_ENTITLEMENT}            PRD-XIQ-PIL-S-C
-${COPILOT_ENTITLEMENT}          PRD-XIQ-COPILOT-S-C
+${PILOT_ENTITLEMENT}            XIQ-PIL-S-C
+${COPILOT_ENTITLEMENT}          XIQ-COPILOT-S-C
 ${COPILOT_NONE}                 None
 ${PILOT_LICENSE}                Pilot
 
@@ -78,7 +78,7 @@ Test 4: Verify Pilot Baseline License Counts
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
 
 Test 5: Onboard Device and Verify Success
     [Documentation]     Onboards first test device and verifies success
@@ -111,7 +111,7 @@ Test 6: Verify Device Consumes Pilot License Within Global Settings License Mana
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    1
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
 
 Test 7: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify device consumed the pilot license and not a copilot license
@@ -141,7 +141,7 @@ Test 9: Verify Pilot and License Revoked
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
 
 *** Keywords ***
 Log Into XIQ and Set Up Test

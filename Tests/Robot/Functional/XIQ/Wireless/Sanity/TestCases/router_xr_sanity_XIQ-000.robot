@@ -246,7 +246,7 @@ TCCS-7351: Upgrade Latest IQ Engine Router Firmware
 
     Depends On              TCCS-7766_Step1
 
-    ${LATEST_VERSION}=      Upgrade Device To Latest Version        ${router1.serial}
+    ${LATEST_VERSION}=      Upgrade Device       ${router1}
     Should Not Be Equal As Strings      '${LATEST_VERSION}'         '-1'
 
     Sleep                   ${config_push_wait}
