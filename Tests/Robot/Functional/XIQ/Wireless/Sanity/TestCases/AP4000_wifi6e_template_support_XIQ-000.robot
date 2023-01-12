@@ -80,10 +80,7 @@ Step0: Onboard AP
 
     ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
     Should Be Equal As Strings                                      '${STATUS}'       '1'
-    ${STATUS}       Wait Until Device Online                        ${ap1.serial}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    ${STATUS}       Get Device Status                               ${ap1.serial}
-    Should contain any                                              ${STATUS}          green           config audit mismatch
+    Wait_device_online                                              ${ap1}
     [Teardown]      Close Spawn                                     ${AP_SPAWN}
 
 Step1: Verify device template wireless interface wifi0-1-2 details and wired interface details
@@ -175,10 +172,7 @@ Step3: Create and Assign network policy to AP
     Should Be Equal As Strings     '${STATUS}'        '1'
     ${UPDATE}                      Update Network Policy To Ap             ${POLICY}          ${ap1.serial}     Complete
     should be equal as strings     '${UPDATE}'        '1'
-    ${STATUS}                      Wait Until Device Online                ${ap1.serial}
-    Should Be Equal As Strings     '${STATUS}'        '1'
-    ${STATUS}                      Get Device Status                       ${ap1.serial}
-    Should Be Equal As Strings     '${STATUS}'        'green'
+    Wait_device_online             ${ap1}
 
 step4: verify client access and backhaul mesh link support for wifi0-1
     [Documentation]    Get client access and backhaul mesh link support for wifi0-1
@@ -188,7 +182,7 @@ step4: verify client access and backhaul mesh link support for wifi0-1
     &{AP_TEMPLATE_01_WIFI1}   create dictionary     client_access=Enable       backhaul_mesh_link=Enable
     &{AP_TEMPLATE_01}         create dictionary     wifi0_configuration=&{AP_TEMPLATE_01_WIFI0}   wifi1_configuration=&{AP_TEMPLATE_01_WIFI1}
 
-    Set AP Template Wifi      ${AP_TEMP_NAME}       &{AP_TEMPLATE_01}
+    Set AP Template Wifi      ${AP_TEMP_NAME}       ${AP_TEMPLATE_01}
     Navigate To Devices
     sleep             10s
     ${OUT}            get_device_config_audit_delta     ${ap1.mac}
@@ -220,7 +214,7 @@ step5: verify backhaul mesh link support for wifi0-1
     &{AP_TEMPLATE_02_WIFI1}   create dictionary     client_access=Disable      backhaul_mesh_link=Enable
     &{AP_TEMPLATE_02}         create dictionary     wifi0_configuration=&{AP_TEMPLATE_02_WIFI0}   wifi1_configuration=&{AP_TEMPLATE_02_WIFI1}
 
-    Set AP Template Wifi      ${AP_TEMP_NAME}           &{AP_TEMPLATE_02}
+    Set AP Template Wifi      ${AP_TEMP_NAME}           ${AP_TEMPLATE_02}
     Navigate To Devices
     sleep             10s
     ${OUT}            get_device_config_audit_delta     ${ap1.mac}
@@ -234,7 +228,7 @@ step5: verify backhaul mesh link support for wifi0-1
 #    &{AP_TEMPLATE_03_WIFI2}   create dictionary     client_access=Disable   backhaul_mesh_link=Disable   sensor=Enable
 #    &{AP_TEMPLATE_03}         create dictionary     wifi2_configuration=&{AP_TEMPLATE_03_WIFI2}
 #
-#    Set AP Template Wifi        ${AP_TEMP_NAME}         &{AP_TEMPLATE_03}
+#    Set AP Template Wifi        ${AP_TEMP_NAME}         ${AP_TEMPLATE_03}
 #    Navigate To Devices
 #    sleep             10s
 #    ${OUT}            get_device_config_audit_delta     ${ap1.mac}
@@ -246,7 +240,8 @@ step7: Verify 6 GHz Dual (Client Access & Backhaul Mesh) mode on wifi2 interface
     Depends On         Step3
     &{AP_TEMPLATE_04_WIFI2}   create dictionary     client_access=Enable   backhaul_mesh_link=Enable   sensor=Disable
     &{AP_TEMPLATE_04}         create dictionary     wifi2_configuration=&{AP_TEMPLATE_04_WIFI2}
-    Set AP Template Wifi      ${AP_TEMP_NAME}       &{AP_TEMPLATE_04}
+
+    Set AP Template Wifi      ${AP_TEMP_NAME}       ${AP_TEMPLATE_04}
     Navigate To Devices
     Revert Device to Template                       ${ap1.serial}
     sleep             10s
@@ -268,3 +263,10 @@ Pre_condition
 Post_condition
     Logout User
     Quit Browser
+
+Wait_device_online
+    [Arguments]    ${ap}
+    ${STATUS}                       Wait Until Device Online    ${ap}[serial]
+    Should Be Equal As Strings      '${STATUS}'    '1'
+    ${STATUS}                       Get Device Status           ${ap}[serial]
+    Should contain any              ${STATUS}      green        config audit mismatch

@@ -18,8 +18,11 @@
 &{PSK_KEY_ENCRYPTION_00}        key_management=WPA2-(WPA2 Personal)-PSK    encryption_method=CCMP (AES)    key_type=ASCII Key   key_value=aerohive
 &{USER_PROFILE_00}              profile_name=up_105       vlan_name=vlan_105      vlan_id=105     classification_rule_name=up105_location0     description=building_02_floor_04
 &{USER_PROFILE_01}              profile_name=up_104       vlan_name=vlan_104      vlan_id=104     classification_rule_name=up104_location1     description=building_02_floor_02
-&{USER_PROFILE_02}              profile_name=up_103       vlan_name=vlan_103      vlan_id=103     assignment_rule=building3_floor3
-&{USER_PROFILE_03}              profile_name=up_101       vlan_name=vlan_101      vlan_id=101     assignment_rule=building1_floor1
+&{USER_PROFILE_02}              profile_name=up_103       vlan_name=vlan_103      vlan_id=103     assignment_rule=&{USER_PROFILE_LOC_02}
+&{USER_PROFILE_03}              profile_name=up_101       vlan_name=vlan_101      vlan_id=101     assignment_rule=&{USER_PROFILE_LOC_03}
+
+&{USER_PROFILE_LOC_02}          name=building_03_floor_03_rule      description=building_03_floor_03
+&{USER_PROFILE_LOC_03}          name=building_01_floor_01_rule      description=building_01_floor_01
 
 &{LOC_TEST_00}          country_node=auto_location_01     loc_node=Santa Clara     building_node=building_02    floor_node=floor_04
 &{LOC_TEST_01}          country_node=auto_location_01     loc_node=Santa Clara     building_node=building_02    floor_node=floor_02
@@ -81,10 +84,7 @@ Step0: Onboard AP
 
     ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
     Should Be Equal As Strings                                      '${STATUS}'       '1'
-    ${STATUS}       Wait Until Device Online                        ${ap1.serial}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    ${STATUS}       Get Device Status                               ${ap1.serial}
-    Should contain any                                              ${STATUS}          green           config audit mismatch
+    Wait_device_online                                              ${ap1}
     [Teardown]      Close Spawn                                     ${AP_SPAWN}
 
 Step1: Create Policy
@@ -99,7 +99,6 @@ Step1: Create Policy
     Set To Dictionary              ${WIRELESS_PESRONAL_00}         ssid_name=${SSID_00}
     Set To Dictionary              ${WIRELESS_PESRONAL_01}         ssid_name=${SSID_01}
 
-
     ${STATUS}                      Add Classification Rule with Location      ${USER_PROFILE_00}[classification_rule_name]   ${USER_PROFILE_00}[description]   ${LOC_TEST_00}
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      Add Classification Rule with Location      ${USER_PROFILE_01}[classification_rule_name]   ${USER_PROFILE_01}[description]   ${LOC_TEST_01}
@@ -110,13 +109,13 @@ Step1: Create Policy
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      Add Classification Rule to User Profile    ${USER_PROFILE_00}[profile_name]   ${USER_PROFILE_01}[vlan_id]     ${USER_PROFILE_01}[classification_rule_name]
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      create network policy if does not exist            ${POLICY}         &{WIRELESS_PESRONAL_00}
+    ${STATUS}                      create network policy if does not exist            ${POLICY}         ${WIRELESS_PESRONAL_00}
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      create ssid to policy                              ${POLICY}         &{WIRELESS_PESRONAL_01}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      Apply Different User Profile to Various Clients    ${SSID_01}        &{USER_PROFILE_02}
+    ${STATUS}                      Apply Different User Profile to Various Clients    ${SSID_01}        ${USER_PROFILE_02}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      Apply Different User Profile to Various Clients    ${SSID_01}        &{USER_PROFILE_03}
+    ${STATUS}                      Apply Different User Profile to Various Clients    ${SSID_01}        ${USER_PROFILE_03}
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      add ap template from common object                 ${ap1.model}      ${AP_TEMP_NAME}      ${AP_TEMPLATE_1}
     Should Be Equal As Strings     '${STATUS}'        '1'
@@ -129,10 +128,7 @@ Step2: Assign network policy with VLANs to AP1
     Depends On          Step1
     ${UPDATE}                      Update Network Policy To Ap     ${POLICY}     ${ap1.serial}    Complete
     should be equal as strings     '${UPDATE}'        '1'
-    ${STATUS}                      Wait Until Device Online                ${ap1.serial}
-    Should Be Equal As Strings     '${STATUS}'        '1'
-    ${STATUS}                      Get Device Status                       ${ap1.serial}
-    Should Be Equal As Strings     '${STATUS}'        'green'
+    Wait_device_online                                             ${ap1}
 
 Step3: Verify (105) cli user-profile attr and ssid security object attr - Default User Profile
     [Documentation]     Verify (105) cli user-profile attr and ssid security object attr - Default User Profile
@@ -241,17 +237,19 @@ Post_condition
 
 Change_ap_location_and_update
     [Arguments]    ${ap}   ${location}
-    ${STATUS}                      Assign Location With Device Actions    ${ap1}[serial]   ${location}
+    ${STATUS}                      Assign Location With Device Actions    ${ap}[serial]   ${location}
     Should Be Equal As Strings     '${STATUS}'     '1'
-    Update_policy_to_ap            ${ap}
+    ${STATUS}                      update device delta configuration      ${ap}[serial]
+    Should Be Equal As Strings     '${STATUS}'     '1'
+    Wait_device_online             ${ap}
     clear_ap_auth_user_profile     ${ap}
 
-Update_policy_to_ap
+Wait_device_online
     [Arguments]    ${ap}
-    update device delta configuration    ${ap}[serial]
-    Wait Until Device Online             ${ap}[serial]
-    ${AP_STATUS}                         Get AP Status     ap_mac=${ap}[mac]
-    Should Be Equal As Strings           '${AP_STATUS}'    'green'
+    ${STATUS}                       Wait Until Device Online    ${ap}[serial]
+    Should Be Equal As Strings      '${STATUS}'    '1'
+    ${STATUS}                       Get Device Status           ${ap}[serial]
+    Should contain any              ${STATUS}      green        config audit mismatch
 
 Clear_ap_auth_user_profile
     [Arguments]    ${ap}
