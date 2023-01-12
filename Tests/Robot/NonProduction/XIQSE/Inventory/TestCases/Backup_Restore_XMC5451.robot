@@ -44,19 +44,19 @@ ${OPS_PANEL_RESTORE}        Configuration Restore - Operation Complete
 *** Test Cases ***
 Test 1: Create Backup Configuration and Confirm Success
     [Documentation]     Confirms a backup configuration archive can be created
-    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test1
+    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test1    stacking
 
     Create Backup Configuration and Confirm Success     ${DUT_IP}
 
 Test 2: Confirm Operations Panel Message - Retrieved
     [Documentation]     Confirms the operations panel contains the expected message
-    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test2
+    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test2    stacking
 
     Confirm Operations Panel Message For Type      Inventory Audit  ${OPS_PANEL_RETRIEVED}
 
 Test 3: Confirm Events - Backup Configuration
     [Documentation]     Confirms the events view contains the expected event
-    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test3
+    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test3    stacking
 
     Navigate to Events and Confirm Success
     Set Event Time Range and Confirm Success        Last 30 Minutes
@@ -68,26 +68,26 @@ Test 3: Confirm Events - Backup Configuration
 
 Test 4: Navigate and Restore Configuration
     [Documentation]     Confirms a restore configuration archive can be created
-    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test4
+    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test4    stacking
 
     Navigate and Restore Configuration       ${DUT_IP}  ${SITE_ENGINE_ARCHIVE}
 
 Test 5: Verify Device Is Up After Restore
     [Documentation]     Confirms device status is up after restore
-    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test5
+    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test5    stacking
 
     Navigate to Devices and Confirm Success
     Confirm Device Status Up          ${DUT_IP}
 
 Test 6: Confirm Operations Panel Message - Restore
     [Documentation]     Confirms the operations panel contains the expected message
-    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test6
+    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test6    stacking
 
     Confirm Operations Panel Message For Type      Inventory Audit  ${OPS_PANEL_RESTORE}
 
 Test 7: Confirm Events - Restore Configuration
     [Documentation]     Confirms the events view contains the expected event
-    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test7
+    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test7    stacking
 
     Navigate to Events and Confirm Success
     Set Event Search String and Confirm Success     Configuration Restore
@@ -97,7 +97,7 @@ Test 7: Confirm Events - Restore Configuration
 
 Test 8: Delete Archive and Confirm Success
     [Documentation]     Confirms an archive can be deleted
-    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test8
+    [Tags]              nightly1    tcxe_868    xmc_5451    development    xiqse    acceptance    inventory    backup    restore    test8    stacking
 
     Navigate and Delete Archive     ${TEST_ARCHIVE}
 
@@ -114,6 +114,7 @@ Log In and Set Up Test
     Set Option Device Tree Name Format and Confirm Success     IP Address
     Disable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
     Onboard XIQSE To XIQ If In Connected Mode        ${INSTALL_MODE}  ${XIQSE_IP_ADDRESS}  ${XIQ_EMAIL}  ${XIQ_PASSWORD}
+    Clear Operations Panel and Confirm Success
     Navigate and Create Device                       ${DUT_IP}  ${DUT_PROFILE}
     Clear Operations Panel and Confirm Success
 

@@ -78,7 +78,7 @@ TCCS-7651_Step3: AP upgrade to lastest version
 
     Depends On          TCCS-7651_Step2
 
-    ${LATEST_VERSION}=      Upgrade Device To Latest Version            ${ap1.serial}
+    ${LATEST_VERSION}=      Upgrade Device            ${ap1}
     Should Not be Empty     ${LATEST_VERSION}
 
     Sleep                   ${ap_reboot_wait}

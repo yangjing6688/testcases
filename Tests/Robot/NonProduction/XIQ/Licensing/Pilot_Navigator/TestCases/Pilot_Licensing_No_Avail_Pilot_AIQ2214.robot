@@ -64,7 +64,7 @@ ${DUT4_USERNAME}            ${netelem4.username}
 ${DUT4_PASSWORD}            ${netelem4.password}
 ${DUT4_VR}                  ${netelem4.vr}
 
-${PILOT_ENTITLEMENT}        PRD-XIQ-PIL-S-C
+${PILOT_ENTITLEMENT}        XIQ-PIL-S-C
 ${PILOT_LICENSE}            Pilot
 
 ${COLUMN_1}                 Managed
@@ -78,7 +78,7 @@ Test 1: Verify Pilot Baseline License Counts
     [Documentation]     Confirms Pilot license count is at expected value in XIQ to begin with (nothing consumed)
     [Tags]              tccs-13549    pilot_release_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
 
 Test 2: Onboard First Device and Verify Success
     [Documentation]     Onboards first test device and verifies success
@@ -111,7 +111,7 @@ Test 3: Verify First Device Consumes Pilot License Within Global Settings Licens
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    1
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
 
 Test 4: Onboard Second Test Device and Verify Success
     [Documentation]     Onboards a second test device and verifies success
@@ -141,7 +141,7 @@ Test 5: Verify Second Device Consumes Pilot License Within Global Settings Licen
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       1    2    2
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       1    2    3
 
 Test 6: Onboard Third Test Device and Verify Success
     [Documentation]     Onboards a third test device and verifies success
@@ -231,7 +231,7 @@ Test 12: Verify All Pilot Licenses Revoked
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
 
 
 *** Keywords ***

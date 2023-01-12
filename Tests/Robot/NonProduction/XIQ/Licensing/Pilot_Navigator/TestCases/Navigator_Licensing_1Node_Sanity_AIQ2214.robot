@@ -36,7 +36,7 @@ ${DUT_USERNAME}             ${netelem1.username}
 ${DUT_PASSWORD}             ${netelem1.password}
 ${DUT_VR}                   ${netelem1.vr}
 
-${NAV_ENTITLEMENT}          PRD-XIQ-NAV-S-C
+${NAV_ENTITLEMENT}          XIQ-NAV-S-C
 ${NAV_LICENSE}              Navigator
 
 ${COLUMN_1}                 Managed
@@ -50,7 +50,7 @@ Test 1: Verify Navigator Baseline License Count
     [Documentation]     Confirms navigator license count is at expected value in XIQ to begin with (nothing consumed)
     [Tags]              tccs-13510    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       2    0    2
 
 Test 2: Onboard Device and Verify Success
     [Documentation]     Onboards test device and verifies success
@@ -83,7 +83,7 @@ Test 3: Verify Device Consumes Navigator License Within Global Settings License 
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       1    1    1
+    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       1    1    2
 
 Test 4: Verify Device License Column Value
     [Documentation]     Confirms the Device License column to verify device consumed the appropriate license or not
@@ -109,7 +109,7 @@ Test 6: Verify Navigator License Revoked Within Global Settings License Manageme
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       2   0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       2   0    2
 
 
 *** Keywords ***

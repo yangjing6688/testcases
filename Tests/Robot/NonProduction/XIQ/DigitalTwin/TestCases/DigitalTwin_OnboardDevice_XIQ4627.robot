@@ -18,23 +18,26 @@
 #                   TCXM-21617 - Digital Twin - Disable the feature using the "Soft Launch" URL
 
 *** Settings ***
-Resource         ../../DigitalTwin/Resources/AllResources.robot
-Variables    TestBeds/${TESTBED}
-Variables    Environments/${TOPO}
-Variables    Environments/${ENV}
+Resource        ../../DigitalTwin/Resources/AllResources.robot
 
-Suite Setup      Log In and Set Up Test
-Suite Teardown   Tear Down Test and Close Session
+Force Tags      testbed_2_node
+
+Variables       TestBeds/${TESTBED}
+Variables       Environments/${TOPO}
+Variables       Environments/${ENV}
+
+Suite Setup     Log In and Set Up Test
+Suite Teardown  Tear Down Test and Close Session
 
 
 *** Variables ***
-${XIQ_URL}                  ${test_url}
-${XIQ_USER}                 ${tenant_username}
-${XIQ_PASSWORD}             ${tenant_password}
-${LOCATION}                 ${netelem1.location}
+${XIQ_URL}                     ${test_url}
+${XIQ_USER}                    ${tenant_username}
+${XIQ_PASSWORD}                ${tenant_password}
+${LOCATION}                    ${netelem1.location}
 
-${ENABLE_DT_FEATURE}        ${XIQ_URL}/hm-webapp/?digitalTwin=true#/devices
-${DISABLE_DT_FEATURE}       ${XIQ_URL}/hm-webapp/?digitalTwin=false#/devices
+${ENABLE_DT_FEATURE}           ${XIQ_URL}/hm-webapp/?digitalTwin=true#/devices
+${DISABLE_DT_FEATURE}          ${XIQ_URL}/hm-webapp/?digitalTwin=false#/devices
 
 ${DT_SE_PERSONA}               ${netelem1.digital_twin_persona}
 ${DT_SE_MAKE}                  ${netelem1.make}
@@ -58,6 +61,10 @@ Test 1: Enable Digital Twin Soft Launch Feature
     Navigate to Devices and Confirm Success
     Confirm Digital Twin Feature Is Disabled
     Enable Digital Twin Feature                             ${XIQ_URL}
+    Confirm Digital Twin Feature Is Disabled
+
+    Enable CoPilot Feature and Confirm Success
+    Navigate to Devices and Confirm Success
     Confirm Digital Twin Feature Is Enabled
 
     [Teardown]    Refresh Page
@@ -65,6 +72,8 @@ Test 1: Enable Digital Twin Soft Launch Feature
 Test 2: Onboard Digital Twin Switch Engine Device
     [Documentation]     Onboard "Digital Twin" Switch Engine device.
     [Tags]      tcxm_21215    tcxm_21229    xiq_4627     xiq_6669    development    xiq    digital_twin    test2
+
+    Depends On    Test 1
 
     Navigate to Devices and Confirm Success
 
@@ -94,6 +103,8 @@ Test 3: Onboard Digital Twin Fabric Engine Device
     [Documentation]     Onboard "Digital Twin" Fabric Engine device.
     [Tags]      tcxm_21216   tcxm_21229    xiq_4627   xiq_6669    development    xiq    digital_twin    test3
 
+    Depends On    Test 1
+
     Navigate to Devices and Confirm Success
 
     ${ONBOARD_FE_RESULT}=      onboard device quick         ${netelem2}
@@ -122,6 +133,8 @@ Test 4: Shutdown Digital Twin Device
     [Documentation]     Shutdown "Digital Twin" devices and verify Actions menu options.
     [Tags]      tcxm_21230   tcxm_21229    xiq_4627   xiq_6669    development    xiq    digital_twin    test4
 
+    Depends On    Test 2    Test 3
+
     Navigate to Devices and Confirm Success
     Select Device Rows                                      device_serials=${DT_SE_SERIAL},${DT_FE_SERIAL}
     Confirm Actions Relaunch Digital Twin Option Hidden
@@ -140,6 +153,8 @@ Test 4: Shutdown Digital Twin Device
 Test 5: Relaunch Digital Twin Device
     [Documentation]     Relaunch "Digital Twin" devices and verify Actions menu options.
     [Tags]      tcxm_21275   tcxm_21229    xiq_4627     xiq_6669    development    xiq    digital_twin    test5
+
+    Depends On    Test 2    Test 3
 
     Navigate to Devices and Confirm Success
     Select Device Rows                                      device_serials=${DT_SE_SERIAL},${DT_FE_SERIAL}
@@ -162,9 +177,15 @@ Test 6: Disable Digital Twin Soft Launch Feature
     [Documentation]     Disables the "Digital Twin" soft-launch feature. (Required for 22R4 & 22R5)
     [Tags]      tcxm_21617   xiq_4627     xiq_6669    development    xiq    digital_twin    test6
 
+    Depends On    Test 1
+
     Navigate to Devices and Confirm Success
     Confirm Digital Twin Feature Is Enabled
     Disable Digital Twin Feature                            ${XIQ_URL}
+    Confirm Digital Twin Feature Is Enabled
+
+    Disable CoPilot Feature and Confirm Success
+    Navigate to Devices and Confirm Success
     Confirm Digital Twin Feature Is Disabled
 
     [Teardown]    Refresh Page
@@ -174,11 +195,7 @@ Log In and Set Up Test
     [Documentation]     Logs into XIQ and configures pre-requisites for the test
 
     Log Into XIQ and Confirm Success  ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
-
-    Log To Console  >> THIS IS FUTURE TEST SECTION TO SET DEFAULT DEVICE PASSWORD AND EXPRESS POLICY
-    # Change Device Password and Confirm Success      ${DEFAULT_DEVICE_PWD}
-    # Create Open Express Policy and Confirm Success  ${POLICY_NAME}  ${SSID_NAME}
-
+    Disable CoPilot Feature and Confirm Success
     Navigate to Devices and Confirm Success
 
 Tear Down Test and Close Session

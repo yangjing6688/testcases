@@ -34,8 +34,8 @@ ${DUT_USERNAME}             ${netelem1.username}
 ${DUT_PASSWORD}             ${netelem1.password}
 ${DUT_VR}                   ${netelem1.vr}
 
-${PILOT_ENTITLEMENT}        PRD-XIQ-PIL-S-C
-${COPILOT_ENTITLEMENT}      PRD-XIQ-COPILOT-S-C
+${PILOT_ENTITLEMENT}        XIQ-PIL-S-C
+${COPILOT_ENTITLEMENT}      XIQ-COPILOT-S-C
 ${COPILOT_ACTIVE}           Active
 ${COPILOT_NONE}             None
 ${PILOT_LICENSE}            Pilot
@@ -51,8 +51,8 @@ Test 1: Verify Pilot and CoPilot Baseline License Counts
     [Documentation]     Confirms license counts are at expected values in XIQ to begin with (nothing consumed)
     [Tags]              tcxm-20884    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 Test 2: Onboard Device and Verify Success
     [Documentation]     Onboards test device and verifies success
@@ -85,8 +85,8 @@ Test 3: Verify Device Consumes Pilot and CoPilot License Within Global Settings 
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    1
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    1
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    2
 
 Test 4: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify device consumed the appropriate license or not
@@ -120,8 +120,8 @@ Test 6: Verify Unmanaged Device Revokes CoPilot and Pilot Licenses in Global Set
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 Test 7: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns for unmanaged device to verify device revoked the copilot and pilot licenses
@@ -155,8 +155,8 @@ Test 9: Verify Managed Device Consumes Pilot and CoPilot License Within Global S
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    1
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    1
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    2
 
 Test 10: Verify Managed Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify device consumed the appropriate license or not
@@ -186,8 +186,8 @@ Test 12: Verify Pilot and CoPilot Licenses Revoked Within Global Settings Licens
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 
 *** Keywords ***

@@ -45,7 +45,7 @@ ${OPS_LICENSE_CHECK}        Device License is XIQ_${DUT_LICENSE}
 *** Test Cases ***
 Test 1: Add Device and Confirm Success
     [Documentation]     Confirms a device can be successfuly aded to XIQ-SE
-    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test1
+    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test1    stacking
 
     Navigate and Create Device                          ${DUT_IP}  ${DUT_PROFILE}
     Wait For Operations Panel Operation To Complete     Device Added
@@ -53,7 +53,7 @@ Test 1: Add Device and Confirm Success
 
 Test 2: Verify Operations Panel Operations Complete Successfully
     [Documentation]     Confirms all operations panel operations completed successfully
-    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test2
+    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test2    stacking
 
     Log To Console  >> Confirms Device Poller Completed
     Wait For Operations Panel Operation To Complete     Device Poller
@@ -75,19 +75,19 @@ Test 2: Verify Operations Panel Operations Complete Successfully
 
 Test 3: Verify Device Assigned Correct License
     [Documentation]     Navigates and verifies the device license on the specified device
-    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test3
+    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test3    stacking
 
     Navigate and Confirm Device License                 ${DUT_IP}  ${DUT_LICENSE}
 
 Test 4: Verify Device Statistics Enabled
     [Documentation]     Navigates and verifies the device historical statistics is enabled on the specified device
-    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test4
+    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test4    stacking
 
     Navigate and Confirm Device Historical Statistics       ${DUT_IP}    Collecting Historical
 
 Test 5: Verify Events For Add Device
     [Documentation]     Navigates and confirms the events view contains the expected event for add device
-    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test5
+    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test5    stacking
 
     Navigate to Events and Confirm Success
     Set Event Time Range and Confirm Success            Last 30 Minutes
@@ -98,7 +98,7 @@ Test 5: Verify Events For Add Device
 
 Test 6: Verify Event For Device License
     [Documentation]     Navigates and confirms the events view contains the expected event for device license
-    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test6
+    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test6    stacking
 
     Set Event Search String and Confirm Success         ${DUT_IP}
     Confirm Event Row Contains Text                     Device License is XIQ_${DUT_LICENSE}
@@ -106,41 +106,41 @@ Test 6: Verify Event For Device License
 
 Test 7: Verify Add Actions Register Trap Receiver Successful
     [Documentation]     Navigates to the Devices tab and verifies the trap status on the specified device
-    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test7
+    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test7    stacking
 
     Wait For Operations Panel Operation To Complete     Trap Configuration
     Navigate and Confirm Trap Status                    ${DUT_IP}    ${TRAP_REGISTERED}
 
 Test 8: Verify Add Actions Register Syslog Receiver Successful
     [Documentation]     Navigates to the Devices tab and verifies the syslog status on the specified device
-    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test8
+    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test8    stacking
 
     Wait For Operations Panel Operation To Complete     Syslog Configuration
     Navigate and Confirm Syslog Status                  ${DUT_IP}    ${SYSLOG_REGISTERED}
 
 Test 9: Verify Add Actions Add to Archive Successful
     [Documentation]     Navigates and confirms an archive exists in the Network> Archives tree in XIQ-SE and confirms the action was successful
-    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test9
+    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test9    stacking
 
     Navigate and Confirm Archive Exists In Tree         ${TEST_ARCHIVE}
 
 Text 10: Unregister Trap Receiver and Confirm Success
     [Documentation]     Navigates to the Devices tab and unregisters the trap receiver on the specified device, confirming the status shows unregistered
-    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test10
+    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test10    stacking
 
     Navigate and Unregister Trap Receiver                   ${DUT_IP}
     Navigate and Confirm Trap Status                        ${DUT_IP}    ${TRAP_UNREGISTERED}
 
 Text 11: Unregister Syslog Receiver and Confirm Success
     [Documentation]     Navigates to the Devices tab and unregisters the syslog receiver on the specified device, confirming the status shows unregistered
-    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test11
+    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test11    stacking
 
     Unregister Syslog Receiver and Confirm Success          ${DUT_IP}
     Navigate and Confirm Syslog Status                      ${DUT_IP}    ${SYSLOG_UNREGISTERED}
 
 Test 12: Delete Device and Confirm Success
     [Documentation]     Navigates and deletes the specified device from XIQ-SE and confirms it was removed successfully
-    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test12
+    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test12    stacking
 
     Navigate to Devices and Confirm Success
     Delete Device and Confirm Success                   ${DUT_IP}
@@ -149,7 +149,7 @@ Test 12: Delete Device and Confirm Success
 
 Test 13: Verify Event for Delete Device
     [Documentation]     Navigates and confirms the events view contains the expected event for delete device
-    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test13
+    [Tags]              nightly1    tcxe_951    xmc_5451    development    xiqse    acceptance    inventory    add_delete    test13    stacking
 
     Navigate to Events and Confirm Success
     Set Event Time Range and Confirm Success            Last 30 Minutes

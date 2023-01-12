@@ -100,10 +100,7 @@ Test3: Check AP1 and AP2 Status On UI - TCXM-16059
     Depends On          Test2
     ${aps}=      Create List        ${ap1}        ${ap2}
     FOR    ${ap}    IN    @{aps}
-        ${STATUS}       Wait Until Device Online           ${ap}[serial]
-        Should Be Equal As Strings       '${STATUS}'       '1'
-        ${STATUS}       Get Device Status                  ${ap}[serial]
-        Should contain any               ${STATUS}         green           config audit mismatch
+         Wait_device_online       ${ap}
     END
 
 Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-16059
@@ -126,16 +123,16 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-16059
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2}         wifi0_configuration=${AP_TEMPLATE_CONFIG_2_WIFI0}
 
     ${STATUS}                      create network policy if does not exist            ${POLICY}          ${WIRELESS_PESRONAL_ENT_00}
-    should be equal as strings     '${STATUS}'               '1'
+    Should Be Equal As Strings     '${STATUS}'               '1'
     ${DHCP_STATUS}                 navigate to device config device config dhcp       ${ap1.mac}          enable
-    Should Be Equal As Strings    '${DHCP_STATUS}'           '1'
+    Should Be Equal As Strings     '${DHCP_STATUS}'          '1'
     ${CREATE_AP_TEMPLATE}          add ap template from common object     ${ap1.model}         ${AP_TEMP_NAME}      ${AP_TEMPLATE_CONFIG_1}
     Should Be Equal As Strings     '${CREATE_AP_TEMPLATE}'   '1'
     ${SELECT_AP_TEMPLATE}          add ap template to network policy      ${AP_TEMP_NAME}      ${POLICY}
     Should Be Equal As Strings     '${SELECT_AP_TEMPLATE}'   '1'
 
-    ${STATUS}                      create network policy if does not exist            ${POLICY_CM}       ${WIRELESS_PESRONAL_CM}
-    should be equal as strings     '${STATUS}'               '1'
+    ${STATUS}                      create network policy if does not exist           ${POLICY_CM}       ${WIRELESS_PESRONAL_CM}
+    Should Be Equal As Strings     '${STATUS}'               '1'
     ${CREATE_AP_TEMPLATE}          add ap template from common object      ${ap2.model}            ${AP_TEMP_NAME_CM}      ${AP_TEMPLATE_CONFIG_2}
     Should Be Equal As Strings     '${CREATE_AP_TEMPLATE}'   '1'
     ${SELECT_AP_TEMPLATE}          add ap template to network policy       ${AP_TEMP_NAME_CM}      ${POLICY_CM}
@@ -143,17 +140,11 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-16059
 
     ${UPDATE}                      Update Network Policy To Ap    policy_name=${POLICY}       ap_serial=${ap1.serial}     update_method=Complete
     should be equal as strings     '${UPDATE}'               '1'
-    ${STATUS}                      Wait Until Device Online       ${ap1.serial}
-    Should Be Equal As Strings     '${STATUS}'               '1'
-    ${STATUS}                      Get Device Status              ${ap1.serial}
-    Should Be Equal As Strings     '${STATUS}'               'green'
+    Wait_device_online             ${ap1}
 
     ${UPDATE}                      Update Network Policy To Ap    policy_name=${POLICY_CM}    ap_serial=${ap2.serial}     update_method=Complete
     should be equal as strings     '${UPDATE}'               '1'
-    ${STATUS}                      Wait Until Device Online       ${ap2.serial}
-    Should Be Equal As Strings     '${STATUS}'               '1'
-    ${STATUS}                      Get Device Status              ${ap2.serial}
-    Should Be Equal As Strings     '${STATUS}'               'green'
+    Wait_device_online             ${ap2}
 
 Test5: Setup WIFI on STA2 and Connect to AP2 - TCXM-16059
     [Documentation]     Setup WIFI on STA2 and Connect to AP2 on Client Mode
@@ -171,6 +162,13 @@ Test6: Verify Connection - TCXM-16059
     Verify station            ${mu1}     ${AP_TEMPLATE_CONFIG_2}[wifi0_configuration][client_mode_profile][dhcp_server_scope]
 
 *** Keywords ***
+Wait_device_online
+    [Arguments]    ${ap}
+    ${STATUS}                       Wait Until Device Online    ${ap}[serial]
+    Should Be Equal As Strings      '${STATUS}'    '1'
+    ${STATUS}                       Get Device Status           ${ap}[serial]
+    Should contain any              ${STATUS}      green        config audit mismatch
+
 Setup AP in Client Mode
     [Arguments]     ${ap}
     ${spawn}	        Open Spawn         ${ap}[console_ip]    ${ap}[console_port]    ${ap}[username]	 ${ap}[password]    AH-XR    connection_method=console

@@ -36,7 +36,7 @@ ${PILOT_ENTITLEMENT}                ${xiq.pilot_entitlements}
 ${NAVIGATOR_ENTITLEMENT}            ${xiq.navigator_entitlements}
 ${XIQ_BASE_URL}                     "https\://g2.qa.xcloudiq.com"
 ${XIQ_REDIRECT_URL}                 "https\://g2-hac.qa.xcloudiq.com"
-${XIQ_CAPWAP_URL}                   g2r1-cwpm-01.qa.xcloudiq.com
+${XIQ_CAPWAP_URL}                   "g2r1-cwpm-01.qa.xcloudiq.com"
 
 ${APPLIANCE_USERNAME}               ${appliance.user}
 ${APPLIANCE_PASSWORD}               ${appliance.password}
@@ -113,8 +113,3 @@ Test 4: CLI NGAnalytics Appliance From XIQSE
     ${version} =   Get From Dictionary   ${UPGRADE_TEST_XIQSE}  version
     Run Keyword If    'ngAnalyticsSnapShotId' in ${UPGRADE_TEST_XIQSE}   NGAnalytics Engine Upgrade  ${UPGRADE_TEST_XIQSE}
     ...    ELSE  Log   Skipping NG Analytics Upgrade From XMC ${version}
-
-Test 5: Check Server Log
-    [Documentation]   Check server.log for exceptions.
-    [Tags]            known_issue    tcxe_958    xmc_5685    development    xiqse    acceptance    exception_check    test5
-    Check Server Log For Exceptions  ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}

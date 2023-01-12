@@ -100,10 +100,7 @@ Test3: Check AP1 and AP2 Status On UI - TCXM-16059
     Depends On          Test2
     ${aps}=      Create List        ${ap1}        ${ap2}
     FOR    ${ap}    IN    @{aps}
-        ${STATUS}       Wait Until Device Online           ${ap}[serial]
-        Should Be Equal As Strings       '${STATUS}'       '1'
-        ${STATUS}       Get Device Status                  ${ap}[serial]
-        Should contain any               ${STATUS}         green           config audit mismatch
+         Wait_device_online       ${ap}
     END
 
 Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-16059
@@ -143,17 +140,11 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-16059
 
     ${UPDATE}                      Update Network Policy To Ap    policy_name=${POLICY}       ap_serial=${ap1.serial}     update_method=Complete
     should be equal as strings     '${UPDATE}'               '1'
-    ${STATUS}                      Wait Until Device Online       ${ap1.serial}
-    Should Be Equal As Strings     '${STATUS}'               '1'
-    ${STATUS}                      Get Device Status              ${ap1.serial}
-    Should Be Equal As Strings     '${STATUS}'               'green'
+    Wait_device_online             ${ap1}
 
     ${UPDATE}                      Update Network Policy To Ap    policy_name=${POLICY_CM}    ap_serial=${ap2.serial}     update_method=Complete
     should be equal as strings     '${UPDATE}'               '1'
-    ${STATUS}                      Wait Until Device Online       ${ap2.serial}
-    Should Be Equal As Strings     '${STATUS}'               '1'
-    ${STATUS}                      Get Device Status              ${ap2.serial}
-    Should Be Equal As Strings     '${STATUS}'               'green'
+    Wait_device_online             ${ap2}
 
 Test5: Setup WIFI on STA2 and Connect to AP2 - TCXM-16059
     [Documentation]     Setup WIFI on STA2 and Connect to AP2 on Client Mode
@@ -171,6 +162,13 @@ Test6: Verify Connection - TCXM-16059
     Verify station            ${mu1}     ${AP_TEMPLATE_CONFIG_2}[wifi1_configuration][client_mode_profile][dhcp_server_scope]
 
 *** Keywords ***
+Wait_device_online
+    [Arguments]    ${ap}
+    ${STATUS}                       Wait Until Device Online    ${ap}[serial]
+    Should Be Equal As Strings      '${STATUS}'    '1'
+    ${STATUS}                       Get Device Status           ${ap}[serial]
+    Should contain any              ${STATUS}      green        config audit mismatch
+
 Setup AP in Client Mode
     [Arguments]     ${ap}
     ${spawn}	        Open Spawn         ${ap}[console_ip]    ${ap}[console_port]    ${ap}[username]	 ${ap}[password]    AH-XR    connection_method=console

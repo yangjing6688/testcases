@@ -61,8 +61,8 @@ ${NAV3_SERIAL}            ${netelem6.serial}
 ${PILOT_ENTITLEMENT}      ${xiq.pilot_entitlements}
 ${NAVIGATOR_ENTITLEMENT}  ${xiq.navigator_entitlements}
 
-${PILOT_LICENSE}          PRD-XIQ-PIL-S-C
-${NAVIGATOR_LICENSE}      PRD-XIQ-NAV-S-C
+${PILOT_LICENSE}          XIQ-PIL-S-C
+${NAVIGATOR_LICENSE}      XIQ-NAV-S-C
 
 ${NAV_SITE}               AutoSiteNavigators
 ${PILOT_SITE}             AutoSitePilots

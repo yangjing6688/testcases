@@ -54,8 +54,8 @@ ${DUT3_USERNAME}            ${netelem3.username}
 ${DUT3_PASSWORD}            ${netelem3.password}
 ${DUT3_VR}                  ${netelem3.vr}
 
-${PILOT_ENTITLEMENT}        PRD-XIQ-PIL-S-C
-${COPILOT_ENTITLEMENT}      PRD-XIQ-COPILOT-S-C
+${PILOT_ENTITLEMENT}        XIQ-PIL-S-C
+${COPILOT_ENTITLEMENT}      XIQ-COPILOT-S-C
 ${COPILOT_ACTIVE}           Active
 ${COPILOT_NONE}             None
 ${PILOT_LICENSE}            Pilot
@@ -71,8 +71,8 @@ Test 1: Verify Pilot and CoPilot Baseline License Counts
     [Documentation]     Confirms license counts are at expected values in XIQ to begin with (nothing consumed)
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 Test 2: Onboard First Test Device and Verify Success
     [Documentation]     Onboards test device and verifies success
@@ -127,7 +127,7 @@ Test 4: Verify Devices Consume Pilot and CoPilot License Within Global Settings 
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       1    2    2
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       1    2    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     0    2    2
 
 Test 5: Verify Device License and CoPilot Column Values
@@ -170,8 +170,8 @@ Test 7: Verify Unmanaged Device Revokes Both CoPilot and Pilot Licenses in Globa
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    1
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    1
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    2
 
 Test 8: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns for unmanaged device to verify device revoked the copilot and pilot licenses
@@ -223,7 +223,7 @@ Test 10: Verify Third Device Consumes Pilot and CoPilot License Within Global Se
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       1    2    2
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       1    2    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     0    2    2
 
 Test 11: Verify Device License and CoPilot Column Values
@@ -275,8 +275,8 @@ Test 13: Verify All Pilot and CoPilot License Revoked
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 Test 14: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns for unmanaged device to verify device revoked the copilot and pilot licenses
@@ -367,8 +367,8 @@ Test 19: Verify All Pilot and CoPilot Licenses Revoked Within Global Settings Li
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 
 *** Keywords ***

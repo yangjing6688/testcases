@@ -11,6 +11,7 @@
 Library     xiqse/flows/common/XIQSE_CommonNavigator.py
 Library     xiqse/flows/network/devices/XIQSE_NetworkDevices.py
 Library     xiqse/flows/network/devices/devices/XIQSE_NetworkDevicesDevices.py
+Library     common/Cli.py
 
 
 *** Keywords ***
@@ -71,7 +72,7 @@ Create Status Only Device and Confirm Success
     Should Be Equal As Integers                         ${add_result}      1
 
     # Wait until the Operations panel shows the add operation is completed
-    ${wait_result}=  XIQSE Wait Until Device Add Operation Complete   retry_duration=10  retry_count=30
+    ${wait_result}=  XIQSE Wait Until Device Add Operation Complete   retry_duration=10  retry_count=6
     Should Be Equal As Integers         ${wait_result}   1
 
     # Make sure we didn't get a license limit banner
@@ -90,7 +91,7 @@ Add Device and Wait for Device Add Operation to Complete
     Should Be Equal As Integers                         ${add_result}      1
 
     # Wait until the Operations panel shows the add operation is completed
-    ${wait_result}=  XIQSE Wait Until Device Add Operation Complete   retry_duration=10  retry_count=30
+    ${wait_result}=  XIQSE Wait Until Device Add Operation Complete   retry_duration=30  retry_count=30
     Should Be Equal As Integers         ${wait_result}   1
 
 Add Device and Wait for Operation to Complete
@@ -128,6 +129,13 @@ Set Device Profile and Confirm Success
 
     ${result}=  XIQSE Device Set Profile    ${ip}    ${profile}
     Should Be Equal As Integers             ${result}       1
+
+Rediscover Device and Confirm Success
+    [Documentation]     Rediscovers the specified device and confirms the action was successful
+    [Arguments]         ${ip}
+
+    ${result}=  XIQSE Perform Rediscover Device   ${ip}
+    Should Be Equal As Integers                ${result}
 
 Restart Device and Confirm Success
     [Documentation]     Restarts the specified device and confirms the action was successful
@@ -277,3 +285,11 @@ Confirm Device License
 
     ${returned_value}=  XIQSE Get Device License       ${device_ip}
     Should Be Equal As Strings             ${returned_value}    ${expected_value}    ignore_case=True
+
+Update SIM Device MIB File
+    [Documentation]  Logs into a SNMP simulator and swaps out the mib file representing the device
+    [Arguments]  ${ip}  ${user}  ${password}   ${folder}   ${from_file}    ${to_file}    ${ssh_port}
+
+    ${sshSession} =    open_paramiko_ssh_spawn  ${ip}  ${user}  ${password}  ${ssh_port}
+    ${output} =  Send Paramiko CMD        ${sshSession}  cp ${folder}/${from_file} ${folder}/${to_file}  60
+    Log  ${output}

@@ -28,8 +28,8 @@ ${DEVICE_TYPE}              XR600
 ${MODEL}                    XR600
 ${SIMULATED_COUNT}          1
 
-${PILOT_ENTITLEMENT}        PRD-XIQ-PIL-S-C
-${COPILOT_ENTITLEMENT}      PRD-XIQ-COPILOT-S-C
+${PILOT_ENTITLEMENT}        XIQ-PIL-S-C
+${COPILOT_ENTITLEMENT}      XIQ-COPILOT-S-C
 ${COPILOT_NONE}             None
 ${PILOT_NONE}               Not Required
 
@@ -45,8 +45,8 @@ Test 1: Verify Pilot and CoPilot Baseline License Counts
     [Documentation]     Confirms license counts are at expected values in XIQ to begin with (nothing consumed)
     [Tags]              tcxm-21006    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 Test 2: Onboard Device and Verify Success
     [Documentation]     Onboards test device and verifies success
@@ -77,8 +77,8 @@ Test 3: Verify Device Does Not Consume Pilot or CoPilot License Within Global Se
     Log To Console  Sleeping for 10 minutes to wait for the maximum 10 minute license update to come in
     Count Down in Minutes  10
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 Test 4: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify device consumed the appropriate license or not
@@ -108,8 +108,8 @@ Test 6: Verify Pilot and CoPilot Licenses Revoked Within Global Settings License
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
-    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 
 *** Keywords ***

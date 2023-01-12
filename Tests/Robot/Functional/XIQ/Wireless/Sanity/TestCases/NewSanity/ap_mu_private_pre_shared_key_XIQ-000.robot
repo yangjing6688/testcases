@@ -81,10 +81,6 @@ Suite Setup
     Base Test Suite Setup
     Set Global Variable     ${MAIN_DEVICE_SPAWN}            ${device1.name}
 
-    # Downgrade the device if needed
-    ${DOWNGRADE_RESULT}=        Downgrade IQAgent           ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
-    Should Be Equal As Integers     ${DOWNGRADE_RESULT}     1
-
     ${LOGIN_RESULT}=            Login User                  ${tenant_username}      ${tenant_password}      check_warning_msg=True
     Should Be Equal As Integers     ${LOGIN_RESULT}         1
 
@@ -115,6 +111,10 @@ Suite Setup
     ${DEVICE_STATUS}=       Get Device Status           device_mac=${device1.mac}
     Should Contain Any              ${DEVICE_STATUS}    green   config audit mismatch
 
+    # Upgrade the device to latest/supported version to avoid config push issues.
+    ${LATEST_VERSION}=      Upgrade Device      ${device1.serial}
+    Should Not be Empty     ${LATEST_VERSION}
+    
     ${DELETE_POLICIES_RESULT}=      Delete Network Polices          ${OPEN_POLICY}      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
     Should Be Equal As Integers     ${DELETE_POLICIES_RESULT}           1
 
@@ -143,15 +143,6 @@ Suite Teardown
 
     ${SEARCH_RESULT}=   Search Device               device_serial=${device1.serial}     ignore_cli_feedback=true
     IF  ${SEARCH_RESULT} == 1
-        ${CREATE_POLICY_RESULT}=        Create Network Policy If Does Not Exist     ${OPEN_POLICY}      ${CONFIG_PUSH_OPEN_NW_01}       cli_type=${device1.cli_type}
-        Should Be Equal As Integers     ${CREATE_POLICY_RESULT}             1
-
-        ${UPDATE_POLICY_RESULT}=        Update Network Policy To AP         ${OPEN_POLICY}      ap_serial=${device1.serial}
-        Should Be Equal As Integers     ${UPDATE_POLICY_RESULT}             1
-
-        ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done       device_serial=${device1.serial}
-        Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}                1
-
         ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
         Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
 
@@ -159,14 +150,11 @@ Suite Teardown
         Should Be Equal As Integers     ${DELETE_DEVICE_RESULT}             1
     END
 
-    ${DELETE_POLICIES_RESULT}=      Delete Network Polices          ${OPEN_POLICY}      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
+    ${DELETE_POLICIES_RESULT}=      Delete Network Polices          ${OPEN_POLICY}
     Should Be Equal As Integers     ${DELETE_POLICIES_RESULT}       1
 
-    ${DELETE_SSID_RESULT}=          Delete SSIDs                    ${OPEN_SSID}        ${BULK_CLOUD_NW_SSID}       ${BULK_LOCAL_NW_SSID}
+    ${DELETE_SSID_RESULT}=          Delete SSIDs                    ${OPEN_SSID}
     Should Be Equal As Integers     ${DELETE_SSID_RESULT}           1
-
-    ${DELETE_UG_RESULT}=            Delete User Groups              ${BULK_CLOUD_USER_GROUP}        ${BULK_LOCAL_USER_GROUP}
-    Should Be Equal As Integers     ${DELETE_UG_RESULT}             1
 
     ${LOGOUT_RESULT}=               Logout User
     Should Be Equal As Integers     ${LOGOUT_RESULT}                1

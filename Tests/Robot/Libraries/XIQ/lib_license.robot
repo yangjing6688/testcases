@@ -16,18 +16,18 @@ Library     xiq/flows/common/Navigator.py
 *** Keywords ***
 Confirm Entitlement Counts for Feature Matches Expected
     [Documentation]     Confirms the specified feature in the Entitlements table has the expected counts
-    [Arguments]         ${feature}  ${available}  ${activated}  ${devices}  ${retry_interval}=30  ${retry_count}=40
+    [Arguments]         ${feature}  ${available}  ${activated}  ${total}  ${retry_interval}=30  ${retry_count}=40
 
     # Wait until the entitlement counts match what we expect.
-    ${result}=  Wait Until Entitlement Counts for Feature Matches  ${feature}  ${available}  ${activated}  ${devices}   ${retry_interval}  ${retry_count}
+    ${result}=  Wait Until Entitlement Counts for Feature Matches  ${feature}  ${available}  ${activated}  ${total}   ${retry_interval}  ${retry_count}
     Should Be Equal As Integers  ${result}  1
 
-Confirm Entitlement Device Count for Feature Matches Expected
-    [Documentation]     Confirms the specified feature has the expected number of devices associated with it
+Confirm Entitlement Total Count for Feature Matches Expected
+    [Documentation]     Confirms the specified feature has the expected number of total devices associated with it
     [Arguments]         ${feature}  ${expected}  ${retry_interval}=30  ${retry_count}=40
 
     # Wait until the "Device Count" entitlement value matches what we expect.
-    ${result}=  Wait Until Entitlement Device Count for Feature Matches  ${expected}  feature=${feature}   ${retry_interval}  ${retry_count}
+    ${result}=  Wait Until Entitlement Total Count for Feature Matches  ${expected}  feature=${feature}   ${retry_interval}  ${retry_count}
     Should Be Equal As Integers  ${result}  1
 
 Confirm Entitlement Available Count for Feature Matches Expected

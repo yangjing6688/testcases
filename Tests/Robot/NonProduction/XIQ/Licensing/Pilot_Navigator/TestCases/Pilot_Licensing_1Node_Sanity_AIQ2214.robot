@@ -34,7 +34,7 @@ ${DUT_USERNAME}             ${netelem1.username}
 ${DUT_PASSWORD}             ${netelem1.password}
 ${DUT_VR}                   ${netelem1.vr}
 
-${PILOT_ENTITLEMENT}        PRD-XIQ-PIL-S-C
+${PILOT_ENTITLEMENT}        XIQ-PIL-S-C
 ${PILOT_LICENSE}            Pilot
 
 ${COLUMN_1}                 Managed
@@ -48,7 +48,7 @@ Test 1: Verify Pilot Baseline License Counts
     [Documentation]     Confirms pilot license count is at expected value in XIQ to begin with (nothing consumed)
     [Tags]              tccs-13509    pilot_sanity_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
 
 Test 2: Onboard Device and Verify Success
     [Documentation]     Onboards test device and verifies success
@@ -81,7 +81,7 @@ Test 3: Verify Device Consumes Pilot License Within Global Settings License Mana
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    1
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
 
 Test 4: Verify Device License Column Value
     [Documentation]     Confirms the Device License column to verify device consumed the appropriate license or not
@@ -107,7 +107,7 @@ Test 6: Verify Pilot License Revoked Within Global Settings License Management
 
     Depends On          Test 1
 
-    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    0
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
 
 
 *** Keywords ***

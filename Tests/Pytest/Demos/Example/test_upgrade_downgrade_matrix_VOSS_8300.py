@@ -302,8 +302,8 @@ class xiqTests():
                         archive_name += '.voss'
 
                 print('Archive used for upgrade will be {}:'.format(archive_name))
-                upgrade = self.xiq.xflowsmanageDevices.select_version_and_upgrade_device_to_specific_version(self.tb.dut1.serial, archive_name)
-                if upgrade != 1:
+                upgrade = self.xiq.xflowsmanageDevices.upgrade_device(self.tb.dut1, version=archive_name)
+                if upgrade == -1:
                     pytest.fail('Upgrade to version {} failed'.format(OS_list[i]))
 
                 # Verify the device goes offline, which will happen during the reboot on the device
@@ -388,8 +388,8 @@ class xiqTests():
                             archive_name += '.voss'
 
                     print('Archive used for downgrade will be {}:'.format(archive_name))
-                    downgrade = self.xiq.xflowsmanageDevices.select_version_and_upgrade_device_to_specific_version(self.tb.dut1.serial,archive_name)
-                    if downgrade != 1:
+                    downgrade = self.xiq.xflowsmanageDevices.upgrade_device(self.tb.dut1, version=archive_name)
+                    if downgrade == -1:
                         pytest.fail('Downgrade to version {} failed'.format(startingOS))
 
                     self.xiq.xflowscommonDevices.wait_until_device_offline(self.tb.dut1.serial)

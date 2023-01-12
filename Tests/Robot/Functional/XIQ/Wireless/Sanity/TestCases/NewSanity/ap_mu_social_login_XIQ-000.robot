@@ -81,10 +81,6 @@ Suite Setup
     Base Test Suite Setup
     Set Global Variable     ${MAIN_DEVICE_SPAWN}            ${device1.name}
 
-    # Downgrade the device if needed
-    ${DOWNGRADE_RESULT}=        Downgrade IQAgent           ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
-    Should Be Equal As Integers     ${DOWNGRADE_RESULT}     1
-
     ${LOGIN_RESULT}=            Login User                  ${tenant_username}      ${tenant_password}      check_warning_msg=True
     Should Be Equal As Integers     ${LOGIN_RESULT}         1
 
@@ -114,6 +110,10 @@ Suite Setup
 
     ${DEVICE_STATUS}=       Get Device Status           device_mac=${device1.mac}
     Should Contain Any              ${DEVICE_STATUS}    green   config audit mismatch
+
+    # Upgrade the device to latest/supported version to avoid config push issues.
+    ${LATEST_VERSION}=      Upgrade Device      ${device1.serial}
+    Should Not be Empty     ${LATEST_VERSION}
 
     ${DELETE_CUS_POLICY_RESULT}=    Delete Network Policy           ${NW_POLICY_NAME1}
     Should Be Equal As Integers     ${DELETE_CUS_POLICY_RESULT}         1
@@ -146,15 +146,6 @@ Suite Teardown
 
     ${SEARCH_RESULT}=   Search Device               device_serial=${device1.serial}     ignore_cli_feedback=true
     IF  ${SEARCH_RESULT} == 1
-        ${CREATE_POLICY_RESULT}=        Create Network Policy If Does Not Exist     ${NW_DEFAULT_POLICY}    ${CONFIG_PUSH_OPEN_NW_01}   cli_type=${device1.cli_type}
-        Should Be Equal As Integers     ${CREATE_POLICY_RESULT}             1
-
-        ${UPDATE_POLICY_RESULT}=        Update Network Policy To AP         ${NW_DEFAULT_POLICY}    ap_serial=${device1.serial}
-        Should Be Equal As Integers     ${UPDATE_POLICY_RESULT}             1
-
-        ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done       device_serial=${device1.serial}
-        Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}                1
-
         ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
         Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
 
@@ -207,7 +198,9 @@ TCCS-11614: Social login with facebook
 
     Log to Console      Sleep for ${client_connect_wait} seconds
     Sleep               ${client_connect_wait}
+
     Remote_Server.Connect Open Network      ${NW_POLICY_SSID1}
+
     Log to Console      Sleep for ${client_connect_wait} seconds
     Sleep               ${client_connect_wait}
 
