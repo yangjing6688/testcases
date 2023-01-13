@@ -62,7 +62,7 @@ ${WORLD_SITE}           World
 *** Test Cases ***
 Test 1: Confirm Initial Device Annotation Values in XIQSE are Reflected in XIQ
     [Documentation]     Confirms the initial device annotations in XIQSE are reflected in XIQ
-    [Tags]              nightly2    release_testing    tccs_10318   apc_44684    development    xiqse    xiq_integration    d360    annotations    test1
+    [Tags]              nightly2    stacking    release_testing    tccs_10318   apc_44684    development    xiqse    xiq_integration    d360    annotations    test1
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
     XIQSE Navigate to Devices and Confirm Success
@@ -77,7 +77,7 @@ Test 1: Confirm Initial Device Annotation Values in XIQSE are Reflected in XIQ
 
 Test 2: Confirm Device Annotations Configured in XIQSE are Reflected in XIQ
     [Documentation]     Configures the device annotations in XIQSE and confirms XIQ displays them correctly
-    [Tags]              nightly2    release_testing    known_issue    tccs_10318   apc_44684    development    xiqse    xiq_integration    d360    annotations    test2
+    [Tags]              nightly2    stacking   release_testing    known_issue    tccs_10318   apc_44684    development    xiqse    xiq_integration    d360    annotations    test2
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
     XIQSE Navigate to Devices and Confirm Success
@@ -96,7 +96,7 @@ Test 2: Confirm Device Annotations Configured in XIQSE are Reflected in XIQ
 
 Test 3: Confirm Device Annotations Updated in XIQSE are Reflected in XIQ
     [Documentation]     Resets the device annotations in XIQSE and confirms XIQ displays them correctly
-    [Tags]              nightly2    release_testing    known_issue    tccs_10318   apc_44684    development    xiqse    xiq_integration    d360    annotations    test3
+    [Tags]              nightly2    stacking  release_testing    known_issue    tccs_10318   apc_44684    development    xiqse    xiq_integration    d360    annotations    test3
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
     XIQSE Navigate to Devices and Confirm Success
@@ -129,7 +129,7 @@ Log In and Set Up Test
 
     # Wait until the device added in XIQSE is onboarded to XIQ
     Switch To Window  ${XIQ_WINDOW_INDEX}
-    ${search_result}=  Wait Until Device Added      ${DUT_SERIAL}
+    ${search_result}=  Wait Until Device Added      device_mac=${DUT_MAC}    retry_duration=30    retry_count=20
     Should Be Equal As Integers                     ${search_result}    1
 
 Tear Down Test and Close Session
@@ -181,7 +181,7 @@ Set Up XIQSE Components
     Confirm Serial Number and Set Common Options     ${XIQSE_SERIAL}
 
     # Create the test device
-    Navigate and Create Device      ${DUT_IP}  ${DUT_PROFILE}
+    Navigate and Create Pending Device      ${DUT_IP}  ${DUT_PROFILE}
 
     # Make sure the necessary colunns are displayed
     XIQSE Devices Show Columns    Asset Tag  User Data 1  User Data 2  User Data 3  User Data 4  Notes
