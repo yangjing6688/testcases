@@ -85,7 +85,6 @@ Test suite Cleanup
     ${disconnect_device}=             Disconnect Device From Cloud      ${device1.cli_type}      ${AP_SPAWN}
     should be equal as integers       ${disconnect_device}             1
 
-    ${remove_ap_template}=            Remove AP Template From Network Policy    ${AP_TEMPLATE_NAME}   ${NW_POLICY_NAME}
     ${delete_np}=                     Delete Network Policy                     ${NW_POLICY_NAME}
     should be equal as integers       ${delete_np}                   1
 
