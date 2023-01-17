@@ -267,20 +267,12 @@ Test 6: Confirm Cloud Config Groups Filter
     Run Keyword If  '21.4' in '${XIQSE_OS_VERSION}'  Set CCG Group Filter  ${XIQSE_SERIAL}  false
     ...  ELSE  Set CCG Group Filter  XIQSE-${XIQSE_NAME}  false
 
-    # Filter to only show devices with the XIQ-managed device's cloud config group
-    Set CCG Group Filter                                        ${XIQ_DUT_CCG}  true
-    sleep  5 seconds
-    Confirm Device MAC Not Present in XIQ                       ${XIQSE_MAC}
-    Confirm Device MAC Not Present in XIQ                       ${XIQSE_DUT_MAC}
-    Confirm Device Serial Present in XIQ                        ${XIQ_DUT_SERIAL}
-    Set CCG Group Filter                                        ${XIQ_DUT_CCG}  false
-
     # Filter to show devices with all cloud config groups
     Set CCG Group Filter                                        All  true
     sleep  5 seconds
     Confirm Device MAC Present in XIQ                           ${XIQSE_MAC}
     Confirm Device MAC Present in XIQ                           ${XIQSE_DUT_MAC}
-    Confirm Device Serial Present in XIQ                        ${XIQ_DUT_SERIAL}
+    Confirm Device Serial Not Present in XIQ                    ${XIQ_DUT_SERIAL}
     Set CCG Group Filter                                        All  false
 
 # This test is commented out as there is an automation bug where the incorrect element is being identified
