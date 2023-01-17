@@ -12,7 +12,7 @@ ${Tag}          72XGLN2
 *** Settings ***
 Library     extauto/common/Rest.py
 
-Resource    Tests/Robot/Libraries/XIQ/lib_product_url.robot
+Resource    Tests/Robot/Libraries/XIQ/lib_url_validation.robot
 
 Variables    Environments/${TOPO}
 
