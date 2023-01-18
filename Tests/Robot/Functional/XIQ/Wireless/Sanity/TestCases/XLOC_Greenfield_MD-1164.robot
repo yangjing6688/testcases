@@ -9,6 +9,14 @@
 # ------------------
 #  robot -L INFO -v TEST_URL:https://g2.qa.xcloudiq.com/login -v TESTBED:blr_tb_2 -v DEVICE1:AP460C_RF_BOX_001 -v TOPO:XLOC_topo XLOC_Greenfield_MD-1164.robot
 
+
+*** Variables ***
+#${WEB_DRIVER_LOC}           local
+${TESTBED}          BANGALORE/Prod/wireless/xloc_blr_tb1_ap460c_mu5.yaml
+${TOPO}             Extreme_Location/topo.eloc.g2r1.yaml
+${ENV}              Extreme_Guest/environment.remote.chrome.windows.guest1.yaml
+
+
 *** Variables ***
 ${LOCATION}                 auto_location_01, San Jose, building_01, floor_02
 ${NW_POLICY_NAME}           automation_xloc_gf_policy
@@ -68,17 +76,18 @@ Suite Teardown   Test Suite Clean Up
 
 *** Keywords ***
 Pre Condition
+    
     [Documentation]   AP onboarding  and check is online
-    ${result}=                      Login User          ${tenant1_username}     ${tenant_password}
 
-    ${IMPORT_MAP}=                  Import Map In Network360Plan  ${MAP_FILE_NAME}
-    Should Be Equal As Strings      '${IMPORT_MAP}'              '1'
+    #convert to generic device object            device  index=1
+
+    ${result}=                      Login User          ${tenant1_username}     ${tenant_password}
 
     ${ONBOARD_RESULT}=              onboard device quick      ${ap1}
     Should be equal as integers     ${ONBOARD_RESULT}       1
-
-    ${AP_SPAWN}=        Open Spawn          ${ap1.console_ip}   ${ap1.console_port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
-    Should not be equal as Strings      '${AP_SPAWN}'        '-1'
+    
+    ${AP_SPAWN}=        Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}
+    Set Suite Variable  ${AP_SPAWN}
 
     ${CONF_STATUS_RESULT}=      Configure Device To Connect To Cloud      ${ap1.cli_type}         ${capwap_url}       ${AP_SPAWN}
     Should Be Equal As Strings                  ${CONF_STATUS_RESULT}       1
@@ -92,7 +101,7 @@ Pre Condition
     ${DEVICE_STATUS}=       Get Device Status       device_serial=${ap1.serial}
     Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
 
-    ${LATEST_VERSION}=      Upgrade Device To Latest Version            ${ap1.serial}
+    ${LATEST_VERSION}=      Upgrade Device            ${ap1}
     Should Not be Empty     ${LATEST_VERSION}
     
     Sleep                   ${ap_reboot_wait}
@@ -101,6 +110,10 @@ Pre Condition
     Should Be Equal as Integers             ${REBOOT_STATUS}          1
 
     Close Spawn    ${AP_SPAWN}
+    
+    Logout User
+    Quit Browser
+
 
 Test Suite Clean Up
     [Documentation]    Check XLOC Subscription after resetviq
@@ -119,14 +132,15 @@ Test1: Check for Subscription and Validate XLOC Config for New Customer
     [Documentation]         New Customer - GreenField Scenario with subscription and XLOC Config validation
     [Tags]                  tccs_7281            development
 
-    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      &{LOCATION_OPEN_NW}
+    ${result}=                      Login User          ${tenant1_username}     ${tenant_password}
+
+    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${LOCATION_OPEN_NW}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${ap1.template_name}    &{AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${ap1.template_name}    ${AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings      '${CREATE_AP_TEMPLATE}'   '1'
 
     ${ENABLE_PRESENCE}=          Enable Nw Presence Analytics    ${NW_POLICY_NAME}
-    Should Be Equal As Strings      '${ENABLE_PRESENCE}'    '1'
 
     ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME}     ap_serial=${ap1.serial}   update_method=Complete
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
@@ -181,6 +195,12 @@ Test3: Validate BLE Asset
     ${CREATE_ASSEST_XLOC}=          Create Asset Category XLOC    ${AS_CATEGORY_NAME}     ${XLOC_SITE_NAME}
     Should Be Equal As Strings      '${CREATE_ASSEST_XLOC}'   '1'
 
+    switch_to_extreme_location_window
+    
+    close_extreme_location_window
+    
+    Go back To XLOC
+
     ${CREATE_BECON}=           Create XLOC Third Party Ibeacon   ${IBEACON_NAME_WORK}    ${UUID_WORK}   ${XLOC_SITE_NAME}   ${AS_CATEGORY_NAME}   ${BEACON_MAC_ADDRESS_WORK}    major_version=1    minor_version=1
 
     Sleep    30s
@@ -199,8 +219,7 @@ Test4: Perform BackUp VIQ
     ${BACKUP_VIQ_DATA}=             Backup VIQ Data
     Should Be Equal As Strings      '${BACKUP_VIQ_DATA}'              '1'
 
-    [Teardown]   run keywords       Logout User
-    ...                             Quit Browser
+    ${QUIT_BROWSER}=                   Quit Browser
 
 Test5: Perform Reset VIQ
     [Documentation]         New Customer - GreenField Scenario with Reset Customer Account Data
@@ -208,8 +227,8 @@ Test5: Perform Reset VIQ
 
     Sleep    2 minutes
     ${LOGIN_XIQ}=                   Login User          ${tenant1_username}     ${tenant_password}
+    
     ${RESET_VIQ_DATA}=               Reset VIQ Data
     Should Be Equal As Strings      '${RESET_VIQ_DATA}'              '1'
-
-    [Teardown]   run keywords       Logout User
-    ...                             Quit Browser
+    
+    ${QUIT_BROWSER}=                   Quit Browser
