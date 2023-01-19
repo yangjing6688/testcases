@@ -37,6 +37,30 @@ ${gle_web_obj}  *.google.com, accounts.google.com, *.geotrust.com, *.comodoca.co
 &{GUEST_OPEN_NW7}              ssid_name=${SSID_NAME7}                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
 ...                              auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
 
+&{GUEST_OPEN_NW8}              ssid_name=${SSID_NAME8}                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
+...                              auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
+
+&{GUEST_OPEN_NW9}              ssid_name=${SSID_NAME9}                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
+...                              auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
+
+&{GUEST_OPEN_NW10}              ssid_name=${SSID_NAME10}                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
+...                              auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
+
+&{GUEST_OPEN_NW11}              ssid_name=${SSID_NAME11}                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
+...                              auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
+
+&{GUEST_OPEN_NW12}              ssid_name=${SSID_NAME12}                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
+...                              auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
+
+&{GUEST_OPEN_NW13}              ssid_name=${SSID_NAME13}                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
+...                              auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
+
+&{GUEST_OPEN_NW14}              ssid_name=${SSID_NAME14}                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
+...                              auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
+
+&{GUEST_OPEN_NW15}              ssid_name=${SSID_NAME15}                network_type=standard    ssid_profile=&{BORADCAST_SSID_DEFAULT}
+...                              auth_profile=&{OPEN_AUTHENTICATION_PROFILE0}
+
 &{BORADCAST_SSID_DEFAULT}=       WIFI0=Enable        WIFI1=Enable
 
 &{OPEN_AUTHENTICATION_PROFILE0}     auth_type=Open    cwp_profile=&{OPEN_CWP0}

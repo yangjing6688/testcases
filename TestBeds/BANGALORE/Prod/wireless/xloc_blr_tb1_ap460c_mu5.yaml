@@ -15,6 +15,8 @@ ap1:
   template:                 AP_460C-default-template
   template_name:            xloc_prod_sanity_ap460template
   make:                     Extreme - Aerohive
+  cli_type:                 AH-AP
+  onboard_device_type:      Real
   mgmt_vlan:                10
   rf-env:                   true
   country:                  Korea
@@ -42,5 +44,6 @@ mu5:
   wifi_mac:       58946B6511DC
   ethernet_mac:   68B599F0B92B
   delete_mac:     58946B6511DC
+  cli_type:       MU-LINUX
   rf-mu-env:      true
 
