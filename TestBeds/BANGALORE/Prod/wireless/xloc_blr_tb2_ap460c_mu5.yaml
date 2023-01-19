@@ -9,6 +9,8 @@ ap1:
   console_ip:               10.234.207.230
   console_port:             7010
   mac:                      BCF310654780
+  onboard_device_type:      Real
+  cli_type:                 AH-AP
   os:                       Cloud IQ Engine
   platform:                 aerohive
   model:                    AP460C
@@ -42,5 +44,6 @@ mu5:
   wifi_mac:       2477034EB610
   ethernet_mac:   D067E5429420
   delete_mac:     2477034EB610
+  cli_type:       MU-LINUX
   rf-mu-env:      true
 

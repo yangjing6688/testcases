@@ -1,7 +1,7 @@
 ap1:
   name:                     AP305CX
   connection_method:        "SSH"
-  ip:                       10.234.62.11
+  ip:                       10.234.62.10
   port:                     22
   username:                 admin
   password:                 Aerohive123

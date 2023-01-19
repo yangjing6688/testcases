@@ -53,7 +53,7 @@ ${WORLD_SITE}           World
 *** Test Cases ***
 Test 1: Confirm Initial Archived Status in XIQSE is Reflected in XIQ
     [Documentation]     Confirms the initial unarchived status of a device is reflected correclty in XIQ
-    [Tags]              nightly2    release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test1
+    [Tags]              nightly2    stacking   release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test1
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
     XIQSE Navigate to Devices and Confirm Success
@@ -65,7 +65,7 @@ Test 1: Confirm Initial Archived Status in XIQSE is Reflected in XIQ
 
 Test 2: Confirm Archived Status in XIQSE is Reflected in XIQ When Device is Archived
     [Documentation]     Creates an archive for the device and confirms XIQ displays the correct Archived value
-    [Tags]              nightly2    release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test2
+    [Tags]              nightly2    stacking   release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test2
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 
@@ -83,7 +83,7 @@ Test 2: Confirm Archived Status in XIQSE is Reflected in XIQ When Device is Arch
 
 Test 3: Confirm Archived Status in XIQSE is Reflected in XIQ When Device No Longer Archived
     [Documentation]     Deletes the archive for the device and confirms XIQ displays the correct Archived value
-    [Tags]              nightly2    release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test3
+    [Tags]              nightly2    stacking    release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test3
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 
@@ -115,7 +115,7 @@ Log In and Set Up Test
 
     # Wait until the device added in XIQSE is onboarded to XIQ
     Switch To Window  ${XIQ_WINDOW_INDEX}
-    ${search_result}=  Wait Until Device Added      ${DUT_SERIAL}
+    ${search_result}=  Wait Until Device Added      device_mac=${DUT_MAC}    retry_duration=30    retry_count=20
     Should Be Equal As Integers                     ${search_result}    1
 
 Tear Down Test and Close Session
@@ -168,7 +168,7 @@ Set Up XIQSE Components
 
     # Create the test device - deleting it first if it already exists
     Navigate and Delete Device          ${DUT_IP}
-    Create Device and Confirm Success   ${DUT_IP}  ${DUT_PROFILE}
+    Create Pending Device and Confirm Success   ${DUT_IP}  ${DUT_PROFILE}
 
     # Make sure the necessary colunns are displayed
     XIQSE Devices Show Columns          Archived
@@ -183,12 +183,6 @@ Set Up XIQ Components
 
     XIQ Navigate to Devices and Confirm Success
 
-    # Onboard the XIQ Site Engine
-    Onboard XIQ Site Engine and Confirm Success
-
-    # Wait until the device added in XIQSE is onboarded to XIQ
-    ${search_result}=  Wait Until Device Added              ${DUT_SERIAL}
-    Should Be Equal As Integers                             ${search_result}    1
 
 XIQ Navigate to Devices and Confirm Success
     [Documentation]     Navigates to the Manage> Devices view in XIQ and confirms the action was successful

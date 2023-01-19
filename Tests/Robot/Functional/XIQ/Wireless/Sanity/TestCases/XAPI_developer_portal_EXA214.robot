@@ -9,7 +9,7 @@
 *** Settings ***
 Library     extauto/common/Rest.py
 
-Resource    Tests/Robot/Libraries/XIQ/lib_product_url.robot
+Resource    Tests/Robot/Libraries/XIQ/lib_url_validation.robot
 
 Variables    Environments/${TOPO}
 
@@ -40,3 +40,6 @@ TCCS-13220: XAPI Developer Portal Validation
 
     ${Status_url4} =   Get Http Response Code     ${developer_portal_swagger_ui}
     Should be equal as Integers     ${Status_url4}     200
+
+    ${result} =   Validate unresolved directive   ${developer_portal_api_docs}
+    Should Be Equal As Integers     ${result}       -1 

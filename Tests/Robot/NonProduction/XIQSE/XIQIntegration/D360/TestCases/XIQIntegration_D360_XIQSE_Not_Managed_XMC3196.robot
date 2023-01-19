@@ -75,9 +75,6 @@ Test 2: Confirm Alarm and Event Device360 Values
 
     Log To Console  UNDER INVESTIGATION: Active Alarms panel is not updating until next sync on some systems
 
-    # Make sure the Device360 window is closed from the previous test
-    Close Device360 Window
-
     # Generate the alarm and event
     Generate Alarm and Event for XIQ Site Engine
 
@@ -229,8 +226,6 @@ Clean Up XIQ Components
     [Documentation]     Cleans up components used in XIQ during the test, logs out, and closes the browser
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
-
-    Close Device360 Window
 
     XIQ Navigate to Devices and Confirm Success
     ${del_result}=  Delete Device   device_mac=${XIQSE_MAC}
