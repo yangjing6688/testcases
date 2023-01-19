@@ -97,6 +97,10 @@ Device Onboard
     ${DEVICE_STATUS_RESULT}=    get device status      ${device1.serial}
     Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
 
+    # Upgrade the device to latest/supported version to avoid config push issues.
+    ${LATEST_VERSION}=      Upgrade Device      ${device1}
+    Should Not be Empty     ${LATEST_VERSION}
+
 Clean Up Device
     ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_cli_feedback=true
     # Disconnect from Extreme Cloud IQ

@@ -112,7 +112,7 @@ Suite Setup
     Should Contain Any              ${DEVICE_STATUS}    green   config audit mismatch
 
     # Upgrade the device to latest/supported version to avoid config push issues.
-    ${LATEST_VERSION}=      Upgrade Device      ${device1.serial}
+    ${LATEST_VERSION}=      Upgrade Device      ${device1}
     Should Not be Empty     ${LATEST_VERSION}
 
     ${DELETE_CUS_POLICY_RESULT}=    Delete Network Policy           ${NW_POLICY_NAME1}

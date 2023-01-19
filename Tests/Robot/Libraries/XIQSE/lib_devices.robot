@@ -24,12 +24,19 @@ Navigate to Devices and Confirm Success
     ${sel_result}=  XIQSE Devices Select Devices Tab
     Should Be Equal As Integers         ${sel_result}     1
 
+Navigate and Create Pending Device
+    [Documentation]     Navigates to the Devices tab and creates the specified device, confirming it was added
+    [Arguments]         ${ip}  ${profile}
+
+    Navigate to Devices and Confirm Success
+    Create Pending Device and Confirm Success           ${ip}  ${profile}
+
 Navigate and Create Device
     [Documentation]     Navigates to the Devices tab and creates the specified device, confirming it was added
     [Arguments]         ${ip}  ${profile}
 
     Navigate to Devices and Confirm Success
-    Create Device and Confirm Success           ${ip}  ${profile}
+    Create Pending Device and Confirm Success           ${ip}  ${profile}
 
 Navigate and Create Status Only Device
     [Documentation]     Navigates to the Devices tab and creates the specified status only device, confirming it was added
@@ -50,6 +57,16 @@ Navigate and Delete All Devices
 
     Navigate to Devices and Confirm Success
     Delete All Devices and Confirm Success
+
+Create Pending Device and Confirm Success
+    [Documentation]     Creates the specified device in XIQ-SE and confirms it was added successfully. This call is for adding devices before onboarding to XIQ.
+    [Arguments]         ${ip}  ${profile}
+
+    Add Device and Wait for Device Add Operation to Complete    ${ip}  ${profile}
+
+    # Make sure the device shows up in the Devices table
+    ${confirm_result}=  XIQSE Wait Until Device Added   ${ip}
+    Should Be Equal As Integers                         ${confirm_result}  1
 
 Create Device and Confirm Success
     [Documentation]     Creates the specified device in XIQ-SE and confirms it was added successfully

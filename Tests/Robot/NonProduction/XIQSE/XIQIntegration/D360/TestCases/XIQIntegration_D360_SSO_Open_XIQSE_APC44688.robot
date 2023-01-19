@@ -52,7 +52,7 @@ ${WORLD_SITE}           World
 *** Test Cases ***
 Test 1: Open Site Engine Link: XIQ-SE Managed Device
     [Documentation]     Confirms that the D360 "Open Site Engine" link works for a device managed by XIQ Site Engine
-    [Tags]              nightly2    release_testing    staging_testing    tccs_11878    apc_44688    development    xiqse    xiq_integration    d360     sso    test1
+    [Tags]              nightly2    stacking    release_testing    staging_testing    tccs_11878    apc_44688    development    xiqse    xiq_integration    d360     sso    test1
 
     XIQ Navigate to Devices and Confirm Success
     XIQ Device360 Click Open Site Engine Link       ${DUT_MAC}
@@ -78,8 +78,9 @@ Log In and Set Up Test
     Log Out of XIQSE and Confirm Success
 
     # Wait until the device added in XIQSE is onboarded to XIQ
-    Switch To Window                                ${XIQ_WINDOW_INDEX}
-    Confirm Device Serial Present                   ${DUT_SERIAL}
+    Switch To Window  ${XIQ_WINDOW_INDEX}
+    ${search_result}=  Wait Until Device Added      device_mac=${DUT_MAC}    retry_duration=30    retry_count=20
+    Should Be Equal As Integers                     ${search_result}    1
 
 Tear Down Test and Close Session
     [Documentation]     Cleans up XIQ and XIQ Site Engine test components and closes the browser
