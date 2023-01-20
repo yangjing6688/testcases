@@ -154,3 +154,30 @@ xapi Assign country code
     ${RESP}=  rest api post     /devices/country-code/:assign    '{"devices": {"ids": [${DEVICE_ID}]}, "country_code": "${COUNTRY_CODE}"}'
     log  ${RESP}
     [Return]  ${RESP}
+
+########### Device Description Keywords#############
+#####  Get sample id from devices Keywords   #####
+xapi get sample id from devices
+    [Documentation]  get a sample device id from device list
+    ${RESP}=  rest api get  ${LIST_DEVICES_URI}
+    ${DATA}=  get json values  ${RESP}  key=data
+    ${ID}=   get random id from list json  ${DATA}
+    log  ${ID}
+    [Return]  ${ID}
+
+#####  Get device description Keywords   #####
+xapi get device description
+    [Documentation]  get device description
+    [Arguments]  ${ID}
+    ${RESP}=  rest api get  /devices/${ID}?views=full
+    ${DESCRIPTION}=  get json values  ${RESP}  key=description
+    log  ${DESCRIPTION}
+    [Return]  ${DESCRIPTION}
+
+#####  Change device description Keywords   #####
+xapi change device description
+    [Documentation]  change device description
+    [Arguments]  ${ID}  ${DESCRIPTION}
+    ${RESPCODE}=  rest api put v1  /devices/${ID}/description    ${DESCRIPTION}
+    log  ${RESPCODE}
+    [Return]  ${RESPCODE}    
