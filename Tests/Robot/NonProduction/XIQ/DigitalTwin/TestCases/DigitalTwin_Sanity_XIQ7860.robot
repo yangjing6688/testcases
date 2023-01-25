@@ -180,9 +180,9 @@ Log In and Set Up Test
     ${result}=  Login User                                  ${XIQ_USER}     ${XIQ_PASSWORD}     url=${XIQ_URL}
     Should Be Equal As Integers                             ${result}       1
 
-    &{entitlement}=   Navigate And Get Entitlement Counts For Feature       feature=PRD-XIQ-COPILOT-S-C
+    &{entitlement}=   Navigate And Get Entitlement Counts For Feature       feature=XIQ-COPILOT-S-C
     ${feature}=       Get From Dictionary                   ${entitlement}  feature
-    Should Contain                                          ${feature}      PRD-XIQ-COPILOT-S-C
+    Should Contain                                          ${feature}      XIQ-COPILOT-S-C
 
     ${result}=    Disable CoPilot Feature For This VIQ
     Should Be Equal As Integers                             ${result}       1
