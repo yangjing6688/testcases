@@ -225,9 +225,14 @@ class SuiteUdk():
         return True
 
     def upload_bundle(self, dut_name, vrid, local_file, filename, dt_file):
-        kw_results = self.send_cmd(dut_name, f"!python -m bundle_handler --delete "
+        vrf_exec = pytest.gns3_inst.get_vrf_exec_prefix()
+        if not vrf_exec:
+            vr_opt = f"--vr {vrid}"
+        else:
+            vr_opt = ""
+        kw_results = self.send_cmd(dut_name, f"!{vrf_exec} python -m bundle_handler --delete "
                                    f"--upload {pytest.upload_url} --file {dt_file} "
-                                   f"--upload-file {filename} --vr {vrid}")
+                                   f"--upload-file {filename} {vr_opt}")
         txt = kw_results[0].cmd_obj.return_text
 
         if rf'Bundle "{dt_file}" uploaded' not in txt:
@@ -250,8 +255,13 @@ class SuiteUdk():
             return False
 
         url = "/".join((pytest.download_url, os.path.basename(dt_file)))
-        kw_results = self.send_cmd(dut_name, f"!python -m bundle_handler --overwrite "
-                                   f"--download {url} --file {dt_file} --vr {vrid}")
+        vrf_exec = pytest.gns3_inst.get_vrf_exec_prefix()
+        if not vrf_exec:
+            vr_opt = f"--vr {vrid}"
+        else:
+            vr_opt = ""
+        kw_results = self.send_cmd(dut_name, f"!{vrf_exec} python -m bundle_handler --overwrite "
+                                   f"--download {url} --file {dt_file} {vr_opt}")
         txt = kw_results[0].cmd_obj.return_text
 
         if rf'Bundle "{dt_file}" downloaded' not in txt:
