@@ -48,6 +48,7 @@ ${DUT_IP}               ${netelem1.ip}
 ${DUT_PROFILE}          ${netelem1.profile}
 
 ${TEST_ARCHIVE}         D360_AUTO_ARCHIVE
+${WORLD_ARCHIVE}        /World
 ${WORLD_SITE}           World
 
 *** Test Cases ***
@@ -175,6 +176,7 @@ Set Up XIQSE Components
 
     # Make sure the device starts out as not archived
     Navigate and Delete Archive         ${TEST_ARCHIVE}
+    Navigate and Delete Archive         ${WORLD_ARCHIVE}
     Navigate to Devices and Confirm Success
     Confirm Device Not Archived         ${DUT_IP}
 
@@ -285,6 +287,7 @@ Clean Up XIQSE Components
 
     # Delete the archive again during tear down in case it is still present
     Navigate and Delete Archive         ${TEST_ARCHIVE}
+    Navigate and Delete Archive         ${WORLD_ARCHIVE}
 
     # Delete the test device
     Navigate and Delete Device          ${DUT_IP}
