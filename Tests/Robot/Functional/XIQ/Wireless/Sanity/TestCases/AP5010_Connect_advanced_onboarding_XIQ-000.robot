@@ -19,6 +19,7 @@ Library     extauto/xiq/flows/manage/DeviceCliAccess.py
 Library     extauto/xiq/flows/globalsettings/GlobalSetting.py
 Library     extauto/xiq/flows/configure/NetworkPolicy.py
 Library     extauto/xiq/flows/configure/CommonObjects.py
+Library     ExtremeAutomation/Imports/CommonObjectUtils.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -39,10 +40,16 @@ ${LOCATION}                 auto_location_01, Santa Clara, building_02, floor_04
 TCXM-19754 - XIQ-4593 - Advanced onboard: Onboard AP5010/AP5010U cloud managed - step1
     [Documentation]         Checks for AP advanced onboarding is success
     [Tags]                  tcxm_19754    development     ap5010      step1     tcxm-19754    advanced
+        # Use this method to convert the ap, wing, netelem to a generic device object
+    # ap1       => device1
+    # wing1     => device1
+    # netelem1  => device1 (EXOS / VOSS)
+    convert to generic device object   device  index=1
+
     ${result}=              Login User          ${tenant_username}      ${tenant_password}
-    Delete AP               ap_serial=${ap5010.serial}
+    Delete device               device_serial=${device1.serial}
     Change Device Password                      Aerohive123
-    ${ONBOARD_STATUS}=               Advance Onboard Device         ${ap5010.serial}    device_make=${DEVICE_MAKE_AEROHIVE}   dev_location=${LOCATION}
+    ${ONBOARD_STATUS}=               Advance Onboard Device         ${device1.serial}    device_make=${DEVICE_MAKE_AEROHIVE}   dev_location=${LOCATION}
     should be equal as integers      ${ONBOARD_STATUS}       1
 
     [Teardown]   run keywords               logout user
@@ -53,7 +60,7 @@ TCXM-19754 - XIQ-4593 - Advanced onboard: Onboard AP5010/AP5010U cloud managed -
     [Documentation]     Configure Capwap client server
     [Tags]              tcxm_19754    development     ap5010      step2      tcxm-19754   advanced
     Depends On          step1
-    ${AP_SPAWN}=        Open Spawn          ${ap5010.ip}   ${ap5010.port}      ${ap5010.username}       ${ap5010.password}        ${ap5010.cli_type}
+    ${AP_SPAWN}=        Open Spawn          ${device1.ip}   ${device1.port}      ${device1.username}       ${device1.password}        ${device1.cli_type}
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
 
     ${OUTPUT0}=         Send                ${AP_SPAWN}         console page 0
@@ -73,8 +80,8 @@ TCXM-19754 - XIQ-4593 - Advanced onboard: Onboard AP5010/AP5010U cloud managed -
     [Tags]              tcxm_19754    development     ap5010      step3     tcxm-19754    advanced
     Depends On          step2
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
-    Wait Until Device Online                ${ap5010.serial}
-    ${AP_STATUS}=       Get AP Status       ap_mac=${ap5010.mac}
+    Wait Until Device Online                ${device1.serial}
+    ${AP_STATUS}=       Get AP Status       ap_mac=${device1.mac}
     Should Be Equal As Strings  '${AP_STATUS}'     'green'
 
     [Teardown]   run keywords               logout user
