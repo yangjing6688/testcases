@@ -114,7 +114,7 @@ Suite Setup
     # Upgrade the device to latest/supported version to avoid config push issues.
     ${LATEST_VERSION}=      Upgrade Device      ${device1}
     Should Not be Empty     ${LATEST_VERSION}
-    
+
     ${DELETE_POLICIES_RESULT}=      Delete Network Polices          ${OPEN_POLICY}      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
     Should Be Equal As Integers     ${DELETE_POLICIES_RESULT}           1
 
@@ -180,7 +180,7 @@ Reconnect To PPSK Wireless Network
     Sleep               ${client_connect_wait}
 
     ${URL_TITLE}=       Check Internet Connectivity             ${mu1.ip}
-    Should Be Equal As Strings              ${URL_TITLE}'      '${PAGE_TITLE}'
+    Should Be Equal As Strings              '${URL_TITLE}'      '${PAGE_TITLE}'
 
 Wi-Fi Interface IP Address Check
     ${WIFI_IP_ADDRESS}=     mu1.Get Wi Fi Interface Ip Address
@@ -228,7 +228,7 @@ TCCS-7678: Cloud DB PPSK Network Client Connectivity With Bulk Users Group
     Sleep               ${client_connect_wait}
 
     ${URL_TITLE}=       Check Internet Connectivity     ${mu1.ip}
-    Should Not Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
+    Should Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
 
     ${CREDENTIALS}=     Get Login Credential From Attachments       ${MAIL_ID1}     ${MAIL_ID1_PASS}
 
@@ -269,7 +269,7 @@ TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
     Sleep               ${client_connect_wait}
 
     ${URL_TITLE}=       Check Internet Connectivity     ${mu1.ip}
-    Should Not Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
+    Should Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
 
     ${CREDENTIALS}=     Get Login Credential From Attachments       ${MAIL_ID1}     ${MAIL_ID1_PASS}
 
