@@ -40,20 +40,20 @@ ${SITE_ENGINE_ARCHIVE}      Site Engine Archive
 *** Test Cases ***
 Test 1: Register Syslog Receiver
     [Documentation]     Confirms register syslog receiver is successful
-    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test1    stacking
+    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test1    nightly4
 
     Clear Operations Panel and Confirm Success
     Navigate and Register Syslog Receiver            ${DUT_IP}
 
 Test 2: Verify Register Syslog Receiver Completes
     [Documentation]     Checks the operations panel and waits for the register syslog receiver to complete
-    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test2    stacking
+    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test2    nightly4
 
     Verify Register Syslog Receiver Completes    Syslog Configuration
 
 Test 3: Create Backup After Register and Confirm Success
     [Documentation]     Creates a backup configuration on selected device
-    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test3    stacking
+    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test3    nightly4
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO BACKUP CONFIGURATION
 #    Clear Operations Panel and Confirm Success
@@ -61,26 +61,26 @@ Test 3: Create Backup After Register and Confirm Success
 
 Test 4: Check Backup Configuration For Syslog Receiver Registered Entries Added
     [Documentation]     Confirms the device configuration includes entries for register syslog receiver
-    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test4    stacking
+    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test4    nightly4
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO CHECK CONFIGURATION FILE TO VERIFY SYSLOG ENTRIES ADDED
 
 Test 5: Unregister Syslog Receiver
     [Documentation]     Confirms unregister syslog receiver is successful
-    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test5    stacking
+    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test5    nightly4
 
     Clear Operations Panel and Confirm Success
     Navigate and Unregister Syslog Receiver          ${DUT_IP}
 
 Test 6: Verify Unregister Syslog Receiver Completes
     [Documentation]     Checks the operations panel and waits for the unregister syslog receiver to complete
-    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test6    stacking
+    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test6    nightly4
 
     Verify Register Syslog Receiver Completes    Syslog Configuration
 
 Test 7: Create Backup After Unregister and Confirm Success
     [Documentation]     Creates a backup configuration on selected device
-    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test7    stacking
+    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test7    nightly4
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO BACKUP CONFIGURATION
 #    Clear Operations Panel and Confirm Success
@@ -88,13 +88,13 @@ Test 7: Create Backup After Unregister and Confirm Success
 
 Test 8: Check Backup Configuration For Syslog Receiver Entries Removed
     [Documentation]     Confirms the device configuration no longer includes entries for register syslog receiver
-    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test8    stacking
+    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test8    nightly4
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO CHECK CONFIGURATION FILE TO VERIFY SYSLOG ENTRIES REMOVED
 
 Test 9: Delete Archive
     [Documentation]     Confirms an archive can be deleted
-    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test9    stacking
+    [Tags]              nightly1    tcxe_875    xmc_5451    development    xiqse    acceptance    inventory    syslog    test9    nightly4
 
     Log To Console  >> THIS IS FUTURE TEST SECTION TO DELETE BACKUP CONFIGURATION
 #    Navigate and Delete Archive and Confirm Success     ${SITE_ENGINE_ARCHIVE}

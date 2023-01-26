@@ -56,7 +56,7 @@ ${WORLD_SITE}             World
 *** Test Cases ***
 Test 1: Check Baseline License Counts
     [Documentation]     Confirms license counts are at expected values in XIQ to begin with (nothing consumed)
-    [Tags]              release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test1
+    [Tags]              nightly3    release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test1
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
@@ -65,7 +65,7 @@ Test 1: Check Baseline License Counts
 
 Test 2: Onboard XIQSE to XIQ and Check License Counts
     [Documentation]     Onboards XIQSE to XIQ and confirms the license counts
-    [Tags]              release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test2
+    [Tags]              nightly3    release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test2
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 
@@ -83,7 +83,7 @@ Test 2: Onboard XIQSE to XIQ and Check License Counts
 
 Test 3: Create Pilot Device and Check License Counts
     [Documentation]     Creates a pilot type device in XIQSE and confirms the license counts
-    [Tags]              release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test3
+    [Tags]              nightly3    release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test3
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 
@@ -100,7 +100,7 @@ Test 3: Create Pilot Device and Check License Counts
 
 Test 4: Create Navigator Device and Check License Counts
     [Documentation]     Creates a navigator type device in XIQSE and confirms the license counts
-    [Tags]              release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test4
+    [Tags]              nightly3    release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test4
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 
@@ -117,7 +117,7 @@ Test 4: Create Navigator Device and Check License Counts
 
 Test 5: Delete Pilot Device and Check License Counts
     [Documentation]     Deletes a pilot type device in XIQSE and confirms the license counts
-    [Tags]              release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test5
+    [Tags]              nightly3    release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test5
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 
@@ -133,7 +133,7 @@ Test 5: Delete Pilot Device and Check License Counts
 
 Test 6: Delete Navigator Device and Check License Counts
     [Documentation]     Deletes a navigator type device in XIQSE and confirms the license counts
-    [Tags]              release_testing    license_testing    staging_testing    known_issue    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test6
+    [Tags]              nightly3    release_testing    license_testing    staging_testing    known_issue    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test6
 
     Log To Console  KNOWN ISSUE: XIQ-639
 
@@ -151,7 +151,7 @@ Test 6: Delete Navigator Device and Check License Counts
 
 Test 7: Remove XIQSE from XIQ and Check License Counts
     [Documentation]     Removes XIQSE from XIQ and confirms the license counts (nothing consumed)
-    [Tags]              release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test7
+    [Tags]              nightly3    release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test7
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 

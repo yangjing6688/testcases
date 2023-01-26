@@ -54,7 +54,7 @@ ${WORLD_SITE}           World
 *** Test Cases ***
 Test 1: Confirm Initial Archived Status in XIQSE is Reflected in XIQ
     [Documentation]     Confirms the initial unarchived status of a device is reflected correclty in XIQ
-    [Tags]              nightly2    stacking   release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test1
+    [Tags]              nightly2    nightly4   release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test1
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
     XIQSE Navigate to Devices and Confirm Success
@@ -66,7 +66,7 @@ Test 1: Confirm Initial Archived Status in XIQSE is Reflected in XIQ
 
 Test 2: Confirm Archived Status in XIQSE is Reflected in XIQ When Device is Archived
     [Documentation]     Creates an archive for the device and confirms XIQ displays the correct Archived value
-    [Tags]              nightly2    stacking   release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test2
+    [Tags]              nightly2    nightly4   release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test2
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 
@@ -84,7 +84,7 @@ Test 2: Confirm Archived Status in XIQSE is Reflected in XIQ When Device is Arch
 
 Test 3: Confirm Archived Status in XIQSE is Reflected in XIQ When Device No Longer Archived
     [Documentation]     Deletes the archive for the device and confirms XIQ displays the correct Archived value
-    [Tags]              nightly2    stacking    release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test3
+    [Tags]              nightly2    nightly4    release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test3
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 

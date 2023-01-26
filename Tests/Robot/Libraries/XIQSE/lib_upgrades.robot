@@ -157,24 +157,24 @@ Check NAC Exit Code
     [Arguments]    ${ip}  ${user}  ${password}
 
     ${sshSession} =    open_paramiko_ssh_spawn  ${ip}  ${user}  ${password}  ${SSH_PORT}
-    ${output} =  Send Paramiko CMD        ${sshSession}  cat ${NSRELEASE_NAC_LOG_FILE} | grep "upgrade to ${NSRELEASE_VERSION} was completed"
-    Should Contain  ${output}  upgrade to ${NSRELEASE_VERSION} was completed
+    ${output} =  Send Paramiko CMD        ${sshSession}  cat ${NSRELEASE_NAC_LOG_FILE} | grep "upgrade to ${NSRELEASE_BUILD} was completed"
+    Should Contain  ${output}  upgrade to ${NSRELEASE_BUILD} was completed
 
 Check Purview Exit Code
     [Documentation]     Parses installer log for exit code. If "upgrade was completed" line is present, it was successful.
     [Arguments]    ${ip}  ${user}  ${password}
 
     ${sshSession} =    open_paramiko_ssh_spawn  ${ip}  ${user}  ${password}  ${SSH_PORT}
-    ${output} =  Send Paramiko CMD        ${sshSession}  cat ${NSRELEASE_Purview_LOG_FILE} | grep "upgrade to ${NSRELEASE_VERSION} was completed"
-    Should Contain  ${output}  upgrade to ${NSRELEASE_VERSION} was completed
+    ${output} =  Send Paramiko CMD        ${sshSession}  cat ${NSRELEASE_Purview_LOG_FILE} | grep "upgrade to ${NSRELEASE_BUILD} was completed"
+    Should Contain  ${output}  upgrade to ${NSRELEASE_BUILD} was completed
 
 Check NGAnalytics Exit Code
     [Documentation]     Parses installer log for exit code. If "upgrade was completed" line is present, it was successful.
     [Arguments]    ${ip}  ${user}  ${password}
 
     ${sshSession} =    open_paramiko_ssh_spawn  ${ip}  ${user}  ${password}  ${SSH_PORT}
-    ${output} =  Send Paramiko CMD        ${sshSession}  cat ${NSRELEASE_NGANALYTICS_LOG_FILE} | grep "upgrade to ${NSRELEASE_VERSION} was completed"
-    Should Contain  ${output}  upgrade to ${NSRELEASE_VERSION} was completed
+    ${output} =  Send Paramiko CMD        ${sshSession}  cat ${NSRELEASE_NGANALYTICS_LOG_FILE} | grep "upgrade to ${NSRELEASE_BUILD} was completed"
+    Should Contain  ${output}  upgrade to ${NSRELEASE_BUILD} was completed
 
 NBI Check Server Is Up
     [Documentation]    Checks the server is up and running via an NBI call
@@ -238,7 +238,7 @@ Site Engine Upgrade
     ${esxIp} =  Get From Dictionary  ${upgradeParams}  esxIp
     ${esxUser} =  Get From Dictionary  ${upgradeParams}  esxUser
     ${esxPw} =  Get From Dictionary  ${upgradeParams}  esxPw
-    Log   Upgrading XIQ-SE from version ${version} to ${NSRELEASE_VERSION}
+    Log   Upgrading XIQ-SE from version ${version} to ${NSRELEASE_BUILD}
     Reset VM   ${esxIp}  ${esxUser}  ${esxPw}  ${vmid}  ${snapshot}
     NBI Check Server Is Up    ${XIQSE_IP_ADDRESS}  ${XIQSE_USERNAME}  ${XIQSE_PASSWORD}  ${NBI_FILE}
     Upgrade Site Engine
@@ -253,7 +253,7 @@ Nac Engine Upgrade
     ${esxIp} =  Get From Dictionary  ${upgradeParams}  esxIp
     ${esxUser} =  Get From Dictionary  ${upgradeParams}  esxUser
     ${esxPw} =  Get From Dictionary  ${upgradeParams}  esxPw
-    Log   Upgrading NAC from version ${version} to ${NSRELEASE_VERSION}
+    Log   Upgrading NAC from version ${version} to ${NSRELEASE_BUILD}
     Reset VM   ${esxIp}  ${esxUser}  ${esxPw}  ${vmid}  ${snapshot}
     Check NAC Is Up
     Upgrade NAC Engine
@@ -267,7 +267,7 @@ Purview Engine Upgrade
     ${esxIp} =  Get From Dictionary  ${upgradeParams}  esxIp
     ${esxUser} =  Get From Dictionary  ${upgradeParams}  esxUser
     ${esxPw} =  Get From Dictionary  ${upgradeParams}  esxPw
-    Log   Upgrading Purview from version ${version} to ${NSRELEASE_VERSION}
+    Log   Upgrading Purview from version ${version} to ${NSRELEASE_BUILD}
     Reset VM   ${esxIp}  ${esxUser}  ${esxPw}  ${vmid}  ${snapshot}
     Check Purview Is Up
     Upgrade Purview Engine
@@ -281,7 +281,49 @@ NGAnalytics Engine Upgrade
     ${esxIp} =  Get From Dictionary  ${upgradeParams}  esxIp
     ${esxUser} =  Get From Dictionary  ${upgradeParams}  esxUser
     ${esxPw} =  Get From Dictionary  ${upgradeParams}  esxPw
-    Log   Upgrading NGAnalytics from version ${version} to ${NSRELEASE_VERSION}
+    Log   Upgrading NGAnalytics from version ${version} to ${NSRELEASE_BUILD}
     Reset VM   ${esxIp}  ${esxUser}  ${esxPw}  ${vmid}  ${snapshot}
     Check NGAnalytics Is Up
     Upgrade NGAnalytics Engine
+
+UPDATE_SUITE_VERSION_VARIABLES
+    [Documentation]    Gets the latest version and sets the install variables
+    [Arguments]        ${release}
+
+    ${result} =     Run Process   curl    http://nsrelease.extremenetworks.com/release/?release\=${release}
+    @{output} =     Split String   ${result.stdout}    Release Version\=
+    ${res} =        Split String   ${output}[1]    <
+    ${version}=     Set Variable    ${res}[0]
+    ${base_path}=   Set Variable  http://nsrelease.extremenetworks.com/release/netsightweb/ns_console/Console/NETSIGHT_Suite_
+
+
+    # Set Suite variables
+
+    Set Suite Variable    ${LOG_DIRECTORY}                    /var/log/
+    Set Suite Variable    ${XIQSE_FILE_PREFIX}                ExtremeCloudIQSiteEngine_
+    Set Suite Variable    ${NAC_BINARY_PREFIX}                nac_appliance_64bit_sw_upgrade_to_
+    Set Suite Variable    ${PURVIEW_BINARY_PREFIX}            purview_appliance_upgrade_to_
+    Set Suite Variable    ${NGANALYTICS_BINARY_PREFIX}        analytics_appliance_upgrade_to_
+
+    Set Suite Variable    ${XIQSE_FOLDER}                     NetSight
+    Set Suite Variable    ${NAC_FOLDER}                       NAC
+    Set Suite Variable    ${PURVIEW_FOLDER}                   Purview
+    Set Suite Variable    ${NGANALYTICS_FOLDER}               Analytics
+
+    Set Suite Variable    ${XIQSE_LOG_PREFIX}                 ExtremeCloudIQSiteEngine_
+    Set Suite Variable    ${NAC_LOG_PREFIX}                   nacSoftwareUpgradeTo
+    Set Suite Variable    ${PURVIEW_LOG_PREFIX}               purviewSoftwareUpgradeTo
+    Set Suite Variable    ${NGANALYTICS_LOG_PREFIX}           analyticsSoftwareUpgradeTo
+
+    Set Suite Variable    ${NSRELEASE_BUILD}                  ${version}
+    Set Suite Variable    ${NSRELEASE_XIQSE_FILE}             ${XIQSE_FILE_PREFIX}${version}_64bit_install.bin
+    Set Suite Variable    ${NSRELEASE_XIQSE_LOG_FILE}         ${XIQSE_LOG_PREFIX}${version}_64bit_install.log
+    Set Suite Variable    ${NSRELEASE_VERSION_BASE}           ${base_path}${version}
+    Set Suite Variable    ${NSRELEASE_NAC_FILE}               ${NAC_BINARY_PREFIX}${version}.bin
+    Set Suite Variable    ${NSRELEASE_NAC_LOG_FILE}           ${LOG_DIRECTORY}${NAC_LOG_PREFIX}${version}.log
+    Set Suite Variable    ${NSRELEASE_PURVIEW_FILE}           ${PURVIEW_BINARY_PREFIX}${version}.bin
+    Set Suite Variable    ${NSRELEASE_PURVIEW_LOG_FILE}       ${LOG_DIRECTORY}${PURVIEW_LOG_PREFIX}${version}.log
+    Set Suite Variable    ${NSRELEASE_NGANALYTICS_FILE}       ${NGANALYTICS_BINARY_PREFIX}${version}.bin
+    Set Suite Variable    ${NSRELEASE_NGANALYTICS_LOG_FILE}   ${LOG_DIRECTORY}${NGANALYTICS_LOG_PREFIX}${version}.log
+
+    [return]    ${version}

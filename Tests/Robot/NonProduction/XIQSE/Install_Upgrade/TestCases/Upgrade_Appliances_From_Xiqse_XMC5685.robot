@@ -9,11 +9,13 @@
 #                 This is qTest TCXE-958 in the XIQ-SE project.
 
 *** Settings ***
+Library         Process
+Library         String
 Resource        ../../Install_Upgrade/Resources/AllResources.robot
 
 Force Tags      testbed_no_node
 
-Suite Setup     Ubuntu Clear SSH Keys
+Suite Setup     Prepare Test Variables
 
 
 *** Variables ***
@@ -41,28 +43,6 @@ ${XIQ_CAPWAP_URL}                   "g2r1-cwpm-01.qa.xcloudiq.com"
 ${APPLIANCE_USERNAME}               ${appliance.user}
 ${APPLIANCE_PASSWORD}               ${appliance.password}
 
-${NSRELEASE_BASE}                   http://nsrelease.extremenetworks.com/release/netsightweb/ns_console/Console/NETSIGHT_Suite_
-${XIQSE_FOLDER}                     NetSight
-${NAC_FOLDER}                       NAC
-${NGANALYTICS_FOLDER}               Analytics
-${PURVIEW_FOLDER}                   Purview
-${XIQSE_FILE_PREFIX}                ExtremeCloudIQSiteEngine_
-${NAC_BINARY_PREFIX}                nac_appliance_64bit_sw_upgrade_to_
-${NAC_LOG_PREFIX}                   nacSoftwareUpgradeTo
-${PURVIEW_BINARY_PREFIX}            purview_appliance_upgrade_to_
-${PURVIEW_LOG_PREFIX}               purviewSoftwareUpgradeTo
-${NGANALYTICS_BINARY_PREFIX}        analytics_appliance_upgrade_to_
-${NGANALYTICS_LOG_PREFIX}           analyticsSoftwareUpgradeTo
-${LOG_DIRECTORY}                    /var/log/
-${NSRELEASE_XIQSE_FILE}             ${XIQSE_FILE_PREFIX}${NSRELEASE_VERSION}_64bit_install.bin
-${NSRELEASE_XIQSE_LOG_FILE}         ${XIQSE_FILE_PREFIX}${NSRELEASE_VERSION}_64bit_install.log
-${NSRELEASE_NAC_FILE}               ${NAC_BINARY_PREFIX}${NSRELEASE_VERSION}.bin
-${NSRELEASE_NAC_LOG_FILE}           ${LOG_DIRECTORY}${NAC_LOG_PREFIX}${NSRELEASE_VERSION}.log
-${NSRELEASE_PURVIEW_FILE}           ${PURVIEW_BINARY_PREFIX}${NSRELEASE_VERSION}.bin
-${NSRELEASE_PURVIEW_LOG_FILE}       ${LOG_DIRECTORY}${PURVIEW_LOG_PREFIX}${NSRELEASE_VERSION}.log
-${NSRELEASE_NGANALYTICS_FILE}       ${NGANALYTICS_BINARY_PREFIX}${NSRELEASE_VERSION}.bin
-${NSRELEASE_NGANALYTICS_LOG_FILE}   ${LOG_DIRECTORY}${NGANALYTICS_LOG_PREFIX}${NSRELEASE_VERSION}.log
-${NSRELEASE_VERSION_BASE}           ${NSRELEASE_BASE}${NSRELEASE_VERSION}
 ${SSH_PORT}                         22
 ${DOWNLOAD_TIMEOUT_SEC}             300
 ${INSTALL_DOWNLOAD_TIMEOUT_SEC}     7200
@@ -113,3 +93,12 @@ Test 4: CLI NGAnalytics Appliance From XIQSE
     ${version} =   Get From Dictionary   ${UPGRADE_TEST_XIQSE}  version
     Run Keyword If    'ngAnalyticsSnapShotId' in ${UPGRADE_TEST_XIQSE}   NGAnalytics Engine Upgrade  ${UPGRADE_TEST_XIQSE}
     ...    ELSE  Log   Skipping NG Analytics Upgrade From XMC ${version}
+
+*** Keywords ***
+Prepare Test Variables
+    [Documentation]    Sets the version to install and all variables used by keywords
+
+    Log To Console     SETTING TEST UP
+    Ubuntu Clear SSH Keys
+    ${version}=    UPDATE_SUITE_VERSION_VARIABLES    ${NSRELEASE_VERSION}
+    Log To Console    version=${version}
