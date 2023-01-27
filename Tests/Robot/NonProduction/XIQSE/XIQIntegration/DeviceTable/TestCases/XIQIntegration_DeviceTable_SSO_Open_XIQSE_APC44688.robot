@@ -276,7 +276,7 @@ Confirm XIQ Maximum Site Engine Message
     [Documentation]     Confirm the 'Maximum 5 Site Engine > Device Views...' message is displayed
 
     Switch To Window                                ${XIQ_WINDOW_INDEX}
-    ${displayed}=  Is XIQSE Maximum Site Engine Message Displayed
+    ${displayed}=  verify xiqse maximum site engine message displayed
     Should Be Equal As Strings          ${displayed}    True
 
 XIQSE Delete the Authorized User
