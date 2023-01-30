@@ -3,18 +3,18 @@
 # Precondition  : AP4000 or AP4000U Should be onboarded with a network policy having WiFi2 SSID.
 #****************************************************************************************************************************************************************
 # Execution Commands: The testcases in this script can be run either independently or together depending on the tags.
-# robot -L INFO -i p2 WiFi6E_ManageDevicePage.robot
-# robot -L INFO -i TC-8818 WiFi6E_ManageDevicePage.robot
-# robot -L INFO -i TC-8809 WiFi6E_ManageDevicePage.robot
-# robot -L INFO -i TC-8817 WiFi6E_ManageDevicePage.robot
-# robot -L INFO -i TC-8810 WiFi6E_ManageDevicePage.robot
-# robot -L INFO -i TC-10962 WiFi6E_ManageDevicePage.robot
-# robot -L INFO -i TC-10961 WiFi6E_ManageDevicePage.robot
-# robot -L INFO -i TC-10960 WiFi6E_ManageDevicePage.robot
+# robot -L INFO -i p2 WiFi6E_ManageDevicePage_XIQ-000.robot
+# robot -L INFO -i TC-8818 WiFi6E_ManageDevicePage_XIQ-000.robot
+# robot -L INFO -i TC-8809 WiFi6E_ManageDevicePage_XIQ-000.robot
+# robot -L INFO -i TC-8817 WiFi6E_ManageDevicePage_XIQ-000.robot
+# robot -L INFO -i TC-8810 WiFi6E_ManageDevicePage_XIQ-000.robot
+# robot -L INFO -i TC-10962 WiFi6E_ManageDevicePage_XIQ-000.robot
+# robot -L INFO -i TC-10961 WiFi6E_ManageDevicePage_XIQ-000.robot
+# robot -L INFO -i TC-10960 WiFi6E_ManageDevicePage_XIQ-000.robot
 
 # Select the "TOPO" and "DEVICE" variable based on Test bed to run the following execution
-# robot -L INFO -v DEVICE:AP4000U -v TOPO:g2r1  WiFi6E_ManageDevicePage.robot
-# robot -v TESTBED:/BANGALORE/Prod/wireless/xiq_blr_tb_sh_AP5010.yaml -v TOPO:topo.prod.g2r1.shilpa.yaml  -v ENV:environment.remote.win10.sh.chrome.yaml  -i tcxm-10960 WiFi6E_ManageDevicePage.robot
+# robot -L INFO -v DEVICE:AP4000U -v TOPO:g2r1  WiFi6E_ManageDevicePage_XIQ-000.robot
+# robot -v TESTBED:/BANGALORE/Prod/wireless/xiq_blr_tb_sh_AP5010.yaml -v TOPO:topo.prod.g2r1.shilpa.yaml  -v ENV:environment.remote.win10.sh.chrome.yaml  -i tcxm-10960 WiFi6E_ManageDevicePage_XIQ-000.robot
 
 #****************************************************************************************************************************************************************
 *** Variables ***
@@ -120,7 +120,7 @@ Onboard AP5010U
     [Documentation]         AP5010 or AP5010U Should be onboarded with a network policy having WiFi2 SSID.
     [Arguments]             ${AP1_NETWORK_POLICY}
     ${result}=              Login User          ${TENANT_USERNAME}      ${TENANT_PASSWORD}
-    Delete AP               ap_serial=${AP1_SERIAL}
+    delete device               device_serial=${AP1_SERIAL}
     Change Device Password                      Aerohive123
     #${AP_SPAWN}=	Open Spawn  ${AP1_IP}  ${AP1_CONSOLE_PORT}   ${AP1_USERNAME}     ${AP1_PASSWORD}     ${AP1_PLATFORM}
     ${AP_SPAWN}=	Open Spawn      ${AP1_IP}   ${AP1_CONSOLE_PORT}   ${AP1_USERNAME}     ${AP1_PASSWORD}      ${AP1_Cli_Type}
@@ -154,8 +154,8 @@ Test Suite Clean Up
     [Documentation]         delete created network policies, SSID, Device etc
     [Tags]                  sanity    p2   p3  p4  production  regression
     Login User              ${TENANT_USERNAME}      ${TENANT_PASSWORD}
-    Delete AP     ${AP1_SERIAL}
-    Delete AP     ${AP2_SERIAL}
+    Delete device           device_serial=${AP1_SERIAL}
+    Delete device           device_serial=${AP2_SERIAL}
     Delete Network Policy     ${AP1_NETWORK_POLICY}
     Delete ssid     ${NW_POLICY_SSID2}
     Logout User

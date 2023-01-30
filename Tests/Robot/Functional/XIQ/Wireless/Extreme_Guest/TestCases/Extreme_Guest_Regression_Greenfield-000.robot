@@ -91,6 +91,10 @@ Modify Suite Variables
     Set Suite Variable    ${SPONSOR_EMAIL}    ${SPONSOR_NAME}+${RANDOM}@gmail.com
     Log To Console    Sponsor Email: ${SPONSOR_EMAIL}
     Set Suite Variable    &{GUEST_MANAGEMENT_ROLE}    email=${USER_EMAIL}     name=${USER_NAME}     timeout=30     role=GuestManagement    organization=All Organizations
+    ${RANDOM1}=    Generate Random String
+    Set Suite Variable    ${USER_EMAIL1}    ${USER_NAME}+${RANDOM1}@gmail.com
+    Log To Console    User Email: ${USER_EMAIL1}
+    Set Suite Variable    &{GUEST_MANAGEMENT_MONITOR_ROLE}    email=${USER_EMAIL1}     name=${USER_NAME}     timeout=30     role=Monitor    organization=All Organizations
 
 Create Network Policies
     [Documentation]    Create Network Policies
@@ -273,10 +277,22 @@ TCCS-14169: Clone Splash Template, Onboarding Policy and Onboarding Rules
     ${EG_POLICY_NAME_STATUS3}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME3}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE4}
     Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS3}'     '1'
 
-    ${EG_POLICY_NAME_STATUS4}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME4}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE3}    condition_value=${CONDITION_VALUE}    action_type=${SEND_PASSCODE_ON_APPROVAL}    user_notifpolicy=${DEFAULT_NOTIFICATION_POLICY1}    sponsor_notifpolicy=${DEFAULT_NOTIFICATION_POLICY2}
+    ${EG_POLICY_NAME_STATUS4}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME4}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE3}    condition_value=${CONDITION_VALUE}    action_type=${SEND_OTP_TO_USER}    user_notifpolicy=${DEFAULT_NOTIFICATION_POLICY1}    sponsor_notifpolicy=${DEFAULT_NOTIFICATION_POLICY2}
     Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS4}'     '1'
 
-    save screen shot
+    ${EG_POLICY_NAME_STATUS5}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME5}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE3}    condition_value=${CONDITION_VALUE}    action_type=${SEND_OTP_ON_APPROVAL}    user_notifpolicy=${DEFAULT_NOTIFICATION_POLICY1}    sponsor_notifpolicy=${DEFAULT_NOTIFICATION_POLICY2}
+    Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS5}'     '1'
+
+    ${EG_POLICY_NAME_STATUS6}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME6}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE4}    condition_value=${CONDITION_VALUE}    action_type=${SEND_PASSCODE_ON_APPROVAL}    user_notifpolicy=${DEFAULT_NOTIFICATION_POLICY1}    sponsor_notifpolicy=${DEFAULT_NOTIFICATION_POLICY2}
+    Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS6}'     '1'
+
+    ${EG_POLICY_NAME_STATUS7}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME7}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE4}    condition_value=${CONDITION_VALUE}    action_type=${SEND_OTP_TO_SPONSOR}    user_notifpolicy=${DEFAULT_NOTIFICATION_POLICY1}    sponsor_notifpolicy=${DEFAULT_NOTIFICATION_POLICY3}
+    Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS7}'     '1'
+
+    ${EG_POLICY_NAME_STATUS8}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME8}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE5}    condition_value=${CONDITION_USER_VALUE}
+    Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS8}'     '1'
+
+    save screen shot    
 
     ${EG_RULE_NAME_0}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME0}  policy_name=${EG_POLICY_NAME0}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME0}
     Should Be Equal As Strings      '${EG_RULE_NAME_0}'     '1'
@@ -302,8 +318,28 @@ TCCS-14169: Clone Splash Template, Onboarding Policy and Onboarding Rules
     ${EG_RULE_NAME_7}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME7}  policy_name=${EG_POLICY_NAME4}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME8}
     Should Be Equal As Strings      '${EG_RULE_NAME_7}'     '1'
 
+    ${EG_RULE_NAME_8}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME8}  policy_name=${EG_POLICY_NAME5}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME9}
+    Should Be Equal As Strings      '${EG_RULE_NAME_8}'     '1'
+
+    ${EG_RULE_NAME_9}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME9}  policy_name=${EG_POLICY_NAME6}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME10}
+    Should Be Equal As Strings      '${EG_RULE_NAME_9}'     '1'
+
+    ${EG_RULE_NAME_10}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME10}  policy_name=${EG_POLICY_NAME7}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME11}
+    Should Be Equal As Strings      '${EG_RULE_NAME_10}'     '1'
+
+    ${EG_RULE_NAME_11}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME11}  policy_name=${EG_POLICY_NAME8}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME12}
+    Should Be Equal As Strings      '${EG_RULE_NAME_11}'     '1'
+
+    ${EG_RULE_NAME_12}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME12}  policy_name=${EG_POLICY_NAME2}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME14}
+    Should Be Equal As Strings      '${EG_RULE_NAME_12}'     '1'
+    
+    ${EG_RULE_NAME_13}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME13}  policy_name=${EG_POLICY_NAME8}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME15}
+    Should Be Equal As Strings      '${EG_RULE_NAME_13}'     '1'
+    
+    save screen shot
 
     [Teardown]   run keywords       Test Case Level Cleanup
+    ...                             Quit Browser
 
 TCCS-14178: Verify User registration and authenticate CP with Facebook
 
@@ -312,6 +348,11 @@ TCCS-14178: Verify User registration and authenticate CP with Facebook
     [Tags]                  development    greenfield    brownfield    social    facebook    tccs_14178
 
     Depends On              TCCS-14165    TCCS-14169
+
+    convert to generic device object            device  index=1
+
+    ${LOGIN_XIQ}=             Login User          ${TENANT_USERNAME}      ${TENANT_PASSWORD}      url=${TEST_URL}    ignore_map=True
+    should be equal as strings      '${LOGIN_XIQ}'    '1'
 
     ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Complete Update      ${NW_POLICY_NAME1}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
@@ -628,55 +669,38 @@ TCCS-14180: Sponsor Approval-Verify on sponsor Permit login passcode sent to use
     save screen shot
 
     ${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}=             go to configure splash system template tab
-
     Should Be Equal As Strings      '${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}'       '1'
 
     ${APPLY_USER_TEMPLATE}=             apply network to user template  network_name=${SSID_NAME8}      template_name=${TEMPLATE7_NAME}     location=${LOCATION_TREE}
-
     Should Be Equal As Strings      '${APPLY_USER_TEMPLATE}'     '1'
 
-    Remote_Server.Connect Open Network    ${SSID_NAME8}
-
+    ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME8}
     Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
-
     Sleep                         ${CLIENT_CONNECT_WAIT}
 
-    Open Guest Portal Browser    ${mu1.ip}
-
+    ${OPEN_GUEST_PORTAL}=             Open Guest Portal Browser    ${mu1.ip}
     Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
-
     Sleep  ${CP_PAGE_OPEN_WAIT}
 
     ${REGISTRATION_STATUS}=                 Register Sponsored Guest User    ${USER_NAME}    ${USER_EMAIL}    ${USER_MOBILE}    ${SPONSOR_NAME}     ${SPONSOR_EMAIL}     ${ACCESS_PURPOSE}
-
     Log to Console      Sleep for ${RECEIVE_MAIL}
     Sleep                         ${RECEIVE_MAIL}
 
-    ${APPROVAL_URL}=        Get Sponsor Action URL      ${SPONSOR_EMAIL}    ${SPONSOR_PASSWORD}    ${SPONSOR_PERMIT}
-
-    ${DRIVER}=    Load Browser    ${APPROVAL_URL}    program=${PROGRAM}
-
-    ${TEXT}=    Check Approval Success Text    ${DRIVER}
-
-    Quit Browser    ${DRIVER}
-
-    ${ACCESS_STATUS}=    Validate Sponsored Guest Access    ${USER_EMAIL}    ${USER_PASSWORD}    ${SEND_PASSCODE_ON_APPROVAL}
+    ${ACCESS_STATUS}=    Validate Sponsored Guest Access    ${USER_EMAIL}    ${USER_PASSWORD}    ${SEND_OTP_TO_USER}
+    get gp page screen shot
 
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
-
     Should Be Equal As Strings      '${WIFI_DISCONNECT}'     '1'
-
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
-
     Sleep  ${CLIENT_DISCONNECT_WAIT}
 
     ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
-
     Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
 
     ${DELETE_USER_EMAIL}=             Delete User  ${USER_EMAIL}
-
     Should Be Equal As Strings     '${DELETE_USER_EMAIL}'  '1'
+
+    Should Be Equal As Strings     '${ACCESS_STATUS}'  '1'
 
     [Teardown]   run keywords       Test Case Level AP Cleanup
 
@@ -755,7 +779,7 @@ TCCS-14200: Sponsor Approval-Verify on sponsor Deny login passcode is not sent t
     [Tags]                  development    greenfield    sponsor    tccs_14200
     
     Depends On          TCCS-14169
-    
+
     ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Complete Update     ${NW_POLICY_NAME9}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
@@ -770,12 +794,6 @@ TCCS-14200: Sponsor Approval-Verify on sponsor Deny login passcode is not sent t
 
     ${APPLY_USER_TEMPLATE}=             Apply Network to User Template  network_name=${SSID_NAME9}      template_name=${TEMPLATE7_NAME}     location=${LOCATION_TREE}
     Should Be Equal As Strings      '${APPLY_USER_TEMPLATE}'     '1'
-
-    ${EG_POLICY_NAME_STATUS0}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME5}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE3}    condition_value=${CONDITION_VALUE}    action_type=${SEND_OTP_ON_APPROVAL}    user_notifpolicy=${DEFAULT_NOTIFICATION_POLICY1}    sponsor_notifpolicy=${DEFAULT_NOTIFICATION_POLICY2}
-    Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS0}'     '1'
-
-    ${EG_RULE_NAME_0}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME8}  policy_name=${EG_POLICY_NAME5}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME9}
-    Should Be Equal As Strings      '${EG_RULE_NAME_0}'     '1'
     
     ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME9}
     Should Be Equal As Strings     '${CONNECT_CLIENT_OPEN_N/W}'  '1'
@@ -788,6 +806,8 @@ TCCS-14200: Sponsor Approval-Verify on sponsor Deny login passcode is not sent t
         
     ${REGISTRATION_STATUS}=                 Register Sponsored Guest User    ${USER_NAME}    ${USER_EMAIL}    ${USER_MOBILE}    ${SPONSOR_NAME}     ${SPONSOR_EMAIL}     ${ACCESS_PURPOSE}
     Should Be Equal As Strings     '${REGISTRATION_STATUS}'  '1'
+    Log to Console      Sleep for ${RECEIVE_MAIL}
+    Sleep                         ${RECEIVE_MAIL}
 
     ${APPROVAL_URL}=        Get Sponsor Action URL      ${SPONSOR_EMAIL}    ${SPONSOR_PASSWORD}    ${SPONSOR_DENY}
 
@@ -836,12 +856,6 @@ TCCS-14189: Checkng the behavior when two sponsors decision is different
     ${APPLY_USER_TEMPLATE}=             Apply Network to User Template  network_name=${SSID_NAME10}      template_name=${TEMPLATE7_NAME}     location=${LOCATION_TREE}
     Should Be Equal As Strings      '${APPLY_USER_TEMPLATE}'     '1'
 
-    ${EG_POLICY_NAME_STATUS1}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME6}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE4}    condition_value=${CONDITION_VALUE}    action_type=${SEND_PASSCODE_ON_APPROVAL}    user_notifpolicy=${DEFAULT_NOTIFICATION_POLICY1}    sponsor_notifpolicy=${DEFAULT_NOTIFICATION_POLICY2}
-    Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS1}'     '1'
-    
-    ${EG_RULE_NAME_1}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME9}  policy_name=${EG_POLICY_NAME6}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME10}
-    Should Be Equal As Strings      '${EG_RULE_NAME_1}'     '1'
-
     ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME10}
     Should Be Equal As Strings      '${CONNECT_CLIENT_OPEN_N/W}'     '1'
     Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
@@ -853,6 +867,9 @@ TCCS-14189: Checkng the behavior when two sponsors decision is different
 
     ${REGISTRATION_STATUS}=                 Register Sponsored Guest User    ${USER_NAME}    ${USER_EMAIL}    ${USER_MOBILE}    ${SPONSOR_NAME}     ${SPONSOR_EMAIL}     ${ACCESS_PURPOSE}
     Should Be Equal As Strings     '${REGISTRATION_STATUS}'  '1'
+    
+    Log to Console      Sleep for ${RECEIVE_MAIL}
+    Sleep                         ${RECEIVE_MAIL}
 
     ${PERMIT_URL}=        Get Sponsor Action URL      ${SPONSOR_EMAIL}    ${SPONSOR_PASSWORD}    ${SPONSOR_PERMIT}
 
@@ -905,12 +922,6 @@ TCCS-14190: Selecting Action item as Sending one time passcode to sponsor in onb
     ${APPLY_USER_TEMPLATE}=             Apply Network to User Template  network_name=${SSID_NAME11}      template_name=${TEMPLATE7_NAME}     location=${LOCATION_TREE}
     Should Be Equal As Strings      '${APPLY_USER_TEMPLATE}'     '1'
     
-    ${EG_POLICY_NAME_STATUS2}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME7}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE4}    condition_value=${CONDITION_VALUE}    action_type=${SEND_OTP_TO_SPONSOR}    user_notifpolicy=${DEFAULT_NOTIFICATION_POLICY1}    sponsor_notifpolicy=${DEFAULT_NOTIFICATION_POLICY3}
-    Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS2}'     '1'
-    
-    ${EG_RULE_NAME_2}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME10}  policy_name=${EG_POLICY_NAME7}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME11}
-    Should Be Equal As Strings      '${EG_RULE_NAME_2}'     '1'
-
     ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME11}
     Should Be Equal As Strings      '${CONNECT_CLIENT_OPEN_N/W}'     '1'
     Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
@@ -975,12 +986,6 @@ TCCS-14191: CFD-6353 ExtremeGuest Essentials: Deny Access rule does not work for
 
     ${USER_COUNT2}=    Get Extreme Guest Users Count
     Log to Console     Number of Guest Users: ${USER_COUNT2}
-
-    ${EG_POLICY_NAME_STATUS3}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME8}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE5}    condition_value=${CONDITION_USER_VALUE}
-    Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS3}'     '1'
-    
-    ${EG_RULE_NAME_3}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME11}  policy_name=${EG_POLICY_NAME8}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME12}
-    Should Be Equal As Strings      '${EG_RULE_NAME_3}'     '1'
 
     ${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}=             go to configure splash system template tab
     Should Be Equal As Strings      '${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}'       '1'
@@ -1106,13 +1111,7 @@ TCCS-14194: Device registration and authenticate CP with wrong OTP notified over
 
     ${NAVIGATE_TO_CONFIGURE_PAGE}=                  go to configure page
     Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'     '1'
-
-    ${EG_POLICY_NAME_STATUS4}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME9}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE4}    condition_value=${CONDITION_VALUE}    action_type=${SEND_OTP_TO_USER}    user_notifpolicy=${DEFAULT_NOTIFICATION_POLICY1}    sponsor_notifpolicy=${DEFAULT_NOTIFICATION_POLICY2}
-    Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS4}'     '1'
-    
-    ${EG_RULE_NAME_4}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME12}  policy_name=${EG_POLICY_NAME9}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME14}
-    Should Be Equal As Strings      '${EG_RULE_NAME_4}'     '1'
-    
+ 
     ${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}=             go to configure splash system template tab
     Should Be Equal As Strings      '${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}'       '1'
 
@@ -1182,76 +1181,6 @@ TCCS-14193: Validate if After redirecting to failed page, user connected back to
     [Tags]                  development    greenfield    brownfield    tccs_14193
 
     Depends On              TCCS-14194
-
-TCCS-14192: Create a voucher for one location and use it for other location
-    
-    [Documentation]         Verify User auth with Guest Vouchers
-
-    [Tags]                  development    greenfield    brownfield    tccs_14193
-
-    Depends On              TCCS-14169
-
-    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Complete Update     ${NW_POLICY_NAME15}          ${device1.serial}
-    Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
-
-    ${ONLINE_STATUS}=        Wait Until Device Online                ${device1.serial}
-    Should Be Equal As Strings      '${ONLINE_STATUS}'   '1'
-
-    ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
-    Should Be Equal As Strings      '${NAVIGATE_TO_EXTREME_GUEST_PAGE}'       '1'
-
-    ${NAVIGATE_TO_CONFIGURE_PAGE}=             go to configure page
-    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
-
-    ${NAVIGATE_TO_CONFIGURE_USERS_PAGE}=             go to configure users page
-    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_USERS_PAGE}'       '1'
-
-    ${USER_COUNT1}=    Get Extreme Guest Users Count
-    Log to Console     Number of Guest Users: ${USER_COUNT1}
-
-    ${VOUCHER_CREDENTIALS}=             create bulk vouchers client login  ${NO_OF_VOUCHERS}    access_group=${ACCESS_GROUP}    location_name=${LOCATION_TREE_01}
-
-    ${USER_COUNT2}=    Get Extreme Guest Users Count
-    Log to Console     Number of Guest Users: ${USER_COUNT2}
-
-    ${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}=             go to configure splash system template tab
-    Should Be Equal As Strings      '${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}'       '1'
-
-    ${APPLY_STATUS}=             apply network to user template  network_name=${SSID_NAME15}      template_name=${TEMPLATE9_NAME}     location=${LOCATION_TREE}
-    Should Be Equal As Strings      '${APPLY_STATUS}'       '1'
-    
-    ${EG_RULE_NAME_5}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME13}  policy_name=${EG_POLICY_NAME8}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME15}
-    Should Be Equal As Strings      '${EG_RULE_NAME_5}'     '1'
-
-    ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME15}
-    Should Be Equal As Strings      '${CONNECT_CLIENT_OPEN_N/W}'       '1'
-    Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
-    Sleep                         ${CLIENT_CONNECT_WAIT}
-
-    ${OPEN_GUEST_PORTAL}=             open guest portal browser    ${mu1.ip}
-    Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
-    Sleep       ${CP_PAGE_OPEN_WAIT}
-
-    ${USER_AUTH_STATUS}=                 validate eguest user login with voucher credentials    ${VOUCHER_CREDENTIALS}
-    get gp page screen shot
-
-    ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
-    Should Be Equal As Strings      '${WIFI_DISCONNECT}'       '1'
-    Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
-    Sleep  ${CLIENT_DISCONNECT_WAIT}
-
-    ${USERNAME1}=                 Get Username from vouchers   ${VOUCHER_CREDENTIALS}
-    ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
-    Should Be Equal As Strings     '${NAVIGATE_TO_CONFIGURE_PAGE}'  '1'
-
-    ${DELETE_USER}=             Delete User    ${USERNAME1}
-    Should Be Equal As Strings     '${DELETE_USER}'  '1'
-
-    Should Be Equal As Strings      '${USER_AUTH_STATUS}'       '-1'
-
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             Test Case Level AP Cleanup    
 
 TCCS-14166: Verify User registration and get CP access using E-mail
 
@@ -1464,6 +1393,79 @@ TCCS-14170: Guest-Essentials -Summary-Gender distribution widget
 
     [Teardown]   run keywords       Test Case Level Cleanup
 
+TCCS-14192: Create a voucher for one location and use it for other location
+    
+    [Documentation]         Verify User auth with Guest Vouchers
+
+    [Tags]                  development    greenfield    brownfield    tccs_14193
+
+    Depends On              TCCS-14169
+
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Complete Update     ${NW_POLICY_NAME15}          ${device1.serial}
+    Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
+
+    ${ONLINE_STATUS}=        Wait Until Device Online                ${device1.serial}
+    Should Be Equal As Strings      '${ONLINE_STATUS}'   '1'
+
+    ${NAVIGATE_TO_EXTREME_GUEST_PAGE}=             go to extreme guest page
+    Should Be Equal As Strings      '${NAVIGATE_TO_EXTREME_GUEST_PAGE}'       '1'
+
+    ${NAVIGATE_TO_CONFIGURE_PAGE}=             go to configure page
+    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
+
+    ${NAVIGATE_TO_CONFIGURE_USERS_PAGE}=             go to configure users page
+    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_USERS_PAGE}'       '1'
+    
+    ${USER_COUNT1}=    Get Extreme Guest Users Count
+    Log to Console     Number of Guest Users: ${USER_COUNT1}
+
+    ${DELETE_ALL_USER}=             Delete All User
+    Should Be Equal As Strings     '${DELETE_ALL_USER}'  '1'
+
+    ${USER_COUNT1}=    Get Extreme Guest Users Count
+    Log to Console     Number of Guest Users: ${USER_COUNT1}
+
+    ${VOUCHER_CREDENTIALS}=             create bulk vouchers client login  ${NO_OF_VOUCHERS}    access_group=${ACCESS_GROUP}    location_name=${LOCATION_TREE_01}
+
+    ${USER_COUNT2}=    Get Extreme Guest Users Count
+    Log to Console     Number of Guest Users: ${USER_COUNT2}
+
+    ${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}=             go to configure splash system template tab
+    Should Be Equal As Strings      '${CONFIGURE_SPLASH_SYSTEM_TEMPLATE}'       '1'
+
+    ${APPLY_STATUS}=             apply network to user template  network_name=${SSID_NAME15}      template_name=${TEMPLATE9_NAME}     location=${LOCATION_TREE}
+    Should Be Equal As Strings      '${APPLY_STATUS}'       '1'
+
+    ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME15}
+    Should Be Equal As Strings      '${CONNECT_CLIENT_OPEN_N/W}'       '1'
+    Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
+    Sleep                         ${CLIENT_CONNECT_WAIT}
+
+    ${OPEN_GUEST_PORTAL}=             open guest portal browser    ${mu1.ip}
+    Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
+    Sleep       ${CP_PAGE_OPEN_WAIT}
+
+    ${USER_AUTH_STATUS}=                 validate eguest user login with voucher credentials    ${VOUCHER_CREDENTIALS}
+    get gp page screen shot
+
+    ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
+    Should Be Equal As Strings      '${WIFI_DISCONNECT}'       '1'
+    Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
+    Sleep  ${CLIENT_DISCONNECT_WAIT}
+
+    ${USERNAME1}=                 Get Username from vouchers   ${VOUCHER_CREDENTIALS}
+    ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
+    Should Be Equal As Strings     '${NAVIGATE_TO_CONFIGURE_PAGE}'  '1'
+
+    ${DELETE_USER}=             Delete User    ${USERNAME1}
+    Should Be Equal As Strings     '${DELETE_USER}'  '1'
+
+    Should Be Equal As Strings      '${USER_AUTH_STATUS}'       '-1'
+
+    [Teardown]   run keywords       switch_to_extreme_guest_window
+    ...                             close_extreme_guest_window
+    ...                             Test Case Level AP Cleanup    
+
 TCCS-14161: Adding Dashboards
 
     [Documentation]         Create Extreme Guest Dashboard
@@ -1582,11 +1584,6 @@ TCCS-14196: Guest Monitor Role - Adding users
     [Documentation]         Create Guest Management Role and Create Vouchers
 
     [Tags]                  development    greenfield    guest_monoitor_role    tccs_14196 
-    
-    ${RANDOM1}=    Generate Random String
-    Set Suite Variable    ${USER_EMAIL1}    ${USER_NAME}+${RANDOM1}@gmail.com
-    Log To Console    User Email: ${USER_EMAIL1}
-    Set Suite Variable    &{GUEST_MANAGEMENT_MONITOR_ROLE}    email=${USER_EMAIL1}     name=${USER_NAME}     timeout=30     role=Monitor    organization=All Organizations
     
     ${LOGIN_XIQ}=             Login User          ${TENANT_USERNAME}      ${TENANT_PASSWORD}      url=${TEST_URL}    ignore_map=True
     should be equal as strings      '${LOGIN_XIQ}'    '1'

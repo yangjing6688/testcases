@@ -97,3 +97,28 @@ xapi Delete Radio Settings
     ${RESP_CODE} =      rest api delete     ${URI}    ${ID}
     [Return]            ${RESP_CODE}
 
+
+#### CCG Keywords ###
+xapi delete ccg
+    [Documentation]  delete ccg group
+    [Arguments]  ${CCG_ID}
+    ${RESP}=  rest api delete  /ccgs/${CCG_ID}
+    [Return]  ${RESP}
+
+xapi get total cloud config groups count
+    [Documentation]  Get Cloud Config Groups count
+    ${output}=                                  rest api get           /ccgs/?page=1&limit=10        access_token=${ACCESS_TOKEN}
+    ${total_cloud_config_groups_count}=         get json value         ${output}                     total_count
+    [Return]  ${total_cloud_config_groups_count}
+
+xapi get cloud config group by id
+    [Arguments]  ${ccg_id}
+    [Documentation]  Get Cloud Config Groups By Id
+    ${GET_RESPONSE}                                    rest api get                   /ccgs/${ccg_id}       access_token=${ACCESS_TOKEN}
+    [Return]  ${GET_RESPONSE}
+
+xapi create new cloud config groups
+    [Arguments]      ${request_ccg_name}               ${request_ccg_description}     ${device_id}
+    [Documentation]  Create CCG
+    ${POST_RESPONSE}=     rest api post v3        /ccgs       '{"name": "${request_ccg_name}","description":"${request_ccg_description}","device_ids":[${device_id}]}'       result_code=201
+    [Return]         ${POST_RESPONSE}

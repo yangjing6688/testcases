@@ -57,8 +57,8 @@ TCCS-13497: Enable Digital Twin Feature
     ${result}=  Navigate to Devices
     Should Be Equal As Integers                             ${result}       1
 
-    ${result}=  Is Digital Twin Option Visible
-    Should Be Equal As Strings                              ${result}       False
+    ${result}=  validate digital twin option hidden
+    Should Be Equal As Strings                              ${result}       True
 
     ${result}=  Enable CoPilot Feature For This VIQ
     Should Be Equal As Integers                             ${result}       1
@@ -66,7 +66,7 @@ TCCS-13497: Enable Digital Twin Feature
     ${result}=  Navigate to Devices
     Should Be Equal As Integers                             ${result}       1
 
-    ${result}=  Is Digital Twin Option Visible
+    ${result}=  validate digital twin option visible
     Should Be Equal As Strings                              ${result}       True
 
     [Teardown]    Refresh Page
@@ -149,7 +149,7 @@ TCCS-13500: Disable Digital Twin Feature
     ${result}=  Navigate to Devices
     Should Be Equal As Integers                             ${result}       1
 
-    ${result}=   Is Digital Twin Option Visible
+    ${result}=   validate digital twin option visible
     Should Be Equal As Strings                              ${result}       True
 
     ${result}=    Disable CoPilot Feature For This VIQ
@@ -158,8 +158,8 @@ TCCS-13500: Disable Digital Twin Feature
     ${result}=  Navigate to Devices
     Should Be Equal As Integers                             ${result}       1
 
-    ${result}=   Is Digital Twin Option Visible
-    Should Be Equal As Strings                              ${result}       False
+    ${result}=  validate digital twin option hidden
+    Should Be Equal As Strings                              ${result}       True
 
     Depends On      TCCS-13498
 

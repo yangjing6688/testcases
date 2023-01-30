@@ -3,6 +3,9 @@ data:
   setting_2: 2
   setting_3: 3
   setting_4: 4
+  feature_name: Feature Name XIQ-200
+  feature_jira_link: Jira Link XIQ-200
+  feature_qtest_link: qTest Link XIQ-200
 
 tests:
 
