@@ -72,7 +72,7 @@ ${WORLD_SITE}             World
 *** Test Cases ***
 Test 1: TC-11468 - With No Navigator> Add non-Extreme device
     [Documentation]     Confirms functionality surrounding adding a non-Extreme device when no navigator licenses are available
-    [Tags]              staging_testing    release_testing    license_testing    tccs_11468    apc_46353    development    xiqse    xiq_integration    no_navigators    test1
+    [Tags]              nightly3    staging_testing    release_testing    license_testing    tccs_11468    apc_46353    development    xiqse    xiq_integration    no_navigators    test1
 
     # Navigate to the Devices tab for the test site
     XIQSE Navigate to Site Devices and Confirm Success  ${NAV_SITE}
@@ -96,7 +96,7 @@ Test 1: TC-11468 - With No Navigator> Add non-Extreme device
 
 Test 2: TC-11465 - With No Navigator, No Pilots> Add non-Extreme
     [Documentation]     Confirms functionality surrounding adding a non-Extreme device when no licenses (navigator or pilot) are available
-    [Tags]              staging_testing    release_testing    license_testing    tccs_11465    apc_46353    development    xiqse    xiq_integration    no_navigators    test2
+    [Tags]              nightly3    staging_testing    release_testing    license_testing    tccs_11465    apc_46353    development    xiqse    xiq_integration    no_navigators    test2
 
     [Setup]    Consume All Pilot Licenses and Confirm Success
 
@@ -119,7 +119,7 @@ Test 2: TC-11465 - With No Navigator, No Pilots> Add non-Extreme
 
 Test 3: TC-11462 - With Not Enough Navigator> Add non-Extreme
     [Documentation]     Confirms functionality surrounding adding a non-Extreme device when not enough navigator licenses are available
-    [Tags]              staging_testing    release_testing    license_testing    tccs_11462    apc_46353    development    xiqse    xiq_integration    no_navigators    test3
+    [Tags]              nightly3    staging_testing    release_testing    license_testing    tccs_11462    apc_46353    development    xiqse    xiq_integration    no_navigators    test3
 
     # Delete one of the navigator devices to get back one navigator license entitlement
     XIQSE Navigate to Site Devices and Confirm Success  ${NAV_SITE}

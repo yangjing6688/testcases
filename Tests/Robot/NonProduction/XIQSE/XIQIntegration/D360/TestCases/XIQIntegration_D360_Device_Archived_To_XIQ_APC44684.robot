@@ -48,12 +48,13 @@ ${DUT_IP}               ${netelem1.ip}
 ${DUT_PROFILE}          ${netelem1.profile}
 
 ${TEST_ARCHIVE}         D360_AUTO_ARCHIVE
+${WORLD_ARCHIVE}        /World
 ${WORLD_SITE}           World
 
 *** Test Cases ***
 Test 1: Confirm Initial Archived Status in XIQSE is Reflected in XIQ
     [Documentation]     Confirms the initial unarchived status of a device is reflected correclty in XIQ
-    [Tags]              nightly2    stacking   release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test1
+    [Tags]              nightly2    nightly4   release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test1
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
     XIQSE Navigate to Devices and Confirm Success
@@ -65,7 +66,7 @@ Test 1: Confirm Initial Archived Status in XIQSE is Reflected in XIQ
 
 Test 2: Confirm Archived Status in XIQSE is Reflected in XIQ When Device is Archived
     [Documentation]     Creates an archive for the device and confirms XIQ displays the correct Archived value
-    [Tags]              nightly2    stacking   release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test2
+    [Tags]              nightly2    nightly4   release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test2
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 
@@ -83,7 +84,7 @@ Test 2: Confirm Archived Status in XIQSE is Reflected in XIQ When Device is Arch
 
 Test 3: Confirm Archived Status in XIQSE is Reflected in XIQ When Device No Longer Archived
     [Documentation]     Deletes the archive for the device and confirms XIQ displays the correct Archived value
-    [Tags]              nightly2    stacking    release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test3
+    [Tags]              nightly2    nightly4    release_testing    tccs_10317   apc_44684    development    xiqse    xiq_integration    d360    archived    test3
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
 
@@ -175,6 +176,7 @@ Set Up XIQSE Components
 
     # Make sure the device starts out as not archived
     Navigate and Delete Archive         ${TEST_ARCHIVE}
+    Navigate and Delete Archive         ${WORLD_ARCHIVE}
     Navigate to Devices and Confirm Success
     Confirm Device Not Archived         ${DUT_IP}
 
@@ -285,6 +287,7 @@ Clean Up XIQSE Components
 
     # Delete the archive again during tear down in case it is still present
     Navigate and Delete Archive         ${TEST_ARCHIVE}
+    Navigate and Delete Archive         ${WORLD_ARCHIVE}
 
     # Delete the test device
     Navigate and Delete Device          ${DUT_IP}

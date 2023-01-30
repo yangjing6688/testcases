@@ -104,6 +104,7 @@ TCXM-21577: Unhide Country Code - AP templates
     [Tags]       tcxm_21577         development
 
     # Country Code variables in line No.41 and 95 are different because retrived output and assigned output format are different for Country Code value.
+    # This test case will work only on the device which has the region World or EU
 
     ${onboard_status}=                onboard device quick                         ${device1}
     should be equal as integers       ${onboard_status}              1

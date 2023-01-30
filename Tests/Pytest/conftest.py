@@ -13,7 +13,9 @@ import yaml
 import sys
 import pexpect
 import imp
+import operator
 
+from distutils.version import LooseVersion
 from pytest import FixtureRequest
 from pexpect.pxssh import pxssh
 from _pytest import mark, fixtures
@@ -76,6 +78,16 @@ class OpenSpawn(Protocol):
         ) -> Iterator[pxssh]: ...
 
 
+class OpenPxsshSpawn(Protocol):
+    def __call__(
+        self, 
+        dut: Node,
+        debug_mode: bool,
+        disable_strict_host_key_checking: bool,
+        **kwargs: Dict
+        ) -> Iterator[pxssh]: ...
+
+
 class LoginXiq(Protocol):
     def __call__(
         self,
@@ -117,6 +129,13 @@ class ConfigureIqAgent(Protocol):
         self,
         duts: List[Node], 
         ipaddress: str
+        ) -> None: ...
+
+
+class UnconfigureIqAgent(Protocol):
+    def __call__(
+        self,
+        duts: List[Node]
         ) -> None: ...
 
 
@@ -238,7 +257,20 @@ class ResetSwitch(Protocol):
         ) -> None: ... 
 
 
+class SetHostname(Protocol):
+    def __call__(
+        self,
+        duts: List[Node]
+        ) -> None: ... 
+
+
 class DevicesConfiguration(Protocol):
+    def __call__(
+        self,
+        ) -> None: ...
+
+
+class DevicesCleanup(Protocol):
     def __call__(
         self,
         ) -> None: ...
@@ -498,6 +530,107 @@ def pytest_configure(config):
     pytest.testbed_one_node_items: List[pytest.Function] = []
     pytest.testbed_two_node_items: List[pytest.Function] = []
     pytest.testbed_stack_items: List[pytest.Function] = []
+    pytest.xiq_version: str = None
+    pytest.data: Dict[str, str] = {}
+
+
+def log_features():
+
+    root = Path(os.path.join(imp.find_module("extreme_automation_tests")[1], "data"))
+    suitemaps: List[str] = [str(path) for path in root.rglob("suitemap_*.yaml")]
+    suitemaps.sort()
+
+    if suitemaps:
+        
+        data: Dict[str, Dict[str, str]] = {}
+        max_len_values = 0
+        automated_tests = 0
+        story_tests_mapping: Dict[str, int] = {}
+        story_directory_mapping: DefaultDict[str, List[str]] = defaultdict(lambda: [])
+        
+        for index, suitemap_path in enumerate(suitemaps):
+
+            suitemap_file = re.search(r"suitemap_.*\.yaml", suitemap_path).group(0)
+            
+            try:
+                with open(suitemap_path, "r") as content:
+                    output_suitemap = yaml.safe_load(content.read())
+            except:
+                continue
+
+            if not (feature_name := output_suitemap.get("data", {}).get("feature_name")):
+                logger_obj.warning(f"{suitemap_file} suitemap file won't be parsed at it does not have the 'feature_name' key.")
+                continue
+
+            feature_jira_link = output_suitemap.get("data", {}).get("feature_jira_link")
+            feature_qtest_link = output_suitemap.get("data", {}).get("feature_qtest_link")
+
+            for directory in root.iterdir():
+                if path_obj := Path(suitemap_path):
+                    if directory in path_obj.parents:
+                        story_directory_mapping[directory.name].append(feature_name)
+                        break
+    
+            tests: List[TestCaseMarker] = []
+
+            for k, v in output_suitemap.get("tests", {}).items():
+                if tc := v.get("tc"):
+                    tests.append(tc)
+                else:
+                    tests.extend([x.get("tc") for x in v.get("tests", [])])
+
+            feature_tests = [test for test in tests if test not in [pytest.onboarding_test_name, pytest.onboarding_cleanup_test_name]]
+            temp_lines: List[str] = []
+            automated_tests += len(feature_tests)
+
+            temp_data = {
+                "Feature Index": index + 1,
+                "Feature Name": feature_name,
+                "Suitemap File": suitemap_file,
+                "Suitemap Path": re.search("data/.*$", suitemap_path).group(0),
+                "Automated Tests": str(len(feature_tests)),
+                "Jira Link": feature_jira_link,
+                "qTest Link": feature_qtest_link,
+                "Data Directory": directory.name
+            }
+
+            story_tests_mapping[feature_name] = len(feature_tests)
+
+            data[suitemap_path] = temp_data
+            max_len_fields = max(len(str(k)) for k in temp_data)
+            temp_max_len_values = max(len(str(v)) for v in temp_data.values())
+            max_len_values = temp_max_len_values if temp_max_len_values > max_len_values else max_len_values
+
+        temp_lines.append("\n+" + "-" * (max_len_fields + max_len_values + 4) + "+")
+        for suitema_path, values in data.items():
+            for k, v in values.items():
+                if v:
+                    temp_lines.append(f"| {k:<{max_len_fields}}: {v:<{max_len_values}} |")
+            temp_lines.append("+" + "-"*(max_len_fields+max_len_values+4) + "+")
+
+        logger_obj.info("\n".join(temp_lines))
+        logger_obj.info(f"Found {len(suitemaps)} automated features in the data/ directory.")
+        logger_obj.info(f"Found {automated_tests} automated tests definitions in the data/ directory.")
+
+        for directory, features in story_directory_mapping.items():
+            if features:
+                logger_obj.info(f"Found {len(features)} automated stories in the '{directory}' directory: '" + ", '".join(features) + "'.")
+                logger_obj.info(f"Found {sum(v for k, v in story_tests_mapping.items() if k in features)} automated test cases in the '{directory}' directory.")
+            else:
+                logger_obj.info(f"Did not find any story in the '{directory}' directory.")
+
+        try:
+            logger_obj.info(f"The average number of automated test cases per story is {int(sum(story_tests_mapping.values())/len(story_tests_mapping))}.")
+            logger_obj.info(
+                f"The highest number of automated test cases per story is {max(story_tests_mapping.values())} ('" + \
+                "', '".join(k for k, v in story_tests_mapping.items() if v == max(story_tests_mapping.values())) + "' feature(s)).")
+            logger_obj.info(
+                f"The least number of automated test cases per story is {min(story_tests_mapping.values())} ('" + \
+                "', '".join(k for k, v in story_tests_mapping.items() if v == min(story_tests_mapping.values())) + "' feature(s)).")
+        except:
+            pass
+    else:
+        logger.info("Did not find any suitemap file in the data/ directory.")
 
 
 def pytest_collection_modifyitems(session, items):
@@ -505,6 +638,7 @@ def pytest_collection_modifyitems(session, items):
     if pytest.runlist_path != "default":
         
         log_git()
+        log_features()
 
         logger_obj.info(f"Collected {len(items)} test functions from given test directory path(s).")
         logger_obj.info(f"Current runlist ('{pytest.runlist_name}') is located in this yaml file: '{pytest.runlist_path}'.")
@@ -1009,11 +1143,12 @@ def pytest_sessionstart(session):
 def pytest_sessionfinish(session):
 
     if pytest.runlist_path != "default":
-
+        
         try:
             config['${TEST_NAME}'] = "RESULTS"
             
             max_tc_length = max([len(get_test_marker(item)[0]) for item in pytest.items])
+            max_tc_length = max([max_tc_length, 9])
             result_witdh = 17
             line_width = max_tc_length + 7 * result_witdh + 38
             
@@ -1087,6 +1222,13 @@ def pytest_sessionfinish(session):
         
         if run_options := pytest.run_options:
             session.config._metadata["Run Options"] = run_options
+
+        if xiq_version := pytest.xiq_version:
+            session.config._metadata["XIQ version"] = xiq_version
+
+        for field in pytest.data:
+            if data := pytest.data.get(field):
+                session.config._metadata[field] = data
 
 
 def pytest_generate_tests(metafunc):
@@ -1211,6 +1353,17 @@ def pytest_runtest_setup(item):
         request = FixtureRequest(item, _ispytest=True)
 
         for marker in item.own_markers:
+
+            # valid markers: 
+            #   pytest.mark.skip_if_{node}_{field}(*args)
+            #
+            #   e.g.
+            #        @pytest.mark.skip_if_node_1_platform("5420", "5520") -> will skip test case if the platform of the switch is in ["5420", "5520"]
+            #
+            #   node -> node_1|node_2|node_stack
+            #   field -> cli_type|make|model|platform
+            #   args -> values for given field
+            
             for node in ["node_1", "node_2", "node_stack"]:
                 for field in ["cli_type", "make", "model", "platform"]:
                     if (marker.name == f'skip_if_{node}_{field}') and bool(marker.args):
@@ -1219,11 +1372,15 @@ def pytest_runtest_setup(item):
                             if field_value := node_fxt.get(field):
                                 if any(field_value.upper() == str(arg).upper() for arg in marker.args):
                                     msg = f"'{current_test_marker}' test case will be skipped because " \
-                                          f"it is not meant to run when '{node_fxt.name}' has" \
+                                          f"it is not meant to run when '{node_fxt.node_name}' has" \
                                           f" '{field_value}' set for the '{field}' field."
                                     item.add_marker(pytest.mark.skip(msg))
                                     pytest.skip(msg)
-                                    
+            
+            # e.g.
+            #     pytest.mark.skip_if_browser(chrome")
+            #
+
             if (marker.name == "skip_if_browser") and bool(marker.args):
                 if browser := config.get("BROWSER"):
                     if any(browser.upper() == value.upper() for value in marker.args):
@@ -1232,6 +1389,10 @@ def pytest_runtest_setup(item):
                         item.add_marker(pytest.mark.skip(msg))
                         pytest.skip(msg)
             
+            # e.g.
+            #     pytest.mark.skip_if_lab("BUCHAREST")
+            #
+
             if (marker.name == "skip_if_lab") and bool(marker.args):
                 if lab := config.get("lab"):
                     if any(lab.upper() == value.upper() for value in marker.args):
@@ -1239,7 +1400,66 @@ def pytest_runtest_setup(item):
                               f"it is not meant to run when lab is '{lab}'."
                         item.add_marker(pytest.mark.skip(msg))
                         pytest.skip(msg)
-                         
+            
+            # valid markers: 
+            #   pytest.mark.skip_if_{node}_{software}_version_{operator}({version}, {os})
+            #   
+            #   e.g. 
+            #        @pytest.mark.skip_if_node_1_system_version_lt("8.8.0.0", "VOSS") -> will skip test case if switch is VOSS and has system version < 8.8.0.0
+            #
+            #           if box is VOSS and has iqagent_version='0.6.0', system_version='8.8.0.0'
+            #
+            #        @pytest.mark.skip_if_node_1_system_version_eq("8.8.0.0", "VOSS")  -> SKIPPED
+            #        @pytest.mark.skip_if_node_1_system_version_eq("8.8.0.0", "EXOS")  -> NOT SKIPPED
+            #        @pytest.mark.skip_if_node_1_system_version_eq("8.7.0.0", "VOSS")  -> NOT SKIPPED
+            #        @pytest.mark.skip_if_node_1_system_version_lt("8.8.0.1", "VOSS")  -> SKIPPED
+            #        @pytest.mark.skip_if_node_1_system_version_le("8.8.0.0", "VOSS")  -> SKIPPED
+            #        @pytest.mark.skip_if_node_1_system_version_lt("7.8.0.0", "VOSS")  -> NOT SKIPPED
+            #        @pytest.mark.skip_if_node_1_system_version_gt("7.8.0.0", "VOSS")  -> SKIPPED
+            #        @pytest.mark.skip_if_node_1_system_version_ge("8.8.0.0", "VOSS")  -> SKIPPED
+            #        @pytest.mark.skip_if_node_1_system_version_ge("8.8.0.0", "EXOS")  -> NOT SKIPPED
+            #        @pytest.mark.skip_if_node_1_iqagent_version_eq("0.6.0", "VOSS")   -> SKIPPED
+            #        @pytest.mark.skip_if_node_1_iqagent_version_eq("0.6.0", "EXOS")   -> NOT SKIPPED
+            #        @pytest.mark.skip_if_node_1_iqagent_version_lt("0.6.0.1", "VOSS") -> SKIPPED
+            #        @pytest.mark.skip_if_node_1_iqagent_version_le("0.6.0", "VOSS")   -> SKIPPED
+            #        @pytest.mark.skip_if_node_1_iqagent_version_gt("0.5.0", "VOSS")   -> SKIPPED
+            #        @pytest.mark.skip_if_node_1_iqagent_version_ge("0.6.0", "VOSS")   -> SKIPPED
+            #        @pytest.mark.skip_if_node_1_iqagent_version_ge("0.6.0", "EXOS")   -> NOT SKIPPED
+            #
+            #   node -> node_1|node_2|node_stack
+            #   software -> system|iqagent
+            #   operator -> lt|le|gt|ge|eq
+            #   version -> the expected {software} version
+            #   os -> the OS of the switch
+            #
+            #   note: currently implemented only for EXOS/VOSS
+
+            for marker in item.own_markers:
+                for found_node in ["node_1", "node_2", "node_stack"]:
+                    for found_operator in ["lt", "le", "gt", "ge", "eq"]:
+                        for found_software in ["iqagent", "system"]:
+                            if (marker.name == f"skip_if_{found_node}_{found_software}_version_{found_operator}") and len(marker.args) == 2:
+                                marker_version = marker.args[0]
+                                marker_os = marker.args[1].upper()
+                                if node_fxt := request.getfixturevalue(found_node):  
+                                    if marker_os == node_fxt.cli_type.upper():
+                                        if sys_fxt := request.getfixturevalue(f"{found_node}_starting_{found_software}_version"):
+                                            if (found_software == "system") and (found_node == "node_stack"):
+                                                sys_fxt = sys_fxt[0][1]
+                                            try:
+                                                op = f"getattr(operator, '{found_operator}')(LooseVersion('{sys_fxt}'), LooseVersion('{marker_version}'))"
+                                                result = eval(op)
+                                            except:
+                                                logger_obj.warning("Failed to parse versions.")
+                                            else:
+
+                                                if result is True:
+                                                    msg = f"'{current_test_marker}' test case will be skipped because " \
+                                                          f"it is not meant to run when '{node_fxt.node_name}' is '{marker_os}' and" \
+                                                          f" its {found_software} version ('{sys_fxt}') is {found_operator} '{marker_version}'."
+                                                    item.add_marker(pytest.mark.skip(msg))
+                                                    pytest.skip(msg)
+
         if (not is_onboarding_test(item)) and (not is_onboarding_cleanup_test(item)):
             logger_obj.step(f"Start SETUP of test function '{current_test_marker}': '{item.nodeid}'.")
 
@@ -1537,7 +1757,8 @@ class OnboardingTests:
 def login_xiq(
         debug: Callable,
         get_xiq_library,
-        deactivate_xiq_library
+        deactivate_xiq_library,
+        logger: PytestLogger
 ) -> LoginXiq:
 
     @contextmanager
@@ -1549,6 +1770,11 @@ def login_xiq(
         
         try:
             xiq = get_xiq_library()
+
+            if not pytest.xiq_version:
+                pytest.xiq_version = xiq.login.get_xiq_version()
+                logger.info(f"XIQ has version '{pytest.xiq_version}'.")
+
             yield xiq
         finally:
             deactivate_xiq_library(xiq)
@@ -1695,6 +1921,39 @@ def open_spawn(
 
 
 @pytest.fixture(scope="session")
+def open_pxssh_spawn(
+    cli: Cli
+) -> OpenPxsshSpawn:
+
+    @contextmanager
+    def open_pxssh_spawn_func(
+            dut: Node,
+            debug_mode: bool=False,
+            disable_strict_host_key_checking: bool=True,
+            **kwargs
+    ) -> Iterator[pxssh]:
+        try:
+            spawn_connection = cli._Cli__open_pxssh_spawn(
+                dut.ip, dut.username, dut.password, disable_strict_host_key_checking=disable_strict_host_key_checking, **kwargs)
+            
+            if debug_mode:
+                if 'EXOS' in dut.cli_type.upper():
+                    cli.send(spawn_connection, 'disable cli paging', pxssh=True)
+                    cli.send(spawn_connection, 'debug iqagent show log hive-agent tail', pxssh=True)
+
+                elif 'VOSS' in dut.cli_type.upper():
+                    cli.send(spawn_connection, 'enable', pxssh=True)
+                    cli.send(spawn_connection, 'configure terminal', pxssh=True)
+                    cli.send(spawn_connection, 'trace level 261 3', pxssh=True)
+                    cli.send(spawn_connection, 'trace screen enable', pxssh=True)
+
+            yield spawn_connection
+        finally:          
+            spawn_connection.close()
+    return open_pxssh_spawn_func
+
+
+@pytest.fixture(scope="session")
 def connect_to_all_devices(
         network_manager: NetworkElementConnectionManager,
         dev_cmd: NetworkElementCliSend
@@ -1805,41 +2064,115 @@ def close_connection(
 def virtual_routers(
         enter_switch_cli: EnterSwitchCli,
         node_list: List[Node],
-        logger: PytestLogger
+        logger: PytestLogger,
+        nodes_data
 ) -> Dict[str, str]:
-    
-    vrs = {}
+    return nodes_data.get("virtual_routers", {})
+ 
+
+@pytest.fixture(scope="session")
+def starting_iqagent_versions(
+        enter_switch_cli: EnterSwitchCli,
+        node_list: List[Node],
+        logger: PytestLogger,
+        nodes_data
+) -> Dict[str, str]:
+    return {
+        k: v["iqagent_version"] for k, v in nodes_data.items()
+    }
+
+
+@pytest.fixture(scope="session")
+def starting_system_versions(
+        enter_switch_cli: EnterSwitchCli,
+        node_list: List[Node],
+        logger: PytestLogger,
+        nodes_data
+) -> Dict[str, str]:
+    return {
+        k: v["system_version"] for k, v in nodes_data.items()
+    }
+
+
+@pytest.fixture(scope="session")
+def nodes_data(
+    enter_switch_cli: EnterSwitchCli,
+    node_list: List[Node],
+    logger: PytestLogger
+) -> Dict[str, Dict[str, Union[str, List[Tuple[str, str]]]]]:
+
+    data = defaultdict(lambda: {})
 
     def worker(dut: Node):
         with enter_switch_cli(dut) as dev_cmd:
-            try:
+            
+            # get iqagent versions'
+            iqagent_version = "N/A"
+
+            if dut.cli_type.upper() == "EXOS":
+                output = dev_cmd.send_cmd(dut.name, 'show iqagent')[0].return_text
+                iqagent_version = re.search(r"Version\s+\s([\d\.]+)\s+\r\n", output).group(1)
+            elif dut.cli_type.upper() == "VOSS":
+                output = dev_cmd.send_cmd(dut.name, 'show application iqagent')[0].return_text
+                iqagent_version = re.search(f"Agent Version\s+:\s([\d\.]+)\r\n", output).group(1)
+            else:
+                logger.warning("OS not yet supported.")
+
+            data[dut.node_name]["iqagent_version"] = iqagent_version
+
+            # get system versions
+            system_version = "N/A"
+
+            if dut.cli_type.upper() == "EXOS":
+                output = dev_cmd.send_cmd(dut.name, 'show version')[0].return_text
+
+                if dut.platform.upper() == "STACK":
+                    system_version = re.findall("(Slot-\d).*\sIMG:\s([\d\.]+)", output)
+                else:
+                    system_version = re.search(r"IMG:\s([\d\.]+)", output).group(1)
+
+            elif dut.cli_type.upper() == "VOSS":
+                output = dev_cmd.send_cmd(dut.name, 'show sys software', ignore_cli_feedback=True)[0].return_text
+                system_version = re.search(r"Version\s+:\sBuild\s([\d\.]+)\s", output).group(1)
+            else:
+                logger.warning("OS not yet supported.")
+
+            data[dut.node_name]["system_version"] = system_version
+
+            # get vritual routers
+            virtual_router = "N/A"
+
+            if dut.cli_type.upper() == "EXOS":
                 output = dev_cmd.send_cmd(
                     dut.name, 'show vlan', max_wait=10, interval=2)[0].return_text
-                pattern = f'(\w+)(\s+)(\d+)(\s+)({dut.ip})(\s+)(\/.*)(\s+)(\w+)(\s+/)(.*)(VR-\w+)'
+                pattern = fr'(\w+)(\s+)(\d+)(\s+)({dut.ip})(\s+)(\/.*)(\s+)(\w+)(\s+/)(.*)(VR-\w+)'
                 match = re.search(pattern, output)
+                try:
+                    virtual_router = match.group(12)
+                except:
+                    pass
+            
+            elif dut.cli_type.upper() == "VOSS":
+                pass
+            else:
+                logger.warning("OS not yet supported.")
 
-                assert match, "Pattern not found, unable to get virtual router info!"
-                assert int(match.group(9)) > 0, f"There is no active port in the mgmt vlan {match.group(1)}"
-                
-                vrs[dut.name] = match.group(12)
-            except Exception as exc:
-                logger.warning(repr(exc))
-                vrs[dut.name] = ""
+            data[dut.node_name]["virtual_router"] = virtual_router
             
     threads: List[threading.Thread] = []
     try:
-        for dut in [d for d in node_list if d.cli_type.upper() == "EXOS"]:
+        for dut in node_list:
             thread = threading.Thread(target=worker, args=(dut, ))
             threads.append(thread)
             thread.start()
     finally:
         for thread in threads:
             thread.join()
-    return vrs
+    return data
 
 
 @pytest.fixture(scope="session")
-def configure_iq_agent(
+def configure_iqagent(
         loaded_config: Dict[str, str],
         logger: PytestLogger,
         node_list: List[Node],
@@ -1853,7 +2186,7 @@ def configure_iq_agent(
     """
 
     @debug
-    def configure_iq_agent_func(
+    def configure_iqagent_func(
             duts: List[Node]=node_list,
             ipaddress: str=loaded_config['sw_connection_host']
     ) -> None:
@@ -1907,7 +2240,7 @@ def configure_iq_agent(
         finally:
             for thread in threads:
                 thread.join()
-    return configure_iq_agent_func
+    return configure_iqagent_func
 
 
 @pytest.fixture(scope="session")
@@ -1944,7 +2277,7 @@ def onboarding_locations(
                 
             logger.info(
                 f"Successfully found this location in the runlist for node '{node.node_name}': '{onboarding_location}'")
-            ret[node.name] = onboarding_location
+            ret[node.node_name] = onboarding_location
             
             if create_onboarding_location:
                 logger.info(
@@ -1961,21 +2294,22 @@ def onboarding_locations(
                 logger.info(f"Found location(s) attached to '{node.node_name}': {locations}.")
             
             if isinstance(locations, str):
-                ret[node.name] = locations
+                ret[node.node_name] = locations
                 
             elif isinstance(locations, dict):
                 logger.step("Choose one of them.")
                 found_location = random.choice(list(locations.values()))
                 logger.info(f"The chosen location for '{node.node_name}' is '{found_location}'.")
-                ret[node.name] = found_location
+                ret[node.node_name] = found_location
             
             else:
                 logger.info(f"Did not find any location attached to '{node.node_name}'.")
 
                 logger.step(f"Will choose a location out of these for '{node.node_name}': {hardcoded_locations}.")
                 found_location = random.choice(hardcoded_locations)
-                logger.info(f"The chosen location for '{node.name}' is '{found_location}'.")
-                ret[node.name] = found_location
+                logger.info(f"The chosen location for '{node.node_name}' is '{found_location}'.")
+                ret[node.node_name] = found_location
+        pytest.data[f"{node.node_name}_onboarding_location"] = ret[node.node_name]
     return ret
 
 
@@ -2269,10 +2603,10 @@ def configure_network_policies(
             dut_config: PolicyConfig=policy_config,
     ) -> None:
         
-        for dut, data in dut_config.items():
+        for node_name, data in dut_config.items():
      
-            [dut_info] = [dut_iter for dut_iter in node_list if dut_iter.name == dut]
-            node_name = dut_info.node_name
+            node_info = request.getfixturevalue(node_name)
+            dut = node_info.name
             onb_options: Options = request.getfixturevalue(f"{node_name}_onboarding_options")
             
             logger.step(f"Configuring the network policy and switch template for dut '{dut}' (node: '{node_name}').")
@@ -2315,7 +2649,7 @@ def configure_network_policies(
 
                 if assign_network_policy_to_device_flag:
                     assert xiq.xflowsmanageDevices.assign_network_policy_to_switch_mac(
-                        policy_name=network_policy, mac=dut_info.mac) == 1, \
+                        policy_name=network_policy, mac=node_info.mac) == 1, \
                         f"Couldn't assign policy {network_policy} to device '{dut}' (node: '{node_name}')."
                     
                     screen.save_screen_shot()
@@ -2363,12 +2697,57 @@ def policy_config(
         policy_name: str = onboarding_options.get("policy_name", random_policy_name)
         template_name: str = onboarding_options.get("template_name", random_template_name)
         
-        dut_config[dut.name]["policy_name"] = policy_name
-        dut_config[dut.name]['template_name'] = template_name
-        dut_config[dut.name]['dut_model_template'] = model
-        dut_config[dut.name]['units_model'] = units_model
+        dut_config[dut.node_name]["policy_name"] = policy_name
+        dut_config[dut.node_name]['template_name'] = template_name
+        dut_config[dut.node_name]['dut_model_template'] = model
+        dut_config[dut.node_name]['units_model'] = units_model
+
+        pytest.data[f"{dut.node_name}_policy_name"] = policy_name
+        pytest.data[f"{dut.node_name}_template_name"] = template_name
 
     return dut_config
+
+
+@pytest.fixture(scope="session")
+def node_1_starting_iqagent_version(
+    starting_iqagent_versions: Dict[str, str]
+) -> str:
+    return starting_iqagent_versions.get("node_1", "")
+
+
+@pytest.fixture(scope="session")
+def node_1_starting_system_version(
+    starting_system_versions: Dict[str, str]
+) -> str:
+    return starting_system_versions.get("node_1", "")
+
+
+@pytest.fixture(scope="session")
+def node_2_starting_iqagent_version(
+    starting_iqagent_versions: Dict[str, str]
+) -> str:
+    return starting_iqagent_versions.get("node_2", "")
+
+
+@pytest.fixture(scope="session")
+def node_2_starting_system_version(
+    starting_system_versions: Dict[str, str]
+) -> str:
+    return starting_system_versions.get("node_2", "")
+
+
+@pytest.fixture(scope="session")
+def node_stack_starting_iqagent_version(
+    starting_iqagent_versions: Dict[str, str]
+) -> str:
+    return starting_iqagent_versions.get("node_stack", "")
+
+
+@pytest.fixture(scope="session")
+def node_stack_starting_system_version(
+    starting_system_versions: Dict[str, str]
+) -> List[Tuple[str, str]]:
+    return starting_system_versions.get("node_stack", "")
 
 
 @pytest.fixture(scope="session")
@@ -2376,7 +2755,7 @@ def node_1_policy_config(
         policy_config: PolicyConfig,
         node_1: Node
 ) -> Dict[str, str]:
-    return policy_config.get(node_1.get("name"), {})
+    return policy_config.get("node_1", {})
 
 
 @pytest.fixture(scope="session")
@@ -2384,7 +2763,7 @@ def node_2_policy_config(
         policy_config: PolicyConfig,
         node_2: Node
 ) -> Dict[str, str]:
-    return policy_config.get(node_2.get("name"), {})
+    return policy_config.get("node_2", {})
 
 
 @pytest.fixture(scope="session")
@@ -2392,14 +2771,14 @@ def node_stack_policy_config(
         policy_config: PolicyConfig,
         node_stack: Node
 ) -> Dict[str, str]:
-    return policy_config.get(node_stack.get("name"), {})
+    return policy_config.get("node_stack", {})
 
 
 @pytest.fixture(scope="session")
 def node_stack_model_units(
     node_stack_policy_config: Dict[str, str]
 ) -> str:
-    return node_stack_policy_config.get("units_model")
+    return node_stack_policy_config.get("units_model", "")
 
 
 @pytest.fixture(scope="session")
@@ -2407,7 +2786,7 @@ def node_1_onboarding_location(
         onboarding_locations: Dict[str, str],
         node_1: Node
 ) -> str:
-    return onboarding_locations.get(node_1.get("name", ""), "")
+    return onboarding_locations.get("node_1", "")
 
 
 @pytest.fixture(scope="session")
@@ -2415,7 +2794,7 @@ def node_2_onboarding_location(
         onboarding_locations: Dict[str, str],
         node_2: Node
 ) -> str:
-    return onboarding_locations.get(node_2.get("name", ""), "")
+    return onboarding_locations.get("node_2", "")
 
 
 @pytest.fixture(scope="session")
@@ -2423,35 +2802,40 @@ def node_stack_onboarding_location(
         onboarding_locations: Dict[str, str],
         node_stack: Node
 ) -> str:
-    return onboarding_locations.get(node_stack.get("name", ""), "")
+    return onboarding_locations.get("node_stack", "")
+
+
+@pytest.fixture(scope="session")
+def xiq_version() -> str:
+    return pytest.xiq_version
 
 
 @pytest.fixture(scope="session")
 def node_1_policy_name(
     node_1_policy_config: Dict[str, str]
 ) -> str:
-    return node_1_policy_config.get("policy_name")
+    return node_1_policy_config.get("policy_name", "")
 
 
 @pytest.fixture(scope="session")
 def node_2_policy_name(
     node_2_policy_config: Dict[str, str]
 ) -> str:
-    return node_2_policy_config.get("policy_name")
+    return node_2_policy_config.get("policy_name", "")
 
 
 @pytest.fixture(scope="session")
 def node_stack_policy_name(
     node_stack_policy_config: Dict[str, str]
 ) -> str:
-    return node_stack_policy_config.get("policy_name")
+    return node_stack_policy_config.get("policy_name", "")
 
 
 @pytest.fixture(scope="session")
 def node_1_template_name(
     node_1_policy_config: Dict[str, str]
 ) -> str:
-    return node_1_policy_config.get("template_name")
+    return node_1_policy_config.get("template_name", "")
 
 
 @pytest.fixture(scope="session")
@@ -2465,7 +2849,7 @@ def node_2_template_name(
 def node_stack_template_name(
     node_stack_policy_config: Dict[str, str]
 ) -> str:
-    return node_stack_policy_config.get("template_name")
+    return node_stack_policy_config.get("template_name", "")
 
 
 @pytest.fixture(scope="session")
@@ -2555,6 +2939,10 @@ def node_list(
         node.node_name = "node_stack"
         duts.append(node)   
 
+    for dut in duts:
+        pytest.data[f"{dut.node_name}_netelem_name"] = dut.name
+        pytest.data[f"{dut.node_name}_cli_type"] = dut.cli_type.upper() 
+
     return duts
 
 
@@ -2585,7 +2973,7 @@ def update_devices(
         for dut in duts:
             
             onb_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
-            policy_name: str = policy_config[dut.name]['policy_name']
+            policy_name: str = policy_config[dut.node_name]['policy_name']
             
             create_network_policy_flag = onb_options.get('create_network_policy', True)
             assign_network_policy_to_device_flag = onb_options.get('assign_network_policy_to_device', True)
@@ -2616,7 +3004,7 @@ def update_devices(
         for dut in duts:
             
             onb_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
-            policy_name = policy_config[dut.name]['policy_name']
+            policy_name = policy_config[dut.node_name]['policy_name']
 
             create_network_policy_flag = onb_options.get('create_network_policy', True)
             assign_network_policy_to_device_flag = onb_options.get('assign_network_policy_to_device', True)
@@ -2662,7 +3050,7 @@ def onboarding(
                             
         for dut in duts:
             
-            if xiq.xflowscommonDevices.onboard_device_quick({**dut, "location": onboarding_locations[dut.name]}) == 1: 
+            if xiq.xflowscommonDevices.onboard_device_quick({**dut, "location": onboarding_locations[dut.node_name]}) == 1: 
                 logger.info(f"Successfully onboarded this device: '{dut}'.")
                 screen.save_screen_shot()
             else:
@@ -2767,7 +3155,8 @@ def log_options(
             logger.info(f"The onboarding options for '{node_name}':\n{json.dumps(fxt, indent=4)}")
 
     run_options: Options = request.getfixturevalue("run_options")
-    logger.info(f"The run options for this session: {json.dumps(run_options, indent=4)}")
+    if run_options:
+        logger.info(f"The run options for this session: {json.dumps(run_options, indent=4)}")
 
 
 @pytest.fixture(scope="session")
@@ -2781,6 +3170,26 @@ def get_new_action_chains(
     action_chains: type
 ) -> Callable[[], ActionChains]:
     return lambda: action_chains(cloud_driver.cloud_driver)
+
+
+@pytest.fixture(scope="session")
+def log_devices_versions(
+    nodes_data: Dict[str, Dict[str, Union[str, List[Tuple[str, str]]]]],
+    logger: PytestLogger
+) -> None:
+    for node, values in nodes_data.items():
+
+        logger.info(f"Node '{node}' has iqagent version '{values['iqagent_version']}'.")
+        pytest.data[f"{node}_starting_iqagent_version"] = values["iqagent_version"]
+
+        if node == "node_stack":
+            for slot, version in values["system_version"]:
+                logger.info(f"Node '{node}' ('{slot}') has system version '{version}'.")
+                pytest.data[f"{node}_starting_system_version ('{slot}')"] = version
+
+        else:
+            logger.info(f"Node '{node}' has system version '{values['system_version']}'.")
+            pytest.data[f"{node}_starting_system_version"] = values["system_version"]
 
 
 @pytest.fixture(scope="session")
@@ -2813,16 +3222,79 @@ def devices_configuration(
     """
     
     @debug
-    def device_configuration_func() -> None:
+    def devices_configuration_func() -> None:
         
         reset_switch: ResetSwitch = request.getfixturevalue("reset_switch")
-        configure_iq_agent: ConfigureIqAgent = request.getfixturevalue("configure_iq_agent")
+        set_hostname: SetHostname = request.getfixturevalue("set_hostname")
+        configure_iqagent: ConfigureIqAgent = request.getfixturevalue("configure_iqagent")
         node_list: List[Node] = request.getfixturevalue("node_list")
 
         reset_switch()
-        configure_iq_agent(duts=node_list)
+        configure_iqagent(duts=node_list)
+        set_hostname()
 
-    return device_configuration_func
+        request.getfixturevalue("log_devices_versions")
+
+    return devices_configuration_func
+
+
+@pytest.fixture(scope="session")
+def set_hostname(
+    enter_switch_cli: EnterSwitchCli,
+    logger: PytestLogger,
+    debug: Callable,
+    node_list: List[Node],
+    request: fixtures.SubRequest
+):
+
+    @debug
+    def set_hostname_func(
+        duts: List[Node]=node_list
+        ) -> None:
+
+        def worker(dut: Node):
+            
+            onboarding_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
+
+            if hostname := onboarding_options.get("hostname"):
+                logger.info(f"Found field 'hostname' in runlist for node '{dut.node_name}' set to '{hostname}'.")
+            elif hostname := dut.get("hostname"):
+                logger.info(f"Found field 'hostname' in devices yaml for node '{dut.node_name}' ('{dut.name}') set to '{hostname}'.")
+            else:
+                logger.info(f"Did not find the 'hostname' field in runlist or devices yaml for node '{dut.node_name}'.")
+                return
+            
+            logger.step(f"Set hostname to '{hostname}' for the '{dut.node_name}' node.")
+
+            with enter_switch_cli(dut) as dev_cmd:
+                if dut.cli_type.upper() == "EXOS":
+                    dev_cmd.send_cmd(dut.name, f'configure snmp sysName {hostname}')
+                    dev_cmd.send_cmd(
+                        dut.name, 'disable iqagent', max_wait=10, interval=2,
+                        confirmation_phrases='Do you want to continue?', confirmation_args='Yes')
+                    dev_cmd.send_cmd(dut.name, 'enable iqagent', max_wait=10, interval=2)
+                elif dut.cli_type.upper() == "VOSS":
+                    dev_cmd.send_cmd(dut.name, "enable")
+                    dev_cmd.send_cmd(dut.name, "configure terminal")
+                    dev_cmd.send_cmd(dut.name, f"sys name {hostname}")
+                    dev_cmd.send_cmd(dut.name, 'application', max_wait=10, interval=2)
+                    dev_cmd.send_cmd(dut.name, 'no iqagent enable', max_wait=10, interval=2)
+                    dev_cmd.send_cmd(dut.name, 'iqagent enable', max_wait=10, interval=2)
+                else:
+                    logger.warning("OS not yet supported.")
+
+        threads: List[threading.Thread] = []
+
+        try:
+            for dut in duts:
+                thread = threading.Thread(target=worker, args=(dut, ))
+                threads.append(thread)
+                thread.start()
+        finally:
+            for thread in threads:
+                thread.join()
+
+    return set_hostname_func
 
 
 @pytest.fixture(scope="session")
@@ -2838,8 +3310,20 @@ def account_configuration(
         xiq: XiqLibrary
     ) -> None:
         
-        if (option := pytest.onboarding_options.get("change_device_management_settings", "disable")):
-            
+        global_settings = pytest.onboarding_options.get("global_settings", {})
+
+        accounts = global_settings.get("accounts", {})
+
+        administration = global_settings.get("administration", {})
+        device_management_settings = administration.get("device_management_settings", {})
+        viq_management = administration.get("viq_management", {})
+
+        api = global_settings.get("api", {})
+        alert_notifications = global_settings.get("alert_notifications", {})
+        logs = global_settings.get("logs", {})
+
+        if option := device_management_settings.get("change_device_management_settings", "disable"):
+
             change_device_management_settings: ChangeDeviceManagementSettings = request.getfixturevalue(
                 "change_device_management_settings")
             
@@ -2848,6 +3332,9 @@ def account_configuration(
                 option=option
             )
 
+        if option := viq_management.get("supplemental_cli_option", "disable"):
+           xiq.xflowsglobalsettingsGlobalSetting.get_supplemental_cli_option(option)
+    
     return account_configuration_func
 
 
@@ -3083,7 +3570,6 @@ def onboarding_succeeded(
         xiq: XiqLibrary
     ) -> None:
         request.getfixturevalue("test_bed")
-
     return onboarding_succeeded_func
 
 
@@ -3153,6 +3639,73 @@ def onboard(
         
         pytest.fail(f"The onboarding failed for these devices: {node_list}\n{traceback.format_exc()}")
     
+
+@pytest.fixture(scope="session")
+def devices_cleanup(
+    request: fixtures.SubRequest,
+    debug: Callable
+) -> DevicesConfiguration:
+    """ Fixture that unconfigures the devices in the onboarding cleanup test.
+    """
+    
+    @debug
+    def device_cleanup_func() -> None:
+        
+        unconfigure_iqagent: UnconfigureIqAgent = request.getfixturevalue("unconfigure_iqagent")
+        node_list: List[Node] = request.getfixturevalue("node_list")
+
+        unconfigure_iqagent(duts=node_list)
+
+    return device_cleanup_func
+
+
+@pytest.fixture(scope="session")
+def unconfigure_iqagent(
+        logger: PytestLogger,
+        node_list: List[Node],
+        debug: Callable,
+        open_spawn: OpenSpawn,
+        cli: Cli,
+        loaded_config: Dict[str, str],
+        
+) -> UnconfigureIqAgent:
+    """
+    Fixture that unconfigures the IQAGENT on given devices.
+    """
+
+    @debug
+    def unconfigure_iqagent_func(
+        duts: List[Node]=node_list
+    ) -> None:
+
+        def worker(dut: Node):
+            
+            onboarding_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
+
+            unconfigure_iqagent_flag: bool = onboarding_options.get("unconfigure_iqagent", True)
+            logger.info(f"The 'unconfigure_iqagent' flag is '{'enabled' if unconfigure_iqagent_flag else 'disabled'}' for node '{dut.node_name}'.")
+
+            if not unconfigure_iqagent_flag:
+                logger.info(f"iqagent won't be unconfigured because the 'unconfigure_iqagent' flag is disabled for node '{dut.node_name}'.")
+                return
+
+            with open_spawn(dut) as spawn_connection:
+                cli.disconnect_device_from_cloud(dut.cli_type, spawn_connection)
+                logger.info(f"Successfully unconfigured iqagent on node '{dut.node_name}'.")
+
+        threads: List[threading.Thread] = []
+
+        try:
+            for dut in duts:
+                thread = threading.Thread(target=worker, args=(dut, ))
+                threads.append(thread)
+                thread.start()
+        finally:
+            for thread in threads:
+                thread.join()
+
+    return unconfigure_iqagent_func
+
 
 @pytest.fixture(scope="session")
 def onboard_cleanup(
@@ -3724,6 +4277,13 @@ def cloud_driver() -> CloudDriver:
 
 
 @pytest.fixture(scope="session")
+def cloud_driver_capabilities(
+    cloud_driver: CloudDriver
+) -> Dict[str, Union[str, Dict[str, Union[str, int, bool]]]]:
+    return getattr(cloud_driver.cloud_driver, "capabilities", {})
+
+
+@pytest.fixture(scope="session")
 def auto_actions() -> AutoActions:
     return AutoActions()
 
@@ -3775,7 +4335,15 @@ class Testbed(metaclass=Singleton):
         self.node_2: Node = request.getfixturevalue("node_2")
         self.node_stack: Node = request.getfixturevalue("node_stack")
         self.node_list: List[Node] = request.getfixturevalue("node_list")
-        
+        self.nodes_data: Dict[str, Dict[str, Union[str, List[Tuple[str, str]]]]] = request.getfixturevalue("nodes_data")
+
+        self.username: str = self.config.get("tenant_username")
+        self.password: str = self.config.get("tenant_password")
+        self.test_url: str = self.config.get("test_url")
+        self.sw_connection_host: str = self.config.get("sw_connection_host")
+        self.xiq_version: str = request.getfixturevalue("xiq_version")
+        self.cloud_driver_capabilities: Dict[str, Union[str, Dict[str, Union[str, int, bool]]]] = request.getfixturevalue("cloud_driver_capabilities")
+
         self.dut_1: Node = request.getfixturevalue("dut1")
         self.dut_2: Node = request.getfixturevalue("dut2")
         self.dut_3: Node = request.getfixturevalue("dut3")
@@ -3793,6 +4361,16 @@ class Testbed(metaclass=Singleton):
         self.node_stack_onboarding_location: str = request.getfixturevalue("node_stack_onboarding_location")
         self.created_onboarding_locations: List[str] = request.getfixturevalue("created_onboarding_locations")
    
+        self.starting_iqagent_versions: Dict[str, str] = request.getfixturevalue("starting_iqagent_versions")
+        self.node_1_starting_iqagent_version: str = request.getfixturevalue("node_1_starting_iqagent_version")
+        self.node_2_starting_iqagent_version: str = request.getfixturevalue("node_2_starting_iqagent_version")
+        self.node_stack_starting_iqagent_version: str = request.getfixturevalue("node_stack_starting_iqagent_version")
+
+        self.starting_system_versions: Dict[str, str] = request.getfixturevalue("starting_system_versions")
+        self.node_1_starting_system_version: str = request.getfixturevalue("node_1_starting_system_version")
+        self.node_2_starting_system_version: str = request.getfixturevalue("node_2_starting_system_version")
+        self.node_stack_starting_system_version: List[Tuple[str, str]] = request.getfixturevalue("node_stack_starting_system_version")
+
         self.policy_config: PolicyConfig = request.getfixturevalue("policy_config")
         self.node_1_policy_config: Dict[str, str] = request.getfixturevalue("node_1_policy_config")
         self.node_2_policy_config: Dict[str, str] = request.getfixturevalue("node_2_policy_config")
@@ -3805,6 +4383,7 @@ class Testbed(metaclass=Singleton):
         self.node_2_template_name: str = request.getfixturevalue("node_2_template_name")
         self.node_stack_template_name: str = request.getfixturevalue("node_stack_template_name")
         self.node_stack_model_units: str = request.getfixturevalue("node_stack_model_units")
+        self.virtual_routers: Dict[str, str] = request.getfixturevalue("virtual_routers")
 
         self.network_manager: NetworkElementConnectionManager = request.getfixturevalue("network_manager")
         self.cli: Cli = request.getfixturevalue("cli")
@@ -3836,9 +4415,10 @@ class Testbed(metaclass=Singleton):
         self.login_xiq: LoginXiq = request.getfixturevalue("login_xiq")
         self.enter_switch_cli: EnterSwitchCli = request.getfixturevalue("enter_switch_cli")
         self.open_spawn: OpenSpawn = request.getfixturevalue("open_spawn")
+        self.open_pxssh_spawn: OpenPxsshSpawn = request.getfixturevalue("open_pxssh_spawn")
         self.connect_to_all_devices: Callable[[], Iterator[NetworkElementCliSend]] = request.getfixturevalue("connect_to_all_devices")
         self.close_connection: CloseConnection = request.getfixturevalue("close_connection")
-        self.configure_iq_agent: ConfigureIqAgent = request.getfixturevalue("configure_iq_agent")
+        self.configure_iqagent: ConfigureIqAgent = request.getfixturevalue("configure_iqagent")
         self.check_devices_are_reachable: CheckDevicesAreReachable = request.getfixturevalue("check_devices_are_reachable")
         self.dump_switch_logs: DumpSwitchLogs = request.getfixturevalue("dump_switch_logs")
         self.check_devices_are_onboarded: CheckDevicesAreOnboarded = request.getfixturevalue("check_devices_are_onboarded")

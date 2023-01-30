@@ -65,7 +65,7 @@ ${NAVIGATOR_LICENSE}        XIQ-NAV-S-
 *** Test Cases ***
 Test 1: Add Device and Confirm Success
     [Documentation]     Confirms a device can be successfuly aded to XIQ-SE
-    [Tags]              test1    stacking    tcxm-15241
+    [Tags]              test1    nightly4    tcxm-15241
 
     # Make sure test starts as 7 slot
     Update SIM Device MIB File  ${SNMPSIM_IP}    ${SNMPSIM_USER}    ${SNMPSIM_PW}    ${SNMPSIM_MIB_LOCATION}
@@ -77,7 +77,7 @@ Test 1: Add Device and Confirm Success
 
 Test 2: Verify Operations Panel Operations Complete Successfully
     [Documentation]     Confirms all operations panel operations completed successfully
-    [Tags]              test2    stacking    tcxm-15241
+    [Tags]              test2    nightly4    tcxm-15241
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
     Log To Console  >> Confirms Device Poller Completed
@@ -100,14 +100,14 @@ Test 2: Verify Operations Panel Operations Complete Successfully
 
 Test 3: Verify Device Assigned Correct License
     [Documentation]     Navigates and verifies the device license on the specified device
-    [Tags]              test3    stacking    tcxm-15241
+    [Tags]              test3    nightly4    tcxm-15241
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
     Navigate and Confirm Device License                 ${DUT_IP}  ${DUT_LICENSE}
 
 Test 4: Verify Device in XIQ Assigned Correct License Count
     [Documentation]     Navigates to XIQ Devices and verifies the correct consumed licensed.
-    [Tags]              test4    stacking     tcxm-15241
+    [Tags]              test4    nightly4     tcxm-15241
 
     # Confirm a Pilot entitlement is used for this device (1 for XIQSE, and 7 for the device, so a total of 8),
     XIQ Confirm Expected Pilot Licenses Consumed        8
@@ -115,7 +115,7 @@ Test 4: Verify Device in XIQ Assigned Correct License Count
 
 Test 5: Add Stack Unit And Verify in XIQ Assigned Correct License Count
     [Documentation]     Add a stack element and Navigates to XIQ Devices and verifies the correct consumed licensed.
-    [Tags]              test5    stacking     tcxm-15241
+    [Tags]              test5    nightly4     tcxm-15241
 
     Update SIM Device MIB File  ${SNMPSIM_IP}    ${SNMPSIM_USER}    ${SNMPSIM_PW}    ${SNMPSIM_MIB_LOCATION}
     ...    ${SNMPSIM_MIB_8SLOT}    ${ SNMPSIM_MIB_FILE}    ${SSH_PORT}
@@ -126,7 +126,7 @@ Test 5: Add Stack Unit And Verify in XIQ Assigned Correct License Count
 
 Test 6: Delete Stack Unit And Verify in XIQ Assigned Correct License Count
     [Documentation]     Delete a stack unit and Navigates to XIQ Devices and verifies the correct consumed licensed.
-    [Tags]              test6    stacking     tcxm-15241
+    [Tags]              test6    nightly4     tcxm-15241
 
     Update SIM Device MIB File  ${SNMPSIM_IP}    ${SNMPSIM_USER}    ${SNMPSIM_PW}    ${SNMPSIM_MIB_LOCATION}
     ...    ${SNMPSIM_MIB_7SLOT}    ${SNMPSIM_MIB_FILE}    ${SSH_PORT}
@@ -137,7 +137,7 @@ Test 6: Delete Stack Unit And Verify in XIQ Assigned Correct License Count
 
 Test 7: Delete Device and Confirm Success
     [Documentation]     Navigates and deletes the specified device from XIQ-SE and confirms it was removed successfully
-    [Tags]              test7    stacking     tcxm-15241
+    [Tags]              test7    nightly4     tcxm-15241
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
     Navigate to Devices and Confirm Success
@@ -149,7 +149,7 @@ Test 7: Delete Device and Confirm Success
 
 Test 8: Verify Event for Delete Device
     [Documentation]     Navigates and confirms the events view contains the expected event for delete device
-    [Tags]              test8    stacking    tcxm-15241
+    [Tags]              test8    nightly4    tcxm-15241
 
     Switch To Window  ${XIQSE_WINDOW_INDEX}
     Navigate to Events and Confirm Success
@@ -161,13 +161,13 @@ Test 8: Verify Event for Delete Device
 
 Test 9: Add Stack Unit And Verify in XIQ Enters Violation State
     [Documentation]     Delete a stack unit and Navigates to XIQ Devices and verifies the correct consumed licensed.
-    [Tags]              test9    stacking     tcxm-15241
+    [Tags]              test9    nightly4     tcxm-15241
 
     Log To Console    "TBD"
 
 Test 10: Verify In XIQ Licenses Are Released
     [Documentation]     Navigates to XIQ and verify licenss have been released.
-    [Tags]              test10    stacking    tcxm-15241
+    [Tags]              test10    nightly4    tcxm-15241
 
     Log To Console    "TBD"
 

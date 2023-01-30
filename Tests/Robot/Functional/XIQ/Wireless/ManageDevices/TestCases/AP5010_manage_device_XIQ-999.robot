@@ -169,7 +169,7 @@ Test Suite Clean Up
     [Documentation]         delete created network policies, SSID, Device etc
     [Tags]                  sanity    p2   p3  p4  production  regression
     Login User              ${TENANT_USERNAME}      ${TENANT_PASSWORD}
-    Delete AP     ${AP1_SERIAL}
+    Delete device           device_serial=${AP1_SERIAL}
 #    Delete AP     ${AP2_SERIAL}
     Delete Network Policy      ${NW_POLICY_NAME}
     Logout User

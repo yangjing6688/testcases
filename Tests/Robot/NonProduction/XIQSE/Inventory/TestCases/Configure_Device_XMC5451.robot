@@ -52,7 +52,7 @@ ${TEST_NOTE}                AUTO NOTE
 *** Test Cases ***
 Test 1: Set Device Profile
     [Documentation]     Confirms the profile can be changed on a device
-    [Tags]              nightly1    tcxe_869    xmc_5451    development    xiqse    acceptance    inventory    configure    test1    stacking
+    [Tags]              nightly1    tcxe_869    xmc_5451    development    xiqse    acceptance    inventory    configure    test1    nightly4
 
     Navigate and Create Profile      ${TEST_PROFILE}  ${TEST_PROFILE_VERSION}  ${TEST_PROFILE_READ}  ${TEST_PROFILE_WRITE}  ${TEST_PROFILE_MAX}  ${TEST_PROFILE_CLI}
 
@@ -80,7 +80,7 @@ Test 1: Set Device Profile
 
 Test 2: Configure Device
     [Documentation]     Confirms a device can be configured
-    [Tags]              nightly1    known_issue    tcxe_869    xmc_5451    development    xiqse    acceptance    inventory    configure    test2    stacking
+    [Tags]              nightly1    known_issue    tcxe_869    xmc_5451    development    xiqse    acceptance    inventory    configure    test2    nightly4
 
     Navigate to Devices and Confirm Success
 
