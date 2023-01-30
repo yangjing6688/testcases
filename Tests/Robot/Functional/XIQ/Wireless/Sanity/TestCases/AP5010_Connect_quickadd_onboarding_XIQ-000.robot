@@ -37,7 +37,7 @@ TCXM-19753 - XIQ-4593 - QuickAdd: Onboard AP5010/AP5010U cloud managed - step1
     [Documentation]         Checks for ap onboarding is success in case of valid scenario
     [Tags]                  tcxm_19753    development     ap5010      step1      tcxm-19753      quickadd
     ${result}=              Login User          ${tenant_username}      ${tenant_password}
-    Delete AP               ap_serial=${ap5010.serial}
+    Delete device               device_serial=${ap5010.serial}
     Change Device Password                      Aerohive123
     ${ONBOARD_RESULT}=      onboard device quick      ${ap5010}
     ${search_result}=       Search AP Serial    ${ap5010.serial}

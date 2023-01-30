@@ -1,3 +1,8 @@
+data:
+  feature_name: CSV Onboarding
+  feature_jira_link: Jira Link CSV Onboarding
+  feature_qtest_link: qTest Link CSV Onboarding
+
 tests:
 
   #################### XIQ ONBOARDING ##########################

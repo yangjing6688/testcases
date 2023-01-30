@@ -9,11 +9,13 @@
 #                 This is qTest TCXE-958 in the XIQ-SE project.
 
 *** Settings ***
+Library         Process
+Library         String
 Resource        ../../Install_Upgrade/Resources/AllResources.robot
 
 Force Tags      testbed_no_node
 
-Suite Setup     Ubuntu Clear SSH Keys
+Suite Setup     Prepare Test Variables
 
 
 *** Variables ***
@@ -37,13 +39,6 @@ ${XIQ_CAPWAP_URL}                   "g2r1-cwpm-01.qa.xcloudiq.com"
 ${APPLIANCE_USERNAME}               ${appliance.user}
 ${APPLIANCE_PASSWORD}               ${appliance.password}
 
-${NSRELEASE_BASE}                   http://nsrelease.extremenetworks.com/release/netsightweb/ns_console/Console/NETSIGHT_Suite_
-${XIQSE_FOLDER}                     NetSight
-${XIQSE_FILE_PREFIX}                ExtremeCloudIQSiteEngine_
-${LOG_DIRECTORY}                    /var/log/
-${NSRELEASE_XIQSE_FILE}             ${XIQSE_FILE_PREFIX}${NSRELEASE_VERSION}_64bit_install.bin
-${NSRELEASE_XIQSE_LOG_FILE}         ${XIQSE_FILE_PREFIX}${NSRELEASE_VERSION}_64bit_install.log
-${NSRELEASE_VERSION_BASE}           ${NSRELEASE_BASE}${NSRELEASE_VERSION}
 ${SSH_PORT}                         22
 ${DOWNLOAD_TIMEOUT_SEC}             300
 ${INSTALL_DOWNLOAD_TIMEOUT_SEC}     7200
@@ -67,3 +62,14 @@ Test 1: Cli XIQSE Upgrade From XIQSE
     ${version} =   Get From Dictionary   ${UPGRADE_TEST_XIQSE}    version
     Run Keyword If  'xiqseSnapShotId' in ${UPGRADE_TEST_XIQSE}      Site Engine Upgrade  ${UPGRADE_TEST_XIQSE}
     ...    ELSE  Log   Skipping XIQ-SE Upgrade from XMC ${version}
+
+
+*** Keywords ***
+Prepare Test Variables
+    [Documentation]    Sets the version to install and all variables used by keywords
+
+    Log To Console     SETTING TEST UP
+    Ubuntu Clear SSH Keys
+    ${version}=    UPDATE_SUITE_VERSION_VARIABLES    ${NSRELEASE_VERSION}
+    Log To Console    version=${version}
+

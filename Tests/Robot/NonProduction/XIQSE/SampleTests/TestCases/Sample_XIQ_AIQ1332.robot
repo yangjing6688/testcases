@@ -31,8 +31,8 @@ ${XIQ_PASSWORD}           ${xiq.tenant_password}
 ${PILOT_ENTITLEMENT}      ${xiq.pilot_entitlements}
 ${NAVIGATOR_ENTITLEMENT}  ${xiq.navigator_entitlements}
 
-${PILOT_LICENSE}          PRD-XIQ-PIL-S-C
-${NAVIGATOR_LICENSE}      PRD-XIQ-NAV-S-C
+${PILOT_LICENSE}          XIQ-PIL-S-C
+${NAVIGATOR_LICENSE}      XIQ-NAV-S-C
 
 
 *** Test Cases ***

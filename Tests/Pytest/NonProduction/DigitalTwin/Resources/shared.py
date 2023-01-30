@@ -38,6 +38,8 @@ DT_DFLT_RAM_AMOUNT = 1024
 SYS_BOOT_SLEEP = 25
 SYS_BOOT_SLEEP_STACK = 45
 
+DT_MGMT_VRF = "vrf_2256"
+
 # List of platform prefixes/family that do not have OOB Mgmt (no VR-Mgmt)
 PLATFORMS_WITHOUT_OOB_MGMT = ["5320"]
 
@@ -175,6 +177,7 @@ class DtTestEnv:
         # (for testing).  We will just choose the first "primary" slot or the
         # first slot if no slot is marked as primary.
         ram = None
+        sys_type = None
         try:
             if not self.uses_stacking:
                 # Get first slot...for negative testcases, we may choose the wrong
@@ -185,16 +188,19 @@ class DtTestEnv:
                 lowest_slot = self.yaml["system"]["slots"][0]["num"]
                 for slot in self.yaml["system"]["slots"]:
                     if slot["num"] <= lowest_slot:
-                        ram = self.get_ram_for_sys_type(slot["type"])
+                        sys_type = slot["type"]
+                        ram = self.get_ram_for_sys_type(sys_type)
                     if slot.get("primary") and slot["primary"]:
-                        ram = self.get_ram_for_sys_type(slot["type"])
+                        sys_type = slot["type"]
+                        ram = self.get_ram_for_sys_type(sys_type)
                         break
         except Exception:
             logger.debug("Exception detecting RAM value")
 
         if ram is None:
             ram = DT_DFLT_RAM_AMOUNT
-            logger.info("Error detecting RAM value...using default: %d", ram)
+            logger.info("System type %s has no configured RAM value...using default: %d "
+                        "(normal for negative tests)", sys_type, ram)
 
         return ram
 
@@ -315,6 +321,16 @@ class Gns3:
     def _send_delete(url):
         req = requests.delete(url)
         logger.debug("Status Code: %s (%d)", req.reason, req.status_code)
+
+    def get_vrf_exec_prefix(self):
+        """If DT Mgmt is in-use, not every command can access the mgmt network
+        without special sauce.  One example is the bundle_handler upload and
+        download commands.  They need the calling environment to manually
+        setup use of DT Mgmt if https (what IQA uses) is not being used."""
+        if self.use_dt_mgmt:
+            return f"ip vrf exec {DT_MGMT_VRF}"
+        else:
+            return ""
 
     def get_templates(self):
         logger.info("Getting GNS3 Templates")
