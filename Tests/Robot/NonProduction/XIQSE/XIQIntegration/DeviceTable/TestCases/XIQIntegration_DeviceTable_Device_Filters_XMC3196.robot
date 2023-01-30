@@ -674,9 +674,6 @@ Clean Up XIQSE Components
 
     Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
 
-    # Disable all columns for event searches
-    Set Alarm Event Search Scope    false
-
     # Handle Connection Lost
     XIQSE Handle Connection Lost Error    ${XIQSE_USER}    ${XIQSE_PASSWORD}
 
@@ -690,6 +687,9 @@ Clean Up XIQSE Components
     # Delete the profile and SNMP credential
     XIQSE Delete Profile and Confirm Success              BAD_PROFILE
     XIQSE Delete SNMP Credential and Confirm Success      BAD_CRED
+
+    # Disable all columns for event searches
+    Set Alarm Event Search Scope    false
 
     # Log out
     Log Out of XIQSE and Confirm Success
