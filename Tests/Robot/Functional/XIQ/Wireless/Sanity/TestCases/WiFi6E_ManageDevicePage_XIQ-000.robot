@@ -4,15 +4,15 @@
 # Initial version by kunal Babbar, modified by Jay Moorkoth
 #****************************************************************************************************************************************************************
 # Execution Commands: The testcases in this script can be run either independently or together depending on the tags.
-# robot -L INFO -i p2 WiFi6E_ManageDevicePage.robot
-# robot -L INFO -i TCCS-12167 WiFi6E_ManageDevicePage.robot
-# robot -L INFO -i TCCS-12185 WiFi6E_ManageDevicePage.robot
-# robot -L INFO -i TCCS-12179 WiFi6E_ManageDevicePage.robot
-# robot -L INFO -i TCCS-12153 WiFi6E_ManageDevicePage.robot
-# robot -L INFO -i TCCS-12155 WiFi6E_ManageDevicePage.robot
-# robot -L INFO -i TCCS-12148 WiFi6E_ManageDevicePage.robot
+# robot -L INFO -i p2 WiFi6E_ManageDevicePage_XIQ-000.robot
+# robot -L INFO -i TCCS-12167 WiFi6E_ManageDevicePage_XIQ-000.robot
+# robot -L INFO -i TCCS-12185 WiFi6E_ManageDevicePage_XIQ-000.robot
+# robot -L INFO -i TCCS-12179 WiFi6E_ManageDevicePage_XIQ-000.robot
+# robot -L INFO -i TCCS-12153 WiFi6E_ManageDevicePage_XIQ-000.robot
+# robot -L INFO -i TCCS-12155 WiFi6E_ManageDevicePage_XIQ-000.robot
+# robot -L INFO -i TCCS-12148 WiFi6E_ManageDevicePage_XIQ-000.robot
 # Select the "TOPO" and "DEVICE" variable based on Test bed to run the following execution
-# robot -L INFO -v DEVICE:AP4000U -v TOPO:g2r1  WiFi6E_ManageDevicePage.robot
+# robot -L INFO -v DEVICE:AP4000U -v TOPO:g2r1  WiFi6E_ManageDevicePage_XIQ-000.robot
 #****************************************************************************************************************************************************************
 *** Variables ***
 ${DEVICE}

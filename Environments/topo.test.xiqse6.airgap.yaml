@@ -42,7 +42,7 @@ nac:
 #     vim-cmd vmsvc/get.snapshotinfo <vmid>
 upgrades:
   install_mode:                "AIRGAP"
-  nsrelease_version:           "21.11.10.57"
+  nsrelease_version:           "23.2.10"
   esx:
     esx_ip:                    "10.69.60.16"
     esx_user:                  "root"

@@ -36,34 +36,34 @@ TCXM-19759: Confirm That Left Side Action Icons Are Not Available
 
     Navigate to Devices and Confirm Success
 
-    ${btn_visible}=     Is Add Button Visible
-    Should Be Equal As Integers   ${btn_visible}   -1
-    ${btn_visible}=     Is Download Button Visible
-    Should Be Equal As Integers   ${btn_visible}   -1
-    ${btn_visible}=     Is Bulk Edit Button Visible
-    Should Be Equal As Integers   ${btn_visible}   -1
-    ${btn_visible}=     Is Delete Button Visible
-    Should Be Equal As Integers   ${btn_visible}   -1
+    ${btn_visible}=     validate add button hidden
+    Should Be Equal As Integers   ${btn_visible}   1
+    ${btn_visible}=     validate download button hidden
+    Should Be Equal As Integers   ${btn_visible}   1
+    ${btn_visible}=    validate bulk edit button hidden
+    Should Be Equal As Integers   ${btn_visible}   1
+    ${btn_visible}=    validate delete button hidden
+    Should Be Equal As Integers   ${btn_visible}   1
 
 TCXM-19758: Confirm The Update Device Button Is Not Available
     [Documentation]     Confirms that the right side Update Device button is not visible
     [Tags]              tcxm_19758   development
 
-    ${btn_visible}=     Is Update Device Button Visible
-    Should Be Equal As Integers   ${btn_visible}   -1
+    ${btn_visible}=    validate update device button hidden
+    Should Be Equal As Integers   ${btn_visible}   1
 
 TCXM-19835: Confirm The Actions Button Is Not Available
     [Documentation]     Confirms that the right side Actions button is not visible
     [Tags]              tcxm_19835   development
 
-    ${btn_visible}=     Is Actions Button Visible
-    Should Be Equal As Integers   ${btn_visible}   -1
+    ${btn_visible}=     validate actions button hidden
+    Should Be Equal As Integers   ${btn_visible}   1
 
 TCXM-19834: Confirm The Utilities Button Is Available
     [Documentation]     Confirms that the right side Utilities button is visible
     [Tags]              tcxm_19834   development
 
-    ${btn_visible}=     Is Utilities Button Visible
+    ${btn_visible}=     validate utilities button visible
     Should Be Equal As Integers   ${btn_visible}   1
 
 TCXM-19760: Confirm No Access To Device360

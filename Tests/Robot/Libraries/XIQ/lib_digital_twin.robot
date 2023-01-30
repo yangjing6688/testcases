@@ -17,14 +17,14 @@ Library     xiq/flows/manage/Device360.py
 Confirm Digital Twin Feature Is Enabled
     [Documentation]     Confirm that the Digital Twin option is enabled.
 
-    ${result}=   Is Digital Twin Option Visible
+    ${result}=   validate digital twin option visible
     Should Be Equal As Strings                              ${result}           True
 
 Confirm Digital Twin Feature Is Disabled
     [Documentation]     Confirm if the Digital Twin feature is disabled.
 
-    ${result}=   Is Digital Twin Option Visible
-    Should Be Equal As Strings                              ${result}           False
+    ${result}=   validate digital twin option hidden
+    Should Be Equal As Strings                              ${result}           True
 
 Enable Digital Twin Feature
     [Documentation]     Use the soft launch URL to enable the Digital Twin feature.

@@ -6,13 +6,13 @@
 # Precondition  : AP should be onboarded and appear online with a network policy and a ssid.
 #****************************************************************************************************************************************************************
 # Execution Commands: The testcases in this script can either run independently or together depending on the tags passed.
-# robot -L INFO -i p2 BLE-ConfigMonitoring.robot
-# robot -L INFO -i tccs-7306 BLE-ConfigMonitoring.robot
-# robot -L INFO -i TC-7386 BLE-ConfigMonitoring.robot
-# robot -L INFO -i TC-10800 BLE-ConfigMonitoring.robot
+# robot -L INFO -i p2 BLE-ConfigMonitoring_XIQ-000.robot
+# robot -L INFO -i tccs-7306 BLE-ConfigMonitoring_XIQ-000.robot
+# robot -L INFO -i TC-7386 BLE-ConfigMonitoring_XIQ-000.robot
+# robot -L INFO -i TC-10800 BLE-ConfigMonitoring_XIQ-000.robot
 
 # Select the "TOPO" and "DEVICE" variable based on Test bed to run the following execution
-# robot -L INFO -v DEVICE:AP250 -v TOPO:g2r1  BLE-ConfigMonitoring.robot
+# robot -L INFO -v DEVICE:AP250 -v TOPO:g2r1  BLE-ConfigMonitoring_XIQ-000.robot
 ########################################################################################################################
 *** Variables ***
 ${DEVICE}
@@ -59,7 +59,7 @@ Clean-up
     [Tags]                  cleanup    development
     ${LOGIN_STATUS}=                Login User              ${tenant_username}     ${tenant_password}
     should be equal as integers     ${LOGIN_STATUS}               1
-    ${DELETE_DEVICE_STATUS}=            Delete AP                  ${ap1.serial}
+    ${DELETE_DEVICE_STATUS}=            Delete device                  device_serial=${ap1.serial}
     should be equal as integers     ${DELETE_DEVICE_STATUS}               1
     Delete Network Policy     ${AP_NETWORK_POLICY}
     Delete SSID               ${SSID_NAME}
