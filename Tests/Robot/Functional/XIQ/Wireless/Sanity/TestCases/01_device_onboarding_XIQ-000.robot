@@ -48,7 +48,7 @@ TCCS-7651_Step1: Onboard Aerohive AP
     ${ONBOARD_RESULT}=              onboard device quick      ${ap1}
     should be equal as integers     ${ONBOARD_RESULT}       1
 
-    ${search_result}=               Search AP Serial    ${ap1.serial}
+    ${search_result}=               search device    device_serial=${ap1.serial}
     should be equal as integers     ${search_result}        1
 
 TCCS-7651_Step2: Config AP to Report AIO and Check status
