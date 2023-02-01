@@ -863,7 +863,7 @@ InitialSetup
     delete_all_ssids
 
     ${onboard_result}=      onboard device quick     ${ap1}
-    ${search_result}=       Search AP Serial    ${ap1.serial}
+    ${search_result}=       search device    device_serial=${ap1.serial}
     should be equal as integers                 ${onboard_result}     1
     should be equal as integers                 ${search_result}      1
 
