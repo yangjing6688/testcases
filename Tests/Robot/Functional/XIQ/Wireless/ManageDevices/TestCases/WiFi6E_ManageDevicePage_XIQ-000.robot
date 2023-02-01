@@ -130,7 +130,7 @@ Onboard AP5010U
     ${POLICY_RESULT}=                Create Network Policy  ${AP1_NETWORK_POLICY}      ${WIRELESS_PESRONAL_NW1}
     Should Be Equal As Strings      '${POLICY_RESULT}'   '1'
     ${ONBOARD_RESULT}=      onboard_ap_with_policy      ${AP1_SERIAL}           ${AP1_MAKE}       location=${LOCATION}      policy=${AP1_NETWORK_POLICY}        device_os=${AP1_OS}
-    ${search_result}=       Search AP Serial    ${AP1_SERIAL}
+    ${search_result}=       search device    device_serial=${AP1_SERIAL}
     #${AP_SPAWN}=	Open Spawn  ${AP1_IP}  ${AP1_CONSOLE_PORT}   ${AP1_USERNAME}     ${AP1_PASSWORD}     ${AP1_PLATFORM}
     ${AP_SPAWN}=	Open Spawn      ${AP1_IP}   ${AP1_CONSOLE_PORT}   ${AP1_USERNAME}     ${AP1_PASSWORD}      ${AP1_Cli_Type}
     Set Suite Variable  ${AP_SPAWN}

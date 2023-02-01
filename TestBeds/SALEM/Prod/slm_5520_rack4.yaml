@@ -16,7 +16,7 @@ netelem1:
   connection_method:        "ssh"
   cli_type:                 "exos"
   platform:                 "5520"
-  model:                    "FabricEngine5520_24W"
+  model:                    "SwitchEngine5520_24W"
   make:                     "exos"
   auth_mode:                "basic"
   location:                 "auto_location_01, Santa Clara, building_02, floor_04"

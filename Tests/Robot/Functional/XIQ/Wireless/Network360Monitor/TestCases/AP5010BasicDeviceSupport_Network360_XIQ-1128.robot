@@ -82,7 +82,7 @@ Test1 - TCXM-18636 - N360M_DeviceScoring_DeviceAvailabilityScore_100_1
     ${result1}=             Login User          ${tenant_username}    ${tenant_password}
     should be equal as integers                 ${result1}            1
     ${onboard_result}=      onboard device quick     ${ap1}
-    ${search_result}=       Search AP Serial    ${ap1.serial}
+    ${search_result}=       search device    device_serial=${ap1.serial}
     should be equal as integers                 ${onboard_result}     1
     should be equal as integers                 ${search_result}      1
     ${AP_SPAWN}=            Open Spawn          ${ap1.ip}     ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.platform}

@@ -141,7 +141,7 @@ def check_stack_status_in_xiq(xiq, dut_mac):
 
 def assign_network_policy_to_stack(xiq, policy_name, mac):
     xiq.xflowscommonNavigator.navigate_to_devices()
-    xiq.xflowscommonDevices.select_ap(ap_mac=mac)
+    xiq.xflowscommonDevices.select_device(device_mac=mac)
     AutoActions().click(xiq.xflowscommonDevices.devices_web_elements.get_manage_device_actions_button())
     time.sleep(2)
 

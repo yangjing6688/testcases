@@ -40,7 +40,7 @@ TCXM-19753 - XIQ-4593 - QuickAdd: Onboard AP5010/AP5010U cloud managed - step1
     Delete device               device_serial=${ap5010.serial}
     Change Device Password                      Aerohive123
     ${ONBOARD_RESULT}=      onboard device quick      ${ap5010}
-    ${search_result}=       Search AP Serial    ${ap5010.serial}
+    ${search_result}=       search device    device_serial=${ap5010.serial}
     should be equal as integers             ${result}               1
     should be equal as integers             ${ONBOARD_RESULT}       1
     should be equal as integers             ${search_result}        1
