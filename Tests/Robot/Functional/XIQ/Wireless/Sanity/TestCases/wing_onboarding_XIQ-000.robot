@@ -65,7 +65,7 @@ TCCS-7279_Step1: Onboard WiNG AP
     ${ONBOARD_RESULT}=              onboard device quick         ${wing1}
     Should Be Equal As Integers     ${ONBOARD_RESULT}           1
 
-    ${search_result}=               Search AP Serial    ${wing1.serial}
+    ${search_result}=               search device    device_serial=${wing1.serial}
     should be equal as integers     ${search_result}        1
 
     [Teardown]      run keywords    logout user
