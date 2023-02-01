@@ -200,7 +200,7 @@ TCXM-20275 : Enable PING for Installer user for Aerohive AP
     ${result}=                 Login User             ${tenant_username_installer}     ${tenant_password}
     should be equal as strings       '${result}'                   '1'
 
-    ${select_ap}               Select AP                         ${device1.serial}
+    ${select_ap}               select device                         device_serial=${device1.serial}
     should be equal as strings       '${select_ap}'                 '1'
 
     ${ping}                    Installer Role Diagnostics Ping
