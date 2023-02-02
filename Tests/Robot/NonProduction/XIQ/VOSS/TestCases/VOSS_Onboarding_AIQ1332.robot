@@ -15,6 +15,7 @@ Library          OperatingSystem
 Library          common/Utils.py
 
 Resource         ../../VOSS/Resources/AllResources.robot
+Resource         ExtremeAutomation/Resources/Libraries/DefaultLibraries.robot
 
 Force Tags       testbed_voss_node
 
@@ -43,7 +44,10 @@ ${IQAGENT_VERSION_OLD}      ${netelem3.iqagent_version.old}
 ${IQAGENT_VERSION_NEW}      ${netelem3.iqagent_version.new}
 ${DUT_MAKE}                 ${netelem3.make}
 ${DUT_CLI_TYPE}             ${netelem3.cli_type}
+${DUT_NAME}                 ${netelem3.name}
 
+#Please be aware that you should make sure that you have a good configuration on device named 'config_VOSS.cfg', if not the test will fail
+${CONFIG_FILE}              "config_VOSS"
 ${DUT_CSV_FILE}             onboard.csv
 ${STATUS_UP}                green
 ${LOCATION}                 San Jose, building_01, floor_02
@@ -98,6 +102,11 @@ Test 3: Test Device Onboarding - IQAgent Upgrade Required
     Downgrade NOS Version on Test Device        ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
     Downgrade IQAgent on Test Device            ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
 
+    ${SW_SPAWN}=                        Open Spawn          ${DUT_IP}       ${DUT_PORT}      ${DUT_USERNAME}       ${DUT_PASSWORD}        ${DUT_CLI_TYPE}
+    ${DOWNGRADE_IQAGENT}=               Downgrade iqagent      ${DUT_CLI_TYPE}     ${SW_SPAWN}
+    Should Be Equal As Integers         ${DOWNGRADE_IQAGENT}       1
+    Close Spawn     ${SW_SPAWN}
+
     # Confirm the IQAgent is at an older version
     Confirm IQAgent Version on Test Device      ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${IQAGENT_VERSION_OLD}
 
@@ -127,7 +136,7 @@ Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ and sets up the elements necessary to complete this test suite
 
     Create CSV File and Confirm Success     ${DUT_CSV_FILE}  ${DUT_SERIAL}
-    Configure Test Device                   ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}
+    Configure Test Device                   ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}    ${DUT_NAME}    ${CONFIG_FILE}
 
     Log Into XIQ and Confirm Success        ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
 
@@ -141,9 +150,12 @@ Tear Down Test and Close Session
 
 Configure Test Device
     [Documentation]     Configures the specified test device by rebooting a known good configuration file and then configuring the iqagent
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${agent}
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${agent}    ${dut_name}    ${config_file}
 
-    Boot Switch To Known Good Configuration     ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
+    #Boot the Test Device to a known good configuration
+    Connect to all network elements
+    reboot_network_element_with_config      ${dut_name}      ${config_file}
+    close_connection_to_all_network_elements
 
     ${SPAWN_CONNECTION}=      Open Spawn       ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
     # Downgrade the device's iqagent if needed

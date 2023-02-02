@@ -22,7 +22,12 @@ Boot Switch To Known Good Configuration
     ${enable_results}=      Send  ${spawn}  enable
     Log To Console          Command results are ${enable_results}
 
-    ${boot_results}=        Send  ${spawn}  boot config config_knowngood.cfg     confirmation_phrases=Are you sure you want to re-boot the switch (y/n) ?    confirmation_args=y
+    #Please be aware that this keyword should no longer be used and also you should make sure that you have a good configuration on device named 'config_VOSS.cfg'
+    #Instead of this keyword try using the following methods:
+    #Connect to all network elements
+    #reboot_network_element_with_config      ${dut_name}      ${config_file}
+    #close_connection_to_all_network_elements
+    ${boot_results}=        Send  ${spawn}  boot config config_VOSS.cfg     confirmation_phrases=Are you sure you want to re-boot the switch (y/n) ?    confirmation_args=y
     Log To Console          Command results are ${boot_results}
 
     sleep                   ${switch_reboot_wait}
