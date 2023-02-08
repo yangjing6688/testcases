@@ -1,0 +1,12 @@
+test_url:             "https://wl2.qa.xcloudiq.com"
+capwap_url:           "wl2r1-cws-0.qa.xcloudiq.com"
+sw_connection_host:   "wl2r1.qa.xcloudiq.com"
+tenant_username:      "xiqproductionqa+auto1-blr-tb1-wl2r1@gmail.com"
+tenant_password:      "Extreme@123"
+base_url:             "https://wl2-api.qa.xcloudiq.com"
+aio_xiq: 0
+iapi_base_url:        "https://wl2.qa.xcloudiq.com"
+sw_capwap_url:        "wl2r1.qa.xcloudiq.com"
+wing_capwap_url:      "wl2r1-wing.qa.xcloudiq.com"
+CLOUD_GDC_URL:        "https://wl2.qa.xcloudiq.com"
+test_rdc_url:         "https://wl2r1.qa.xcloudiq.com"
