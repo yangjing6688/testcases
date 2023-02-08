@@ -115,6 +115,14 @@ Suite Setup
     ${LATEST_VERSION}=      Upgrade Device      ${device1}
     Should Not be Empty     ${LATEST_VERSION}
 
+    Sleep                   ${ap_reboot_wait}
+
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${device1.serial}       retry_count=15
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
+
+    ${REBOOT_STATUS}=    Wait Until Device Reboots               ${device1.serial}
+    Should Be Equal as Integers             ${REBOOT_STATUS}          1
+
     ${DELETE_POLICIES_RESULT}=      Delete Network Polices          ${OPEN_POLICY}      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
     Should Be Equal As Integers     ${DELETE_POLICIES_RESULT}           1
 
