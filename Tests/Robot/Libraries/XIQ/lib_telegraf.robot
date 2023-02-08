@@ -16,14 +16,17 @@ Library         extauto.common.Utils
 Library         extauto.common.Xapi
 
 Resource   ./lib_voss.robot
+Resource         ExtremeAutomation/Resources/Libraries/DefaultLibraries.robot
 
 *** Keywords ***
 Trigger Interface Up Event for VOSS and Confirm Success
     [Documentation]    Trigger interface up event on specific port for VOSS and Confirm Success
     [Tags]             voss
-    [Arguments]        ${ip}  ${port}  ${user}  ${pwd}  ${test_port}    ${keyword}
+    [Arguments]        ${ip}  ${port}  ${user}  ${pwd}  ${test_port}    ${keyword}    ${cli_type}
     #Enable specific port on device
-    Enable Port for Test Device     ${ip}  ${port}  ${user}  ${pwd}  ${test_port}
+    ${SW_SPAWN}=                        Open Spawn          ${ip}       ${port}      ${user}       ${pwd}        ${cli_type}
+    Enable_Port_and_Validate_Port_is_Enabled      ${SW_SPAWN}  ${test_port}
+    Close Spawn     ${SW_SPAWN}
 
     #Check the interface up event by XAPI
     XAPI Verify Interface Name By Alert Type     INTERFACE_ADMIN_UP    ${test_port}    ${keyword}
@@ -31,9 +34,11 @@ Trigger Interface Up Event for VOSS and Confirm Success
 Trigger Interface Down Event for VOSS and Confirm Success
     [Documentation]    Trigger interface down event on specific port for VOSS and Confirm Success
     [Tags]             voss
-    [Arguments]        ${ip}  ${port}  ${user}  ${pwd}  ${test_port}    ${keyword}
+    [Arguments]        ${ip}  ${port}  ${user}  ${pwd}  ${test_port}    ${keyword}     ${cli_type}
     #Disable specific port on device
-    Disable Port for Test Device     ${ip}  ${port}  ${user}  ${pwd}  ${test_port}
+    ${SW_SPAWN}=                        Open Spawn          ${ip}       ${port}      ${user}       ${pwd}        ${cli_type}
+    Disable_Port_and_Validate_Port_is_Disabled    ${SW_SPAWN}  ${test_port}
+    Close Spawn     ${SW_SPAWN}
 
     #Check the interface down event by XAPI
     XAPI Verify Interface Name By Alert Type     INTERFACE_ADMIN_DOWN    ${test_port}    ${keyword}

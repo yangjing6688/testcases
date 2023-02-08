@@ -36,7 +36,7 @@ Navigate and Create Device
     [Arguments]         ${ip}  ${profile}
 
     Navigate to Devices and Confirm Success
-    Create Pending Device and Confirm Success           ${ip}  ${profile}
+    Create Device and Confirm Success                   ${ip}  ${profile}
 
 Navigate and Create Status Only Device
     [Documentation]     Navigates to the Devices tab and creates the specified status only device, confirming it was added

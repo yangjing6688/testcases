@@ -1,0 +1,7 @@
+test_url:                 "https://cp1r1.qa.xcloudiq.com"
+capwap_url:               "cp1r1-cws-0.qa.xcloudiq.com"
+sw_capwap_url:            "cp1r1.qa.xcloudiq.com"
+tenant_username:          "lawu+600@extremenetworks.com"
+tenant_password:          "Aerohive123"
+wing_capwap_url:          "cp1r1-wing.qa.xcloudiq.com"
+base_url:                 "https://cp1r1.qa.xcloudiq.com"
