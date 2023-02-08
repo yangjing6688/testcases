@@ -62,7 +62,7 @@ ${DUT_3VR}                   ${netelem3.vr}
 
 ${NAV_ENTITLEMENT}           XIQ-NAV-S-C
 ${NAV_LICENSE}               Navigator
-${PILOT_ENTITLEMENT}         PRD-XIQ-PIL-S-C
+${PILOT_ENTITLEMENT}         XIQ-PIL-S-C
 ${PILOT_LICENSE}             Pilot
 
 ${COLUMN_1}                  Managed
