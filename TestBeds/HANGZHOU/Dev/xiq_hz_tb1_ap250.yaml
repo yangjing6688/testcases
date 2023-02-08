@@ -1,0 +1,39 @@
+ap1:
+  name:                     bui-flo-1101
+  connection_method:        "ssh"
+  ip:                       10.155.255.151
+  port:                     "22"
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '02501607150015'
+  # console server not available now
+  console_ip:               10.155.255.141
+  console_port:             2051
+  mac:                      C413E2148040
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP250
+  template:                 AP_250-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                1
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United States
+      network_policy:           HZ_TB1_AP250_01
+      ssid:                     AP250_01
+      version:                  10.5.3
+      neighbour_serial:         06301908310556
+      neighbour_mac:            3485843A5CC0
+
+

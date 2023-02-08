@@ -78,7 +78,7 @@ class rebootTests():
         global needToDeleteDevice
 
         res = self.xiq.xflowscommonDevices.onboard_device_quick(self.tb.dut1)
-
+        
         if res != 1:
             pytest.fail(f'Could not onboard device {self.tb.dut1_platform} with serial {self.tb.dut1_serial}')
         else:
@@ -102,14 +102,16 @@ class rebootTests():
 
         self.xiq.xflowscommonDevices.reboot_device(device_serial=self.tb.dut1_serial)
 
-        device_offline_result = self.xiq.xflowscommonDevices.wait_until_device_offline(self.tb.dut1_serial, retry_duration=15,
+        if self.tb.dut1_cli_type == "voss":
+            device_offline_result = self.xiq.xflowscommonDevices.wait_until_device_offline(self.tb.dut1_serial, retry_duration=15,
                                                                retry_count=12)
 
-        if device_offline_result == 1:
-            print('Status for device with serial number: {} is offline'.format(self.tb.dut1_serial))
+            if device_offline_result == 1:
+                print('Status for device with serial number: {} is offline'.format(self.tb.dut1_serial))
+            else:
+                pytest.fail('Status for serial {} is not offline: {}'.format(self.tb.dut1_serial, managed_res))
         else:
-            pytest.fail('Status for serial {} is not offline: {}'.format(self.tb.dut1_serial, managed_res))
-
+            print('Deivce Status will not go offline for this type of device {} '.format(self.tb.dut1_cli_type))
 
         bootWaitTime = self.suiteUdks.get_boot_wait_time(self.tb.dut1_model,self.tb.dut1_cli_type)
         print("Sleeping for {} seconds to allow device to come back on line".format(bootWaitTime))

@@ -1,0 +1,76 @@
+ap1:
+  name:                     bui-flo-1301
+  connection_method:        "ssh"
+  ip:                       10.155.255.153
+  port:                     "22"
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '01501707240093'
+  # console server not available now
+  console_ip:               10.155.255.141
+  console_port:             2053
+  mac:                      7C95B1006040
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP150W
+  template:                 AP_150W-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                1
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United States
+      network_policy:           HZ_TB3_AP150W_01
+      ssid:                     AP150W_01
+      version:                  10.5.3
+      neighbour_serial:         01501805180810
+      neighbour_mac:            7C95B1107F4
+
+ap2:
+  name:                     bui-flo-1302
+  connection_method:        "ssh"
+  ip:                       10.155.255.155
+  port:                     "22"
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '01501805180810'
+  # console server not available now
+  console_ip:               10.155.255.141
+  console_port:             2055
+  mac:                      7C95B1107F4
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP150W
+  template:                 AP_150W-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                1
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United States
+      network_policy:           HZ_TB3_AP150W_01
+      ssid:                     AP150W_01
+      version:                  10.5.3
+      neighbour_serial:         06301908310556
+      neighbour_mac:            3485843A5CC0
+

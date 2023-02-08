@@ -10,6 +10,7 @@ Library      extauto.xiq.flows.manage.EspAlert
 Library      ExtremeAutomation/Keywords/NetworkElementKeywords/GeneratedKeywords/NetworkElementPortGenKeywords.py
 
 Resource    ../../Resources/AllResources.robot
+Resource      ExtremeAutomation/Resources/Libraries/DefaultLibraries.robot
 
 Force Tags            testbed_1_node
 
@@ -33,7 +34,9 @@ TCXM-22883: Verify Interface admin up Alert
 Test Suite Set Up
      [Documentation]    Onboard device to XIQ
      # Enable specific port on device
-     Enable Port for Test Device     ${netelem1.ip}   ${netelem1.port}  ${netelem1.username}    ${netelem1.password}    ${netelem1.test_port}
+    ${SW_SPAWN}=                        Open Spawn          ${netelem1.ip}       ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
+    Enable_Port_and_Validate_Port_is_Enabled      ${SW_SPAWN}  ${netelem1.test_port}
+    Close Spawn     ${SW_SPAWN}
 
      # Add device serial number into XIQ
      lib_xiq.Log Into XIQ and Confirm Success   ${tenant_username}  ${tenant_password}  ${test_url}

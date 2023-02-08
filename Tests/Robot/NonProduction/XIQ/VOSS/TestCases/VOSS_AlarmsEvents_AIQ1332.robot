@@ -14,6 +14,7 @@ Library          common/Utils.py
 Library          xiq/flows/manage/Device360.py
 
 Resource         ../../VOSS/Resources/AllResources.robot
+Resource         ExtremeAutomation/Resources/Libraries/DefaultLibraries.robot
 
 Force Tags       testbed_voss_node
 
@@ -40,6 +41,8 @@ ${DUT_TEST_PORT}            ${netelem3.test_port}
 ${DUT_MAKE}                 ${netelem3.make}
 ${DUT_CLI_TYPE}             ${netelem3.cli_type}
 
+#Please be aware that you should make sure that you have a good configuration on device named 'config_VOSS.cfg', if not the test will fail
+${CONFIG_FILE}              "config_VOSS"
 ${LOCATION}                 San Jose, building_01, floor_02
 
 
@@ -48,7 +51,9 @@ Test1: Confirm Link Down Event
     [Documentation]     Disables a port on the test device and confirms a Link Down event is generated
     [Tags]              tccs_8384    aiq_1332    development    xiq    voss    alarms_events    test1
 
-    Disable Port for Test Device            ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_TEST_PORT}
+    ${SW_SPAWN}=    Open Spawn          ${DUT_IP}       ${DUT_PORT}      ${DUT_USERNAME}       ${DUT_PASSWORD}        ${DUT_CLI_TYPE}
+    Disable_Port_and_Validate_Port_is_Disabled    ${SW_SPAWN}  ${DUT_TEST_PORT}
+    Close Spawn     ${SW_SPAWN}
 
     Refresh Devices Page
     Navigate to Device360 Page with MAC     ${DUT_MAC}
@@ -65,7 +70,9 @@ Test2: Confirm Link Up Event
     [Documentation]     Enables a port on the test device and confirms a Link Up event is generated
     [Tags]              tccs_8384    aiq_1332    development    xiq    voss    alarms_events    test2
 
-    Enable Port for Test Device             ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_TEST_PORT}
+    ${SW_SPAWN}=    Open Spawn          ${DUT_IP}       ${DUT_PORT}      ${DUT_USERNAME}       ${DUT_PASSWORD}        ${DUT_CLI_TYPE}
+    Enable_Port_and_Validate_Port_is_Enabled      ${SW_SPAWN}  ${DUT_TEST_PORT}
+    Close Spawn     ${SW_SPAWN}
 
     Refresh Devices Page
     Navigate to Device360 Page with MAC     ${DUT_MAC}
@@ -102,9 +109,11 @@ Log Into XIQ and Set Up Test
 
     Log Into XIQ and Confirm Success            ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
 
-    Configure Test Device                       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}
+    Configure Test Device                       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}  ${DUT_NAME}  ${CONFIG_FILE}
 
-    Enable Port for Test Device                 ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_TEST_PORT}
+    ${SW_SPAWN}=    Open Spawn          ${DUT_IP}       ${DUT_PORT}      ${DUT_USERNAME}       ${DUT_PASSWORD}        ${DUT_CLI_TYPE}
+    Enable_Port_and_Validate_Port_is_Enabled      ${SW_SPAWN}  ${DUT_TEST_PORT}
+    Close Spawn     ${SW_SPAWN}
 
     Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}    ${netelem3}
     Wait Until Device Online                    ${DUT_SERIAL}
@@ -120,9 +129,12 @@ Tear Down Test and Close Session
 
 Configure Test Device
     [Documentation]     Configures the specified test device by rebooting a known good configuration file and then configuring the iqagent
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${agent}
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${agent}  ${dut_name}  ${config_file}
 
-    Boot Switch To Known Good Configuration     ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
+    #Boot the Test Device to a known good configuration
+    Connect to all network elements
+    reboot_network_element_with_config      ${dut_name}      ${config_file}
+    close_connection_to_all_network_elements
 
     ${SPAWN_CONNECTION}=      Open Spawn       ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
 
