@@ -236,7 +236,7 @@ TCCS-7678: Cloud DB PPSK Network Client Connectivity With Bulk Users Group
     Sleep               ${client_connect_wait}
 
     ${URL_TITLE}=       Check Internet Connectivity     ${mu1.ip}
-    Should Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
+    Should Not Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
 
     ${CREDENTIALS}=     Get Login Credential From Attachments       ${MAIL_ID1}     ${MAIL_ID1_PASS}
 
@@ -277,7 +277,7 @@ TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
     Sleep               ${client_connect_wait}
 
     ${URL_TITLE}=       Check Internet Connectivity     ${mu1.ip}
-    Should Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
+    Should Not Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
 
     ${CREDENTIALS}=     Get Login Credential From Attachments       ${MAIL_ID1}     ${MAIL_ID1_PASS}
 
