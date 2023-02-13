@@ -88,7 +88,7 @@ Log In and Set Up Test
 
     # Check if the device is already present - if not, configure and onboard it
     Navigate to Devices and Confirm Success
-    ${search_result}=  Search Device   ${DUT_SERIAL}
+    ${search_result}=  Search Device   ${DUT_SERIAL}    ignore_failure=True
     Run Keyword If  '${search_result}' != '1' and '${DUT_PLATFORM}' == 'aerohive'         Set Up Aerohive AP Test
     Run Keyword If  '${search_result}' != '1' and '${DUT_PLATFORM}' == 'aerohive-switch'  Set Up Aerohive Switch Test
     Run Keyword If  '${search_result}' != '1' and '${DUT_PLATFORM}' == 'voss'             Set Up VOSS Test

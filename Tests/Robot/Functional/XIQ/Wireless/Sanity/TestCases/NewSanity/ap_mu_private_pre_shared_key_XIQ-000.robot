@@ -84,7 +84,7 @@ Suite Setup
     ${LOGIN_RESULT}=            Login User                  ${tenant_username}      ${tenant_password}      check_warning_msg=True
     Should Be Equal As Integers     ${LOGIN_RESULT}         1
 
-    ${SEARCH_RESULT}=           Search Device               device_serial=${device1.serial}     ignore_cli_feedback=true
+    ${SEARCH_RESULT}=           Search Device               device_serial=${device1.serial}     ignore_failure=True
     IF  ${SEARCH_RESULT} == 1
         ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}      ${MAIN_DEVICE_SPAWN}
         Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
@@ -149,7 +149,7 @@ Suite Teardown
 
     Log To Console      DOING CLEANUP AFTER RUNNING THE SUITE!
 
-    ${SEARCH_RESULT}=   Search Device               device_serial=${device1.serial}     ignore_cli_feedback=true
+    ${SEARCH_RESULT}=   Search Device               device_serial=${device1.serial}     ignore_failure=True
     IF  ${SEARCH_RESULT} == 1
         ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
         Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1

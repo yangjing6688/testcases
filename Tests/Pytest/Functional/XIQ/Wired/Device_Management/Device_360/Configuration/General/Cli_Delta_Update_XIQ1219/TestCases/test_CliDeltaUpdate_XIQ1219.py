@@ -61,12 +61,12 @@ def xiq_teardown_long_config(request):
                                                                                         device_mac=request.instance.tb.dut1.mac)
             request.instance.xiq.xflowscommonDevices.check_device_update_status_by_using_mac(device_mac=request.instance.tb.dut1.mac)
 
-        if request.instance.xiq.xflowscommonDevices.search_device(device_mac=request.instance.tb.dut1.mac) == 1:
+        if request.instance.xiq.xflowscommonDevices.search_device(device_mac=request.instance.tb.dut1.mac, ignore_failure=True) == 1:
             print(f'Found device using mac-address {request.instance.tb.dut1.mac}')
             request.instance.xiq.xflowscommonDevices.delete_device(device_mac=request.instance.tb.dut1.mac)
         else:
             for a_serial in request.instance.tb.dut1_serial.split(","):
-                if request.instance.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                if request.instance.xiq.xflowscommonDevices.search_device(device_serial=a_serial, ignore_failure=True) == 1:
                     print(f'Found device using serial-number {a_serial}')
                     request.instance.xiq.xflowscommonDevices.delete_device(a_serial)
                 else:
@@ -99,12 +99,12 @@ def xiq_teardown_small_config(request):
                                                                                         device_mac=request.instance.tb.dut1.mac)
             request.instance.xiq.xflowscommonDevices.check_device_update_status_by_using_mac(device_mac=request.instance.tb.dut1.mac)
 
-        if request.instance.xiq.xflowscommonDevices.search_device(device_mac=request.instance.tb.dut1.mac) == 1:
+        if request.instance.xiq.xflowscommonDevices.search_device(device_mac=request.instance.tb.dut1.mac, ignore_failure=True) == 1:
             print(f'Found device using mac-address {request.instance.tb.dut1.mac}')
             request.instance.xiq.xflowscommonDevices.delete_device(device_mac=request.instance.tb.dut1.mac)
         else:
             for a_serial in request.instance.tb.dut1_serial.split(","):
-                if request.instance.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                if request.instance.xiq.xflowscommonDevices.search_device(device_serial=a_serial, ignore_failure=True) == 1:
                     print(f'Found device using serial-number {a_serial}')
                     request.instance.xiq.xflowscommonDevices.delete_device(a_serial)
                 else:
@@ -454,12 +454,12 @@ class xiqTests():
                     if cls.xiq.xflowsconfigureCommonObjects.delete_switch_template(template_name="Template_" + cls.tb.dut1.mac[:-2]+f"-{slot}") != 1:
                         pytest.fail("Cannot delete the template in Common Objects")
             cls.xiq.xflowscommonNavigator.navigate_to_devices()
-            if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac) == 1:
+            if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac, ignore_failure=True) == 1:
                 print(f'Found device using mac-address {cls.tb.dut1.mac}')
                 cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
             else:
                 for a_serial in cls.tb.dut1_serial.split(","):
-                    if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                    if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial, ignore_failure=True) == 1:
                         print(f'Found device using serial-number {a_serial}')
                         cls.xiq.xflowscommonDevices.delete_device(a_serial)
                     else:
@@ -514,12 +514,12 @@ class xiqTests():
         cls.cfg['${TEST_NAME}'] = 'Teardown'
         time.sleep(5)
         cls.xiq.xflowscommonNavigator.navigate_to_devices()
-        if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac) == 1:
+        if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac, ignore_failure=True) == 1:
             print(f'Found device using mac-address {cls.tb.dut1.mac}')
             cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
         else:
             for a_serial in cls.tb.dut1_serial.split(","):
-                if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial, ignore_failure=True) == 1:
                     print(f'Found device using serial-number {a_serial}')
                     cls.xiq.xflowscommonDevices.delete_device(a_serial)
                 else:

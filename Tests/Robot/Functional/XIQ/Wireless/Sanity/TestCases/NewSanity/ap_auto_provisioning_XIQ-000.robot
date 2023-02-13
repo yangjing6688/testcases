@@ -62,7 +62,7 @@ Test Suite Setup
     # log in the user
     Login User      ${tenant_username}      ${tenant_password}
 
-    ${search_result}=   Search Device       device_serial=${ap1.serial}    ignore_cli_feedback=true
+    ${search_result}=   Search Device       device_serial=${ap1.serial}    ignore_failure=True
     # Disconnect from Extreme Cloud IQ
     Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud  ${ap1}  ${MAIN_DEVICE_SPAWN_AP}
 
@@ -77,7 +77,7 @@ Test Suite Teardown
     Navigate To Devices
     Refresh Devices Page
 
-    ${search_result}=   Search Device       device_serial=${ap1.serial}    ignore_cli_feedback=true
+    ${search_result}=   Search Device       device_serial=${ap1.serial}    ignore_failure=True
     # Disconnect from Extreme Cloud IQ
     Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud  ${ap1}  ${MAIN_DEVICE_SPAWN_AP}
 
@@ -99,7 +99,7 @@ Delete and Disconnect Device From Cloud
 
 Clean Up Device
     [Arguments]                             ${device}  ${SPAWN}
-    ${search_result}=   Search Device       device_serial=${device.serial}    ignore_cli_feedback=true
+    ${search_result}=   Search Device       device_serial=${device.serial}    ignore_failure=True
     # Disconnect from Extreme Cloud IQ
     Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud  ${device.cli_type}     ${SPAWN}
 

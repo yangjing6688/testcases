@@ -97,7 +97,7 @@ Pre Condition
     ${DEVICE_STATUS}=       Get Device Status       device_serial=${ap1.serial}
     Should contain any  ${DEVICE_STATUS}    green     config audit mismatch
 
-    ${LATEST_VERSION}=      Upgrade Device To Latest Version            ${ap1.serial}
+    ${LATEST_VERSION}=      Upgrade Device           ${ap1}
     Should Not be Empty     ${LATEST_VERSION}
 
     Sleep                   ${ap_reboot_wait}

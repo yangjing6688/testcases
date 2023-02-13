@@ -374,5 +374,5 @@ Verify CoPilot Licenses Message Displayed
 Verify CoPilot Licenses Message Not Displayed
     [Documentation]     Verifies the "Not enough CoPilot licenses" banner message is not displayed
 
-    ${banner_result}=  Confirm Not Enough CoPilot Licenses Message Displayed
+    ${banner_result}=  Confirm Not Enough CoPilot Licenses Message Displayed        ignore_failure=True
     Should Be Equal As Strings                       ${banner_result}      False

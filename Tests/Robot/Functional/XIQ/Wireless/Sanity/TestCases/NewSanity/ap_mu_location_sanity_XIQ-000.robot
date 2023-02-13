@@ -102,7 +102,7 @@ Device Onboard
     Should Not be Empty     ${LATEST_VERSION}
 
 Clean Up Device
-    ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_cli_feedback=true
+    ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_failure=True
     # Disconnect from Extreme Cloud IQ
     Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud
 
