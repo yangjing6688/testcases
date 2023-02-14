@@ -43,9 +43,9 @@ Suite Setup      Pre Condition
 Suite Teardown   Suite Clean Up
 
 *** Test Cases ***
-TCXM-26873: Filtering devices based on network policy
+TCXM-39327: Filtering devices based on network policy
     [Documentation]         Filtering devices based on network policy
-    [Tags]                  tcxm_26873  development
+    [Tags]                  tcxm_39327  development
     #filter device by network policy
     ${CHECK_RESULT}=        check filter device by network policy is correct
     Should Be Equal As Integers    ${CHECK_RESULT}        1
@@ -60,6 +60,7 @@ Pre Condition
     ...     model=${device_type1}
     ...     simulated_count=1
     ...     onboard_device_type=Simulated
+    ...     make=${DEVICE_MAKE}
     ...     location=${LOCATION_1}, San Jose, ${BUILDING_1}, ${FLOOR_1}
 
     ${device2}=      Create Dictionary
@@ -67,6 +68,7 @@ Pre Condition
     ...     model=${device_type2}
     ...     simulated_count=1
     ...     onboard_device_type=Simulated
+    ...     make=${DEVICE_MAKE}
     ...     location=${LOCATION_2}, Santa Clara, ${BUILDING_2}, ${FLOOR_2}
 
     set suite variable    ${device1}
