@@ -144,6 +144,11 @@ Downgrade IQAgent on Test Device
 
     [Teardown]  Close Spawn and Confirm Success  ${spawn}
 
+#Please be aware that this keyword should no longer be used
+#Instead of this keyword try using the following methods:
+#Connect to all network elements
+#hostinformation_verify_host_nos_version      ${dut_name}      ${NOS_VERSION_OLD}
+#close_connection_to_all_network_elements
 Confirm NOS Version on Test Device
     [Documentation]     Confirms the NOS version on the Test Device is at the specified version
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${nos_version}

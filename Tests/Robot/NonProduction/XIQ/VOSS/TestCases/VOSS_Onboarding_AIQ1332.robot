@@ -112,8 +112,7 @@ Test 3: Test Device Onboarding - IQAgent Upgrade Required
     Should Be Equal As Integers         ${DOWNGRADE_IQAGENT}       1
     Close Spawn     ${SW_SPAWN}
 
-#    # Confirm the IQAgent is at an older version
-
+    # Confirm the IQAgent is at an older version
     Connect to all network elements
     hostinformation_verify_iqagent_version      ${dut_name}      ${IQAGENT_VERSION_OLD}
     close_connection_to_all_network_elements
@@ -125,17 +124,16 @@ Test 3: Test Device Onboarding - IQAgent Upgrade Required
     Confirm Device Serial Online                ${DUT_SERIAL}
     Confirm Device Serial Has Expected Status   ${DUT_SERIAL}  ${STATUS_UP}
 
-    # Confirm the IQAgent is automatically upgraded shortly after onboarding
+    # Confirm the IQAgent is automatically upgraded shortly after onboarding and Confirm the NOS is not automatically upgraded
     Count Down in Minutes  2
 
     Connect to all network elements
     hostinformation_verify_iqagent_version      ${dut_name}      ${IQAGENT_VERSION_NEW}
+    hostinformation_verify_host_nos_version      ${dut_name}      ${NOS_VERSION_OLD}
     close_connection_to_all_network_elements
 
     Confirm IQAgent Version in XIQ              ${IQAGENT_VERSION_NEW}
 
-    # Confirm the NOS is not automatically upgraded
-    Confirm NOS Version on Test Device          ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${NOS_VERSION_OLD}
     Refresh Devices Page
     Confirm NOS Version in XIQ                  ${NOS_VERSION_OLD}
 
@@ -207,14 +205,20 @@ Downgrade NOS Version on Test Device
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}
 
     Update NOS Version on Test Device    ${ip}  ${port}  ${user}  ${pwd}  ${NOS_DIR_OLD}
-    Confirm NOS Version on Test Device   ${ip}  ${port}  ${user}  ${pwd}  ${NOS_VERSION_OLD}
+
+    Connect to all network elements
+    hostinformation_verify_host_nos_version      ${dut_name}      ${NOS_VERSION_OLD}
+    close_connection_to_all_network_elements
 
 Upgrade NOS Version on Test Device
     [Documentation]     Upgrades the NOS version on the VOSS switch to the latest version
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}
 
     Update NOS Version on Test Device   ${ip}  ${port}  ${user}  ${pwd}  ${NOS_DIR_NEW}
-    Confirm NOS Version on Test Device  ${ip}  ${port}  ${user}  ${pwd}  ${NOS_VERSION_NEW}
+
+    Connect to all network elements
+    hostinformation_verify_host_nos_version      ${dut_name}      ${NOS_VERSION_NEW}
+    close_connection_to_all_network_elements
 
 Confirm NOS Version in XIQ
     [Documentation]     Confirms XIQ displays the specified NOS version for the VOSS switch
