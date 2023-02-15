@@ -37,6 +37,7 @@ ${AP_CONSOLE_PORT}    ${ap1.port}
 ${AP_USERNAME}        ${ap1.username}
 ${AP_PASSWORD}        ${ap1.password}
 ${AP_PLATFORM}        ${ap1.platform}
+${AP_CLI_TYPE}        ${ap1.cli_type}
 
 
 *** Test Cases ***
@@ -76,11 +77,11 @@ Onboard Test Devices
     Navigate to Devices and Confirm Success
 
     # Onboard the devices for the test
-    ${dut1_result}=     Search Device       device_serial=${AP_SERIAL}
+    ${dut1_result}=     Search Device       device_serial=${AP_SERIAL}      ignore_failure=True
     Run Keyword If      '${dut1_result}' != '1'  onboard device quick    ${ap1}
 
     Configure CAPWAP               ${AP_CONSOLE_IP}  ${AP_CONSOLE_PORT}  ${AP_USERNAME}
-    ...                            ${AP_PASSWORD}  ${AP_PLATFORM}  ${XIQ_CAPWAP_URL}
+    ...                            ${AP_PASSWORD}  ${AP_CLI_TYPE}  ${XIQ_CAPWAP_URL}
 
     # Confirm the devices were onboarded
     Confirm Device Serial Present  ${AP_SERIAL}
@@ -88,9 +89,9 @@ Onboard Test Devices
 
 Configure CAPWAP
     [Documentation]     Configures the CAPWAP client
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${platform}  ${capwap_server}
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${capwap_server}
 
-    ${spawn}=           Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${platform}
+    ${spawn}=           Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
 
     Send                ${spawn}   capwap client server name ${capwap_server}
     Send                ${spawn}   capwap client default-server-name ${capwap_server}

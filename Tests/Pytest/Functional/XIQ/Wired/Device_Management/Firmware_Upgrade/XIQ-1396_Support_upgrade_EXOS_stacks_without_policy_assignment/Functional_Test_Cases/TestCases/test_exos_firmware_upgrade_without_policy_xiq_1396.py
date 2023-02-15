@@ -104,12 +104,12 @@ class xiqTests():
             # Preparing the mapo add the device into the proper location building and floor
             def cleanupDevice (cls):
                 # Delete the netelement-1 device from XIQ if it is already onboarded prior to delete the location buildig floor
-                if cls.xiq.xflowscommonDevices.search_device(device_mac=dutMac) == 1:
+                if cls.xiq.xflowscommonDevices.search_device(device_mac=dutMac, ignore_failure=True) == 1:
                     print(f'Found device using mac-address {dutMac}')
                     cls.xiq.xflowscommonDevices.delete_device(device_mac=dutMac)
                 else:
                     for a_serial in cls.tb.dut1_serial.split(","):
-                        if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                        if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial, ignore_failure=True) == 1:
                             print(f'Found device using serial-number {a_serial}')
                             cls.xiq.xflowscommonDevices.delete_device(a_serial)
                         else:
@@ -149,7 +149,7 @@ class xiqTests():
 
 
                 # Step-1: # Wait until the stack icon turn to 'blue' it is in 'red'
-                result =  cls.xiq.xflowscommonDevices.get_exos_stack_status(device_mac=dutMac)
+                result =  cls.xiq.xflowscommonDevices.get_exos_stack_status(device_mac=dutMac, ignore_failure=True)
                 max_wait = 300
                 time_elapsed = 0
                 while (result == "red" or result == -1 ) and max_wait >= 0 :
@@ -157,7 +157,7 @@ class xiqTests():
                     time.sleep(10)
                     max_wait -= 10
                     time_elapsed += 10
-                    result =  cls.xiq.xflowscommonDevices.get_exos_stack_status(device_mac=dutMac)
+                    result =  cls.xiq.xflowscommonDevices.get_exos_stack_status(device_mac=dutMac, ignore_failure=True)
                     # Once the max_wait time is elapsed the it will be declared as not onboared successfully
                     if (result == "red" or result == -1 ) and max_wait == 0 :
                         print ("\nFAILED \t Stack not formed properly, please check.\n")
@@ -244,12 +244,12 @@ class xiqTests():
         time.sleep(5)
 
         # Delete the dut1 switch if it is already onboarded in to the XIQ environment
-        if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac) == 1:
+        if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac, ignore_failure=True) == 1:
             print(f'Found device using mac-address {cls.tb.dut1.mac}')
             cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
         else:
             for a_serial in cls.tb.dut1_serial.split(","):
-                if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial, ignore_failure=True) == 1:
                     print(f'Found device using serial-number {a_serial}')
                     cls.xiq.xflowscommonDevices.delete_device(a_serial)
                 else:

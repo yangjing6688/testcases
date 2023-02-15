@@ -129,7 +129,7 @@ Log In and Set Up Test
 
     # Wait until the device added in XIQSE is onboarded to XIQ
     Switch To Window  ${XIQ_WINDOW_INDEX}
-    ${search_result}=  Wait Until Device Added      device_serial=${DUT_SERIAL}    retry_duration=30    retry_count=20
+    ${search_result}=  Wait Until Device Added      device_mac=${DUT_MAC}    retry_duration=30    retry_count=20
     Should Be Equal As Integers                     ${search_result}    1
 
 Tear Down Test and Close Session
@@ -224,7 +224,7 @@ Remove Existing Site Engine from XIQ
     XIQ Navigate to Devices and Confirm Success
 
     # If the XIQ Site Engine has already been onboarded, delete it
-    ${search_result}=  Search Device  ${XIQSE_MAC}
+    ${search_result}=  Search Device  ${XIQSE_MAC}      ignore_failure=True
     Run Keyword If  '${search_result}' == '1'    Delete Device  device_mac=${XIQSE_MAC}
 
 Auto Onboard XIQ Site Engine

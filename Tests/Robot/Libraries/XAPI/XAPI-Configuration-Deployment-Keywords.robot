@@ -34,3 +34,30 @@ xapi configuration push deployment status
     ${DEPLOYMENT_STATUS}=       get json values     ${DATA_ARRAY}       key=finished
     log  ${DEPLOYMENT_STATUS}
     [Return]    ${DEPLOYMENT_STATUS}
+
+xapi push delta config
+    [Documentation]  Push delta config to a Single Device(s) - AH-AP
+    [Arguments]  ${DEVICE_ID}
+
+    ${DATA_DELTA_CONFIG}=  set variable  '{"devices": {"ids": [${DEVICE_ID}]},"policy": {"enable_complete_configuration_update": false}}'
+    ${RESP}=  rest api post  /deployments   post_data=${DATA_DELTA_CONFIG}  result_code=200
+    log          ${RESP}
+    [Return]     ${RESP}
+
+xapi push complete config
+    [Documentation]  Push complete config to a Single Device(s) - AH-AP
+    [Arguments]  ${DEVICE_ID}
+
+    ${DATA_COMPLETE_CONFIG_ONLY}=  set variable  '{"devices": {"ids": [${DEVICE_ID}]},"policy": {"enable_complete_configuration_update": true, "firmware_activate_option": {"enable_activate_at_next_reboot": false,"activation_delay_seconds": 10, "activation_time": 0}}}'
+    ${RESP}=  rest api post  /deployments   post_data=${DATA_COMPLETE_CONFIG_ONLY}  result_code=200
+    log          ${RESP}
+    [Return]     ${RESP}
+
+xapi push complete config and firmware
+    [Documentation]  Push complete config and firmware to a Single Device(s) - AH-AP
+    [Arguments]  ${DEVICE_ID}
+
+    ${DATA_COMPLETE_CONFIG_AND_FW}=  set variable  '{"devices": {"ids": [${DEVICE_ID}]},"policy": {"enable_complete_configuration_update": true, "firmware_upgrade_policy": {"enable_distributed_upgrade": false,"enable_enforce_upgrade": true}, "firmware_activate_option": {"enable_activate_at_next_reboot": false,"activation_delay_seconds": 10,"activation_time": 0}}}'
+    ${RESP}=  rest api post  /deployments   post_data=${DATA_COMPLETE_CONFIG_AND_FW}  result_code=200
+    log          ${RESP}
+    [Return]     ${RESP}

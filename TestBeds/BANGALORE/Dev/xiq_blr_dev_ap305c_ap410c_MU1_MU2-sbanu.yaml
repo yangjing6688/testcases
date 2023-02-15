@@ -1,7 +1,7 @@
 ap1:
   name:                     bui-flo-0188
   connection_method:        "ssh"
-  ip:                       10.234.131.97
+  ip:                       10.234.131.99
   port:                     22
   username:                 admin
   password:                 Aerohive123
@@ -17,6 +17,7 @@ ap1:
   mgmt_vlan:                10
   country:                  United States
   onboard_device_type:      Real
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
   extra:
       country:                  United Kingdom
       network_policy:           BLR_TB2_AP410C_01
@@ -44,6 +45,7 @@ ap2:
   mgmt_vlan:                10
   country:                  United States
   onboard_device_type:      Real
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
   extra:
       country:                  United Kingdom
       network_policy:           BLR_TB2_AP305C_01

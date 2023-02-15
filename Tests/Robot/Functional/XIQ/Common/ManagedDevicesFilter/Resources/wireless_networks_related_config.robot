@@ -163,3 +163,5 @@ ${CLIENT_PER_PPSK_GRP}          auto_cloud_ppsk_bulk_user_group
 &{Enterprise_User_Group_Cfg2}      group_name=AutoEnterpriseacctlogs     user_group_profile=None
 &{Enterprise_User_Group_Cfg3}      group_name=AutoEnterprisegroup     user_group_profile=None
 
+#### This block is for devcie make
+${DEVICE_MAKE}          Extreme - Aerohive

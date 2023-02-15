@@ -32,6 +32,8 @@ ${AUTH_TYPE_FACEBOOK}            facebook
 ${AUTH_TYPE_GOOGLE}              google
 ${AUTH_TYPE_LINKEDIN}            linkedin
 ${LOCATION}                      auto_location_01, Santa Clara, building_02, floor_04
+${CWP_MAIL_ID}                   mail.sociallogin.cwp@gmail.com
+${CWP_MAIL_PASSWORD}             Extreme@123
 
 *** Settings ***
 Library     Collections
@@ -55,7 +57,7 @@ Variables   Environments/${ENV}
 Variables   Environments/Config/waits.yaml
 Variables   Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/social_login_config.py
 
-Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/test_email_ids.robot
+
 
 Library	    Remote  http://${mu1.ip}:${mu1.port}    WITH NAME   Remote_Server
 
@@ -84,7 +86,7 @@ Suite Setup
     ${LOGIN_RESULT}=            Login User                  ${tenant_username}      ${tenant_password}      check_warning_msg=True
     Should Be Equal As Integers     ${LOGIN_RESULT}         1
 
-    ${SEARCH_RESULT}=           Search Device               device_serial=${device1.serial}     ignore_cli_feedback=true
+    ${SEARCH_RESULT}=           Search Device               device_serial=${device1.serial}     ignore_failure=True
     IF  ${SEARCH_RESULT} == 1
         ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}      ${MAIN_DEVICE_SPAWN}
         Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
@@ -152,7 +154,7 @@ Suite Teardown
 
     Log To Console      DOING CLEANUP AFTER RUNNING THE SUITE!
 
-    ${SEARCH_RESULT}=   Search Device               device_serial=${device1.serial}     ignore_cli_feedback=true
+    ${SEARCH_RESULT}=   Search Device               device_serial=${device1.serial}     ignore_failure=True
     IF  ${SEARCH_RESULT} == 1
         ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
         Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
@@ -223,17 +225,17 @@ TCCS-11614: Social login with facebook
     Log to Console      Sleep for ${cp_page_open_wait} seconds
     Sleep               ${cp_page_open_wait}
 
-    ${SOCIAL_AUTH_STATUS}=          Validate CWP Social Login With Facebook     ${MAIL_ID3}     ${MAIL_ID3_PASS}
+    ${SOCIAL_AUTH_STATUS}=          Validate CWP Social Login With Facebook     ${CWP_MAIL_ID}     ${CWP_MAIL_PASSWORD}
     Should Be Equal As Integers     ${SOCIAL_AUTH_STATUS}       1
 
     ${CURRENT_DATE_TIME}=           Get Current Date Time
     Log To Console      Current date and time: ${CURRENT_DATE_TIME}
     Log to Console      Sleep for ${auth_logs_duration_wait} seconds
     Sleep               ${auth_logs_duration_wait}
-    ${AUTH_LOGS}=                   Get Authentication Logs Details     ${CURRENT_DATE_TIME}        ${MAIL_ID3}
+    ${AUTH_LOGS}=                   Get Authentication Logs Details     ${CURRENT_DATE_TIME}        ${CWP_MAIL_ID}
     IF  ${AUTH_LOGS} == &{EMPTY}
         ${PREVIOUS_DATE_TIME}=      Get Previous Time Delta             ${CURRENT_DATE_TIME}        minutes=1
-        ${AUTH_LOGS}=               Get Authentication Logs Details     ${PREVIOUS_DATE_TIME}       ${MAIL_ID3}
+        ${AUTH_LOGS}=               Get Authentication Logs Details     ${PREVIOUS_DATE_TIME}       ${CWP_MAIL_ID}
         Log To Console  Setting current date and time to: ${PREVIOUS_DATE_TIME}
     END
     Log To Console          ${AUTH_LOGS}
@@ -246,13 +248,118 @@ TCCS-11614: Social login with facebook
     Should Be Equal As Strings      '${AUTH_STATUS}'        '${AUTH_STATUS_ACCEPT}'
 
     ${USER_NAME}=                   Get From Dictionary     ${AUTH_LOGS}        userName
-    Should Be Equal As Strings      '${USER_NAME}'          '${MAIL_ID3}'
+    Should Be Equal As Strings      '${USER_NAME}'          '${CWP_MAIL_ID}'
 
     ${SSID}=                        Get From Dictionary     ${AUTH_LOGS}        ssid
     Should Be Equal As Strings      '${SSID}'               '${NW_POLICY_SSID1}'
 
     ${AUTH_TYPE}=                   Get From Dictionary     ${AUTH_LOGS}        authType
     Should Be Equal As Strings      '${AUTH_TYPE}'          '${AUTH_TYPE_FACEBOOK}'
+
+    ${CLIENT_MAC}=                  Get From Dictionary     ${AUTH_LOGS}        callingStationId
+    Should Be Equal As Strings      '${CLIENT_MAC}'         '${mu1.wifi_mac}'
+
+    ${REJ_CODE}=                    Get From Dictionary     ${AUTH_LOGS}        rejectReason
+    Should Be Equal As Strings      '${REJ_CODE}'           ''
+
+    ${AP_MAC}=                      Get From Dictionary     ${AUTH_LOGS}        calledStationId
+    Should Be Equal As Strings      '${AP_MAC}'           '${device1.mac}'
+
+    ${NAS_ID}=                      Get From Dictionary     ${AUTH_LOGS}        nasIdentifier
+    Should Be Equal As Strings      '${NAS_ID}'             ''
+
+    ${TIME_STAMP}=                  Get From Dictionary     ${AUTH_LOGS}        authdate
+    ${VARIABLES}=                   Get Variables
+    IF  "\${PREVIOUS_DATE_TIME}" in "${VARIABLES}"
+        Should Contain      ${TIME_STAMP}       ${PREVIOUS_DATE_TIME}
+    ELSE
+        Should Contain      ${TIME_STAMP}       ${CURRENT_DATE_TIME}
+    END
+
+    Remote_Server.Disconnect WiFi
+    Log to Console      Sleep for ${client_disconnect_wait} seconds
+    Sleep  ${client_disconnect_wait}
+
+    ${CLEAR_CLIENT}=        Send            ${MAIN_DEVICE_SPAWN}         ${cmd_clear_client_mac}
+    Log to Console      Sleep for ${ap_clear_mac_wait} seconds
+    Sleep  ${ap_clear_mac_wait}
+
+    ${SHOW_STATION}=        Send            ${MAIN_DEVICE_SPAWN}         ${cmd_show_station}
+    Should Not Contain      ${SHOW_STATION}     ${mu1.wifi_mac}
+
+    [Teardown]
+    Run Keywords    Close CP Browser
+
+TCCS-14366: Social login with Linkedin
+    [Documentation]   CWP Social login with Linkedin
+    ...               https://jira.aerohive.com/browse/APC-39420
+
+    [Tags]            production    tccs_14366
+
+    ${NW_POLICY_CREATION}=     Create Network Policy     ${NW_POLICY_NAME3}    ${OPEN_NW_3}     cli_type=${device1.cli_type}
+    ${AP_UPDATE_CONFIG}=       Update Network Policy To AP   ${NW_POLICY_NAME3}     ap_serial=${device1.serial}
+
+    ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial}
+    Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}            1
+
+    Log to Console      Sleep for ${client_connect_wait} seconds
+    Sleep               ${client_connect_wait}
+
+    Remote_Server.Connect Open Network     ${NW_POLICY_SSID3}
+
+    Log to Console      Sleep for ${client_connect_wait} seconds
+    Sleep               ${client_connect_wait}
+
+    Negative Internet connectivity check
+
+    Run Keyword If     "${mu1.platform}" == "mac"           Remote_Server.Kill Native Captive
+    IF                 "${mu1.platform}" == "mac"
+                        Open CP Browser    ${mu1.ip}        incognito=True
+    ELSE
+                        Open CP Browser    ${mu1.ip}
+    END
+
+    Log to Console      Sleep for ${cp_page_open_wait} seconds
+    Sleep               ${cp_page_open_wait}
+
+    ${SOCIAL_AUTH_STATUS}=        Validate CWP Social Login With Linkedin Account    ${CWP_MAIL_ID}     ${CWP_MAIL_PASSWORD}
+    Should Be Equal As Integers     ${SOCIAL_AUTH_STATUS}       1
+
+    ${CURRENT_DATE_TIME}=           Get Current Date Time
+    Log To Console      Current date and time: ${CURRENT_DATE_TIME}
+    Log to Console      Sleep for ${auth_logs_duration_wait} seconds
+    Sleep               ${auth_logs_duration_wait}
+
+    ${AUTH_LOGS}=                   Get Authentication Logs Details     ${CURRENT_DATE_TIME}        ${CWP_MAIL_ID}
+    IF  ${AUTH_LOGS} == &{EMPTY}
+        ${PREVIOUS_DATE_TIME}=      Get Previous Time Delta             ${CURRENT_DATE_TIME}        minutes=1
+        ${AUTH_LOGS}=               Get Authentication Logs Details     ${PREVIOUS_DATE_TIME}       ${CWP_MAIL_ID}
+        Log To Console  Setting current date and time to: ${PREVIOUS_DATE_TIME}
+    END
+
+    Log To Console          ${AUTH_LOGS}
+    Should Not Be Empty     ${AUTH_LOGS}
+
+    Positive Internet connectivity check
+
+    Log to Console      Sleep for ${auth_logs_duration_wait} seconds
+    Sleep               ${auth_logs_duration_wait}
+
+    ${AUTH_LOGS}=                Get Authentication Logs Details       ${CURRENT_DATE_TIME}        ${CWP_MAIL_ID}
+    LOG TO CONSOLE               ${AUTH_LOGS}
+
+   # Logs Verification
+    ${AUTH_STATUS}=                 Get From Dictionary     ${AUTH_LOGS}        reply
+    Should Be Equal As Strings      '${AUTH_STATUS}'        '${AUTH_STATUS_ACCEPT}'
+
+    ${USER_NAME}=                   Get From Dictionary     ${AUTH_LOGS}        userName
+    Should Be Equal As Strings      '${USER_NAME}'          '${CWP_MAIL_ID}'
+
+    ${SSID}=                        Get From Dictionary     ${AUTH_LOGS}        ssid
+    Should Be Equal As Strings      '${SSID}'               '${NW_POLICY_SSID3}'
+
+    ${AUTH_TYPE}=                   Get From Dictionary     ${AUTH_LOGS}        authType
+    Should Be Equal As Strings      '${AUTH_TYPE}'          '${AUTH_TYPE_LINKEDIN}'
 
     ${CLIENT_MAC}=                  Get From Dictionary     ${AUTH_LOGS}        callingStationId
     Should Be Equal As Strings      '${CLIENT_MAC}'         '${mu1.wifi_mac}'
