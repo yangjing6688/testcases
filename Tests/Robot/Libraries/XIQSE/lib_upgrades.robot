@@ -182,11 +182,15 @@ NBI Check Server Is Up
 
     FOR    ${index}    IN RANGE    45
         ${sshSession} =    open_paramiko_ssh_spawn  ${ip}  ${user}  ${password}  ${SSH_PORT}
-        ${output} =  Send Paramiko CMD        ${sshSession}  rm ${nbi_file}
-        ${output} =  Send Paramiko CMD        ${sshSession}  curl -k -u ${user}:${password} https://${ip}:8443/Clients/nbi/graphql/index.html?query=query%7Bnetwork%20%7Bsites%20%7BsiteName%7D%7D%7D > ${nbi_file}
-        ${result} =  Send Paramiko CMD        ${sshSession}  cat ${nbi_file} | grep "World"
+        IF  "${sshSession}"=="-1"
+            Log To Console  Failed to open ssh session for ${ip}: ${user},${password}
+        ELSE
+            ${output} =  Send Paramiko CMD        ${sshSession}  rm ${nbi_file}
+            ${output} =  Send Paramiko CMD        ${sshSession}  curl -k -u ${user}:${password} https://${ip}:8443/Clients/nbi/graphql/index.html?query=query%7Bnetwork%20%7Bsites%20%7BsiteName%7D%7D%7D > ${nbi_file}
+            ${result} =  Send Paramiko CMD        ${sshSession}  cat ${nbi_file} | grep "World"
 
-        Exit For Loop If  'World' in '''${result}'''
+            Exit For Loop If  'World' in '''${result}'''
+        END
         Sleep  60s
         IF  "${index}"=="44"
             Log To Console          Server is not yet up. Please check the server for any errors

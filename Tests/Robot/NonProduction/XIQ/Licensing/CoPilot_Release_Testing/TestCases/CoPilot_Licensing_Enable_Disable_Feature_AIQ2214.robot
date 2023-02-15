@@ -178,6 +178,8 @@ Test 11: Verify Device License and CoPilot Column Values
 
     Depends On          Test 1
 
+    Count Down in Minutes    2
+
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT1_SERIAL}    DEVICE LICENSE
     Should Contain         ${pilot1_result}      ${PILOT_LICENSE}
@@ -227,6 +229,13 @@ Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
 
     Disable CoPilot Feature and Confirm Success
+
+    Navigate to Devices and Confirm Success
+
+    ${result_delete}=                   Delete All Devices
+    Should Be Equal As Integers         ${result_delete}     1
+
+    Refresh Page
     Log Out of XIQ and Quit Browser
 
 Enable CoPilot Feature For This VIQ and Confirm Success

@@ -25,6 +25,20 @@ Set Alarm Event Search Scope
 
     XIQSE Set Event Search Scope And Save    ${value}
 
+Set Syslog Delay Engine Start and Confirm Success
+    [Documentation]     Configures the syslog delay engine start option, saves the change, and confirms the action was successful
+    [Arguments]         ${value}
+
+    ${result}=  XIQSE Set Syslog Delay Engine Start and Save   ${value}
+    Should Be Equal As Integers     ${result}     1
+
+Set Trap Delay Engine Start and Confirm Success
+    [Documentation]     Configures the trap delay engine start option, saves the change, and confirms the action was successful
+    [Arguments]         ${value}
+
+    ${result}=  XIQSE Set Trap Delay Engine Start and Save   ${value}
+    Should Be Equal As Integers     ${result}     1
+
 Set Option Web Server Session Timeout and Confirm Success
     [Documentation]     Configures the HTTP Session Timeout option, saves the change, and confirms the action was successful
     [Arguments]         ${value}  ${units}

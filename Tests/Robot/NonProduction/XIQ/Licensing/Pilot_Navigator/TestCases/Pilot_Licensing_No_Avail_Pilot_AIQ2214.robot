@@ -214,7 +214,7 @@ Test 10: Verify Fourth Device Not Onboarded and Not Present In Devices panel
 
     Depends On          Test 1
 
-    ${result_search}=    Search Device          ${DUT4_SERIAL}
+    ${result_search}=    Search Device          ${DUT4_SERIAL}      expect_error=True
     Should Be Equal As Integers                 ${result_search}     -1
 
 Test 11: Delete All Devices and Verify Success
@@ -248,6 +248,10 @@ Log Into XIQ and Set Up Test
 
 Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
+
+    Navigate to Devices and Confirm Success
+    ${del_result}=  Delete All Devices
+    Should Be Equal As Integers  ${del_result}  1
 
     Log Out of XIQ and Quit Browser
 

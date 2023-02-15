@@ -1,0 +1,16 @@
+test_url:                "https://10.155.255.145"
+capwap_url:              "10.155.255.145"
+sw_connection_host:      "10.155.255.145"
+tenant_username:         "admin@cust001.com"
+tenant_password:         "aerohive"
+base_url:                "http://10.155.255.145:8185"
+xapi_url:                "http://10.155.255.145:8185"
+aio_xiq:                 0
+iapi_base_url:           "https://10.155.255.145"
+sw_capwap_url:           "10.155.255.145"
+wing_capwap_url:         "10.155.255.145"
+test_rdc_url:            "https://10.155.255.145"
+
+
+
+

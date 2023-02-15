@@ -24,6 +24,7 @@ from pytest_testconfig import config
 from contextlib import contextmanager
 from typing import List, Dict, DefaultDict, Callable, Tuple, Iterator, Protocol, NewType, Union
 from pathlib import Path
+from itertools import permutations
 
 from ExtremeAutomation.Library.Utils.Singleton import Singleton
 from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
@@ -532,6 +533,7 @@ def pytest_configure(config):
     pytest.testbed_stack_items: List[pytest.Function] = []
     pytest.xiq_version: str = None
     pytest.data: Dict[str, str] = {}
+    pytest.onboarding_config: str = "onboarding.config.json"
 
 
 def log_features():
@@ -1350,19 +1352,19 @@ def pytest_runtest_setup(item):
         except:
             config['${TEST_NAME}'] = current_test_marker
 
-        request = FixtureRequest(item, _ispytest=True)
+        request: fixtures.SubRequest = FixtureRequest(item, _ispytest=True)
 
         for marker in item.own_markers:
 
             # valid markers: 
-            #   pytest.mark.skip_if_{node}_{field}(*args)
+            #   @pytest.mark.skip_if_{node}_{field}(*args)
             #
             #   e.g.
             #        @pytest.mark.skip_if_node_1_platform("5420", "5520") -> will skip test case if the platform of the switch is in ["5420", "5520"]
             #
-            #   node -> node_1|node_2|node_stack
+            #   node  -> node_1|node_2|node_stack
             #   field -> cli_type|make|model|platform
-            #   args -> values for given field
+            #   args  -> values for given field
             
             for node in ["node_1", "node_2", "node_stack"]:
                 for field in ["cli_type", "make", "model", "platform"]:
@@ -1377,8 +1379,29 @@ def pytest_runtest_setup(item):
                                     item.add_marker(pytest.mark.skip(msg))
                                     pytest.skip(msg)
             
+            # valid markers: 
+            #   @pytest.mark.run_if_{node}_{field}(*args)
+            #
+            #   e.g.
+            #       @pytest.mark.run_if_node_1_platform("5420", "5520") -> will skip test case if the platform of the switch is not in ["5420", "5520"]
+            #
+            #   node -> node_1|node_2|node_stack
+            #   field -> cli_type|make|model|platform
+            #   args -> values for given field
+               
+                    if (marker.name == f'run_if_{node}_{field}') and bool(marker.args):
+                        node_fxt = request.getfixturevalue(node)
+                        if node_fxt:
+                            if field_value := node_fxt.get(field):
+                                if not any(field_value.upper() == arg.upper() for arg in marker.args):
+                                    msg = f"'{current_test_marker}' test case will be skipped because " \
+                                          f"it is meant to run when '{node_fxt.node_name}' has" \
+                                          f" any of {marker.args} set for the '{field}' field."           
+                                    item.add_marker(pytest.mark.skip(msg))
+                                    pytest.skip(msg)
+                                                
             # e.g.
-            #     pytest.mark.skip_if_browser(chrome")
+            #     @pytest.mark.skip_if_browser("chrome")
             #
 
             if (marker.name == "skip_if_browser") and bool(marker.args):
@@ -1390,7 +1413,7 @@ def pytest_runtest_setup(item):
                         pytest.skip(msg)
             
             # e.g.
-            #     pytest.mark.skip_if_lab("BUCHAREST")
+            #     @pytest.mark.skip_if_lab("BUCHAREST")
             #
 
             if (marker.name == "skip_if_lab") and bool(marker.args):
@@ -1400,9 +1423,89 @@ def pytest_runtest_setup(item):
                               f"it is not meant to run when lab is '{lab}'."
                         item.add_marker(pytest.mark.skip(msg))
                         pytest.skip(msg)
-            
+
+            # e.g.
+            #     @pytest.mark.skip_if_node_1_does_not_support_poe -> will skip test case if node_1 does not support poe
+            #
+
+            for node in ["node_1", "node_2", "node_stack"]:
+                if marker.name == f"skip_if_{node}_does_not_support_poe":
+                    node_fxt = request.getfixturevalue(node)
+                    if node_fxt:
+                        if not request.getfixturevalue(f"{node}_poe_capability"):
+                            msg = f"'{current_test_marker}' test case will be skipped because " \
+                                  f"it is not meant to run when {node} does not support poe."
+                            item.add_marker(pytest.mark.skip(msg))
+                            pytest.skip(msg)  
+
+            legacy_voss = ["1400", "4900", "7400"]
+            unified_hardware = ["5200", "5300", "5400", "5500", "5700"]
+
             # valid markers: 
-            #   pytest.mark.skip_if_{node}_{software}_version_{operator}({version}, {os})
+            #   @pytest.mark.run_if_{node}_{field}
+            # 
+            # e.g.
+            #     @pytest.mark.run_if_node_1_legacy_voss        -> will not skip test case if node_1 is legacy voss
+            #     @pytest.mark.run_if_node_1_unified_hardware   -> will not skip test case if node_1 is unified hardware
+            #
+            #   node  -> node_1|node_2|node_stack
+            #   field -> legacy_voss|unified hardware
+            #
+            
+            for node in ["node_1", "node_2", "node_stack"]:
+                for device_platform in ["legacy_voss", "unified_hardware"]:
+                    if marker.name == f"run_if_{node}_is_{device_platform}":
+                        node_fxt = request.getfixturevalue(node)
+                        if node_fxt:
+                            if node_fxt.node_name == "node_stack":
+                                # will get the platform from the model field
+                                model = node_fxt.model
+                                platform_match = re.search("Engine(\d{4})", model)
+                                if not platform_match:
+                                    continue
+                                node_platform = platform_match.group(1)[:2]
+                            else:
+                                node_platform = str(node_fxt.platform)[:2]
+                                
+                            if not any(node_platform == str(hw)[:2] for hw in locals()[device_platform]):
+                                msg = f"'{current_test_marker}' test case will be skipped because " \
+                                    f"it is meant to run when {node} is {device_platform} ({locals()[device_platform]})."
+                                item.add_marker(pytest.mark.skip(msg))
+                                pytest.skip(msg)
+
+            # valid markers: 
+            #   @pytest.mark.skip_if_{node}_{field}
+            # 
+            # e.g.
+            #     @pytest.mark.skip_if_node_1_legacy_voss        -> will skip test case if node_1 is legacy voss
+            #     @pytest.mark.skip_if_node_1_unified_hardware   -> will skip test case if node_1 is unified hardware
+            #
+            #   node  -> node_1|node_2|node_stack
+            #   field -> legacy_voss|unified hardware
+            #
+            
+            for node in ["node_1", "node_2", "node_stack"]:
+                for device_platform in ["legacy_voss", "unified_hardware"]:
+                    if marker.name == f"skip_if_{node}_is_{device_platform}":
+                        node_fxt = request.getfixturevalue(node)
+                        if node_fxt:
+                            if node_fxt.node_name == "node_stack":
+                                # will get the platform from the model field
+                                model = node_fxt.model
+                                platform_match = re.search("Engine(\d{4})", model)
+                                if not platform_match:
+                                    continue
+                                node_platform = platform_match.group(1)[:2]
+                            else:
+                                node_platform = str(node_fxt.platform)[:2]
+                            if any(node_platform == str(hw)[:2] for hw in locals()[device_platform]):
+                                msg = f"'{current_test_marker}' test case will be skipped because " \
+                                    f"it is not meant to run when {node} is {device_platform} ({locals()[device_platform]})."
+                                item.add_marker(pytest.mark.skip(msg))
+                                pytest.skip(msg)
+
+            # valid markers: 
+            #   @pytest.mark.skip_if_{node}_{software}_version_{operator}({version}, {os})
             #   
             #   e.g. 
             #        @pytest.mark.skip_if_node_1_system_version_lt("8.8.0.0", "VOSS") -> will skip test case if switch is VOSS and has system version < 8.8.0.0
@@ -1426,39 +1529,38 @@ def pytest_runtest_setup(item):
             #        @pytest.mark.skip_if_node_1_iqagent_version_ge("0.6.0", "VOSS")   -> SKIPPED
             #        @pytest.mark.skip_if_node_1_iqagent_version_ge("0.6.0", "EXOS")   -> NOT SKIPPED
             #
-            #   node -> node_1|node_2|node_stack
+            #   node     -> node_1|node_2|node_stack
             #   software -> system|iqagent
             #   operator -> lt|le|gt|ge|eq
-            #   version -> the expected {software} version
-            #   os -> the OS of the switch
+            #   version  -> the expected {software} version
+            #   os       -> the OS of the switch
             #
             #   note: currently implemented only for EXOS/VOSS
 
-            for marker in item.own_markers:
-                for found_node in ["node_1", "node_2", "node_stack"]:
-                    for found_operator in ["lt", "le", "gt", "ge", "eq"]:
-                        for found_software in ["iqagent", "system"]:
-                            if (marker.name == f"skip_if_{found_node}_{found_software}_version_{found_operator}") and len(marker.args) == 2:
-                                marker_version = marker.args[0]
-                                marker_os = marker.args[1].upper()
-                                if node_fxt := request.getfixturevalue(found_node):  
-                                    if marker_os == node_fxt.cli_type.upper():
-                                        if sys_fxt := request.getfixturevalue(f"{found_node}_starting_{found_software}_version"):
-                                            if (found_software == "system") and (found_node == "node_stack"):
-                                                sys_fxt = sys_fxt[0][1]
-                                            try:
-                                                op = f"getattr(operator, '{found_operator}')(LooseVersion('{sys_fxt}'), LooseVersion('{marker_version}'))"
-                                                result = eval(op)
-                                            except:
-                                                logger_obj.warning("Failed to parse versions.")
-                                            else:
+            for found_node in ["node_1", "node_2", "node_stack"]:
+                for found_operator in ["lt", "le", "gt", "ge", "eq"]:
+                    for found_software in ["iqagent", "system"]:
+                        if (marker.name == f"skip_if_{found_node}_{found_software}_version_{found_operator}") and len(marker.args) == 2:
+                            marker_version = marker.args[0]
+                            marker_os = marker.args[1].upper()
+                            if node_fxt := request.getfixturevalue(found_node):  
+                                if marker_os == node_fxt.cli_type.upper():
+                                    if sys_fxt := request.getfixturevalue(f"{found_node}_starting_{found_software}_version"):
+                                        if (found_software == "system") and (found_node == "node_stack"):
+                                            sys_fxt = sys_fxt[0][1]
+                                        try:
+                                            op = f"getattr(operator, '{found_operator}')(LooseVersion('{sys_fxt}'), LooseVersion('{marker_version}'))"
+                                            result = eval(op)
+                                        except:
+                                            logger_obj.warning("Failed to parse versions.")
+                                        else:
 
-                                                if result is True:
-                                                    msg = f"'{current_test_marker}' test case will be skipped because " \
-                                                          f"it is not meant to run when '{node_fxt.node_name}' is '{marker_os}' and" \
-                                                          f" its {found_software} version ('{sys_fxt}') is {found_operator} '{marker_version}'."
-                                                    item.add_marker(pytest.mark.skip(msg))
-                                                    pytest.skip(msg)
+                                            if result is True:
+                                                msg = f"'{current_test_marker}' test case will be skipped because " \
+                                                    f"it is not meant to run when '{node_fxt.node_name}' is '{marker_os}' and" \
+                                                    f" its {found_software} version ('{sys_fxt}') is {found_operator} '{marker_version}'."
+                                                item.add_marker(pytest.mark.skip(msg))
+                                                pytest.skip(msg)
 
         if (not is_onboarding_test(item)) and (not is_onboarding_cleanup_test(item)):
             logger_obj.step(f"Start SETUP of test function '{current_test_marker}': '{item.nodeid}'.")
@@ -1706,6 +1808,7 @@ class OnboardingTests:
         if pytest.run_options.get("skip_setup"):
             logger_obj.info(
                 "The 'skip_setup' option is given in runlist. The onboarding is skipped.")
+            request.getfixturevalue("test_bed")
             return
 
         if not any(
@@ -1846,7 +1949,8 @@ def xiq_library_at_class_level(
 @pytest.fixture(scope="session")
 def deactivate_xiq_library(
     debug: Callable,
-    cloud_driver: CloudDriver
+    cloud_driver: CloudDriver,
+    logger: PytestLogger
 ) -> DeactivateXiqLibrary:
     """
     Fixture that deactivates the given XiqLibrary object.
@@ -1860,12 +1964,13 @@ def deactivate_xiq_library(
         try:
             xiq.login.logout_user()
             xiq.login.quit_browser()
-        except:
-            if not xiq:
-                try:
-                    cloud_driver.cloud_driver.close()
-                except:
-                    pass
+        except Exception as exc:
+            # this branch covers the case when a window in XIQ is not closed and the logout will raise an error -> e.g. the honeycomb port type editor
+            logger.error(f"Failed to logout and close the browser. Will try to forcefully close the browser using the cloud driver object.\n{repr(exc)}")
+            try:
+                cloud_driver.cloud_driver.close()
+            except:
+                pass
     return deactivate_xiq_library_func
 
 
@@ -2020,7 +2125,7 @@ def generate_template_for_given_model(
             if "SwitchEngine" in slot_model:
                 mat = re.match('(.*)(Engine)(.*)', slot_model)
                 model_md = mat.group(1) + ' ' + mat.group(2) + ' ' + mat.group(3).replace('_', '-')
-                switch_type=re.match('(\d+).*', mat.group(3).split('_')[0]).group(1)
+                switch_type = re.match(r'(\d+).*', mat.group(3).split('_')[0]).group(1)
                 sw_model = 'Switch Engine ' + switch_type + '-Series-Stack'
 
             else:
@@ -2065,17 +2170,47 @@ def virtual_routers(
         enter_switch_cli: EnterSwitchCli,
         node_list: List[Node],
         logger: PytestLogger,
-        nodes_data
+        nodes_data: Dict[str, Dict[str, Union[str, bool, List[Tuple[str, str]]]]]
 ) -> Dict[str, str]:
     return nodes_data.get("virtual_routers", {})
  
+
+@pytest.fixture(scope="session")
+def poe_capabilities(
+    nodes_data: Dict[str, Dict[str, Union[str, bool, List[Tuple[str, str]]]]]
+) -> Dict[str, bool]:
+    return {
+        k: v["poe"] for k, v in nodes_data.items()
+    }
+
+
+@pytest.fixture(scope="session")
+def node_1_poe_capability(
+    poe_capabilities: Dict[str, str]
+) -> bool:
+    return poe_capabilities.get("node_1")
+
+
+@pytest.fixture(scope="session")
+def node_2_poe_capability(
+    poe_capabilities: Dict[str, str]
+) -> bool:
+    return poe_capabilities.get("node_2")
+
+
+@pytest.fixture(scope="session")
+def node_stack_poe_capability(
+    poe_capabilities: Dict[str, str]
+) -> bool:
+    return poe_capabilities.get("node_stack")
+
 
 @pytest.fixture(scope="session")
 def starting_iqagent_versions(
         enter_switch_cli: EnterSwitchCli,
         node_list: List[Node],
         logger: PytestLogger,
-        nodes_data
+        nodes_data: Dict[str, Dict[str, Union[str, bool, List[Tuple[str, str]]]]]
 ) -> Dict[str, str]:
     return {
         k: v["iqagent_version"] for k, v in nodes_data.items()
@@ -2087,7 +2222,7 @@ def starting_system_versions(
         enter_switch_cli: EnterSwitchCli,
         node_list: List[Node],
         logger: PytestLogger,
-        nodes_data
+        nodes_data: Dict[str, Dict[str, Union[str, bool, List[Tuple[str, str]]]]]
 ) -> Dict[str, str]:
     return {
         k: v["system_version"] for k, v in nodes_data.items()
@@ -2099,7 +2234,7 @@ def nodes_data(
     enter_switch_cli: EnterSwitchCli,
     node_list: List[Node],
     logger: PytestLogger
-) -> Dict[str, Dict[str, Union[str, List[Tuple[str, str]]]]]:
+) -> Dict[str, Dict[str, Union[str, bool, List[Tuple[str, str]]]]]:
 
     data = defaultdict(lambda: {})
 
@@ -2114,7 +2249,7 @@ def nodes_data(
                 iqagent_version = re.search(r"Version\s+\s([\d\.]+)\s+\r\n", output).group(1)
             elif dut.cli_type.upper() == "VOSS":
                 output = dev_cmd.send_cmd(dut.name, 'show application iqagent')[0].return_text
-                iqagent_version = re.search(f"Agent Version\s+:\s([\d\.]+)\r\n", output).group(1)
+                iqagent_version = re.search(fr"Agent Version\s+:\s([\d\.]+)\r\n", output).group(1)
             else:
                 logger.warning("OS not yet supported.")
 
@@ -2127,7 +2262,7 @@ def nodes_data(
                 output = dev_cmd.send_cmd(dut.name, 'show version')[0].return_text
 
                 if dut.platform.upper() == "STACK":
-                    system_version = re.findall("(Slot-\d).*\sIMG:\s([\d\.]+)", output)
+                    system_version = re.findall(r"(Slot-\d).*\sIMG:\s([\d\.]+)", output)
                 else:
                     system_version = re.search(r"IMG:\s([\d\.]+)", output).group(1)
 
@@ -2159,6 +2294,40 @@ def nodes_data(
 
             data[dut.node_name]["virtual_router"] = virtual_router
             
+            # get poe capability
+            poe = False
+            
+            try:
+                if dut.cli_type.lower() == "voss":
+                    dev_cmd.send_cmd(
+                        dut.name, 'enable', max_wait=30, interval=10)
+                    dev_cmd.send_cmd(
+                        dut.name, 'configure terminal', max_wait=30, interval=10)
+                    result = dev_cmd.send_cmd(
+                        dut.name, 'show poe-main-status', max_wait=30, interval=10)[0].return_text
+                    logger.cli(result)
+                    assert re.search("PoE Main Status", result)
+                    assert not re.search("Device is not a POE device", result)
+
+                elif dut.cli_type.lower() == 'exos':
+                    dev_cmd.send_cmd(dut.name, 'enable telnet')
+                    dev_cmd.send_cmd(dut.name, 'disable cli paging')
+                    result = dev_cmd.send_cmd(
+                        dut.name, 'show inline-power', max_wait=30, 
+                        interval=10)[0].cmd_obj._return_text
+                    logger.cli(result)
+                    assert re.search('Inline Power System Information', result)
+                else:
+                    assert False, "OS not yet supported."
+                    
+            except Exception as exc:
+                warning = f"'{dut.node_name}' node ('{dut.name}') does not support POE.\n{repr(exc)}"
+                logger.warning(warning)
+            else:
+                poe = True
+            
+            data[dut.node_name]["poe"] = poe
+
     threads: List[threading.Thread] = []
     try:
         for dut in node_list:
@@ -2248,67 +2417,74 @@ def onboarding_locations(
         node_list: List[Node],
         logger: PytestLogger,
         request: fixtures.SubRequest,
-        
+        cached_onboarding_config: Dict[str, Dict[str, str]],
+        run_options: Options
 ) -> Dict[str, str]:
     """
     Fixture that choose the onboarding location for the available nodes.
     """
     
-    ret = {}
+    ret: Dict[str, str] = {}
     
     hardcoded_locations = [
         "San Jose,building_01,floor_01",
     ]
-    
+
+    skip_setup: bool = run_options.get("skip_setup", False)
+  
     for node in node_list:
         
-        onboarding_options: Options = request.getfixturevalue(f"{node.node_name}_onboarding_options")
-        onboarding_location: str = onboarding_options.get("onboarding_location")
-        create_onboarding_location: bool = onboarding_options.get("create_onboarding_location")
-
-        if onboarding_location:
-            
-            if onboarding_location == "random":
-                create_onboarding_location = True
-                pool = list(string.ascii_letters) + list(string.digits)
-                onboarding_location = f"Salem_{''.join(random.sample(pool, k=4))}," \
-                                      f"Northeastern_{''.join(random.sample(pool, k=4))}," \
-                                      f"Floor_{''.join(random.sample(pool, k=4))}"
-                
-            logger.info(
-                f"Successfully found this location in the runlist for node '{node.node_name}': '{onboarding_location}'")
-            ret[node.node_name] = onboarding_location
-            
-            if create_onboarding_location:
-                logger.info(
-                    f"The 'create_onboarding_location' flag is set to True. The '{onboarding_location}' location"
-                    f" will be created so it can be used at the onboarding of the '{node.node_name}' node."
-                )
-                if onboarding_location not in pytest.created_onboarding_locations:
-                    pytest.created_onboarding_locations.append(onboarding_location)
-
+        node_cached_onboarding_config: Dict[str, str] = cached_onboarding_config.get(node.node_name)
+        
+        if skip_setup and node_cached_onboarding_config:
+            ret[node.node_name] = node_cached_onboarding_config.get("onboarding_location")
         else:
-            locations = node.get("location")
-            
-            if locations:
-                logger.info(f"Found location(s) attached to '{node.node_name}': {locations}.")
-            
-            if isinstance(locations, str):
-                ret[node.node_name] = locations
-                
-            elif isinstance(locations, dict):
-                logger.step("Choose one of them.")
-                found_location = random.choice(list(locations.values()))
-                logger.info(f"The chosen location for '{node.node_name}' is '{found_location}'.")
-                ret[node.node_name] = found_location
-            
-            else:
-                logger.info(f"Did not find any location attached to '{node.node_name}'.")
+            onboarding_options: Options = request.getfixturevalue(f"{node.node_name}_onboarding_options")
+            onboarding_location: str = onboarding_options.get("onboarding_location")
+            create_onboarding_location: bool = onboarding_options.get("create_onboarding_location")
 
-                logger.step(f"Will choose a location out of these for '{node.node_name}': {hardcoded_locations}.")
-                found_location = random.choice(hardcoded_locations)
-                logger.info(f"The chosen location for '{node.node_name}' is '{found_location}'.")
-                ret[node.node_name] = found_location
+            if onboarding_location:
+                
+                if onboarding_location == "random":
+                    create_onboarding_location = True
+                    onboarding_location = f"Salem_{get_random_word(length=4)}," \
+                                          f"Northeastern_{get_random_word(length=4)}," \
+                                          f"Floor_{get_random_word(length=4)}"
+                    
+                logger.info(
+                    f"Successfully found this location in the runlist for node '{node.node_name}': '{onboarding_location}'")
+                ret[node.node_name] = onboarding_location
+                
+                if create_onboarding_location:
+                    logger.info(
+                        f"The 'create_onboarding_location' flag is set to True. The '{onboarding_location}' location"
+                        f" will be created so it can be used at the onboarding of the '{node.node_name}' node."
+                    )
+                    if onboarding_location not in pytest.created_onboarding_locations:
+                        pytest.created_onboarding_locations.append(onboarding_location)
+
+            else:
+                locations = node.get("location")
+                
+                if locations:
+                    logger.info(f"Found location(s) attached to '{node.node_name}': '{locations}'.")
+                
+                if isinstance(locations, str):
+                    ret[node.node_name] = locations
+                    
+                elif isinstance(locations, dict):
+                    logger.step("Choose one of them.")
+                    found_location = random.choice(list(locations.values()))
+                    logger.info(f"The chosen location for '{node.node_name}' is '{found_location}'.")
+                    ret[node.node_name] = found_location
+                
+                else:
+                    logger.info(f"Did not find any location attached to '{node.node_name}'.")
+
+                    logger.step(f"Will choose a location out of these for '{node.node_name}': {hardcoded_locations}.")
+                    found_location = random.choice(hardcoded_locations)
+                    logger.info(f"The chosen location for '{node.node_name}' is '{found_location}'.")
+                    ret[node.node_name] = found_location
         pytest.data[f"{node.node_name}_onboarding_location"] = ret[node.node_name]
     return ret
 
@@ -2384,7 +2560,7 @@ def loaded_config() -> Dict[str, str]:
     config['${TEST_NAME}'] = "onboarding"
     config['${OUTPUT DIR}'] = os.getcwd()
     config['${MAX_CONFIG_PUSH_TIME}'] = 600
-    config['${EXIT_LEVEL}'] = -600
+    config['${EXIT_LEVEL}'] = "test_case"
 
     for word in ["tenant_username", "tenant_password", "test_url"]:
         if word in config:
@@ -2676,26 +2852,33 @@ def stack_nodes() -> List[Node]:
 @pytest.fixture(scope="session")
 def policy_config(
         node_list: List[Node],
-        request: fixtures.SubRequest
+        request: fixtures.SubRequest,
+        cached_onboarding_config: Dict[str, Dict[str, str]]
 ) -> PolicyConfig:
     """
     Fixture that selects the policy name and the template name for all the nodes.
     """
     
     dut_config: PolicyConfig = defaultdict(lambda: {})
-    pool = list(string.ascii_letters) + list(string.digits)
+    run_options: Options = request.getfixturevalue("run_options")
+    skip_setup: bool = run_options.get("skip_setup", False)
 
     for dut in node_list:
         
         model, units_model = generate_template_for_given_model(dut)
+        node_cached_onboarding_config = cached_onboarding_config.get(dut.node_name)
         
-        onboarding_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
-        
-        random_policy_name = f"{pytest.runlist_name.replace('runlist_', '')}_np_{''.join(random.sample(pool, k=8))}"[:28]
-        random_template_name = f"{pytest.runlist_name.replace('runlist_', '')}_template_{''.join(random.sample(pool, k=8))}"[:28]
-        
-        policy_name: str = onboarding_options.get("policy_name", random_policy_name)
-        template_name: str = onboarding_options.get("template_name", random_template_name)
+        if skip_setup and node_cached_onboarding_config:
+            policy_name: str = node_cached_onboarding_config.get("policy_name")
+            template_name: str = node_cached_onboarding_config.get("template_name")
+        else:
+            onboarding_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
+            
+            random_policy_name = f"{pytest.runlist_name.replace('runlist_', '')}_np_{get_random_word(length=8)}"[:28]
+            random_template_name = f"{pytest.runlist_name.replace('runlist_', '')}_template_{get_random_word(length=8)}"[:28]
+            
+            policy_name: str = onboarding_options.get("policy_name", random_policy_name)
+            template_name: str = onboarding_options.get("template_name", random_template_name)
         
         dut_config[dut.node_name]["policy_name"] = policy_name
         dut_config[dut.node_name]['template_name'] = template_name
@@ -2856,10 +3039,16 @@ def node_stack_template_name(
 def node_list(
         standalone_nodes: List[Node],
         stack_nodes: List[Node],
-        node_1_onboarding_options,
-        node_2_onboarding_options,
-        node_stack_onboarding_options,
-        logger: PytestLogger
+        all_nodes: List[Node],
+        standalone_onboarding_options: Options,
+        node_1_onboarding_options: Options,
+        node_2_onboarding_options: Options,
+        node_stack_onboarding_options: Options,
+        logger: PytestLogger,
+        request: fixtures.SubRequest,
+        cached_onboarding_config: Dict[str, Dict[str, str]],
+        run_options: Options,
+        check_devices_are_reachable: CheckDevicesAreReachable
 ) -> List[Node]:
     """
     Fixture that selects the devices to be onboarded from the devices.yaml.
@@ -2867,81 +3056,153 @@ def node_list(
     
     duts: List[Node] = []
 
-    if pytest.onboard_two_node or pytest.onboard_one_node:
+    skip_setup: bool = run_options.get("skip_setup", False)
+
+    if skip_setup and cached_onboarding_config:
         
-        runos_node_1 = node_1_onboarding_options.get('run_os', [])
-        platform_node_1 = node_1_onboarding_options.get('platform', "standalone")
-        runos_node_2 = node_2_onboarding_options.get('run_os', [])
-        platform_node_2 = node_2_onboarding_options.get('platform', "standalone")
+        for node_name, data in cached_onboarding_config.items():
+            [temp] = [n for n in all_nodes if n.name == data["dut_name"]]
+            setattr(temp, "node_name", node_name)
+            duts.append(temp)
+        if "node_2" in cached_onboarding_config:
+            pytest.onboard_two_node, pytest.onboard_one_node = True, True
+        elif "node_1" in cached_onboarding_config:
+            pytest.onboard_one_node = True
+        if "node_stack" in cached_onboarding_config:
+            pytest.onboard_stack = True
+        
+    else:
+        
+        if pytest.onboard_two_node:
+
+            runos_node_1 = node_1_onboarding_options.get('run_os', [])
+            platform_node_1 = node_1_onboarding_options.get('platform', "standalone")
+            runos_node_2 = node_2_onboarding_options.get('run_os', [])
+            platform_node_2 = node_2_onboarding_options.get('platform', "standalone")
+
+            nodes_runos_should_be: str = standalone_onboarding_options.get("nodes_runos_should_be", "random")
+            nodes_platform_should_be: str = standalone_onboarding_options.get("nodes_platform_should_be", "random")
+            
+            # this flag specifies if the nodes must have the same cli_type: 'random'(default) or 'identical'
+            logger.info(f"The 'nodes_runos_should_be' flag is set to '{nodes_runos_should_be}'.")
+            
+            # this flag specifies if the nodes must have the same platform: 'random'(default) or 'identical'
+            logger.info(f"The 'nodes_platform_should_be' flag is set to '{nodes_runos_should_be}'.")
+            
+            for permutation in permutations(standalone_nodes):
                 
-        for node in standalone_nodes:
-            if runos_node_1:
-                if any(node.cli_type.upper() == os.upper() for os in runos_node_1):
+                temp_node_1, temp_node_2 = permutation[:2]
+                found_node_1, found_node_2 = False, False
+                
+                if runos_node_1:
+                    if any(temp_node_1.cli_type.upper() == os.upper() for os in runos_node_1):
+                        if (platform_node_1.lower() == "standalone") or (temp_node_1.platform.lower() == platform_node_1.lower()):
+                            found_node_1 = True
+                else:
+                    if (platform_node_1.lower() == "standalone") or (node.platform.lower() == platform_node_1.lower()):
+                        found_node_1 = True
+        
+                if runos_node_2:
+                    if any(temp_node_2.cli_type.upper() == os.upper() for os in runos_node_2):
+                        if (platform_node_2.lower() == "standalone") or (temp_node_2.platform.lower() == platform_node_2.lower()):
+                            found_node_2 = True
+                else:
+                    if (platform_node_2.lower() == "standalone") or (temp_node_2.platform.lower() == platform_node_2.lower()):
+                        found_node_2 = True
+
+                if found_node_1 and found_node_2:
+                                                        
+                    if nodes_runos_should_be == "random":
+                        
+                        if nodes_platform_should_be == "random":
+                            break
+                        
+                        elif nodes_platform_should_be == "identical":
+                            if temp_node_1.platform.upper() == temp_node_2.platform.upper():
+                                break
+
+                    elif nodes_runos_should_be == "identical":
+                        
+                        if temp_node_1.cli_type.upper() != temp_node_2.cli_type.upper():
+                            continue
+                        
+                        if nodes_platform_should_be == "random":
+                            break
+                        elif nodes_platform_should_be == "identical":
+                            if temp_node_1.platform.upper() == temp_node_2.platform.upper():
+                                break
+            else:
+                error_msg = f"Failed to find two standalone nodes in the testbed yaml that satisfy these requirements:\n" \
+                            f"node_1: run_os={runos_node_1}, platform='{platform_node_1}'\n" \
+                            f"node_2: run_os={runos_node_2}, platform='{platform_node_2}'\n" \
+                            f"The 'nodes_runos_should_be' flag is set to '{nodes_runos_should_be}'.\n" \
+                            f"The 'nodes_platform_should_be' flag is set to '{nodes_platform_should_be}'.\n" \
+                            "Available duts in the testbed yaml file: " + ", ".join([f"{dut.name}({dut.cli_type=}, {dut.platform=})" for dut in standalone_nodes])
+                logger.fail(error_msg)
+            
+            temp_node_1.node_name = "node_1"
+            temp_node_2.node_name = "node_2"
+            duts.extend([temp_node_1, temp_node_2])
+            
+            logger.info(
+                f"Successfuly chose this dut as 'node_1': '{temp_node_1.name}' "
+                f"(cli_type='{temp_node_1.cli_type}', run_os={runos_node_1}, platform='{platform_node_1}').")
+                        
+            logger.info(
+                f"Successfuly chose this dut as 'node_2': '{temp_node_2.name}' "
+                f"(cli_type='{temp_node_2.cli_type}', run_os={runos_node_2}, platform='{platform_node_2}').")
+                            
+        elif pytest.onboard_one_node:
+            
+            runos_node_1 = node_1_onboarding_options.get('run_os', [])
+            platform_node_1 = node_1_onboarding_options.get('platform', "standalone")
+                    
+            for node in standalone_nodes:
+                if runos_node_1:
+                    if any(node.cli_type.upper() == os.upper() for os in runos_node_1):
+                        if (platform_node_1.lower() == "standalone") or (node.platform.lower() == platform_node_1.lower()):
+                            break
+                else:
                     if (platform_node_1.lower() == "standalone") or (node.platform.lower() == platform_node_1.lower()):
                         break
             else:
-                if (platform_node_1.lower() == "standalone") or (node.platform.lower() == platform_node_1.lower()):
-                    break
-        else:
-            error_msg = f"Failed to find a standalone node in the testbed yaml that satisfy these requirements:" \
-                        f" run_os={runos_node_1}, platform='{platform_node_1}'."
-            logger.error(error_msg)
-            pytest.fail(error_msg)
-
-        logger.info(
-            f"Successfuly chose this dut as 'node_1': '{node.name}' "
-            f"(cli_type='{node.cli_type}', run_os={runos_node_1}, platform='{platform_node_1}').")
-
-        node.node_name = "node_1"
-        duts.append(node)
-    
-        if pytest.onboard_two_node:
-            for node in standalone_nodes:
-                if node not in duts:
-                    if runos_node_2:
-                        if any(node.cli_type.upper() == os.upper() for os in runos_node_2):
-                                if (platform_node_2.lower() == "standalone") or (node.platform.lower() == platform_node_2.lower()):
-                                    break
-                    else:
-                        if (platform_node_2.lower() == "standalone") or (node.platform.lower() == platform_node_2.lower()):
-                            break  
-            else:
                 error_msg = f"Failed to find a standalone node in the testbed yaml that satisfy these requirements:" \
-                            f"run_os={runos_node_2}, platform='{platform_node_2}'. " \
-                            f"Already used node: '{duts[0].name}'."
+                            f" run_os={runos_node_1}, platform='{platform_node_1}'."
                 logger.error(error_msg)
                 pytest.fail(error_msg)
 
             logger.info(
-                f"Successfuly chose this dut as 'node_2': '{node.name}' "
-                f"(cli_type='{node.cli_type}', run_os={runos_node_2}, platform='{platform_node_2}').")
-            
-            node.node_name = "node_2"
-            duts.append(node)
+                f"Successfuly chose this dut as 'node_1': '{node.name}' "
+                f"(cli_type='{node.cli_type}', run_os={runos_node_1}, platform='{platform_node_1}').")
 
-    if pytest.onboard_stack:
-        runos_node_stack = node_stack_onboarding_options.get('run_os', [])
-        for node in stack_nodes:
-            if runos_node_stack:
-                if any(node.cli_type.upper() == os.upper() for os in runos_node_stack):
+            node.node_name = "node_1"
+            duts.append(node)
+        
+        if pytest.onboard_stack:
+            runos_node_stack = node_stack_onboarding_options.get('run_os', [])
+            for node in stack_nodes:
+                if runos_node_stack:
+                    if any(node.cli_type.upper() == os.upper() for os in runos_node_stack):
+                        break
+                else:
                     break
             else:
-                break
-        else:
-            error_msg = f"Failed to find a stack node in the testbed yaml that satisfy these requirements: run_os={runos_node_stack}."
-            logger.error(error_msg)
-            pytest.fail(error_msg)
+                error_msg = f"Failed to find a stack node in the testbed yaml that satisfy these requirements: run_os={runos_node_stack}."
+                logger.error(error_msg)
+                pytest.fail(error_msg)
 
-        logger.info(
-            f"Successfuly chose this dut as 'node_stack': '{node.name}' "
-            f"(cli_type='{node.cli_type}', run_os={runos_node_stack}, platform='stack').")
-        
-        node.node_name = "node_stack"
-        duts.append(node)   
+            logger.info(
+                f"Successfuly chose this dut as 'node_stack': '{node.name}' "
+                f"(cli_type='{node.cli_type}', run_os={runos_node_stack}, platform='stack').")
+            
+            node.node_name = "node_stack"
+            duts.append(node)   
 
     for dut in duts:
         pytest.data[f"{dut.node_name}_netelem_name"] = dut.name
         pytest.data[f"{dut.node_name}_cli_type"] = dut.cli_type.upper() 
+
+    check_devices_are_reachable(duts)
 
     return duts
 
@@ -3174,7 +3435,7 @@ def get_new_action_chains(
 
 @pytest.fixture(scope="session")
 def log_devices_versions(
-    nodes_data: Dict[str, Dict[str, Union[str, List[Tuple[str, str]]]]],
+    nodes_data: Dict[str, Dict[str, Union[str, bool, List[Tuple[str, str]]]]],
     logger: PytestLogger
 ) -> None:
     for node, values in nodes_data.items():
@@ -3332,8 +3593,9 @@ def account_configuration(
                 option=option
             )
 
-        if option := viq_management.get("supplemental_cli_option", "disable"):
-           xiq.xflowsglobalsettingsGlobalSetting.get_supplemental_cli_option(option)
+        if option := viq_management.get("supplemental_cli_option"):
+            if option in ["disable", "enable"]:
+                xiq.xflowsglobalsettingsGlobalSetting.get_supplemental_cli_option(option)
     
     return account_configuration_func
 
@@ -3424,7 +3686,8 @@ def check_poe(
     enter_switch_cli: EnterSwitchCli, 
     logger: PytestLogger,
     request: fixtures.SubRequest,
-    node_list: List[Node]
+    node_list: List[Node],
+    poe_capabilities: Dict[str, bool]
 ) -> CheckPoe:
     
     errors: List[str] = []
@@ -3442,37 +3705,11 @@ def check_poe(
                 
                 logger.step(f"Verify that the '{node.node_name}' ('{node.name}') supports POE.")
 
-                with enter_switch_cli(node) as dev_cmd:
+                if not poe_capabilities[node.node_name]:
+                    errors.append(f"'{node.node_name}' node does not support poe")
+                    return
                 
-                    try:
-                        if node.cli_type.lower() == "voss":
-                            dev_cmd.send_cmd(
-                                node.name, 'enable', max_wait=30, interval=10)
-                            dev_cmd.send_cmd(
-                                node.name, 'configure terminal', max_wait=30, interval=10)
-                            result = dev_cmd.send_cmd(
-                                node.name, 'show poe-main-status', max_wait=30, interval=10)[0].return_text
-                            logger.cli(result)
-                            assert re.search("PoE Main Status", result)
-                            assert not re.search("Device is not a POE device", result)
-
-                        elif node.cli_type.lower() == 'exos':
-                            dev_cmd.send_cmd(node.name, 'enable telnet')
-                            dev_cmd.send_cmd(node.name, 'disable cli paging')
-                            result = dev_cmd.send_cmd(
-                                node.name, 'show inline-power', max_wait=30, 
-                                interval=10)[0].cmd_obj._return_text
-                            logger.cli(result)
-                            assert re.search('Inline Power System Information', result)
-
-                    except Exception as exc:
-                        logger.error(exc)
-                        error = f"'{node.node_name}' node ('{node.name}') does not support POE."
-                        logger.error(error)
-                        errors.append(error)
-                        
-                    else:
-                        logger.info(f"Successfully verified that the '{node.node_name}' ('{node.name}') node supports POE.")
+                logger.info(f"'{node.node_name}' node supports poe")
                         
         threads: List[threading.Thread] = []
         
@@ -3558,6 +3795,54 @@ def onboarding_failure(
 
 
 @pytest.fixture(scope="session")
+def cached_onboarding_config(
+    run_options: Options,
+    logger: PytestLogger
+) -> Dict[str, Dict[str, str]]:
+    
+    skip_setup: bool = run_options.get("skip_setup", False)
+    
+    if skip_setup:
+        # cached onboarding config is loaded only when the skip_setup is used
+        # in order for this to work, the onboarding must have been run successfully before 
+        # and its config dumped into the pytest.onboarding_config file
+        if os.path.exists(pytest.onboarding_config):
+            with open(pytest.onboarding_config, "r") as outfile:
+                if content := json.loads(outfile.read()):
+                    logger.info(f"Found this onboarding configuration stored in the '{pytest.onboarding_config}' file:\n{json.dumps(content, indent=4)}")
+                    return content
+    return {}
+
+
+@pytest.fixture(scope="session")
+def store_onboarding_config(node_list, request, logger, run_options):
+    
+    skip_setup: bool = run_options.get("skip_setup", False)
+    
+    if not skip_setup and node_list:
+        # the onboarding config is dumped into the pytest.onboarding_config file at the end of the onboarding if
+        #    -> the onboarding is successful
+        #    -> skip_setup is not given in runlist as run_options
+        #    -> node_list is not empty (the list of devices that were onboarded)
+        store = {}
+        
+        for node in node_list:
+            node_name = node.node_name
+            store[node_name] = {
+                "policy_name": request.getfixturevalue(f"{node_name}_policy_name"),
+                "template_name": request.getfixturevalue(f"{node_name}_template_name"),
+                "onboarding_location": request.getfixturevalue(f"{node_name}_onboarding_location"),
+                "dut_name": node.name
+            }
+        
+        content = json.dumps(store, indent=4)
+        logger.step(f"Will dump this onboarding configuration in the '{pytest.onboarding_config}' file:\n{content}")
+        
+        with open(pytest.onboarding_config, "w") as outfile:
+            outfile.write(content)
+
+
+@pytest.fixture(scope="session")
 def onboarding_succeeded(
     request: fixtures.SubRequest, 
     debug: Callable
@@ -3570,6 +3855,7 @@ def onboarding_succeeded(
         xiq: XiqLibrary
     ) -> None:
         request.getfixturevalue("test_bed")
+        request.getfixturevalue("store_onboarding_config")
     return onboarding_succeeded_func
 
 
@@ -4288,6 +4574,35 @@ def auto_actions() -> AutoActions:
     return AutoActions()
 
 
+def get_random_word(**kwargs) -> str:
+    
+    pool: List[str] = []
+    length = kwargs.pop("length", 6)
+    punctuation = kwargs.pop("punctuation", False)
+    
+    if punctuation:
+        pool.extend(list(string.punctuation))
+        
+    for item in ["ascii_lowercase", "ascii_uppercase", "digits"]:
+        if kwargs.get(item, True):
+            pool.extend(list(getattr(string, item)))
+            
+    word = ''.join(random.choice(pool) for _ in range(length))
+    return word
+
+
+def add_switch_template_to_teardown(switch_template: str) -> None:
+    pytest.created_switch_templates.append(switch_template)
+
+
+def add_network_policy_to_teardown(network_policy: str) -> None:
+    pytest.created_network_policies.append(network_policy)
+
+
+def add_onboarding_location_to_teardown(onboarding_location: str) -> None:
+    pytest.created_onboarding_locations.append(onboarding_location)
+
+
 @pytest.fixture(scope="session")
 def update_test_name(
     loaded_config: Dict[str, str]
@@ -4330,12 +4645,12 @@ class Testbed(metaclass=Singleton):
         
         self.all_nodes: List[Node] = request.getfixturevalue("all_nodes")
         self.standalone_nodes: List[Node] = request.getfixturevalue("standalone_nodes")
+        self.node_list: List[Node] = request.getfixturevalue("node_list")
         self.stack_nodes: List[Node] = request.getfixturevalue("stack_nodes")
         self.node_1: Node = request.getfixturevalue("node_1")
         self.node_2: Node = request.getfixturevalue("node_2")
         self.node_stack: Node = request.getfixturevalue("node_stack")
-        self.node_list: List[Node] = request.getfixturevalue("node_list")
-        self.nodes_data: Dict[str, Dict[str, Union[str, List[Tuple[str, str]]]]] = request.getfixturevalue("nodes_data")
+        self.nodes_data: Dict[str, Dict[str, Union[str, bool, List[Tuple[str, str]]]]] = request.getfixturevalue("nodes_data")
 
         self.username: str = self.config.get("tenant_username")
         self.password: str = self.config.get("tenant_password")
@@ -4385,6 +4700,11 @@ class Testbed(metaclass=Singleton):
         self.node_stack_model_units: str = request.getfixturevalue("node_stack_model_units")
         self.virtual_routers: Dict[str, str] = request.getfixturevalue("virtual_routers")
 
+        self.poe_capabilities: Dict[str, bool] = request.getfixturevalue("poe_capabilities")
+        self.node_1_poe_capability: bool = request.getfixturevalue("node_1_poe_capability")
+        self.node_2_poe_capability: bool = request.getfixturevalue("node_2_poe_capability")
+        self.node_stack_poe_capability: bool = request.getfixturevalue("node_stack_poe_capability")
+        
         self.network_manager: NetworkElementConnectionManager = request.getfixturevalue("network_manager")
         self.cli: Cli = request.getfixturevalue("cli")
         self.auto_actions: AutoActions = request.getfixturevalue("auto_actions")
@@ -4429,6 +4749,10 @@ class Testbed(metaclass=Singleton):
         self.clear_traffic_counters: ClearTrafficCounters = request.getfixturevalue("clear_traffic_counters")
         self.dev_cmd: NetworkElementCliSend = request.getfixturevalue("dev_cmd")
         self.debug: Callable = request.getfixturevalue("debug")
+        self.get_random_word: Callable[[str], str] = get_random_word
+        self.add_switch_template_to_teardown: Callable[[str], None] = add_switch_template_to_teardown
+        self.add_network_policy_to_teardown: Callable[[str], None] = add_network_policy_to_teardown
+        self.add_onboarding_location_to_teardown: Callable[[str], None] = add_onboarding_location_to_teardown
         self.create_location: CreateLocation = request.getfixturevalue("create_location")
         self.get_new_action_chains: Callable[[], ActionChains] = request.getfixturevalue("get_new_action_chains")
         self.cleanup: Cleanup = request.getfixturevalue("cleanup")

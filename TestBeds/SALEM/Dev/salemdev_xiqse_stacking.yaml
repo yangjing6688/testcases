@@ -34,7 +34,7 @@ simelem1:
   name:                     "10.139.48.109"
   hostname:                 "10.139.48.109"
   serial:                   "SIM 1520N-40045"
-  mac:                      "000096996D2E"
+  mac:                      "020096996D2E"
   ip:                       "10.139.48.109"
   port:                     "22"
   mgmt_vlan:                "mgmt"

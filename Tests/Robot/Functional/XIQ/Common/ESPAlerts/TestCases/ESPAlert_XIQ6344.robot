@@ -1,4 +1,4 @@
-# Author        : Tim Chen
+# Author        : Zhihui Chen
 # Date          : Jul 28th 2022
 # Description   : ESP Alert
 #
@@ -20,7 +20,7 @@ Resource    ../Resources/AllResources.robot
 
 Force Tags            testbed_1_node
 
-Suite Setup      Log Into XIQ and Confirm Success  ${tenant_username}  ${tenant_password}  ${test_url}
+Suite Setup      lib_login.Log Into XIQ and Confirm Success  ${tenant_username}  ${tenant_password}  ${test_url}
 Suite Teardown   Clean Up Alert Policies And Webhooks
 
 *** Test Cases ***

@@ -34,9 +34,10 @@ xapi onboard multiple extreme devices
     [Documentation]  Onboard Multiple devices
     [Arguments]  ${SERIAL_NUMBER_1}    ${SERIAL_NUMBER_2}
 
-    ${RESP}=  rest api post      /devices/:onboard      post_data='{"extreme": {"sns": ["${SERIAL_NUMBER_1}, ${SERIAL_NUMBER_2}"]}}'        result_code=202
-    log                             ${RESP}
-    [Return]                        ${RESP}
+    #Kun Li: Fix the sns list issue
+    ${RESP}=  rest api post   /devices/:onboard   post_data='{"extreme": {"sns": ["${SERIAL_NUMBER_1}", "${SERIAL_NUMBER_2}"]}}'  result_code=202
+    log       ${RESP}
+    [Return]  ${RESP}
 
 xapi list and get device id
     [Documentation]  List Devices and Get Device ID
@@ -180,4 +181,99 @@ xapi change device description
     [Arguments]  ${ID}  ${DESCRIPTION}
     ${RESPCODE}=  rest api put v1  /devices/${ID}/description    ${DESCRIPTION}
     log  ${RESPCODE}
-    [Return]  ${RESPCODE}    
+    [Return]  ${RESPCODE}
+
+xapi get device hostname
+    [Documentation]  get device name
+    [Arguments]  ${DEVICE_ID}
+    ${RESP}=  rest api get  /devices/${DEVICE_ID}?views=full
+    ${HOSTNAME}=  get json values  ${RESP}  key=hostname
+    log  ${HOSTNAME}
+    [Return]  ${HOSTNAME}
+
+xapi change device hostname
+    [Documentation]  change device hostname
+    [Arguments]  ${DEVICE_ID}  ${HOSTNAME}
+    ${RESP}=  rest api put v3  /devices/${DEVICE_ID}/hostname?hostname=${HOSTNAME}
+    log  ${RESP}
+    [Return]  ${RESP}
+
+xapi change single device to managed
+    [Documentation]  change single device to managed
+    [Arguments]  ${DEVICE_ID}
+
+    ${RESP}=  rest api post  /devices/${DEVICE_ID}/:manage
+    log    ${RESP}
+    [Return]   ${RESP}
+
+xapi change multiple devices to managed
+    [Documentation]  change multiple devices to managed
+    [Arguments]  ${DEVICE1_ID}  ${DEVICE2_ID}
+
+    ${RESP}=  rest api post  /devices/:manage  post_data='{"ids": [${DEVICE1_ID}, ${DEVICE2_ID}]}'
+    log    ${RESP}
+    [Return]   ${RESP}
+
+xapi change single device to unmanaged
+    [Documentation]  change single device to unmanaged
+    [Arguments]  ${DEVICE_ID}
+
+    ${RESP}=  rest api post  /devices/${DEVICE_ID}/:unmanage
+    log    ${RESP}
+    [Return]   ${RESP}
+
+xapi change multiple devices to unmanaged
+    [Documentation]  change multiple devices to unmanaged
+    [Arguments]  ${DEVICE1_ID}  ${DEVICE2_ID}
+
+    ${RESP}=  rest api post  /devices/:unmanage  post_data='{"ids": [${DEVICE1_ID}, ${DEVICE2_ID}]}'
+    log    ${RESP}
+    [Return]   ${RESP}
+
+xapi reboot single device
+    [Documentation]  reboot single device
+    [Arguments]  ${DEVICE_ID}
+
+    ${RESP}=  rest api post  /devices/${DEVICE_ID}/:reboot
+    log    ${RESP}
+    [Return]   ${RESP}
+
+xapi reboot multiple devices
+    [Documentation]  reboot multiple devices
+    [Arguments]  ${DEVICE1_ID}  ${DEVICE2_ID}
+
+    ${RESP}=  rest api post  /devices/:reboot  post_data='{"ids": ["${DEVICE1_ID}", "${DEVICE2_ID}"]}'
+    log    ${RESP}
+    [Return]   ${RESP}
+
+xapi assign network policy to one device
+    [Documentation]  assign network policy to single device
+    [Arguments]  ${DEVICE_ID}  ${NETWORK_POLICY_ID}
+
+    ${RESP}=  rest api put v1  /devices/${DEVICE_ID}/network-policy  ${NETWORK_POLICY_ID}
+    log    ${RESP}
+    [Return]   ${RESP}
+
+xapi assign network policy to two devices
+    [Documentation]  assign network policy to two devices
+    [Arguments]  ${DEVICE1_ID}  ${DEVICE2_ID}  ${NETWORK_POLICY_ID}
+
+    ${RESP}=  rest api post  /devices/network-policy/:assign  post_data='{"devices": {"ids": ["${DEVICE1_ID}", "${DEVICE2_ID}"]}, "network_policy_id": "${NETWORK_POLICY_ID}"}'
+    log    ${RESP}
+    [Return]   ${RESP}
+
+xapi get device network policy id
+    [Documentation]  get device network policy id
+    [Arguments]  ${DEVICE_ID}
+
+    ${DEV_NETWORK_POLICY_CONTENT}=  rest api get  /devices/${DEVICE_ID}/network-policy
+    ${DEV_NETWORK_POLICY_ID}=  get json values  ${DEV_NETWORK_POLICY_CONTENT}  key=id
+    [Return]    ${DEV_NETWORK_POLICY_ID}
+
+xapi get device network policy name
+    [Documentation]  xapi get device network policy name
+    [Arguments]  ${DEVICE_ID}
+
+    ${DEV_NETWORK_POLICY_CONTENT}=  rest api get  /devices/${DEVICE_ID}/network-policy
+    ${DEV_NETWORK_POLICY_NAME}=  get json values  ${DEV_NETWORK_POLICY_CONTENT}  key=name
+    [Return]    ${DEV_NETWORK_POLICY_NAME}
