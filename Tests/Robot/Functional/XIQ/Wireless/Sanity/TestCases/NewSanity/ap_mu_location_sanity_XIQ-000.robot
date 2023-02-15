@@ -101,6 +101,14 @@ Device Onboard
     ${LATEST_VERSION}=      Upgrade Device      ${device1}
     Should Not be Empty     ${LATEST_VERSION}
 
+    Sleep                   ${ap_reboot_wait}
+
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${device1.serial}       retry_count=15
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
+
+    ${REBOOT_STATUS}=    Wait Until Device Reboots               ${device1.serial}
+    Should Be Equal as Integers             ${REBOOT_STATUS}          1
+
 Clean Up Device
     ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_failure=True
     # Disconnect from Extreme Cloud IQ
