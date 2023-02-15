@@ -62,7 +62,7 @@ ${DUT_3VR}                   ${netelem3.vr}
 
 ${NAV_ENTITLEMENT}           XIQ-NAV-S-C
 ${NAV_LICENSE}               Navigator
-${PILOT_ENTITLEMENT}         PRD-XIQ-PIL-S-C
+${PILOT_ENTITLEMENT}         XIQ-PIL-S-C
 ${PILOT_LICENSE}             Pilot
 
 ${COLUMN_1}                  Managed
@@ -239,6 +239,10 @@ Log Into XIQ and Set Up Test
 
 Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
+
+    Navigate to Devices and Confirm Success
+    ${del_result}=  Delete All Devices
+    Should Be Equal As Integers  ${del_result}  1
 
     Log Out of XIQ and Quit Browser
 

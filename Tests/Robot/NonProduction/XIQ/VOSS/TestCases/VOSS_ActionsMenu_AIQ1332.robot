@@ -15,6 +15,7 @@
 Library          xiq/flows/manage/Location.py
 
 Resource         ../../VOSS/Resources/AllResources.robot
+Resource         ExtremeAutomation/Resources/Libraries/DefaultLibraries.robot
 
 Force Tags       testbed_voss_node
 
@@ -39,6 +40,8 @@ ${DUT_PLATFORM}             ${netelem3.platform}
 ${DUT_MAKE}                 ${netelem3.make}
 ${DUT_CLI_TYPE}             ${netelem3.cli_type}
 
+#Please be aware that you should make sure that you have a good configuration on device named 'config_VOSS.cfg', if not the test will fail
+${CONFIG_FILE}              "config_VOSS"
 ${DEFAULT_DEVICE_PWD}       Aerohive123
 ${LOCATION}                 auto_location_01, Santa Clara, building_02, floor_04
 ${LOCATION_DISPLAY}         auto_location_01 >> Santa Clara >> building_02 >> floor_04
@@ -91,7 +94,7 @@ Log Into XIQ and Set Up Test
     Log Into XIQ and Confirm Success            ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
     Change Device Password and Confirm Success  ${DEFAULT_DEVICE_PWD}
     Create Open Express Policy With Switch Template and Confirm Success  ${POLICY_NAME}  ${SSID_NAME}  ${DUT_TEMPLATE}
-    Configure Test Device                       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}
+    Configure Test Device                       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}    ${DUT_NAME}    ${CONFIG_FILE}
     Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}     ${netelem3}
 
 Tear Down Test and Close Session
@@ -104,9 +107,12 @@ Tear Down Test and Close Session
 
 Configure Test Device
     [Documentation]     Configures the specified test device by rebooting a known good configuration file and then configuring the iqagent
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${agent}
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${agent}  ${dut_name}  ${config_file}
 
-    Boot Switch To Known Good Configuration     ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
+    #Boot the Test Device to a known good configuration
+    Connect to all network elements
+    reboot_network_element_with_config      ${dut_name}      ${config_file}
+    close_connection_to_all_network_elements
 
     ${SPAWN_CONNECTION}=      Open Spawn       ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
     # Downgrade the device's iqagent if needed

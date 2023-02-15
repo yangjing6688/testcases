@@ -22,11 +22,18 @@ Boot Switch To Known Good Configuration
     ${enable_results}=      Send  ${spawn}  enable
     Log To Console          Command results are ${enable_results}
 
-    ${boot_results}=        Send  ${spawn}  boot config config_knowngood.cfg     confirmation_phrases=Are you sure you want to re-boot the switch (y/n) ?    confirmation_args=y
+    #Please be aware that this keyword should no longer be used and also you should make sure that you have a good configuration on device named 'config_VOSS.cfg'
+    #Instead of this keyword try using the following methods:
+    #Connect to all network elements
+    #reboot_network_element_with_config      ${dut_name}      ${config_file}
+    #close_connection_to_all_network_elements
+    ${boot_results}=        Send  ${spawn}  boot config config_VOSS.cfg     confirmation_phrases=Are you sure you want to re-boot the switch (y/n) ?    confirmation_args=y
     Log To Console          Command results are ${boot_results}
 
     sleep                   ${switch_reboot_wait}
 
+#Please be aware that this keyword should no longer be used
+#Instead of this keyword try using the following method: configure_device_to_connect_to_cloud
 Configure iqagent for Test Device
     [Documentation]     Configures the iqagent for the Test Device
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${iqagent}
@@ -49,6 +56,8 @@ Configure iqagent for Test Device
 
     [Teardown]          Close Spawn and Confirm Success  ${spawn}
 
+#Please be aware that this keyword should no longer be used
+#Instead of this keyword try using the following method: Disable_Port_and_Validate_Port_is_Disabled
 Disable iqagent for Test Device
     [Documentation]     Disables the iqagent for the Test Device
     [Tags]              voss
@@ -65,6 +74,8 @@ Disable iqagent for Test Device
 
     [Teardown]              Close Spawn and Confirm Success  ${spawn}
 
+#Please be aware that this keyword should no longer be used
+#Instead of this keyword try using the following method: Enable_Port_and_Validate_Port_is_Enabled
 Enable iqagent for Test Device
     [Documentation]     Enables the iqagent for the Test Device
     [Tags]              voss
@@ -115,6 +126,8 @@ Update NOS Version on Test Device
 
     [Teardown]  Close Spawn and Confirm Success  ${spawn}
 
+#Please be aware that this keyword should no longer be used
+#Instead of this keyword try using the following method: Downgrade iqagent
 Downgrade IQAgent on Test Device
     [Documentation]     Downgrades the IQAgent version on the Test Device to an older version
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}
@@ -131,6 +144,11 @@ Downgrade IQAgent on Test Device
 
     [Teardown]  Close Spawn and Confirm Success  ${spawn}
 
+#Please be aware that this keyword should no longer be used
+#Instead of this keyword try using the following methods:
+#Connect to all network elements
+#hostinformation_verify_host_nos_version      ${dut_name}      ${NOS_VERSION_OLD}
+#close_connection_to_all_network_elements
 Confirm NOS Version on Test Device
     [Documentation]     Confirms the NOS version on the Test Device is at the specified version
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${nos_version}
@@ -143,6 +161,11 @@ Confirm NOS Version on Test Device
 
     [Teardown]  Close Spawn and Confirm Success  ${spawn}
 
+#Please be aware that this keyword should no longer be used
+#Instead of this keyword try using the following methods:
+#Connect to all network elements
+#hostinformation_verify_iqagent_version      ${dut_name}      ${IQAGENT_VERSION_NEW}
+#close_connection_to_all_network_elements
 Confirm IQAgent Version on Test Device
     [Documentation]     Confirma the IQAgent on the Test Device is at the expected version
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${iqa_version}

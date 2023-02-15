@@ -242,6 +242,8 @@ Log In and Set Up Test
     Log Into XIQSE and Confirm Success                 ${XIQSE_USERNAME}    ${XIQSE_PASSWORD}    url=${XIQSE_URL}
     Handle License Agreement If Displayed              ${XIQ_EMAIL}  ${XIQ_PASSWORD}
     Close Panels on Login If Displayed
+    Set Syslog Delay Engine Start and Confirm Success       1
+    Set Trap Delay Engine Start and Confirm Success         1
     Set Option Web Server Session Timeout and Confirm Success  7  day(s)
     Set Alarm Event Search Scope    true
     Set Option Device Tree Name Format and Confirm Success     IP Address
@@ -254,6 +256,8 @@ Tear Down Test and Close Session
 
     Restore Web Server Options to Default and Confirm Success
     Restore Site Engine General Options to Default and Confirm Success
+    Set Syslog Delay Engine Start and Confirm Success       15
+    Set Trap Delay Engine Start and Confirm Success         15
     Set Alarm Event Search Scope    false
     Navigate to Site Devices and Confirm Success                ${TEST_SITE}
     Navigate and Delete Site                                    ${TEST_SITE}

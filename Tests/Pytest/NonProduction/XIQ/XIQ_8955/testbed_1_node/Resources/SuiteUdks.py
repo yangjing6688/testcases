@@ -282,7 +282,8 @@ class SuiteUdks:
                 return -1
 
         current_message = \
-            self.xiq.xflowscommonDevices.get_device_updated_fail_message_after_reboot(device_serial=device_serial)
+            self.xiq.xflowscommonDevices.get_device_updated_fail_message_after_reboot(device_serial=device_serial,
+                                                                                      ignore_failure=True)
 
         if failure_message != current_message:
             self.utils.print_info(f"Update process ended up with another failure message: {current_message}")

@@ -12,6 +12,7 @@
 Library          xiq/flows/manage/Device360.py
 
 Resource         ../../VOSS/Resources/AllResources.robot
+Resource         ExtremeAutomation/Resources/Libraries/DefaultLibraries.robot
 
 Force Tags       testbed_voss_node
 
@@ -33,10 +34,12 @@ ${DUT_PORT}                 ${netelem3.port}
 ${DUT_USERNAME}             ${netelem3.username}
 ${DUT_PASSWORD}             ${netelem3.password}
 ${DUT_PLATFORM}             ${netelem3.platform}
-${DUT_TEST_PORT}            ${netelem3.test_port_num}
 ${DUT_MAKE}                 ${netelem3.make}
 ${DUT_CLI_TYPE}             ${netelem3.cli_type}
+${DUT_TEST_PORT}            ${netelem3.test_port}
 
+#Please be aware that you should make sure that you have a good configuration on device named 'config_VOSS.cfg', if not the test will fail
+${CONFIG_FILE}              "config_VOSS"
 ${LOCATION}                 San Jose, building_01, floor_02
 
 @{OVERVIEW_DAY_HOURS}       1  2  4  8  24
@@ -98,7 +101,7 @@ Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ and sets up the elements necessary to complete this test suite
 
     Log Into XIQ and Confirm Success            ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
-    Configure Test Device                       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}
+    Configure Test Device                       ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}  ${DUT_CLI_TYPE}  ${IQAGENT}    ${DUT_NAME}    ${CONFIG_FILE}
     Onboard New Test Device                     ${DUT_SERIAL}  ${DUT_MAKE}  ${LOCATION}    ${netelem3}
     Confirm Device Serial Online                ${DUT_SERIAL}
 
@@ -125,9 +128,12 @@ Onboard New Test Device
 
 Configure Test Device
     [Documentation]     Configures the specified test device by rebooting a known good configuration file and then configuring the iqagent
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${agent}
+    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${agent}    ${dut_name}    ${config_file}
 
-    Boot Switch To Known Good Configuration     ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
+    #Boot the Test Device to a known good configuration
+    Connect to all network elements
+    reboot_network_element_with_config      ${dut_name}      ${config_file}
+    close_connection_to_all_network_elements
 
     ${SPAWN_CONNECTION}=      Open Spawn       ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
 

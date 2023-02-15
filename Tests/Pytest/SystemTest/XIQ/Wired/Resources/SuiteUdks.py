@@ -236,7 +236,8 @@ class SuiteUdks():
                 bootWaitTime = 145
             else:
                 bootWaitTime = 190
-
+        elif device_os == "AH-FASTPATH":
+            bootWaitTime = 180
         else:
             pytest.fail('FAILED I have not implmeted a wait time for device_os {} '.format(device_os))
 

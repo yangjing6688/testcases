@@ -46,12 +46,12 @@ setup_xiq_connect_fail = 0
 class xiqTests():
 
     def cleanup_device(self):
-        if self.xiq.xflowscommonDevices.search_device(device_mac=self.tb.dut1.mac) == 1:
+        if self.xiq.xflowscommonDevices.search_device(device_mac=self.tb.dut1.mac, ignore_failure=True) == 1:
             print(f'Found device using mac-address {self.tb.dut1.mac}')
             self.xiq.xflowscommonDevices.delete_device(device_mac=self.tb.dut1.mac)
         else:
             for a_serial in self.tb.dut1_serial.split(","):
-                if self.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                if self.xiq.xflowscommonDevices.search_device(device_serial=a_serial, ignore_failure=True) == 1:
                     print(f'Found device using serial-number {a_serial}')
                     self.xiq.xflowscommonDevices.delete_device(a_serial)
                 else:

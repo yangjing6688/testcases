@@ -54,7 +54,7 @@ Test 1: Verify CoPilot Entitlement Not Present in License Management
     [Documentation]     Confirms CoPilot entitlement is not present in Licemse Management table
     [Tags]              tccs-13534    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test1
 
-    Confirm Entitlements Table Does Not Contain Feature         PRD-XIQ-COPILOT-S-C
+    Confirm Entitlements Table Does Not Contain Feature         XIQ-COPILOT-S-C
 
 Test 2: Verify User Unable to "Enable CoPilot" Within CoPilot Menu Page and Alert Warning Present
     [Documentation]     Verifies the "Enable CoPilot" feature from CoPilot Menu page in not available to select and alert warning present
@@ -157,6 +157,10 @@ Log Into XIQ and Set Up Test
 
 Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
+
+    Navigate to Devices and Confirm Success
+    ${del_result}=  Delete All Devices
+    Should Be Equal As Integers  ${del_result}  1
 
     Log Out of XIQ and Quit Browser
 

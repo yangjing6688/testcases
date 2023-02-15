@@ -146,7 +146,7 @@ class xiqTests():
 
             # Clear out the device information
             self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1.serial)
-            self.xiq.xflowscommonDevices.search_device(device_serial=self.tb.dut1.serial)
+            self.xiq.xflowscommonDevices.search_device(device_serial=self.tb.dut1.serial, ignore_failure=True)
             self.xiq.xflowscommonDevices.delete_device(device_serial=self.tb.dut1.serial)
             self.udks.setupTeardownUdks.networkElementConnectionManager.connect_to_all_network_elements()
 
@@ -164,7 +164,7 @@ class xiqTests():
                                          url=self.cfg['TEST_URL'])
 
         self.xiq.xflowscommonDevices.get_device_status(device_serial=self.tb.dut1.serial)
-        self.xiq.xflowscommonDevices.search_device(device_serial=self.tb.dut1.serial)
+        self.xiq.xflowscommonDevices.search_device(device_serial=self.tb.dut1.serial, ignore_failure=True)
         self.xiq.xflowscommonDevices.delete_device(device_serial=self.tb.dut1.serial)
         self.deactivate_xiq_libaries_and_logout(self)
         

@@ -227,6 +227,10 @@ Log Into XIQ and Set Up Test
 Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
 
+    Navigate to Devices and Confirm Success
+    ${del_result}=  Delete All Devices
+    Should Be Equal As Integers  ${del_result}  1
+
     Disable CoPilot Feature and Confirm Success
     Log Out of XIQ and Quit Browser
 

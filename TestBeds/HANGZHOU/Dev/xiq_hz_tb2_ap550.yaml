@@ -1,0 +1,75 @@
+ap1:
+  name:                     bui-flo-1201
+  connection_method:        "ssh"
+  ip:                       10.155.255.152
+  port:                     "22"
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '05501802090092'
+  # console server not available now
+  console_ip:               10.155.255.141
+  console_port:             2052
+  mac:                      B87CF25B5240
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP550
+  template:                 AP_550-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                1
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United States
+      network_policy:           HZ_TB2_A550_01
+      ssid:                     AP550_01
+      version:                  10.5.3
+      neighbour_serial:         05501608090159
+      neighbour_mac:            B87CF2008300
+
+ap2:
+  name:                     bui-flo-1202
+  connection_method:        "ssh"
+  ip:                       10.155.255.154
+  port:                     "22"
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '05501608090159'
+  # console server not available now
+  console_ip:               10.155.255.141
+  console_port:             2054
+  mac:                      B87CF2008300
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP550
+  template:                 AP_550-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                1
+  country:                  United Kingdom
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           HZ_TB2_A550_01
+      ssid:                     AP550_01
+      version:                  10.5.3
+      neighbour_serial:         05501802090092
+      neighbour_mac:            B87CF25B5240

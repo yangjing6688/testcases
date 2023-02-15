@@ -183,12 +183,12 @@ class xiqTests():
 
             cls.delete_create_location_organization(cls)
 
-            if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac) == 1:
+            if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac, ignore_failure=True) == 1:
                 print(f'Found device using mac-address {cls.tb.dut1.mac}')
                 cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
             else:
                 for a_serial in cls.tb.dut1_serial.split(","):
-                    if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                    if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial, ignore_failure=True) == 1:
                         print(f'Found device using serial-number {a_serial}')
                         cls.xiq.xflowscommonDevices.delete_device(a_serial)
                     else:
@@ -208,12 +208,12 @@ class xiqTests():
 
     @classmethod
     def teardown_class(cls):
-        if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac) == 1:
+        if cls.xiq.xflowscommonDevices.search_device(device_mac=cls.tb.dut1.mac, ignore_failure=True) == 1:
             print(f'Found device using mac-address {cls.tb.dut1.mac}')
             cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
         else:
             for a_serial in cls.tb.dut1_serial.split(","):
-                if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial) == 1:
+                if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial, ignore_failure=True) == 1:
                     print(f'Found device using serial-number {a_serial}')
                     cls.xiq.xflowscommonDevices.delete_device(a_serial)
                 else:

@@ -158,7 +158,6 @@ Test 13: Verify Event for Delete Device
     Confirm Event Row Contains Text                     ${DUT_IP} and Site Engine data were deleted from the database
     Clear Event Search String and Confirm Success
 
-
 *** Keywords ***
 Log In and Set Up Test
     [Documentation]     Logs in and configures everything that is required for the test to run
@@ -166,8 +165,11 @@ Log In and Set Up Test
     Log Into XIQSE and Confirm Success                 ${XIQSE_USERNAME}    ${XIQSE_PASSWORD}    url=${XIQSE_URL}
     Handle License Agreement If Displayed              ${XIQ_EMAIL}  ${XIQ_PASSWORD}
     Close Panels on Login If Displayed
+    Set Syslog Delay Engine Start and Confirm Success       1
+    Set Trap Delay Engine Start and Confirm Success         1
     Set Option Web Server Session Timeout and Confirm Success  7  day(s)
     Set Alarm Event Search Scope    true
+
     Set Option Device Tree Name Format and Confirm Success     IP Address
     Enable Site Actions - Add to Archive, Add Trap Receiver & Add Syslog Receiver    ${WORLD_SITE}
     Onboard XIQSE To XIQ If In Connected Mode        ${INSTALL_MODE}  ${XIQSE_IP_ADDRESS}  ${XIQ_EMAIL}  ${XIQ_PASSWORD}
@@ -178,6 +180,8 @@ Tear Down Test and Close Session
 
     Restore Web Server Options to Default and Confirm Success
     Restore Site Engine General Options to Default and Confirm Success
+    Set Syslog Delay Engine Start and Confirm Success       15
+    Set Trap Delay Engine Start and Confirm Success         15
     Set Alarm Event Search Scope    false
     Navigate and Delete Archive                             ${TEST_ARCHIVE}
     Log Out of XIQSE and Quit Browser

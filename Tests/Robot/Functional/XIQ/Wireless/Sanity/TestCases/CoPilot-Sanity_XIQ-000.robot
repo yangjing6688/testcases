@@ -115,7 +115,7 @@ TCCS-13495_Step1 : Login and Onboard AP on XIQ Account
     Should Be Equal As Strings      ${copilot_enable_status}       1
 
     # Check if devices exist and disconnect and delete
-    ${SEARCH_RESULT}=           Search Device               device_serial=${device1.serial}     ignore_cli_feedback=true
+    ${SEARCH_RESULT}=           Search Device               device_serial=${device1.serial}     ignore_failure=True
     IF  ${SEARCH_RESULT} == 1
         ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}      ${MAIN_DEVICE_SPAWN}
         Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
@@ -123,6 +123,7 @@ TCCS-13495_Step1 : Login and Onboard AP on XIQ Account
         ${DELETE_DEVICE_RESULT}=        Delete Device                       device_serial=${device1.serial}
         Should Be Equal As Integers     ${DELETE_DEVICE_RESULT}             1
     END
+
 
     ${ONBOARD_RESULT}=      Onboard Device Quick        ${device1}
     Should Be Equal As Strings      ${ONBOARD_RESULT}       1
@@ -154,7 +155,7 @@ TCCS-13495_Step2 : Create Network policy and Attach Network policy to AP
     ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${LOCATION_OPEN_NW}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${ap1.template_name}    ${AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${ap1.template}    ${AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings      '${CREATE_AP_TEMPLATE}'   '1'
 
     ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   ${NW_POLICY_NAME}     ap_serial=${ap1.serial}   update_method=Complete

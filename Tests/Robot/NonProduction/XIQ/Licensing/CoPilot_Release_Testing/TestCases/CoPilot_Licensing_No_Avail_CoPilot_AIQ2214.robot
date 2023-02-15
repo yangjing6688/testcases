@@ -289,6 +289,10 @@ Log Into XIQ and Set Up Test
 Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
 
+    Navigate to Devices and Confirm Success
+    ${del_result}=  Delete All Devices
+    Should Be Equal As Integers  ${del_result}  1
+
     Disable CoPilot Feature and Confirm Success
     Log Out of XIQ and Quit Browser
 
@@ -374,5 +378,5 @@ Verify CoPilot Licenses Message Displayed
 Verify CoPilot Licenses Message Not Displayed
     [Documentation]     Verifies the "Not enough CoPilot licenses" banner message is not displayed
 
-    ${banner_result}=  Confirm Not Enough CoPilot Licenses Message Displayed
+    ${banner_result}=  Confirm Not Enough CoPilot Licenses Message Displayed        ignore_failure=True
     Should Be Equal As Strings                       ${banner_result}      False

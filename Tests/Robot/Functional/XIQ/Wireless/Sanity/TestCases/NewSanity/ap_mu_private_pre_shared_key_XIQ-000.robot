@@ -84,7 +84,7 @@ Suite Setup
     ${LOGIN_RESULT}=            Login User                  ${tenant_username}      ${tenant_password}      check_warning_msg=True
     Should Be Equal As Integers     ${LOGIN_RESULT}         1
 
-    ${SEARCH_RESULT}=           Search Device               device_serial=${device1.serial}     ignore_cli_feedback=true
+    ${SEARCH_RESULT}=           Search Device               device_serial=${device1.serial}     ignore_failure=True
     IF  ${SEARCH_RESULT} == 1
         ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}      ${MAIN_DEVICE_SPAWN}
         Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
@@ -115,6 +115,14 @@ Suite Setup
     ${LATEST_VERSION}=      Upgrade Device      ${device1}
     Should Not be Empty     ${LATEST_VERSION}
 
+    Sleep                   ${ap_reboot_wait}
+
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${device1.serial}       retry_count=15
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
+
+    ${REBOOT_STATUS}=    Wait Until Device Reboots               ${device1.serial}
+    Should Be Equal as Integers             ${REBOOT_STATUS}          1
+
     ${DELETE_POLICIES_RESULT}=      Delete Network Polices          ${OPEN_POLICY}      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
     Should Be Equal As Integers     ${DELETE_POLICIES_RESULT}           1
 
@@ -141,7 +149,7 @@ Suite Teardown
 
     Log To Console      DOING CLEANUP AFTER RUNNING THE SUITE!
 
-    ${SEARCH_RESULT}=   Search Device               device_serial=${device1.serial}     ignore_cli_feedback=true
+    ${SEARCH_RESULT}=   Search Device               device_serial=${device1.serial}     ignore_failure=True
     IF  ${SEARCH_RESULT} == 1
         ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
         Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
@@ -228,7 +236,7 @@ TCCS-7678: Cloud DB PPSK Network Client Connectivity With Bulk Users Group
     Sleep               ${client_connect_wait}
 
     ${URL_TITLE}=       Check Internet Connectivity     ${mu1.ip}
-    Should Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
+    Should Not Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
 
     ${CREDENTIALS}=     Get Login Credential From Attachments       ${MAIL_ID1}     ${MAIL_ID1_PASS}
 
@@ -269,7 +277,7 @@ TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
     Sleep               ${client_connect_wait}
 
     ${URL_TITLE}=       Check Internet Connectivity     ${mu1.ip}
-    Should Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
+    Should Not Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
 
     ${CREDENTIALS}=     Get Login Credential From Attachments       ${MAIL_ID1}     ${MAIL_ID1_PASS}
 

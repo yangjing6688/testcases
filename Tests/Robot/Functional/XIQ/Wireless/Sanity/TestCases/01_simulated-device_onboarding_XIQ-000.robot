@@ -33,6 +33,7 @@ TCCS-13211: Quick Add Onboard Simulated Device
     ...     simulated_count=1
     ...     onboard_device_type=Simulated
     ...     location=auto_location_01, Santa Clara, building_02, floor_04
+    ...     make=Extreme - Aerohive
 
     set suite variable    ${device}
     ${LOGIN_STATUS}=                Login User          ${tenant_username}          ${tenant_password}

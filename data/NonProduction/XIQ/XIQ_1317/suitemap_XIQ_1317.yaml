@@ -1,0 +1,110 @@
+data:
+  os_version_voss: 8.8.0.0
+  os_version_exos: 31.7.1.4
+  feature_name: Support Device Level Config Clone Single Switch Engine (EXOS)/Fabric Engine (VOSS) Phase I
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-1317
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=42781675
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 2 NODE ##########################
+
+  Xiq1317Tests::test_replacement_cloning_same_os_txcm22472:
+    author: Dragos Sofiea
+    tc: tcxm_22472
+    title: This script run the below tests for clone switch configuration feature according with XIQ-1317 story
+    description: "Check Clone Device page has Replacement Device drop down menu if 'Onboarded' is selected then
+                       'Replacement Serials' should list the matching serials that are already onboarded and connected"
+
+  Xiq1317Tests::test_replacement_cloning_same_os_txcm22475:
+    author: Dragos Sofiea
+    tc: tcxm_22475
+    title: TCXM-22475
+    description: "Check Clone Device function lists the replacement device if it is onboarded and connected to XIQ.
+                        Select a replacement device and initiate the Cloning Operation."
+
+  Xiq1317Tests::test_replacement_cloning_same_os_unmanaged_txcm_22474:
+    author: Dragos Sofiea
+    tc: tcxm_22474
+    title: TCXM-22474
+    description: "TCXM-22474-Check Clone Device function is available even the original device is onboarded but unmanaged in XIQ
+                        Select a replacement device and initiate the Cloning Operation."
+
+  Xiq1317Tests::test_replacement_cloning_same_os_disconnected_txcm_22473:
+    author: Dragos Sofiea
+    tc: tcxm_22473
+    title: TCXM-22473
+    description: "TCXM-22473 - Check Clone Device function is available even if the original device is not connected to the XIQ
+                        Select a replacement device and initiate the Cloning Operation."
+
+  Xiq1317Tests::test_replacement_cloning_policy_txcm22480:
+    author: Dragos Sofiea
+    tc: tcxm_22480
+    title: TCXM-22480
+    description: "TCXM-22480 - Check Clone Device page has Replacement Device drop down menu if 'Onboarded' is selected then
+                        'Replacement Serials' should list the matching serials that are already onboarded and connected"
+
+  Xiq1317Tests::test_replacement_cloning_policy_txcm22483:
+    author: Dragos Sofiea
+    tc: tcxm_22483
+    title: TCXM-22483
+    description: "TCXM-22483 - Check Clone Device function lists the replacement device if it is onboarded and connected to XIQ.
+                        Select a replacement device and initiate the Cloning Operation."
+
+  Xiq1317Tests::test_replacement_cloning_policy_unmanaged_txcm_22482:
+    author: Dragos Sofiea
+    tc: tcxm_22482
+    title: TCXM-22482
+    description: "TCXM-22482 - Check Clone Device function is available even the original device is onboarded but unmanaged in XIQ
+                        Select a replacement device and initiate the Cloning Operation."
+
+  Xiq1317Tests::test_replacement_cloning_policy_disconnected_txcm_22481:
+    author: Dragos Sofiea
+    tc: tcxm_22481
+    title: TCXM-22481
+    description: "TXCM-22481 - Check Clone Device function is available even if the original device is not connected to the XIQ
+                        Select a replacement device and initiate the Cloning Operation."
+
+  Xiq1317Tests::test_replacement_cloning_different_os_txcm22476:
+    author: Dragos Sofiea
+    tc: tcxm_22476
+    title: TCXM-22476
+    description: "TCXM-22476 - Check Clone Device page has Replacement Device drop down menu if 'Onboarded' is selected then
+                        'Replacement Serials' should list the matching serials that are already onboarded and connected"
+
+  Xiq1317Tests::test_replacement_cloning_different_os_txcm22479:
+    author: Dragos Sofiea
+    tc: tcxm_22479
+    title: TCXM-22479
+    description: "TCXM-22479 - Check Clone Device function lists the replacement device if it is onboarded and connected to XIQ.
+                          Select a replacement device and initiate the Cloning Operation."
+
+  Xiq1317Tests::test_replacement_cloning_different_os_unmanaged_txcm_22478:
+    author: Dragos Sofiea
+    tc: tcxm_22478
+    title: TCXM-22478
+    description: "TCXM-22478 - Check Clone Device function is available even the original device is onboarded but unmanaged in XIQ
+                          Select a replacement device and initiate the Cloning Operation."
+
+  Xiq1317Tests::test_replacement_cloning_different_disconnected_txcm_22477:
+    author: Dragos Sofiea
+    tc: tcxm_22477
+    title: TCXM-22477
+    description: "TCXM-22477 - Check Clone Device function is available even if the original device is not connected to the XIQ
+        Select a replacement device and initiate the Cloning Operation."
+
+  #################### TESTBED 2 NODE ##########################
