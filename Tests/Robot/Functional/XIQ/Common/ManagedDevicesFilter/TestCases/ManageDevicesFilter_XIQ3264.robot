@@ -60,7 +60,6 @@ Pre Condition
     ...     model=${device_type1}
     ...     simulated_count=1
     ...     onboard_device_type=Simulated
-    ...     make=${DEVICE_MAKE}
     ...     location=${LOCATION_1}, San Jose, ${BUILDING_1}, ${FLOOR_1}
 
     ${device2}=      Create Dictionary
@@ -68,7 +67,6 @@ Pre Condition
     ...     model=${device_type2}
     ...     simulated_count=1
     ...     onboard_device_type=Simulated
-    ...     make=${DEVICE_MAKE}
     ...     location=${LOCATION_2}, Santa Clara, ${BUILDING_2}, ${FLOOR_2}
 
     set suite variable    ${device1}
