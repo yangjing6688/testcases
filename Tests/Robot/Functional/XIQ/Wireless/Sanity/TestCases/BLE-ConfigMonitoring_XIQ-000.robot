@@ -88,7 +88,7 @@ TCCS-7306: HM-Bluetooth_Configuration_enable
     should be equal as strings     '${DELTA_UPDATE}'           '1'
     Sleep   1min
     Wait Until Device Online    ${ap1.serial}
-    ${AP1_STATUS}=           Get AP Status       ap_mac=${ap1.mac}
+    ${AP1_STATUS}=           get device status       device_mac=${ap1.mac}
     Should Be Equal As Strings             '${AP1_STATUS}'       'green'
     ${SPAWN1}=              Open Spawn         ${ap1.ip}   ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.cli_type}
     ${OUTPUT2}=            Send Commands       ${SPAWN1}         sh int ble0 ibeacon
@@ -108,7 +108,7 @@ TCCS-7386: HM-Bluetooth_Monitoring_enable
     Wait Until Device Online    ${ap1.serial}
     Sleep   1min
     Wait Until Device Online    ${ap1.serial}
-    ${AP1_STATUS}=           Get AP Status       ap_mac=${ap1.mac}
+    ${AP1_STATUS}=           get device status       device_mac=${ap1.mac}
     Should Be Equal As Strings             '${AP1_STATUS}'       'green'
     ${SPAWN1}=              Open Spawn         ${ap1.ip}   ${ap1.port}     ${ap1.username}     ${ap1.password}     ${ap1.cli_type}
     ${OUTPUT1}=            Send Commands       ${SPAWN1}         sh int ble0 ibeacon

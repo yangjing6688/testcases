@@ -75,7 +75,7 @@ TCXM-19753 - XIQ-4593 - QuickAdd: Onboard AP5010/AP5010U cloud managed - step3
     Depends On          step2
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
     Wait Until Device Online                ${ap5010.serial}
-    ${AP_STATUS}=       Get AP Status       ap_mac=${ap5010.mac}
+    ${AP_STATUS}=       get device status      device_mac=${ap5010.mac}
     Should Be Equal As Strings  '${AP_STATUS}'     'green'
 
     [Teardown]   run keywords               logout user

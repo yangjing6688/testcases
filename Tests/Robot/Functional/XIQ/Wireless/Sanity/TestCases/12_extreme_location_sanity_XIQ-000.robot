@@ -66,7 +66,7 @@ Suite Setup      Pre Condition
 Pre Condition
     [Documentation]   AP Should be onboarded  and it is online
     ${result}=                      Login User          ${tenant_username}     ${tenant_password}
-    ${AP1_STATUS}=                  Get AP Status       ap_mac=${ap1.mac}
+    ${AP1_STATUS}=                  get device status       device_mac=${ap1.mac}
     Should Be Equal As Strings      '${AP1_STATUS}'     'green'
     ${IMPORT_MAP}=                  Import Map In Network360Plan  ${MAP_FILE_NAME}
     Should Be Equal As Strings      ${IMPORT_MAP}       1
@@ -271,7 +271,7 @@ Test7: Onboard AP on New customer Account
 
     Refresh Devices Page
 
-    ${AP1_STATUS}=               Get AP Status       ap_mac=${ap1.mac}
+    ${AP1_STATUS}=               get device status       device_mac=${ap1.mac}
     Should Be Equal As Strings  '${AP1_STATUS}'     'green'
 
     ${LOCATION_RESULT}=             Assign Location With Device Actions         ${ap1.serial}       ${LOCATION}

@@ -119,7 +119,7 @@ Test1: Onboard Sensor AP
     sleep  240s
     Wait Until Device Online    ${ap1.serial}
     Refresh Devices Page
-    ${AP1_STATUS}=              Get AP Status       ap_mac=${ap1.mac}
+    ${AP1_STATUS}=              get device status       device_mac=${ap1.mac}
     Should Be Equal As Strings  '${AP1_STATUS}'     'green'
     close Spawn  ${AP_SPAWN}
     [Teardown]         run keywords    logout user
