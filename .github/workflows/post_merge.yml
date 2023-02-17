@@ -8,7 +8,8 @@ on:
 jobs:
   update_qtest:
     name: Update qTest Testcases
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: Ubuntu-20.04
     # workflow_dispatch is a manual trigger. It would only get used for testing or other extenuating circumstances
     # This job's normal trigger is every push to main.
 
@@ -131,4 +132,5 @@ jobs:
         ATTACHMENTS=./${{ env.tag_marker_report_path }}
 
         # Send email
-        python .github/workflows/send_email.py --recipients "${RECIPIENTS}" --subject "${SUBJECT}" --message "${EMAIL_BODY}" --attachments ${ATTACHMENTS} --auth-token "${{ secrets.AUTOIQ_PAT }}"
+        # python .github/workflows/send_email.py --recipients "${RECIPIENTS}" --subject "${SUBJECT}" --message "${EMAIL_BODY}" --attachments ${ATTACHMENTS} --auth-token "${{ secrets.AUTOIQ_PAT }}"
+        python .github/workflows/send_email.py --recipients "${RECIPIENTS}" --subject "${SUBJECT}" --message "${EMAIL_BODY}" --auth-token "${{ secrets.AUTOIQ_PAT }}"
