@@ -140,7 +140,7 @@ TCCS-13495_Step1 : Login and Onboard AP on XIQ Account
     ${MANAGED_STATUS}=      Wait Until Device Managed   ${device1.serial}
     Should Be Equal As Integers     ${MANAGED_STATUS}       1
 
-    ${AP1_STATUS}=               Get AP Status       ap_mac=${ap1.mac}
+    ${AP1_STATUS}=               get device status       device_mac=${ap1.mac}
     Should Be Equal As Strings  '${AP1_STATUS}'     'green'
 
     [Teardown]   run keywords       Logout User

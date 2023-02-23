@@ -1,5 +1,4 @@
 # ------------------   From Wireless  ----------------------  need robot b/c used in builtin used in some python methods.
-#Pillow==7.0.0
 Flask==1.1.1
 image==1.5.28
 netmiko==3.0.0
@@ -41,7 +40,6 @@ oyaml==0.7
 textfsm==0.4.1
 PyMySQL==1.0.2
 wheel==0.36.2
+extremecloudiq-api==22.6.4.1
 ansi2html==1.8.0
 GitPython==3.1.29
-PyAutoGUI==0.9.42; platform_system == "Windows"
-https://github.com/jacexh/pyautoit/archive/master.zip; platform_system == "Windows"

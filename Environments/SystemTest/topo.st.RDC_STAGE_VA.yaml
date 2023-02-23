@@ -1,6 +1,7 @@
 test_url:                 "https://stage.extremecloudiq.com"
 sw_capwap_url:            "stage.extremecloudiq.com"
 wing_capwap_url:          "stage-wing.extremecloudiq.com"
+xapi_url:                 "api.extremecloudiq.com"
 tenant_username:          "st.auto.voss@gmail.com"
 tenant_password:          "Aerohive123"
 sw_connection_host:       "stage.extremecloudiq.com"

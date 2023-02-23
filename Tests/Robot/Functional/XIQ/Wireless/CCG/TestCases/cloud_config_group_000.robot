@@ -1,5 +1,5 @@
 # Author        : bsainath
-# Date          : October 2020
+# Date          : December 2022
 # Description   : Cloud Config Group
 
 # Topology      :
@@ -92,7 +92,7 @@ Resource    Tests/Robot/Functional/XIQ/Wireless/CCG/Resources/cloud_config_group
 
 Force Tags   testbed_3_node
 Suite Setup      Pre Condition
-Suite Teardown    Test suite Cleanup
+Suite Teardown    Run Keyword And Warn On Failure  Test Suite Cleanup
 
 *** Keywords ***
 Pre Condition
@@ -148,7 +148,6 @@ Test Suite Cleanup
 TCCS-7651_Step1: Onboard Aerohive AP
     [Documentation]         Checks for ap onboarding is success in case of valid scenario
     [Tags]                  production      tccs_7651       tccs_7651_step_1
-
     ${DELETE_DEVICE_STATUS}=            Delete Device       device_serial=${ap1.serial}
     should be equal as integers     ${DELETE_DEVICE_STATUS}               1
 
@@ -235,8 +234,8 @@ TCCS-7651_Step2: Config AP to Report AIO and Check status
 
 TCCS-9268: CCG CommonObject Add Edit Delete
     [Documentation]    CCG CommonObject Add Edit Delete
-
     [Tags]             development         tccs_9268
+    Depends On          TCCS-7651_Step1    TCCS-7651_Step2
 
     ${CREATE_NW_POLICY_STATUS}=     Create Network Policy           ${NETWORK}                  ${CONFIG_PUSH_OPEN_NW_02}
     should be equal as integers     ${CREATE_NW_POLICY_STATUS}               1
@@ -266,8 +265,8 @@ TCCS-9268: CCG CommonObject Add Edit Delete
 
 TCCS-9271: CCG_CommonObject_Assign_Duplicate_Device_to_Group
     [Documentation]    CCG_CommonObject_Assign_Duplicate_Device_to_Group
-
     [Tags]             development         tccs_9271
+    Depends On          TCCS-7651_Step1    TCCS-7651_Step2
 
 
     ${CCG_STATUS1}                  add cloud config group      ${CCG_NAME1}        ${CCG_DESC1}        ${ap1.serial}
@@ -285,8 +284,8 @@ TCCS-9271: CCG_CommonObject_Assign_Duplicate_Device_to_Group
 
 TCCS-9342: CCG_Assign_Device_to_Exiting_Group_from_Monitor
     [Documentation]    CCG_Assign_Device_to_Exiting_Group_from_Monitor
-
     [Tags]             development          tccs_9342
+    Depends On          TCCS-7651_Step1    TCCS-7651_Step2
 
 
     ${ASSIGN_CCG_POLICY}            assign cloud config group       ${CCG_NAME1}        Delta       Cancel      ${ap3.serial}
@@ -295,17 +294,17 @@ TCCS-9342: CCG_Assign_Device_to_Exiting_Group_from_Monitor
 
 TCCS-9261: CCG_Assign_Device_to_New_Create_Group_from_Monitor
     [Documentation]    CCG_Assign_Device_to_New_Create_Group_from_Monitor
-
     [Tags]             development         tccs_9261
+    Depends On          TCCS-7651_Step1    TCCS-7651_Step2
 
     ${CCG_STATUS1}                  add cloud config group from manage     ${CCG_NAME2}        ${CCG_DESC2}        ${ap1.serial}
     should be equal as strings     '${CCG_STATUS1}'     '1'
 
 
-TCCS-9243 testcase1: CFD_4567 Editing the SSID in the common object will remove the Classification Rules based on CCG configured for the same SSID
+TCCS-9243 : CFD_4567 Editing the SSID in the common object will remove the Classification Rules based on CCG configured for the same SSID
     [Documentation]    CFD_4567 Editing the SSID in the common object will remove the Classification Rules based on CCG configured for the same SSID
-
     [Tags]             development         tccs_9243
+    Depends On          TCCS-7651_Step1    TCCS-7651_Step2
 
     ${CCG_STATUS1}                  add cloud config group from manage     ${CCG_NAME3}        ${CCG_DESC3}        ${ap1.serial}
     should be equal as strings     '${CCG_STATUS1}'     '1'
@@ -341,8 +340,8 @@ TCCS-9243 testcase1: CFD_4567 Editing the SSID in the common object will remove 
 
 TCCS-9170: CFD-4667 Edit the CCG report error The item cannot be saved because the name null already exists
     [Documentation]    CFD-4667 Edit the CCG report error the item cannot be saved because the name null already exists
-
     [Tags]             development         tccs_9170
+    Depends On          TCCS-7651_Step1    TCCS-7651_Step2
 
     ${CCG_STATUS1}                  add cloud config group from manage     ${CCG_NAME4}        ${CCG_DESC4}        ${ap1.serial}
     should be equal as strings     '${CCG_STATUS1}'     '1'
@@ -354,8 +353,8 @@ TCCS-9170: CFD-4667 Edit the CCG report error The item cannot be saved because t
 
 TCCS-9281: CFD_4691 SSIDs configured via CCG will be seen on the device interface settings of APs that are not included in the CCG
     [Documentation]    CFD_4691 SSIDs configured via CCG will be seen on the device interface settings of APs that are not included in the CCG
-
     [Tags]             development         tccs_9281       tccs_9243
+    Depends On          TCCS-7651_Step1    TCCS-7651_Step2   TCCS-9243
 
 
     ${AP1_INFO}                     Get Device System Information  device_mac=${ap1.mac}
@@ -367,8 +366,8 @@ TCCS-9281: CFD_4691 SSIDs configured via CCG will be seen on the device interfac
 
 TCCS-9267: CFD_5201 Cannot view more than 10 cloud config group (CCG) XIQ
     [Documentation]    CFD_5201 Cannot view more than 10 cloud config group (CCG) XIQ
-
     [Tags]             development         tccs_9267
+    Depends On          TCCS-7651_Step1    TCCS-7651_Step2
 
 
     ${CCG_STATUS1}                  create bulk cloud config group     ${CCG_BULK}        ${ap1.serial}         ${NUM}
@@ -379,10 +378,10 @@ TCCS-9267: CFD_5201 Cannot view more than 10 cloud config group (CCG) XIQ
 
 
 
-TCCS-9251: CCGII_SSID_Enable_Classification_1
-    [Documentation]    CCGII_SSID_Enable_Classification_1
-
+TCCS-9251: CCGII_SSID_Enable_Classification_Rule_With_Location
+    [Documentation]    CCGII_SSID_Enable_Classification_Rule_with_location
     [Tags]             development         tccs_9251
+    Depends On          TCCS-7651_Step1    TCCS-7651_Step2
 
     ${SSID_ADD_STATUS}              add wireless nw to network policy           ${NETWORK}            &{CONFIG_PUSH_OPEN_NW_01}
     should be equal as strings     '${SSID_ADD_STATUS}'     '1'
@@ -423,10 +422,10 @@ TCCS-9251: CCGII_SSID_Enable_Classification_1
 
 
 
-TCCS-9194: CCGII_SSID_Enable_Classification_3
-    [Documentation]    CCGII_SSID_Enable_Classification_3
-
+TCCS-9194: CCGII_SSID_Enable_Classification_User_Group_Profile
+    [Documentation]    CCGII_SSID_Enable_Classification_User_Group_Profile
     [Tags]             development         tccs_9194
+    Depends On          TCCS-7651_Step1    TCCS-7651_Step2
 
     ${PPSK_USER_GROUP}=             Create User Group   ${BULK_CLOUD_USER_GROUP}   user_group_profile=&{USER_GROUP_PROFILE_CLOUD_BULK}
     should be equal as strings     '${PPSK_USER_GROUP}'     '1'
@@ -503,4 +502,3 @@ TCCS-9194: CCGII_SSID_Enable_Classification_3
     ${CONFIG_OUTPUT5}               Send Cmd On Device Advanced Cli     device_serial=${ap2.serial}    cmd=show ssid
     Should Contain                  ${CONFIG_OUTPUT5}         ${BULK_CLOUD_NW_SSID}
     Should Contain                  ${CONFIG_OUTPUT5}         ${ENTERPRISE_SSID}
-

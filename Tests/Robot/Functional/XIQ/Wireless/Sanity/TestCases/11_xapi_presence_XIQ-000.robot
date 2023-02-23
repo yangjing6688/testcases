@@ -71,7 +71,7 @@ Pre Condition
     ${base_url}=                    Get Base Url Of Current Page
     set global variable             ${base_url}
 
-    ${AP_STATUS}=                   Get AP Status     ap_mac=${ap1.mac}
+    ${AP_STATUS}=                   get device status     device_mac=${ap1.mac}
     Should Be Equal As Strings     '${AP_STATUS}'     'green'
 
     ${ASSIGN_LOC}=                  Assign Location With Device Actions    ${ap1.serial}    ${LOCATION}
