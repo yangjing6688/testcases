@@ -50,7 +50,7 @@ Force Tags   testbed_1_node
 
 
 Suite Setup     Test Suite Setup
-Suite Teardown    Test Suite Teardown
+Suite Teardown    Run Keyword And Warn On Failure    Test Suite Teardown
 *** Keywords ***
 Test Suite Setup
 

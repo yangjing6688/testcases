@@ -1,0 +1,22 @@
+wing1:
+  name:                     ap510-1347A9
+  model:                    AP510
+  device_template:
+  serial:                   1908W-2009900000
+  os_version:               7.9.0.0-017R
+  mac:                      949B2C1347A9
+  cli_type:                 "WING-AP"
+  bssid:
+  network_policy:           Test_np
+  username:                 admin
+  password:                 symbol
+  platform:                 wing
+  ip:                       10.234.106.18
+  port:                     22
+  connection_method:        "ssh"
+  console_ip:               10.234.212.230
+  console_port:             7025
+  country:                  United Kingdom
+  make:                     Controllers
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real

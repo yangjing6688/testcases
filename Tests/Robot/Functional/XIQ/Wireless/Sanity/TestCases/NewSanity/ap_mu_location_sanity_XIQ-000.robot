@@ -32,7 +32,7 @@ Force Tags   testbed_1_node
 Library	            Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   MU1
 
 Suite Setup     Test Suite Setup
-Suite Teardown  Test Suite Clean Up
+Suite Teardown    Run Keyword And Warn On Failure  Test Suite Clean Up 
 
 *** Variables ***
 ${LOCATION}                 auto_location_01, Santa Clara, building_02, floor_04

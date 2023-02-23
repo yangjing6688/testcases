@@ -1,0 +1,20 @@
+aerohive_sw1:
+  name:               AH-Switch
+  model:              SR2224P
+  device_template:    SR2348P-default-template
+  serial:             '22241605201989'
+  cli_type:           "AH-FASTPATH"
+  ip:                 10.234.106.
+  port:               22
+  connection_method:  "ssh"
+  mac:                B87CF20146E0
+  network_policy:
+  username:           admin
+  password:           Aerohive123
+  platform:           aerohive-fastpath
+  console_ip:         10.234.212.230
+  console_port:       7004
+  test_port:
+  make:               Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real

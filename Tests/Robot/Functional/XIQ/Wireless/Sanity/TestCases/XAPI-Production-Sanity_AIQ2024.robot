@@ -15,7 +15,7 @@
 
 # Execution Command:
 # ------------------
-# robot -v TOPO:topo.xapi-g2.yaml -v TESTBED:BANGALORE/testbed_all_SubramaniVR.yaml -L DEBUG XAPI-Production-Sanity.robot
+# robot -v TOPO:topo.xapi-g2.yaml -v TESTBED:BANGALORE/testbed_all_SubramaniVR.yaml -L DEBUG XAPI-Production-Sanity_AIQ2024.robot
 #
 #
 
@@ -52,7 +52,7 @@ Variables   Environments/${TOPO}
 
 
 Suite Setup     Pre Condition
-Suite Teardown  Test Suite Clean Up
+Suite Teardown    Run Keyword And Warn On Failure  Test Suite Clean Up 
 
 *** Keywords ***
 Pre Condition

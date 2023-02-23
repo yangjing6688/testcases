@@ -107,7 +107,7 @@ Test1: Onboard Dual Radio AP305C, Assign policy, template with WIPS ON as ADEss 
     ${REFRESH_PAGE}=         Refresh Devices Page
     Should Be Equal As Strings      '${REFRESH_PAGE}'       '1'
 
-    ${AP3_STATUS}=              Get AP Status       ap_mac=${ap3.mac}
+    ${AP3_STATUS}=              get device status       device_mac=${ap3.mac}
     Should Be Equal As Strings  '${AP3_STATUS}'     'green'
 
     close Spawn  ${AP3_SPAWN}
@@ -146,7 +146,7 @@ Test2: Onboard WiFi6 AP4000U, Assign policy, template with WIPS ON as ADEss Enab
     ${REFRESH_PAGE}=         Refresh Devices Page
     Should Be Equal As Strings      '${REFRESH_PAGE}'       '1'
 
-    ${AP4_STATUS}=              Get AP Status       ap_mac=${ap4.mac}
+    ${AP4_STATUS}=              get device status       device_mac=${ap4.mac}
     Should Be Equal As Strings  '${AP4_STATUS}'     'green'
 
     close Spawn  ${AP4_SPAWN}

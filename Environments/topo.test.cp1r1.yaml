@@ -1,3 +1,4 @@
 tenant_username:          "ycao@extremenetworks.com"
 tenant_password:          "Aerohive123"
 base_url:                 "https://cp1-api.qa.xcloudiq.com"
+xapi_url:                 "test-api.extremecloudiq.com"

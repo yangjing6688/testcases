@@ -140,7 +140,7 @@ Onboard AP5010U
     Log to Console      Sleep for ${CONFIG_PUSH_WAIT}
     sleep                         ${CONFIG_PUSH_WAIT}
     Refresh Devices Page
-    ${AP_STATUS}=                           Get AP Status       ap_serial=${AP1_SERIAL}
+    ${AP_STATUS}=                           get device status       device_serial=${AP1_SERIAL}
     should be equal as integers             ${result}   1
     should be equal as integers             ${ONBOARD_RESULT}   1
     should be equal as integers             ${search_result}    1
