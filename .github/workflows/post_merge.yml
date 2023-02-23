@@ -8,7 +8,8 @@ on:
 jobs:
   update_qtest:
     name: Update qTest Testcases
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: Ubuntu-20.04
     # workflow_dispatch is a manual trigger. It would only get used for testing or other extenuating circumstances
     # This job's normal trigger is every push to main.
 
@@ -128,7 +129,13 @@ jobs:
         RECIPIENTS="psadej@extremenetworks.com"
         SUBJECT="Error updating qTest or Testcase data - ${{ github.repository }}"
         EMAIL_BODY="See error in attached report or on GitHub: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        ATTACHMENTS=./${{ env.tag_marker_report_path }}
+
+        # Commented out because attachments were causing email to hang
+        #
+        # ATTACHMENTS=./${{ env.tag_marker_report_path }}
+        # echo "Sending email to ${RECIPIENTS} with subject ${SUBJECT} and message ${EMAIL_BODY} and attachments ${ATTACHMENTS}"
+        # python .github/workflows/send_email.py --recipients "${RECIPIENTS}" --subject "${SUBJECT}" --message "${EMAIL_BODY}" --attachments ${ATTACHMENTS} --auth-token "${{ secrets.AUTOIQ_PAT }}"
 
         # Send email
-        python .github/workflows/send_email.py --recipients "${RECIPIENTS}" --subject "${SUBJECT}" --message "${EMAIL_BODY}" --attachments ${ATTACHMENTS} --auth-token "${{ secrets.AUTOIQ_PAT }}"
+        echo "Sending email to ${RECIPIENTS} with subject ${SUBJECT} and message ${EMAIL_BODY}"
+        python .github/workflows/send_email.py --recipients "${RECIPIENTS}" --subject "${SUBJECT}" --message "${EMAIL_BODY}" --auth-token "${{ secrets.AUTOIQ_PAT }}"

@@ -1,6 +1,7 @@
 test_url:                 "https://stage.extremecloudiq.com"
 capwap_url:               "stage-cwpm-01.extremecloudiq.com"
 sw_capwap_url:            "stage.extremecloudiq.com"
+xapi_url:                 "stage-api.extremecloudiq.com"
 wing_capwap_url:          "stage-wing.extremecloudiq.com"
 tenant_username:          "xiqextremeqa+adess-stage2@gmail.com"
 tenant_password:          "Extreme@123"

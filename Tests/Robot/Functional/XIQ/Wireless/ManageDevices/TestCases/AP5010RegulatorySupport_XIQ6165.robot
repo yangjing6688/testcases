@@ -902,7 +902,7 @@ InitialSetup
     ${UPDATE}                      Update Network Policy To Ap             ${POLICY}          ${ap1.serial}      Complete
     should be equal as strings     '${UPDATE}'       '1'
     Wait Until Device Online       ${ap1.serial}
-    ${AP_STATUS}                   Get AP Status     ap_mac=${ap1.mac}
+    ${AP_STATUS}                   get device status     device_mac=${ap1.mac}
     Should Be Equal As Strings    '${AP_STATUS}'    'green'
 
     Logout User
@@ -923,7 +923,7 @@ SetCountryCodeAndVerify
     ${COUNTRY_STATUS}=          Change Country      ${ap1.serial}         ${country}
     Wait Until Device Reboots   ${ap1.serial}
     refresh devices page
-    ${AP_STATUS2}=              Get AP Status       ${ap1.serial}
+    ${AP_STATUS2}=              get device status       device_serial=${ap1.serial}
     refresh devices page
     ${AP_COUNTRY}=              Get AP Country      ${ap1.serial}
     refresh devices page

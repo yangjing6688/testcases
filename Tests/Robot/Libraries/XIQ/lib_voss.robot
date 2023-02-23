@@ -95,6 +95,8 @@ Enable iqagent for Test Device
 
     [Teardown]              Close Spawn and Confirm Success  ${spawn}
 
+#Please be aware that this keyword should no longer be used
+#Instead of this keyword try using the following method: Upgrade_VOSS_Network_Element
 Update NOS Version on Test Device
     [Documentation]     Updates the NOS version on the Test Device to the specified version
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${nos_dir}

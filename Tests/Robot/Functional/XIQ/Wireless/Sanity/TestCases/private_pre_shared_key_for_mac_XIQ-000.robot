@@ -65,7 +65,7 @@ Pre Condition
     [Documentation]   AP Should be onboarded  and it is online
     #[teardown]   quit browser
     ${result}=                      Login User                 ${TENANT_USERNAME}     ${TENANT_PASSWORD}
-    ${AP_STATUS}=                   Get AP Status              ap_mac=${ap1.mac}
+    ${AP_STATUS}=                   get device status              device_mac=${ap1.mac}
     Should Be Equal As Strings     '${AP_STATUS}'             'green'
     Create Network Policy           ${OPEN_POLICY}             ${CONFIG_PUSH_OPEN_NW_01}
     Update Network Policy To Ap     policy_name=${OPEN_POLICY}      ap_serial=${ap1.serial}

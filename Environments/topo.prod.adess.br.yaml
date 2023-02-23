@@ -1,7 +1,9 @@
+
 test_url:             "https://extremecloudiq.com"
 capwap_url:           "redirector.aerohive.com"
 sw_capwap_url:        "br.extremecloudiq.com"
 wing_capwap_url:      "br-wing.extremecloudiq.com"
+xapi_url:             "api.extremecloudiq.com"
 tenant_username:      "xiqextremeqa+adess-braz@gmail.com"
 tenant_password:      "Extreme@123"
 base_url:             "https://api.extremecloudiq.com"

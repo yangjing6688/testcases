@@ -1,0 +1,7 @@
+From this directory:
+
+    /automation/tests/extreme_automation_tests/Tests/Robot/Demos/DefaultTemplateXAPI/
+
+Run the script in the Dev VM:
+
+    robot -v TESTBED:SALEM/Demo/demo_salem_1_node_exos.yaml TestCases
