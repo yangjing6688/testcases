@@ -61,7 +61,7 @@ Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   mu1
 Force Tags  testbed_1_node
 
 Suite Setup      Suite Setup
-Suite Teardown   Suite Teardown
+Suite Teardown       Run Keyword And Warn On Failure    Suite Teardown
 
 *** Keywords ***
 Suite Setup
