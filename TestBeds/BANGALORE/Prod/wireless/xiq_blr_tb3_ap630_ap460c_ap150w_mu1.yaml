@@ -5,7 +5,7 @@ ap1:
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   '6301908310569'
+  serial:                   '06301908310569'
   console_ip:               10.234.212.230
   console_port:             7031
   mac:                      3485843A6000
