@@ -1,6 +1,7 @@
 test_url:                 "https://cp1r3.qa.xcloudiq.com"
 capwap_url:               "cp1r3-cws-0.qa.xcloudiq.com"
 sw_capwap_url:            "cp1r3.qa.xcloudiq.com"
+xapi_url:                 "test-api.extremecloudiq.com"
 tenant_username:          "zhichen+cp1r3auto01@extremenetworks.com"
 tenant_password:          "Extreme@123"
 wing_capwap_url:          "cp1r3-wing.qa.xcloudiq.com"
