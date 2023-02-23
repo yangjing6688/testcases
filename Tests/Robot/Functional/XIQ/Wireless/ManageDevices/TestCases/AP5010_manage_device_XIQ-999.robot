@@ -159,7 +159,7 @@ Suite Setup     pre condition
 Pre Condition
     [Documentation]   AP Should be onboarded  without assigining the Network polciy  and it is online
     ${RESSULT}=                      Login User               ${TENANT_USERNAME}     ${TENANT_PASSWORD}
-    ${AP_STATUS}=                   Get AP Status            ap_serial=${AP1_SERIAL}
+    ${AP_STATUS}=                   get device status           device_serial=${AP1_SERIAL}
     Should Be Equal As Strings     '${AP_STATUS}'           'green'
 
     [Teardown]   run keywords      logout user
@@ -270,7 +270,7 @@ TCXM-19411 : Verify connection status with AP5010U/AP5010
     [Documentation]         AP5010U/AP5010 online and offline connection status check.
     [Tags]             development    tcxm-19411            p-1
     ${RESULT}=          Login User       ${TENANT_USERNAME}      ${TENANT_PASSWORD}
-    ${AP_STATUS}=                           Get AP Status       ap_serial=${AP1_SERIAL}
+    ${AP_STATUS}=                           get device status       device_serial=${AP1_SERIAL}
     should be equal as strings             '${AP_STATUS}'       'green'
       [Teardown]   run keywords      logout user
       ...                            quit browser

@@ -35,6 +35,16 @@ ${DUT1_USERNAME}                ${netelem1.username}
 ${DUT1_PASSWORD}                ${netelem1.password}
 ${DUT1_VR}                      ${netelem1.vr}
 
+${DUT2_SERIAL}                  ${netelem2.serial}
+${DUT2_MAKE}                    ${netelem2.make}
+${DUT2_MAC}                     ${netelem2.mac}
+${DUT2_CLI_TYPE}                ${netelem2.cli_type}
+${DUT2_IP}                      ${netelem2.ip}
+${DUT2_PORT}                    ${netelem2.port}
+${DUT2_USERNAME}                ${netelem2.username}
+${DUT2_PASSWORD}                ${netelem2.password}
+${DUT2_VR}                      ${netelem2.vr}
+
 ${COPILOT_ENTITLEMENT_VALUE}    ${copilot_entitlements}
 
 ${PILOT_ENTITLEMENT}            XIQ-PIL-S-C
@@ -122,90 +132,98 @@ Test 6: Delete First Device and Verify Success
 
     Delete Test Device and Confirm Success          ${DUT1_SERIAL}
 
-Test 7: Disable CoPilot Within Global Settings->VIQ Management
-    [Documentation]     Disables CoPilot feature from Global Settings->VIQ Management page
+Test 7: Verify Pilot and CoPilot Licenses Revoked For First Device
+    [Documentation]     Confirms license counts are revoked in XIQ after devices were deleted
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test7
+    # Confirm the device row shows the correct copilot license status
+
+    Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+    Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
+
+Test 8: Disable CoPilot Within Global Settings->VIQ Management
+    [Documentation]     Disables CoPilot feature from Global Settings->VIQ Management page
+    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test8
 
     Depends On          Test 1
 
     Disable CoPilot Feature For This VIQ and Confirm Success
 
-Test 8: Enable CoPilot Within CoPilot Menu Page
+Test 9: Enable CoPilot Within CoPilot Menu Page
     [Documentation]     Enables CoPilot feature from CoPilot Menu page
-    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test8
+    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test9
 
     Depends On          Test 1
 
     Enable CoPilot Menu Feature and Confirm Success
 
-Test 9: Onboard Second Device and Verify Success
+Test 10: Onboard Second Device and Verify Success
     [Documentation]     Onboards test device and verifies success
-    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test9
+    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test10
 
     Depends On          Test 1
 
     # Downgrade the device's iqagent if needed
-    ${SPAWN_CONNECTION}=      Open Spawn        ${DUT1_IP}   ${DUT1_PORT}   ${DUT1_USERNAME}   ${DUT1_PASSWORD}   ${DUT1_CLI_TYPE}
-    ${DOWNGRADE_IQAGENT}=     Downgrade Iqagent              ${DUT1_CLI_TYPE}         ${SPAWN_CONNECTION}
+    ${SPAWN_CONNECTION}=      Open Spawn        ${DUT2_IP}   ${DUT2_PORT}   ${DUT2_USERNAME}   ${DUT2_PASSWORD}   ${DUT2_CLI_TYPE}
+    ${DOWNGRADE_IQAGENT}=     Downgrade Iqagent              ${DUT2_CLI_TYPE}         ${SPAWN_CONNECTION}
     Should Be Equal As Integers      ${DOWNGRADE_IQAGENT}     1
 
-    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud        ${DUT1_CLI_TYPE}    ${IQAGENT}   ${SPAWN_CONNECTION}    vr=${DUT1_VR}
+    ${CONF_STATUS_RESULT}=    Configure Device To Connect To Cloud        ${DUT2_CLI_TYPE}    ${IQAGENT}   ${SPAWN_CONNECTION}    vr=${DUT2_VR}
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT1_SERIAL}  ${netelem1}
+    Onboard New Test Device                     ${DUT2_SERIAL}  ${netelem2}
 
     ${selected}=    Column Picker Select        ${COLUMN_1}     ${COLUMN_2}    ${COLUMN_3}
     Should Be Equal As Integers                 ${selected}     1
 
     Refresh Devices Page
-    Verify and Wait Until Device Online         ${DUT1_SERIAL}
-    Verify and Wait Until Device Managed        ${DUT1_SERIAL}
-    Verify Device Status Green                  ${DUT1_SERIAL}
+    Verify and Wait Until Device Online         ${DUT2_SERIAL}
+    Verify and Wait Until Device Managed        ${DUT2_SERIAL}
+    Verify Device Status Green                  ${DUT2_SERIAL}
 
-Test 10: Verify Second Device Consumes Pilot and CoPilot License Within Global Settings License Management
+Test 11: Verify Second Device Consumes Pilot and CoPilot License Within Global Settings License Management
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
-    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test10
+    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test11
 
     Depends On          Test 1
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    2
 
-Test 11: Verify Device License and CoPilot Column Values
+Test 12: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify devices consumed the appropriate license or not
-    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test11
+    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test12
 
     Depends On          Test 1
 
     Count Down in Minutes    2
 
     # Confirm the device row shows the correct pilot license status
-    ${pilot1_result}=      Get Device Details    ${DUT1_SERIAL}    DEVICE LICENSE
+    ${pilot1_result}=      Get Device Details    ${DUT2_SERIAL}    DEVICE LICENSE
     Should Contain         ${pilot1_result}      ${PILOT_LICENSE}
 
-    ${copilot1_result}=    Get Device Details    ${DUT1_SERIAL}    COPILOT
+    ${copilot1_result}=    Get Device Details    ${DUT2_SERIAL}    COPILOT
     Should Contain         ${copilot1_result}    ${COPILOT_ACTIVE}
 
-Test 12: Delete Second Device and Verify Success
+Test 13: Delete Second Device and Verify Success
     [Documentation]     Deletes a test device and verifies success
-    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test12
+    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test13
 
     Depends On          Test 1
 
-    Delete Test Device and Confirm Success          ${DUT1_SERIAL}
+    Delete Test Device and Confirm Success          ${DUT2_SERIAL}
 
-Test 13: Verify Pilot and CoPilot Licenses Revoked
+Test 14: Verify Pilot and CoPilot Licenses Revoked For Second Device
     [Documentation]     Confirms license counts are revoked in XIQ after devices were deleted
-    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test13
+    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test14
     # Confirm the device row shows the correct copilot license status
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
-Test 14: Disable CoPilot Within Global Settings->VIQ Management
+Test 15: Disable CoPilot Within Global Settings->VIQ Management
     [Documentation]     Disables CoPilot feature from Global Settings->VIQ Management page
-    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test14
+    [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test15
 
     Depends On          Test 1
 

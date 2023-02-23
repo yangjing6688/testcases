@@ -1,6 +1,6 @@
 test_url:                   "https://extremecloudiq.com"
-capwap_url:                 "va-cwm.extremecloudiq.com"
-sw_connection_host:         "va.extremecloudiq.com"
+capwap_url:                 "va2-cwm.extremecloudiq.com"
+sw_connection_host:         "va2.extremecloudiq.com"
 tenant_username:            "xiqprodautova2@gmail.com"
 tenant_password:            "Aerohive123"
 pilot_entitlements:         "3"

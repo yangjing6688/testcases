@@ -204,9 +204,8 @@ Downgrade NOS Version on Test Device
     [Documentation]     Downgrades the NOS version on the VOSS switch to an older version
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}
 
-    Update NOS Version on Test Device    ${ip}  ${port}  ${user}  ${pwd}  ${NOS_DIR_OLD}
-
     Connect to all network elements
+    Upgrade_VOSS_Network_Element          ${NOS_DIR_OLD}
     hostinformation_verify_host_nos_version      ${dut_name}      ${NOS_VERSION_OLD}
     close_connection_to_all_network_elements
 
@@ -214,9 +213,8 @@ Upgrade NOS Version on Test Device
     [Documentation]     Upgrades the NOS version on the VOSS switch to the latest version
     [Arguments]         ${ip}  ${port}  ${user}  ${pwd}
 
-    Update NOS Version on Test Device   ${ip}  ${port}  ${user}  ${pwd}  ${NOS_DIR_NEW}
-
     Connect to all network elements
+    Upgrade_VOSS_Network_Element          ${NOS_DIR_NEW}
     hostinformation_verify_host_nos_version      ${dut_name}      ${NOS_VERSION_NEW}
     close_connection_to_all_network_elements
 

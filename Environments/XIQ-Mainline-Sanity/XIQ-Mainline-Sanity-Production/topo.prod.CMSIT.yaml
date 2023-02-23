@@ -1,6 +1,7 @@
 test_url:           "https://cmsit.extremecloudiq.com"
 capwap_url:         "redirector.aerohive.com"
 sw_capwap_url:      "cmsit.extremecloudiq.com"
+xapi_url:            "api.extremecloudiq.com"
 tenant_username:    "xiqproductionqa+auto-cmsit@gmail.com"
 tenant_password:    "Extreme@123"
 base_url:           "https://api.extremecloudiq.com"

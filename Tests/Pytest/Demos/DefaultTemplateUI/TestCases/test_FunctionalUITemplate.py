@@ -64,10 +64,9 @@ class xiqTests():
     @classmethod
     def teardown_class(cls):
         cls.defaultLibrary.apiUdks.setupTeardownUdks.Base_Test_Suite_Cleanup()
-        cls.xiq.login.logout_user()
         cls.xiq.login.quit_browser()
 
-    # """ Test Cases """
+    """ Test Cases """
     @mark.p1
     def test_logout_user(self, test_case_one_setup_teardown_skip_test, test_case_one_setup_teardown_print):
         """ This is the test case description for test one """
@@ -76,8 +75,7 @@ class xiqTests():
     @mark.p2
     def test_expect_login_fail(self, test_case_one_setup_teardown_skip_test):
         """ This is the test case description for test two """
-        # IRV = Internal Results Verification
-        self.xiq.login.login_user("bob", "bob", url=self.tb.config['test_url'], IRV=True, expect_error=True)
+        self.xiq.login.login_user("bob", "bob", url=self.tb.config['test_url'], expect_error=True)
 
 
 

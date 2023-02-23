@@ -94,11 +94,11 @@ TCCS-13498: Onboard Digital Twin Device
 
     Select Device                                           ${DT_SERIAL}
 
-    ${action_menu}=  Is Actions Relaunch Digital Twin Visible
-    Should Be Equal As Strings                              ${action_menu}  True
+    ${action_menu}=  Verify Actions Relaunch Digital Twin Visible
+    Should Be Equal As Strings                              ${action_menu}  1
 
-    ${action_menu}=    Is Actions Shutdown Digital Twin Visible
-    Should Be Equal As Strings                              ${action_menu}  False
+    ${action_menu}=    Verify Actions Shutdown Digital Twin Visible      expect_failure=True
+    Should Be Equal As Strings                              ${action_menu}  -1
 
     ${result}=  Wait Until Device Online                    ${DT_SERIAL}    retry_duration=5    retry_count=60
     Should Be Equal As Integers                             ${result}       1
@@ -168,8 +168,8 @@ TCCS-13500: Disable Digital Twin Feature
 
     Select Device                                           ${DT_SERIAL}
 
-    ${result}=    Is Actions Button Enabled
-    Should Be Equal As Strings                              ${result}       False
+    ${result}=    Verify Actions Button Enable      expect_failure=True
+    Should Be Equal As Strings                              ${result}       -1
 
     [Teardown]    Refresh Page
 

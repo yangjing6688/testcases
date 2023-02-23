@@ -73,7 +73,7 @@ Suite Setup      Pre Condition
 Pre Condition
     [Documentation]   AP Should be onboarded  and it is online
     ${result}=                      Login User                 ${tenant_username}     ${tenant_password}
-    ${AP_STATUS}=                   Get AP Status              ap_mac=${ap1.mac}
+    ${AP_STATUS}=                   get device status              device_mac=${ap1.mac}
     Should Be Equal As Strings     '${AP_STATUS}'             'green'
 
     [Teardown]   run keywords      logout user

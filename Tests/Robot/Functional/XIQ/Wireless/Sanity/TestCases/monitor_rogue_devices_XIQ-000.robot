@@ -58,7 +58,7 @@ Suite Setup      Pre Condition
 Pre Condition
     [Documentation]   AP Should be onboarded  and it is online
     ${result}=          Login User          ${tenant_username}     ${tenant_password}
-    ${AP1_STATUS}=       Get AP Status       ap_mac=${ap1.mac}
+    ${AP1_STATUS}=       get device status       device_mac=${ap1.mac}
     Should Be Equal As Strings  '${AP1_STATUS}'     'green'
 
     create network policy           default_network_policy     ${OPEN_NW_01}
@@ -84,7 +84,7 @@ Test0: Pre-config
     ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${capwap_url}, capwap client default-server-name ${capwap_url}, capwap client server backup name ${capwap_url}, no capwap client enable, capwap client enable, save config
     Wait Until Device Online                ${ap2.serial}
     Refresh Devices Page
-    ${AP2_STATUS}=       Get AP Status       ap_mac=${ap2.mac}}
+    ${AP2_STATUS}=       get device status       device_mac=${ap2.mac}
     Should Be Equal As Strings  '${AP2_STATUS}'     'green'
 
     [Teardown]         run keywords    logout user

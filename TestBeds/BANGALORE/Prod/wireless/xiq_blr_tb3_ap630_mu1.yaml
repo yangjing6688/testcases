@@ -1,0 +1,49 @@
+ap1:
+  name:                     bui-flo-1046
+  connection_method:        "ssh"
+  ip:                       10.234.106.13
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '06301909141046'
+  console_ip:               10.234.212.230
+  console_port:             7029
+  mac:                      3485843E7700
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP630
+  template:                 AP_630-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           Test_np
+      ssid:                     BLR_TB1_AP630_01
+      version:                  6.5
+      neighbour_serial:         01501810030852
+      neighbour_mac:            7C95B11A0800
+
+mu1:
+  ip:             10.234.106.102
+  port:           8270
+  username:       extreme
+  password:       Extreme@123
+  platform:       windows
+  cli_type:       "MU-WINDOWS"
+  interface:      wlan0
+  wifi_mac:       38FC9831267B
+  ethernet_mac:   34735AC3B547
+  wifi_network:   10.234.106
+  wifi_network_vlan10:    10.234.106

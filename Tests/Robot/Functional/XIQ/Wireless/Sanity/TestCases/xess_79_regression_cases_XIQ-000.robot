@@ -86,7 +86,7 @@ Pre Condition
 
     Refresh Devices Page
     
-    ${AP1_STATUS}=                  Get AP Status       ap_mac=${ap1.mac}
+    ${AP1_STATUS}=                  get device status       device_mac=${ap1.mac}
     Should Be Equal As Strings      '${AP1_STATUS}'     'green'
 
     ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      &{LOCATION_OPEN_NW}
