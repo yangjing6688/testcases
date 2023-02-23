@@ -65,14 +65,14 @@ Relaunch Digital Twin Device
 Confirm Actions Relaunch Digital Twin Option Visible
     [Documentation]     Confirm that the Actions > Relaunch Digital Twin is visible.
 
-    ${action_menu}=  Is Actions Relaunch Digital Twin Visible
-    Should Be Equal As Strings                              ${action_menu}      True
+    ${action_menu}=  Verify Actions Relaunch Digital Twin Visible
+    Should Be Equal As Strings                              ${action_menu}      1
 
 Confirm Actions Relaunch Digital Twin Option Hidden
     [Documentation]     Confirm that the Actions > Relaunch Digital Twin is hidden.
 
-    ${action_menu}=  Is Actions Relaunch Digital Twin Visible
-    Should Be Equal As Strings                              ${action_menu}      False
+    ${action_menu}=  Verify Actions Relaunch Digital Twin Visible      expect_failure=True
+    Should Be Equal As Strings                              ${action_menu}      -1
 
 Shutdown Digital Twin Device
     [Documentation]    Selects the "Action > Shutdown Digital Twin" menu option
@@ -83,14 +83,14 @@ Shutdown Digital Twin Device
 Confirm Actions Shutdown Digital Twin Option Visible
     [Documentation]     Confirm that the Actions > Shutdown Digital Twin is visible.
 
-    ${action_menu}=    Is Actions Shutdown Digital Twin Visible
-    Should Be Equal As Strings                              ${action_menu}      True
+    ${action_menu}=    Verify Actions Shutdown Digital Twin Visible
+    Should Be Equal As Strings                              ${action_menu}      1
 
 Confirm Actions Shutdown Digital Twin Option Hidden
     [Documentation]     Confirm that the Actions > Shutdown Digital Twin is hidden.
 
-    ${action_menu}=    Is Actions Shutdown Digital Twin Visible
-    Should Be Equal As Strings                              ${action_menu}      False
+    ${action_menu}=    Verify Actions Shutdown Digital Twin Visible      expect_failure=True
+    Should Be Equal As Strings                              ${action_menu}      -1
 
 Confirm D360 Digital Twin Status
     [Documentation]     Confirm that the digital twin device status is disconnected within the Device360 view.
