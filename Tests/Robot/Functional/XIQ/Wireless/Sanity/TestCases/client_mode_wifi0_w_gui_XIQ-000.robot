@@ -265,7 +265,7 @@ Pre_condition
     reset devices to default
     log to console                      Wait for 2 minutes for completing reboot....
     sleep                               2m
-    delete all aps
+    delete all devices
     delete all network policies
     delete all ssids
     delete all ap templates

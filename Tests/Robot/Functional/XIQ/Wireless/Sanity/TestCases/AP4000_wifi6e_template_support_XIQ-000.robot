@@ -221,33 +221,6 @@ step5: verify backhaul mesh link support for wifi0-1
     should contain    ${OUT}    interface wifi0 mode backhaul
     should contain    ${OUT}    interface wifi1 mode backhaul
 
-#step6: Verify 6 GHz (Sensor) mode on wifi2 interface
-#    [Documentation]    Verify 6 GHz (Sensor) mode on wifi2 interface
-#    [Tags]             tcxm-9352    development    step6    steps
-#    Depends On         Step3
-#    &{AP_TEMPLATE_03_WIFI2}   create dictionary     client_access=Disable   backhaul_mesh_link=Disable   sensor=Enable
-#    &{AP_TEMPLATE_03}         create dictionary     wifi2_configuration=&{AP_TEMPLATE_03_WIFI2}
-#
-#    Set AP Template Wifi        ${AP_TEMP_NAME}         ${AP_TEMPLATE_03}
-#    Navigate To Devices
-#    sleep             10s
-#    ${OUT}            get_device_config_audit_delta     ${ap1.mac}
-#    should contain    ${OUT}    interface wifi2 mode sensor
-
-step7: Verify 6 GHz Dual (Client Access & Backhaul Mesh) mode on wifi2 interface
-    [Documentation]    Verify 6 GHz Dual (Client Access & Backhaul Mesh) mode on wifi2 interface
-    [Tags]             tcxm-11671    development    step7    steps
-    Depends On         Step3
-    &{AP_TEMPLATE_04_WIFI2}   create dictionary     client_access=Enable   backhaul_mesh_link=Enable   sensor=Disable
-    &{AP_TEMPLATE_04}         create dictionary     wifi2_configuration=&{AP_TEMPLATE_04_WIFI2}
-
-    Set AP Template Wifi      ${AP_TEMP_NAME}       ${AP_TEMPLATE_04}
-    Navigate To Devices
-    Revert Device to Template                       ${ap1.serial}
-    sleep             10s
-    ${OUT}            get_device_config_audit_delta     ${ap1.mac}
-    should contain    ${OUT}    interface wifi2 mode dual
-
 *** Keywords ***
 Pre_condition
     ${STATUS}                     Login User    ${tenant_username}   ${tenant_password}
@@ -255,7 +228,7 @@ Pre_condition
     reset devices to default
     log to console                Wait for 2 minutes for completing reboot....
     sleep                         2m
-    delete all aps
+    delete all devices
     delete all network policies
     delete all ssids
     delete all ap templates
