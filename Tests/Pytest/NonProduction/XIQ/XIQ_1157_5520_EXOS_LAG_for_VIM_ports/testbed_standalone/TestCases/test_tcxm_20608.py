@@ -81,7 +81,7 @@ class TCXM20608Tests(xiqBase):
             self.xiq.xflowsmanageDevice360.close_device360_window()
             sleep(1)
 
-            self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy, template_switch)
+            self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy, template_switch, dut.cli_type)
             sleep(1)
             self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
             sleep(2)

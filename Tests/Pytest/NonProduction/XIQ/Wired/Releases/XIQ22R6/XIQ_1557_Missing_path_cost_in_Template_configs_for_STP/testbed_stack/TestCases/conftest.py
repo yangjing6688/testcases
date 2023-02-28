@@ -351,7 +351,7 @@ def onboarded_switch(onboarding_location, template_switch, network_policy):
             add_stack_template = xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(dut.model_units,
                                                                                               network_policy,
                                                                                               dut.model_template,
-                                                                                              template_switch)
+                                                                                              template_switch, dut.cli_type)
             assert add_stack_template == 1, f"Stack template {template_switch} wasn't created successfully "
             _temporary_fix_assign_policy(xiq, network_policy, dut)
 

@@ -843,6 +843,8 @@ class SuiteUdk:
             port_type="access", verify_delta_cli=False, revert_configuration=True,
             port_order_in_asic=None, ports=None, stp_mode="mstp", slot=None):
 
+        dut = onboarded_switch
+
         if not default_path_cost:
             default_path_cost = "200000000" if onboarded_switch.cli_type.upper() == "VOSS" else "20000"
 
@@ -861,7 +863,7 @@ class SuiteUdk:
         self.utils.print_info(
             f"Go to the port configuration of '{template_switch}' template")
         self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(
-            network_policy, template_switch)
+            network_policy, template_switch, dut.cli_type)
         self.set_stp(enable=True)
         self.choose_stp_mode(mode=stp_mode)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
@@ -922,7 +924,7 @@ class SuiteUdk:
 
             self.utils.print_info(f"Go to the port configuration of {template_switch} template")
             self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(
-                network_policy, template_switch)
+                network_policy, template_switch, dut.cli_type)
             self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
             required_slot = template_switch + "-" + slot
             self.navigate_to_slot_template(required_slot)
@@ -1000,7 +1002,7 @@ class SuiteUdk:
                         f" '{template_switch} 'template"
                     )
                     self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(
-                        network_policy, template_switch)
+                        network_policy, template_switch, dut.cli_type)
                     self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
                     self.navigate_to_slot_template(required_slot)
                     self.click_on_port_details_tab(level="template")
@@ -1211,7 +1213,7 @@ class SuiteUdk:
         self.utils.print_info(f"Port Type Configuration: {port_config}")
 
         self.utils.print_info(f"Go to the port configuration of '{template_switch}' template")
-        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy, template_switch)
+        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy, template_switch, dut.cli_type)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
         required_slot = template_switch + "-" + slot
         self.navigate_to_slot_template(required_slot)
@@ -1271,7 +1273,7 @@ class SuiteUdk:
         self.utils.print_info(
             f"Go to the port configuration of '{template_switch}' template")
         self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(
-            network_policy, template_switch)
+            network_policy, template_switch, dut.cli_type)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
         required_slot = template_switch + "-" + slot
         self.navigate_to_slot_template(required_slot)

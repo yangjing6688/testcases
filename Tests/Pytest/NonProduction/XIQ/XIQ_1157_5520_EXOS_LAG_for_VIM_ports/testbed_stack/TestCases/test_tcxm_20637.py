@@ -34,7 +34,7 @@ class TCXM20637Tests(xiqBase):
             #Aggregate 2 VIM ports
             vim_slots_list = self.suite_udk.get_stack_slots_with_vim(dut.stack)
             print(f"Slots with VIM are : {vim_slots_list}")
-            self.switch_template.select_sw_template(network_policy, template_stack)
+            self.switch_template.select_sw_template(network_policy, template_stack, dut.cli_type)
             self.auto_actions.click(self.sw_template_web_elements.get_template_link(template=template_stack))
 
             time.sleep(2)

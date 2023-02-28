@@ -252,9 +252,11 @@ def onboarded_dut(network_policy, template_stack):
         xiq.xflowsmanageLocation.create_location_building_floor(*location.split(","))
         time.sleep(1)
         xiq.xflowsconfigureSwitchTemplate.delete_stack_switch_template(nw_policy=network_policy,
-                                                                       sw_template_name=template_stack)
+                                                                       sw_template_name=template_stack,
+                                                                       device_type=dut.cli_type)
         xiq.xflowsconfigureSwitchTemplate.delete_stack_units_device_template(nw_policy=network_policy,
-                                                                             sw_template_name=template_stack)
+                                                                             sw_template_name=template_stack,
+                                                                             device_type=dut.cli_type)
         xiq.xflowsconfigureNetworkPolicy.delete_network_policy(network_policy)
         netelement_iqagent_disable(dev_cmd, dut.name)
 
@@ -288,7 +290,7 @@ def onboarded_dut(network_policy, template_stack):
         add_stack_template = xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(dut.model_units,
                                                                                           network_policy,
                                                                                           dut.model_template,
-                                                                                          template_stack)
+                                                                                          template_stack, dut.cli_type)
         assert add_stack_template == 1, f"Stack template {template_stack} wasn't created successfully "
 
         assert xiq.xflowsmanageDevices.update_network_policy_to_stack(device_mac=dut.mac, policy_name=network_policy,
@@ -313,9 +315,11 @@ def onboarded_dut(network_policy, template_stack):
             try:
                 delete_device(xiq, dut)
                 xiq.xflowsconfigureSwitchTemplate.delete_stack_switch_template(nw_policy=network_policy,
-                                                                               sw_template_name=template_stack)
+                                                                               sw_template_name=template_stack,
+                                                                               device_type=dut.cli_type)
                 xiq.xflowsconfigureSwitchTemplate.delete_stack_units_device_template(nw_policy=network_policy,
-                                                                                     sw_template_name=template_stack)
+                                                                                     sw_template_name=template_stack,
+                                                                                     device_make=dut.cli_type)
                 xiq.xflowsconfigureNetworkPolicy.delete_network_policy(network_policy)
                 xiq.xflowsmanageLocation.delete_location_building_floor(*location.split(","))
             finally:

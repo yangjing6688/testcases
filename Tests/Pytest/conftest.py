@@ -2815,7 +2815,7 @@ def configure_network_policies(
                             model_template, template_switch)
                     else:
                         xiq.xflowsconfigureSwitchTemplate.add_sw_template(
-                            network_policy, model_template, template_switch)
+                            network_policy, model_template, template_switch, dut.cli_type)
                         screen.save_screen_shot()
                     logger.info(
                         f"Successfully created and attached this switch template to the network policy"

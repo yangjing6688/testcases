@@ -38,7 +38,7 @@ class TCXM20606Tests(xiqBase):
         main_lag_port = 0
         all_vim_ports_added_to_lacp = False
         try:
-            self.switch_template.select_sw_template(network_policy, template_switch)
+            self.switch_template.select_sw_template(network_policy, template_switch, dut.cli_type)
             self.switch_template.go_to_port_configuration()
             self.auto_actions.click(self.sw_template_web_elements.get_aggr_ports_standalone_button())
 
@@ -52,18 +52,18 @@ class TCXM20606Tests(xiqBase):
 
             self.suite_udk.add_ports_to_lag(dut, main_lag_port, vim_ports[0:2], False)
 
-            self.switch_template.select_sw_template(network_policy, template_switch)
+            self.switch_template.select_sw_template(network_policy, template_switch, dut.cli_type)
             self.suite_udk.go_to_switch_template(template_switch)
             self.suite_udk.add_ports_to_lag(dut, main_lag_port, [vim_ports[2]], True)
 
-            self.switch_template.select_sw_template(network_policy, template_switch)
+            self.switch_template.select_sw_template(network_policy, template_switch, dut.cli_type)
             self.suite_udk.go_to_switch_template(template_switch)
             self.suite_udk.add_ports_to_lag(dut, main_lag_port, [vim_ports[3]], True)
             all_vim_ports_added_to_lacp = True
 
         finally:
             if main_lag_port != 0:
-                self.switch_template.select_sw_template(network_policy, template_switch)
+                self.switch_template.select_sw_template(network_policy, template_switch, dut.cli_type)
                 self.suite_udk.go_to_switch_template(template_switch)
                 lag_text = str(main_lag_port) + " LAG"
                 print(f"Remove all ports from {lag_text}")

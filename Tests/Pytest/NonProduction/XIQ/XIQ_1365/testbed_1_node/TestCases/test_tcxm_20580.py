@@ -96,7 +96,7 @@ class TCXM20580Tests(xiqBase):
 
             # Change STP forward delay value; this change will be used to check if config push has been successfuly done
             xiq_fw_delay = self.localsuiteudks.select_sw_template_device_config_forw_delay(network_policy_name,
-                                                                                               device_template_name)
+                                                                                               device_template_name, dut.cli_type)
             print(f"STP forward delay has been configured in device template: {xiq_fw_delay}")
 
             self.localsuiteudks.press_upload_config_and_upgr_firm_button(network_policy_name,device_template_name)

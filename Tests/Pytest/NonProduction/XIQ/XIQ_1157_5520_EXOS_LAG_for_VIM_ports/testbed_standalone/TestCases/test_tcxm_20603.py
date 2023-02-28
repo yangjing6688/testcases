@@ -35,7 +35,7 @@ class TCXM20603Tests(xiqBase):
         nr_vim_ports = 4
         main_lag_port = ""
         try:
-            self.switch_template.select_sw_template(network_policy, template_switch)
+            self.switch_template.select_sw_template(network_policy, template_switch, dut.cli_type)
             self.switch_template.go_to_port_configuration()
             print("Click on Assign button to aggregate ports.")
             time.sleep(1)
@@ -61,7 +61,7 @@ class TCXM20603Tests(xiqBase):
 
             self.suite_udk.add_ports_to_lag(dut, main_lag_port, vim_ports[0:2], False)
 
-            self.switch_template.select_sw_template(network_policy, template_switch)
+            self.switch_template.select_sw_template(network_policy, template_switch, dut.cli_type)
             self.suite_udk.go_to_switch_template(template_switch)
             self.suite_udk.add_ports_to_lag(dut, main_lag_port, [vim_ports[2]], True)
 
@@ -70,7 +70,7 @@ class TCXM20603Tests(xiqBase):
             self.suite_udk.add_ports_to_lag(dut, main_lag_port, [vim_ports[3]], True)
         finally:
             if main_lag_port != "":
-                self.switch_template.select_sw_template(network_policy, template_switch)
+                self.switch_template.select_sw_template(network_policy, template_switch, dut.cli_type)
                 self.suite_udk.go_to_switch_template(template_switch)
 
                 lag_text = str(main_lag_port) + " LAG"

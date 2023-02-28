@@ -32,6 +32,7 @@ class TCXM20618Tests(xiqBase):
         """
 
         self.executionHelper.testSkipCheck()
+        dut = onboarded_dut
 
         # check the configuration audit button
         configuration_audit_status = self.xiq.xflowsmanageDevices.get_device_configuration_audit_status(device_serial=onboarded_dut.serial)
@@ -114,7 +115,7 @@ class TCXM20618Tests(xiqBase):
             pytest.fail(f"The LAG is still configured, CLI result: {result}")
 
         # check the number of LACP ports in switch template -> port configuration
-        self.switch_template.select_sw_template(nw_policy=network_policy, sw_template=template_switch)
+        self.switch_template.select_sw_template(network_policy, template_switch, dut.cli_type)
         self.switch_template.go_to_port_configuration()
         labels = self.sw_template_web_elements.get_lag_span(lag=ports[0])
 

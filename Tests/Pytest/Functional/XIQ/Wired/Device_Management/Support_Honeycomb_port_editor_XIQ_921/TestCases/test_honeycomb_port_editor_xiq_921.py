@@ -217,7 +217,7 @@ class xiqTests():
         if check_nav:
             check_config = self.xiq.xflowsconfigureSwitchTemplate.add_sw_template(policy_name,
                                                                                   sw_template_model,
-                                                                                  sw_template_name)
+                                                                                  sw_template_name, self.tb.dut1.cli_type)
             if check_config != 1:
                 pytest.fail("Could not create device model in policy.")
         else:
@@ -297,7 +297,7 @@ class xiqTests():
         else:
             print("***Selecting SW template ", device_name)
             time.sleep(10)
-            select_template = self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(policy_name, device_name)
+            select_template = self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(policy_name, device_name, self.tb.dut1.cli_type)
             if select_template != 1:
                 pytest.fail("Could not select switch template ", device_name)
 
@@ -2404,7 +2404,7 @@ class xiqTests():
         self.xiq.Utils.wait_till(_check_page_after_refresh, timeout=30, is_logging_enabled=True)
         time.sleep(10)
         select_template = self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name,
-                                                                                    sw_template_name_original)
+                                                                                    sw_template_name_original, self.tb.dut1.cli_type)
         if select_template != 1:
             pytest.fail("Could not select switch template ", sw_template_name_original)
 

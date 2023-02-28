@@ -36,6 +36,7 @@ class TCXM22151Tests(xiqBase):
         """
         self.executionHelper.testSkipCheck()
         self.cfg['${TEST_NAME}'] = 'test_XIQ_1557_TCXM_22151'
+        dut = onboarded_switch
 
         wrong_values = [-1, 200000001, "#", "b"]
         ports = self.suite_udk.get_one_port_from_each_asic(
@@ -45,7 +46,7 @@ class TCXM22151Tests(xiqBase):
         self.utils.print_info(
             f"Go to the port configuration of '{template_switch}' template")
         self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(
-            network_policy, template_switch)
+            network_policy, template_switch, dut.cli_type)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
         self.suite_udk.click_on_port_details_tab()
 

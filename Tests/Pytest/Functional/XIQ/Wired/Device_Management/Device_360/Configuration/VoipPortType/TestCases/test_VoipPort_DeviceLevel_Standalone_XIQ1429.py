@@ -296,8 +296,9 @@ class XIQ1429Tests:
             sw_model, model_units = self.xiq.xflowsconfigureSwitchTemplate.generate_template_name(
                 self.tb.dut1_platform.lower(),
                 self.tb.dut1.serial, self.tb.dut1.model, model_act)
-            self.xiq.xflowsconfigureSwitchTemplate.add_sw_template(policy_name, sw_model, template_name)
-            self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(policy_name, template_name)
+
+            self.xiq.xflowsconfigureSwitchTemplate.add_sw_template(policy_name, sw_model, template_name, dut.cli_type)
+            self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(policy_name, template_name, dut.cli_type)
             self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
             self.suite_udk.open_new_port_type_editor(exos_port, device_360=False)
@@ -357,8 +358,9 @@ class XIQ1429Tests:
                 self.tb.dut1_platform.lower(),
                 self.tb.dut1.serial, self.tb.dut1.model, model_act)
             time.sleep(3)
-            self.xiq.xflowsconfigureSwitchTemplate.add_sw_template(policy_name,sw_model, template_name)
-            self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(policy_name, template_name)
+
+            self.xiq.xflowsconfigureSwitchTemplate.add_sw_template(policy_name,sw_model, template_name, dut.cli_type)
+            self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(policy_name, template_name, dut.cli_type)
             self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
             self.suite_udk.open_new_port_type_editor(exos_port, device_360=False)
@@ -557,8 +559,9 @@ class XIQ1429Tests:
             sw_model, model_units = self.xiq.xflowsconfigureSwitchTemplate.generate_template_name(
                 self.tb.dut1_platform.lower(),
                 self.tb.dut1.serial, self.tb.dut1.model, model_act)
-            self.xiq.xflowsconfigureSwitchTemplate.add_sw_template(policy_name, sw_model, template_name)
-            self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(policy_name, template_name)
+
+            self.xiq.xflowsconfigureSwitchTemplate.add_sw_template(policy_name, sw_model, template_name, dut.cli_type)
+            self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(policy_name, template_name, dut.cli_type)
             self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
             self.suite_udk.open_new_port_type_editor(exos_port, device_360=False)
@@ -635,8 +638,8 @@ class XIQ1429Tests:
                 policy_name=policy_name) == 1, f"Failed to create this network policy: {policy_name}"
             time.sleep(3)
 
-            self.xiq.xflowsconfigureSwitchTemplate.add_sw_template(policy_name, "Fabric Engine 5320-16P-4XE", template_name)
-            self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(policy_name, template_name)
+            self.xiq.xflowsconfigureSwitchTemplate.add_sw_template(policy_name, "Fabric Engine 5320-16P-4XE", template_name, dut.cli_type)
+            self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(policy_name, template_name, dut.cli_type)
             time.sleep(4)
             self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
             time.sleep(10)

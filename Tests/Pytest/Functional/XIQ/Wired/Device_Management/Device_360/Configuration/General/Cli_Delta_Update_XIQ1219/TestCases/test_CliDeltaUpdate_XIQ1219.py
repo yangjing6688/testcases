@@ -526,7 +526,8 @@ class xiqTests():
                     print(f'Did not find device with mac-address {cls.tb.dut1.mac} or serial number(s) {cls.tb.dut1_serial}')
         if cls.tb.dut1.platform.lower() == "stack":
             if cls.xiq.xflowsconfigureSwitchTemplate.delete_stack_switch_template(nw_policy="policy_test_" + cls.tb.dut1.mac[:-2],
-                                                                                  sw_template_name="Template_" + cls.tb.dut1.mac[:-2]) != 1:
+                                                                                  sw_template_name="Template_" + cls.tb.dut1.mac[:-2],
+                                                                                  device_type=cls.tb.dut1.cli_type) != 1:
                 pytest.fail("Cannot delete the template")
         cls.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(policy="policy_test_" + cls.tb.dut1.mac[:-2])
         if cls.tb.dut1.platform.lower() == "stack":

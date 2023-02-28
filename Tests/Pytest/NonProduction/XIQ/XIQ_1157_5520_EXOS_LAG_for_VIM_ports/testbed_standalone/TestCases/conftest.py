@@ -208,7 +208,7 @@ def onboarded_dut(onboarding_location, network_policy, template_switch):
             else:
                 sw_model_template += dut.model.replace('_', '-')
             xiq.xflowsconfigureSwitchTemplate.\
-                add_sw_template(network_policy, sw_model_template, template_switch)
+                add_sw_template(network_policy, sw_model_template, template_switch, dut.cli_type)
             assert xiq.xflowsmanageDevices.\
                 assign_network_policy_to_switch(policy_name=network_policy, serial=dut.serial) == 1, \
                 f"Couldn't assign policy {network_policy} to device {dut}"

@@ -31,7 +31,7 @@ class TCXM20604Tests(xiqBase):
         main_lag_port = 0
         # Aggregate 4 VIM ports
         try:
-            self.switch_template.select_sw_template(network_policy, template_switch)
+            self.switch_template.select_sw_template(network_policy, template_switch, dut.cli_type)
             self.switch_template.go_to_port_configuration()
 
             self.auto_actions.click(self.sw_template_web_elements.get_sw_template_assign_button())

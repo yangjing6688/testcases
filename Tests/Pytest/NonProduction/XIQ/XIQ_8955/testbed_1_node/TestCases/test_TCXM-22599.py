@@ -82,10 +82,10 @@ class TCXM22599Tests(XIQBase):
             switch_template = self.xiq.xflowsconfigureSwitchTemplate
             assert switch_template.add_sw_template(network_policy_name,
                                                    sw_model_template,
-                                                   device_template_name) == 1, \
+                                                   device_template_name, dut.cli_type) == 1, \
                 f"Failed to add switch template with model: {sw_model_template}"
 
-            assert switch_template.select_adv_settings_tab(network_policy_name, device_template_name) == 1, \
+            assert switch_template.select_adv_settings_tab(network_policy_name, device_template_name, dut.cli_type) == 1, \
                 "Failed to open Advanced Settings tab"
 
             assert self.localSuiteUdks.set_upload_config_auto_button() == 1, \

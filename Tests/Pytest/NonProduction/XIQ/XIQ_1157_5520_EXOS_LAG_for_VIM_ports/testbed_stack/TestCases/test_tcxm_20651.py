@@ -129,7 +129,7 @@ class TCXM20651Tests(xiqBase):
                 pytest.fail(f"The LAG is still configured, CLI result: {result}")
 
             # check the number of LACP ports in switch template -> port configuration
-            self.switch_template.select_sw_template(nw_policy=network_policy, sw_template=template_stack)
+            self.switch_template.select_sw_template(network_policy, template_stack, dut.cli_type)
             time.sleep(2)
 
             if self.sw_template_web_elements.get_sw_template_port_configuration_tab() is None:

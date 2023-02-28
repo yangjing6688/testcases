@@ -42,6 +42,7 @@ class TCXM22167Tests(xiqBase):
 
         self.executionHelper.testSkipCheck()
         self.cfg['${TEST_NAME}'] = 'test_XIQ_1557_TCXM_22167'
+        dut = onboarded_dut
 
         try:
             self.suite_udk.verify_path_cost_edit_summary(
@@ -63,7 +64,7 @@ class TCXM22167Tests(xiqBase):
 
             self.utils.print_info(f"Go to the port configuration of '{template_switch}' template")
             self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(
-                network_policy, template_switch)
+                network_policy, template_switch, dut.cli_type)
             self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
             self.suite_udk.revert_port_configuration_template_level("Access Port")

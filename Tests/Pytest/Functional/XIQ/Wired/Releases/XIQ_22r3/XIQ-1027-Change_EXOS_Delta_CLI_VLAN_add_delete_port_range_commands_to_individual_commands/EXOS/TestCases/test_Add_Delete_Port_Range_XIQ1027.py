@@ -107,7 +107,8 @@ def xiq_teardown_template(request):
                                                  msg='Checking update status')
 
             request.instance.xiq.xflowsconfigureSwitchTemplate.delete_switch_template_from_policy(network_policy_name,
-                                                                                                  sw_template_name)
+                                                                                                  sw_template_name,
+                                                                                                  request.instance.tb.dut1.cli_type)
             request.instance.xiq.xflowsconfigureCommonObjects.delete_switch_template(sw_template_name)
 
             request.instance.xiq.xflowsconfigureCommonObjects.delete_port_type_profile(trunk_port_type_name)
@@ -579,7 +580,8 @@ class XiqTests():
             # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
             time.sleep(20)
             cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
-            cls.xiq.xflowsconfigureSwitchTemplate.delete_stack_switch_template(network_policy_name, sw_template_name)
+            cls.xiq.xflowsconfigureSwitchTemplate.delete_stack_switch_template(network_policy_name, sw_template_name,
+                                                                               cls.tb.dut1.cli_type)
             cls.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(network_policy_name)
             for slot in range(1, len(cls.tb.dut1.serial.split(',')) + 1):
                 cls.xiq.xflowsconfigureCommonObjects.delete_switch_template(sw_template_name + '-' + str(slot))
@@ -646,10 +648,10 @@ class XiqTests():
         if self.tb.dut1.platform != "Stack":
             self.xiq.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
                                                                    self.get_device_template_model_name(),
-                                                                   sw_template_name)
+                                                                   sw_template_name, self.tb.dut1.cli_type)
         try:
             def _check_sw_template_selection():
-                return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
+                return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, self.tb.dut1.cli_type)
             self.xiq.Utils.wait_till(_check_sw_template_selection, timeout=30, delay=5)
         except:
             pytest.fail(f'Did not find: {sw_template_name} template')
@@ -660,7 +662,7 @@ class XiqTests():
 
                 def _check_sw_template_selection():
                     return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name,
-                                                                                     sw_template_name)
+                                                                                     sw_template_name, self.tb.dut1.cli_type)
                 self.xiq.Utils.wait_till(_check_sw_template_selection, timeout=30, delay=5)
 
                 self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
@@ -669,7 +671,7 @@ class XiqTests():
                                                                                                       trunk_port_type_name)
         else:
             def _check_sw_template_selection():
-                return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
+                return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, self.tb.dut1.cli_type)
             self.xiq.Utils.wait_till(_check_sw_template_selection, timeout=30, delay=5)
 
             self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
@@ -704,7 +706,7 @@ class XiqTests():
         self.xiq.Utils.wait_till(_check_navigation_to_network_policy)
 
         def _check_sw_template_selection():
-            return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
+            return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, self.tb.dut1.cli_type)
         self.xiq.Utils.wait_till(_check_sw_template_selection, timeout=30, delay=5)
 
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
@@ -717,7 +719,7 @@ class XiqTests():
 
                 def _check_sw_template_selection():
                     return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name,
-                                                                                     sw_template_name)
+                                                                                     sw_template_name, self.tb.dut1.cli_type)
                 self.xiq.Utils.wait_till(_check_sw_template_selection, timeout=30, delay=5)
 
                 self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
@@ -727,7 +729,7 @@ class XiqTests():
                                                                                                   "Access Port")
 
             def _check_sw_template_selection():
-                return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
+                return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, self.tb.dut1.cli_type)
             self.xiq.Utils.wait_till(_check_sw_template_selection, timeout=30, delay=5)
 
             self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()

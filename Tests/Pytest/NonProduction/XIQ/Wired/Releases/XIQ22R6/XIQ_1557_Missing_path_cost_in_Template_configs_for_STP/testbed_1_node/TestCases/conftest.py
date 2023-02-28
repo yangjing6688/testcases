@@ -338,7 +338,7 @@ def onboarded_switch(onboarding_location, template_switch, network_policy):
             assert create_np == 1, f"Policy {network_policy} wasn't created successfully "
             sw_model_template = generate_template_for_given_model(dut.platform, dut.model)
             xiq.xflowsconfigureSwitchTemplate.\
-                add_sw_template(network_policy, sw_model_template, template_switch)
+                add_sw_template(network_policy, sw_model_template, template_switch, dut.cli_type)
             # assert xiq.xflowsmanageDevices.\
                 # assign_network_policy_to_switch(policy_name=network_policy, serial=dut.serial) == 1, \
                 # f"Couldn't assign policy {network_policy} to device {dut}"

@@ -31,8 +31,11 @@ class TCXM20640Tests(xiqBase):
         lst_errors = ["You cannot aggregate Ethernet ports with SFP ports.",
                       "Only VIM ports within the same VIM can be part of the same LAG",
                       "Selected ports have different maximum speeds and cannot be part of the same LAG."]
+
+        dut = onboarded_dut
+
         try:
-            self.switch_template.select_sw_template(network_policy, template_stack)
+            self.switch_template.select_sw_template(network_policy, template_stack, dut.cli_type)
 
             if self.sw_template_web_elements.get_sw_template_port_configuration_tab() is None:
                 AutoActions().click(self.sw_template_web_elements.get_template_link(template=template_stack))
