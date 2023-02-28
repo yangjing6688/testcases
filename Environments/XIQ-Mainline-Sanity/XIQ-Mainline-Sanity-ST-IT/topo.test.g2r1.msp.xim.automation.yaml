@@ -1,6 +1,7 @@
 test_url:                 "https://g2.qa.xcloudiq.com"
 capwap_url:               "g2r1-cwpm-01.qa.xcloudiq.com"
 sw_capwap_url:            "g2r1.qa.xcloudiq.com"
+xapi_url:                 "g2-api.extremecloudiq.com"
 tenant_username:          "xiqextremeqa+msp-g2r1@gmail.com"
 tenant_password:          "Extreme@123"
 organization_name:        "TEST_ORG"
