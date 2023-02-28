@@ -36,7 +36,8 @@ ${CWP_MAIL_ID}                   mail.sociallogin.cwp@gmail.com
 ${CWP_MAIL_PASSWORD}             Extreme@123
 ${FLOOR}                         floor_04
 ${LOCATION_DISPLAY}              auto_location_01 >> Santa Clara >> building_02 >> floor_04
-${FLAG}                          False
+${TIME_STAMP_FLAG1}                         False
+${TIME_STAMP_FLAG2}                         False
 
 *** Settings ***
 Library     Collections
@@ -131,8 +132,6 @@ Suite Setup
     ${REBOOT_STATUS}=    Wait Until Device Reboots               ${device1.serial}
     Should Be Equal as Integers             ${REBOOT_STATUS}          1
 
-    Verify AP Hostname in ML Insights Network 360 Monitor Tab
-
     ${DELETE_CUS_POLICY_RESULT}=    Delete Network Polices               ${NW_POLICY_NAME1}     ${NW_DEFAULT_POLICY}    ${NW_POLICY_NAME3}
     Should Be Equal As Integers     ${DELETE_CUS_POLICY_RESULT}         1
 
@@ -193,7 +192,12 @@ Positive Internet Connectivity Check
     ${FLAG}=        Remote_Server.Connectivity Check        https://www.extremenetworks.com
     Should Be Equal As Integers     ${FLAG}     1
 
-Verify AP Hostname in ML Insights Network 360 Monitor Tab
+*** Test Cases ***
+TCCS-14502: Verify AP Hostname in ML Insights Network 360 Monitor Tab and Client in ML Insights Client 360 Tab
+    [Documentation]                 Verify AP Hostname and Client in ML Insights Monitor Tab
+
+    [Tags]                          production      tccs_14502
+
     ${FLOOR_SEARCH}=                search_floor_in_network360Plan                  ${FLOOR}
     Save Screen shot
     Should Not Be Equal as Strings             '${FLOOR_SEARCH}'          '-1'
@@ -201,12 +205,6 @@ Verify AP Hostname in ML Insights Network 360 Monitor Tab
     ${AP_LIST}=                     get_aps_from_network360plan_floor               ${FLOOR}
     Should Contain                  ${AP_LIST}              ${device1.name}             ignore_case=True
     Save Screen shot
-
-*** Test Cases ***
-TCCS-14502: Verify Client in ML Insights Client 360 Tab
-    [Documentation]                 Verify AP Hostname and Client in ML Insights Monitor Tab
-
-    [Tags]                          production      tccs_14502
 
     ${loc_result}=                  Get Device Details      ${device1.serial}       LOCATION
     Should Contain                  ${loc_result}           ${LOCATION_DISPLAY}
@@ -277,7 +275,7 @@ TCCS-11614: Social login with facebook
     Sleep               ${auth_logs_duration_wait}
     ${AUTH_LOGS}=                   Get Authentication Logs Details     ${CURRENT_DATE_TIME}        ${CWP_MAIL_ID}
     IF  ${AUTH_LOGS} == &{EMPTY}
-        ${FLAG}=        Set Variable    True
+        ${TIME_STAMP_FLAG1}=        Set Variable    True
         ${PREVIOUS_DATE_TIME}=      Get Previous Time Delta             ${CURRENT_DATE_TIME}        minutes=1
         ${AUTH_LOGS}=               Get Authentication Logs Details     ${PREVIOUS_DATE_TIME}       ${CWP_MAIL_ID}
         Log To Console  Setting current date and time to: ${PREVIOUS_DATE_TIME}
@@ -314,15 +312,13 @@ TCCS-11614: Social login with facebook
 
     ${TIME_STAMP}=                  Get From Dictionary     ${AUTH_LOGS}        authdate
 
-    IF  ${FLAG}   ==  True
+    IF  "${TIME_STAMP_FLAG1}" == "True"
         Should Contain      ${TIME_STAMP}       ${PREVIOUS_DATE_TIME}
     ELSE
         Should Contain      ${TIME_STAMP}       ${CURRENT_DATE_TIME}
     END
 
     sleep   ${client_connect_wait}
-
-    Verify AP Hostname and Client in ML Insights Monitor Tab
 
     Remote_Server.Disconnect WiFi
     Log to Console      Sleep for ${client_disconnect_wait} seconds
@@ -380,6 +376,7 @@ TCCS-14366: Social login with Linkedin
 
     ${AUTH_LOGS}=                   Get Authentication Logs Details     ${CURRENT_DATE_TIME}        ${CWP_MAIL_ID}
     IF  ${AUTH_LOGS} == &{EMPTY}
+        ${TIME_STAMP_FLAG2}=        Set Variable    True
         ${PREVIOUS_DATE_TIME}=      Get Previous Time Delta             ${CURRENT_DATE_TIME}        minutes=1
         ${AUTH_LOGS}=               Get Authentication Logs Details     ${PREVIOUS_DATE_TIME}       ${CWP_MAIL_ID}
         Log To Console  Setting current date and time to: ${PREVIOUS_DATE_TIME}
@@ -416,8 +413,8 @@ TCCS-14366: Social login with Linkedin
     Should Be Equal As Strings      '${NAS_ID}'             ''
 
     ${TIME_STAMP}=                  Get From Dictionary     ${AUTH_LOGS}        authdate
-    ${VARIABLES}=                   Get Variables
-    IF  "\${PREVIOUS_DATE_TIME}" in "${VARIABLES}"
+
+    IF  "${TIME_STAMP_FLAG2}" == "True"
         Should Contain      ${TIME_STAMP}       ${PREVIOUS_DATE_TIME}
     ELSE
         Should Contain      ${TIME_STAMP}       ${CURRENT_DATE_TIME}
