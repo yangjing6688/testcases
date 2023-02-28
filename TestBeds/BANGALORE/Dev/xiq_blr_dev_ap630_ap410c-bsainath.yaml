@@ -1,7 +1,7 @@
 ap1:
   name:                     bui-flo-2819
   connection_method:        "ssh"
-  ip:                       10.234.132.95
+  ip:                       10.234.132.98
   port:                     22
   username:                 admin
   password:                 Aerohive123
@@ -38,7 +38,7 @@ ap1:
 ap2:
   name:                     bui-flo-0524
   connection_method:        "ssh"
-  ip:                       10.234.132.98
+  ip:                       10.234.132.91
   port:                     22
   username:                 admin
   password:                 Aerohive123
@@ -75,7 +75,7 @@ ap2:
 ap3:
   name:                     bui-flo-0570
   connection_method:        "ssh"
-  ip:                       10.234.132.97
+  ip:                       10.234.132.95
   port:                     22
   username:                 admin
   password:                 Aerohive123
