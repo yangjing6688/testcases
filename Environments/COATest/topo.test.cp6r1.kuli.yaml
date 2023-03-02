@@ -1,0 +1,12 @@
+test_url: "https://cp6r1.qa.xcloudiq.com"
+capwap_url: "cp6r1-cwpm-01.qa.xcloudiq.com"
+sw_connection_host: "cp6r1.qa.xcloudiq.com"
+tenant_username: "kuli@extremenetworks.com"
+tenant_password: "Aerohive123"
+base_url: "https://cp6-api.qa.xcloudiq.com"
+xapi_url: "https://cp6-api.qa.xcloudiq.com"
+aio_xiq: 0
+iapi_base_url: "https://cp6.qa.xcloudiq.com"
+sw_capwap_url: "cp6r1.qa.xcloudiq.com"
+wing_capwap_url: "cp6r1-wing.qa.xcloudiq.com"
+test_rdc_url:             "https://cp6r1.qa.xcloudiq.com"

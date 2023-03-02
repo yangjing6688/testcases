@@ -15,9 +15,12 @@
 &{WIRELESS_ENTERPRISE_01}    ssid_name=""   network_type=Standard   ssid_profile=&{BORADCAST_SSID_00}   auth_profile=&{ENTERPRISE_AUTH_PROFILE_01}
 &{WIRELESS_ENTERPRISE_02}    ssid_name=""   network_type=Standard   ssid_profile=&{BORADCAST_SSID_01}   auth_profile=&{ENTERPRISE_AUTH_PROFILE_02}
 &{WIRELESS_ENTERPRISE_03}    ssid_name=""   network_type=Standard   ssid_profile=&{BORADCAST_SSID_01}   auth_profile=&{ENTERPRISE_AUTH_PROFILE_03}
+&{WIRELESS_ENTERPRISE_04}    ssid_name=""   network_type=Standard   ssid_profile=&{BORADCAST_SSID_02}   auth_profile=&{ENTERPRISE_AUTH_PROFILE_00}
+&{WIRELESS_ENTERPRISE_05}    ssid_name=""   network_type=Standard   ssid_profile=&{BORADCAST_SSID_02}   auth_profile=&{ENTERPRISE_AUTH_PROFILE_01}
 
 &{BORADCAST_SSID_00}        WIFI0=Enable      WIFI1=Enable      WIFI2=Disable
 &{BORADCAST_SSID_01}        WIFI0=Disable     WIFI1=Disable     WIFI2=Enable
+&{BORADCAST_SSID_02}        WIFI0=Disable     WIFI1=Enable      WIFI2=Disable
 
 &{ENTERPRISE_AUTH_PROFILE_00}   auth_type=enterprise    key_encryption=&{KEY_ENCRYPTION_00}   cwp_profile=&{ENTERPRISE_CWP_00}  auth_settings_profile=&{AUTHENTICATION_SETTINGS_00}   user_access_settings=None   additional_settings=None
 &{ENTERPRISE_AUTH_PROFILE_01}   auth_type=enterprise    key_encryption=&{KEY_ENCRYPTION_00}   cwp_profile=&{ENTERPRISE_CWP_00}  auth_settings_profile=&{AUTHENTICATION_SETTINGS_01}   user_access_settings=None   additional_settings=None
@@ -58,6 +61,10 @@
 &{AP_TEMPLATE_1_WIFI0}   radio_status=On     radio_profile=radio_ng_11ax-2g     client_mode=Disable    client_access=Enable    backhaul_mesh_link=Disable   sensor=Disable
 &{AP_TEMPLATE_1_WIFI1}   radio_status=On     radio_profile=radio_ng_11ax-5g     client_mode=Disable    client_access=Enable    backhaul_mesh_link=Disable   sensor=Disable
 &{AP_TEMPLATE_1_WIFI2}   radio_status=on     radio_profile=radio_ng_11ax-6g                            client_access=Enable    backhaul_mesh_link=Disable   sensor=Disable
+
+&{AP_TEMPLATE_2}         wifi0_configuration=&{AP_TEMPLATE_2_WIFI0}   wifi1_configuration=&{AP_TEMPLATE_2_WIFI1}
+&{AP_TEMPLATE_2_WIFI0}   radio_status=On     radio_profile=radio_ng_11ax-6g     client_mode=Disable    client_access=Enable    backhaul_mesh_link=Disable   sensor=Disable
+&{AP_TEMPLATE_2_WIFI1}   radio_status=On     radio_profile=radio_ng_11ax-5g     client_mode=Disable    client_access=Enable    backhaul_mesh_link=Disable   sensor=Disable
 
 ############### Globle Variables ######################
 ${retry}     3
@@ -121,6 +128,9 @@ Step1: Create Policy - Enterprise with Cloud and Radius auth
     Set Suite Variable             ${SSID_02}                      w2_cld
     Set Suite Variable             ${SSID_03}                      w2_rad
     Set Suite Variable             ${AP_TEMP_NAME}                 ${ap1.model}_${NUM}
+    ${WIRELESS_ENTERPRISE_00}      set variable if    '${ap1.model}' != 'AP3000'    ${WIRELESS_ENTERPRISE_00}    ${WIRELESS_ENTERPRISE_04}
+    ${WIRELESS_ENTERPRISE_01}      set variable if    '${ap1.model}' != 'AP3000'    ${WIRELESS_ENTERPRISE_01}    ${WIRELESS_ENTERPRISE_05}
+    ${AP_TEMPLATE_1}               set variable if    '${ap1.model}' != 'AP3000'    ${AP_TEMPLATE_1}             ${AP_TEMPLATE_2}
     Set To Dictionary              ${WIRELESS_ENTERPRISE_00}       ssid_name=${SSID_00}
     Set To Dictionary              ${WIRELESS_ENTERPRISE_01}       ssid_name=${SSID_01}
     Set To Dictionary              ${WIRELESS_ENTERPRISE_02}       ssid_name=${SSID_02}
@@ -223,7 +233,7 @@ Pre_condition
     reset devices to default
     log to console                      Wait for 2 minutes for completing reboot....
     sleep                               2m
-    delete all aps
+    delete all devices
     delete all network policies
     delete all ssids
     delete all ap templates

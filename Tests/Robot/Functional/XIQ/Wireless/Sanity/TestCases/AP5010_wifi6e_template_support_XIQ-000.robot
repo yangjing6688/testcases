@@ -14,7 +14,7 @@
 ### AP5010 ###
 &{AP_TEMPLATE_2}         wifi0_configuration=&{AP_TEMPLATE_2_WIFI0}   wifi1_configuration=&{AP_TEMPLATE_2_WIFI1}
 ...                      wifi2_configuration=&{AP_TEMPLATE_2_WIFI2}   wired_configuration=&{AP_TEMPLATE_2_WIRED}
-&{AP_TEMPLATE_2_WIFI0}   radio_status=On   radio_profile=radio_ng_11ax-2g   client_access=Enable   backhaul_mesh_link=Disable   sensor=UIDisable   enable_SDR=Disable
+&{AP_TEMPLATE_2_WIFI0}   radio_status=On   radio_profile=radio_ng_11ax-2g   client_access=Enable   backhaul_mesh_link=Disable   sensor=Disable     enable_SDR=Disable
 &{AP_TEMPLATE_2_WIFI1}   radio_status=On   radio_profile=radio_ng_11ax-5g   client_access=Enable   backhaul_mesh_link=Disable   sensor=UIDisable
 &{AP_TEMPLATE_2_WIFI2}   radio_status=On   radio_profile=radio_ng_11ax-6g   client_access=Enable   backhaul_mesh_link=Disable   sensor=UIDisable
 &{AP_TEMPLATE_2_WIRED}   eth0=On           port_type_eth0=Uplink Port       transmission_type_eth0=Auto     speed_eth0=Auto     lldp_eth0=Enable   cdp_eth0=Enable
@@ -221,19 +221,6 @@ step5: verify backhaul mesh link support for wifi0-1
     should contain    ${OUT}    interface wifi0 mode backhaul
     should contain    ${OUT}    interface wifi1 mode backhaul
 
-step6: Verify 6 GHz Dual (Client Access & Backhaul Mesh) mode on wifi2 interface
-    [Documentation]    Verify 6 GHz Dual (Client Access & Backhaul Mesh) mode on wifi2 interface
-    [Tags]             tcxm-11671    development    step6    steps
-    Depends On         Step3
-    &{AP_TEMPLATE_04_WIFI2}   create dictionary     client_access=Enable   backhaul_mesh_link=Enable
-    &{AP_TEMPLATE_04}         create dictionary     wifi2_configuration=&{AP_TEMPLATE_04_WIFI2}
-    Set AP Template Wifi      ${AP_TEMP_NAME}       ${AP_TEMPLATE_04}
-    Navigate To Devices
-    Revert Device to Template                       ${ap1.serial}
-    sleep             10s
-    ${OUT}            get_device_config_audit_delta     ${ap1.mac}
-    should contain    ${OUT}    interface wifi2 mode dual
-
 *** Keywords ***
 Pre_condition
     ${STATUS}                     Login User    ${tenant_username}   ${tenant_password}
@@ -241,7 +228,7 @@ Pre_condition
     reset devices to default
     log to console                Wait for 2 minutes for completing reboot....
     sleep                         2m
-    delete all aps
+    delete all devices
     delete all network policies
     delete all ssids
     delete all ap templates

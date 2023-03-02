@@ -4,6 +4,7 @@ sw_connection_host:   "int1r1.qa.xcloudiq.com"
 tenant_username:      "xiqproductionqa+auto1-blr-tb1-int1r1@gmail.com"
 tenant_password:      "Extreme@123"
 base_url:             "https://int1-api.qa.xcloudiq.com"
+xapi_url:             "https://int1-api.qa.xcloudiq.com"
 aio_xiq: 0
 iapi_base_url:        "https://int1.qa.xcloudiq.com"
 sw_capwap_url:        "int1r1.qa.xcloudiq.com"
