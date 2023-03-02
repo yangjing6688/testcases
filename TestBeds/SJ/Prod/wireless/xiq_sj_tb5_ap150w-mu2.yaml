@@ -8,7 +8,7 @@ ap1:
   serial:                   "01501708180444"
   console_ip:               10.16.170.37
   console_port:             4003
-  mac:                      7C95B1004DC0
+  mac:                      7C95B100E8C0
   cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP150W

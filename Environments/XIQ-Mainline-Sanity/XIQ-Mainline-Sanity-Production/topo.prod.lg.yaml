@@ -1,6 +1,7 @@
 test_url:             "https://lg.extremecloudiq.com"
 capwap_url:           "redirector.aerohive.com"
 sw_capwap_url:        "lg.extremecloudiq.com"
+xapi_url:             "api.extremecloudiq.com"
 wing_capwap_url:      "lg-wing.extremecloudiq.com"
 tenant_username:      "lg.test.1229@gmail.com"
 tenant_password:      "Extreme@123"

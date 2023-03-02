@@ -328,8 +328,9 @@ TCXM-42575: XAPI Deployment - Update Complete Configuration to Device
     [Tags]			     development  tcxm_42575
 
     # Prepare the environment, upgrade the device to non latest build
-    ${DEV1_LATEST_BUILD}=  get device latest version  ${device1}
-    #${DEV1_LATEST_BUILD}=  upgrade device  ${device1}  action=close
+    #${DEV1_LATEST_BUILD}=  get device latest version  ${device1}
+    ${ONLINE_STATUS_RESULT}=    wait until device online     ${device1.serial}
+    ${DEV1_LATEST_BUILD}=  upgrade device  ${device1}  action=close
     set suite variable  ${DEV1_LATEST_BUILD}
     ${DEV1_BUILD_VERSION_BEFORE_UPGRADE}=  Get AP Version  ${DEVICE1_SPAWN}
     run keyword if  '${DEV1_BUILD_VERSION_BEFORE_UPGRADE}' == '${DEV1_LATEST_BUILD}'  Update Device Firmware  device1  ${DEVICE1_SPAWN}  ${NON_LASTEST_BUILD}

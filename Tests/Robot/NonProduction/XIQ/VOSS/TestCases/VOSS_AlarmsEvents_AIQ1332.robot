@@ -31,7 +31,7 @@ ${IQAGENT}                  ${xiq.sw_connection_host}
 ${DUT_SERIAL}               ${netelem3.serial}
 ${DUT_MAC}                  ${netelem3.mac}
 ${DUT_NAME}                 ${netelem3.name}
-${DUT_TEMPLATE}             ${netelem3.template}
+${DUT_TEMPLATE}             ${netelem3.default_template}
 ${DUT_IP}                   ${netelem3.ip}
 ${DUT_PORT}                 ${netelem3.port}
 ${DUT_USERNAME}             ${netelem3.username}
@@ -89,7 +89,9 @@ Test3: Confirm Device Disconnected Alarm
     [Documentation]     Disconnect the test device from the IQ agent and confirms a Device Disconnected alarm is generated
     [Tags]              tccs_8384    aiq_1332    development    xiq    voss    alarms_events    test3
 
-    Disable iqagent for Test Device         ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
+    Connect to all network elements
+    hostinformation_disable_iqagent       ${dut_name}      false      disconnected
+    close_connection_to_all_network_elements
 
     Refresh Devices Page
     Navigate to Device360 Page with MAC     ${DUT_MAC}
@@ -160,7 +162,10 @@ Confirm Alarm Exists
 Clear Alarm Condition and Close Device360 Window
     [Documentation]     Re-enables the iqagent to clear the alarm condition, and closes the Device360 window
 
-    Enable iqagent for Test Device  ${DUT_IP}  ${DUT_PORT}  ${DUT_USERNAME}  ${DUT_PASSWORD}
+    Connect to all network elements
+    hostinformation_enable_iqagent      ${dut_name}      true      connected
+    close_connection_to_all_network_elements
+
     Close Device360 Window
 
 Onboard New Test Device
