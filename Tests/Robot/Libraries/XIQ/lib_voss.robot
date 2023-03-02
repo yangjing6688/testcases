@@ -57,7 +57,7 @@ Configure iqagent for Test Device
     [Teardown]          Close Spawn and Confirm Success  ${spawn}
 
 #Please be aware that this keyword should no longer be used
-#Instead of this keyword try using the following method: Disable_Port_and_Validate_Port_is_Disabled
+#Instead of this keyword try using the following method: hostinformation_disable_iqagent
 Disable iqagent for Test Device
     [Documentation]     Disables the iqagent for the Test Device
     [Tags]              voss
@@ -75,7 +75,7 @@ Disable iqagent for Test Device
     [Teardown]              Close Spawn and Confirm Success  ${spawn}
 
 #Please be aware that this keyword should no longer be used
-#Instead of this keyword try using the following method: Enable_Port_and_Validate_Port_is_Enabled
+#Instead of this keyword try using the following method: hostinformation_enable_iqagent
 Enable iqagent for Test Device
     [Documentation]     Enables the iqagent for the Test Device
     [Tags]              voss
@@ -180,6 +180,8 @@ Confirm IQAgent Version on Test Device
 
     [Teardown]  Close Spawn and Confirm Success  ${spawn}
 
+#Please be aware that this keyword should no longer be used
+#Instead of this keyword try using the following method: Disable_Port_and_Validate_Port_is_Disabled
 Disable Port for Test Device
     [Documentation]     Disables the specified port for the Test Device
     [Tags]              voss
@@ -194,6 +196,8 @@ Disable Port for Test Device
 
     [Teardown]          Close Spawn and Confirm Success  ${spawn}
 
+#Please be aware that this keyword should no longer be used
+#Instead of this keyword try using the following method: Enable_Port_and_Validate_Port_is_Enabled
 Enable Port for Test Device
     [Documentation]     Enables the specified port for the Test Device
     [Tags]              voss

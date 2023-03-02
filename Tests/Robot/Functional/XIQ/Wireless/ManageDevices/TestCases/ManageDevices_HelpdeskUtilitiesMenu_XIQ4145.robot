@@ -49,57 +49,57 @@ TCXM-19799: Confirm Access To APs Diagnostics
     ${nav_result}=      Navigate To Device Utilities Diagnostics
     Should Be Equal As Integers  ${nav_result}  1
 
-    ${nav_visible}=     Is Device Tool Ping Available
+    ${nav_visible}=     Verify Device Tool Ping Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Log Available
+    ${nav_visible}=     Verify Device Tool Show Log Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Version Available
+    ${nav_visible}=     Verify Device Tool Show Version Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Running Config Available
+    ${nav_visible}=     Verify Device Tool Show Running Config Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Startup Config Available
+    ${nav_visible}=     Verify Device Tool Show Startup Config Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Ip Routes Available
+    ${nav_visible}=     Verify Device Tool Show Ip Routes Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Mac Routes Available
+    ${nav_visible}=     Verify Device Tool Show Mac Routes Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Arp Cache Available
+    ${nav_visible}=     Verify Device Tool Show Arp Cache Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Roaming Cache Available
+    ${nav_visible}=     Verify Device Tool Show Roaming Cache Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Dnxp Neighbors Available
+    ${nav_visible}=     Verify Device Tool Show Dnxp Neighbors Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Dnxp Cache Available
+    ${nav_visible}=     Verify Device Tool Show Dnxp Cache Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Amrp Tunnel Available
+    ${nav_visible}=     Verify Device Tool Show Amrp Tunnel Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Gre Tunnel Available
+    ${nav_visible}=     Verify Device Tool Show Gre Tunnel Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Ike Event Available
+    ${nav_visible}=     Verify Device Tool Show Ike Event Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Ike Sa Available
+    ${nav_visible}=     Verify Device Tool Show Ike Sa Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Ipsec Sa Available
+    ${nav_visible}=     Verify Device Tool Show Ipsec Sa Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Ipsec Tunnel Available
+    ${nav_visible}=     Verify Device Tool Show Ipsec Tunnel Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Cpu Available
+    ${nav_visible}=     Verify Device Tool Show Cpu Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Memory Available
+    ${nav_visible}=     Verify Device Tool Show Memory Available
     Should Be Equal As Integers   ${nav_visible}   1
 
 TCXM-19757: Confirm No Access To APs Reset Device To Default
     [Documentation]     Confirms the Reset Device To Default is not available for APs
     [Tags]              tcxm_19757   development
 
-    ${nav_visible}=     Is Reset Device To Default Available
+    ${nav_visible}=     Verify Reset Device To Default Available    expect_failure=True
     Should Be Equal As Integers   ${nav_visible}   -1
 
 TCXM-19801: Confirm Access To APs Spectrum Intelligence
     [Documentation]     Confirms the Spectrum Intelligence is available for APs
     [Tags]              tcxm_19801   development
 
-    ${nav_visible}=     Is Device Spectrum Intelligence Available
+    ${nav_visible}=     Verify Device Spectrum Intelligence Available
     Should Be Equal As Integers   ${nav_visible}   1
 
 TCXM-19805: Confirm Access To APs Status
@@ -109,11 +109,11 @@ TCXM-19805: Confirm Access To APs Status
     ${nav_result}=      Navigate To Device Utilities Status
     Should Be Equal As Integers  ${nav_result}  1
 
-    ${nav_visible}=     Is Device Status Advanced Channel Selection Protocol Available
+    ${nav_visible}=     Verify Device Status Advanced Channel Selection Protocol Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Status Interface Available
+    ${nav_visible}=     Verify Device Status Interface Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Status Wifi Status Summary Available
+    ${nav_visible}=     Verify Device Status Wifi Status Summary Available
     Should Be Equal As Integers   ${nav_visible}   1
 
 TCXM-19808: Confirm Access To APs Tools
@@ -123,17 +123,17 @@ TCXM-19808: Confirm Access To APs Tools
     ${nav_result}=      Navigate To Device Utilities Tools
     Should Be Equal As Integers  ${nav_result}  1
 
-    ${nav_visible}=     Is Device Tool Client Information Available
+    ${nav_visible}=     Verify Device Tool Client Information Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Get Tech Data Available
+    ${nav_visible}=     Verify Device Tool Get Tech Data Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Locate Device Available
+    ${nav_visible}=     Verify Device Tool Locate Device Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Layer Neighbor Info Available
+    ${nav_visible}=     Verify Device Tool Layer Neighbor Info Available
     Should Be Equal As Integers   ${nav_visible}   1
 #    ${nav_visible}=     Is Device Tool Packet Capture Available
 #    Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Vlan Probe Available
+    ${nav_visible}=     Verify Device Tool Vlan Probe Available
     Should Be Equal As Integers   ${nav_visible}   1
 
 TCXM-19800: Confirm Access To Routers Diagnostics
@@ -145,40 +145,40 @@ TCXM-19800: Confirm Access To Routers Diagnostics
     ${nav_result}=      Navigate To Device Utilities Diagnostics
     Should Be Equal As Integers  ${nav_result}  1
 
-    ${nav_visible}=     Is Device Tool Ping Available
+    ${nav_visible}=     Verify Device Tool Ping Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Log Available
+    ${nav_visible}=     Verify Device Tool Show Log Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Version Available
+    ${nav_visible}=     Verify Device Tool Show Version Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Running Config Available
+    ${nav_visible}=     Verify Device Tool Show Running Config Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Startup Config Available
+    ${nav_visible}=     Verify Device Tool Show Startup Config Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Ip Routes Available
+    ${nav_visible}=     Verify Device Tool Show Ip Routes Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Mac Routes Available
+    ${nav_visible}=     Verify Device Tool Show Mac Routes Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Arp Cache Available
+    ${nav_visible}=     Verify Device Tool Show Arp Cache Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Ike Event Available
+    ${nav_visible}=     Verify Device Tool Show Ike Event Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Ike Sa Available
+    ${nav_visible}=     Verify Device Tool Show Ike Sa Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Ipsec Sa Available
+    ${nav_visible}=     Verify Device Tool Show Ipsec Sa Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Ipsec Tunnel Available
+    ${nav_visible}=     Verify Device Tool Show Ipsec Tunnel Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Cpu Available
+    ${nav_visible}=     Verify Device Tool Show Cpu Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Memory Available
+    ${nav_visible}=     Verify Device Tool Show Memory Available
     Should Be Equal As Integers   ${nav_visible}   1
 
 TCXM-19757: Confirm No Access To Routers Reset Device To Default
     [Documentation]     Confirms the Reset Device To Default is not available for routers
     [Tags]              tcxm_19757   development
 
-    ${nav_visible}=     Is Reset Device To Default Available
+    ${nav_visible}=     Verify Reset Device To Default Available    expect_failure=True
     Should Be Equal As Integers   ${nav_visible}   -1
 
 TCXM-19807: Confirm Access To Routers Status
@@ -188,7 +188,7 @@ TCXM-19807: Confirm Access To Routers Status
     ${nav_result}=      Navigate To Device Utilities Status
     Should Be Equal As Integers  ${nav_result}  1
 
-    ${nav_visible}=     Is Device Status Interface Available
+    ${nav_visible}=     Verify Device Status Interface Available
     Should Be Equal As Integers   ${nav_visible}   1
 
 TCXM-19809: Confirm Access To Routers Tools
@@ -198,15 +198,15 @@ TCXM-19809: Confirm Access To Routers Tools
     ${nav_result}=      Navigate To Device Utilities Tools
     Should Be Equal As Integers  ${nav_result}  1
 
-    ${nav_visible}=     Is Device Tool Client Information Available
+    ${nav_visible}=     Verify Device Tool Client Information Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Get Tech Data Available
+    ${nav_visible}=     Verify Device Tool Get Tech Data Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Locate Device Available
+    ${nav_visible}=     Verify Device Tool Locate Device Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Layer Neighbor Info Available
+    ${nav_visible}=     Verify Device Tool Layer Neighbor Info Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Vlan Probe Available
+    ${nav_visible}=     Verify Device Tool Vlan Probe Available
     Should Be Equal As Integers   ${nav_visible}   1
 
 TCXM-19810: Confirm Access To Switches Diagnostics
@@ -218,32 +218,32 @@ TCXM-19810: Confirm Access To Switches Diagnostics
     ${nav_result}=      Navigate To Device Utilities Diagnostics
     Should Be Equal As Integers  ${nav_result}  1
 
-    ${nav_visible}=     Is Device Tool Ping Available
+    ${nav_visible}=     Verify Device Tool Ping Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Log Available
+    ${nav_visible}=     Verify Device Tool Show Log Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Mac Table Available
+    ${nav_visible}=     Verify Device Tool Show Mac Table Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Version Available
+    ${nav_visible}=     Verify Device Tool Show Version Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Running Config Available
+    ${nav_visible}=     Verify Device Tool Show Running Config Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Startup Config Available
+    ${nav_visible}=     Verify Device Tool Show Startup Config Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Ip Routes Available
+    ${nav_visible}=     Verify Device Tool Show Ip Routes Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Cpu Available
+    ${nav_visible}=     Verify Device Tool Show Cpu Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Memory Available
+    ${nav_visible}=     Verify Device Tool Show Memory Available
     Should Be Equal As Integers   ${nav_visible}   1
-    ${nav_visible}=     Is Device Tool Show Pse Available
+    ${nav_visible}=     Verify Device Tool Show Pse Available
     Should Be Equal As Integers   ${nav_visible}   1
 
 TCXM-19757: Confirm No Access To Switches Reset Device To Default
     [Documentation]     Confirms the Reset Device To Default is not available for switches
     [Tags]              tcxm_19757   development
 
-    ${nav_visible}=     Is Reset Device To Default Available
+    ${nav_visible}=     Verify Reset Device To Default Available    expect_failure=True
     Should Be Equal As Integers   ${nav_visible}   -1
 
 TCXM-19993: Confirm Access To Switches Tools
@@ -253,7 +253,7 @@ TCXM-19993: Confirm Access To Switches Tools
     ${nav_result}=      Navigate To Device Utilities Tools
     Should Be Equal As Integers  ${nav_result}  1
 
-    ${nav_visible}=     Is Device Tool Get Tech Data Available
+    ${nav_visible}=     Verify Device Tool Get Tech Data Available
     Should Be Equal As Integers   ${nav_visible}   1
 
 

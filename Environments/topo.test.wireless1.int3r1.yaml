@@ -1,0 +1,10 @@
+test_url:           "https://int3r1.qa.xcloudiq.com"
+capwap_url:         "int3r1-cwpm-01.qa.xcloudiq.com"
+sw_connection_host: "int3r1.qa.xcloudiq.com"
+tenant_username:    "init3r1+2022-wireless1@gmail.com"
+tenant_password:    "Aerohive123"
+base_url:           "https://int3-api.qa.xcloudiq.com"
+aio_xiq:            0
+iapi_base_url:      "https://int3.qa.xcloudiq.com"
+sw_capwap_url:      "int3r1.qa.xcloudiq.com"
+wing_capwap_url:    "int3r1-wing.qa.xcloudiq.com"
