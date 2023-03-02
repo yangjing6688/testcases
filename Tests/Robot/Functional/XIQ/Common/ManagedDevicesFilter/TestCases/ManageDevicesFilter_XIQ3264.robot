@@ -50,6 +50,13 @@ TCXM-39327: Filtering devices based on network policy
     ${CHECK_RESULT}=        check filter device by network policy is correct
     Should Be Equal As Integers    ${CHECK_RESULT}        1
 
+TCXM-39450: Filtering devices based on SSID
+    [Documentation]         Filtering devices based on SSID
+    [Tags]                  tcxm_39450  development
+    #filter device by SSID
+    ${CHECK_RESULT}=        check filter device by SSID is correct
+    Should Be Equal As Integers    ${CHECK_RESULT}        1
+
 *** Keywords ***
 Pre Condition
     [Documentation]   Login XIQ and Create Maps and classification rules first

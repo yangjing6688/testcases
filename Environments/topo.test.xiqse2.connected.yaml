@@ -61,7 +61,7 @@ xiq2:
 #     vim-cmd vmsvc/get.snapshotinfo <vmid>
 upgrades:
   install_mode:                "CONNECTED"
-  nsrelease_version:           "23.2.10"
+  nsrelease_version:           "23.4.10"
   esx:
     esx_ip:                    "10.69.60.11"
     esx_user:                  "root"

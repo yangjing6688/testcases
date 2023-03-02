@@ -34,11 +34,16 @@ ${AUTH_TYPE_LINKEDIN}            linkedin
 ${LOCATION}                      auto_location_01, Santa Clara, building_02, floor_04
 ${CWP_MAIL_ID}                   mail.sociallogin.cwp@gmail.com
 ${CWP_MAIL_PASSWORD}             Extreme@123
+${FLOOR}                         floor_04
+${LOCATION_DISPLAY}              auto_location_01 >> Santa Clara >> building_02 >> floor_04
+${TIME_STAMP_FLAG1}                         False
+${TIME_STAMP_FLAG2}                         False
 
 *** Settings ***
 Library     Collections
 Library     extauto/common/Cli.py
 Library     extauto/common/Utils.py
+Library     extauto/common/Screen.py
 Library     extauto/xiq/flows/common/Login.py
 Library     extauto/xiq/flows/common/MuCaptivePortal.py
 Library     extauto/xiq/flows/configure/CommonObjects.py
@@ -46,6 +51,8 @@ Library     extauto/xiq/flows/configure/ExpressNetworkPolicies.py
 Library     extauto/xiq/flows/configure/NetworkPolicy.py
 Library     extauto/xiq/flows/configure/WirelessNetworks.py
 Library     extauto/xiq/flows/globalsettings/GlobalSetting.py
+Library     extauto/xiq/flows/mlinsights/Network360Plan.py
+Library     extauto/xiq/flows/mlinsights/Network360Monitor.py
 Library     extauto/xiq/flows/manage/Client.py
 Library     extauto/xiq/flows/manage/Devices.py
 Library     ExtremeAutomation/Imports/CommonObjectUtils.py
@@ -125,16 +132,13 @@ Suite Setup
     ${REBOOT_STATUS}=    Wait Until Device Reboots               ${device1.serial}
     Should Be Equal as Integers             ${REBOOT_STATUS}          1
 
-    ${DELETE_CUS_POLICY_RESULT}=    Delete Network Policy           ${NW_POLICY_NAME1}
+    ${DELETE_CUS_POLICY_RESULT}=    Delete Network Polices               ${NW_POLICY_NAME1}     ${NW_DEFAULT_POLICY}    ${NW_POLICY_NAME3}
     Should Be Equal As Integers     ${DELETE_CUS_POLICY_RESULT}         1
 
-    ${DELETE_DEF_POLICY_RESULT}=    Delete Network Policy           ${NW_DEFAULT_POLICY}
-    Should Be Equal As Integers     ${DELETE_DEF_POLICY_RESULT}         1
-
-    ${DELETE_SSID_RESULT}=          Delete SSIDs                    ${NW_POLICY_SSID1}
+    ${DELETE_SSID_RESULT}=          Delete SSIDs                        ${NW_POLICY_SSID1}  ${NW_DEFAULT_SSID}  ${NW_POLICY_SSID3}
     Should Be Equal As Integers     ${DELETE_SSID_RESULT}               1
 
-    ${DELETE_CWP_RESULT}=           Delete Captive Web Portals      ${CWP_NAME_FACEBOOK}
+    ${DELETE_CWP_RESULT}=           Delete Captive Web Portals          ${CWP_NAME_FACEBOOK}    ${CWP_NAME_LINKEDIN}
     Should Be Equal As Integers     ${DELETE_CWP_RESULT}                1
 
     ${CREATE_POLICY_RESULT}=        Create Network Policy           ${NW_DEFAULT_POLICY}    ${CONFIG_PUSH_OPEN_NW_01}   cli_type=${device1.cli_type}
@@ -163,16 +167,13 @@ Suite Teardown
         Should Be Equal As Integers     ${DELETE_DEVICE_RESULT}             1
     END
 
-    ${DELETE_CUS_POLICY_RESULT}=    Delete Network Policy               ${NW_POLICY_NAME1}
+    ${DELETE_CUS_POLICY_RESULT}=    Delete Network Polices               ${NW_POLICY_NAME1}     ${NW_DEFAULT_POLICY}    ${NW_POLICY_NAME3}
     Should Be Equal As Integers     ${DELETE_CUS_POLICY_RESULT}         1
 
-    ${DELETE_DEF_POLICY_RESULT}=    Delete Network Policy               ${NW_DEFAULT_POLICY}
-    Should Be Equal As Integers     ${DELETE_DEF_POLICY_RESULT}         1
-
-    ${DELETE_SSID_RESULT}=          Delete SSIDs                        ${NW_POLICY_SSID1}  ${NW_DEFAULT_SSID}
+    ${DELETE_SSID_RESULT}=          Delete SSIDs                        ${NW_POLICY_SSID1}  ${NW_DEFAULT_SSID}  ${NW_POLICY_SSID3}
     Should Be Equal As Integers     ${DELETE_SSID_RESULT}               1
 
-    ${DELETE_CWP_RESULT}=           Delete Captive Web Portals          ${CWP_NAME_FACEBOOK}
+    ${DELETE_CWP_RESULT}=           Delete Captive Web Portals          ${CWP_NAME_FACEBOOK}    ${CWP_NAME_LINKEDIN}
     Should Be Equal As Integers     ${DELETE_CWP_RESULT}                1
 
     ${LOGOUT_RESULT}=               Logout User
@@ -192,6 +193,45 @@ Positive Internet Connectivity Check
     Should Be Equal As Integers     ${FLAG}     1
 
 *** Test Cases ***
+TCCS-14502: Verify AP Hostname in ML Insights Network 360 Monitor Tab and Client in ML Insights Client 360 Tab
+    [Documentation]                 Verify AP Hostname and Client in ML Insights Monitor Tab
+
+    [Tags]                          production      tccs_14502
+
+    ${FLOOR_SEARCH}=                search_floor_in_network360Plan                  ${FLOOR}
+    Save Screen shot
+    Should Not Be Equal as Strings             '${FLOOR_SEARCH}'          '-1'
+
+    ${AP_LIST}=                     get_aps_from_network360plan_floor               ${FLOOR}
+    Should Contain                  ${AP_LIST}              ${device1.name}             ignore_case=True
+    Save Screen shot
+
+    ${loc_result}=                  Get Device Details      ${device1.serial}       LOCATION
+    Should Contain                  ${loc_result}           ${LOCATION_DISPLAY}
+
+    ${NP_FROM_UI}=                  Get Device Details      ${device1.serial}       POLICY
+    should be equal as strings      ${NP_FROM_UI}           ${NW_DEFAULT_POLICY}
+
+    ${CONNECT_STATUS}=              Remote_Server.Connect Open Network         ${NW_DEFAULT_SSID}
+    should be equal as strings      '${CONNECT_STATUS}'    '1'
+
+    sleep   ${client_connect_wait}
+
+    ${FLOOR_SEARCH}=                search_floor_in_network360monitor               ${FLOOR}
+    Save Screen shot
+    Should Not Be Equal as Strings             '${FLOOR_SEARCH}'          '-1'
+
+    ${AP_LIST}=                     get_devices_from_network360monitor_floor        ${FLOOR}
+    Should Contain                  ${AP_LIST}              ${device1.name}
+    Save Screen shot
+
+    ${CLIENT_LIST}                  get_clients_from_network360monitor_floor        ${FLOOR}
+    Save Screen shot
+    Log                             ${CLIENT_LIST}
+    Should Contain                  ${CLIENT_LIST}          ${mu1.wifi_mac}
+
+    Remote_Server.Disconnect WiFi
+
 TCCS-11614: Social login with facebook
     [Documentation]   CWP Social login with facebook
     ...               https://jira.aerohive.com/browse/APC-36506
@@ -209,7 +249,8 @@ TCCS-11614: Social login with facebook
     Log to Console      Sleep for ${client_connect_wait} seconds
     Sleep               ${client_connect_wait}
 
-    Remote_Server.Connect Open Network      ${NW_POLICY_SSID1}
+    ${CONNECT_STATUS}=              Remote_Server.Connect Open Network      ${NW_POLICY_SSID1}
+    should be equal as strings      '${CONNECT_STATUS}'    '1'
 
     Log to Console      Sleep for ${client_connect_wait} seconds
     Sleep               ${client_connect_wait}
@@ -234,6 +275,7 @@ TCCS-11614: Social login with facebook
     Sleep               ${auth_logs_duration_wait}
     ${AUTH_LOGS}=                   Get Authentication Logs Details     ${CURRENT_DATE_TIME}        ${CWP_MAIL_ID}
     IF  ${AUTH_LOGS} == &{EMPTY}
+        ${TIME_STAMP_FLAG1}=        Set Variable    True
         ${PREVIOUS_DATE_TIME}=      Get Previous Time Delta             ${CURRENT_DATE_TIME}        minutes=1
         ${AUTH_LOGS}=               Get Authentication Logs Details     ${PREVIOUS_DATE_TIME}       ${CWP_MAIL_ID}
         Log To Console  Setting current date and time to: ${PREVIOUS_DATE_TIME}
@@ -269,12 +311,14 @@ TCCS-11614: Social login with facebook
     Should Be Equal As Strings      '${NAS_ID}'             ''
 
     ${TIME_STAMP}=                  Get From Dictionary     ${AUTH_LOGS}        authdate
-    ${VARIABLES}=                   Get Variables
-    IF  "\${PREVIOUS_DATE_TIME}" in "${VARIABLES}"
+
+    IF  "${TIME_STAMP_FLAG1}" == "True"
         Should Contain      ${TIME_STAMP}       ${PREVIOUS_DATE_TIME}
     ELSE
         Should Contain      ${TIME_STAMP}       ${CURRENT_DATE_TIME}
     END
+
+    sleep   ${client_connect_wait}
 
     Remote_Server.Disconnect WiFi
     Log to Console      Sleep for ${client_disconnect_wait} seconds
@@ -332,6 +376,7 @@ TCCS-14366: Social login with Linkedin
 
     ${AUTH_LOGS}=                   Get Authentication Logs Details     ${CURRENT_DATE_TIME}        ${CWP_MAIL_ID}
     IF  ${AUTH_LOGS} == &{EMPTY}
+        ${TIME_STAMP_FLAG2}=        Set Variable    True
         ${PREVIOUS_DATE_TIME}=      Get Previous Time Delta             ${CURRENT_DATE_TIME}        minutes=1
         ${AUTH_LOGS}=               Get Authentication Logs Details     ${PREVIOUS_DATE_TIME}       ${CWP_MAIL_ID}
         Log To Console  Setting current date and time to: ${PREVIOUS_DATE_TIME}
@@ -341,12 +386,6 @@ TCCS-14366: Social login with Linkedin
     Should Not Be Empty     ${AUTH_LOGS}
 
     Positive Internet connectivity check
-
-    Log to Console      Sleep for ${auth_logs_duration_wait} seconds
-    Sleep               ${auth_logs_duration_wait}
-
-    ${AUTH_LOGS}=                Get Authentication Logs Details       ${CURRENT_DATE_TIME}        ${CWP_MAIL_ID}
-    LOG TO CONSOLE               ${AUTH_LOGS}
 
    # Logs Verification
     ${AUTH_STATUS}=                 Get From Dictionary     ${AUTH_LOGS}        reply
@@ -374,8 +413,8 @@ TCCS-14366: Social login with Linkedin
     Should Be Equal As Strings      '${NAS_ID}'             ''
 
     ${TIME_STAMP}=                  Get From Dictionary     ${AUTH_LOGS}        authdate
-    ${VARIABLES}=                   Get Variables
-    IF  "\${PREVIOUS_DATE_TIME}" in "${VARIABLES}"
+
+    IF  "${TIME_STAMP_FLAG2}" == "True"
         Should Contain      ${TIME_STAMP}       ${PREVIOUS_DATE_TIME}
     ELSE
         Should Contain      ${TIME_STAMP}       ${CURRENT_DATE_TIME}

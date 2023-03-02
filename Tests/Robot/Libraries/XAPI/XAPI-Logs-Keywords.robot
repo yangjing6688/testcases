@@ -28,7 +28,7 @@ xapi list first page audit logs by keyword
     [Documentation]  Get first page audit logs by keyword.
     [Arguments]      ${KEYWORD}
 
-    ${AUDIT_LOG_URL}=    set variable    /logs/audit?page=1&limit=100&categories=&keyword=${KEYWORD}
+    ${AUDIT_LOG_URL}=    set variable    /logs/audit?page=1&limit=100&keyword=${KEYWORD}
     Log    AUDIT_LOG_URL = ${AUDIT_LOG_URL}
     ${AUDIT_LOG_CONTENT}=  rest api get      ${AUDIT_LOG_URL}
     [Return]    ${AUDIT_LOG_CONTENT}

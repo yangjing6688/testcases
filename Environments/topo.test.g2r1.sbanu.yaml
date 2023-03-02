@@ -1,7 +1,7 @@
 test_url:                 "https://g2.qa.xcloudiq.com"
 capwap_url:               "g2r1-cwpm-01.qa.xcloudiq.com"
 sw_capwap_url:            "g2r1.qa.xcloudiq.com"
-xapi_url:                 "g2-api.extremecloudiq.com"
+xapi_url:                 "https://g2-api.qa.xcloudiq.com"
 tenant_username:          "xiqextremeqa+sbanu-g2r1@gmail.com"
 tenant_password:          "Extreme@123"
 sw_connection_host:       "g2r1.qa.xcloudiq.com"

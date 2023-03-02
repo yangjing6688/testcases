@@ -1,3 +1,79 @@
+ap2:
+  name:                     San-flo-0770
+  connection_method:        "ssh"
+  ip:                       10.254.152.135
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "WM042214W-30770"
+  console_ip:               10.254.152.38
+  console_port:             "22"
+  mac:                      B027CF87AA80
+  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
+  model:                    AP5050D
+  template:                 AP5050D-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                1
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  platform:                 "AH-AP"
+  ap_type:                  11ax
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United States
+      network_policy:           Test_np
+      ssid:                     AP5050_01
+      version:                  10.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            7C95B1005700
+
+ap3:
+  name:                     Ext-Flo-0021
+  connection_method:        "ssh"
+  ip:                       10.16.175.115
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "WM032233W-30021"
+  console_ip:               10.254.152.38
+  console_port:             "22"
+  mac:                      241FBD0CD240
+  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
+  model:                    AP5050U
+  template:                 AP5050U-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                1
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  platform:                 "AH-AP"
+  ap_type:                  11ax
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United States
+      network_policy:           Test_np
+      ssid:                     AP5050_01
+      version:                  10.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            7C95B1005700
+
 ap1:
   name:                     637-Flo-0157
   connection_method:        "ssh"
@@ -35,27 +111,26 @@ ap1:
       neighbour_serial:         06301908310556
       neighbour_mac:            7C95B1005700
 
-ap2:
-  name:                     San-flo-0930
+ap6:
+  name:                     bui-Flo-0118
   connection_method:        "ssh"
-  ip:                       10.16.134.104
+  ip:                       10.16.172.218
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   "WM052209W-30930"
-  console_ip:               10.16.165.249
+  serial:                   "64002103260118"
+  console_ip:               10.16.172.10
   console_port:             "22"
-  mac:                      B027CF8064C0
+  mac:                      F064267274C0
   os:                       Cloud IQ Engine
   cli_type:                 "AH-AP"
-  model:                    AP5010
-  template:                 AP5010-default-template
+  model:                    AP4000
+  template:                 AP4000-default-template
   make:                     Extreme - Aerohive
   mgmt_vlan:                1
   country:                  United States
   location:                 auto_location_01, Santa Clara, building_02, floor_04
   platform:                 "AH-AP"
-  onboard_device_type:      Real
   power_strip:
     ip:
     port:
@@ -73,3 +148,39 @@ ap2:
       neighbour_serial:         06301908310556
       neighbour_mac:            7C95B1005700
 
+ap7:
+  name:                     637-flo-0063
+  connection_method:        "ssh"
+  ip:                       10.254.152.223
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "HA022235Y-10063"
+  console_ip:               10.16.172.10
+  console_port:             "22"
+  mac:                      241FBD902F40
+  os:                       Cloud IQ Engine
+  cli_type:                 "AH-AP"
+  model:                    AP3000X
+  template:                 AP3000X-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                1
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  platform:                 "AH-AP"
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           Test_np
+      ssid:                     AP230_01
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            7C95B1005700

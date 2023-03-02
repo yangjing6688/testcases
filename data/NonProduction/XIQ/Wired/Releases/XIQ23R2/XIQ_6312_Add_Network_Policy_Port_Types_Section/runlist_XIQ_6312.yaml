@@ -1,0 +1,20 @@
+runlist_XIQ_6312:
+  suitemap:
+    - suitemap_XIQ_6312.yaml
+  onboarding_options:                               # not mandatory (if not given then all the onboarding option will default)
+    standalone:
+      node_1:
+        run_os: ['exos', "voss"]                    # not mandatory (by default it is []); it specifies which cli_type the devices needs to have
+        platform: 'standalone'                      # not mandatory (by default it is set to "standalone"); it specifies which platform needs to have (e.g. 5320, 5420, 5520)
+        change_device_management_settings: no
+        create_network_policy: yes                  # not mandatory (by default it is set to "yes"); it specifies if there will be created a network policy for the node
+        assign_network_policy_to_device: yes        # not mandatory (by default it is set to "yes"); it specifies if the created network policy will be assigned to the node
+        initial_network_policy_push: no            # not mandatory (by default it is set to "yes"); it specifies if the network policy will be pushed to node in the onboarding test
+        create_switch_template: no
+        
+  tests:
+    - tcxm_xiq_onboarding                               # the onboarding test should be the first one
+    - tcxm_23826
+    - tcxm_23827
+    - tcxm_23833
+    - tcxm_xiq_onboarding_cleanup                       # the last one should be the onboarding cleanup test

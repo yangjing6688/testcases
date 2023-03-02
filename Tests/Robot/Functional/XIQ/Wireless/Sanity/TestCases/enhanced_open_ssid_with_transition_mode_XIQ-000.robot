@@ -17,9 +17,12 @@
 &{WIRELESS_ENHANCED_00}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}    auth_profile=&{ENHANCED_AUTH_PROFILE_01}
 &{WIRELESS_ENHANCED_01}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}    auth_profile=&{ENHANCED_AUTH_PROFILE_00}
 &{WIRELESS_ENHANCED_02}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_01}    auth_profile=&{ENHANCED_AUTH_PROFILE_01}
+&{WIRELESS_ENHANCED_03}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_02}    auth_profile=&{ENHANCED_AUTH_PROFILE_01}
+&{WIRELESS_ENHANCED_04}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_02}    auth_profile=&{ENHANCED_AUTH_PROFILE_00}
 
 &{BORADCAST_SSID_00}        WIFI0=Enable      WIFI1=Enable      WIFI2=Disable
 &{BORADCAST_SSID_01}        WIFI0=Disable     WIFI1=Disable     WIFI2=Enable
+&{BORADCAST_SSID_02}        WIFI0=Disable     WIFI1=Enable      WIFI2=Disable
 
 &{ENHANCED_AUTH_PROFILE_00}     auth_type=ENHANCED   transition_mode=Enable
 &{ENHANCED_AUTH_PROFILE_01}     auth_type=ENHANCED   transition_mode=Disable
@@ -29,6 +32,10 @@
 &{AP_TEMPLATE_1_WIFI0}   radio_status=On     radio_profile=radio_ng_11ax-2g     client_mode=Disable    client_access=Enable    backhaul_mesh_link=Disable   sensor=Disable
 &{AP_TEMPLATE_1_WIFI1}   radio_status=On     radio_profile=radio_ng_11ax-5g     client_mode=Disable    client_access=Enable    backhaul_mesh_link=Disable   sensor=Disable
 &{AP_TEMPLATE_1_WIFI2}   radio_status=on     radio_profile=radio_ng_11ax-6g                            client_access=Enable    backhaul_mesh_link=Disable   sensor=Disable
+
+&{AP_TEMPLATE_2}         wifi0_configuration=&{AP_TEMPLATE_2_WIFI0}   wifi1_configuration=&{AP_TEMPLATE_2_WIFI1}
+&{AP_TEMPLATE_2_WIFI0}   radio_status=On     radio_profile=radio_ng_11ax-6g     client_mode=Disable    client_access=Enable    backhaul_mesh_link=Disable   sensor=Disable
+&{AP_TEMPLATE_2_WIFI1}   radio_status=On     radio_profile=radio_ng_11ax-5g     client_mode=Disable    client_access=Enable    backhaul_mesh_link=Disable   sensor=Disable
 
 ############### Globle Variables ######################
 ${retry}     3
@@ -93,6 +100,9 @@ Step1: Create Policy - Enhanced open with transition mode
     Set Suite Variable             ${SSID_01}                      w0_1_en_${NUM}
     Set Suite Variable             ${SSID_02}                      w2_dis_${NUM}
     Set Suite Variable             ${AP_TEMP_NAME}                 ${ap1.model}_${NUM}
+    ${WIRELESS_ENHANCED_00}        set variable if    '${ap1.model}' != 'AP3000'    ${WIRELESS_ENHANCED_00}    ${WIRELESS_ENHANCED_03}
+    ${WIRELESS_ENHANCED_01}        set variable if    '${ap1.model}' != 'AP3000'    ${WIRELESS_ENHANCED_01}    ${WIRELESS_ENHANCED_04}
+    ${AP_TEMPLATE_1}               set variable if    '${ap1.model}' != 'AP3000'    ${AP_TEMPLATE_1}           ${AP_TEMPLATE_2}
     Set To Dictionary              ${WIRELESS_ENHANCED_00}         ssid_name=${SSID_00}
     Set To Dictionary              ${WIRELESS_ENHANCED_01}         ssid_name=${SSID_01}
     Set To Dictionary              ${WIRELESS_ENHANCED_02}         ssid_name=${SSID_02}
@@ -103,9 +113,9 @@ Step1: Create Policy - Enhanced open with transition mode
     should be equal as strings     '${STATUS}'       '1'
     ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_ENHANCED_02}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      add ap template from common object      ${ap1.model}        ${AP_TEMP_NAME}   ${AP_TEMPLATE_1}
+    ${STATUS}                      add ap template from common object      ${ap1.model}      ${AP_TEMP_NAME}   ${AP_TEMPLATE_1}
     Should Be Equal As Strings     '${STATUS}'       '1'
-    ${STATUS}                      add ap template to network policy       ${AP_TEMP_NAME}    ${POLICY}
+    ${STATUS}                      add ap template to network policy       ${AP_TEMP_NAME}   ${POLICY}
     Should Be Equal As Strings     '${STATUS}'       '1'
 
 Step2: Assign network policy to AP
@@ -201,7 +211,7 @@ Pre_condition
     reset devices to default
     log to console                      Wait for 2 minutes for completing reboot....
     sleep                               2m
-    delete all aps
+    delete all devices
     delete all network policies
     delete all ssids
     delete all ap templates
