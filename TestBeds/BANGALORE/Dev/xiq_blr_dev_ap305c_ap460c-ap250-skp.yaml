@@ -1,0 +1,122 @@
+ap1:
+  name:                     bui-flo-0480
+  connection_method:        "ssh"
+  ip:                       10.234.132.95
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '03051911260480'
+  console_ip:               10.234.211.200
+  console_port:             7030
+  mac:                      BCF310190F40
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP305C
+  template:                 AP305C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           AP305C_AP1
+      ssid:                     AP305C_01
+      version:                  6.5
+      neighbour_serial:         06301908310524
+      neighbour_mac:            3485843A54C0
+
+ap2:
+  name:                     bui-flo-0594
+  connection_method:        "ssh"
+  ip:                       10.234.103.93
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '24602005230594'
+  console_ip:               10.234.211.200
+  console_port:             7028
+  mac:                      BCF310659A80
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP460C
+  template:                 AP460C-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           AP460C_AP1
+      ssid:                     AP460C_01
+      version:                  6.5
+      neighbour_serial:         24602001170042
+      neighbour_mac:            BCF3102A9880
+
+ap3:
+  name:                     bui-flo-0339
+  connection_method:        "ssh"
+  ip:                       10.234.103.97
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '02501607150339'
+  console_ip:               10.234.211.200
+  console_port:             7027
+  mac:                      C413E214D140
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP250
+  template:                 AP250-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           AP250_AP2
+      ssid:                     AP250_01
+      version:                  6.5
+      neighbour_serial:         24602001170042
+      neighbour_mac:            BCF3102A9880
+
+mu1:
+  ip:                       10.234.103.1
+  port:                     10002
+  username:                 extreme
+  password:                 Extreme@123
+  platform:                 windows
+  interface:                wlan0
+  wifi_mac:                 6C881432D850
+  ethernet_mac:             D4C9EFE591BF
+  wifi_network:             10.234.132
+  wifi_network_vlan10:      10.234.132

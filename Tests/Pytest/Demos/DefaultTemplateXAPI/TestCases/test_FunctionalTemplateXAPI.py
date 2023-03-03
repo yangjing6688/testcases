@@ -42,6 +42,7 @@ class xiqTests():
             # The user can also get to the test bed yaml by using the config dictionary
             config['${OUTPUT DIR}'] = os.getcwd()
             config['${TEST_NAME}'] = 'SETUP'
+            config['${XAPI_ENABLE}'] = True
             cls.tb = PytestConfigHelper(config)
 
             # Creae the new object for the Switch / Traffic Generator Libraries
@@ -50,28 +51,27 @@ class xiqTests():
             # Create the new object for the XIQ / XIQSE Libraries
             cls.xiq = XiqLibrary()
 
-            # log into the UI
+            # log into the XAPI
             cls.xiq.login.login_user(cls.tb.config.tenant_username,
                                           cls.tb.config.tenant_password,
                                           url=cls.tb.config.test_url,
-                                          IRV=True, XAPI_ENABLED=True)
+                                          IRV=True, XAPI_ONLY=True)
 
         except Exception as e:
             cls.executionHelper.setSetupFailure(True)
 
     @classmethod
     def teardown_class(cls):
-        cls.xiq.login.quit_browser()
+        # Log out of the XAPI
+        cls.xiq.login.logout_user(XAPI_ONLY=True)
 
     # """ Test Cases """
     @mark.p2
-    def test_xapi_call_to_get_viq_information(self, test_case_one_setup_teardown_skip_test):
-        """ This is the test case description for test two """
+    def test_xapi_test(self, test_case_one_setup_teardown_skip_test):
+        """ This is the test case description for test one """
+        print('test case')
 
-        # get the VIQ Info
-        xapiGlobalSettings = XapiGlobalSettings()
-        results = xapiGlobalSettings.get_viq_info()
-        print(f"get_viq_information: {results}")
+
 
 
 
