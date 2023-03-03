@@ -1801,15 +1801,15 @@ class SuiteUdk():
         print('Getting device Updated Status using')
         if device_serial != 'default':
             print("Getting Updated status of device with serial: ", device_serial)
-            device_row = self.xiq.xflowscommonDevices.get_device_row(device_serial)
+            device_row = self.xiq.xflowscommonDevices.get_device_row(device_serial=device_serial)
 
         if device_name != 'default':
             print("Getting Updated status of device with name: ", device_name)
-            device_row = self.xiq.xflowscommonDevices.get_device_row(device_name)
+            device_row = self.xiq.xflowscommonDevices.get_device_row(device_name=device_name)
 
         if device_mac != 'default':
             print("Getting Updated status of device with MAC: ", device_mac)
-            device_row = self.xiq.xflowscommonDevices.get_device_row(device_mac)
+            device_row = self.xiq.xflowscommonDevices.get_device_row(device_mac=device_mac)
 
         if device_row:
             time.sleep(5)

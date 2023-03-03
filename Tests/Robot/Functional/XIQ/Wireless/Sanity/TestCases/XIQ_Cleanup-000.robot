@@ -3,66 +3,57 @@
 # Description   : Resets VIQ and deletes all devices and existing configuration
 
 *** Variables ***
-${MAP_FILE_NAME}            auto_location_01_1595321828282.tar.gz
 
 *** Settings ***
 Library     xiq/flows/common/Login.py
 Library     xiq/flows/globalsettings/GlobalSetting.py
-Library     common/TestFlow.py
-
-Library     common/Cli.py
-Library     xiq/flows/mlinsights/Network360Plan.py
 
 Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 
-Force Tags   testbed_1_node
+Force Tags   testbed_none
 
 *** Keywords ***
 
 *** Test Cases ***
-TCCS-13205_Step1: Perform Backup VIQ 
-    [Documentation]    Takes backup of VIQ
+TCCS-13205: Perform Backup/Reset VIQ , Add default login password for devices
+    [Documentation]    Takes backup of VIQ and Resets the VIQ,  Add default login password for devices
 
-    [Tags]             production       tccs_13205  tccs_13205_step1
+    [Tags]             production       tccs_13205
 
     ${LOGIN_STATUS}=                Login User              ${TENANT_USERNAME}     ${TENANT_PASSWORD}
     should be equal as integers         ${LOGIN_STATUS}               1
 
+    #Perform Backup VIQ
     ${BACKUP_VIQ_DATA}=             Backup VIQ Data
     Should Be Equal As Strings      '${BACKUP_VIQ_DATA}'              '1'
 
-    [Teardown]      Quit Browser
+    ${QUIT_BROWSER_RESULT}=         Quit Browser
+    Should Be Equal As Integers     ${QUIT_BROWSER_RESULT}          1
 
-TCCS-13205_Step2: Perform Reset VIQ
-    [Documentation]         Resets VIQ
-
-    [Tags]                  production      tccs_13205  tccs_13205_step2
-
-    Depends on      TCCS-13205_Step1
     Sleep    3 minutes
+
+    #Perform Reset VIQ
     ${LOGIN_STATUS}=                   Login User          ${tenant_username}     ${tenant_password}
     should be equal as integers         ${LOGIN_STATUS}               1
 
     ${RESET_VIQ_DATA}=              Reset VIQ Data
     Should Be Equal As Strings      '${RESET_VIQ_DATA}'              '1'
 
-    [Teardown]          Quit Browser
-    
-TCCS-13205_Step3: Import Map and Change Device Password
-    [Documentation]         Imports map
-
-    [Tags]                  production  tccs_13205  tccs_13205_step3
-
-    Depends on      TCCS-13205_Step2
+    ${QUIT_BROWSER_RESULT}=         Quit Browser
+    Should Be Equal As Integers     ${QUIT_BROWSER_RESULT}          1
 
     Sleep    3 minutes
+
+    # Add default login password for devices
     ${LOGIN_STATUS}=                   Login User          ${tenant_username}     ${tenant_password}       check_warning_msg=True
     should be equal as integers         ${LOGIN_STATUS}               1
 
-    # Add default login password for devices
     ${CHANGE_PASSWORD_STATUS}=      Change Device Password                  Aerohive123
     should be equal as integers     ${CHANGE_PASSWORD_STATUS}               1
 
-    [Teardown]   run keywords       Logout User
-    ...                             Quit Browser
+    ${LOGOUT_RESULT}=               Logout User
+    Should Be Equal As Integers     ${LOGOUT_RESULT}                1
+
+    ${QUIT_BROWSER_RESULT}=         Quit Browser
+    Should Be Equal As Integers     ${QUIT_BROWSER_RESULT}          1

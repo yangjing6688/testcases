@@ -1,6 +1,7 @@
 # Built-in imports
 import inspect
 import logging
+import os
 import queue
 import sys
 import threading
@@ -22,7 +23,7 @@ import pytest
 from pytest import (
     fixture,
     hookimpl)
-from pytest_testconfig import config
+from pytest_testconfig import config as pytest_config
 from yaml import safe_load as yaml_safe_load
 
 
@@ -100,6 +101,7 @@ def pytest_addoption(parser):
     parser.addoption("--customReportDate", action="store_true", default=False, help="Adds a report date to the report_<date>.html file")
     parser.addoption("--customReportTitle", action="store", default=None, help="Adds a Custom title to the report htmls file")
     parser.addoption("--runlist", action="store", help="The path to the runlist", default="default")
+    parser.addoption("--xapienable", action="store_true", default=False, help="Set the XAPI_ENABLE flag")
 
 def pytest_html_report_title(report):
     # Update title on web page
@@ -130,6 +132,16 @@ def pytest_configure(config):
         # logging.getLogger("urllib3").propagate = False
         patch_https_connection_pool(maxsize=100)
         patch_http_connection_pool(maxsize=100)
+
+        # Enable the xapi on the command line
+        if config.option.xapienable:
+            try:
+                # Add both the robot and pytest variable
+                pytest_config["XAPI_ENABLE"] = True
+                pytest_config["${XAPI_ENABLE}"] = True
+                print('XAPIENABLE is True')
+            except Exception as e:
+                print(f'Exception trying to add xapienable: {e}')
 
         if config.option.customReportDate:
             # set the timestamp
