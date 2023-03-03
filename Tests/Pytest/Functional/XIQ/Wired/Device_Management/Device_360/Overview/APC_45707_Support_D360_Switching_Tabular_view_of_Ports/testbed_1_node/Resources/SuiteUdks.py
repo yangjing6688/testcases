@@ -910,7 +910,7 @@ class SuiteUdk:
         time.sleep(10)
 
         self.utils.print_info(f"Select switch row with serial {dut.mac}")
-        if not self.devices.select_device(dut.mac):
+        if not self.devices.select_device(device_mac=dut.mac):
             self.utils.print_info(f"Switch {dut.mac} is not present in the grid")
             return -1
         time.sleep(2)
@@ -958,7 +958,7 @@ class SuiteUdk:
         time.sleep(10)
         
         self.utils.print_info(f"Select switch row with serial {dut.mac}")
-        if not self.devices.select_device(dut.mac):
+        if not self.devices.select_device(device_mac=dut.mac):
             self.utils.print_info(f"Switch {dut.mac} is not present in the grid")
             return -1
         time.sleep(2)

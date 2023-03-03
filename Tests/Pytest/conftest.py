@@ -3249,7 +3249,7 @@ def update_devices(
                 ]
             ):
                 logger.step(f"Select switch row with serial '{dut.mac}'.")
-                if not xiq.xflowscommonDevices.select_device(dut.mac):
+                if not xiq.xflowscommonDevices.select_device(device_mac=dut.mac):
                     error_msg = f"Switch '{dut.mac}' is not present in the grid."
                     logger.error(error_msg)
                     pytest.fail(error_msg)
