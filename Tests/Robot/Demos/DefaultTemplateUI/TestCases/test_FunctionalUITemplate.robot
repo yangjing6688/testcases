@@ -4,8 +4,7 @@ Suite Setup     Test Suite Setup
 Suite Teardown  Test Suite Cleanup
 Force Tags      testbed_1_node
 
-Library     common/Utils.py
-Library     xiq/flows/common/Login.py
+Library     extauto/xiq/flows/common/Login.py
 
 *** Test Cases ***
 01 do_something
