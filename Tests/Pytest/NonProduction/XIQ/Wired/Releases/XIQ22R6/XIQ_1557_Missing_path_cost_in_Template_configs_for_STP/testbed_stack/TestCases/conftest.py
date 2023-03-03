@@ -212,7 +212,7 @@ def _temporary_fix_assign_policy(xiq, policy_name, dut):
     xiq.xflowscommonDevices._goto_devices()
     time.sleep(10)
 
-    assert devices.select_device(dut.mac)
+    assert devices.select_device(device_mac=dut.mac)
     time.sleep(2)
 
     auto_actions.click(devices.devices_web_elements.get_manage_device_actions_button())
