@@ -40,7 +40,7 @@ ${APPLIANCE_USERNAME}               ${appliance.user}
 ${APPLIANCE_PASSWORD}               ${appliance.password}
 
 ${SSH_PORT}                         22
-${DOWNLOAD_TIMEOUT_SEC}             300
+${DOWNLOAD_TIMEOUT_SEC}             600
 ${INSTALL_DOWNLOAD_TIMEOUT_SEC}     7200
 ${ESX_VM_CMD_TIMEOUT_SEC}           300
 
