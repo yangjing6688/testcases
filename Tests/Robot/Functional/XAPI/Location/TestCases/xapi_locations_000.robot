@@ -146,9 +146,9 @@ TCXM-6761: Topology-Update LOCATION by ID
     [Tags]                  development      tcxm_6761
     
     ${LOCATION_6761_1}=  Set Variable  XAPI-Topology-Location-6761-1
-    ${LOCATION_6761_2}=  Set Variable  XAPI-Topology-Location-6761-2
+    ${LOCATION_6761_2}=  Set Variable  XAPI-Topology-Loc-6761-Updated
     ${BUILDING_6761_1}=  Set Variable  XAPI-Topology-Building-6761-1
-    ${BUILDING_6761_2}=  Set Variable  XAPI-Topology-Building-6761-2
+    ${BUILDING_6761_2}=  Set Variable  XAPI-Topology-Loc-6761-Updated
     ${BUILDING_6761_1_ADDR} =  Set Variable  Address-01-6761
     ${BUILDING_6761_2_ADDR} =  Set Variable  Address-02-6761
     ${FLOOR_6761} =  Set Variable  XAPI-Topology-Floor-6761
