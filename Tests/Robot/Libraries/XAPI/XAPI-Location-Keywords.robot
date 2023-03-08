@@ -151,6 +151,14 @@ xapi update location and get api response
     Log               ${RESPONSE}
     [Return]         ${RESPONSE}
 
+xapi update location and get api response with status
+    [Documentation]  Used to Update a Location And Get API Response
+    [Arguments]      ${PARENT_ID}   ${LOCATION_ID}    ${NEW_LOCATION_NAME}
+    ${httpCode}  ${RESPONSE}=     rest api put      /locations/${LOCATION_ID}         '{ "parent_id": "${PARENT_ID}", "name": "${NEW_LOCATION_NAME}" }'      result_code=response_map
+    Log               ${httpCode}
+    Log               ${RESPONSE}
+    [Return]         ${RESPONSE}
+
 xapi update location
     [Documentation]  Used to Update a Location
     [Arguments]      ${PARENT_ID}   ${LOCATION_ID}    ${NEW_LOCATION_NAME}
@@ -183,6 +191,14 @@ xapi update building and get api response
     [Documentation]  Used to Update a Building And Get API Response
     [Arguments]      ${PARENT_ID}   ${BUILDING_ID}    ${NEW_BUILDING_NAME}
     ${RESPONSE}=     rest api put v3     /locations/building/${BUILDING_ID}         '{ "parent_id": "${PARENT_ID}", "name": "${NEW_BUILDING_NAME}", "address": "${NEW_BUILDING_NAME}"}'
+    Log              ${RESPONSE}
+    [Return]         ${RESPONSE}
+
+xapi update building and get api response with status
+    [Documentation]  Used to Update a Building And Get API Response
+    [Arguments]      ${PARENT_ID}   ${BUILDING_ID}    ${NEW_BUILDING_NAME}
+    ${httpCode}  ${RESPONSE}=     rest api put     /locations/building/${BUILDING_ID}         '{ "parent_id": "${PARENT_ID}", "name": "${NEW_BUILDING_NAME}", "address": "${NEW_BUILDING_NAME}"}'      result_code=response_map
+    Log              ${httpCode}
     Log              ${RESPONSE}
     [Return]         ${RESPONSE}
 
@@ -221,6 +237,14 @@ xapi update floor and get api response
      Log              ${RESPONSE}
      [Return]         ${RESPONSE}
 
+xapi update floor and get api response with status
+    [Documentation]  Used to Update a Floor And Get API Response
+    [Arguments]      ${PARENT_ID}   ${FLOOR_ID}    ${NEW_FLOOR_NAME}
+    #${RESPONSE}=     rest api put v3      /locations/floor/${FLOOR_ID}         '{"parent_id": "${PARENT_ID}", "name": "${NEW_FLOOR_NAME}", "environment": "AUTO_ESTIMATE", "db_attenuation": "15", "measurement_unit": "FEET", "installation_height": "12", "map_size_width": "12", "map_size_height": "12", "map_name": "" }'
+    ${httpCode}  ${RESPONSE}=     rest api put      /locations/floor/${FLOOR_ID}         '{"parent_id": "${PARENT_ID}", "name": "${NEW_FLOOR_NAME}", "environment": "AUTO_ESTIMATE", "db_attenuation": "15", "measurement_unit": "FEET", "installation_height": "12", "map_size_width": "12", "map_size_height": "12", "map_name": "" }'      result_code=response_map
+    Log              ${httpCode}
+    Log              ${RESPONSE}
+    [Return]         ${RESPONSE}
 
 xapi update floor
     [Documentation]  Used to Update a Floor
