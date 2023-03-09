@@ -1,0 +1,16 @@
+import random
+
+RANDOM_INT = random.randint(0, 9999)
+
+CCG_NAME1 = f"AutoCCG12345678901234567890{RANDOM_INT}"
+CCG_NAME2 = f"CCG_MANAGE_{RANDOM_INT}"
+CCG_DUPLICATE = f"CCG_DUPLICATE_{RANDOM_INT}"
+RULE1_NAME = f"RULE1_NAME_{RANDOM_INT}"
+NETWORK = f"NETWORK_CCG_{RANDOM_INT}"
+CONFIG_PUSH_SSID = f"SSID_CCG_{RANDOM_INT}"
+
+BROADCAST_SSID_DEFAULT = {'WIFI0': 'Enable', 'WIFI1': 'Enable'}
+OPEN_CWP = {'enable_cwp': 'Disable'}
+OPEN_AUTHENTICATION_PROFILE0 = {'auth_type': 'Open', 'cwp_profile': OPEN_CWP}
+CONFIG_PUSH_OPEN_NW_02 = {'ssid_name': CONFIG_PUSH_SSID, 'network_type': 'standard',
+                           'ssid_profile': BROADCAST_SSID_DEFAULT, 'auth_profile': OPEN_AUTHENTICATION_PROFILE0} 
