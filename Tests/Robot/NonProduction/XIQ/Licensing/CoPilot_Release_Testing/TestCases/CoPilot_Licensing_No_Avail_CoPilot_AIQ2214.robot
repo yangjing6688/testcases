@@ -124,7 +124,7 @@ Test 4: Onboard Second Test Device and Verify Success
     Should Be Equal As Strings       ${CONF_STATUS_RESULT}    1
     Close Spawn         ${SPAWN_CONNECTION}
 
-    Onboard New Test Device                     ${DUT2_SERIAL}  $${netelem2}
+    Onboard New Test Device                     ${DUT2_SERIAL}  ${netelem2}
 
     Refresh Devices Page
     Verify and Wait Until Device Online         ${DUT2_SERIAL}

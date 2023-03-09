@@ -146,9 +146,9 @@ TCXM-6761: Topology-Update LOCATION by ID
     [Tags]                  development      tcxm_6761
     
     ${LOCATION_6761_1}=  Set Variable  XAPI-Topology-Location-6761-1
-    ${LOCATION_6761_2}=  Set Variable  XAPI-Topology-Location-6761-2
+    ${LOCATION_6761_2}=  Set Variable  XAPI-Topology-Loc-6761-Updated
     ${BUILDING_6761_1}=  Set Variable  XAPI-Topology-Building-6761-1
-    ${BUILDING_6761_2}=  Set Variable  XAPI-Topology-Building-6761-2
+    ${BUILDING_6761_2}=  Set Variable  XAPI-Topology-Loc-6761-Updated
     ${BUILDING_6761_1_ADDR} =  Set Variable  Address-01-6761
     ${BUILDING_6761_2_ADDR} =  Set Variable  Address-02-6761
     ${FLOOR_6761} =  Set Variable  XAPI-Topology-Floor-6761
@@ -488,12 +488,12 @@ TCXM-6777: NEG-Topology-Update LOCATION with incorrect PARENT ID of GLOBAL VIEW 
     should contain          ${RESPONSE}        ${LOCATION_6777_1}
 
     #Update LOCATION with incorrect PARENT ID of GLOBAL VIEW
-    ${RESPONSE}=            xapi update location and get api response        ${WRONG_ID}     ${LOCATION_6777_1_ID}    ${LOCATION_6777_2}
+    ${RESPONSE}=            xapi update location and get api response with status        ${WRONG_ID}     ${LOCATION_6777_1_ID}    ${LOCATION_6777_2}
     ${RESPONSE_STRING}=     get json value as string                    ${RESPONSE}
     should contain          ${RESPONSE_STRING}        ${ERROR_CODE_STR}
 
     #Update LOCATION with incorrect Location ID
-    ${RESPONSE}=            xapi update location and get api response        ${ROOT_LOCATION_ID}     ${WRONG_ID}    ${LOCATION_6777_2}
+    ${RESPONSE}=            xapi update location and get api response with status        ${ROOT_LOCATION_ID}     ${WRONG_ID}    ${LOCATION_6777_2}
     ${RESPONSE_STRING}=     get json value as string                    ${RESPONSE}
     should contain          ${RESPONSE_STRING}        ${ERROR_CODE_STR}
 
@@ -625,12 +625,12 @@ TCXM-6784: NEG-Topology-Update BUILDING with incorrect PARENT ID of Location and
     should contain          ${RESPONSE}             ${BUILDING_6784_1}
 
     #Update BUILDING with incorrect PARENT ID of Building
-    ${RESPONSE}=            xapi update building and get api response            ${WRONG_ID}         ${BUILDING_6784_1_ID}    ${BUILDING_6784_2}
+    ${RESPONSE}=            xapi update building and get api response with status            ${WRONG_ID}         ${BUILDING_6784_1_ID}    ${BUILDING_6784_2}
     ${RESPONSE_STRING}=     get json value as string                        ${RESPONSE}
     should contain          ${RESPONSE_STRING}        ${ERROR_CODE_STR}
 
     #Update BUILDING with incorrect BUILDING ID
-    ${RESPONSE}=            xapi update building and get api response            ${LOCATION_6784_1_ID}     ${WRONG_ID}        ${BUILDING_6784_2}
+    ${RESPONSE}=            xapi update building and get api response with status            ${LOCATION_6784_1_ID}     ${WRONG_ID}        ${BUILDING_6784_2}
     ${RESPONSE_STRING}=     get json value as string                        ${RESPONSE}
     should contain          ${RESPONSE_STRING}        ${ERROR_CODE_STR}
 
@@ -794,12 +794,12 @@ TCXM-6791: NEG-Topology-Update FLOOR with incorrect PARAMETERS
     should contain          ${RESPONSE}             ${FLOOR_6791_1}
 
     #Update FLOOR with incorrect PARENT ID of Floor
-    ${RESPONSE}=            xapi update floor and get api response            ${WRONG_ID}          ${FLOOR_6791_1_ID}    ${FLOOR_6791_2}
+    ${RESPONSE}=            xapi update floor and get api response with status            ${WRONG_ID}          ${FLOOR_6791_1_ID}    ${FLOOR_6791_2}
     ${RESPONSE_STRING}=     get json value as string                     ${RESPONSE}
     should contain          ${RESPONSE_STRING}                           ${ERROR_CODE_STR}
 
     #Update FLOOR with incorrect FLOOR ID
-    ${RESPONSE}=            xapi update floor and get api response            ${BUILDING_6791_1_ID}     ${WRONG_ID}      ${FLOOR_6791_2}
+    ${RESPONSE}=            xapi update floor and get api response with status            ${BUILDING_6791_1_ID}     ${WRONG_ID}      ${FLOOR_6791_2}
     ${RESPONSE_STRING}=     get json value as string                     ${RESPONSE}
     should contain          ${RESPONSE_STRING}                           ${ERROR_CODE_STR}
 

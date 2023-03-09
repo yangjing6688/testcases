@@ -253,10 +253,10 @@ TCCS-9268: CCG CommonObject Add Edit Delete
     ${ASSIGN_CCG_POLICY}            assign cloud config group       ${CCG_NAME1}        Delta       none        ${ap2.serial}       ${ap3.serial}
     should be equal as strings     '${ASSIGN_CCG_POLICY}'     '1'
 
-    ${EDIT_CCG_REMOVE_DEVICE}       edit cloud config group         ${CCG_NAME1}        remove           ${ap1.serial}
+    ${EDIT_CCG_REMOVE_DEVICE}       edit cloud config group         ${CCG_NAME1}        remove           ap_serials=${ap1.serial}
     should be equal as strings     '${EDIT_CCG_REMOVE_DEVICE}'     '1'
 
-    ${EDIT_CCG_ADD_DEVICE}          edit cloud config group         ${CCG_NAME1}        add              ${ap1.serial}
+    ${EDIT_CCG_ADD_DEVICE}          edit cloud config group         ${CCG_NAME1}        add              ap_serials=${ap1.serial}
     should be equal as strings     '${EDIT_CCG_ADD_DEVICE}'     '1'
 
     ${DELETE_CCG}                   delete cloud config group       ${CCG_NAME1}
@@ -346,7 +346,7 @@ TCCS-9170: CFD-4667 Edit the CCG report error The item cannot be saved because t
     ${CCG_STATUS1}                  add cloud config group from manage     ${CCG_NAME4}        ${CCG_DESC4}        ${ap1.serial}
     should be equal as strings     '${CCG_STATUS1}'     '1'
 
-    ${EDIT_CCG_ADD_DEVICE}          edit cloud config group         ${CCG_NAME4}        add              ${ap2.serial}
+    ${EDIT_CCG_ADD_DEVICE}          edit cloud config group         ${CCG_NAME4}        add              ap_serials=${ap2.serial}
     should be equal as strings     '${EDIT_CCG_ADD_DEVICE}'     '1'
 
 

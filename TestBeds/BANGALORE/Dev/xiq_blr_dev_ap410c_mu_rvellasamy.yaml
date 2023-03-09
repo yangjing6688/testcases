@@ -37,13 +37,14 @@ ap1:
       neighbour_mac:            BCF3102A9880
 
 mu1:
-  ip:             10.234.178.227
+  ip:             10.234.135.227
   port:           8270
+  hostname:       Ramkumar-LB
   username:       extreme
   password:       Extreme@123
   platform:       windows
   interface:      wlan0
-  wifi_mac:       548D5A693CE6
+  wifi_mac:       548D5A693D31
   ethernet_mac:   2CEA7F023CF7
-  wifi_network:   10.234.178
-  wifi_network_vlan10:    10.234.178
+  wifi_network:   10.234.135
+  wifi_network_vlan10:    10.234.135
