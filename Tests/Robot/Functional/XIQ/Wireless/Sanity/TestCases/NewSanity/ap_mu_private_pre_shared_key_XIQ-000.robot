@@ -60,8 +60,8 @@ Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   mu1
 
 Force Tags  testbed_1_node
 
-Suite Setup      Suite Setup
-Suite Teardown       Run Keyword And Warn On Failure    Suite Teardown
+Suite Setup         Suite Setup
+Suite Teardown      Run Keyword And Warn On Failure    Suite Teardown
 
 *** Keywords ***
 Suite Setup
@@ -112,16 +112,14 @@ Suite Setup
     Should Contain Any              ${DEVICE_STATUS}    green   config audit mismatch
 
     # Upgrade the device to latest/supported version to avoid config push issues.
-    ${LATEST_VERSION}=      Upgrade Device      ${device1}
-    Should Not be Empty     ${LATEST_VERSION}
+    ${LATEST_VERSION}=              Upgrade Device                  ${device1}
+    Should Not be Empty             ${LATEST_VERSION}
 
-    Sleep                   ${ap_reboot_wait}
+    ${REBOOT_STATUS}=               Wait Until Device Reboots       ${device1.serial}
+    Should Be Equal as Integers     ${REBOOT_STATUS}                    1
 
-    ${CONNECTED_STATUS}=    Wait Until Device Online                ${device1.serial}       retry_count=15
-    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
-
-    ${REBOOT_STATUS}=    Wait Until Device Reboots               ${device1.serial}
-    Should Be Equal as Integers             ${REBOOT_STATUS}          1
+    ${CONNECTED_STATUS}=            Wait Until Device Online        ${device1.serial}
+    Should Be Equal as Integers     ${CONNECTED_STATUS}                 1
 
     ${DELETE_POLICIES_RESULT}=      Delete Network Polices          ${OPEN_POLICY}      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
     Should Be Equal As Integers     ${DELETE_POLICIES_RESULT}           1
@@ -172,28 +170,6 @@ Suite Teardown
 
     mu1.Disconnect WiFi
 
-Connect To PPSK Wireless Network
-    [Arguments]     ${SSID}     ${KEY}
-    ${CONNECT_RESULT}=      mu1.Connect WPA2 PPSK Network       ${SSID}     ${KEY}
-    Should Be Equal As Integers     ${CONNECT_RESULT}           1
-
-Reconnect To PPSK Wireless Network
-    [Arguments]     ${SSID}     ${KEY}
-    mu1.Disconnect WiFi
-    Log to Console      Sleep for ${client_disconnect_wait} seconds
-    Sleep               ${client_disconnect_wait}
-
-    Connect To PPSK Wireless Network        ${SSID}             ${KEY}
-    Log to Console      Sleep for ${client_connect_wait} seconds
-    Sleep               ${client_connect_wait}
-
-    ${URL_TITLE}=       Check Internet Connectivity             ${mu1.ip}
-    Should Be Equal As Strings              '${URL_TITLE}'      '${PAGE_TITLE}'
-
-Wi-Fi Interface IP Address Check
-    ${WIFI_IP_ADDRESS}=     mu1.Get Wi Fi Interface Ip Address
-    Should Contain Any      ${WIFI_IP_ADDRESS}           ${mu1.wifi_network}     ${mu1.wifi_network_vlan10}
-
 Test Case Teardown
     [Arguments]     ${POLICY}   ${SSID}     ${USER_GROUP}
     ${UPDATE_POLICY_RESULT}=        Update Network Policy To AP     ${OPEN_POLICY}      ap_serial=${device1.serial}
@@ -213,6 +189,25 @@ Test Case Teardown
 
     mu1.Disconnect WiFi
     mu1.Delete WLAN Profile         ${SSID}
+
+Connect To PPSK Wireless Network
+    [Arguments]     ${SSID}     ${KEY}
+    ${CONNECT_RESULT}=      mu1.Connect WPA2 PPSK Network       ${SSID}     ${KEY}
+    Should Be Equal As Integers     ${CONNECT_RESULT}           1
+
+Wi-Fi Interface IP Address Check
+    ${WIFI_IP_ADDRESS}=     mu1.Get Wi Fi Interface Ip Address
+    Should Contain Any      ${WIFI_IP_ADDRESS}           ${mu1.wifi_network}     ${mu1.wifi_network_vlan10}
+
+Negative Internet Connectivity Check
+    ${FLAG}=    mu1.Check Internet Connectivity
+    Should Be Equal As Integers     ${FLAG}     -1
+    Log To Console      Internet is NOT available on the MU machine, as expected!
+
+Positive Internet Connectivity Check
+    ${FLAG}=    mu1.Check Internet Connectivity
+    Should Be Equal As Integers     ${FLAG}     1
+    Log To Console      Internet is available on the MU machine, as expected!
 
 *** Test Cases ***
 TCCS-7678: Cloud DB PPSK Network Client Connectivity With Bulk Users Group
@@ -235,8 +230,7 @@ TCCS-7678: Cloud DB PPSK Network Client Connectivity With Bulk Users Group
     Log to Console      Sleep for ${client_connect_wait} seconds
     Sleep               ${client_connect_wait}
 
-    ${URL_TITLE}=       Check Internet Connectivity     ${mu1.ip}
-    Should Not Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
+    Negative Internet Connectivity Check
 
     ${CREDENTIALS}=     Get Login Credential From Attachments       ${MAIL_ID1}     ${MAIL_ID1_PASS}
 
@@ -248,13 +242,10 @@ TCCS-7678: Cloud DB PPSK Network Client Connectivity With Bulk Users Group
 
     Wi-Fi Interface IP Address Check
 
-    ${URL_TITLE}=       Check Internet Connectivity     ${mu1.ip}
-    Run keyword If  '${URL_TITLE}' != '${PAGE_TITLE}'
-    ...     Reconnect To PPSK Wireless Network      ${BULK_CLOUD_NW_SSID}       ${CREDENTIALS['user_1']['Access Key']}
+    Positive Internet Connectivity Check
 
     [Teardown]
     Test Case Teardown      ${BULK_CLOUD_NW_POLICY}     ${BULK_CLOUD_NW_SSID}   ${BULK_CLOUD_USER_GROUP}
-
 
 TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
     [Documentation]     Check client connectivity to Wi-Fi PPSK network with user group and local password DB
@@ -276,8 +267,7 @@ TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
     Log to Console      Sleep for ${client_connect_wait} seconds
     Sleep               ${client_connect_wait}
 
-    ${URL_TITLE}=       Check Internet Connectivity     ${mu1.ip}
-    Should Not Be Equal As Strings  '${URL_TITLE}'                  '${PAGE_TITLE}'
+    Negative Internet Connectivity Check
 
     ${CREDENTIALS}=     Get Login Credential From Attachments       ${MAIL_ID1}     ${MAIL_ID1_PASS}
 
@@ -289,9 +279,7 @@ TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
 
     Wi-Fi Interface IP Address Check
 
-    ${URL_TITLE}=       Check Internet Connectivity     ${mu1.ip}
-    Run keyword If  '${URL_TITLE}' != '${PAGE_TITLE}'
-    ...     Reconnect To PPSK Wireless Network      ${BULK_LOCAL_NW_SSID}       ${CREDENTIALS['user2_1']['Access Key']}
+    Positive Internet Connectivity Check
 
     [Teardown]
     Test Case Teardown      ${BULK_LOCAL_NW_POLICY}     ${BULK_LOCAL_NW_SSID}   ${BULK_LOCAL_USER_GROUP}
