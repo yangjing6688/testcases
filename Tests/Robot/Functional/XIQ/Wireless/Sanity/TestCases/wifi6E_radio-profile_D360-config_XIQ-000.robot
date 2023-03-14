@@ -102,7 +102,7 @@ Navigate To Device Config Wireless wifi2
 Step0: Onboard AP1
     [Documentation]    Onboard AP
     [Tags]             tcxm-17044    development     step0    steps    step01
-    delete all aps
+    delete all devices
     sleep  60s
     ${STATUS}                      onboard device quick      ${ap1}
     should be equal as integers    ${STATUS}         1
@@ -705,4 +705,4 @@ TCXM-18412: cleanup - Setting default radio profiles
     update_override_configuration_to_device  device_serial=${ap1.serial}
     sleep  60s
 
-    delete all aps
+    delete all devices
