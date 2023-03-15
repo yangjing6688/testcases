@@ -181,12 +181,12 @@ Suite Teardown
     Remote_Server.Disconnect WiFi
 
 Negative Internet Connectivity Check
-    ${FLAG}=    Remote_Server.Check Internet Connectivity
+    ${FLAG}=    Remote_Server.Verify Internet Connectivity
     Should Be Equal As Integers     ${FLAG}     -1
     Log To Console      Internet is NOT available on the MU machine, as expected!
 
 Positive Internet Connectivity Check
-    ${FLAG}=    Remote_Server.Check Internet Connectivity
+    ${FLAG}=    Remote_Server.Verify Internet Connectivity
     Should Be Equal As Integers     ${FLAG}     1
     Log To Console      Internet is available on the MU machine, as expected!
 

@@ -200,12 +200,12 @@ Wi-Fi Interface IP Address Check
     Should Contain Any      ${WIFI_IP_ADDRESS}           ${mu1.wifi_network}     ${mu1.wifi_network_vlan10}
 
 Negative Internet Connectivity Check
-    ${FLAG}=    mu1.Check Internet Connectivity
+    ${FLAG}=    mu1.Verify Internet Connectivity
     Should Be Equal As Integers     ${FLAG}     -1
     Log To Console      Internet is NOT available on the MU machine, as expected!
 
 Positive Internet Connectivity Check
-    ${FLAG}=    mu1.Check Internet Connectivity
+    ${FLAG}=    mu1.Verify Internet Connectivity
     Should Be Equal As Integers     ${FLAG}     1
     Log To Console      Internet is available on the MU machine, as expected!
 
