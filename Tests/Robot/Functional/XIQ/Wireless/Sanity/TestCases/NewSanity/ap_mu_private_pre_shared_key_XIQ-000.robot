@@ -115,7 +115,7 @@ Suite Setup
     ${LATEST_VERSION}=              Upgrade Device                  ${device1}
     Should Not be Empty             ${LATEST_VERSION}
 
-    ${REBOOT_STATUS}=               Wait Until Device Reboots       ${device1.serial}
+    ${REBOOT_STATUS}=               Wait Until Device Reboots       ${device1.serial}       retry_count=15
     Should Be Equal as Integers     ${REBOOT_STATUS}                    1
 
     ${CONNECTED_STATUS}=            Wait Until Device Online        ${device1.serial}
@@ -200,12 +200,12 @@ Wi-Fi Interface IP Address Check
     Should Contain Any      ${WIFI_IP_ADDRESS}           ${mu1.wifi_network}     ${mu1.wifi_network_vlan10}
 
 Negative Internet Connectivity Check
-    ${FLAG}=    mu1.Check Internet Connectivity
+    ${FLAG}=    mu1.Verify Internet Connectivity
     Should Be Equal As Integers     ${FLAG}     -1
     Log To Console      Internet is NOT available on the MU machine, as expected!
 
 Positive Internet Connectivity Check
-    ${FLAG}=    mu1.Check Internet Connectivity
+    ${FLAG}=    mu1.Verify Internet Connectivity
     Should Be Equal As Integers     ${FLAG}     1
     Log To Console      Internet is available on the MU machine, as expected!
 

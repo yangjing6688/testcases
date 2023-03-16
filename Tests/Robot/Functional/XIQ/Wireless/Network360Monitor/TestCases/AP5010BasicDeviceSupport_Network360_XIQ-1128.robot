@@ -200,7 +200,7 @@ Test4 - TCXM-18725: N360M_Client_Count_1_1
 *** Keywords ***
 Cleanup
     Login User      ${tenant_username}      ${tenant_password}
-    delete all aps
+    delete all devices
     delete_all_ssids
     delete all network policies
     Logout User
