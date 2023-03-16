@@ -1,0 +1,148 @@
+data:
+  feature_name: Support an untagged vlan of "none" for EXOS/VOSS within Template/Device Level Config
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-1053
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=12083385
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  Xiq1053OneNodeTests::test_tcxm_17588:
+    author: vstefan
+    tc: tcxm_17588
+    title: Configure "none" option in "Native" for trunk ports in device level configuration
+
+  Xiq1053OneNodeTests::test_tcxm_17589:
+    author: vstefan
+    tc: tcxm_17589
+    title: Configure "none" option in "VLAN ID" for user-defined trunk port in template level configuration
+
+  Xiq1053OneNodeTests::test_tcxm_17590:
+    author: dpetrescu
+    tc: tcxm_17590
+    title: Configure "none" option in "Native" for trunk ports in device level configuration
+
+  Xiq1053OneNodeTests::test_tcxm_17591:
+    author: vstefan
+    tc: tcxm_17591
+    title: Configure "none" option in "VLAN ID" for user-defined trunk port in template level configuration
+
+  Xiq1053OneNodeTests::test_tcxm_17596:
+    author: kbr
+    tests:
+      - tc: tcxm_17596
+        port_type: onboarding
+        title: Configure "none" option for trunk ports in device level config for EXOS Device
+      - tc: tcxm_17597
+        port_type: disabled
+        title: Configure "none" option for trunk ports in device level config for EXOS Device
+
+  Xiq1053OneNodeTests::test_tcxm_17598:
+    author: kbr
+    tc: tcxm_17598
+    title: Configure "none" option in "Native" for user-defined trunk port in device level configuration
+
+  Xiq1053OneNodeTests::test_tcxm_17600:
+    author: kbr
+    tc: tcxm_17600
+    title: Configure "none" option in "Native" for user-defined trunk port in device level configuration
+
+  Xiq1053OneNodeTests::test_tcxm_17606:
+    author: vstefan
+    tc: tcxm_17606
+    title: Verify the port is added as tagged to all other existing vlans in XIQ
+
+  Xiq1053OneNodeTests::test_tcxm_19995:
+    author: vstefan
+    tc: tcxm_19995
+    title: Configure "none" option in "VLAN" for access port in device level configuration
+
+  Xiq1053OneNodeTests::test_tcxm_19996:
+    author: vstefan
+    tc: tcxm_19996
+    title: Configure "none" option in "VLAN ID" for user-defined access port in template level configuration
+
+  Xiq1053OneNodeTests::test_tcxm_19997:
+    author: dpetrescu
+    tc: tcxm_19997
+    title: Configure "none" option in "VLAN" for access port in device level configuration
+
+  Xiq1053OneNodeTests::test_tcxm_19998:
+    author: vstefan
+    tc: tcxm_19998
+    title: Configure "none" option in "VLAN ID" for user-defined access port in template level configuration
+
+  Xiq1053OneNodeTests::test_tcxm_19999:
+    author: vstefan
+    tc: tcxm_19999
+    title: Configure "none" option in "VLAN" for user-defined access port in device level configuration
+
+  Xiq1053OneNodeTests::test_tcxm_20000:
+    author: vstefan
+    tc: tcxm_20000
+    title: Configure "none" option in "VLAN ID" for user-defined access port in template level configuration
+
+  Xiq1053OneNodeTests::test_tcxm_20001:
+    author: vstefan
+    tests:
+      - tc: tcxm_20001
+        from: trunk
+        title: Configure "none" option for trunk port and change the port type of the specific port to access port
+      - tc: tcxm_20002
+        from: access
+        title: Configure "none" option for an access port and change the port type of the specific type to trunk port.
+
+  #################### TESTBED 1 NODE ##########################
+
+  #################### TESTBED STACK ##########################
+
+  Xiq1053StackTests::test_tcxm_21055:
+    author: vstefan
+    tc: tcxm_21055
+    title: Configure "none" option in "VLAN ID" for user-defined trunk port in template level configuration
+
+  Xiq1053StackTests::test_tcxm_21056:
+    author: dpetrescu
+    tc: tcxm_21056
+    title: Configure "none" option in "Native" for trunk ports in device level configuration
+
+  Xiq1053StackTests::test_tcxm_21057:
+    author: kbr
+    tc: tcxm_21057
+    title: Configure "none" option in "Native" for user-defined trunk port in device level configuration
+
+  Xiq1053StackTests::test_tcxm_21058:
+    author: dpetrescu
+    tc: tcxm_21058
+    title: Configure "none" option in "VLAN" for access port in device level configuration
+
+  Xiq1053StackTests::test_tcxm_21059:
+    author: vstefan
+    tc: tcxm_21059
+    title: Configure "none" option in "VLAN ID" for user-defined access port in template level configuration
+
+  Xiq1053StackTests::test_tcxm_21060:
+    author: vstefan
+    tc: tcxm_21060
+    title: Configure "none" option in "VLAN" for user-defined access port in device level configuration
+
+  Xiq1053StackTests::test_tcxm_21061:
+    author: dpetrescu
+    tc: tcxm_21061
+    title: Verify the port is added as tagged to all other existing vlans in XIQ
+
+  #################### TESTBED STACK ##########################

@@ -1,3 +1,8 @@
+data:
+  feature_name: Add Network Policy Switch/Fabric Engine (EXOS/VOSS) Port Types Section
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-6312
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=57215084
+
 tests:
   #################### XIQ ONBOARDING ##########################
 

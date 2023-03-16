@@ -1,0 +1,47 @@
+data:
+  feature_name: Provide status of CLI delta update to customer
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-1219
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=12015939
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE, TESTBED STACK ##########################
+
+  Xiq1219Tests::test_tcxm_16515_long_config_update:
+    author: Dragos Sofiea, Devi Ranganathan, Raluca Cionca
+    tests:
+      - title: Configure a long  config update and check the config update messages
+        tc: tcxm_16515
+        case: long_config
+      - tc: tcxm_16917
+        title: CLI command which spans many minutes
+        case: cli_spans_many_minutes
+      - tc: tcxm_16915
+        title: Configure a small config update and check the config update messages
+        case: small_config
+  
+  Xiq1219Tests::test_tcxm_16916_long_config_update:
+    author: Dragos Sofiea, Devi Ranganathan, Raluca Cionca
+    tc: tcxm_16916
+    title: Long list of CLI commands
+
+  Xiq1219Tests::test_tcxm_16516_long_config_update:
+    author: Dragos Sofiea, Devi Ranganathan, Raluca Cionca
+    tc: tcxm_16516
+    title: Long list of CLI commands and check messages in event page
+
+  #################### TESTBED 1 NODE, TESTBED STACK ##########################

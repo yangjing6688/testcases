@@ -10,925 +10,572 @@
 #                   TCXM-18717
 # Comments :        This test is applicable for exos, exos_Stack
 
-from pytest_testconfig import config, load_yaml
-from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary
-from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
-from pytest import mark
-from pytest import fixture
 import pytest
-import os
-import os.path
-import re
-import sys
 import time
 import string
 import random
-from pprint import pprint
-from ExtremeAutomation.Imports.pytestExecutionHelper import PytestExecutionHelper
-from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
-from ExtremeAutomation.Imports.XiqLibraryHelper import XiqLibraryHelper
-
-def random_word(x=12):
-    randword = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(x))
-    return randword
 
 
-location = "Location_" + random_word()
-building = "Building_" + random_word()
-floor = "Floor_" + random_word()
-network_policy_name = 'Policy_' + random_word()
-sw_template_name = 'Template_' + random_word()
-trunk_port_type_name = 'Trunk_' + random_word()
-vlan_range = '200-300'
-vlan_range2 = '400-500'
-port_numbers = '1,3,5,10'
-port_numbers2 = '6,7,8'
+class Xiq1027:
 
-@fixture()
-def xiq_teardown_template(request):
-    request.instance.executionHelper.testSkipCheck()
-    def teardown():
-        request.instance.cfg['${TEST_NAME}'] = 'Teardown Template'
-        if request.instance.tb.dut1.platform == 'Stack':
-            for slot in range(1, len(request.instance.tb.dut1.serial.split(',')) + 1):
-                request.instance.xiq.xflowscommonNavigator.navigate_to_devices()
-                request.instance.xiq.xflowsmanageDevices.refresh_devices_page()
-                # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
-                time.sleep(20)
-                def _check_d360_navigation():
-                    return request.instance.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(
-                                                                                           request.instance.tb.dut1.mac)
-                request.instance.xiq.Utils.wait_till(_check_d360_navigation, timeout=30, delay=10)
-                request.instance.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
+    @pytest.fixture
+    def xiq_teardown_template(self, xiq_library_at_class_level, suite_data, request, utils):
 
-                def _check_stack_selection():
-                    return request.instance.xiq.xflowsmanageDevice360.select_stack_unit(slot)
-                request.instance.xiq.Utils.wait_till(_check_stack_selection, timeout=30, delay=10)
+        def func(node, trunk_port_type_name):
 
-                request.instance.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan_stack(
-                                                                                  port_numbers=port_numbers2, slot=slot)
-            request.instance.xiq.xflowsmanageDevices.refresh_devices_page()
-            def _check_device_update():
-                return request.instance.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(
-                                                                                       policy_name=network_policy_name,
-                                                                                       option="disable",
-                                                                                       device_mac=request.instance.tb.dut1.mac)
+            network_policy_name = request.getfixturevalue(f"{node.node_name}_policy_name")
+            sw_template_name = request.getfixturevalue(f"{node.node_name}_template_name")
+            port_numbers_2 = suite_data["port_numbers_2"]
 
-            request.instance.xiq.Utils.wait_till(_check_device_update, timeout=60, delay=3, msg='Checking the '
-                                                                                                'initialization of the '
-                                                                                                'update')
+            if node.node_name == 'node_stack':
 
-            def _check_device_update_status():
-                return request.instance.xiq.xflowsmanageDevices.check_device_update_status_by_using_mac(request.instance.tb.dut1.mac)
+                xiq_library_at_class_level.xflowscommonNavigator.navigate_to_network_policies_list_view_page()
+                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
+                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
+                
+                for slot in range(1, len(node.serial.split(',')) + 1):
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot)
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(port_numbers_2, "Access Port")
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot=slot)
 
-            request.instance.xiq.Utils.wait_till(_check_device_update_status, timeout=300, delay=5, msg='Checking update status')
+                for slot in range(1, len(node.serial.split(',')) + 1):
+                    
+                    xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
+                    xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+                    time.sleep(20)
+                    xiq_library_at_class_level.xflowscommonNavigator.navigate_to_device360_page_with_mac(node.mac)
+                    xiq_library_at_class_level.xflowscommonNavigator.navigate_to_port_configuration_d360()
+                    xiq_library_at_class_level.xflowsmanageDevice360.select_stack_unit(slot)
 
-        else:
-            request.instance.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan(
-                                                                                device_mac=request.instance.tb.dut1.mac,
-                                                                                port_numbers=port_numbers2,
-                                                                                access_vlan_id="1")
-            request.instance.xiq.xflowsmanageDevices.refresh_devices_page()
-            def _check_device_update():
-                return request.instance.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(
-                                                                                       policy_name=network_policy_name,
-                                                                                       option="disable",
-                                                                                       device_mac=request.instance.tb.dut1.mac)
+                    xiq_library_at_class_level.xflowsmanageDevice360.device360_configure_ports_access_vlan_stack(port_numbers=port_numbers_2, slot=slot)
+                
+            else:
+                xiq_library_at_class_level.xflowsmanageDevice360.device360_configure_ports_access_vlan(
+                    device_mac=node.mac, port_numbers=port_numbers_2, access_vlan_id="1")
+                xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+            
+            xiq_library_at_class_level.xflowscommonDevices.get_update_devices_reboot_rollback(
+                policy_name=network_policy_name, option="disable", device_mac=node.mac)
+            xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
+            xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_port_type_profile(trunk_port_type_name)
 
-            request.instance.xiq.Utils.wait_till(_check_device_update, timeout=60, delay=3, msg='Checking the '
-                                                                                                'initialization of the '
-                                                                                                'update')
+        return func
 
-            def _check_device_update_status():
-                return request.instance.xiq.xflowsmanageDevices.check_device_update_status_by_using_mac(
-                                                                                           request.instance.tb.dut1.mac)
+    @pytest.fixture
+    def teardown_revert_to_template_default(self, xiq_library_at_class_level, request, utils, suite_data):
 
-            request.instance.xiq.Utils.wait_till(_check_device_update_status, timeout=300, delay=5,
-                                                 msg='Checking update status')
+        def func(node):
+            network_policy_name = request.getfixturevalue(f"{node.node_name}_policy_name")
+            xiq_library_at_class_level.xflowscommonDevices.revert_device_to_template_but_donot_update(node.mac)
+            xiq_library_at_class_level.xflowscommonDevices.get_update_devices_reboot_rollback(
+                policy_name=network_policy_name, option="disable", device_mac=node.mac)
+            xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
 
-            request.instance.xiq.xflowsconfigureSwitchTemplate.delete_switch_template_from_policy(network_policy_name,
-                                                                                                  sw_template_name)
-            request.instance.xiq.xflowsconfigureCommonObjects.delete_switch_template(sw_template_name)
+        return func
 
-            request.instance.xiq.xflowsconfigureCommonObjects.delete_port_type_profile(trunk_port_type_name)
+    @pytest.fixture
+    def teardown_template_configure_ports_access_port_numbers(self, xiq_library_at_class_level, utils, request, suite_data):
 
-    request.addfinalizer(teardown)
+        def func(node, trunk_port_type_name):
 
-@mark.testbed_1_node
-class XiqTests():
+            network_policy_name = request.getfixturevalue(f"{node.node_name}_policy_name")
+            sw_template_name = request.getfixturevalue(f"{node.node_name}_template_name")
+            port_numbers = suite_data["port_numbers"]
 
-    def init_xiq_libaries_and_login(self, username, password, url="default"):
-        self.xiq = XiqLibrary()
-        res = self.xiq.login.login_user(username, password,  url=url)
-        if res != 1:
-            pytest.fail('Could not Login')
+            xiq_library_at_class_level.xflowscommonNavigator.navigate_to_network_policies_list_view_page()
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
-    def deactivate_xiq_libaries_and_logout(self):
-        self.xiq.login.logout_user()
-        self.xiq.login.quit_browser()
-        self.xiq = None
+            if node.node_name == "node_stack":
+                for slot in range(1, len(node.serial.split(',')) + 1):
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot)
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(port_numbers, "Access Port")
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
 
-    def delete_create_location_organization(self):
-        self.xiq.xflowsmanageLocation.create_first_organization("Extreme", "broadway", "newyork", "Romania")
-        self.xiq.xflowsmanageLocation.delete_location_building_floor(location, building, floor)
-        self.xiq.xflowsmanageLocation.create_location_building_floor(location, building, floor)
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot=slot)
+            else:
+                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(port_numbers, "Access Port")
 
-    def check_ports_existence(self, ports):
-        output = self.devCmd.send_cmd(self.tb.dut1.name, 'show ports vlan ')[0].cmd_obj._return_text
-        ports_not_found = []
-        flag = 1
-        if self.tb.dut1.platform == 'Stack':
-            for slot in range(1, len(self.tb.dut1.serial.split(',')) + 1):
-                for port in ports.split(','):
-                    if str(slot) + ':' + port not in output:
-                        flag = -1
-                        ports_not_found.append(str(slot) + ':' + port)
-                    else:
-                        print("Found the port: " + str(slot) + ':' + port)
-        else:
-            for port in ports.split(','):
-                if port + ' ' not in output:
-                    flag = -1
-                    ports_not_found.append(port)
+            utils.wait_till(
+                lambda: xiq_library_at_class_level.xflowscommonDevices.get_update_devices_reboot_rollback(policy_name=network_policy_name, option="disable", device_mac=node.mac),
+                timeout=60, delay=3, msg='Checking the initialization of the update')
+
+            utils.wait_till(lambda: xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac),
+                timeout=300, delay=5, msg='Checking update status')
+            xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_port_type_profile(trunk_port_type_name)
+
+        return func
+
+    @pytest.fixture
+    def check_delta_cli_delete_port_range_commands_to_individual_from_template(self, suite_data, utils,
+        logger, xiq_library_at_class_level, enter_switch_cli, request, teardown_template_configure_ports_access_port_numbers):
+
+        def func(node):
+            
+            try:
+                trunk_port_type_name = "port_type_" + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(6))
+                network_policy_name = request.getfixturevalue(f"{node.node_name}_policy_name")
+                sw_template_name = request.getfixturevalue(f"{node.node_name}_template_name")
+                vlan_range = suite_data["vlan_range"]
+                port_numbers = suite_data["port_numbers"]
+                port_numbers_2 = suite_data["port_numbers_2"]
+
+                xiq_library_at_class_level.xflowsmanageXiqVerifications.template_add_vlans(
+                    node, port_numbers, vlan_range, trunk_port_type_name, network_policy_name, sw_template_name)
+
+                for new_trunk_port in port_numbers_2.split(','):
+                    for port in port_numbers.split(','):
+                        if int(new_trunk_port) == int(port):
+                            logger.fail("The new trunk ports must be different from the initial ones!")
+
+                xiq_library_at_class_level.xflowscommonNavigator.navigate_to_network_policies_list_view_page()
+                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
+                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
+
+                if node.node_name == "node_stack":
+                    for slot in range(1, len(node.serial.split(',')) + 1):
+                        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot)
+                        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(port_numbers,
+                                                                                                            "Access Port")
+                        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name,
+                                                                                            sw_template_name)
+                        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
+                        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot=slot)
                 else:
-                    print("Found the port: " + port)
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(port_numbers,
+                                                                                                        "Access Port")
 
-        if ports_not_found:
-            print('The following ports were not found: ')
-            for port_not_found in ports_not_found:
-                print(port_not_found)
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
-        return flag
+                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(
+                    port_numbers_2, trunk_port_type_name)
+                xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
+                xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
 
-    def get_device_template_model_name(self):
-        device_system_output = self.devCmd.send_cmd(self.tb.dut1.name, 'show system')[0].cmd_obj._return_text
-        system_type_regex = '(System Type:[ ]{2,}.{0,})'
-        system_type = self.xiq.Utils.get_regexp_matches(device_system_output, system_type_regex, 1)[0]
-        system_type_string = system_type.replace(self.xiq.Utils.get_regexp_matches(system_type,
-                                                                                   '(System Type:[ ]{2,})')[0], '')
-        if 'SwitchEngine' in system_type_string:
-            system_type_string = 'Switch Engine ' + system_type_string
-            system_type_string = system_type_string.replace('-SwitchEngine', '')
-            system_type_string = system_type_string.replace('\r', '')
-        elif 'EXOS' in system_type_string:
-            system_type_string = 'Switch Engine ' + system_type_string
-            system_type_string = system_type_string.replace('-EXOS', '')
-            system_type_string = system_type_string.replace('\r', '')
-        else:
-            system_type_string = system_type_string.replace(system_type_string[:4], system_type_string[:4] + '-')
-            system_type_string = system_type_string.replace('\r', '')
-        print('The device template name is: ' + system_type_string)
-        return system_type_string
-
-    def check_add_vlan_range_commands_to_individual(self, device_mac, vlan_rng, ports):
-        def check_delta_config():
-            pass
-        delta_configs = self.xiq.xflowsmanageDeviceConfig.get_device_config_audit_delta(device_mac)
-        if delta_configs == -1:
-            pytest.fail('Did not manage to collect the delta configurations.')
-
-        flag = 1
-        not_found = []
-        if self.tb.dut1.platform == 'Stack':
-            for slot in range(1, len(self.tb.dut1.serial.split(',')) + 1):
-                for port in ports.split(','):
-                    for vlan in range(int(vlan_rng.split('-')[0]), int(vlan_rng.split('-')[1]) + 1):
-                        if 'configure vlan ' + str(vlan) + ' add port ' + str(slot) + ':' + str(port) + ' tagged' + \
-                                                                                      ' #y' not in delta_configs:
-                            not_found.append('configure vlan ' + str(vlan) + ' add port ' + str(slot) + ':' +
-                                             str(port) + ' tagged' + ' #y')
-                            flag = 0
-
-        else:
-            for port in ports.split(','):
-                for vlan in range(int(vlan_rng.split('-')[0]), int(vlan_rng.split('-')[1])+1):
-                    if 'configure vlan ' + str(vlan) + ' add port ' + str(port) + ' tagged' + ' #y'not in delta_configs:
-                        not_found.append('configure vlan ' + str(vlan) + ' add port ' + str(port) + ' tagged' + ' #y')
-                        flag = 0
-        if not_found:
-            print("Did not find the following add port commands:\n")
-            for nf in not_found:
-                print(nf)
-        return flag
-
-    def check_delete_vlan_range_commands_to_individual(self, device_mac, vlan_range, ports):
-        delta_configs = self.xiq.xflowsmanageDeviceConfig.get_device_config_audit_delta(device_mac)
-        if delta_configs == -1:
-            pytest.fail('Did not manage to collect the delta configurations.')
-        flag = 1
-        not_found = []
-        if self.tb.dut1.platform == 'Stack':
-            for slot in range(1, len(self.tb.dut1.serial.split(',')) + 1):
-                for port in ports.split(','):
-                    for vlan in range(int(vlan_range.split('-')[0]), int(vlan_range.split('-')[1]) + 1):
-                        if 'configure vlan ' + str(vlan) + ' delete port ' + str(slot) + ':' + str(port) not in delta_configs:
-                            flag = 0
-                            not_found.append('configure vlan ' + str(vlan) + ' delete port ' + str(slot) + ':' +
-                                             str(port))
-        else:
-            for port in ports.split(','):
-                for vlan in range(int(vlan_range.split('-')[0]), int(vlan_range.split('-')[1])+1):
-                    if 'configure vlan ' + str(vlan) + ' delete port ' + str(port) not in delta_configs:
-                        flag = 0
-                        not_found.append('configure vlan ' + str(vlan) + ' delete port ' + str(port))
-        if not_found:
-            print("Did not find the following delete port commands: ")
-            for nf in not_found:
-                print(nf)
-
-        return flag
-
-    def get_device_vlan_configuration(self, ports):
-        configuration_list = []
-        self.xiq.xflowsmanageDevices.refresh_devices_page()
-
-        def _check_device_update():
-            return self.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(policy_name=network_policy_name,
-                                                                                   option="disable",
-                                                                                   device_mac=self.tb.dut1.mac)
-        self.xiq.Utils.wait_till(_check_device_update, timeout=60, delay=3, msg='Checking the initialization of the '
-                                                                                'update')
-
-        def _check_device_update_status():
-            return self.xiq.xflowsmanageDevices.check_device_update_status_by_using_mac(self.tb.dut1.mac)
-        self.xiq.Utils.wait_till(_check_device_update_status, timeout=300, delay=5, msg='Checking update status')
-
-        output = self.devCmd.send_cmd(self.tb.dut1.name, 'show ports vlan ')[0].cmd_obj._return_text
-        if self.tb.dut1.platform == 'Stack':
-            for slot in range(1, len(self.tb.dut1.serial.split(',')) + 1):
-                for port in ports.split(','):
-                    if str(slot) + ':' + port not in output:
-                        print("Cannot find the port: " + str(slot) + ':' + port )
-                        return -1
-                    counter = 0
-                    start_index = 0
-                    stop_index = 0
-                    for letter in output:
-                        if counter + 3 == len(output):
-                            break
-                        if int(port) + 1 > 9:
-                            if output[counter] == str(slot) and output[counter + 1] == ':' and output[counter + 2] + \
-                                    output[counter + 3] == port:
-                                start_index = counter
-                            if str(slot) + ':' + str(int(port) + 1) not in output:
-                                stop_index = len(output)
-                            elif output[counter] == str(slot) and output[counter + 1] == ':' and output[counter + 2] + \
-                                    output[counter + 3] == str(int(port) + 1):
-                                stop_index = counter
-                                configuration_list.append(output[start_index:stop_index])
-                                break
+                if xiq_library_at_class_level.xflowsmanageXiqVerifications.check_delete_vlan_range_commands_to_individual(
+                    node, vlan_range, port_numbers):
+                    logger.info("Found the individual delete port commands!")
+                    
+                    with enter_switch_cli(node) as dev_cmd:
+                        if xiq_library_at_class_level.xflowsmanageXiqVerifications.check_devices_config_after_individual_add_delete_port_push(
+                            node, port_numbers, vlan_range, network_policy_name, op="delete"):
+                            logger.info("The delete commands that have been pushed are present on the device's config.")
                         else:
-                            if output[counter] == str(slot) and output[counter + 1] == ':' and \
-                                    output[counter + 2] == port:
-                                start_index = counter
-                            if str(slot) + ':' + str(int(port) + 1) not in output:
-                                stop_index = len(output)
-                            elif output[counter] == str(slot) and output[counter + 1] == ':' and \
-                                    output[counter + 2] == str(int(port) + 1):
-                                stop_index = counter
-                                configuration_list.append(output[start_index:stop_index])
-                                break
-                        counter = counter + 1
-        else:
-            for port in ports.split(','):
-                if port not in output:
-                    print("Cannot find the port: " + port)
-                    return -1
-                counter = 0
-                start_index = 0
-                stop_index = 0
-                for letter in output:
-                    if counter + 2 == len(output):
-                        break
-                    if int(port) + 1 > 9:
-                        if output[counter] + output[counter + 1] == port and output[counter + 2] == ' ':
-                            start_index = counter
-                        if str(int(port) + 1) not in output:
-                            stop_index = len(output)
-                        elif output[counter] + output[counter + 1] == str(int(port) + 1) and output[counter + 2] == ' ':
-                            stop_index = counter
-                            configuration_list.append(output[start_index:stop_index])
-                            break
-                    else:
-                        if output[counter] == port and output[counter + 1] == ' ':
-                            start_index = counter
-                        if str(int(port) + 1) not in output:
-                            stop_index = len(output)
-                        elif output[counter] == str(int(port) + 1) and output[counter + 1] == ' ':
-                            stop_index = counter
-                            configuration_list.append(output[start_index:stop_index])
-                            break
-                    counter = counter + 1
-        print(configuration_list)
-        return configuration_list
-
-    def check_devices_config_after_individual_add_port_push(self, vlan_range, ports):
-        configuration_list = self.get_device_vlan_configuration(ports)
-        flag = 1
-        for configuration in configuration_list:
-            vlans_not_found = []
-            vlan_list_config = self.xiq.Utils.get_regexp_matches(configuration, "(\d\d\d\d)", 1)
-            for vlan in range(int(vlan_range.split('-')[0]), int(vlan_range.split('-')[1]) + 1):
-
-                if vlan < 10:
-                    if '000' + str(vlan) not in vlan_list_config:
-                        vlans_not_found.append(str(vlan))
-                elif vlan >= 10 and vlan < 100:
-                    if '00' + str(vlan) not in vlan_list_config:
-                        vlans_not_found.append(str(vlan))
-                elif vlan >= 100 and vlan < 1000:
-                    if '0' + str(vlan) not in vlan_list_config:
-                        vlans_not_found.append(str(vlan))
-                elif vlan >= 1000:
-                    if str(vlan) not in vlan_list_config:
-                        vlans_not_found.append(str(vlan))
-
-            if vlans_not_found:
-                flag = 0
-                print("Vlans not found. The vlan range was: " + vlan_range)
-                print('The port is currently configured as follows: ')
-                print(configuration)
-                print("The following vlans are missing:")
-                vlans_not_found_string = ''
-                for vlan in vlans_not_found:
-                    vlans_not_found_string = vlans_not_found_string + vlan + ', '
-                print(vlans_not_found_string[:-1])
-                print(3 * '\n')
-            else:
-                print("The add port commands for this port have been pushed succesfully!")
-                print(configuration)
-        return flag
-
-    def check_devices_config_after_individual_delete_port_push(self, ports, vlan_range):
-        configuration_list = self.get_device_vlan_configuration(ports)
-        flag = 1
-        for configuration in configuration_list:
-            vlans_found = []
-            vlan_list_config = self.xiq.Utils.get_regexp_matches(configuration, "(\d\d\d\d)", 1)
-            for vlan in range(int(vlan_range.split('-')[0]), int(vlan_range.split('-')[1]) + 1):
-
-                if vlan < 10:
-                    if '000' + str(vlan) in vlan_list_config:
-                        vlans_found.append(str(vlan))
-                elif vlan >= 10 and vlan < 100:
-                    if '00' + str(vlan) in vlan_list_config:
-                        vlans_found.append(str(vlan))
-                elif vlan >= 100 and vlan < 1000:
-                    if '0' + str(vlan) in vlan_list_config:
-                        vlans_found.append(str(vlan))
-                elif vlan >= 1000:
-                    if str(vlan) in vlan_list_config:
-                        vlans_found.append(str(vlan))
-
-            if vlans_found:
-                flag = 0
-                print("Vlans found. The vlan range was: " + vlan_range)
-                print('The port is currently configured as follows: ')
-                print(configuration)
-                print("The following vlans are still present:")
-                vlans_found_string = ''
-                for vlan in vlans_found:
-                    vlans_found_string = vlans_found_string + vlan + ', '
-                print(vlans_found_string[:-1])
-                print(3 * '\n')
-            else:
-                print("The delete port commands for this port have been pushed succesfully!")
-                print("The port is currently configured as follows: ")
-                print(configuration)
-        return flag
-
-    @classmethod
-    def setup_class(cls):
-        try:
-            cls.executionHelper = PytestExecutionHelper(defaultAction="fail")
-            # Create an instance of the helper class that will read in the test bed yaml file and provide basic methods and variable access.
-            # The user can also get to the test bed yaml by using the config dictionary
-            cls.tb = PytestConfigHelper(config)
-            cls.cfg = config
-            print("TestBed ################%s", cls.tb)
-            print("Config #################%s", cls.cfg)
-            cls.cfg['${OUTPUT DIR}'] = os.getcwd()
-            cls.cfg['${TEST_NAME}'] = 'SETUP'
-
-            # Check if device is exos. If the device is voss or SR, skip the test
-            if cls.tb.dut1.cli_type != 'exos':
-                pytest.skip("Device should be exos.")
-            # Create new objects to use in test. Here we will import everything from the default library
-            cls.defaultLibrary = DefaultLibrary()
-            cls.udks = cls.defaultLibrary.apiUdks
-            cls.devCmd = cls.defaultLibrary.deviceNetworkElement.networkElementCliSend
-            cls.devCmdManager = cls.defaultLibrary.deviceNetworkElement.networkElementConnectionManager
-            cls.devCmdManager.connect_to_all_network_elements()
-            if cls.check_ports_existence(cls, port_numbers) != 1:
-                pytest.fail("One or more ports were not found. Choose other ports.")
-            if cls.check_ports_existence(cls, port_numbers2) != 1:
-                pytest.fail("One or more ports were not found. Choose other ports.")
-            cls.init_xiq_libaries_and_login(cls, cls.cfg['tenant_username'], cls.cfg['tenant_password'],
-                                            url=cls.cfg['test_url'])
-            cls.delete_create_location_organization(cls)
-            cls.xiq.xflowscommonNavigator.navigate_to_devices()
-            cls.xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings("disable", "EXOS")
-            cls.xiq.xflowscommonNavigator.navigate_to_devices()
-
-            # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
-            time.sleep(20)
-            cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
-            solo_serial = cls.tb.dut1.serial.split(',')
-            for eachdevice in solo_serial:
-                cls.xiq.xflowscommonDevices.delete_device(device_serial=eachdevice)
-            dut_location = f'{location},{building},{floor}'
-
-            global setup_flag_onboard_fail
-            setup_flag_onboard_fail = 1
-            cls.devCmd.send_cmd(cls.tb.dut1.name, 'configure iq server ipaddress none')
-            cls.devCmd.send_cmd(cls.tb.dut1.name, 'enable iqagent')
-            if cls.xiq.xflowscommonDevices.onboard_device_quick(cls.tb.dut1) == 1:
-                setup_flag_onboard_fail = 0
-            global setup_flag_connect_fail
-            setup_flag_connect_fail = 1
-            if '5320' in cls.tb.dut1.model:
-                spawn_connection = cls.xiq.Cli.open_spawn(cls.tb.dut1.ip, cls.tb.dut1.port, cls.tb.dut1.username,
-                                                          cls.tb.dut1.password, cls.tb.dut1.cli_type)
-                cls.xiq.Cli.configure_device_to_connect_to_cloud(cls.tb.dut1.cli_type, cls.cfg['sw_connection_host'],
-                                                                 spawn_connection, vr='VR-Default', retry_count=30)
-                cls.xiq.Cli.close_spawn(spawn_connection)
-                setup_flag_connect_fail = 0
-            else:
-                spawn_connection = cls.xiq.Cli.open_spawn(cls.tb.dut1.ip, cls.tb.dut1.port, cls.tb.dut1.username,
-                                                          cls.tb.dut1.password, cls.tb.dut1.cli_type)
-                cls.xiq.Cli.configure_device_to_connect_to_cloud(cls.tb.dut1.cli_type, cls.cfg['sw_connection_host'],
-                                                                 spawn_connection, vr='VR-Mgmt', retry_count=30)
-                cls.xiq.Cli.close_spawn(spawn_connection)
-                setup_flag_connect_fail = 0
-
-            if cls.xiq.xflowscommonDevices.wait_until_device_online(device_mac=cls.tb.dut1.mac, retry_count=30) != 1:
-                pytest.fail("Device didn't come online.")
-            if cls.tb.dut1.platform == "Stack":
-                if cls.xiq.xflowsmanageDevices.get_device_stack_status(device_mac=cls.tb.dut1.mac) != 'blue':
-                    pytest.fail("Stack status is disconnected.")
-            cls.xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(network_policy_name)
-            cls.xiq.xflowscommonNavigator.navigate_to_devices()
-            cls.xiq.xflowsmanageDevices.refresh_devices_page()
-            # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
-            time.sleep(20)
-            cls.xiq.xflowsmanageDevices.assign_network_policy_to_switch_mac(network_policy_name, cls.tb.dut1.mac)
-            if cls.tb.dut1.platform == "Stack":
-                cls.xiq.xflowscommonDevices.column_picker_select('Template')
-                if cls.xiq.xflowsmanageDevices.create_stack_auto_template(device_mac=cls.tb.dut1.mac,
-                                                                          name_stack_template=sw_template_name) == 1:
-                    cls.xiq.xflowsconfigureSwitchTemplate.save_stack_template(sw_template_name)
+                            logger.fail("The delete commands that have been pushed are not present!")
                 else:
-                    pytest.fail("Failed to create template for the stack!")
+                    logger.fail("Failed to find the individual delete port commands!")
 
-                def _check_device_update():
-                    return cls.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(
-                        policy_name=network_policy_name, option="disable", device_mac=cls.tb.dut1.mac)
+            finally:
+                teardown_template_configure_ports_access_port_numbers(node, trunk_port_type_name)
 
-                cls.xiq.Utils.wait_till(_check_device_update, timeout=60, delay=3, msg='Checking the initialization of '
-                                                                                       'the update')
-            else:
-                def _check_device_update():
-                    return cls.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(
-                                                                                       policy_name=network_policy_name,
-                                                                                       option="disable",
-                                                                                       device_mac=cls.tb.dut1.mac)
+        return func
 
-                cls.xiq.Utils.wait_till(_check_device_update, timeout=60, delay=3, msg='Checking the initialization of '
-                                                                                       'the update')
-                # cls.xiq.xflowsmanageDevices.update_override_configuration_to_device(device_serial=cls.tb.dut1.serial)
+    @pytest.fixture
+    def check_delta_cli_add_port_range_commands_to_individual_from_template(self, suite_data, utils,
+        logger, xiq_library_at_class_level, enter_switch_cli, request, teardown_template_configure_ports_access_port_numbers):
 
-            def _check_device_update_status():
-                return cls.xiq.xflowsmanageDevices.check_device_update_status_by_using_mac(cls.tb.dut1.mac)
+        def func(node):
 
-            cls.xiq.Utils.wait_till(_check_device_update_status, timeout=300, delay=5, msg='Checking update status')
-            #cls.xiq.xflowsmanageDevices.check_device_update_status_by_using_mac(cls.tb.dut1.mac)
-        except Exception as e:
-            cls.executionHelper.setSetupFailure(True)
+            try:
+                trunk_port_type_name = "port_type_" + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(6))
+                network_policy_name = request.getfixturevalue(f"{node.node_name}_policy_name")
+                sw_template_name = request.getfixturevalue(f"{node.node_name}_template_name")
+                vlan_range = suite_data["vlan_range"]
+                port_numbers = suite_data["port_numbers"]
+                port_numbers_2 = suite_data["port_numbers_2"]
 
-    @classmethod
-    def teardown_class(cls):
-        cls.cfg['${TEST_NAME}'] = 'Teardown'
-        if setup_flag_onboard_fail:
-            cls.xiq.login.quit_browser()
-            pytest.exit("Failed to onboard the device. Exiting...")
+                template_exos = {'name': [trunk_port_type_name, trunk_port_type_name],
+                                'description': [None, None],
+                                'status': [None, 'on'],
+                                'port usage': ['trunk port', 'TRUNK'],
+                                'page2 trunkVlanPage': ['next_page', None],
+                                'native vlan': ['1', '1'],
+                                'allowed vlans': [vlan_range, vlan_range],
+                                'page3 transmissionSettings': ["next_page", None],
+                                'page4 stp': ["next_page", None],
+                                'page5 stormControlSettings': ["next_page", None],
+                                'page6 MACLocking': ["next_page", None],
+                                'page7 ELRP': ["next_page", None],
+                                'page8 pseSettings': ["next_page", None],
+                                'page9 summary': ["next_page", None]
+                                }
 
-        if setup_flag_connect_fail:
-            cls.xiq.xflowscommonNavigator.navigate_to_devices()
-            # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
-            time.sleep(20)
-            if cls.tb.dut1.platform == "Stack":
-                for slot_serial in cls.tb.dut1.serial.split(','):
-                    cls.xiq.xflowscommonDevices.delete_device(device_serial=slot_serial)
-            else:
-                cls.xiq.xflowscommonDevices.delete_device(device_serial=cls.tb.dut1.serial)
-            cls.xiq.xflowsmanageLocation.delete_location_building_floor(location, building, floor)
-            cls.deactivate_xiq_libaries_and_logout(cls)
-            pytest.exit("The device did not connect to the cloud. Exiting...")
+                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
+                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
+                xiq_library_at_class_level.xflowsmanageDevice360.create_new_port_type(template_exos, port_numbers.split(',')[0])
 
-        if cls.tb.dut1.platform == 'Stack':
-            for slot in range(1, len(cls.tb.dut1.serial.split(',')) + 1):
-                cls.xiq.xflowscommonNavigator.navigate_to_devices()
-                cls.xiq.xflowsmanageDevices.refresh_devices_page()
-                # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
-                time.sleep(20)
-                def _check_d360_navigation():
-                    return cls.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(
-                        cls.tb.dut1.mac)
-                cls.xiq.Utils.wait_till(_check_d360_navigation, timeout=30, delay=5)
+                if node.node_name == "node_stack":
 
-                cls.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
+                    for slot in range(1, len(node.serial.split(',')) + 1):
 
-                def _check_stack_selection():
-                    return cls.xiq.xflowsmanageDevice360.select_stack_unit(slot)
-                cls.xiq.Utils.wait_till(_check_stack_selection, timeout=30, delay=5)
+                        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
+                        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
+                        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot)
+                        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(
+                            port_numbers, trunk_port_type_name)
 
-                cls.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan_stack(port_numbers=port_numbers2,
-                                                                                          slot=slot)
-            for slot in range(1, len(cls.tb.dut1.serial.split(',')) + 1):
-                cls.xiq.xflowscommonNavigator.navigate_to_devices()
-                cls.xiq.xflowsmanageDevices.refresh_devices_page()
-                # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
-                time.sleep(20)
-                def _check_d360_navigation():
-                    return cls.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(
-                        cls.tb.dut1.mac)
-                cls.xiq.Utils.wait_till(_check_d360_navigation, timeout=30, delay=5)
+                else:
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(
+                        port_numbers, trunk_port_type_name)
 
-                cls.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
+                xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
+                xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
 
-                def _check_stack_selection():
-                    return cls.xiq.xflowsmanageDevice360.select_stack_unit(slot)
-                cls.xiq.Utils.wait_till(_check_stack_selection, timeout=30, delay=5)
+                if xiq_library_at_class_level.xflowsmanageXiqVerifications.check_add_vlan_range_commands_to_individual(
+                    node, vlan_range, port_numbers):
+                    logger.info("Found the individual add port commands!")
+                    
+                    with enter_switch_cli(node):
+                        if xiq_library_at_class_level.xflowsmanageXiqVerifications.check_devices_config_after_individual_add_delete_port_push(
+                            node, port_numbers, vlan_range, network_policy_name, op="add"):
+                            logger.info("The add commands that have been pushed are present on the device's config.")
+                        else:
+                            logger.fail("The delete commands that have been pushed are not present!")
+                else:
+                    logger.fail("Failed to find the individual add port commands!")
+            
+            finally:
+                teardown_template_configure_ports_access_port_numbers(node, trunk_port_type_name)
 
-                cls.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan_stack(port_numbers=port_numbers,
-                                                                                          slot=slot)
-            cls.xiq.xflowsmanageDevices.refresh_devices_page()
+        return func
 
-            def _check_device_update():
-                return cls.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(policy_name=network_policy_name,
-                                                                                      option="disable",
-                                                                                      device_mac=cls.tb.dut1.mac)
+    @pytest.fixture
+    def verify_that_changes_are_present_in_delta_cLI_after_overwr_template_vlan_config_in_d360(self, suite_data, utils,
+        logger, xiq_library_at_class_level, enter_switch_cli, request, xiq_teardown_template):
 
-            cls.xiq.Utils.wait_till(_check_device_update, timeout=60, delay=3, msg='Checking the initialization of the '
-                                                                                   'update')
+        def func(node):
 
-            def _check_device_update_status():
-                return cls.xiq.xflowsmanageDevices.check_device_update_status_by_using_mac(cls.tb.dut1.mac)
+            trunk_port_type_name = "port_type_" + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(6))
 
-            cls.xiq.Utils.wait_till(_check_device_update_status, timeout=300, delay=5, msg='Checking update status')
-            # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
-            time.sleep(20)
-            cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
-            cls.xiq.xflowsconfigureSwitchTemplate.delete_stack_switch_template(network_policy_name, sw_template_name)
-            cls.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(network_policy_name)
-            for slot in range(1, len(cls.tb.dut1.serial.split(',')) + 1):
-                cls.xiq.xflowsconfigureCommonObjects.delete_switch_template(sw_template_name + '-' + str(slot))
+            try:
+                network_policy_name = request.getfixturevalue(f"{node.node_name}_policy_name")
+                sw_template_name = request.getfixturevalue(f"{node.node_name}_template_name")
+                vlan_range = suite_data["vlan_range"]
+                vlan_range_2 = suite_data["vlan_range_2"]
+                port_numbers = suite_data["port_numbers"]
+                port_numbers_2 = suite_data["port_numbers_2"]
 
-            cls.xiq.xflowsconfigureCommonObjects.delete_port_type_profile(trunk_port_type_name)
+                xiq_library_at_class_level.xflowsmanageXiqVerifications.template_add_vlans(
+                    node, port_numbers_2, vlan_range, trunk_port_type_name, network_policy_name, sw_template_name)
+                xiq_library_at_class_level.xflowscommonDevices.get_update_devices_reboot_rollback(
+                    policy_name=network_policy_name, option="disable", device_mac=node.mac)
+                xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
 
-        else:
-            cls.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan(device_mac=cls.tb.dut1.mac,
-                                                                                port_numbers=port_numbers2,
-                                                                                access_vlan_id="1")
-            cls.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan(device_mac=cls.tb.dut1.mac,
-                                                                                port_numbers=port_numbers,
-                                                                                access_vlan_id="1")
-            cls.xiq.xflowsmanageDevices.refresh_devices_page()
-            # cls.xiq.xflowsmanageDevices.update_override_configuration_to_device(device_serial=cls.tb.dut1.serial)
-            # cls.xiq.xflowsmanageDevices.check_device_update_status_by_using_mac(cls.tb.dut1.mac)
-            def _check_device_update():
-                return cls.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(policy_name=network_policy_name,
-                                                                                      option="disable",
-                                                                                      device_mac=cls.tb.dut1.mac)
+                if node.node_name == 'node_stack':
+                    for slot in range(1, len(node.serial.split(',')) + 1):
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
+                        xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+                        time.sleep(20)
 
-            cls.xiq.Utils.wait_till(_check_device_update, timeout=60, delay=3,
-                                     msg='Checking the initialization of the '
-                                         'update')
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_device360_page_with_mac(
+                                node.mac)
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_port_configuration_d360()
+                        xiq_library_at_class_level.xflowsmanageDevice360.select_stack_unit(slot)
+                        xiq_library_at_class_level.xflowsmanageDevice360.device360_configure_ports_trunk_stack(
+                            port_numbers=port_numbers_2, trunk_native_vlan="1", trunk_vlan_id=vlan_range_2, slot=slot)
+                else:
+                    xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
+                    xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+                    time.sleep(20)
+                    xiq_library_at_class_level.xflowscommonNavigator.navigate_to_device360_page_with_mac(node.mac)
+                    xiq_library_at_class_level.xflowscommonNavigator.navigate_to_port_configuration_d360()
+                    xiq_library_at_class_level.xflowsmanageDevice360.device360_configure_ports_trunk_vlan(
+                        port_numbers=port_numbers_2, trunk_native_vlan="1", trunk_vlan_id=vlan_range_2)
 
-            def _check_device_update_status():
-                return cls.xiq.xflowsmanageDevices.check_device_update_status_by_using_mac(cls.tb.dut1.mac)
+                xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+                delta_configs = xiq_library_at_class_level.xflowsmanageDeviceConfig.get_device_config_audit_delta(node.mac)
+                
+                if delta_configs == -1:
+                    logger.fail('Did not manage to collect the delta configurations.')
+                
+                if 'delete vlan ' + vlan_range in delta_configs:
+                    if xiq_library_at_class_level.xflowsmanageXiqVerifications.check_add_vlan_range_commands_to_individual(
+                        node, vlan_range_2, port_numbers_2):
+                        logger.info("Found the add commands for the second vlan range!")
+                    else:
+                        logger.fail("Failed to find the individual add port commands!")
+                else:
+                    logger.fail("Did not find the deletion command for the previous range!")
+            
+            finally:
+                xiq_teardown_template(node, trunk_port_type_name)
 
-            cls.xiq.Utils.wait_till(_check_device_update_status, timeout=300, delay=5, msg='Checking update status')
-            # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
-            time.sleep(20)
-            cls.xiq.xflowscommonDevices.delete_device(device_mac=cls.tb.dut1.mac)
-            cls.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(network_policy_name)
-            cls.xiq.xflowsconfigureCommonObjects.delete_switch_template(sw_template_name)
-            cls.xiq.xflowsconfigureCommonObjects.delete_port_type_profile(trunk_port_type_name)
+        return func
 
+    @pytest.fixture
+    def check_delta_cli_add_port_range_commands_to_individual(self, suite_data, utils,
+        logger, xiq_library_at_class_level, enter_switch_cli, request, teardown_revert_to_template_default):
 
+        def func(node):
 
-        cls.xiq.xflowsmanageLocation.delete_location_building_floor(location, building, floor)
-        cls.deactivate_xiq_libaries_and_logout(cls)
+            trunk_port_type_name = "port_type_" + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(6))
+            network_policy_name = request.getfixturevalue(f"{node.node_name}_policy_name")
+            sw_template_name = request.getfixturevalue(f"{node.node_name}_template_name")
+            vlan_range = suite_data["vlan_range"]
+            port_numbers = suite_data["port_numbers"]
+            port_numbers_2 = suite_data["port_numbers_2"]
 
-    @mark.tcxm_18709
-    @mark.p1
-    @mark.testbed_1_node
-    def test_check_delta_cli_add_port_range_commands_to_individual_from_template_tcxm_18709(self):
-        self.cfg['${TEST_NAME}'] = 'Check delta cli add port range commands to individual from template and ' \
-                                   'check device config'
-        self.executionHelper.testSkipCheck()
-        template_exos = {'name': [trunk_port_type_name, trunk_port_type_name],
-                         'description': [None, None],
-                         'status': [None, 'on'],
-                         'port usage': ['trunk port', 'TRUNK'],
-                         'page2 trunkVlanPage': ['next_page', None],
-                         'native vlan': ['1', '1'],
-                         'allowed vlans': [vlan_range, vlan_range],
-                         'page3 transmissionSettings': ["next_page", None],
-                         'page4 stp': ["next_page", None],
-                         'page5 stormControlSettings': ["next_page", None],
-                         'page6 MACLocking': ["next_page", None],
-                         'page7 ELRP': ["next_page", None],
-                         'page8 pseSettings': ["next_page", None],
-                         'page9 summary': ["next_page", None]
-                         }
-        if self.tb.dut1.platform != "Stack":
-            self.xiq.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
-                                                                   self.get_device_template_model_name(),
-                                                                   sw_template_name)
-        try:
-            def _check_sw_template_selection():
-                return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
-            self.xiq.Utils.wait_till(_check_sw_template_selection, timeout=30, delay=5)
-        except:
-            pytest.fail(f'Did not find: {sw_template_name} template')
-        self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-        self.xiq.xflowsmanageDevice360.create_new_port_type(template_exos, port_numbers.split(',')[0])
-        if self.tb.dut1.platform == "Stack":
-            for slot in range(1, len(self.tb.dut1.serial.split(',')) + 1):
+            try:
+                if node.node_name == 'node_stack':
+                    for slot in range(1, len(node.serial.split(',')) + 1):
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
+                        xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+                        time.sleep(20)
+                        
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_device360_page_with_mac(node.mac)
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_port_configuration_d360()
+                        xiq_library_at_class_level.xflowsmanageDevice360.select_stack_unit(slot)
 
-                def _check_sw_template_selection():
-                    return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name,
-                                                                                     sw_template_name)
-                self.xiq.Utils.wait_till(_check_sw_template_selection, timeout=30, delay=5)
+                        xiq_library_at_class_level.xflowsmanageDevice360.device360_configure_ports_trunk_stack(
+                            port_numbers=port_numbers, trunk_native_vlan="1", trunk_vlan_id=vlan_range, slot=slot)
+                else:
+                    xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
+                    xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+                    time.sleep(20)
+                    xiq_library_at_class_level.xflowscommonNavigator.navigate_to_device360_page_with_mac(node.mac)
+                    xiq_library_at_class_level.xflowscommonNavigator.navigate_to_port_configuration_d360()
+                    xiq_library_at_class_level.xflowsmanageDevice360.device360_configure_ports_trunk_vlan(
+                        port_numbers=port_numbers, trunk_native_vlan="1", trunk_vlan_id=vlan_range)
+                
+                xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+                
+                if xiq_library_at_class_level.xflowsmanageXiqVerifications.check_add_vlan_range_commands_to_individual(
+                    node, vlan_range, port_numbers):
+                    logger.info("Found the commands!")
+                else:
+                    logger.fail("Failed to find the individual add port commands!")
 
-                self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-                self.xiq.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot)
-                self.xiq.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(port_numbers,
-                                                                                                      trunk_port_type_name)
-        else:
-            def _check_sw_template_selection():
-                return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
-            self.xiq.Utils.wait_till(_check_sw_template_selection, timeout=30, delay=5)
+            finally:
+                teardown_revert_to_template_default(node)
+        return func
 
-            self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-            self.xiq.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(port_numbers,
-                                                                                                  trunk_port_type_name)
+    @pytest.fixture
+    def check_device_config_after_add_port_individual_commands_update(self, suite_data, utils,
+        logger, xiq_library_at_class_level, enter_switch_cli, request, teardown_revert_to_template_default):
 
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowsmanageDevices.refresh_devices_page()
-        if self.check_add_vlan_range_commands_to_individual(self.tb.dut1.mac, vlan_range, port_numbers):
-            print("Found the individual add port commands!")
-            if self.check_devices_config_after_individual_add_port_push(vlan_range, port_numbers):
-                print("The add commands that have been pushed are present on the device's config.")
-                pass
-            else:
-                pytest.fail("The delete commands that have been pushed are not present!")
-        else:
-            pytest.fail("Failed to find the individual add port commands!")
+        def func(node):
+            
+            try:
+                trunk_port_type_name = "port_type_" + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(6))
+                network_policy_name = request.getfixturevalue(f"{node.node_name}_policy_name")
+                sw_template_name = request.getfixturevalue(f"{node.node_name}_template_name")
+                vlan_range = suite_data["vlan_range"]
+                port_numbers = suite_data["port_numbers"]
+                port_numbers_2 = suite_data["port_numbers_2"]
 
-    @mark.tcxm_18710
-    @mark.p1
-    @mark.testbed_1_node
-    def test_check_delta_cli_delete_port_range_commands_to_individual_from_template_tcxm_18710(self):
-        self.cfg['${TEST_NAME}'] = 'Check delta cli delete port range commands to individual from template and ' \
-                                   'check device config'
-        self.executionHelper.testSkipCheck()
-        for new_trunk_port in port_numbers2.split(','):
-            for port in port_numbers.split(','):
-                if int(new_trunk_port) == int(port):
-                    pytest.fail("The new trunk ports must be different from the initial ones!")
-        def _check_navigation_to_network_policy():
-            return self.xiq.xflowscommonNavigator.navigate_to_network_policies_list_view_page()
-        self.xiq.Utils.wait_till(_check_navigation_to_network_policy)
+                xiq_library_at_class_level.xflowsmanageDevice360.configure_vlan_range_d360(node, port_numbers, vlan_range)
+                
+                with enter_switch_cli(node):
+                    if xiq_library_at_class_level.xflowsmanageXiqVerifications.check_devices_config_after_individual_add_delete_port_push(
+                        node, port_numbers, vlan_range, network_policy_name, op="add"):
+                        logger.info("The commands that have been pushed, are present on the device's config.")
+                    else:
+                        logger.fail("The commands that have been pushed, are not present!")
+            finally:
+                teardown_revert_to_template_default(node)
+        return func
 
-        def _check_sw_template_selection():
-            return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
-        self.xiq.Utils.wait_till(_check_sw_template_selection, timeout=30, delay=5)
+    @pytest.fixture
+    def check_delta_cli_delete_port_range_commands_to_individual(self, suite_data, utils,
+        logger, xiq_library_at_class_level, enter_switch_cli, request, teardown_revert_to_template_default):
 
-        self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
+        def func(node):
+            
+            try:
+                trunk_port_type_name = "port_type_" + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(6))
+                network_policy_name = request.getfixturevalue(f"{node.node_name}_policy_name")
+                sw_template_name = request.getfixturevalue(f"{node.node_name}_template_name")
+                vlan_range = suite_data["vlan_range"]
+                port_numbers = suite_data["port_numbers"]
+                port_numbers_2 = suite_data["port_numbers_2"]
+                new_trunk_port = str(suite_data["new_trunk_port"])
 
-        if self.tb.dut1.platform == "Stack":
-            for slot in range(1, len(self.tb.dut1.serial.split(',')) + 1):
-                self.xiq.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot)
-                self.xiq.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(port_numbers,
-                                                                                                      "Access Port")
+                xiq_library_at_class_level.xflowsmanageDevice360.configure_vlan_range_d360(node, port_numbers, vlan_range)
+                
+                with enter_switch_cli(node):
+                    xiq_library_at_class_level.xflowsmanageXiqVerifications.check_devices_config_after_individual_add_delete_port_push(
+                        node, port_numbers, vlan_range, network_policy_name, op="add")
 
-                def _check_sw_template_selection():
-                    return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name,
-                                                                                     sw_template_name)
-                self.xiq.Utils.wait_till(_check_sw_template_selection, timeout=30, delay=5)
+                for port in port_numbers.split(','):
+                    if int(new_trunk_port) == int(port):
+                        logger.fail("The new trunk port must be different from the initial ones!")
+                
+                xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+                
+                if node.node_name == 'node_stack':
+                    
+                    for slot in range(1, len(node.serial.split(',')) + 1):
+                        
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
+                        xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+                        time.sleep(20)
+                        
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_device360_page_with_mac(
+                                node.mac)
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_port_configuration_d360()
 
-                self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
-                self.xiq.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot=slot)
-        else:
-            self.xiq.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(port_numbers,
-                                                                                                  "Access Port")
+                        xiq_library_at_class_level.xflowsmanageDevice360.select_stack_unit(slot)
+                        xiq_library_at_class_level.xflowsmanageDevice360.device360_configure_ports_trunk_stack(
+                            port_numbers=port_numbers_2, trunk_native_vlan="1", trunk_vlan_id=vlan_range,  slot=slot)
+                    
+                    for slot in range(1, len(node.serial.split(',')) + 1):
+                    
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
+                        xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+                        time.sleep(20)
+                    
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_device360_page_with_mac(node.mac)
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_port_configuration_d360()
+                        xiq_library_at_class_level.xflowsmanageDevice360.select_stack_unit(slot)
+                        xiq_library_at_class_level.xflowsmanageDevice360.device360_configure_ports_access_vlan_stack(
+                            port_numbers=port_numbers, slot=slot)
 
-            def _check_sw_template_selection():
-                return self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name)
-            self.xiq.Utils.wait_till(_check_sw_template_selection, timeout=30, delay=5)
+                else:
+                    xiq_library_at_class_level.xflowscommonNavigator.navigate_to_device360_page_with_mac(node.mac)
+                    xiq_library_at_class_level.xflowscommonNavigator.navigate_to_port_configuration_d360()
+                    xiq_library_at_class_level.xflowsmanageDevice360.device360_configure_ports_trunk_vlan(
+                        port_numbers=new_trunk_port, trunk_native_vlan="1", trunk_vlan_id=vlan_range)
+                    xiq_library_at_class_level.xflowsmanageDevice360.device360_configure_ports_access_vlan(
+                        device_mac=node.mac, port_numbers=port_numbers, access_vlan_id="1")
+                
+                xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+                
+                if xiq_library_at_class_level.xflowsmanageXiqVerifications.check_delete_vlan_range_commands_to_individual(
+                    node, vlan_range, port_numbers):
+                    logger.info('The individual delete commands have been found.')
+                else:
+                    logger.fail("Failed to find the individual delete port commands.")
+            finally:
+                teardown_revert_to_template_default(node)
+ 
+        return func
 
-            self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
+    @pytest.fixture
+    def check_device_config_after_delete_port_individual_commands_update(self, suite_data, utils,
+        logger, xiq_library_at_class_level, enter_switch_cli, request, teardown_revert_to_template_default):
 
-        self.xiq.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(port_numbers2,
-                                                                                              trunk_port_type_name)
-        self.xiq.xflowscommonNavigator.navigate_to_devices()
-        self.xiq.xflowsmanageDevices.refresh_devices_page()
-        if self.check_delete_vlan_range_commands_to_individual(self.tb.dut1.mac, vlan_range, port_numbers):
-            print("Found the individual delete port commands!")
-            if self.check_devices_config_after_individual_delete_port_push(port_numbers, vlan_range):
-                print("The delete commands that have been pushed are present on the device's config.")
-                pass
-            else:
-                pytest.fail("The delete commands that have been pushed are not present!")
-        else:
-            pytest.fail("Failed to find the individual delete port commands!")
+        def func(node):
+            try:
+                trunk_port_type_name = "port_type_" + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(6))
+                network_policy_name = request.getfixturevalue(f"{node.node_name}_policy_name")
+                sw_template_name = request.getfixturevalue(f"{node.node_name}_template_name")
+                vlan_range = suite_data["vlan_range"]
+                port_numbers = suite_data["port_numbers"]
+                port_numbers_2 = suite_data["port_numbers_2"]
+                new_trunk_port = str(suite_data["new_trunk_port"])
 
-    @mark.tcxm_18712
-    @mark.p2
-    @mark.testbed_1_node
+                xiq_library_at_class_level.xflowsmanageDevice360.configure_vlan_range_d360(node, port_numbers, vlan_range)
+
+                with enter_switch_cli(node):
+                    xiq_library_at_class_level.xflowsmanageXiqVerifications.check_devices_config_after_individual_add_delete_port_push(
+                        node, port_numbers, vlan_range, network_policy_name, op="add")
+
+                for port in port_numbers.split(','):
+                    if int(new_trunk_port) == int(port):
+                        logger.fail("The new trunk port must be different from the initial ones!")
+
+                xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+
+                if node.node_name == 'node_stack':
+
+                    for slot in range(1, len(node.serial.split(',')) + 1):
+
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
+                        xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+                        time.sleep(20)
+
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_device360_page_with_mac(
+                                node.mac)
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_port_configuration_d360()
+
+                        xiq_library_at_class_level.xflowsmanageDevice360.select_stack_unit(slot)
+                        xiq_library_at_class_level.xflowsmanageDevice360.device360_configure_ports_trunk_stack(
+                            port_numbers=port_numbers_2, trunk_native_vlan="1", trunk_vlan_id=vlan_range, slot=slot)
+
+                    for slot in range(1, len(node.serial.split(',')) + 1):
+
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
+                        xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+                        time.sleep(20)
+
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_device360_page_with_mac(
+                            node.mac)
+                        xiq_library_at_class_level.xflowscommonNavigator.navigate_to_port_configuration_d360()
+                        xiq_library_at_class_level.xflowsmanageDevice360.select_stack_unit(slot)
+                        xiq_library_at_class_level.xflowsmanageDevice360.device360_configure_ports_access_vlan_stack(
+                            port_numbers=port_numbers, slot=slot)
+                else:
+                    xiq_library_at_class_level.xflowscommonNavigator.navigate_to_device360_page_with_mac(node.mac)
+                    xiq_library_at_class_level.xflowscommonNavigator.navigate_to_port_configuration_d360()
+                    xiq_library_at_class_level.xflowsmanageDevice360.device360_configure_ports_trunk_vlan(
+                        port_numbers=new_trunk_port, trunk_native_vlan="1", trunk_vlan_id=vlan_range)
+
+                    xiq_library_at_class_level.xflowsmanageDevice360.device360_configure_ports_access_vlan(
+                        device_mac=node.mac, port_numbers=port_numbers, access_vlan_id="1")
+                
+                xiq_library_at_class_level.xflowsmanageDevices.refresh_devices_page()
+                
+                with enter_switch_cli(node) as dev_cmd:
+
+                    if xiq_library_at_class_level.xflowsmanageXiqVerifications.check_devices_config_after_individual_add_delete_port_push(
+                        node, port_numbers, vlan_range, network_policy_name, op="delete"):
+                        logger.info('The individual delete commands have been pushed to the device.')
+                    else:
+                        logger.fail("Some or all ports are still configured on trunk.")
+            finally:
+                teardown_revert_to_template_default(node)
+
+        return func
+
+@pytest.mark.dependson("tcxm_xiq_onboarding")
+@pytest.mark.testbed_stack
+@pytest.mark.testbed_1_node
+class Xiq1027Tests(Xiq1027):
+
+    @pytest.mark.tcxm_18709
+    @pytest.mark.p1
+    def test_check_delta_cli_add_port_range_commands_to_individual_from_template_tcxm_18709(
+        self, suite_data, test_data, node, check_delta_cli_add_port_range_commands_to_individual_from_template):
+        check_delta_cli_add_port_range_commands_to_individual_from_template(node)
+
+    @pytest.mark.tcxm_18710
+    @pytest.mark.p1
+    def test_check_delta_cli_delete_port_range_commands_to_individual_from_template_tcxm_18710(
+        self, suite_data, test_data, node, check_delta_cli_delete_port_range_commands_to_individual_from_template):
+        check_delta_cli_delete_port_range_commands_to_individual_from_template(node)
+
+    @pytest.mark.tcxm_18712
+    @pytest.mark.p2
     def test_verify_that_changes_are_present_in_delta_cLI_after_overwr_template_vlan_config_in_d360_tcxm_18712(
-                                                                                        self, xiq_teardown_template):
-        self.cfg['${TEST_NAME}'] = 'Verify that changes are present in Delta CLI after overwriting the template vlan ' \
-                                   'config in d360 config'
-        self.executionHelper.testSkipCheck()
-        if self.tb.dut1.platform == 'Stack':
-            for slot in range(1, len(self.tb.dut1.serial.split(',')) + 1):
-                self.xiq.xflowscommonNavigator.navigate_to_devices()
-                self.xiq.xflowsmanageDevices.refresh_devices_page()
-                # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
-                time.sleep(20)
+        self, suite_data, test_data, node, verify_that_changes_are_present_in_delta_cLI_after_overwr_template_vlan_config_in_d360):
+        verify_that_changes_are_present_in_delta_cLI_after_overwr_template_vlan_config_in_d360(node)
 
-                def _check_d360_navigation():
-                    return self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(
-                        self.tb.dut1.mac)
-                self.xiq.Utils.wait_till(_check_d360_navigation, timeout=30, delay=5)
+    @pytest.mark.tcxm_18696
+    @pytest.mark.p1
+    def test_check_delta_cli_add_port_range_commands_to_individual_tcxm_18696(
+        self, suite_data, test_data, node, check_delta_cli_add_port_range_commands_to_individual):
+        check_delta_cli_add_port_range_commands_to_individual(node)
 
-                self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
+    @pytest.mark.tcxm_18697
+    @pytest.mark.p2
+    def test_check_device_config_after_add_port_individual_commands_update_tcxm_18697(
+        self, suite_data, test_data, node, check_device_config_after_add_port_individual_commands_update):
+        check_device_config_after_add_port_individual_commands_update(node)
 
-                def _check_stack_selection():
-                    return self.xiq.xflowsmanageDevice360.select_stack_unit(slot)
-                self.xiq.Utils.wait_till(_check_stack_selection, timeout=30, delay=5)
+    @pytest.mark.tcxm_18698
+    @pytest.mark.p1
+    def test_check_delta_cli_delete_port_range_commands_to_individual_tcxm_18698(
+        self, suite_data, test_data, node, check_delta_cli_delete_port_range_commands_to_individual):
+        check_delta_cli_delete_port_range_commands_to_individual(node)
 
-                self.xiq.xflowsmanageDevice360.device360_configure_ports_trunk_stack(port_numbers=port_numbers2,
-                                                                                     trunk_native_vlan="1",
-                                                                                     trunk_vlan_id=vlan_range2,
-                                                                                     slot=slot)
-        else:
-            self.xiq.xflowscommonNavigator.navigate_to_devices()
-            self.xiq.xflowsmanageDevices.refresh_devices_page()
-            # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
-            time.sleep(20)
-            self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(self.tb.dut1.mac)
-            self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
-            self.xiq.xflowsmanageDevice360.device360_configure_ports_trunk_vlan(port_numbers=port_numbers2,
-                                                                                trunk_native_vlan="1",
-                                                                                trunk_vlan_id=vlan_range2)
-        self.xiq.xflowsmanageDevices.refresh_devices_page()
-        delta_configs = self.xiq.xflowsmanageDeviceConfig.get_device_config_audit_delta(self.tb.dut1.mac)
-        if delta_configs == -1:
-            pytest.fail('Did not manage to collect the delta configurations.')
-        if 'delete vlan ' + vlan_range in delta_configs:
-            if self.check_add_vlan_range_commands_to_individual(self.tb.dut1.mac, vlan_range2, port_numbers2):
-                print("Found the add commands for the second vlan range!")
-                pass
-            else:
-                pytest.fail("Failed to find the individual add port commands!")
-        else:
-            pytest.fail("Did not find the deletion command for the previous range!")
-
-    @mark.tcxm_18696
-    @mark.tcxm_18716
-    @mark.p1
-    @mark.testbed_1_node
-    def test_check_delta_cli_add_port_range_commands_to_individual_tcxm_18696_tcxm_18716(self):
-        self.cfg['${TEST_NAME}'] = 'Check Individual Add Port Commands'
-        self.executionHelper.testSkipCheck()
-        if self.tb.dut1.platform == 'Stack':
-            for slot in range(1, len(self.tb.dut1.serial.split(',')) + 1):
-                self.xiq.xflowscommonNavigator.navigate_to_devices()
-                self.xiq.xflowsmanageDevices.refresh_devices_page()
-                # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
-                time.sleep(20)
-                def _check_d360_navigation():
-                    return self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(
-                        self.tb.dut1.mac)
-                self.xiq.Utils.wait_till(_check_d360_navigation, timeout=30, delay=5)
-
-                self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
-
-                def _check_stack_selection():
-                    return self.xiq.xflowsmanageDevice360.select_stack_unit(slot)
-                self.xiq.Utils.wait_till(_check_stack_selection, timeout=30, delay=5)
-
-                self.xiq.xflowsmanageDevice360.device360_configure_ports_trunk_stack(port_numbers=port_numbers,
-                                                                                     trunk_native_vlan="1",
-                                                                                     trunk_vlan_id=vlan_range,
-                                                                                     slot=slot)
-        else:
-            self.xiq.xflowscommonNavigator.navigate_to_devices()
-            self.xiq.xflowsmanageDevices.refresh_devices_page()
-            # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
-            time.sleep(20)
-            self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(self.tb.dut1.mac)
-            self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
-            self.xiq.xflowsmanageDevice360.device360_configure_ports_trunk_vlan(port_numbers=port_numbers,
-                                                                                trunk_native_vlan="1",
-                                                                                trunk_vlan_id=vlan_range)
-        self.xiq.xflowsmanageDevices.refresh_devices_page()
-        if self.check_add_vlan_range_commands_to_individual(self.tb.dut1.mac, vlan_range, port_numbers):
-            print("Found the commands!")
-        else:
-            pytest.fail("Failed to find the individual add port commands!")
-
-    @mark.tcxm_18697
-    @mark.p2
-    @mark.testbed_1_node
-    def test_check_device_config_after_add_port_individual_commands_update_tcxm_18697(self):
-        self.cfg['${TEST_NAME}'] = 'Check Device Config after updating the device with individual add port commands.'
-        self.executionHelper.testSkipCheck()
-        if self.check_devices_config_after_individual_add_port_push(vlan_range, port_numbers):
-            print("The commands that have been pushed, are present on the device's config.")
-            pass
-        else:
-            pytest.fail("The commands that have been pushed, are not present!")
-
-    @mark.tcxm_18698
-    @mark.tcxm_18717
-    @mark.p1
-    @mark.testbed_1_node
-    def test_check_delta_cli_delete_port_range_commands_to_individual_tcxm_18698_tcxm_18717(self):
-        self.cfg['${TEST_NAME}'] = 'Check Individual Delete Port Commands'
-        self.executionHelper.testSkipCheck()
-        new_trunk_port = '6'
-        for port in port_numbers.split(','):
-            if int(new_trunk_port) == int(port):
-                pytest.fail("The new trunk port must be different from the initial ones!")
-        self.xiq.xflowsmanageDevices.refresh_devices_page()
-        if self.tb.dut1.platform == 'Stack':
-            for slot in range(1, len(self.tb.dut1.serial.split(',')) + 1):
-                self.xiq.xflowscommonNavigator.navigate_to_devices()
-                self.xiq.xflowsmanageDevices.refresh_devices_page()
-                # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
-                time.sleep(20)
-                def _check_d360_navigation():
-                    return self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(
-                        self.tb.dut1.mac)
-                self.xiq.Utils.wait_till(_check_d360_navigation, timeout=30, delay=5)
-
-                self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
-
-                def _check_stack_selection():
-                    return self.xiq.xflowsmanageDevice360.select_stack_unit(slot)
-                self.xiq.Utils.wait_till(_check_stack_selection, timeout=30, delay=5)
-
-                self.xiq.xflowsmanageDevice360.device360_configure_ports_trunk_stack(port_numbers=port_numbers2,
-                                                                                     trunk_native_vlan="1",
-                                                                                     trunk_vlan_id=vlan_range,
-                                                                                     slot=slot)
-            for slot in range(1, len(self.tb.dut1.serial.split(',')) + 1):
-                self.xiq.xflowscommonNavigator.navigate_to_devices()
-                self.xiq.xflowsmanageDevices.refresh_devices_page()
-                # TEMPORARY SLEEP UNTIL XIQ BUG IS FIXED
-                time.sleep(20)
-                def _check_d360_navigation():
-                    return self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(
-                        self.tb.dut1.mac)
-                self.xiq.Utils.wait_till(_check_d360_navigation, timeout=30, delay=5)
-
-                self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
-
-                def _check_stack_selection():
-                    return self.xiq.xflowsmanageDevice360.select_stack_unit(slot)
-                self.xiq.Utils.wait_till(_check_stack_selection, timeout=30, delay=5)
-
-                self.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan_stack(
-                                                                                  port_numbers=port_numbers, slot=slot)
-        else:
-            self.xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(self.tb.dut1.mac)
-            self.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
-            self.xiq.xflowsmanageDevice360.device360_configure_ports_trunk_vlan(port_numbers=new_trunk_port,
-                                                                               trunk_native_vlan="1",
-                                                                               trunk_vlan_id=vlan_range)
-
-            self.xiq.xflowsmanageDevice360.device360_configure_ports_access_vlan(device_mac=self.tb.dut1.mac,
-                                                                                 port_numbers=port_numbers,
-                                                                                 access_vlan_id="1")
-        self.xiq.xflowsmanageDevices.refresh_devices_page()
-        if self.check_delete_vlan_range_commands_to_individual(self.tb.dut1.mac, vlan_range, port_numbers):
-            print('The individual delete commands have been found.')
-        else:
-            pytest.fail("Failed to find the individual delete port commands.")
-
-    @mark.tcxm_18699
-    @mark.p2
-    @mark.testbed_1_node
-    def test_check_device_config_after_delete_port_individual_commands_update_tcxm_18699(self):
-        self.cfg['${TEST_NAME}'] = 'Check Device Config after updating the device with individual delete port commands.'
-        self.executionHelper.testSkipCheck()
-        if self.check_devices_config_after_individual_delete_port_push(port_numbers, vlan_range):
-            print('The individual delete commands have been pushed to the device.')
-        else:
-            pytest.fail("Some or all ports are still configured on trunk.")
+    @pytest.mark.tcxm_18699
+    @pytest.mark.p2
+    def test_check_device_config_after_delete_port_individual_commands_update_tcxm_18699(
+        self, suite_data, test_data, node, check_device_config_after_delete_port_individual_commands_update):
+        check_device_config_after_delete_port_individual_commands_update(node)

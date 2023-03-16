@@ -207,8 +207,8 @@ Test 9: Verify CoPilot Licenses Warning Message Is Displayed
 
     Depends On          Test 1
 
+    Get CoPilot Licenses
     Navigate to Devices and Confirm Success
-    Refresh Page
     Verify CoPilot Licenses Message Displayed
 
 Test 10: Delete Third Test Device and Verify Success
@@ -234,8 +234,8 @@ Test 12: Verify CoPilot Licenses Warning Message Is Not Displayed
 
     Depends On          Test 1
 
+    Get CoPilot Licenses
     Navigate to Devices and Confirm Success
-    Refresh Page
     Verify CoPilot Licenses Message Not Displayed
 
 Test 13: Delete Second Test Device and Verify Success
