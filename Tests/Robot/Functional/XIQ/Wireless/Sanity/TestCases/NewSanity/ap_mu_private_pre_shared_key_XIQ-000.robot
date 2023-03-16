@@ -115,7 +115,7 @@ Suite Setup
     ${LATEST_VERSION}=              Upgrade Device                  ${device1}
     Should Not be Empty             ${LATEST_VERSION}
 
-    ${REBOOT_STATUS}=               Wait Until Device Reboots       ${device1.serial}
+    ${REBOOT_STATUS}=               Wait Until Device Reboots       ${device1.serial}       retry_count=15
     Should Be Equal as Integers     ${REBOOT_STATUS}                    1
 
     ${CONNECTED_STATUS}=            Wait Until Device Online        ${device1.serial}
