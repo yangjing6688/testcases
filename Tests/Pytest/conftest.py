@@ -22,7 +22,7 @@ from _pytest import mark, fixtures
 from collections import defaultdict
 from pytest_testconfig import config
 from contextlib import contextmanager
-from typing import List, Dict, DefaultDict, Callable, Tuple, Iterator, Protocol, NewType, Union
+from typing import List, Dict, DefaultDict, Callable, Tuple, Iterator, Protocol, NewType, Union, Any
 from pathlib import Path
 from itertools import permutations
 
@@ -59,7 +59,7 @@ from extauto.common.Cli import Cli
 Node = NewType("Node", Dict[str, Union[str, Dict[str, str]]])
 Options = NewType("Options", Dict[str, Union[str, Dict[str, str]]])
 PolicyConfig = NewType("PolicyConfig", DefaultDict[str, Dict[str, str]])
-NodesData = NewType("NodesData", Dict[str, Dict[str, Union[str, bool, List[Tuple[str, str]]]]])
+NodesData = NewType("NodesData", Dict[str, Dict[str, Any]])
 TestCaseMarker = NewType("TestCaseMarker", str)
 PriorityMarker = NewType("PriorityMarker", str)
 TestbedMarker = NewType("TestbedMarker", str)
@@ -606,7 +606,7 @@ def log_features():
             max_len_values = temp_max_len_values if temp_max_len_values > max_len_values else max_len_values
 
         temp_lines.append("\n+" + "-" * (max_len_fields + max_len_values + 4) + "+")
-        for suitema_path, values in data.items():
+        for _, values in data.items():
             for k, v in values.items():
                 if v:
                     temp_lines.append(f"| {k:<{max_len_fields}}: {v:<{max_len_values}} |")
@@ -634,7 +634,7 @@ def log_features():
         except:
             pass
     else:
-        logger.info("Did not find any suitemap file in the data/ directory.")
+        logger_obj.info("Did not find any suitemap file in the data/ directory.")
 
 
 def pytest_collection_modifyitems(session, items):
@@ -2235,21 +2235,21 @@ def starting_system_versions(
 @pytest.fixture(scope="session")
 def node_1_data(
     nodes_data: NodesData
-) -> Dict[str, Union[str, bool, List[Tuple[str, str]]]]:
+) -> Dict[str, Any]:
     return nodes_data.get("node_1", {})
 
 
 @pytest.fixture(scope="session")
 def node_2_data(
     nodes_data: NodesData
-) -> Dict[str, Union[str, bool, List[Tuple[str, str]]]]:
+) -> Dict[str, Any]:
     return nodes_data.get("node_2", {})
 
 
 @pytest.fixture(scope="session")
 def node_stack_data(
     nodes_data: NodesData
-) -> Dict[str, Union[str, bool, List[Tuple[str, str]]]]:
+) -> Dict[str, Any]:
     return nodes_data.get("node_stack", {})
 
 
@@ -2257,7 +2257,7 @@ def node_stack_data(
 def node_data(
     node: Node,
     nodes_data: NodesData
-) -> Dict[str, Union[str, bool, List[Tuple[str, str]]]]:
+) -> Dict[str, Any]:
     return nodes_data.get(node.node_name, {})
 
 
@@ -2363,6 +2363,65 @@ def get_nodes_data(
                 
                 data[dut.node_name]["poe"] = poe
 
+                # get hostname
+                hostname = "N/A"
+                
+                if dut.cli_type.upper() in ["EXOS", "VOSS"]:
+                    output = dev_cmd.send_cmd(
+                        dut.name, 'show sys-info' if dut.cli_type.upper() == "VOSS" else "show system",
+                        max_wait=10, interval=2, ignore_cli_feedback=True)[0].return_text
+                    if match := re.search(fr"\r\n\s*SysName\s*:\s*(.*)\r\n", output):
+                        hostname = match.group(1)
+                else:
+                    logger.warning("OS not yet supported.")
+                
+                data[dut.node_name]["hostname"] = hostname
+
+                # get ports
+                ports = []
+                
+                if dut.cli_type.upper() == "VOSS":
+                    dev_cmd.send_cmd(
+                        dut.name, 'enable', max_wait=10, interval=2)
+                    output = dev_cmd.send_cmd(
+                        dut.name, 'show int gig int | no-more',
+                        max_wait=10, interval=2)[0].return_text
+                    
+                    p = re.compile(r'^\d+\/\d+', re.M)
+                    match_port = re.findall(p, output)
+
+                    p2 = re.compile(r'\d+\/\d+\/\d+', re.M)
+                    filtered = [port for port in match_port if not p2.match(port)]
+                    ports.extend(filtered)
+                
+                elif dut.cli_type.upper() == "EXOS":
+                    
+                    dev_cmd.send_cmd(
+                        dut.name, 'disable cli paging', max_wait=10, interval=2)
+                    output = dev_cmd.send_cmd(
+                        dut.name, 'show ports info', max_wait=20, interval=5)[0].return_text
+                    p = re.compile(r'^(\d+:\d+)\s+', re.M)
+                    match_port = re.findall(p, output)
+                    is_stack = True
+                    if len(match_port) == 0:
+                        is_stack = False
+                        p = re.compile(r'^(\d+)\s+', re.M)
+                        match_port = re.findall(p, output)
+
+                    p_notPresent = re.compile(r'^\d+:\d+.*NotPresent.*$', re.M) if is_stack \
+                        else re.compile(r'^\d+.*NotPresent.*$', re.M)
+                    parsed_info = re.findall(p_notPresent, output)
+
+                    for port in parsed_info:
+                        port_num = re.findall(p, port)
+                        match_port.remove(port_num[0])
+                    ports.extend(match_port)
+                
+                else:
+                    logger.warning("OS not yet supported.")
+
+                data[dut.node_name]["ports"] = ports
+                
         threads: List[threading.Thread] = []
         try:
             for dut in node_list:
@@ -3447,19 +3506,24 @@ def dump_switch_logs(
 @pytest.fixture(scope="session")
 def log_options(
         request: fixtures.SubRequest,
-        logger: PytestLogger
+        logger: PytestLogger,
+        node_list: List[Node],
+        global_settings: Dict[str, Any]
 ) -> None:
     """ Fixture that logs the onboarding options that are selected in the runlist yaml file.
     """
     
-    for node_name in ["node_1", "node_2", "node_stack"]:
-        fxt: Options = request.getfixturevalue(f"{node_name}_onboarding_options")
+    for node in node_list:
+        fxt: Options = request.getfixturevalue(f"{node.node_name}_onboarding_options")
         if fxt:
-            logger.info(f"The onboarding options for '{node_name}':\n{json.dumps(fxt, indent=4)}")
+            logger.info(f"The onboarding options for '{node.node_name}':\n{json.dumps(fxt, indent=4)}")
 
     run_options: Options = request.getfixturevalue("run_options")
     if run_options:
         logger.info(f"The run options for this session: {json.dumps(run_options, indent=4)}")
+
+    if global_settings:
+        logger.info(f"The settings that will be modified in Global Settings menu of XIQ: {json.dumps(global_settings, indent=4)}")
 
 
 @pytest.fixture(scope="session")
@@ -3601,9 +3665,15 @@ def set_hostname(
 
 
 @pytest.fixture(scope="session")
+def global_settings() -> Dict[str, Any]:
+    return pytest.onboarding_options.get("global_settings", {})
+
+
+@pytest.fixture(scope="session")
 def account_configuration(
     request: fixtures.SubRequest,
-    debug: Callable
+    debug: Callable,
+    global_settings: Dict[str, Any]
 ) -> AccountConfiguration:
     """ Fixture that configures the XIQ account at the start of the session.
     """
@@ -3612,8 +3682,6 @@ def account_configuration(
     def account_configuration_func(
         xiq: XiqLibrary
     ) -> None:
-        
-        global_settings = pytest.onboarding_options.get("global_settings", {})
 
         accounts = global_settings.get("accounts", {})
 
@@ -3873,9 +3941,15 @@ def store_onboarding_config(
     Currently the onboarding config file has this format:
         {
             "nodes": {
+                "node_1": {
+                    "policy_name": "XIQ_200_np_c36wCbGU",
+                    "template_name": "XIQ_200_template_s0ozQBiN",
+                    "onboarding_location": "auto_location_01, Santa Clara, building_02, floor_04",
+                    "dut_name": "dut2"
+                },
                 "node_stack": {
-                    "policy_name": "XIQ_1219_np_ko9BJMsF",
-                    "template_name": "XIQ_1219_template_tMjXcIbI",
+                    "policy_name": "XIQ_200_np_sTVm0AEs",
+                    "template_name": "XIQ_200_template_qERzEBP5",
                     "onboarding_location": "auto_location_01, Santa Clara, building_02, floor_04",
                     "dut_name": "dut1"
                 },
@@ -3893,12 +3967,180 @@ def store_onboarding_config(
                             ]
                         ],
                         "virtual_router": "VR-Mgmt",
-                        "poe": true
+                        "poe": true,
+                        "hostname": "Stack",
+                        "ports": [
+                            "1:1",
+                            "1:2",
+                            "1:3",
+                            "1:4",
+                            "1:5",
+                            "1:6",
+                            "1:7",
+                            "1:8",
+                            "1:9",
+                            "1:10",
+                            "1:11",
+                            "1:12",
+                            "1:13",
+                            "1:14",
+                            "1:15",
+                            "1:16",
+                            "1:17",
+                            "1:18",
+                            "1:19",
+                            "1:20",
+                            "1:21",
+                            "1:22",
+                            "1:23",
+                            "1:24",
+                            "1:25",
+                            "1:26",
+                            "1:27",
+                            "1:28",
+                            "1:29",
+                            "1:30",
+                            "1:31",
+                            "1:32",
+                            "1:33",
+                            "1:34",
+                            "1:35",
+                            "1:36",
+                            "1:37",
+                            "1:38",
+                            "1:39",
+                            "1:40",
+                            "1:41",
+                            "1:42",
+                            "1:43",
+                            "1:44",
+                            "1:45",
+                            "1:46",
+                            "1:47",
+                            "1:48",
+                            "1:49",
+                            "1:50",
+                            "1:51",
+                            "1:52",
+                            "2:1",
+                            "2:2",
+                            "2:3",
+                            "2:4",
+                            "2:5",
+                            "2:6",
+                            "2:7",
+                            "2:8",
+                            "2:9",
+                            "2:10",
+                            "2:11",
+                            "2:12",
+                            "2:13",
+                            "2:14",
+                            "2:15",
+                            "2:16",
+                            "2:17",
+                            "2:18",
+                            "2:19",
+                            "2:20",
+                            "2:21",
+                            "2:22",
+                            "2:23",
+                            "2:24",
+                            "2:25",
+                            "2:26",
+                            "2:27",
+                            "2:28",
+                            "2:29",
+                            "2:30",
+                            "2:31",
+                            "2:32",
+                            "2:33",
+                            "2:34",
+                            "2:35",
+                            "2:36",
+                            "2:37",
+                            "2:38",
+                            "2:39",
+                            "2:40",
+                            "2:41",
+                            "2:42",
+                            "2:43",
+                            "2:44",
+                            "2:45",
+                            "2:46",
+                            "2:47",
+                            "2:48",
+                            "2:49",
+                            "2:50",
+                            "2:51",
+                            "2:52"
+                        ]
+                    },
+                    "node_1": {
+                        "iqagent_version": "0.7.1",
+                        "system_version": "32.1.1.6",
+                        "virtual_router": "VR-Mgmt",
+                        "poe": true,
+                        "hostname": "5420M-48W-4YE-SwitchEngine",
+                        "ports": [
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6",
+                            "7",
+                            "8",
+                            "9",
+                            "10",
+                            "11",
+                            "12",
+                            "13",
+                            "14",
+                            "15",
+                            "16",
+                            "17",
+                            "18",
+                            "19",
+                            "20",
+                            "21",
+                            "22",
+                            "23",
+                            "24",
+                            "25",
+                            "26",
+                            "27",
+                            "28",
+                            "29",
+                            "30",
+                            "31",
+                            "32",
+                            "33",
+                            "34",
+                            "35",
+                            "36",
+                            "37",
+                            "38",
+                            "39",
+                            "40",
+                            "41",
+                            "42",
+                            "43",
+                            "44",
+                            "45",
+                            "46",
+                            "47",
+                            "48",
+                            "49",
+                            "50",
+                            "51",
+                            "52"
+                        ]
                     }
                 }
             },
             "testbed_flags": {
-                "pytest.onboard_1_node": false,
+                "pytest.onboard_1_node": true,
                 "pytest.onboard_2_node": false,
                 "pytest.onboard_stack": true,
                 "pytest.onboard_none": true
@@ -3906,12 +4148,14 @@ def store_onboarding_config(
             "created_items": {
                 "pytest.created_onboarding_locations": [],
                 "pytest.created_network_policies": [
-                    "XIQ_1219_np_ko9BJMsF"
+                    "XIQ_200_np_c36wCbGU",
+                    "XIQ_200_np_sTVm0AEs"
                 ],
                 "pytest.created_switch_templates": [
-                    "XIQ_1219_template_tMjXcIbI",
-                    "XIQ_1219_template_tMjXcIbI-1",
-                    "XIQ_1219_template_tMjXcIbI-2"
+                    "XIQ_200_template_s0ozQBiN",
+                    "XIQ_200_template_qERzEBP5",
+                    "XIQ_200_template_qERzEBP5-1",
+                    "XIQ_200_template_qERzEBP5-2"
                 ]
             }
         }
@@ -4220,6 +4464,62 @@ def node_1(
 
 
 @pytest.fixture(scope="session")
+def node_1_ports(
+    node_1_data: Dict[str, Any]
+) -> List[str]:
+    return node_1_data.get("ports", [])
+
+
+@pytest.fixture(scope="session")
+def node_2_ports(
+    node_2_data: Dict[str, Any]
+) -> List[str]:
+    return node_2_data.get("ports", [])
+
+
+@pytest.fixture(scope="session")
+def node_stack_ports(
+    node_stack_data: Dict[str, Any]
+) -> List[str]:
+    return node_stack_data.get("ports", [])
+
+
+@pytest.fixture(scope="session")
+def node_hostname(
+    node_data: Dict[str, Any]
+) -> str:
+    return node_data.get("hostname", "")
+
+
+@pytest.fixture(scope="session")
+def node_1_hostname(
+    node_1_data: Dict[str, Any]
+) -> str:
+    return node_1_data.get("hostname", "")
+
+
+@pytest.fixture(scope="session")
+def node_2_hostname(
+    node_2_data: Dict[str, Any]
+) -> str:
+    return node_2_data.get("hostname", "")
+
+
+@pytest.fixture(scope="session")
+def node_stack_hostname(
+    node_stack_data: Dict[str, Any]
+) -> str:
+    return node_stack_data.get("hostname", "")
+
+
+@pytest.fixture(scope="session")
+def node_ports(
+    node_data: Dict[str, Any]
+) -> List[str]:
+    return node_data.get("ports", [])
+
+
+@pytest.fixture(scope="session")
 def standalone_onboarding_options(
 ) -> Options:
     return pytest.onboarding_options.get("standalone", {})
@@ -4265,79 +4565,10 @@ def node_stack(
  
 @pytest.fixture(scope="session")
 def dut_ports(
-        enter_switch_cli: EnterSwitchCli, 
-        node_list: List[Node], 
-        debug: Callable
+    nodes_data: NodesData,
+    request: fixtures.SubRequest
 ) -> Dict[str, List[str]]:
-    
-    ports = {}
-    
-    @debug
-    def dut_ports_worker(dut: Node):
-        
-        with enter_switch_cli(dut) as dev_cmd:
-            
-            if dut.cli_type.upper() == "VOSS":
-                dev_cmd.send_cmd(
-                    dut.name, 'enable', max_wait=10, interval=2)
-                output = dev_cmd.send_cmd(
-                    dut.name, 'show int gig int | no-more',
-                    max_wait=10, interval=2)[0].return_text
-                
-                p = re.compile(r'^\d+\/\d+', re.M)
-                match_port = re.findall(p, output)
-
-                p2 = re.compile(r'\d+\/\d+\/\d+', re.M)
-                filtered = [port for port in match_port if not p2.match(port)]
-                ports[dut.name] = filtered
-            
-            elif dut.cli_type.upper() == "EXOS":
-                
-                dev_cmd.send_cmd(
-                    dut.name, 'disable cli paging', max_wait=10, interval=2)
-                output = dev_cmd.send_cmd(
-                    dut.name, 'show ports info', max_wait=20, interval=5)[0].return_text
-                p = re.compile(r'^(\d+:\d+)\s+', re.M)
-                match_port = re.findall(p, output)
-                is_stack = True
-                if len(match_port) == 0:
-                    is_stack = False
-                    p = re.compile(r'^(\d+)\s+', re.M)
-                    match_port = re.findall(p, output)
-
-                p_notPresent = re.compile(r'^\d+:\d+.*NotPresent.*$', re.M) if is_stack \
-                    else re.compile(r'^\d+.*NotPresent.*$', re.M)
-                parsed_info = re.findall(p_notPresent, output)
-
-                for port in parsed_info:
-                    port_num = re.findall(p, port)
-                    match_port.remove(port_num[0])
-                ports[dut.name] = match_port
-            
-            elif dut.cli_type.upper() == "AH-FASTPATH":
-                try:
-                    dev_cmd.send_cmd(dut.name, "enable")
-                except:
-                    dev_cmd.send_cmd(dut.name, "exit")
-                output = dev_cmd.send_cmd(
-                    dut.name, "show port all", max_wait=10, interval=2)[0].return_text
-                output = re.findall(r"\r\n(\d+/\d+/\d+)\s+", output)
-                ports[dut.name] = output
-                dev_cmd.send_cmd(dut.name, "exit")
-
-    threads: List[threading.Thread] = []
-    
-    try:
-        for dut in node_list:
-            thread = threading.Thread(target=dut_ports_worker, args=(dut, ))
-            threads.append(thread)
-            thread.start()
-    
-    finally:
-        for thread in threads:
-            thread.join()
-    
-    return ports
+    return {request.getfixturevalue(n).name: values["ports"] for n, values in nodes_data.items()}
 
 
 @pytest.fixture(scope="session")
@@ -5028,6 +5259,16 @@ class Testbed(metaclass=Singleton):
         self.node_model_units: str = request.getfixturevalue("node_model_units")
         self.virtual_routers: Dict[str, str] = request.getfixturevalue("virtual_routers")
 
+        self.node_1_ports: List[str] = request.getfixturevalue("node_1_ports")
+        self.node_2_ports: List[str] = request.getfixturevalue("node_2_ports")
+        self.node_stack_ports: List[str] = request.getfixturevalue("node_stack_ports")
+        self.node_ports: List[str] = request.getfixturevalue("node_ports")
+        
+        self.node_hostname: str = request.getfixturevalue("node_hostname")
+        self.node_1_hostname: str = request.getfixturevalue("node_1_hostname")
+        self.node_2_hostname: str = request.getfixturevalue("node_2_hostname")
+        self.node_stack_hostname: str = request.getfixturevalue("node_stack_hostname")
+        
         self.poe_capabilities: Dict[str, bool] = request.getfixturevalue("poe_capabilities")
         self.node_1_poe_capability: bool = request.getfixturevalue("node_1_poe_capability")
         self.node_2_poe_capability: bool = request.getfixturevalue("node_2_poe_capability")
