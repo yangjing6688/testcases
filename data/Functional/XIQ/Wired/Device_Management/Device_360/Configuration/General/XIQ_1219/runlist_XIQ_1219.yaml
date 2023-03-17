@@ -1,0 +1,21 @@
+runlist_XIQ_1219:
+  suitemap: 
+    - suitemap_XIQ_1219.yaml
+  onboarding_options:
+    global_settings:
+      administration:
+        viq_management:
+          supplemental_cli_option: enable
+    standalone:
+      node_1:
+        run_os: ['exos', "voss"]
+    node_stack:
+      run_os: ["exos"]
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_16515 # testbed_1_node|testbed_stack
+    - tcxm_16916 # testbed_1_node|testbed_stack, depends on tcxm_16515
+    - tcxm_16516 # testbed_1_node|testbed_stack, depends on tcxm_16515
+    - tcxm_16915 # testbed_1_node|testbed_stack
+    - tcxm_16917 # testbed_1_node|testbed_stack
+    - tcxm_xiq_onboarding_cleanup

@@ -122,10 +122,10 @@ Suite Setup
     ${LATEST_VERSION}=              Upgrade Device                  ${device1}
     Should Not be Empty             ${LATEST_VERSION}
 
-    ${REBOOT_STATUS}=               Wait Until Device Reboots       ${device1.serial}
+    ${REBOOT_STATUS}=               Wait Until Device Reboots       ${device1.serial}       retry_count=15
     Should Be Equal as Integers     ${REBOOT_STATUS}                    1
 
-    ${CONNECTED_STATUS}=            Wait Until Device Online        ${device1.serial}       retry_count=15
+    ${CONNECTED_STATUS}=            Wait Until Device Online        ${device1.serial}
     Should Be Equal as Integers     ${CONNECTED_STATUS}                 1
 
     ${DELETE_CUS_POLICY_RESULT}=    Delete Network Polices          ${NW_POLICY_NAME1}      ${NW_DEFAULT_POLICY}    ${NW_POLICY_NAME3}
@@ -136,15 +136,6 @@ Suite Setup
 
     ${DELETE_CWP_RESULT}=           Delete Captive Web Portals      ${CWP_NAME_FACEBOOK}    ${CWP_NAME_LINKEDIN}
     Should Be Equal As Integers     ${DELETE_CWP_RESULT}                1
-
-    ${CREATE_POLICY_RESULT}=        Create Network Policy           ${NW_DEFAULT_POLICY}    ${CONFIG_PUSH_OPEN_NW_01}   cli_type=${device1.cli_type}
-    Should Be Equal As Integers     ${CREATE_POLICY_RESULT}             1
-
-    ${UPDATE_POLICY_RESULT}=        Update Network Policy To AP     ${NW_DEFAULT_POLICY}    ap_serial=${device1.serial}
-    Should Be Equal As Integers     ${UPDATE_POLICY_RESULT}             1
-
-    ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial}
-    Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}                1
 
     Remote_Server.Disconnect WiFi
 
@@ -181,16 +172,64 @@ Suite Teardown
     Remote_Server.Disconnect WiFi
 
 Negative Internet Connectivity Check
-    ${FLAG}=    Remote_Server.Check Internet Connectivity
+    ${FLAG}=    Remote_Server.Verify Internet Connectivity
     Should Be Equal As Integers     ${FLAG}     -1
     Log To Console      Internet is NOT available on the MU machine, as expected!
 
 Positive Internet Connectivity Check
-    ${FLAG}=    Remote_Server.Check Internet Connectivity
+    ${FLAG}=    Remote_Server.Verify Internet Connectivity
     Should Be Equal As Integers     ${FLAG}     1
     Log To Console      Internet is available on the MU machine, as expected!
 
 *** Test Cases ***
+TCCS-14502: Verify AP Hostname in ML Insights Network 360 Monitor Tab and Client in ML Insights Client 360 Tab
+    [Documentation]                 Verify AP Hostname and Client in ML Insights Monitor Tab
+
+    [Tags]                          production      tccs_14502
+
+    ${CREATE_POLICY_RESULT}=        Create Network Policy           ${NW_DEFAULT_POLICY}    ${CONFIG_PUSH_OPEN_NW_01}   cli_type=${device1.cli_type}
+    Should Be Equal As Integers     ${CREATE_POLICY_RESULT}             1
+
+    ${UPDATE_POLICY_RESULT}=        Update Network Policy To AP     ${NW_DEFAULT_POLICY}    ap_serial=${device1.serial}
+    Should Be Equal As Integers     ${UPDATE_POLICY_RESULT}             1
+
+    ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial}
+    Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}                1
+
+    ${FLOOR_SEARCH}=                search_floor_in_network360Plan                  ${FLOOR}
+    Save Screen shot
+    Should Not Be Equal as Strings             '${FLOOR_SEARCH}'          '-1'
+
+    ${AP_LIST}=                     get_aps_from_network360plan_floor               ${FLOOR}
+    Should Contain                  ${AP_LIST}              ${device1.name}             ignore_case=True
+    Save Screen shot
+
+    ${loc_result}=                  Get Device Details      ${device1.serial}       LOCATION
+    Should Contain                  ${loc_result}           ${LOCATION_DISPLAY}
+
+    ${NP_FROM_UI}=                  Get Device Details      ${device1.serial}       POLICY
+    should be equal as strings      ${NP_FROM_UI}           ${NW_DEFAULT_POLICY}
+
+    ${CONNECT_STATUS}=              Remote_Server.Connect Open Network         ${NW_DEFAULT_SSID}
+    should be equal as strings      '${CONNECT_STATUS}'    '1'
+
+    sleep   ${client_connect_wait}
+
+    ${FLOOR_SEARCH}=                search_floor_in_network360monitor               ${FLOOR}
+    Save Screen shot
+    Should Not Be Equal as Strings             '${FLOOR_SEARCH}'          '-1'
+
+    ${AP_LIST}=                     get_devices_from_network360monitor_floor        ${FLOOR}
+    Should Contain                  ${AP_LIST}              ${device1.name}
+    Save Screen shot
+
+    ${CLIENT_LIST}                  get_clients_from_network360monitor_floor        ${FLOOR}
+    Save Screen shot
+    Log                             ${CLIENT_LIST}
+    Should Contain                  ${CLIENT_LIST}          ${mu1.wifi_mac}
+
+    Remote_Server.Disconnect WiFi
+
 TCCS-11614: Social login with facebook
     [Documentation]   CWP Social login with facebook
     ...               https://jira.aerohive.com/browse/APC-36506
@@ -357,10 +396,10 @@ TCCS-14366: Social login with Linkedin
     Should Be Equal As Strings      '${USER_NAME}'          '${CWP_MAIL_ID}'
 
     ${SSID}=                        Get From Dictionary     ${AUTH_LOGS}        ssid
-    Should Be Equal As Strings      '${SSID}'               '${NW_POLICY_SSID1}'
+    Should Be Equal As Strings      '${SSID}'               '${NW_POLICY_SSID3}'
 
     ${AUTH_TYPE}=                   Get From Dictionary     ${AUTH_LOGS}        authType
-    Should Be Equal As Strings      '${AUTH_TYPE}'          '${AUTH_TYPE_FACEBOOK}'
+    Should Be Equal As Strings      '${AUTH_TYPE}'          '${AUTH_TYPE_LINKEDIN}'
 
     ${CLIENT_MAC}=                  Get From Dictionary     ${AUTH_LOGS}        callingStationId
     Should Be Equal As Strings      '${CLIENT_MAC}'         '${mu1.wifi_mac}'
@@ -395,42 +434,4 @@ TCCS-14366: Social login with Linkedin
 
     [Teardown]
     Run Keywords    Close CP Browser
-
-TCCS-14502: Verify AP Hostname in ML Insights Network 360 Monitor Tab and Client in ML Insights Client 360 Tab
-    [Documentation]                 Verify AP Hostname and Client in ML Insights Monitor Tab
-
-    [Tags]                          production      tccs_14502
-
-    ${FLOOR_SEARCH}=                search_floor_in_network360Plan                  ${FLOOR}
-    Save Screen shot
-    Should Not Be Equal as Strings             '${FLOOR_SEARCH}'          '-1'
-
-    ${AP_LIST}=                     get_aps_from_network360plan_floor               ${FLOOR}
-    Should Contain                  ${AP_LIST}              ${device1.name}             ignore_case=True
-    Save Screen shot
-
-    ${loc_result}=                  Get Device Details      ${device1.serial}       LOCATION
-    Should Contain                  ${loc_result}           ${LOCATION_DISPLAY}
-
-    ${NP_FROM_UI}=                  Get Device Details      ${device1.serial}       POLICY
-    should be equal as strings      ${NP_FROM_UI}           ${NW_DEFAULT_POLICY}
-
-    ${CONNECT_STATUS}=              Remote_Server.Connect Open Network         ${NW_DEFAULT_SSID}
-    should be equal as strings      '${CONNECT_STATUS}'    '1'
-
-    sleep   ${client_connect_wait}
-
-    ${FLOOR_SEARCH}=                search_floor_in_network360monitor               ${FLOOR}
-    Save Screen shot
-    Should Not Be Equal as Strings             '${FLOOR_SEARCH}'          '-1'
-
-    ${AP_LIST}=                     get_devices_from_network360monitor_floor        ${FLOOR}
-    Should Contain                  ${AP_LIST}              ${device1.name}
-    Save Screen shot
-
-    ${CLIENT_LIST}                  get_clients_from_network360monitor_floor        ${FLOOR}
-    Save Screen shot
-    Log                             ${CLIENT_LIST}
-    Should Contain                  ${CLIENT_LIST}          ${mu1.wifi_mac}
-
-    Remote_Server.Disconnect WiFi
+    

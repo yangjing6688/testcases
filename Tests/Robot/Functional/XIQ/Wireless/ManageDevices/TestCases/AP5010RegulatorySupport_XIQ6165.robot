@@ -1730,7 +1730,7 @@ Test74 - TCXM-34876 - Verify: D360 Channels Can Be Configured
 *** Keywords ***
 InitialSetup
     Login User      ${tenant_username}      ${tenant_password}
-    delete all aps
+    delete all devices
     delete all network policies
     delete_all_ssids
 

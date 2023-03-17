@@ -1,0 +1,19 @@
+runlist_XIQ_1027:
+  suitemap: 
+    - suitemap_XIQ_1027.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ['exos']
+    node_stack:
+      run_os: ["exos"]
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_18709 # testbed_1_node|testbed_stack
+    - tcxm_18710 # testbed_1_node|testbed_stack
+    - tcxm_18712 # testbed_1_node|testbed_stack
+    - tcxm_18696 # testbed_1_node|testbed_stack
+    - tcxm_18697 # testbed_1_node|testbed_stack
+    - tcxm_18698 # testbed_1_node|testbed_stack
+    - tcxm_18699 # testbed_1_node|testbed_stack
+    - tcxm_xiq_onboarding_cleanup

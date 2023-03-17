@@ -15,43 +15,43 @@ Configure IQagent EXOS
     [Documentation]     Configures the EXOS Iqagent
 
     log to console          "Executed the exos IQAgent configuration"
-    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}
-    send cmd  dut1_telnet   disable iqagent
-    send cmd  dut1_telnet   disable cli prompting
-    send cmd  dut1_telnet   configure iqagent server vr VR-Mgmt
-    send cmd  dut1_telnet   configure iqagent server ipaddress ${sw_connection_host}
-    ${check_results}=  send cmd  dut1_telnet   show iqagent
+    connect to network element  dut1_ssh  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  ssh  ${netelem1.cli_type}
+    send cmd  dut1_ssh   disable iqagent
+    send cmd  dut1_ssh   disable cli prompting
+    send cmd  dut1_ssh   configure iqagent server vr VR-Mgmt
+    send cmd  dut1_ssh   configure iqagent server ipaddress ${sw_connection_host}
+    ${check_results}=  send cmd  dut1_ssh   show iqagent
     log   ${check_results[0].cmd_obj._return_text}
     log to console      ${check_results[0].cmd_obj._return_text}
     Should Contain   ${check_results[0].cmd_obj._return_text}   ${sw_connection_host}
-    send cmd  dut1_telnet   enable iqagent
-    send cmd  dut1_telnet   restart process iqagent
+    send cmd  dut1_ssh   disable iqagent
+    send cmd  dut1_ssh   enable iqagent
     Sleep   45s
-    close connection to network element  dut1_telnet
+    close connection to network element  dut1_ssh
 
 Configure IQagent VOSS
     [Documentation]     Configures the VOSS IQAgent
 
     log to console          "Executed the voss Iqagent configuration"
-    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type} 
-    send cmd  dut1_telnet   enable
-    send cmd  dut1_telnet   configure terminal
-    send cmd  dut1_telnet   application
-    send cmd  dut1_telnet   no iqagent ena
-    send cmd  dut1_telnet   no iqagent server
-    send cmd  dut1_telnet   iqagent server ${sw_connection_host}
-    send cmd  dut1_telnet   iqagent ena
-    ${check_results}=  send cmd  dut1_telnet   show application iqagent
+    connect to network element  dut1_ssh  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  ssh  ${netelem1.cli_type}
+    send cmd  dut1_ssh   enable
+    send cmd  dut1_ssh   configure terminal
+    send cmd  dut1_ssh   application
+    send cmd  dut1_ssh   no iqagent ena
+    send cmd  dut1_ssh   no iqagent server
+    send cmd  dut1_ssh   iqagent server ${sw_connection_host}
+    send cmd  dut1_ssh   iqagent ena
+    ${check_results}=  send cmd  dut1_ssh   show application iqagent
     log   ${check_results[0].cmd_obj._return_text}
     log to console      ${check_results[0].cmd_obj._return_text}
     Should Contain   ${check_results[0].cmd_obj._return_text}   ${sw_connection_host}
-    close connection to network element  dut1_telnet
+    close connection to network element  dut1_ssh
 
 Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ and sets up the elements necessary to complete this test suite
 
     Log Into XIQ and Confirm Success
-    
+
     Create Org
 
 Create Org
@@ -71,7 +71,7 @@ Create Org
 
     delete_location_building_floor              ${location}      ${building}    ${floor}
     create_location_building_floor              ${location}      ${building}    ${floor}
- 
+
 
 
 Log Into XIQ and Confirm Success
@@ -129,27 +129,27 @@ Cleanup IQagent EXOS
     [Documentation]     Unconfigures the EXOS Iqagent
 
     log to console          "Executing the exos IQAgent Cleanup"
-    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}
-    send cmd  dut1_telnet   disable cli prompting
-    send cmd  dut1_telnet   configure iqagent server ipaddress none
-    ${check_results}=  send cmd  dut1_telnet   show iqagent
+    connect to network element  dut1_ssh  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  ssh  ${netelem1.cli_type}
+    send cmd  dut1_ssh   disable cli prompting
+    send cmd  dut1_ssh   configure iqagent server ipaddress none
+    ${check_results}=  send cmd  dut1_ssh   show iqagent
     log   ${check_results[0].cmd_obj._return_text}
     log to console      ${check_results[0].cmd_obj._return_text}
-    close connection to network element  dut1_telnet
+    close connection to network element  dut1_ssh
 
 Cleanup IQagent VOSS
     [Documentation]     Unconfigures the VOSS IQAgent
 
     log to console          "Executing  the voss Iqagent Cleanup"
-    connect to network element  dut1_telnet  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  telnet  ${netelem1.cli_type}
-    send cmd  dut1_telnet   enable
-    send cmd  dut1_telnet   configure terminal
-    send cmd  dut1_telnet   application
-    send cmd  dut1_telnet   no iqagent ena
-    send cmd  dut1_telnet   no iqagent server
-    ${check_results}=  send cmd  dut1_telnet   show application iqagent
+    connect to network element  dut1_ssh  ${netelem1.ip}  ${netelem1.username}  ${netelem1.password}  ssh  ${netelem1.cli_type}
+    send cmd  dut1_ssh   enable
+    send cmd  dut1_ssh   configure terminal
+    send cmd  dut1_ssh   application
+    send cmd  dut1_ssh   no iqagent ena
+    send cmd  dut1_ssh   no iqagent server
+    ${check_results}=  send cmd  dut1_ssh   show application iqagent
     log   ${check_results[0].cmd_obj._return_text}
     log to console      ${check_results[0].cmd_obj._return_text}
-    close connection to network element  dut1_telnet
+    close connection to network element  dut1_ssh
 
 

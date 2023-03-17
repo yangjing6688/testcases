@@ -43,6 +43,7 @@ ${NO_PILOT_LICENSE}         Not Required
 ${COLUMN_1}                 CoPilot
 ${COLUMN_2}                 Managed
 ${COLUMN_3}                 Device License
+${COLUMN_4}                 Model
 
 
 *** Test Cases ***
@@ -59,7 +60,7 @@ Test 2: Onboard Digital Twin Switch Engine Device
 
     Navigate to Devices and Confirm Success
 
-    ${selected}=    Column Picker Select                    ${COLUMN_1}     ${COLUMN_2}    ${COLUMN_3}
+    ${selected}=    Column Picker Select                    ${COLUMN_1}     ${COLUMN_2}    ${COLUMN_3}    ${COLUMN_4}
     Should Be Equal As Integers                             ${selected}     1
 
     ${ONBOARD_RESULT}=      onboard device quick            ${netelem1}
@@ -133,10 +134,3 @@ Disable CoPilot Feature and Confirm Success
 
     ${result_disable}=    Disable CoPilot Feature For This VIQ
     Should Be Equal As Integers     ${result_disable}     1
-
-Confirm Required Columns Selected
-    [Documentation]     Confirms the Device License and CoPilot columns are selected
-    [Arguments]         ${column1}    ${column2}
-
-    ${selected}=    Confirm Column Picker Column Selected     ${COLUMN_1}  ${COLUMN_2}
-    Should Be Equal As Integers     ${selected}    1
