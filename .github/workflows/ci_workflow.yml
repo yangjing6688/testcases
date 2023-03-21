@@ -159,6 +159,7 @@ jobs:
           **/__init__.py
           **/conftest.py
           **/.pylintrc
+          **/.gitignore
           **/{r,R}{e,E}{a,A}{d,D}{m,M}{e,E}.md
           data
           Environments
