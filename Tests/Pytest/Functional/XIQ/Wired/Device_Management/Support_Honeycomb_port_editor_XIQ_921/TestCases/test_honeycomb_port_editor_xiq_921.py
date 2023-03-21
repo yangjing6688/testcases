@@ -409,7 +409,7 @@ class xiqTests():
             # Login
             cls.init_xiq_libaries_and_login(cls, cls.cfg['tenant_username'], cls.cfg['tenant_password'],
                                             url=cls.cfg['test_url'])
-            cls.xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings("disable", "EXOS")
+            cls.xiq.xflowsglobalsettingsGlobalSetting.change_device_management_settings("disable")
             cls.xiq.xflowscommonNavigator.navigate_to_devices()
             # Onboard device
             cls.onboard_local(cls, cls.tb.dut1.mac, cls.tb.dut1.cli_type, cls.tb.dut1.ip,
@@ -432,9 +432,8 @@ class xiqTests():
             else:
                 pytest.fail("The selected device is neither exos, nor voss.")
             cls.xiq.xflowscommonNavigator.navigate_to_devices()
-            # Disable_update_setings for exos
-            if cls.tb.dut1.cli_type == 'exos':
-                cls.xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings('disable', 'exos')
+            # Disable_update_setings 
+            cls.xiq.xflowsglobalsettingsGlobalSetting.change_device_management_settings('disable')
 
             cls.xiq.xflowscommonNavigator.navigate_to_devices()
             if cls.xiq.xflowscommonDevices.get_update_devices_reboot_rollback(policy_name=network_policy_name,

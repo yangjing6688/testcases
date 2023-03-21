@@ -45,7 +45,7 @@ Variables    Environments/${ENV}
 Variables    Environments/Config//waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Resource     Resources/sr_auto_provisioning_config.robot
+Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/sr_auto_provisioning_config.robot
 Force Tags   testbed_1_node
 
 

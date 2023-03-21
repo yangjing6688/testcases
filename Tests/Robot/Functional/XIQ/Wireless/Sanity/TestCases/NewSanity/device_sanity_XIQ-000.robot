@@ -24,8 +24,9 @@ Library     extauto/xiq/flows/configure/AutoProvisioning.py
 Library     extauto/xiq/flows/configure/CommonObjects.py
 Library     extauto/xiq/flows/configure/ExpressNetworkPolicies.py
 Library     extauto/xiq/flows/configure/RouterTemplate.py
-Variables   Resources/voss_config.py
-Resource    Resources/device_sanity_XIQ_config.robot
+Variables   Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/voss_config.py
+
+Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/device_sanity_XIQ_config.robot
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -79,10 +80,10 @@ Test Suite Setup
 
 Test Suite Teardown
     Clean Up Device
-    ${DLT_NW_POLICIES}=             Delete Network Polices      ${PUSH_CONFIG_POLICY_01}        ${VOSS_POLICY_NAME}    ignore_cli_feedback=true
+    ${DLT_NW_POLICIES}=             Delete Network Polices      ${PUSH_CONFIG_POLICY_01}        ignore_cli_feedback=true
     should be equal as integers     ${DLT_NW_POLICIES}          1
 
-    ${DELETE_SSIDS}=                Delete SSIDs                ${PUSH_CONFIG_SSID_01}        ${NEW_SSID_NAME_1}  ${VOSS_SSID_NAME}     ignore_cli_feedback=true
+        ${DELETE_SSIDS}=                Delete SSIDs                ${PUSH_CONFIG_SSID_01}        ${NEW_SSID_NAME_1}    ignore_cli_feedback=true
     should be equal as integers     ${DELETE_SSIDS}             1
 
     Logout User

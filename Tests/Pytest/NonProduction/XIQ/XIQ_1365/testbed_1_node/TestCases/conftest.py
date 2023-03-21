@@ -89,8 +89,7 @@ def setup_switch(onboarding_location):
         xiq.xflowsmanageLocation.delete_location_building_floor(*onboarding_location.split(","))
         xiq.xflowsmanageLocation.create_location_building_floor(*onboarding_location.split(","))
 
-        xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings(option="disable",
-                                                                                     platform=tb.config.netelem1.cli_type)
+        xiq.xflowsglobalsettingsGlobalSetting.change_device_management_settings(option="disable")
 
         image_version = ""
         ga_version = r".*version\s+(\d+\.\d+\.\d+\.\d+)\s+by"

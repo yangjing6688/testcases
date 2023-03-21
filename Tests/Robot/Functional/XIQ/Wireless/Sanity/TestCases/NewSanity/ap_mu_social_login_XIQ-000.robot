@@ -241,7 +241,7 @@ TCCS-11614: Social login with facebook
     ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To AP     ${NW_POLICY_NAME1}  ap_serial=${device1.serial}
     Should Be Equal As Integers     ${UPDATE_NW_POLICY_STATUS}      1
 
-    ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial}
+    ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial} 
     Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}            1
 
     Log to Console      Sleep for ${client_connect_wait} seconds

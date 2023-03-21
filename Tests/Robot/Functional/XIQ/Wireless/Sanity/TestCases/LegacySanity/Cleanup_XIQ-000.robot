@@ -47,7 +47,7 @@ pre condition
 tccs-7436_step1: Remove all Devices
     [Documentation]    Remove all devices
 
-    [Tags]             production       tccs_7436_step1
+    [Tags]             production       tccs_7436_step1     tccs_7436
 
     ${STATUS}    delete all devices
     Should Be Equal As Integers       ${STATUS}     1        Unable to delete all the all devices
@@ -55,7 +55,7 @@ tccs-7436_step1: Remove all Devices
 
 tccs-7436_step2: Remove all Auto-Provision-Policies
     [Documentation]    Remove all auto provision Policies
-    [Tags]             production      tccs-7436_step2
+    [Tags]             production      tccs-7436_step2      tccs_7436
 
     ${STATUS}          Navigate To Network Policies List View Page
     Should Be Equal As Integers       ${STATUS}     1        Unable to navigate to network policies list view page
@@ -67,7 +67,7 @@ tccs-7436_step2: Remove all Auto-Provision-Policies
 
 tccs-7436_step3: Remove all network policies
     [Documentation]    Remove all network policies
-    [Tags]             production       tccs-7436_step3
+    [Tags]             production       tccs-7436_step3     tccs_7436
 
     ${STATUS}=         Delete All Network Policies
     Should Be Equal As Integers       ${STATUS}     1        Unable to remove all network policies
@@ -75,7 +75,7 @@ tccs-7436_step3: Remove all network policies
 
 tccs-7436_step4: Remove all SSIDs
     [Documentation]    Remove all SSIDs
-    [Tags]             production       tccs-7436_step4
+    [Tags]             production       tccs-7436_step4     tccs_7436
 
     ${STATUS}=         Delete All SSIDs
     Should Be Equal As Integers       ${STATUS}     1        Unable to remove all SSIDs
@@ -83,6 +83,6 @@ tccs-7436_step4: Remove all SSIDs
 
 tccs-7436_step5: Remove all user groups
     [Documentation]    Remove all user groups
-    [Tags]             production       tccs-7436_step5
+    [Tags]             production       tccs-7436_step5     tccs_7436
 
     delete all user groups 

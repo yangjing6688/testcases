@@ -39,11 +39,10 @@ def cleanup(xiq, dut=None, onboarding_location=''):
         print(repr(exc))
 
 
-def change_device_management_settings(xiq, option, platform, retries=5, step=5):
+def change_device_management_settings(xiq, option, retries=5, step=5):
     for _ in range(retries):
         try:
-            xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings(
-                option=option, platform=platform)
+            xiq.xflowsglobalsettingsGlobalSetting.change_device_management_settings(option=option)
         except Exception as exc:
             print(repr(exc))
             time.sleep(step)
@@ -51,7 +50,7 @@ def change_device_management_settings(xiq, option, platform, retries=5, step=5):
             xiq.xflowscommonNavigator.navigate_to_devices()
             break
     else:
-        pytest.fail("Failed to change exos device management settings")
+        pytest.fail("Failed to change device management settings")
 
 
 def deactivate_xiq_libraries_and_logout(xiq):
@@ -121,7 +120,7 @@ def onboarded_switch(onboarding_location):
     network_manager.connect_to_network_element_name(dut.name)
 
     xiq = init_xiq_libraries_and_login(config['tenant_username'], config['tenant_password'], config['test_url'])
-    change_device_management_settings(xiq, option="disable", platform=dut.cli_type.upper())
+    change_device_management_settings(xiq, option="disable")
 
     try:
         cleanup(xiq, dut=dut)

@@ -11,7 +11,7 @@
 
 # Execution Command:
 # ------------------
-# robot -v DEVICE1:AP630 -v DEVICE2:AP410C -v TOPO:g7r2 monitor_rogue_devices.robot
+# robot -v DEVICE1:AP630 -v DEVICE2:Ap410C -v TOPO:g7r2 monitor_rogue_devices.robot
 
 *** Variables ***
 ${WIPS_POLICY_NAME}         test_automation_wips
@@ -49,7 +49,8 @@ Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
 Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/monitor_rogue_devices_config.robot
-Force Tags   flow3
+
+Force Tags  testbed_1_node
 
 Library	        Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   Remote_Server
 Suite Setup      Pre Condition
@@ -74,7 +75,7 @@ Pre Condition
 *** Test Cases ***
 Test0: Pre-config
     [Documentation]         Pre-config
-    [Tags]                  sanity  add   Rougueap  wips_ssid   aerohive  P3  P4   regression
+    [Tags]                  sanity  add   rougueap  wips_ssid   aerohive  p3  p4   regression   tcxi_49871
     ${result}=           Login User          ${tenant_username}     ${tenant_password}
 
     onboard device quick       ${ap2}
@@ -92,7 +93,7 @@ Test0: Pre-config
 
 Test1: TC-49871 - Configure WIPS Policy on AP
     [Documentation]         Configure WIPS Policies
-    [Tags]                  sanity  add   Rougueap  wips_ssid   aerohive  P3  P4  production  regression
+    [Tags]                  sanity  add   rougueap  wips_ssid   aerohive  p3  p4  production  regression    tcxi_49871
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}   capture_version=True
     ${CREATE_POLICY1}=         Create Network Policy   ${NW_POLICY_NAME}      ${WIPS_OPEN_NW}
     Should Be Equal As Strings   '${CREATE_POLICY1}'   '1'
@@ -130,7 +131,7 @@ Test1: TC-49871 - Configure WIPS Policy on AP
 
 Test2: Make a WiFi connection with WIPS policy Configured Non-Permiited SSID
     [Documentation]         Make a WiFi connection with WIPS policy Configured Non-Permiited SSID
-    [Tags]                  sanity    wireless    Rougueap  wips_ssid   aerohive P3  P4   regression
+    [Tags]                  sanity    wireless    rougueap  wips_ssid   aerohive p3  p4   regression    tcxi_49871
 
     Depends On          Test1
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
@@ -153,7 +154,7 @@ Test2: Make a WiFi connection with WIPS policy Configured Non-Permiited SSID
 Test3: Verify the Rogue AP Logs with Non-Permitted SSID
     [Documentation]         Verify the Rogue AP
     ...                     https://jira.aerohive.com/browse/APC-38301
-    [Tags]                  sanity  Rougueap  wips_ssid   aerohive  P3  P4   regression
+    [Tags]                  sanity  rougueap  wips_ssid   aerohive  p3  p4   regression     tcxi_49871
 
     Depends On          Test1
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
@@ -184,7 +185,7 @@ Test3: Verify the Rogue AP Logs with Non-Permitted SSID
 
 Test4: Make a WiFi connection with WIPS policy Configured Permitted SSID
     [Documentation]         Make a WiFi connection with WIPS policy Configured Permitted SSID
-    [Tags]                  sanity    wireless    Rougueap  wips_ssid   aerohive P3  P4   regression
+    [Tags]                  sanity    wireless    rougueap  wips_ssid   aerohive p3  p4   regression    tcxi_49871
 
     Depends On          Test1
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
@@ -206,7 +207,7 @@ Test4: Make a WiFi connection with WIPS policy Configured Permitted SSID
 
 Test5: Verify the Rogue AP Logs with Permitted SSID
     [Documentation]         Verify the Rogue AP
-    [Tags]                  sanity  Rougueap  wips_ssid   aerohive P3  P4    regression
+    [Tags]                  sanity  rougueap  wips_ssid   aerohive p3  p4    regression     tcxi_49871
 
     Depends On          Test4
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
@@ -220,7 +221,7 @@ Test5: Verify the Rogue AP Logs with Permitted SSID
 Test6: Verify the Rogue Client
     [Documentation]         Verify the Rogue Client
     ...                     https://jira.aerohive.com/browse/APC-38301
-    [Tags]                  sanity  Rougueclient  wips_ssid   aerohive  not-ready  P3  P4   regression
+    [Tags]                  sanity  rougueclient  wips_ssid   aerohive  not-ready  p3  p4   regression      tcxi_49871
 
     Depends On          Test1
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
@@ -243,7 +244,7 @@ Test6: Verify the Rogue Client
 
 Test7: Delete Wips Policy
     [Documentation]         Verify Delete Wips Policy
-    [Tags]                  sanity   Rougueap  wips_ssid  delete  aerohive  P3  P4   regression  production
+    [Tags]                  sanity   rougueap  wips_ssid  delete  aerohive  p3  p4   regression  production     tcxi_49871
 
     Depends On          Test1
     ${LOGIN_XIQ}=              Login User          ${tenant_username}      ${tenant_password}
