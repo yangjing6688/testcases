@@ -1049,19 +1049,18 @@ class SuiteUdk:
         else:
             raise AssertionError("Failed to revert to default port config")
 
-    def change_device_management_settings(self, option, platform, retries=5, step=20):
+    def change_device_management_settings(self, option, retries=5, step=20):
     
         for _ in range(retries):
             try:
-                self.setup_cls_obj.xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings(
-                    option=option, platform=platform)
+                self.setup_cls_obj.xiq.xflowsglobalsettingsGlobalSetting.change_device_management_settings(option=option)
             except Exception as exc:
                 self.utils.print_info(repr(exc))
                 time.sleep(step)
             else:
                 break
         else:
-            assert False, "Failed to change exos device management settings"
+            assert False, "Failed to change device management settings"
 
     def generate_template_for_given_model(self, platform, model, slots=""):
     

@@ -28,18 +28,20 @@ jobs:
     # https://github.com/tj-actions/changed-files
     - name: Get changed pytest functional tests
       id: pytest-func
-      uses: tj-actions/changed-files@v12.2
+      uses: tj-actions/changed-files@v35
       with:
         files: |
-          Tests/Pytest/(SystemTest|Functional)/([^/]+/)+TestCases/
+          Tests/Pytest/Functional/**/TestCases
+          Tests/Pytest/SystemTest/**/TestCases
         separator: ','
 
     - name: Get changed robot functional tests
       id: robot-func
-      uses: tj-actions/changed-files@v12.2
+      uses: tj-actions/changed-files@v35
       with:
         files: |
-          Tests/Robot/(SystemTest|Functional)/([^/]+/)+TestCases/
+          Tests/Robot/Functional/**/TestCases
+          Tests/Robot/SystemTest/**/TestCases
         separator: ','
 
     - name: Checkout framework
