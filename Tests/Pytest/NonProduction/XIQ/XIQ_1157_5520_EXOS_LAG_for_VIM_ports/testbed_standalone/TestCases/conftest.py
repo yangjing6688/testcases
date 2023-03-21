@@ -160,8 +160,7 @@ def onboarded_dut(onboarding_location, network_policy, template_switch):
 
         xiq = init_xiq_libraries_and_login(config['tenant_username'], config['tenant_password'], config['test_url'])
 
-        xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings(option="disable",
-                                                                                     platform=dut.cli_type.upper())
+        xiq.xflowsglobalsettingsGlobalSetting.change_device_management_settings(option="disable")
         xiq.xflowscommonNavigator.navigate_to_devices()
         sleep(1)
 
