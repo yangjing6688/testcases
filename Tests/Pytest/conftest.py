@@ -2913,10 +2913,10 @@ def configure_network_policies(
                     if node_name == "node_stack":
                         xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(
                             units_model, network_policy,
-                            model_template, template_switch)
+                            model_template, template_switch, cli_type=node_info.cli_type.upper())
                     else:
                         xiq.xflowsconfigureSwitchTemplate.add_sw_template(
-                            network_policy, model_template, template_switch, dut.cli_type)
+                            network_policy, model_template, template_switch, cli_type=node_info.cli_type.upper())
                         screen.save_screen_shot()
                     logger.info(
                         f"Successfully created and attached this switch template to the network policy"

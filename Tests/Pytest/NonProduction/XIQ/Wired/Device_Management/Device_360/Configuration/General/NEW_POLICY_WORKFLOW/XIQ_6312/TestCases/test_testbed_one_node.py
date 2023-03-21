@@ -54,6 +54,9 @@ class XIQ6312OneNodeTests():
 
         # Verify user can edit port-type
 
+        xiq_library_at_class_level.xflowsconfigureNetworkPolicy.navigate_to_switching_tab(policy_name=node_1_policy_name)
+        assert xiq_library_at_class_level.xflowsconfigureNetworkPolicy.get_port_types_section() == 1, "Port types section not found"
+        
         xiq_library_at_class_level.xflowsconfigureNetworkPolicy.edit_port_type(port_type_name)
         xiq_library_at_class_level.xflowsconfigureNetworkPolicy.go_to_specific_tab_in_port_type_configuration(tab_name="NAME")
         xiq_library_at_class_level.xflowsmanageDevice360.configure_port_name_usage_tab(port_type_name=port_type_name, status=False)
