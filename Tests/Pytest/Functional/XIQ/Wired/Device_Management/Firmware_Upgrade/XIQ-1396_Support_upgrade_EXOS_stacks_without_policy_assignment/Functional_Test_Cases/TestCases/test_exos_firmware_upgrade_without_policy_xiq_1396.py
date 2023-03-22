@@ -149,7 +149,7 @@ class xiqTests():
 
 
                 # Step-1: # Wait until the stack icon turn to 'blue' it is in 'red'
-                result =  cls.xiq.xflowscommonDevices.get_exos_stack_status(device_mac=dutMac, ignore_failure=True)
+                result =  cls.xiq.xflowscommonDevices.get_stack_status(device_mac=dutMac, ignore_failure=True)
                 max_wait = 300
                 time_elapsed = 0
                 while (result == "red" or result == -1 ) and max_wait >= 0 :
@@ -157,7 +157,7 @@ class xiqTests():
                     time.sleep(10)
                     max_wait -= 10
                     time_elapsed += 10
-                    result =  cls.xiq.xflowscommonDevices.get_exos_stack_status(device_mac=dutMac, ignore_failure=True)
+                    result =  cls.xiq.xflowscommonDevices.get_stack_status(device_mac=dutMac, ignore_failure=True)
                     # Once the max_wait time is elapsed the it will be declared as not onboared successfully
                     if (result == "red" or result == -1 ) and max_wait == 0 :
                         print ("\nFAILED \t Stack not formed properly, please check.\n")
