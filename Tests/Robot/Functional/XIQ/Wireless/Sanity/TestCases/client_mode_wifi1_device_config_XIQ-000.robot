@@ -147,7 +147,7 @@ Test5: Client mode enable in device Configuration for AP2 - TCXM-15120
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2_WIFI1}   client_mode_profile=${CLIENT_MODE_PROFILE_WIFI1}
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2}         wifi1_configuration=${AP_TEMPLATE_CONFIG_2_WIFI1}
 
-    ${STATUS}                            override client mode in device config    ${ap2.mac}        wifi1    &{CLIENT_MODE_PROFILE_WIFI1}
+    ${STATUS}                            override client mode in device config    ${ap2.mac}        wifi1                      ${CLIENT_MODE_PROFILE_WIFI1}
     should be equal as strings           '${STATUS}'              '1'
     sleep                                20s
     ${STATUS}                            update device delta configuration        ${ap2.serial}     update_method=Complete

@@ -23,5 +23,4 @@ Step0: Reset devices to default and remove devices from XIQ
     should be equal as strings          '${STATUS}'   '1'
     reset devices to default
     delete all devices
-    Logout User
     Quit Browser
