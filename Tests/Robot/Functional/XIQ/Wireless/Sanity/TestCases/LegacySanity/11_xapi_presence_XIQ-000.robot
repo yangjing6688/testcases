@@ -50,6 +50,7 @@ Force Tags   testbed_1_node
 
 Library	         Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   MU1
 Suite Setup      Pre Condition
+Suite Teardown   Test Suite Clean Up
 
 *** Keywords ***
 Connect Open Wireless Network
@@ -91,11 +92,25 @@ Pre Condition
     [Teardown]  run keywords        logout user
      ...                            quit browser
 
+Test Suite Clean Up
+    [Documentation]    cleaning the createst SSID
+
+    ${result}=    Login User       ${tenant_username}        ${tenant_password}
+    Update Network Policy To Ap     policy_name=OPEN_AUTO      ap_serial=${ap1.serial}
+	Delete Device                 device_serial=${ap1.serial}
+
+    delete network policy         ${XAPI_NW}
+    delete ssid                   ${XAPI_SSID}
+    Delete Api Access Tokens
+
+    [Teardown]   run keywords     logout user
+    ...                           quit browser
+    
 *** Test Cases ***
 TCCS-7472_Step1: Get The Autherization Code
      [Documentation]   generate auterization code
 
-     [Tags]            production   tccs_7472_step1
+     [Tags]            production   tccs_7472_step1     tccs_7472
      ${AUTH_CODE}=         Generate Auth Code    ${test_url}   ${CLIENT_ID}     ${tenant_username}      ${tenant_password}
      set global variable   ${AUTH_CODE}
 
@@ -103,7 +118,7 @@ TCCS-7472_Step1: Get The Autherization Code
 TCCS-7472_Step2: Get Access Token And Refresh Token
      [Documentation]   generate the access and extract access token and refresh token from json data
 
-     [Tags]            production   tccs_7472_step2
+     [Tags]            production   tccs_7472_step2     tccs_7472
 
      depends on             tccs_7472_step1
      ${JSON_DATA}=          Generate Access Token                    ${AUTH_CODE}    ${CLIENT_SECRET}    ${CLIENT_ID}   ${test_rdc_url}
@@ -117,7 +132,7 @@ TCCS-7472_Step2: Get Access Token And Refresh Token
 TCCS-7472_Step3: Validate The Access Token In Xiq Global Settings
      [Documentation]   Validate the access token with automatically updated token in API Token Management
 
-     [Tags]            production   tccs_7472_step3
+     [Tags]            production   tccs_7472_step3     tccs_7472
 
      depends on                     tccs_7472_step2
      ${RESULT}=                     Login User        ${tenant_username}      ${tenant_password}
@@ -135,7 +150,7 @@ TCCS-7472_Step3: Validate The Access Token In Xiq Global Settings
 TCCS-7472_Step4: API Call To Get The Device IDs
      [Documentation]   API call to get the device id's
 
-     [Tags]            production   tccs_7472_step4
+     [Tags]            production   tccs_7472_step4     tccs_7472
 
      depends on             tccs_7472_step3
      ${API_RESP}=           xapi_get_method   ${base_url}/xapi/v1/monitor/devices?ownerId=${OWNER_ID}     ${CLIENT_SECRET}   ${CLIENT_ID}   ${ACCESS_TOKEN}
@@ -146,7 +161,7 @@ TCCS-7472_Step4: API Call To Get The Device IDs
 TCCS-7472_Step5: Get The Locationid Of The Device
      [Documentation]   API call to get the device Location id
 
-     [Tags]            production   tccs_7472_step5
+     [Tags]            production   tccs_7472_step5     tccs_7472
 
      depends on            tccs_7472_step4
      ${API_RESP}=          xapi_get_method   ${base_url}/xapi/v1/monitor/devices/${DEVICE_ID}?ownerId=${OWNER_ID}     ${CLIENT_SECRET}   ${CLIENT_ID}   ${ACCESS_TOKEN}
@@ -175,19 +190,3 @@ TCCS-7472_Step5: Get The Locationid Of The Device
 #
 #     [Teardown]   run keywords     MU1.disconnect_wifi
 #     ...          AND              MU1.delete_wlan_profile   ${XAPI_SSID} 
-
-Test Suite Clean Up
-    [Documentation]    cleaning the createst SSID
-
-    [Tags]    production    cleanup
-
-    ${result}=    Login User       ${tenant_username}        ${tenant_password}
-    Update Network Policy To Ap     policy_name=OPEN_AUTO      ap_serial=${ap1.serial}
-	Delete Device                 device_serial=${ap1.serial}
-
-    delete network policy         ${XAPI_NW}
-    delete ssid                   ${XAPI_SSID}
-    Delete Api Access Tokens
-
-    [Teardown]   run keywords     logout user
-    ...                           quit browser

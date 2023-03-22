@@ -1,14 +1,14 @@
 ap1:
   name:                     bui-flo-0073
   connection_method:        "telnet"
-  ip:                       10.234.207.70
+  ip:                       10.234.207.66
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '24601911120073'
   console_ip:               10.234.207.230
   console_port:             7010
-  mac:                      BCF310654780
+  mac:                      bCF3103A7E40
   onboard_device_type:      Real
   cli_type:                 AH-AP
   os:                       Cloud IQ Engine
@@ -35,12 +35,12 @@ ap1:
 mu5:
   ip:             10.234.207.221
   remote_port:    8270
-  port:           23
+  port:           22
   hostname:       CloudMU1
   username:       root
   password:       symbol
   platform:       linux
-  interface:      wlo1
+  interface:      wlan0
   wifi_mac:       2477034EB610
   ethernet_mac:   D067E5429420
   delete_mac:     2477034EB610

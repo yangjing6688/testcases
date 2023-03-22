@@ -15,7 +15,7 @@
 
 # Execution Command:
 # ------------------
-# robot -v TOPO:topo.xapi-g2.yaml -v TESTBED:BANGALORE/testbed_all_SubramaniVR.yaml -L DEBUG XAPI-Production-Sanity_AIQ2024.robot
+# robot -v TOPO:topo.xapi-g2.yaml -v TESTBED:BANGALORE/testbed_all_SubramaniVR.yaml -L DEBUG XAPI_Production_Sanity-000.robot
 #
 #
 

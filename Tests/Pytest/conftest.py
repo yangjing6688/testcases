@@ -4841,12 +4841,11 @@ def change_device_management_settings(
             retries: int=5,
             step: int=5
     ) -> None:
-        
-        platform = "EXOS" if any(node.cli_type.upper() == "EXOS" for node in standalone_nodes + stack_nodes) else "VOSS"
+
         for _ in range(retries):
             try:
-                xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings(
-                    option=option, platform=platform)
+                xiq.xflowsglobalsettingsGlobalSetting.change_device_management_settings(option=option)
+
                 screen.save_screen_shot()
             except Exception as exc:
                 logger.warning(repr(exc))
@@ -4856,7 +4855,7 @@ def change_device_management_settings(
                 xiq.xflowscommonNavigator.navigate_to_devices()
                 break
         else:
-            pytest.fail("Failed to change exos device management settings.")
+            pytest.fail("Failed to change device management settings.")
     return change_device_management_settings_func
 
 

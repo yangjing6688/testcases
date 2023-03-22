@@ -52,9 +52,8 @@ def setup_switch(onboard_location):
             "Failed to create location"
 
         global_settings = xiq.xflowsglobalsettingsGlobalSetting
-        assert global_settings.change_exos_device_management_settings(option="disable",
-                                                                      platform=tb.config.netelem1.cli_type) == 1, \
-            "Failed to change exos device management settings"
+        assert global_settings.change_device_management_settings(option="disable") == 1, \
+            "Failed to change device management settings"
 
         xiq.login.logout_user()
         xiq.login.quit_browser()

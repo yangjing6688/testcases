@@ -79,8 +79,7 @@ class XIQ1429Tests:
             assert cls.xiq.xflowscommonDevices.wait_until_device_online(
                 device_mac=dut.mac) == 1, "Device didn't come online"
 
-            cls.xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings(
-                option="disable", platform=dut.cli_type.upper())
+            cls.xiq.xflowsglobalsettingsGlobalSetting.change_device_management_settings(option="disable")
 
         except Exception as e:
             cls.executionHelper.setSetupFailure(True)

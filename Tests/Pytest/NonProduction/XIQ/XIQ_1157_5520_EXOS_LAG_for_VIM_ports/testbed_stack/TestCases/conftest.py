@@ -243,8 +243,7 @@ def onboarded_dut(network_policy, template_stack):
         network_manager.connect_to_network_element_name(dut.name)
 
         xiq = init_xiq_libraries_and_login(config['tenant_username'], config['tenant_password'], config['test_url'])
-        xiq.xflowsglobalsettingsGlobalSetting.change_exos_device_management_settings(option="disable",
-                                                                                     platform=dut.cli_type.upper())
+        xiq.xflowsglobalsettingsGlobalSetting.change_device_management_settings(option="disable")
         xiq.xflowscommonNavigator.navigate_to_devices()
         xiq.xflowscommonDevices.delete_device(device_mac=dut.mac)
 
