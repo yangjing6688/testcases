@@ -17,7 +17,6 @@ env:
   pytest_non_prod_path:         pytest_non_prod_tests.txt
   pytest_libs_path:             pytest_libs.txt
   pytest_res:                   pytest_resources.txt
-  pytest_runlists:              pytest_runlists.txt
   robot_func_path:              robot_func_tests.txt
   robot_non_prod_path:          robot_non_prod_tests.txt
   robot_libs_path:              robot_libs.txt
@@ -50,125 +49,123 @@ jobs:
       uses: actions/checkout@v3
 
     # https://github.com/tj-actions/changed-files
-    - name: Get changed pytest functional tests
+    - name: Get changed pytest production tests
       id: pytest-func
-      uses: tj-actions/changed-files@v12.2
+      uses: tj-actions/changed-files@v35
       with:
         files: |
-          Tests/Pytest/(SystemTest|Functional)/([^/]+/)+TestCases/
+          Tests/Pytest/Functional/**/TestCases
+          Tests/Pytest/SystemTest/**/TestCases
         separator: ','
 
     - name: Get changed pytest non-prod tests
       id: pytest-non-prod
-      uses: tj-actions/changed-files@v12.2
+      uses: tj-actions/changed-files@v35
       with:
         files: |
-          Tests/Pytest/NonProduction/([^/]+/)+TestCases/
-        separator: ','
-
-    - name: Get changed pytest runlists & suitemaps
-      id: pytest-runlists
-      uses: tj-actions/changed-files@v12.2
-      with:
-        files: |
-          Tests/Pytest/(SystemTest|Functional|NonProduction)/[^/]+/data/(runlists|suitemaps)/
+          Tests/Pytest/NonProduction/**/TestCases
+          Tests/Pytest/ReleaseTest/**/TestCases
         separator: ','
 
     - name: Get changed pytest resources
       id: pytest-resources
-      uses: tj-actions/changed-files@v12.2
+      uses: tj-actions/changed-files@v35
       with:
         files: |
-          Tests/Pytest/([^/]+/)+Resources/
+          Tests/Pytest/**/Resources
         separator: ','
 
-    - name: Get changed robot functional tests
+    - name: Get changed robot production tests
       id: robot-func
-      uses: tj-actions/changed-files@v12.2
+      uses: tj-actions/changed-files@v35
       with:
         files: |
-          Tests/Robot/(SystemTest|Functional)/([^/]+/)+TestCases/
+          Tests/Robot/SystemTest/**/TestCases
+          Tests/Robot/Functional/**/TestCases
         separator: ','
 
     - name: Get changed robot non-prod tests
       id: robot-non-prod
-      uses: tj-actions/changed-files@v12.2
+      uses: tj-actions/changed-files@v35
       with:
         files: |
-          Tests/Robot/NonProduction/([^/]+/)+TestCases/
+          Tests/Robot/NonProduction/**/TestCases/
+          Tests/Robot/ReleaseTest/**/TestCases
         separator: ','
 
     - name: Get changed robot libraries
       id: robot-libs
-      uses: tj-actions/changed-files@v12.2
+      uses: tj-actions/changed-files@v35
       with:
         files: |
-          Tests/Robot/Libraries/([^/]+/)+
+          Tests/Robot/Libraries
         separator: ','
 
     - name: Get changed pytest libraries
       id: pytest-libs
-      uses: tj-actions/changed-files@v12.2
+      uses: tj-actions/changed-files@v35
       with:
         files: |
-          Tests/Pytest/Libraries/([^/]+/)+
+          Tests/Pytest/Libraries
         separator: ','
 
     - name: Get changed Non-Prod Testbed YAML files
       id: testbed-non-prod
-      uses: tj-actions/changed-files@v12.2
+      uses: tj-actions/changed-files@v35
       with:
         files: |
-          TestBeds/[^/]+/(Demo|Dev)/([^/]+/)*.+\.ya?ml
-          TestBeds/Templates/([^/]+/)*.+\.ya?ml
+          TestBeds/Robot/Demo/**/*.{yaml,yml}
+          TestBeds/Robot/Dev/**/*.{yaml,yml}
+          TestBeds/Pytest/Demo/**/*.{yaml,yml}
+          TestBeds/Pytest/Dev/**/*.{yaml,yml}
+          TestBeds/Templates/**/*.{yaml,yml}
         separator: ','
 
     - name: Get changed Prod Testbed YAML files
       id: testbed-prod
-      uses: tj-actions/changed-files@v12.2
+      uses: tj-actions/changed-files@v35
       with:
         files: |
-          TestBeds/[^/]+/(Prod|SystemsTest)/([^/]+/)*.+\.ya?ml
+          TestBeds/*/Prod/**/*.{yaml,yml}
+          TestBeds/*/SystemsTest/**/*.{yaml,yml}
         separator: ','
 
-    # Outputs a list of files breaking directory rules that we do and don't care about
+    # Outputs a list of files breaking directory rules that we care about
     - name: Get other changed files
       id: other-files
-      uses: tj-actions/changed-files@v12.2
+      uses: tj-actions/changed-files@v35
       with:
         files: |
-          Tests/(Pytest|Robot)/(SystemTest|Functional|NonProduction)/([^/]+/)+(TestCases|Resources)/
-          Tests/Pytest/(SystemTest|Functional|NonProduction)/[^/]+/data/(runlists|suitemaps)/
-          Tests/(Pytest|Robot)/Libraries/([^/]+/)+
-          Tests/(Pytest|Robot)/Demos/
-          __init__.py
-          conftest.py
-          .pylintrc
-          [rR][eE][aA][dD][mM][eE]\.md
+          Tests/Pytest/SystemTest/**/TestCases
+          Tests/Pytest/ReleaseTest/**/TestCases
+          Tests/Pytest/Functional/**/TestCases
+          Tests/Pytest/NonProduction/**/TestCases
+          Tests/Pytest/SystemTest/**/Resources
+          Tests/Pytest/ReleaseTest/**/Resources
+          Tests/Pytest/Functional/**/Resources
+          Tests/Pytest/NonProduction/**/Resources
+          Tests/Robot/SystemTest/**/TestCases
+          Tests/Robot/ReleaseTest/**/TestCases
+          Tests/Robot/Functional/**/TestCases
+          Tests/Robot/NonProduction/**/TestCases
+          Tests/Robot/SystemTest/**/Resources
+          Tests/Robot/ReleaseTest/**/Resources
+          Tests/Robot/Functional/**/Resources
+          Tests/Robot/NonProduction/**/Resources
+          Tests/Pytest/Libraries
+          Tests/Robot/Libraries
+          Tests/Pytest/Demos
+          Tests/Robot/Demos
+          **/__init__.py
+          **/conftest.py
+          **/.pylintrc
+          **/.gitignore
+          **/{r,R}{e,E}{a,A}{d,D}{m,M}{e,E}.md
+          data
+          Environments
+          TestBeds
+          Utils
         separator: ','
-
-    # Outputs a list of files breaking directory rules that we don't care about
-    - name: Get other changed files we dont care about
-      id: other-files2
-      uses: tj-actions/changed-files@v12.2
-      with:
-        files: |
-          Tests
-        separator: ','
-
-    # Diff two lists to get just the files we care about
-    # All files in this list need to conform to directory structure rules
-    - name: Diff other files lists
-      shell: python
-      run: |
-        l1 = "${{ steps.other-files.outputs.other_changed_files }}".split(",")
-        l2 = "${{ steps.other-files2.outputs.other_changed_files }}".split(",")
-        diff_list = [x for x in l1 if x not in l2]
-        diff_string = ",".join(diff_list)
-        print(diff_string)
-        with open('${{ env.other_files_path }}', 'w') as outfile:
-          outfile.write(diff_string)
-
 
     - name: List all modified files
       env:
@@ -176,7 +173,6 @@ jobs:
         PY_NON_PROD:      ${{ steps.pytest-non-prod.outputs.all_changed_files }}
         PY_LIBS:          ${{ steps.pytest-libs.outputs.all_changed_files }}
         PY_RES:           ${{ steps.pytest-resources.outputs.all_changed_files }}
-        PY_RUNLISTS:      ${{ steps.pytest-runlists.outputs.all_changed_files }}
         ROBOT_FUNC:       ${{ steps.robot-func.outputs.all_changed_files }}
         ROBOT_NON_PROD:   ${{ steps.robot-non-prod.outputs.all_changed_files }}
         ROBOT_LIBS:       ${{ steps.robot-libs.outputs.all_changed_files }}
@@ -188,13 +184,13 @@ jobs:
         echo $PY_NON_PROD > ${{ env.pytest_non_prod_path }}
         echo $PY_LIBS > ${{ env.pytest_libs_path }}
         echo $PY_RES > ${{ env.pytest_res }}
-        echo $PY_RUNLISTS > ${{ env.pytest_runlists }}
         echo $ROBOT_FUNC > ${{ env.robot_func_path }}
         echo $ROBOT_NON_PROD > ${{ env.robot_non_prod_path }}
         echo $ROBOT_LIBS > ${{ env.robot_libs_path }}
         echo $TESTBED_PROD > ${{ env.testbed_prod_path }}
         echo $TESTBED_NON_PROD > ${{ env.testbed_non_prod_path }}
-        # echo $OTHER_FILES > ${{ env.other_files_path }}
+        echo $OTHER_FILES > ${{ env.other_files_path }}
+
 
     - name: Upload test results to GH artifacts
       uses: actions/upload-artifact@v3
@@ -205,7 +201,6 @@ jobs:
           ${{ env.pytest_non_prod_path }}
           ${{ env.pytest_libs_path }}
           ${{ env.pytest_res }}
-          ${{ env.pytest_runlists }}
           ${{ env.robot_func_path }}
           ${{ env.robot_non_prod_path }}
           ${{ env.robot_libs_path }}
@@ -407,41 +402,6 @@ jobs:
         fi
         exit $rc
 
-    - name: Process Pytest Runlist & Suitemap file(s)
-      if: ${{env.SKIP_CHECK == 'false'}}
-      run: |
-        IFS=','
-        rc=0
-        files_tested=0
-        for path in $( cat ${{ env.pytest_runlists }} | sed -e 's/ //g' ); do
-          errors=0
-          f=$( basename "$path" )
-          let "files_tested += 1"
-          printf '\n%b\n' "[*] Processing file: $path ..." | tee -a ${{ env.testcase_files_report_path }}
-          if [[ ! $f =~ .*\.ya?ml$ ]] ; then
-              printf '%b\n' "[**] ${fail_prefix} $path is NOT a YAML file! Only .yaml/.yml files are allowed in this directory." | tee -a ${{ env.testcase_files_report_path }}
-              rc=1; let "errors += 1"
-          fi
-
-          # Only allow YAML files that contain "suitemap" or "runlist".
-          # Note: inside bash [[ ]] you need to use extended regex format
-          if [[ ! "$f" =~ .*suitemap.*\.ya?ml$|.*runlist.*\.ya?ml$ ]] ; then
-              printf '%b\n' "[**] ${fail_prefix} $path does not contain 'suitemap' or 'runlist'!" | tee -a ${{ env.testcase_files_report_path }}
-              rc=1; let "errors += 1"
-          fi
-
-          if (( errors == 0 )); then
-              printf '%b\n' "[**] ${pass_prefix} $path" | tee -a ${{ env.testcase_files_report_path }}
-          else
-              printf '%b\n' '[**] For more information see the Test Suite File Name section of ${{ env.documentation_url }}' | tee -a ${{ env.testcase_files_report_path }}
-          fi
-        done
-        unset IFS
-        if (( files_tested == 0 )); then
-          printf '%b\n' "[*] No Pytest Runlist & Suitemap files found. Skipping these tests..." | tee -a ${{ env.testcase_files_report_path }}
-        fi
-        exit $rc
-
     - name: Process Robot Production file(s)
       if: ${{env.SKIP_CHECK == 'false'}}
       run: |
@@ -577,8 +537,9 @@ jobs:
         if [[ $trimmed_files ]]; then
           printf '%b\n' "[*] ${fail_prefix} New directories and files not allowed in protected areas." | tee -a ${{ env.directory_struct_report_path }}
           printf '%b\n' "[*] Common reasons for seeing this error:" | tee -a ${{ env.directory_struct_report_path }}
-          printf '%b\n' "[*]   - Adding files outside of TestCases or Resource directories. (Except: __init__.py, .pylintrc, readme.md)" | tee -a ${{ env.directory_struct_report_path }}
-          printf '%b\n' "[*]   - Adding directories outisde of /Tests/<framework>/<test type>/ " | tee -a ${{ env.directory_struct_report_path }}
+          printf '%b\n' "[*]   - Adding files in /Tests outside of TestCases or Resource directories. (Except: __init__.py, .pylintrc, readme.md)" | tee -a ${{ env.directory_struct_report_path }}
+          printf '%b\n' "[*]   - Adding directories/files in /Tests outisde of /Tests/<framework>/<test type>/ " | tee -a ${{ env.directory_struct_report_path }}
+          printf '%b\n' "[*]   - Adding directories/files outisde of /Tests, /data, /Environments, /TestBeds, /Utils " | tee -a ${{ env.directory_struct_report_path }}
           printf '%b\n' '[*] For more information see the Test Suite Location section of ${{ env.documentation_url }}' | tee -a ${{ env.directory_struct_report_path }}
           printf '%b\n' "[*] Offending files/directories:" | tee -a ${{ env.directory_struct_report_path }}
 

@@ -1,36 +1,4 @@
 ap1:
-  name:                     bui-flo-1564
-  connection_method:        "ssh"
-  ip:                       10.234.201.222
-  port:                     22
-  username:                 admin
-  password:                 Aerohive123
-  serial:                   '04102005201640'
-  console_ip:               10.234.201.225
-  console_port:             7029
-  mac:                      BCF3105E2F40
-  cli_type:                 AH-AP
-  platform:                 aerohive
-  model:                    AP410C
-  template:                 AP_410C-default-template
-  template_name:            AP410C-ADSP_Prod
-  make:                     Extreme - Aerohive
-  mgmt_vlan:                10
-  country:                  United States
-  location:                 auto_location_01, San Jose, building_01, floor_01
-  onboard_device_type:      Real
-  power_strip:
-    ip:
-    port:
-    username:
-    password:
-    plug:
-        plug_a:
-        plug_b:
-    type:
-
-
-ap2:
   name:                     bui-flo-1565
   connection_method:        "ssh"
   ip:                       10.234.201.221
@@ -62,8 +30,40 @@ ap2:
     type:
 
 
+ap2:
+  name:                     bui-flo-1564
+  connection_method:        "ssh"
+  ip:                       10.234.201.222
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '04102005201640'
+  console_ip:               10.234.201.225
+  console_port:             7029
+  mac:                      BCF3105E2F40
+  cli_type:                 AH-AP
+  platform:                 aerohive
+  model:                    AP410C
+  template:                 AP_410C-default-template
+  template_name:            AP410C-ADSP_Prod
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, San Jose, building_01, floor_01
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+
+
 kali_server1:
-  ip:                 "10.234.201.101"
+  ip:                 "10.234.201.241"
   username:           "root"
   password:           "symbol"
   connection_method:  "ssh"

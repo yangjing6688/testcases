@@ -175,14 +175,15 @@ Test2: Validate Presence TC after connecting client in new customer account
     Should Be Equal As Strings      '${LOGIN_XIQ}'   '1'
     
     ${CLIENT_MAC_FORMAT}=          Convert To Client MAC  ${mu5.wifi_mac}
+    ${EXPECTED_MAC}    Convert To Lowercase    ${CLIENT_MAC_FORMAT}
     ${MU5_SPAWN}=                  Open Spawn                  ${mu5.ip}               ${mu5.port}             ${mu5.username}      ${mu5.password}      ${mu5.cli_type}
     Should not be equal as Strings      '${MU5_SPAWN}'        '-1'
 
     ${CONNECT_MU5_OPEN}=           Connect MU5 To Open Network    ${SSID_NAME}
     Should not be equal as Strings      '${CONNECT_MU5_OPEN}'        '-1'
 
-    Log to Console      Sleep for 3 minutes
-    sleep    180s
+    Log to Console      Sleep for 5 minutes
+    sleep    300s
 
     ${CLIENT_STATUS}=                Get Client Status   client_mac=${mu5.wifi_mac}
     Should Be Equal As Strings       '${CLIENT_STATUS}'      '1'
@@ -198,7 +199,7 @@ Test2: Validate Presence TC after connecting client in new customer account
 
     ${CLIENT_MAC}=                 Get From Dictionary       ${CLIENT_INFO}    client_mac
 
-    Should Be Equal As Strings    '${CLIENT_MAC}'          '${EXPECTED_CLIENT_MAC}'
+    Should Be Equal As Strings    '${CLIENT_MAC}'          '${EXPECTED_MAC}'
 
     ${CLIENT_TYPE}=                 Get From Dictionary       ${CLIENT_INFO}    device_type
     Should Be Equal As Strings     '${CLIENT_TYPE}'          'Visitor'
