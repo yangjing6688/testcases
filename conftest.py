@@ -1,7 +1,6 @@
 # Built-in imports
 import inspect
 import logging
-import os
 import queue
 import sys
 import threading
@@ -25,6 +24,7 @@ from pytest import (
     hookimpl)
 from pytest_testconfig import config as pytest_config
 from yaml import safe_load as yaml_safe_load
+from Utils.ReportReformatter import ReportReformatter
 
 
 @fixture()
@@ -118,6 +118,9 @@ def pytest_sessionfinish(session):
             text = readFile.read().replace('<title>Test Report</title>', '<title>' + custom_report_title +'</title>')
         with open(htmlfile, "w") as writeFile:
             writeFile.write(text)
+    htmlfile = session.config.getoption('htmlpath')
+    report_reformat_formatter = ReportReformatter(htmlfile, rename=True)
+    report_reformat_formatter.convert_test_results()
 
 @hookimpl(trylast=True)
 def pytest_configure(config):
