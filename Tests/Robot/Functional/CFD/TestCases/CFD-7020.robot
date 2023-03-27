@@ -23,7 +23,6 @@ ${TENANT_USERNAME}          admin@cust001.com
 ${TENANT_PASSWORD}          aerohive
 ${TEST_URL}                 https://10.16.231.72/
 ${AIO_IP}                   10.16.231.72
-${ELEMENT_INFO}             None
 ${BROWSER}                  chrome
 ######### For Local AIO testbed End #########
 
