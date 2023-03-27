@@ -13,9 +13,6 @@ OS_PLATFORM:              linux
 BROWSER:                  firefox
 LINUX:                    selenium-hub
 
-# Configure this to True to print the WebElement descriptions in definitions
-ELEMENT_INFO:             None
-
 # Remote Webdriver Port
 WEBDRIVER_PORT:           4444
 

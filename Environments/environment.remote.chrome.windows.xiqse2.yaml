@@ -16,9 +16,6 @@ BROWSER:                  chrome
 WINDOWS10:                10.69.70.24
 WINDOWS10_2:              10.69.70.44
 
-# Configure this to True to print the WebElement descriptions in definitions
-ELEMENT_INFO:             None
-
 # Remote Webdriver Port
 WEBDRIVER_PORT:           4444
 

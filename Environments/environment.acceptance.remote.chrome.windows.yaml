@@ -15,8 +15,6 @@ BROWSER:                  chrome
 # Remote System
 WINDOWS10:                10.54.142.212
 
-# Configure this to True to print the WebElement descriptions in definitions
-ELEMENT_INFO:             None
 
 # Remote Webdriver Port
 WEBDRIVER_PORT:           4444

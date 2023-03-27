@@ -42,35 +42,7 @@ Test 1: Navigate to XIQ Manage> Devices
 
     Navigate to XIQ Devices and Confirm Success
 
-Test 2: Log License Information
-    [Documentation]     Logs the license information from the Copilot Dashboard page
-    [Tags]              tcxe_898    aiq_1332    development    sample    xiqse    xiq    test2
-
-    Log License Information From CoPilot Dashboard
-
-Test 3: Get License Counts from CoPilot Dashboard
-    [Documentation]     Obtains the license counts from the Copilot Dashboard page and prints the values
-    [Tags]              tcxe_898    aiq_1332    development    sample    xiqse    xiq    test3
-
-    ${pilot_entitled}=  Get Total Pilot License Entitlements From CoPilot Dashboard
-    Log To Console  Pilots Entitled: ${pilot_entitled}
-
-    ${pilot_available}=  Get Pilot License Available Count From CoPilot Dashboard
-    Log To Console  Pilots Available: ${pilot_available}
-
-    ${pilot_consumed}=  Get Pilot License Consumed Count From CoPilot Dashboard
-    Log To Console  Pilots Consumed: ${pilot_consumed}
-
-    ${navigator_entitled}=  Get Total Navigator License Entitlements From CoPilot Dashboard
-    Log To Console  Navigators Entitled: ${navigator_entitled}
-
-    ${navigator_available}=  Get Navigator License Available Count From CoPilot Dashboard
-    Log To Console  Navigators Available: ${navigator_available}
-
-    ${navigator_consumed}=  Get Navigator License Consumed Count From CoPilot Dashboard
-    Log To Console  Navigators Consumed: ${navigator_consumed}
-
-Test 4: Confirm License Counts
+Test 2: Confirm License Counts
     [Documentation]     Confirms the license counts match what is expected.
     ...                 This test assumes there are currently no licenses consumed.
     [Tags]              tcxe_898    aiq_1332    development    sample    xiqse    xiq    test4

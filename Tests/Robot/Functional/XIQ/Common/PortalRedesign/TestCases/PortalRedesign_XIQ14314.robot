@@ -8,6 +8,9 @@
 ${MSP_USER}           msp_admin_user1
 ${MSP_USER_EMAIL}     msp_admin_email+2@extremenetworks.com
 ${MSP_USER_EMAIL_1}     msp_admin_email+3@extremenetworks.com
+${VIQ_USER}           viq_admin_user1
+${VIQ_USER_EMAIL}     viq_admin_email+1@extremenetworks.com
+${VIQ_USER_EMAIl_1}   viq_admin_email+2@extremenetworks.com
 *** Settings ***
 Documentation  robot -v ENV:environment.local.chrome.yaml -v TOPO:topo.test.g2.portal.yaml  PortalRedesign_XIQ14314.robot
 
@@ -35,7 +38,7 @@ TCXM-31051: Verify User should be able to create a MSP-Admin account with System
     [Documentation]         User should be able to create a MSP-Admin account with System-Admin account
     [Tags]                  tcxm_31051  development
     #create a MSP-Admin with System-Admin
-    ${CHECK_RESULT}=        create MSP user        ${MSP_USER}        ${MSP_USER_EMAIL}
+    ${CHECK_RESULT}=        create user        MSP        ${MSP_USER}        ${MSP_USER_EMAIL}
     Should Be Equal As Integers    ${CHECK_RESULT}        1
 
 #     [Teardown]   Delete User    ${MSP_USER}
@@ -50,12 +53,35 @@ TCXM-31053: Verify User should be able to edit a MSP-Admin account with System-A
 
      [Teardown]   Delete User    ${MSP_USER}
 
+TCXM-31052: Verify User should be able to add a VIQ-Admin account with MSP-Admin account
+    [Documentation]         User should be able to add a VIQ-Admin account with MSP-Admin account
+    [Tags]                  tcxm_31052  development
+    depends on             TCXM-31051
+    #logout and login with MSP account
+    Logout User
+    ${Login_Portal}=                  Login User              ${msp_username}      ${msp_password}
+    Should Be Equal As Integers    ${Login_Portal}             1
+    #create a VIQ-Admin with MSP-Admin
+    ${CHECK_RESULT}=        create user        VIQ          ${VIQ_USER}        ${VIQ_USER_EMAIL}
+    Should Be Equal As Integers    ${CHECK_RESULT}        1
+ #    [Teardown]   Delete User    ${VIQ_USER}
+
+ TCXM-31054: Verify User should be able to edit a VIQ-Admin account with MSP-Admin account
+    [Documentation]         User should be able to add a VIQ-Admin account with MSP-Admin account
+    [Tags]                  tcxm_31054  development
+    depends on             TCXM-31052
+    #edit a VIQ-Admin with MSP-Admin
+    ${CHECK_RESULT}=        edit user        ${VIQ_USER}        ${VIQ_USER_EMAIL}        ${VIQ_USER_EMAIL_1}
+    Should Be Equal As Integers    ${CHECK_RESULT}        1
+
+    [Teardown]   Delete User    ${VIQ_USER}
+
 *** Keywords ***
 Pre Condition
     [Documentation]   Login XIQ and Create Maps and classification rules first
     [Tags]                      tcxm_26873     development    pre-condition
 
- #Login AIO
+ #Login Portal
     ${Login_Portal}=                  Login User              ${portal_username}      ${portal_password}
     Should Be Equal As Integers    ${Login_Portal}             1
 

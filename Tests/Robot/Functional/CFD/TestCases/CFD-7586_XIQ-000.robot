@@ -26,7 +26,6 @@ ${TENANT_USERNAME}          admin@cust001.com
 ${TENANT_PASSWORD}          aerohive
 ${TEST_URL}                 https://10.16.231.153/
 ${AIO_IP}                   10.16.231.153
-${ELEMENT_INFO}             None
 ${BROWSER}                  firefox
 
 ${SERIAL}                   01501807130357

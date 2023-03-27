@@ -33,7 +33,7 @@ env:
   # This report is currently broken due to changes outside of this script. All or parts of this can be used in the future
   # testcase_func_report_path:    testcase_functionality_report.txt
   report_artifact_name:         CI-reports-${{ github.event.repository.name }}-run-${{ github.run_number }}
-  documentation_url:            https://extremenetworks2com.sharepoint.com/:w:/r/sites/qa-extauto/_layouts/15/Doc.aspx?sourcedoc=%7B357F1F2C-B274-4739-9D87-A67A72875846%7D&file=Automation%20Process%20-%20Draft.docx
+  documentation_url:            https://wiki.iq.extremenetworks.com/wiki/display/AUT/Automation+Process
 
 jobs:
   check_changes:
