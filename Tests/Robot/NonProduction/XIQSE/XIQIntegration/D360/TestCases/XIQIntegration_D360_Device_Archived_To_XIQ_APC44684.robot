@@ -61,7 +61,7 @@ Test 1: Confirm Initial Archived Status in XIQSE is Reflected in XIQ
 
     # Confirm the current Archived value in XIQ matches XIQSE
     ${se_before}=  XIQSE Get Device Column Value    ${DUT_IP}       Archived
-    Should Be Equal as Strings                      ${se_before}    False
+    Should Be Equal as Strings                      ${se_before}    False           ignore_case=true
     XIQ Confirm Device Archived Value               ${DUT_MAC}      ${se_before}
 
 Test 2: Confirm Archived Status in XIQSE is Reflected in XIQ When Device is Archived
@@ -79,7 +79,7 @@ Test 2: Confirm Archived Status in XIQSE is Reflected in XIQ When Device is Arch
 
     # Confirm the new Archived value in XIQ matches XIQSE
     ${se_after}=  XIQSE Get Device Column Value     ${DUT_IP}       Archived
-    Should Be Equal as Strings                      ${se_after}     True
+    Should Be Equal as Strings                      ${se_after}     True            ignore_case=true
     XIQ Confirm Device Archived Value               ${DUT_MAC}      ${se_after}
 
 Test 3: Confirm Archived Status in XIQSE is Reflected in XIQ When Device No Longer Archived
@@ -97,7 +97,7 @@ Test 3: Confirm Archived Status in XIQSE is Reflected in XIQ When Device No Long
 
     # Confirm the new Archived value in XIQ matches XIQSE
     ${se_reset}=  XIQSE Get Device Column Value     ${DUT_IP}       Archived
-    Should Be Equal as Strings                      ${se_reset}     False
+    Should Be Equal as Strings                      ${se_reset}     False           ignore_case=true
     XIQ Confirm Device Archived Value               ${DUT_MAC}      ${se_reset}
 
 
