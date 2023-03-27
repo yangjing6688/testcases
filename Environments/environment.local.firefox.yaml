@@ -12,9 +12,6 @@ WEB_DRIVER_LOC:           local
 OS_PLATFORM:              linux
 BROWSER:                  firefox
 
-# Configure this to True to print the WebElement descriptions in definitions
-ELEMENT_INFO:             None
-
 # Remote Webdriver Port
 WEBDRIVER_PORT:           4444
 

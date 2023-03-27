@@ -2281,11 +2281,17 @@ def get_nodes_data(
                 iqagent_version = "N/A"
 
                 if dut.cli_type.upper() == "EXOS":
+                    dev_cmd.send_cmd(dut.name, 'enable iqagent')
+                    time.sleep(3)
                     output = dev_cmd.send_cmd(dut.name, 'show iqagent')[0].return_text
-                    iqagent_version = re.search(r"Version\s+\s([\d\.]+)\s+\r\n", output).group(1)
+                    if iqagent_version_match := re.search(r"Version\s+\s([\d\.]+)\s+\r\n", output):
+                        iqagent_version = iqagent_version_match.group(1)
+                
                 elif dut.cli_type.upper() == "VOSS":
                     output = dev_cmd.send_cmd(dut.name, 'show application iqagent')[0].return_text
-                    iqagent_version = re.search(fr"Agent Version\s+:\s([\d\.]+)\r\n", output).group(1)
+                    if iqagent_version_match := re.search(fr"Agent Version\s+:\s([\d\.]+)\r\n", output):
+                        iqagent_version = iqagent_version_match.group(1)
+                
                 else:
                     logger.warning("OS not yet supported.")
 
@@ -2450,6 +2456,97 @@ def nodes_data(
         return cached_onboarding_config.get("nodes", {}).get("data", {})
 
     return get_nodes_data()
+
+
+@pytest.fixture(scope="session")
+def revert_node(
+    open_spawn: OpenSpawn,
+    cli: Cli,
+    loaded_config: Dict[str, str],
+    request: fixtures.SubRequest,
+    debug: Callable,
+    check_devices_are_onboarded: CheckDevicesAreOnboarded, 
+    check_devices_are_reachable: CheckDevicesAreReachable,
+    logger: PytestLogger
+) -> Callable:
+    """
+    This fixture is used to easily revert the node to a specific state.
+    It is useful in test cases where the node was deleted|default network policy is no longer assigned to the node.
+    
+    All of its kwargs are True by default which means that the function will: 
+        - configure the iqagent on the node
+        - onboard the node
+        - assign the network policy to the node
+        - push the network policy to the node
+    
+    args:
+        :xiq: the XiqLibrary object
+        :node: node_1|node_2|node_stack
+    kwargs:
+        :configure_iqagent: specifies if the iqagent needs to be configured
+        :onboard_node: specifies if the node needs to be onboarded
+        :assign_network_policy: specifies if the default network policy needs to be assigned to the node
+        :push_network_policy: specifies if the network poliy needs to be pushed to the node
+    """
+    
+    @debug
+    def revert_node_func(node: Node, xiq: XiqLibrary, configure_iqagent=True, onboard_node=True, assign_network_policy=True, push_network_policy=True):
+        
+        onboarding_location: str = request.getfixturevalue(f"{node.node_name}_onboarding_location")
+        policy_name: str = request.getfixturevalue(f"{node.node_name}_policy_name")
+
+        if configure_iqagent:
+            
+            logger.step(f"Check that node '{node.node_name}' is reachable.")
+            check_devices_are_reachable([node])
+            logger.info(f"Successfully verified that node '{node.node_name}' is reachable.")
+            
+            with open_spawn(node) as spawn:
+                
+                logger.step(f"Configure iqagent on node '{node.node_name}'.")
+                cli.configure_device_to_connect_to_cloud(
+                    node.cli_type, loaded_config['sw_connection_host'],
+                    spawn, vr=node.get("mgmt_vr", 'VR-Mgmt').upper(), retry_count=30
+                )
+                logger.step(f"Configure iqagent on node '{node.node_name}'.")
+                
+        xiq.xflowscommonDevices.column_picker_select("Template", "Network Policy", "MAC Address")
+
+        if onboard_node:
+            if xiq.xflowscommonDevices.search_device(device_mac=node.mac, IRV=False) == -1:
+                logger.step(f"Onboard node '{node.node_name}'.")
+                xiq.xflowscommonDevices.onboard_device_quick({**node, "location": onboarding_location})
+                check_devices_are_onboarded(xiq, [node])
+                logger.info(f"Successfully onboard node '{node.node_name}'.")
+            else:
+                logger.info(f"Node '{node.node_name}' is already onboarded.")
+
+        if assign_network_policy:
+            dev = xiq.xflowscommonDevices._get_row("device_mac", node.mac)
+            
+            if dev != -1:
+                if not re.search(policy_name, dev.text):
+                    
+                    logger.step(f"Assign network policy '{policy_name}' to node '{node.node_name}'.")
+                    assert xiq.xflowsmanageDevices.assign_network_policy_to_switch_mac(
+                        policy_name=policy_name, mac=node.mac) == 1, \
+                        f"Couldn't assign policy {policy_name} to device '{node}' (node: '{node.name}')."
+                    logger.info(f"Successfully assigned network policy '{policy_name}' to node '{node.node_name}'.")
+                    
+                    if push_network_policy:
+                        
+                        logger.step(f"Push network policy '{policy_name}' to node '{node.node_name}'.")
+                        xiq.xflowscommonDevices.get_update_devices_reboot_rollback(
+                            policy_name=policy_name, option="disable", device_mac=node.mac)
+                        xiq.xflowscommonDevices.check_device_update_status_by_using_mac(device_mac=node.mac)
+                        logger.info(f"Successfully pushed network policy '{policy_name}' to node '{node.node_name}'.")
+                        
+                else:
+                    logger.info(f"The network policy '{policy_name}' is already assigned to node '{node.node_name}'.")
+            else:
+                logger.info(f"Won't assign network policy '{policy_name}' to node '{node.node_name}' because the node is not found in the Devices page.")
+                
+    return revert_node_func
 
 
 @pytest.fixture(scope="session")
@@ -5336,6 +5433,7 @@ class Testbed(metaclass=Singleton):
         
         self.get_xiq_library: GetXiqLibrary = request.getfixturevalue("get_xiq_library")
         self.deactivate_xiq_library: DeactivateXiqLibrary = request.getfixturevalue("deactivate_xiq_library")
+        self.revert_node: Callable = request.getfixturevalue("revert_node")
         self.poll: Callable = request.getfixturevalue("poll")
         self.retry: Callable = request.getfixturevalue("retry")
         self.bounce_iqagent: BounceIqagent = request.getfixturevalue("bounce_iqagent")

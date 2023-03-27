@@ -1,3 +1,5 @@
 test_url:               "https://cp8-portal.qa.xcloudiq.com/portal/"
 portal_username:           cloudops-admin@extremenetworks.com
 portal_password:           Extreme@123
+msp_username:              lawu+23@extremenetworks.com
+msp_password:              Aerohive123

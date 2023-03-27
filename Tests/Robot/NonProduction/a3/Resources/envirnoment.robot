@@ -8,7 +8,6 @@ ${SOUCE_BROWSER}           firefox
 ${SOUCE_BROWSER_VER}       68
 ${SOUCE_RESULATION}        2360x1770
 ${SOUCE_SESSION_NAME}      UI-Sanity
-${ELEMENT_INFO}            None
 ${WEBDRIVER_PORT}           4444
 ${REMOTE_SERVER_PORT}       8270
 ${ELEMENT_DELAY}            10

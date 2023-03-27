@@ -123,7 +123,7 @@ class SuiteUdk():
             AutoActions().click(tab)
             time.sleep(2)
 
-        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model):
+        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model, ignore_failure=True):
             print("Template already present in the template grid")
             return 1
 
@@ -233,7 +233,7 @@ class SuiteUdk():
             AutoActions().click(tab)
             time.sleep(2)
 
-        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model):
+        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model, ignore_failure=True):
             print("Template already present in the template grid")
             return 1
 
@@ -358,7 +358,7 @@ class SuiteUdk():
             AutoActions().click(tab)
             time.sleep(2)
 
-        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model):
+        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model, ignore_failure=True):
             print("Template already present in the Switch Templates grid")
             return 1
 
@@ -473,7 +473,7 @@ class SuiteUdk():
             AutoActions().click(tab)
             time.sleep(2)
 
-        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model):
+        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model, ignore_failure=True):
             print("Template Already present in the template grid")
             return 1
 
@@ -598,7 +598,7 @@ class SuiteUdk():
             AutoActions().click(tab)
             time.sleep(2)
 
-        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model):
+        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model, ignore_failure=True):
             print("Template already present in the template grid")
             return 1
 
@@ -734,7 +734,7 @@ class SuiteUdk():
             AutoActions().click(tab)
             time.sleep(2)
 
-        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model):
+        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model, ignore_failure=True):
             print("Template Already present in the template grid")
             return 1
 
@@ -866,7 +866,7 @@ class SuiteUdk():
             AutoActions().click(tab)
             time.sleep(2)
 
-        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model):
+        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model, ignore_failure=True):
             print("Template Already present in the template grid")
             return 1
 
@@ -1000,7 +1000,7 @@ class SuiteUdk():
             AutoActions().click(tab)
             time.sleep(2)
 
-        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model):
+        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model, ignore_failure=True):
             print("Template Already present in the template grid")
             return 1
 
@@ -1149,7 +1149,7 @@ class SuiteUdk():
             AutoActions().click(tab)
             time.sleep(2)
 
-        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model):
+        if self.xiq.xflowsconfigureSwitchTemplate.check_sw_template(sw_model, ignore_failure=True):
             print("Template Already present in the template grid")
             return 1
 
