@@ -1,6 +1,7 @@
 import os
 import sys
 import argparse
+import re
 
 
 class ReportReformatter:
@@ -14,7 +15,7 @@ class ReportReformatter:
         """
         - set_input_report_file - option to set input report filename
         :param filename: value to set the input report filename to
-        - Useage:
+        - Usage:
         - ``report_reformat_Object.set_input_report_file(filename)``
         """
         self.input_report_file = filename
@@ -23,7 +24,7 @@ class ReportReformatter:
         """
         -set_reformat_report_file - option to set reformat report filename
         :param filename: value to set the input report filename to
-        - Useage:
+        - Usage:
         - ``report_reformat_Object.set_reformat_report_file(filename)``
         """
         self.reformat_report_file = filename
@@ -32,7 +33,7 @@ class ReportReformatter:
         """
         -set_rename_report_file - option to set renaming input and reformat filenames
         :param value: value used to indicate if renaming is enabled or disabled
-        - Useage:
+        - Usage:
         - ``report_reformat_Object.set_rename_report_file(True)``
         """
         self.rename_report_file = value
@@ -59,6 +60,7 @@ class ReportReformatter:
         with open(self.reformat_report_file, "w") as file_point:
             for write_data in file_data:
                 html_str = str(write_data)
+                html_str = self.clear_utils_print_statements(html_str)
                 if html_str.startswith('*HTML*'):
                     html_str = self._replace_html_values(html_str)
                 file_point.write(html_str)
@@ -94,12 +96,26 @@ class ReportReformatter:
         """
         - convert_test_results method used to modify results file so that an image can be embedded and displayed
         - in the file
-        - Useage:
+        - Usage:
         - report_reformatter_Object.convert_test_results()
         """
         self._start_conversion()
         self._load_reformat_file()
         self._complete_conversion()
+
+    def clear_utils_print_statements(self, source_string):
+        """
+        - clear_utils_print_statements method used to remove utils print statement from source_string
+        :param source_string: string that may contain utils print statements
+        - Usage:
+        - report_reformat_Object.clear_utils_print_statements(src_string)
+        - returns  original string if utils print statements are not present
+        - else returns original string minus print utils statements
+        """
+
+        string_regex = '\\[Utils\\]\\s+\\[print_.*\\d+\\]'
+        string_return_statement = re.sub(string_regex, "", source_string)
+        return string_return_statement
 
 
 # Defining main function
