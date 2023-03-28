@@ -92,7 +92,7 @@ Pre Condition
     ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      &{LOCATION_OPEN_NW}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
     
-    ${CREATE_AP_TEMPLATE}=          Add AP Template    ${ap1.model}    ${AP_template_name}    &{AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=          Add AP Template    ${ap1.model}    ${AP_template_name}    ${AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings      '${CREATE_AP_TEMPLATE}'   '1'
 
     Enable Nw Presence Analytics    ${NW_POLICY_NAME}
