@@ -89,7 +89,7 @@ Pre Condition
     ${AP1_STATUS}=                  get device status       device_mac=${ap1.mac}
     Should Be Equal As Strings      '${AP1_STATUS}'     'green'
 
-    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      &{LOCATION_OPEN_NW}
+    ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${LOCATION_OPEN_NW}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
     
     ${CREATE_AP_TEMPLATE}=          Add AP Template    ${ap1.model}    ${AP_template_name}    ${AP_TEMPLATE_CONFIG}
