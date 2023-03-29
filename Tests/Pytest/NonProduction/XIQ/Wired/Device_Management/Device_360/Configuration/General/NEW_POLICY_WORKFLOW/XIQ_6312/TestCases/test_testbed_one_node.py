@@ -4,7 +4,7 @@ import pytest
 @pytest.mark.development
 @pytest.mark.testbed_1_node
 class XIQ6312OneNodeTests:
-
+    @pytest.mark.dependson("tcxm_xiq_onboarding")
     @pytest.mark.p1
     @pytest.mark.tcxm_23826
     @pytest.mark.EXOS
