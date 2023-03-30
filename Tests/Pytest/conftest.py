@@ -965,6 +965,8 @@ def pytest_collection_modifyitems(session, items):
                 if test_found_in_suitemap and found_item:
                     ordered_items.append(found_item[0])
 
+            all_tcs = [get_test_marker(item)[0] for item in ordered_items]
+            
             for item in ordered_items:
                 
                 [test_code] = get_test_marker(item)
