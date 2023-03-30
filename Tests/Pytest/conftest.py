@@ -511,6 +511,7 @@ def is_onboarding_cleanup_test(
 def pytest_configure(config):
     pytest.runlist_name: str = ""
     pytest.runlist_path: str = "default"
+    pytest.runlist_filtering_markers: str = ""
     pytest.suitemaps_name: List[str] = []
     pytest.runlist_tests: List[TestCaseMarker] = []
     pytest.suitemap_tests: Dict[str, Union[str, Dict[str, str]]] = {}
@@ -912,6 +913,40 @@ def pytest_collection_modifyitems(session, items):
 
                 temp_items[:] = filtered_by_priority_items
             
+            if pytest.runlist_filtering_markers:
+               
+                runlist_filtering_markers = [word.strip() for word in pytest.runlist_filtering_markers.split(",")]
+                filtered_by_runlist_markers_items: List[pytest.Function] = []      
+               
+                logger_obj.info(
+                    f"Pytest argument '--runlist-filtering-markers' given. "
+                    f"Will filter current selected testcase using these markers: '{pytest.runlist_filtering_markers}'."
+                )
+                
+                for item in temp_items:
+                
+                    test_marker: TestCaseMarker = get_test_marker(item)[0]
+                    
+                    if is_onboarding_test(item) or is_onboarding_cleanup_test(item):
+                        filtered_by_runlist_markers_items.append(item)
+                        continue
+                    
+                    item_markers = item.own_markers
+                    for marker in getattr(item.cls, "pytestmark", []):
+                        if not any(marker.name == m.name for m in item_markers):
+                            item_markers.append(marker)
+                    
+                    for marker in item_markers:
+                        if any(marker.name.upper() == m.upper() for m in runlist_filtering_markers):
+                            filtered_by_runlist_markers_items.append(item)
+                            break
+                    else:
+                        logger_obj.warning(
+                            f"'{test_marker}' test will be unselected because it is not marked "
+                            f"with any of these CLI given markers: '{pytest.runlist_filtering_markers}'.")
+            
+                temp_items[:] = filtered_by_runlist_markers_items
+                
             for test in pytest.runlist_tests:
                 
                 test_found_in_suitemap: bool = test in suitemap_tcs
@@ -1058,7 +1093,8 @@ def pytest_sessionstart(session):
     session.teardown_results = dict()
 
     pytest.runlist_path = session.config.option.runlist
-    
+    pytest.runlist_filtering_markers = session.config.option.runlist_filtering_markers
+
     if pytest.runlist_path != "default":
 
         if os.path.isfile(pytest.runlist_path):
