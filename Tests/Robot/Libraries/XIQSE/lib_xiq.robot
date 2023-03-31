@@ -265,3 +265,21 @@ Close XIQ Device360 Window and Confirm Success
 
     ${result}=  Close Device360 Window
     Should Be Equal As Integers  ${result}  1
+
+Navigate and Confirm XIQ Device License
+    [Documentation]  Confirms the specified device has the expected license in the Devices table's DEVICE LICENSE colunm
+    [Arguments]      ${serial}  ${license}
+
+    Switch To Window  ${XIQ_WINDOW_INDEX}
+
+    Navigate to XIQ Devices and Confirm Success
+
+    ${result}=  Get Device Details  ${serial}  DEVICE LICENSE
+    Should Be Equal                 ${result}  ${license}
+
+Confirm XIQ Device License
+    [Documentation]  Confirms the specified device has the expected license in the Devices table's DEVICE LICENSE colunm
+    [Arguments]      ${serial}  ${license}
+
+    ${result}=  Get Device Details  ${serial}  DEVICE LICENSE
+    Should Be Equal                 ${result}  ${license}
