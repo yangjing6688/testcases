@@ -685,7 +685,7 @@ def pytest_collection_modifyitems(session, items):
                         )
 
         for item in items:
-            if (callspec := getattr(item, "callspec", None)) is not None:
+            if callspec := getattr(item, "callspec", None):
                 test_data = callspec.params["test_data"]
                 test_marker_from_test_data = test_data["tc"]
                 tc_markers = get_test_marker(item)
@@ -1630,31 +1630,41 @@ def pytest_runtest_call(item):
 
         logger_obj.step(f"Start test function '{current_test_marker}': '{item.nodeid}'.")
 
-        output = ""
         test_data = {}
         mandatory_fields = ["author", "tc", "description", "title", "steps"]
 
-        if (callspec := getattr(item, "callspec", None)) is not None:
-            if (data := callspec.params.get("test_data")) is not None:
+        if callspec := getattr(item, "callspec", None):
+            if data := callspec.params.get("test_data"):
                 test_data = data
         else:
             test_data = pytest.suitemap_tests[f"{item.cls.__name__}::{item.originalname}"]
             
-        for field in mandatory_fields:
-            
-            if field == "steps":
-                if (steps := test_data.get("steps")) is not None:
-                    output += "\nSteps:"
-                    for index, step in enumerate(steps):
-                        output += f"\n  Step {(index + 1)}: '{step}'"
-            
-            elif (field_value := test_data.get(field)) is not None:
-                output += f"\n{field.capitalize()}: '{field_value}'"
+        data = defaultdict(lambda: dict())
+        for key, value in test_data.items():
+            if value:
+                if key == "steps":
+                    data["Test Steps"] = str(len(value))
+                    for step_index, step in enumerate(value):
+                        data[f"  Step {step_index + 1}"] = step
+                elif key in mandatory_fields:
+                    data[key.capitalize()] = value
 
-        for k, v in test_data.items():
-            if k not in mandatory_fields:
-                output += f"\n{k}: '{v}'"
-        output and logger_obj.step(output)
+        if not_mandatory_data := {k: v for k, v in test_data.items() if k not in mandatory_fields}:
+            data["Test Data"] = ""
+            for key, value in not_mandatory_data.items():
+                data[f"  {key}"] = str(value)
+        
+        if data:
+            max_len_fields = max(len(str(k)) for k in data)
+            max_len_values = max(len(str(v)) for v in data.values())
+
+            temp_lines = ["\n+" + "-" * (max_len_fields + max_len_values + 4) + "+"]
+            for key, value in data.items():
+                if key in ["Test Steps", "Test Data"]:
+                    temp_lines.append("+" + "-" * (max_len_fields + max_len_values + 4) + "+")
+                temp_lines.append(f"| {key:<{max_len_fields}}: {value:<{max_len_values}} |")
+            temp_lines.append("+" + "-" * (max_len_fields + max_len_values + 4) + "+")
+            logger_obj.step("\n".join(temp_lines))
 
 
 @pytest.fixture(scope="session")
