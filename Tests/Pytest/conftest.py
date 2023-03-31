@@ -2556,7 +2556,7 @@ def revert_node(
                     node.cli_type, loaded_config['sw_connection_host'],
                     spawn, vr=node.get("mgmt_vr", 'VR-Mgmt').upper(), retry_count=30
                 )
-                logger.step(f"Configure iqagent on node '{node.node_name}'.")
+                logger.step(f"Successfully configured iqagent on node '{node.node_name}'.")
                 
         xiq.xflowscommonDevices.column_picker_select("Template", "Network Policy", "MAC Address")
 
@@ -2565,7 +2565,7 @@ def revert_node(
                 logger.step(f"Onboard node '{node.node_name}'.")
                 xiq.xflowscommonDevices.onboard_device_quick({**node, "location": onboarding_location})
                 check_devices_are_onboarded(xiq, [node])
-                logger.info(f"Successfully onboard node '{node.node_name}'.")
+                logger.info(f"Successfully onboarded node '{node.node_name}'.")
             else:
                 logger.info(f"Node '{node.node_name}' is already onboarded.")
 
