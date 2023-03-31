@@ -2556,7 +2556,7 @@ def revert_node(
                     node.cli_type, loaded_config['sw_connection_host'],
                     spawn, vr=node.get("mgmt_vr", 'VR-Mgmt').upper(), retry_count=30
                 )
-                logger.step(f"Successfully configured iqagent on node '{node.node_name}'.")
+                logger.info(f"Successfully configured iqagent on node '{node.node_name}'.")
                 
         xiq.xflowscommonDevices.column_picker_select("Template", "Network Policy", "MAC Address")
 
@@ -3075,26 +3075,32 @@ def configure_network_policies(
                 if network_policy_onboarding_options := merge_dicts(default_network_policy_onboarding_options, onb_options.get("network_policy_onboarding_options", {})):
                 
                     xiq.xflowsconfigureNetworkPolicy.navigate_to_np_edit_tab(network_policy)
+                    screen.save_screen_shot()
                     
                     if dns_server_options := network_policy_onboarding_options.get("dns_server_options", {}):
                         xiq.xflowsconfigureNetworkPolicy.go_to_dns_server_tab()
+                        screen.save_screen_shot()
                         
                         if status := dns_server_options.get("status", "disable"):
                             xiq.xflowsconfigureNetworkPolicy.set_dns_server_status(status)
-
+                            screen.save_screen_shot()
+                            
                         xiq.xflowsconfigureNetworkPolicy.save_dns_server_tab()
-
+                        screen.save_screen_shot()
+                        
                 if create_switch_template_flag:
                     
                     navigator.navigate_to_devices()
                     navigator.navigate_configure_network_policies()
                     utils.wait_till(timeout=5)
-
+                    screen.save_screen_shot()
+                    
                     logger.step(f"Create and attach this switch template to '{dut}' dut (node: '{node_name}'): '{template_switch}'.")
                     if node_name == "node_stack":
                         xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(
                             units_model, network_policy,
                             model_template, template_switch, cli_type=node_info.cli_type.upper())
+                        screen.save_screen_shot()
                     else:
                         xiq.xflowsconfigureSwitchTemplate.add_sw_template(
                             network_policy, model_template, template_switch, cli_type=node_info.cli_type.upper())
@@ -3497,7 +3503,8 @@ def update_devices(
         policy_config: PolicyConfig,
         debug: Callable,
         wait_till: Callable,
-        request: fixtures.SubRequest
+        request: fixtures.SubRequest,
+        screen: Screen
 ) -> UpdateDevices:
     """ 
     Fixture that updates the onboarded nodes after the onboarding.
@@ -3513,7 +3520,8 @@ def update_devices(
         wait_till(timeout=5)
         xiq.xflowscommonDevices._goto_devices()
         wait_till(timeout=5)
-
+        screen.save_screen_shot()
+        
         for dut in duts:
             
             onb_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
@@ -3532,6 +3540,7 @@ def update_devices(
             ):
                 logger.step(f"Select switch row with serial '{dut.mac}'.")
                 if not xiq.xflowscommonDevices.select_device(device_mac=dut.mac):
+                    screen.save_screen_shot()
                     error_msg = f"Switch '{dut.mac}' is not present in the grid."
                     logger.error(error_msg)
                     pytest.fail(error_msg)
@@ -3539,6 +3548,7 @@ def update_devices(
                 
                 logger.step(f"Update the switch: '{dut.mac}'.")
                 if xiq.xflowscommonDevices._update_switch(update_method="PolicyAndConfig") != 1:
+                    screen.save_screen_shot()
                     error_msg = f"Failed to push the update to this switch: '{dut.mac}'."
                     logger.error(error_msg)
                     pytest.fail(error_msg)
@@ -3561,6 +3571,7 @@ def update_devices(
                 ]
             ):
                 if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac) != 1:
+                    screen.save_screen_shot()
                     error_msg = f"It look like the update failed this switch: '{dut.mac}'."
                     logger.error(error_msg)
                     pytest.fail(error_msg) 
@@ -3590,7 +3601,8 @@ def onboarding(
         
         for location in pytest.created_onboarding_locations:
             create_location(xiq, location)
-                            
+            screen.save_screen_shot()
+            
         for dut in duts:
             
             if xiq.xflowscommonDevices.onboard_device_quick({**dut, "location": onboarding_locations[dut.node_name]}) == 1: 
@@ -3943,7 +3955,8 @@ def check_vim(
     request: pytest.FixtureRequest,
     debug: Callable,
     logger: PytestLogger,
-    node_list: List[Node]
+    node_list: List[Node],
+    screen: Screen
     ) -> CheckVim:
     
     @debug
@@ -3959,9 +3972,12 @@ def check_vim(
                 
                 try:
                     xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(node.mac)
+                    screen.save_screen_shot()
+                    
                     time.sleep(10)
                     assert xiq.xflowsmanageDevice360.d360_check_if_vim_is_installed()
                 except AssertionError:
+                    screen.save_screen_shot()
                     error = f"Invalid setup, no actual VIM module installed for chosen dut: '{node.name}' ({node.node_name})."
                     logger.error(error)
                     raise AssertionError(error)
