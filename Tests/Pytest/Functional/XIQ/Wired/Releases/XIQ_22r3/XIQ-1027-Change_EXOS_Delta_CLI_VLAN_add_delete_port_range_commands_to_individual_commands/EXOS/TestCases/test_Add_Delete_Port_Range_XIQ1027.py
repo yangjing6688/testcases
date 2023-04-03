@@ -30,13 +30,13 @@ class Xiq1027:
             if node.node_name == 'node_stack':
 
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_network_policies_list_view_page()
-                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, self.tb.dut1.cli_type)
+                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, node.cli_type)
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
                 
                 for slot in range(1, len(node.serial.split(',')) + 1):
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot)
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(port_numbers_2, "Access Port")
-                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, self.tb.dut1.cli_type)
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, node.cli_type)
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot=slot)
 
@@ -85,14 +85,14 @@ class Xiq1027:
             port_numbers = suite_data["port_numbers"]
 
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_network_policies_list_view_page()
-            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, self.tb.dut1.cli_type)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, node.cli_type)
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
             if node.node_name == "node_stack":
                 for slot in range(1, len(node.serial.split(',')) + 1):
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot)
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(port_numbers, "Access Port")
-                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, self.tb.dut1.cli_type)
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, node.cli_type)
 
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot=slot)
@@ -132,7 +132,7 @@ class Xiq1027:
                             logger.fail("The new trunk ports must be different from the initial ones!")
 
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_network_policies_list_view_page()
-                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, self.tb.dut1.cli_type)
+                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, node.cli_type)
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
                 if node.node_name == "node_stack":
@@ -141,14 +141,14 @@ class Xiq1027:
                         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(port_numbers,
                                                                                                             "Access Port")
                         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name,
-                                                                                            sw_template_name, self.tb.dut1.cli_type)
+                                                                                            sw_template_name, node.cli_type)
                         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
                         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot=slot)
                 else:
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(port_numbers,
                                                                                                         "Access Port")
 
-                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, self.tb.dut1.cli_type)
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, node.cli_type)
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(
@@ -204,7 +204,7 @@ class Xiq1027:
                                 'page9 summary': ["next_page", None]
                                 }
 
-                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, self.tb.dut1.cli_type)
+                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, node.cli_type)
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
                 xiq_library_at_class_level.xflowsmanageDevice360.create_new_port_type(template_exos, port_numbers.split(',')[0])
 
@@ -212,14 +212,14 @@ class Xiq1027:
 
                     for slot in range(1, len(node.serial.split(',')) + 1):
 
-                        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, self.tb.dut1.cli_type)
+                        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, node.cli_type)
                         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
                         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(slot)
                         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(
                             port_numbers, trunk_port_type_name)
 
                 else:
-                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, self.tb.dut1.cli_type)
+                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, sw_template_name, node.cli_type)
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.template_assign_ports_to_an_existing_port_type(
                         port_numbers, trunk_port_type_name)
