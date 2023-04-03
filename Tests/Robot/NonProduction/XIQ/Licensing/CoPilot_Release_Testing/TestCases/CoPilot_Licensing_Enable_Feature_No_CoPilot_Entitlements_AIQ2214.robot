@@ -60,7 +60,7 @@ Test 2: Verify User Unable to "Enable CoPilot" Within CoPilot Menu Page and Aler
     [Documentation]     Verifies the "Enable CoPilot" feature from CoPilot Menu page in not available to select and alert warning present
     [Tags]              tccs-13534    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test2
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify CoPilot Entitlement Not Present in License Management
 
     Enable CoPilot Menu Feature and Confirm No CoPilot Entitlements
 
@@ -68,7 +68,7 @@ Test 3: Verify User Unable to "Enable CoPilot" Within Global Settings->VIQ Manag
     [Documentation]     Enables CoPilot feature from Global Settings->VIQ Management page and verifies a warning banner is displayed
     [Tags]              tccs-13534    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test3
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify CoPilot Entitlement Not Present in License Management
 
     Enable CoPilot Feature For This VIQ and Confirm User Unable To Enable
 
@@ -76,7 +76,7 @@ Test 4: Verify Pilot Baseline License Counts
     [Documentation]     Confirms Pilot license count is at expected value in XIQ to begin with (nothing consumed)
     [Tags]              tccs-13534    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test4
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify CoPilot Entitlement Not Present in License Management
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
 
@@ -84,7 +84,7 @@ Test 5: Onboard Device and Verify Success
     [Documentation]     Onboards first test device and verifies success
     [Tags]              tccs-13534    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test5
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify CoPilot Entitlement Not Present in License Management
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT1_IP}   ${DUT1_PORT}   ${DUT1_USERNAME}   ${DUT1_PASSWORD}   ${DUT1_CLI_TYPE}
@@ -109,7 +109,7 @@ Test 6: Verify Device Consumes Pilot License Within Global Settings License Mana
     [Documentation]     Confirms the license counts for Pilot within Global Settings->License Management
     [Tags]              tccs-13534    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test6
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify CoPilot Entitlement Not Present in License Management
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
 
@@ -117,7 +117,7 @@ Test 7: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify device consumed the pilot license and not a copilot license
     [Tags]              tccs-13534    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test7
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify CoPilot Entitlement Not Present in License Management
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT1_SERIAL}    DEVICE LICENSE
@@ -131,7 +131,7 @@ Test 8: Delete Device and Verify Success
     [Documentation]     Deletes a test device and verifies success
     [Tags]              tccs-13534    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test8
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify CoPilot Entitlement Not Present in License Management
 
     Delete Test Device and Confirm Success          ${DUT1_SERIAL}
 
@@ -139,9 +139,10 @@ Test 9: Verify Pilot and License Revoked
     [Documentation]     Confirms license counts are revoked in XIQ after devices were deleted
     [Tags]              tccs-13534    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test9
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify CoPilot Entitlement Not Present in License Management
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
+
 
 *** Keywords ***
 Log Into XIQ and Set Up Test

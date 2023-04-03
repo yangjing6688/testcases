@@ -56,7 +56,7 @@ Test 2: Onboard Device and Verify Success
     [Documentation]     Onboards test device and verifies success
     [Tags]              tccs-13510    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test2
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator Baseline License Count
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT_IP}   ${DUT_PORT}   ${DUT_USERNAME}   ${DUT_PASSWORD}   ${DUT_CLI_TYPE}
@@ -81,7 +81,7 @@ Test 3: Verify Device Consumes Navigator License Within Global Settings License 
     [Documentation]     Confirms the license count for Navigator within Global Settings->License Management
     [Tags]              tccs-13510    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test3
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator Baseline License Count
 
     Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       1    1    2
 
@@ -89,7 +89,7 @@ Test 4: Verify Device License Column Value
     [Documentation]     Confirms the Device License column to verify device consumed the appropriate license or not
     [Tags]              tccs-13510    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test4
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator Baseline License Count
 
     # Confirm the device row shows the correct navigator license status
     ${nav1_result}=      Get Device Details    ${DUT_SERIAL}    DEVICE LICENSE
@@ -99,7 +99,7 @@ Test 5: Delete Device and Verify Success
     [Documentation]     Deletes the device and verifies success
     [Tags]              tccs-13510    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test5
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator Baseline License Count
 
     Delete Test Device and Confirm Success          ${DUT_SERIAL}
 
@@ -107,7 +107,7 @@ Test 6: Verify Navigator License Revoked Within Global Settings License Manageme
     [Documentation]     Confirms the Navigator license was revoked
     [Tags]              tccs-13510    navigator_sanity_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test6
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator Baseline License Count
 
     Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       2   0    2
 

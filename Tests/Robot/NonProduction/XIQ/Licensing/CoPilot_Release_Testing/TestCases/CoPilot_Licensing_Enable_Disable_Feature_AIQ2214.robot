@@ -72,7 +72,7 @@ Test 2: Enable CoPilot Within Global Settings->VIQ Management
     [Documentation]     Enables CoPilot feature from Global Settings->VIQ Management page
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test2
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Enable CoPilot Feature For This VIQ and Confirm Success
 
@@ -80,7 +80,7 @@ Test 3: Onboard First Device and Verify Success
     [Documentation]     Onboards first test device and verifies success
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test3
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT1_IP}   ${DUT1_PORT}   ${DUT1_USERNAME}   ${DUT1_PASSWORD}   ${DUT1_CLI_TYPE}
@@ -105,7 +105,7 @@ Test 4: Verify First Device Consumes Pilot and CoPilot License Within Global Set
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test4
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    2
@@ -114,7 +114,7 @@ Test 5: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify devices consumed the appropriate license or not
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test5
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT1_SERIAL}    DEVICE LICENSE
@@ -128,14 +128,15 @@ Test 6: Delete First Device and Verify Success
     [Documentation]     Deletes a test device and verifies success
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test6
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Delete Test Device and Confirm Success          ${DUT1_SERIAL}
 
 Test 7: Verify Pilot and CoPilot Licenses Revoked For First Device
     [Documentation]     Confirms license counts are revoked in XIQ after devices were deleted
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test7
-    # Confirm the device row shows the correct copilot license status
+
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
@@ -144,7 +145,7 @@ Test 8: Disable CoPilot Within Global Settings->VIQ Management
     [Documentation]     Disables CoPilot feature from Global Settings->VIQ Management page
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test8
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Disable CoPilot Feature For This VIQ and Confirm Success
 
@@ -152,7 +153,7 @@ Test 9: Enable CoPilot Within CoPilot Menu Page
     [Documentation]     Enables CoPilot feature from CoPilot Menu page
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test9
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Enable CoPilot Menu Feature and Confirm Success
 
@@ -160,7 +161,7 @@ Test 10: Onboard Second Device and Verify Success
     [Documentation]     Onboards test device and verifies success
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test10
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT2_IP}   ${DUT2_PORT}   ${DUT2_USERNAME}   ${DUT2_PASSWORD}   ${DUT2_CLI_TYPE}
@@ -185,7 +186,7 @@ Test 11: Verify Second Device Consumes Pilot and CoPilot License Within Global S
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test11
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    2
@@ -194,7 +195,7 @@ Test 12: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify devices consumed the appropriate license or not
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test12
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Count Down in Minutes    2
 
@@ -209,14 +210,15 @@ Test 13: Delete Second Device and Verify Success
     [Documentation]     Deletes a test device and verifies success
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test13
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Delete Test Device and Confirm Success          ${DUT2_SERIAL}
 
 Test 14: Verify Pilot and CoPilot Licenses Revoked For Second Device
     [Documentation]     Confirms license counts are revoked in XIQ after devices were deleted
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test14
-    # Confirm the device row shows the correct copilot license status
+
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
@@ -225,7 +227,7 @@ Test 15: Disable CoPilot Within Global Settings->VIQ Management
     [Documentation]     Disables CoPilot feature from Global Settings->VIQ Management page
     [Tags]              tccs-13533    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test15
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Disable CoPilot Feature For This VIQ and Confirm Success
 

@@ -78,7 +78,7 @@ Test 2: Onboard First Test Device and Verify Success
     [Documentation]     Onboards test device and verifies success
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test2
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT1_IP}   ${DUT1_PORT}   ${DUT1_USERNAME}   ${DUT1_PASSWORD}   ${DUT1_CLI_TYPE}
@@ -103,7 +103,7 @@ Test 3: Onboard Second Test Device and Verify Success
     [Documentation]     Onboards a second test device and verifies success
     [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test3
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT2_IP}   ${DUT2_PORT}   ${DUT2_USERNAME}   ${DUT2_PASSWORD}   ${DUT2_CLI_TYPE}
@@ -125,7 +125,7 @@ Test 4: Verify Devices Consume Pilot and CoPilot License Within Global Settings 
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test4
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       1    2    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     0    2    2
@@ -134,7 +134,7 @@ Test 5: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify devices consumed the appropriate license or not
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test5
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT1_SERIAL}    DEVICE LICENSE
@@ -156,7 +156,7 @@ Test 6: Unmanage First Device and Confirm Success
     [Documentation]     Sets MANAGED state to UNMANAGE and verifies success
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test6
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Navigate to Devices and Confirm Success
     Unmanage Device and Confirm Success         UNMANAGE    ${DUT1_SERIAL}
@@ -168,7 +168,7 @@ Test 7: Verify Unmanaged Device Revokes Both CoPilot and Pilot Licenses in Globa
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test7
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     1    1    2
@@ -177,7 +177,7 @@ Test 8: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns for unmanaged device to verify device revoked the copilot and pilot licenses
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test8
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT1_SERIAL}    DEVICE LICENSE
@@ -199,7 +199,7 @@ Test 9: Onboard Third Test Device and Verify Success
     [Documentation]     Onboards a third test device and verifies success
     [Tags]              tccs-13492    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test9
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT3_IP}   ${DUT3_PORT}   ${DUT3_USERNAME}   ${DUT3_PASSWORD}   ${DUT3_CLI_TYPE}
@@ -221,7 +221,7 @@ Test 10: Verify Third Device Consumes Pilot and CoPilot License Within Global Se
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test10
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       1    2    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     0    2    2
@@ -230,7 +230,7 @@ Test 11: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns for unmanaged device to verify device revoked the copilot and pilot licenses
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test11
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT1_SERIAL}    DEVICE LICENSE
@@ -255,7 +255,7 @@ Test 12: Unmanage All Devices and Confirm Success
     [Documentation]     Sets MANAGED state to UNMANAGE and verifies success
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test12
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Navigate to Devices and Confirm Success
     Change Management Status and Confirm Success        UNMANAGE       ${DUT2_SERIAL},${DUT3_SERIAL}
@@ -273,7 +273,7 @@ Test 13: Verify All Pilot and CoPilot License Revoked
     [Documentation]     Confirms license counts are all revoked since all devices unmanaged
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test13
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
@@ -282,7 +282,7 @@ Test 14: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns for unmanaged device to verify device revoked the copilot and pilot licenses
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test14
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT1_SERIAL}    DEVICE LICENSE
@@ -307,7 +307,7 @@ Test 15: Manage All Devices and Confirm Success
     [Documentation]     Sets MANAGED state to MANAGE and verifies success
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test15
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Navigate to Devices and Confirm Success
     Change Management Status and Confirm Success        MANAGE       ${DUT1_SERIAL},${DUT2_SERIAL},${DUT3_SERIAL}
@@ -325,6 +325,8 @@ Test 16: Verify All Pilot and CoPilot Licenses Consumed
     [Documentation]     Confirms license counts are all revoked since all devices managed
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test16
 
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
+
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       0    3    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     0    2    2
 
@@ -332,7 +334,7 @@ Test 17: Verify Device License and CoPilot Column Values - First and Second Onbo
     [Documentation]     Confirms the Device License and CoPilot columns for all devices to verify the oldest onboarding devices consumed licenses
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test17
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT1_SERIAL}    DEVICE LICENSE
@@ -357,7 +359,7 @@ Test 18: Delete All Devices and Verify Success
     [Documentation]     Deletes the device and verifies success
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test18
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Delete All devices and Confirm Success
 
@@ -365,7 +367,7 @@ Test 19: Verify All Pilot and CoPilot Licenses Revoked Within Global Settings Li
     [Documentation]     Confirms the Pilot and CoPilot licenses are revoked
     [Tags]              tccs-13513    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test19
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
