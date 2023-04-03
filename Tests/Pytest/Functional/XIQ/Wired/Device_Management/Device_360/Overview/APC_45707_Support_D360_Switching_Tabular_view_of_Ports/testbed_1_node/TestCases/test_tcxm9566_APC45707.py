@@ -27,8 +27,7 @@ class TCXM9566Tests(xiqBase):
         vlan_id = self.suite_udk.generate_vlan_id()
         policy_name = self.suite_udk.generate_policy_name()
  
-        self.suite_udk.change_device_management_settings(
-            option="disable", platform=onboarded_switch.cli_type.upper())
+        self.suite_udk.change_device_management_settings(option="disable")
 
         ports = sorted(
             self.suite_udk.get_ports_from_dut(onboarded_switch),

@@ -5,6 +5,7 @@
 #----------------------------------------------------------------------
 #
 # Author        : John Borges
+# Modified By   : Ramkumar Vellasamy
 # Description   : Test Suite for testing the helpdesk user access to features on devices page
 # Topology      : One simulated device will be onboarded
 #               : A helpdesk user will have to be pre-configured before running these tests
@@ -12,6 +13,8 @@
 
 *** Settings ***
 Library          xiq/flows/common/DeviceCommon.py
+Library          xiq/flows/globalsettings/AccountManagement.py
+Library          common/GmailHandler.py
 
 Resource         ../../ManageDevices/Resources/AllResources.robot
 
@@ -22,11 +25,11 @@ Suite Teardown   Tear Down Test and Close Session
 
 
 *** Variables ***
-${XIQ_URL}           ${xiq.test_url}
-${XIQ_USER}          ${xiq.tenant_username}
-${XIQ_PASSWORD}      ${xiq.tenant_password}
+${XIQ_URL}           ${test_url}
+${XIQ_USER}          ${tenant_username}
+${XIQ_PASSWORD}      ${tenant_password}
 ${SIM_SERIAL}
-${SIM_LOCATION}      Aerohive Networks, Milpitas, Aerohive HQ, 2nd Fl - M
+${SIM_LOCATION}      auto_location_01, Santa Clara, building_02, floor_04
 
 
 *** Test Cases ***
@@ -98,6 +101,19 @@ TCXM-19837: Confirm No Access To Location Change
 
 
 *** Keywords ***
+
+Create HelpDesk Role Account
+    [Documentation]     Create HelpDesk Role Account
+    [Arguments]         ${HELPDESK_ROLE}
+    Login User  ${TENANT_USERNAME}    ${TENANT_PASSWORD}
+    Create Role Based Account        ${HELPDESK_ROLE}
+    logout user
+    sleep   4s
+    ${URL}=                 get_url_to_set_password_for_new_user     ${HELPDESK_EMAIL}     ${HELPDESK_APP_PASSWORD}
+    ${DRIVER}=              load web page       url=${URL}
+    ${result2}=             set_password      ${help_password}
+    Quit Browser
+
 Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ
 
@@ -117,7 +133,9 @@ Log Into XIQ and Set Up Test
     ${SIM_SERIAL}=     set variable    ${${device.name}.serial}
     Set Suite Variable          ${SIM_SERIAL}
 
+    Delete Management Account   ${XIQ_HD_USER}
     Log Out of XIQ and Quit Browser
+    Create HelpDesk Role Account        ${HELPDESK_ROLE}
     Log Into XIQ and Confirm Success   ${XIQ_HD_USER}   ${XIQ_HD_PASSWORD}   ${XIQ_URL}
 
 Tear Down Test and Close Session

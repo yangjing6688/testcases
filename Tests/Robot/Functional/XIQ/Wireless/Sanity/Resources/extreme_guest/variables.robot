@@ -77,6 +77,7 @@ ${REPORT_NAME3}     Report-3
 ${REPORT_NAME4}     Report-4
 ${REPORT_TYPE1}     Guest Visit History
 ${REPORT_TYPE2}     Dashboard Report
+${REPORT_TYPE3}     Guest Summary Report
 ${PERIOD1}          Last Day
 ${PERIOD2}          Last Week
 ${PERIOD3}          Last Month

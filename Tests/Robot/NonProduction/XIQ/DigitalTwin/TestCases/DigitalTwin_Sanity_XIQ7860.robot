@@ -89,9 +89,6 @@ TCCS-13498: Onboard Digital Twin Device
     ${result}=  Length Should Be                            ${DT_SERIAL}    14
     Should Be Equal                                         ${result}       ${None}
 
-    ${status_icon}=    Get Device Status Icon               ${DT_SERIAL}
-    Should Be Equal As Strings                              ${status_icon}  digital_twin
-
     Select Device                                           ${DT_SERIAL}
 
     ${action_menu}=  Verify Actions Relaunch Digital Twin Visible
@@ -99,6 +96,11 @@ TCCS-13498: Onboard Digital Twin Device
 
     ${action_menu}=    Verify Actions Shutdown Digital Twin Visible      expect_failure=True
     Should Be Equal As Strings                              ${action_menu}  -1
+
+    ${selected}=    Column Picker Select                    Status      MAC Address     IQAgent
+
+    ${status_icon}=    Get Device Status Icon               ${DT_SERIAL}
+    Should Be Equal As Strings                              ${status_icon}  digital_twin
 
     ${result}=  Wait Until Device Online                    ${DT_SERIAL}    retry_duration=5    retry_count=60
     Should Be Equal As Integers                             ${result}       1

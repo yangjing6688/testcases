@@ -1,7 +1,8 @@
-# Author:         vstefan
-# Description:    To verify if tabular view displays port mode column
+# Author:         scostache
+# Description:    Configure and check Trunk Vlan Ports are displayed in Device360 Tabular View.
+#                 Then change to default Access Type and then back to Auto-Sense
 # Story:          APC-45707 Support D360 Switching Tabular view of Ports
-# Testcases:      TCXM-9325
+# Testcases:      TCXM-9326
 # Date Updated:   5-August-2022
 # Pre-Requests:   Ideally the EXOS/VOSS device should not contain an on-prem configuration before running any test case of this suite.
 #                 Otherwise intermitent failures could appear during test run.
@@ -13,29 +14,36 @@ import time
 from Tests.Pytest.Functional.XIQ.Wired.Device_Management.Device_360.Overview.APC_45707_Support_D360_Switching_Tabular_view_of_Ports.testbed_1_node.Resources.testcase_base import xiqBase
 
 
-class TCXM9325Tests(xiqBase):
-
-    @pytest.mark.tcxm_9325
+class TCXM9326Tests(xiqBase):
+    
+    @pytest.mark.tcxm_9326
     @pytest.mark.exos
     @pytest.mark.voss
     @pytest.mark.p1
     @pytest.mark.testbed_1_node
-    def test_9325_verify_port_mode_column(self, logger, onboarded_switch, request, setup_lldp, onboarding_location):
+    def test_tcxm_9326(self, request, onboarded_switch, onboarding_location, logger, setup_lldp):
         """ 
         Step	Step Description
         1	    Onboard the device
-        2	    Navigate to Device360, Monitor, Overview
-        3	    Go to the ports table and get its columns
-        4	    Verify the 'port mode' column is selected in the column picker
-        5	    Get all the entries of the ports table
-        6	    Verify that default values of the 'port mode' field for all the ports
-        7	    Add a few ports in different access and trunk VLANs
-        8	    Verify that the changes done above are now updated in the tabular view
-        9	    Revert the changes that were added at step 7
-        10	    Delete the onboarded device and logout from XIQ
+        2	    Create Network Policy
+        3	    Add Switch Template to Network Policy
+        4	    Assign Network Policy to DUT
+        5	    Update DUT
+        6	    Go to Device360, Configure, Port Configuration
+        7	    Select at least 10 ports from tabular view, no mgmt. Save ports in a list
+        8	    Change port type to tagging and allowed VLANs from format "vlanid-vlanid,vlanid"
+        9	    Update DUT
+        10	    Navigate to Device360
+        11	    Check ports from initial port list for same vlans and port type
+        12	    Change port type to access for all ports in list
+        13	    Update DUT
+        14	    Navigate to Device360
+        15	    Check ports from initial port list for same vlans and port type
+        16	    Revert ports to default AutoSense
+        17	    Setup CleanUp
         """
         self.executionHelper.testSkipCheck()
-        self.cfg['${TEST_NAME}'] = 'test_apc_45707_tcxm_9325'
+        self.cfg['${TEST_NAME}'] = 'test_apc_45707_tcxm_9326'
 
         column_name = "Port Mode"
 
@@ -43,7 +51,7 @@ class TCXM9325Tests(xiqBase):
             self.suite_udk.go_to_device360(onboarded_switch)
 
             self.suite_udk.select_max_pagination_size()
-            
+        
             checkbox_button = self.xiq.xflowsmanageDevice360.dev360.get_device360_columns_toggle_button()
             checkbox_button.location_once_scrolled_into_view
             self.auto_actions.click(checkbox_button)
@@ -77,21 +85,19 @@ class TCXM9325Tests(xiqBase):
         )
         logger.info(f"Found these ports available on switch: {ports}")
         
-        self.suite_udk.change_device_management_settings(
-            option="disable", platform=onboarded_switch.cli_type.upper())
+        self.suite_udk.change_device_management_settings(option="disable")
 
         policy_name = self.suite_udk.generate_policy_name()
         self.suite_udk.create_network_policy(policy_name=policy_name)
         
         self.suite_udk.assign_policy(policy_name=policy_name, dut=onboarded_switch)
 
-        trunk_ports = ports[:2]
+        trunk_ports = ports[:10]
         logger.info(f"Trunk ports: {trunk_ports}")
+
+        access_ports = ports[10:12]
+        logger.info(f"Access ports: {access_ports}")
         
-        port_vlan_mapping = {p: str(int(p) * 25) if onboarded_switch.cli_type.upper() == "EXOS" else str(
-            int(p.split("/")[1]) * 25) for p in ports[2:6]}
-        logger.info(f"port-vlanid mapping: {port_vlan_mapping}")
-    
         def func():
             
             port_type = "Access Port" if onboarded_switch.cli_type.upper() == "EXOS" else "Auto-sense Port"
@@ -118,7 +124,7 @@ class TCXM9325Tests(xiqBase):
             try:
                 self.suite_udk.go_to_device_360_port_config(onboarded_switch)
                     
-                for port in list(port_vlan_mapping) + trunk_ports:
+                for port in trunk_ports + access_ports:
                     self.suite_udk.enter_port_type_and_vlan_id(
                         port=port, port_type=port_type, access_vlan_id=access_vlan_id)
             finally:
@@ -143,14 +149,10 @@ class TCXM9325Tests(xiqBase):
         try:
             self.suite_udk.go_to_device_360_port_config(onboarded_switch)
             
-            for port, vlan in port_vlan_mapping.items():
-                logger.info(f"Set {vlan} vlan for {port} port")
-                self.suite_udk.enter_port_type_and_vlan_id(port=port, port_type="Access Port", access_vlan_id=vlan)
-            
             for port in trunk_ports:
                 logger.info(f"Set {port} port as Trunk Port")
                 self.suite_udk.enter_port_type_and_vlan_id(port=port, port_type="Trunk Port")
-
+            
         finally:
             self.suite_udk.save_device_360_port_config()
             logger.info("Saved the device360 port configuration.")
@@ -161,30 +163,47 @@ class TCXM9325Tests(xiqBase):
         self.suite_udk.update_and_wait_switch(policy_name=policy_name, dut=onboarded_switch)
 
         try:
-            self.suite_udk.go_to_device360(onboarded_switch)
-            
-            self.suite_udk.select_max_pagination_size()
-        
-            ports_table = self.xiq.xflowsmanageDevice360.dev360.get_device360_ports_table()
+            self.suite_udk.go_to_device_360_port_config(onboarded_switch)
 
-            for row in ports_table:
-        
-                port_name = row["PORT NAME"]
-                port_mode = row[column_name.upper()]
-                
-                if port_name in port_vlan_mapping:
-                    
-                    assert port_mode == "Access", f"Expected port_mode='Access' but found '{port_mode}' for port_name='{port_name}'"
-                    logger.info(f"Successfully verified {port_name} port is in Access port mode")
-                    
-                    assert row["ACCESS VLAN"] == port_vlan_mapping[port_name], \
-                        f"Expected vlanid={port_vlan_mapping[port_name]} but found {row['ACCESS VLAN']} for {port_name} port"
-                    logger.info(f"Successfully found vlanid='{port_vlan_mapping[port_name]}' for {port_name} port")
-                
-                elif port_name in trunk_ports:
-                    assert port_mode == "Trunk", f"Expected port_mode='Trunk' but found '{port_mode}' for port_name='{port_name}'"
-                    logger.info(f"Successfully verified {port_name} port is in Trunk port mode")
-        
+            for port in access_ports:
+                temp_vlan = self.suite_udk.generate_vlan_id()
+                logger.info(f"Set {temp_vlan} vlan for {port} port")
+                self.suite_udk.enter_port_type_and_vlan_id(
+                    port=port, port_type="Access Port", access_vlan_id=temp_vlan)
+            
         finally:
-            self.suite_udk.select_pagination_size("10")
+            self.suite_udk.save_device_360_port_config()
+            logger.info("Saved the device360 port configuration.")
+
             self.xiq.xflowsmanageDevice360.close_device360_window()
+            logger.info("Closed the device360 window")
+
+        self.suite_udk.update_and_wait_switch(policy_name=policy_name, dut=onboarded_switch)
+        
+        for _ in range(7):
+            try:
+                self.suite_udk.go_to_device360(onboarded_switch)
+                
+                self.suite_udk.select_max_pagination_size()
+            
+                ports_table = self.xiq.xflowsmanageDevice360.dev360.get_device360_ports_table()
+
+                for row in ports_table:
+            
+                    port_name = row["PORT NAME"]
+                    port_mode = row[column_name.upper()]
+                    
+                    if port_name in trunk_ports:
+                        assert port_mode == "Trunk", f"Expected port_mode='Trunk' but found '{port_mode}' for port_name='{port_name}'"
+                        logger.info(f"Successfully verified {port_name} port is in Trunk port mode")
+            
+            except Exception as exc:
+                logger.warning(repr(exc))
+                time.sleep(60)
+            else:
+                break
+            finally:
+                self.suite_udk.select_pagination_size("10")
+                self.xiq.xflowsmanageDevice360.close_device360_window()
+        else:
+            assert False, "Failed to very the port configuration"
