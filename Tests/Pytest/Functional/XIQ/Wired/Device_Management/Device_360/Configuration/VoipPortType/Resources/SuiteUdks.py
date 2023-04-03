@@ -126,13 +126,7 @@ class SuiteUdk:
         time.sleep(15)
         self.setup_cls.xiq.xflowscommonDeviceCommon.go_to_device360_window(device_mac=dut.mac)
         time.sleep(5)
-
-        if not self.dev360.get_device360_configure_button().is_selected():
-            self.auto_actions.click(self.dev360.get_device360_configure_button())
-        time.sleep(4)
-
-        self.auto_actions.click(self.dev360.get_device360_configure_port_configuration_button())
-        time.sleep(20)
+        self.setup_cls.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
 
     def save_device_360_port_config(self):
         save_btn = self.dev360.get_device360_configure_port_save_button()
