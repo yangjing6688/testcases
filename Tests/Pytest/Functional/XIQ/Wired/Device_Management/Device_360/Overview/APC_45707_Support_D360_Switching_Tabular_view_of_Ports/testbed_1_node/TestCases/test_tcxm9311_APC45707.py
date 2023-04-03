@@ -55,7 +55,8 @@ class TCXM9311Tests(xiqBase):
                 expected_default_columns.extend(
                     [
                         'ELRP Enabled VLAN(s)',
-                        'MAC Locking'
+                        'MAC Locking',
+                        'Link Aggregation'
                     ]
                 )
 

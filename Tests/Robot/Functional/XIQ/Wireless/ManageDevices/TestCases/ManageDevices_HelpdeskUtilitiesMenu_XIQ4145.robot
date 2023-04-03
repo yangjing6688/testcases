@@ -15,28 +15,30 @@ Library          common/TestFlow.py
 Library          common/Cli.py
 Library          xiq/flows/common/DeviceCommon.py
 Library          xiq/flows/manage/DevicesUtilities.py
+Library          xiq/flows/globalsettings/AccountManagement.py
+Library          common/GmailHandler.py
 
 Resource         ../../ManageDevices/Resources/AllResources.robot
 
 Force Tags       testbed_3_node
 
 Suite Setup      Log Into XIQ and Set Up Test
-Suite Teardown   Tear Down Test and Close Session
+Suite Teardown   Run Keyword And Warn On Failure    Tear Down Test and Close Session
 
 
 *** Variables ***
-${XIQ_URL}            ${xiq.test_url}
-${XIQ_USER}           ${xiq.tenant_username}
-${XIQ_PASSWORD}       ${xiq.tenant_password}
-${XIQ_CAPWAP_URL}     ${xiq.capwap_url}
-${IQAGENT}            ${xiq.sw_connection_host}
+${XIQ_URL}            ${test_url}
+${XIQ_USER}           ${tenant_username}
+${XIQ_PASSWORD}       ${tenant_password}
+${XIQ_CAPWAP_URL}     ${capwap_url}
+${IQAGENT}            ${sw_connection_host}
 
 ${AP_SERIAL}
-${AP_LOCATION}        Aerohive Networks, Milpitas, Aerohive HQ, 2nd Fl - M
+${AP_LOCATION}        auto_location_01, Santa Clara, building_02, floor_04
 ${SW_SERIAL}
-${SW_LOCATION}        Aerohive Networks, Milpitas, Aerohive HQ, 2nd Fl - M
+${SW_LOCATION}        auto_location_01, Santa Clara, building_02, floor_04
 ${RT_SERIAL}
-${RT_LOCATION}        Aerohive Networks, Milpitas, Aerohive HQ, 2nd Fl - M
+${RT_LOCATION}        auto_location_01, Santa Clara, building_02, floor_04
 
 
 *** Test Cases ***
@@ -288,10 +290,24 @@ Log Into XIQ and Set Up Test
 
     set suite variable    ${device3}
 
-    Log Into XIQ and Confirm Success  ${XIQ_USER}   ${XIQ_PASSWORD}   ${XIQ_URL}
+    Log Into XIQ and Confirm Success   ${XIQ_USER}   ${XIQ_PASSWORD}   ${XIQ_URL}
+    Delete Management Account   ${XIQ_HD_USER}
     Onboard Test Devices
     Log Out of XIQ and Quit Browser
-    Log Into XIQ and Confirm Success   ${XIQ_HD_USER}   ${XIQ_HD_PASSWORD}   ${XIQ_URL}
+    Create HelpDesk Role Account        ${HELPDESK_ROLE}
+     Log Into XIQ and Confirm Success   ${XIQ_HD_USER}   ${XIQ_HD_PASSWORD}   ${XIQ_URL}
+
+Create HelpDesk Role Account
+    [Documentation]     Create HelpDesk Role Account
+    [Arguments]         ${HELPDESK_ROLE}
+    Login User  ${TENANT_USERNAME}    ${TENANT_PASSWORD}
+    Create Role Based Account        ${HELPDESK_ROLE}
+    logout user
+    sleep   4s
+    ${URL}=                 get_url_to_set_password_for_new_user     ${HELPDESK_EMAIL}     ${HELPDESK_APP_PASSWORD}
+    ${DRIVER}=              load web page       url=${URL}
+    ${result2}=             set_password      ${help_password}
+    Quit Browser
 
 Onboard Test Devices
     [Documentation]     Onboards the test devices

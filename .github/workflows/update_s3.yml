@@ -100,16 +100,20 @@ jobs:
           find ./Environments/ -type f -name "environment.*" -printf "%P\n" | jq -ncR "[inputs] | sort_by(.)" > $1/env.json
           cat $1/env.json
 
-          # Get sorted list of Pytest files and dirs
-          pytest_dirs=$( find -type d -path './Tests/Pytest/*' -name "TestCases" )
+          # Get list of Pytest dirs. Includes all dirs 4+ levels from root with the exception of "Resources" dirs
+          pytest_dirs=$( find ./Tests/Pytest -mindepth 2 -type d \! -name "Resources" )
+          # Get list of Pytest files
           pytest_files=$( find -type f -path './Tests/Pytest/*TestCases*' -name "test_*.py" )
-          printf "%s\n%s\n" $pytest_dirs $pytest_files | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > $1/pytest_test_cases.json
+          # Combine lists and sort
+          printf "%s\n%s\n" $pytest_dirs $pytest_files | sed -e "s/^\.\///" | jq -ncR "[inputs | select(length > 0)]  | sort_by(.)" > $1/pytest_test_cases.json
           cat $1/pytest_test_cases.json
 
-          # Get sorted list of Robot files and dirs
-          robot_dirs=$( find -type d -path './Tests/Robot/*' -name "TestCases" )
+          # Get list of Robot dirs. Includes all dirs 4+ levels from root with the exception of "Resources" dirs
+          robot_dirs=$( find ./Tests/Robot -mindepth 2 -type d \! -name "Resources" )
+          # Get list of Robot files
           robot_files=$( find -type f -path './Tests/Robot/*TestCases*' -name "*.robot" )
-          printf "%s\n%s\n" $robot_dirs $robot_files | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > $1/robot_test_cases.json
+          # Combine lists and sort
+          printf "%s\n%s\n" $robot_dirs $robot_files | sed -e "s/^\.\///" | jq -ncR "[inputs | select(length > 0)]  | sort_by(.)" > $1/robot_test_cases.json
           cat $1/robot_test_cases.json
         }
 
@@ -227,17 +231,19 @@ jobs:
         find ./Environments/ -type f -name "environment.*" -printf "%P\n" | jq -ncR "[inputs] | sort_by(.)" > ${ref_work_dir}/env.json
         cat ${ref_work_dir}/env.json
 
-        # Get sorted list of Pytest files and dirs
-          pytest_dirs=$( find -type d -path './Tests/Pytest/*' -name "TestCases" )
-          pytest_files=$( find -type f -path './Tests/Pytest/*TestCases*' -name "test_*.py" )
-          printf "%s\n%s\n" ${pytest_dirs} ${pytest_files} | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${ref_work_dir}/pytest_test_cases.json
-          cat ${ref_work_dir}/pytest_test_cases.json
+        # Get list of Pytest dirs. Includes all dirs 4+ levels from root with the exception of "Resources" dirs
+        pytest_dirs=$( find ./Tests/Pytest -mindepth 2 -type d \! -name "Resources" )
+        # Get list of Pytest files
+        pytest_files=$( find -type f -path './Tests/Pytest/*TestCases*' -name "test_*.py" )
+        # Combine lists and sort
+        printf "%s\n%s\n" $pytest_dirs $pytest_files | sed -e "s/^\.\///" | jq -ncR "[inputs | select(length > 0)]  | sort_by(.)" > ${ref_work_dir}/pytest_test_cases.json
 
-          # Get sorted list of Robot files and dirs
-          robot_dirs=$( find -type d -path './Tests/Robot/*' -name "TestCases" )
-          robot_files=$( find -type f -path './Tests/Robot/*TestCases*' -name "*.robot" )
-          printf "%s\n%s\n" ${robot_dirs} ${robot_files} | sed -e "s/^\.\///" | jq -ncR "[inputs] | sort_by(.)" > ${ref_work_dir}/robot_test_cases.json
-          cat ${ref_work_dir}/robot_test_cases.json
+        # Get list of Robot dirs. Includes all dirs 4+ levels from root with the exception of "Resources" dirs
+        robot_dirs=$( find ./Tests/Robot -mindepth 2 -type d \! -name "Resources" )
+        # Get list of Robot files
+        robot_files=$( find -type f -path './Tests/Robot/*TestCases*' -name "*.robot" )
+        # Combine lists and sort
+        printf "%s\n%s\n" $robot_dirs $robot_files | sed -e "s/^\.\///" | jq -ncR "[inputs | select(length > 0)] | sort_by(.)" > ${ref_work_dir}/robot_test_cases.json
 
     - name: Upload Metadata
       run: aws s3 sync ${WORK_DIR} s3://econgit/extreme_automation_tests
