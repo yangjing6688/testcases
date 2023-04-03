@@ -250,7 +250,7 @@ TCCS-13119: Clone Splash Template, Onboarding Policy and Onboarding Rules
     ${EG_POLICY_NAME_STATUS3}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME3}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE4}
     Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS3}'     '1'
 
-    ${EG_POLICY_NAME_STATUS4}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME4}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE3}    condition_value=${CONDITION_VALUE}    action_type=${SEND_PASSCODE_ON_APPROVAL}    user_notifpolicy=${DEFAULT_NOTIFICATION_POLICY1}    sponsor_notifpolicy=${DEFAULT_NOTIFICATION_POLICY2}
+    ${EG_POLICY_NAME_STATUS4}=             ADD ONBOARDING POLICY   policy_name=${EG_POLICY_NAME4}  group_name=${GROUP_NAME}    condition_type=${CONDITION_TYPE3}    condition_value=${CONDITION_VALUE}    action_type=${SEND_OTP_TO_USER}    user_notifpolicy=${DEFAULT_NOTIFICATION_POLICY1}    sponsor_notifpolicy=${DEFAULT_NOTIFICATION_POLICY2}
     Should Be Equal As Strings      '${EG_POLICY_NAME_STATUS4}'     '1'
 
     save screen shot
@@ -361,7 +361,7 @@ TCCS-12998: Verify User registration and authenticate CP with LinkedIn
 
     Depends On              TCCS-12993    TCCS-13119
 
-    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME2}          ${device1.serial}
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Complete Update     ${NW_POLICY_NAME2}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
     ${DEVICE_STATUS}=           Wait Until Device Online       ${device1.serial}
@@ -432,7 +432,7 @@ TCCS-13014: Verify Default System template (Accept and Connect)
     ${CREATE_POLICY4}=              Create Network Policy   ${NW_POLICY_NAME4}      ${GUEST_OPEN_NW4}
     Should Be Equal As Strings      '${CREATE_POLICY4}'   '1'
 
-    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME4}          ${device1.serial}
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Complete Update     ${NW_POLICY_NAME4}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
     ${DEVICE_STATUS}=           Wait Until Device Online       ${device1.serial}
@@ -469,7 +469,7 @@ TCCS-12994: Verify Device registration and authenticate CP with OTP notified ove
 
     Depends On              TCCS-12993    TCCS-13119
 
-    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME5}          ${device1.serial}
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Complete Update     ${NW_POLICY_NAME5}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
     ${DEVICE_STATUS}=           Wait Until Device Online       ${device1.serial}
@@ -529,7 +529,7 @@ TCCS-13012: Verify User registration and authenticate CP with passcode notified 
     
     Depends On              TCCS-12993    TCCS-13119
 
-    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME6}          ${device1.serial}
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Complete Update     ${NW_POLICY_NAME6}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
     ${DEVICE_STATUS}=           Wait Until Device Online       ${device1.serial}
@@ -590,7 +590,7 @@ TCCS-13694: Sponsor Approval-Verify on sponsor Permit login passcode sent to use
     
     Depends On              TCCS-12993    TCCS-13119
 
-    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME8}          ${device1.serial}
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Complete Update     ${NW_POLICY_NAME8}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
     ${DEVICE_STATUS}=           Wait Until Device Online       ${device1.serial}
@@ -612,48 +612,33 @@ TCCS-13694: Sponsor Approval-Verify on sponsor Permit login passcode sent to use
 
     Should Be Equal As Strings      '${APPLY_USER_TEMPLATE}'     '1'
 
-    Remote_Server.Connect Open Network    ${SSID_NAME8}
-
+    ${CONNECT_CLIENT_OPEN_N/W}=             Remote_Server.Connect Open Network    ${SSID_NAME8}
     Log to Console      Sleep for ${CLIENT_CONNECT_WAIT}
-
     Sleep                         ${CLIENT_CONNECT_WAIT}
 
-    Open Guest Portal Browser    ${mu1.ip}
-
+    ${OPEN_GUEST_PORTAL}=             Open Guest Portal Browser    ${mu1.ip}
     Log to Console      Sleep for ${CP_PAGE_OPEN_WAIT}
-
     Sleep  ${CP_PAGE_OPEN_WAIT}
 
     ${REGISTRATION_STATUS}=                 Register Sponsored Guest User    ${USER_NAME}    ${USER_EMAIL}    ${USER_MOBILE}    ${SPONSOR_NAME}     ${SPONSOR_EMAIL}     ${ACCESS_PURPOSE}
-
     Log to Console      Sleep for ${RECEIVE_MAIL}
     Sleep                         ${RECEIVE_MAIL}
 
-    ${APPROVAL_URL}=        Get Sponsor Action URL      ${SPONSOR_EMAIL}    ${SPONSOR_PASSWORD}    ${SPONSOR_PERMIT}
-
-    ${DRIVER}=    Load Browser    ${APPROVAL_URL}    program=${PROGRAM}
-
-    ${TEXT}=    Check Approval Success Text    ${DRIVER}
-
-    Quit Browser    ${DRIVER}
-
-    ${ACCESS_STATUS}=    Validate Sponsored Guest Access    ${USER_EMAIL}    ${USER_PASSWORD}    ${SEND_PASSCODE_ON_APPROVAL}
+    ${ACCESS_STATUS}=    Validate Sponsored Guest Access    ${USER_EMAIL}    ${USER_PASSWORD}    ${SEND_OTP_TO_USER}
+    get gp page screen shot
 
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
-
     Should Be Equal As Strings      '${WIFI_DISCONNECT}'     '1'
-
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
-
     Sleep  ${CLIENT_DISCONNECT_WAIT}
 
     ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
-
     Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
 
     ${DELETE_USER_EMAIL}=             Delete User  ${USER_EMAIL}
-
     Should Be Equal As Strings     '${DELETE_USER_EMAIL}'  '1'
+
+    Should Be Equal As Strings     '${ACCESS_STATUS}'  '1'
 
     [Teardown]   run keywords       Test Case Level AP Cleanup
 
@@ -666,7 +651,7 @@ TCCS-12995: Verify user authentication with guest bulk vouchers
 
     Depends On              TCCS-12993    TCCS-13119
 
-    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME0}          ${device1.serial}
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Complete Update     ${NW_POLICY_NAME0}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
     ${DEVICE_STATUS}=           Wait Until Device Online       ${device1.serial}
@@ -734,7 +719,7 @@ TCCS-12996: Verify User registration and get CP access using E-mail
 
     Depends On              TCCS-12993    TCCS-13119
 
-    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Delta Update     ${NW_POLICY_NAME7}          ${device1.serial}
+    ${AP1_UPDATE_CONFIG}=           Deploy Network Policy with Complete Update     ${NW_POLICY_NAME7}          ${device1.serial}
     Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
 
     ${DEVICE_STATUS}=           Wait Until Device Online       ${device1.serial}
@@ -970,6 +955,12 @@ TCCS-13021: Adding of reports [Dashboard Report-PDF]
     Depends On              TCCS-12993    TCCS-13017
 
     ${CREATE_REPORT}=         create extreme guest report  ${REPORT_NAME1}    ${REPORT_TYPE2}     ${REPORT_FORMAT1}       ${SAVE_TYPE3}       dashboard_name=${DASHBOARD_NAME1}
+    save screen shot
+    Should Be Equal As Strings      '${CREATE_REPORT}'     '1'
+    
+    Run keywords       Test Case Level Cleanup
+
+    ${CREATE_REPORT1}=         create extreme guest report  ${REPORT_NAME2}    ${REPORT_TYPE3}     ${REPORT_FORMAT1}       ${SAVE_TYPE3}       dashboard_name=${DASHBOARD_NAME1}
     save screen shot
     Should Be Equal As Strings      '${CREATE_REPORT}'     '1'
 
