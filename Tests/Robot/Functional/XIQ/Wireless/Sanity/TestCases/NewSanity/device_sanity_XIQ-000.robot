@@ -394,7 +394,7 @@ TCCS-13689: Verification of config push delta update (AH-AP Only)
 #    &{ROUTER_TEMPLATE_CONFIG1}=  Create Dictionary   router_model=${device1.model}  template_name=${device1.device_template}  interface_name=ETH2    new_port_type_config=&{PORT_TYPE_CONFIG1}   network_allocation_config=&{NETWORK_ALLOCATION_CONFIG1}
 #    Set Global Variable          &{ROUTER_TEMPLATE_CONFIG1}
 #
-#    ${CREATE_NW_POLICY}=    Create Network Policy   ${XR_NW_POLICY_NAME}       &{XR_ROUTER_NW_01}
+#    ${CREATE_NW_POLICY}=    Create Network Policy   ${XR_NW_POLICY_NAME}       ${XR_ROUTER_NW_01}
 #    Should Be Equal As Strings                      '${CREATE_NW_POLICY}'   '1'
 #
 #    ${CREATE_AP_TEMPLATE}=      Add Router Template     ${XR_NW_POLICY_NAME}     &{ROUTER_TEMPLATE_CONFIG1}

@@ -50,27 +50,35 @@ ${PILOT_PROFILE}          ${netelem7.profile}
 
 ${PIL1_IP}                ${netelem1.ip}
 ${PIL1_PROFILE}           ${netelem1.profile}
+${PIL1_SERIAL}            ${netelem1.serial}
 
 ${PIL2_IP}                ${netelem2.ip}
 ${PIL2_PROFILE}           ${netelem2.profile}
+${PIL2_SERIAL}            ${netelem2.serial}
 
 ${PIL3_IP}                ${netelem3.ip}
 ${PIL3_PROFILE}           ${netelem3.profile}
+${PIL3_SERIAL}            ${netelem3.serial}
 
 ${NAV1_IP}                ${netelem4.ip}
 ${NAV1_PROFILE}           ${netelem4.profile}
+${NAV1_SERIAL}            ${netelem4.serial}
 
 ${NAV2_IP}                ${netelem5.ip}
 ${NAV2_PROFILE}           ${netelem5.profile}
+${NAV2_SERIAL}            ${netelem5.serial}
 
 ${NAV3_IP}                ${netelem6.ip}
 ${NAV3_PROFILE}           ${netelem6.profile}
+${NAV3_SERIAL}            ${netelem6.serial}
 
 ${PILOT_ENTITLEMENT}      ${xiq.pilot_entitlements}
 ${NAVIGATOR_ENTITLEMENT}  ${xiq.navigator_entitlements}
 
 ${PILOT_LICENSE}          XIQ-PIL-S-C
 ${NAVIGATOR_LICENSE}      XIQ-NAV-S-C
+
+${COLUMN_1}               Device License
 
 ${NAV_SITE}               AutoSiteNavigators
 ${PILOT_SITE}             AutoSitePilots
@@ -121,6 +129,9 @@ Test 3: TC-11476 - Delete Navigator Device Taking Pilot License from XIQSE
     # Confirm the Pilot entitlements are at the expected value (2, one for XIQSE and one for the additional device)
     XIQ Confirm Expected Pilot Licenses Consumed  2
 
+    # Confirm the device is shown to be using a pilot license in the Devices table
+    Confirm XIQ Device License       ${NAV3_SERIAL}  Pilot
+
     # Delete the Navigator device consuming the Pilot license
     Delete XIQSE Test Device and Confirm Success  ${NAV3_IP}
 
@@ -149,6 +160,10 @@ Test 4: TC-11474 - Delete Device Not Using a License from XIQSE
     # Confirm the expected license entitlements were used for the devices (2 pilot, 1 navigator)
     XIQ Confirm Expected Pilot Licenses Consumed        2
     XIQ Confirm Expected Navigator Licenses Consumed    1
+
+    # Confirm the devices are shown to be consuming the correct license in the Devices table
+    Navigate and Confirm XIQ Device License       ${PIL1_SERIAL}  Pilot
+    Confirm XIQ Device License                    ${NAV1_SERIAL}  Navigator
 
     # Create some status-only devices
     Switch To Window  ${XIQSE_WINDOW_INDEX}
@@ -274,6 +289,9 @@ Set Up XIQ Components
     # Remove XIQSE if it is already present
     Navigate and Remove Device by MAC From XIQ  ${XIQSE_MAC}
 
+    ${selected}=    Column Picker Select        ${COLUMN_1}
+    Should Be Equal As Integers                 ${selected}     1
+
     # Confirm we are starting with no licenses consumed
     XIQ Confirm Expected Pilot Licenses Consumed        0
     XIQ Confirm Expected Navigator Licenses Consumed    0
@@ -286,6 +304,10 @@ Consume All Navigator Licenses and Confirm Success
     XIQSE Add Device and Confirm Success                ${NAV2_IP}  ${NAV2_PROFILE}
 
     XIQ Confirm Expected Navigator Licenses Consumed    ${NAVIGATOR_ENTITLEMENT}
+
+    # Confirm the devices are shown to be using a navigator license in the Devices table
+    Navigate and Confirm XIQ Device License       ${NAV1_SERIAL}  Navigator
+    Confirm XIQ Device License                    ${NAV2_SERIAL}  Navigator
 
 Consume All Pilot Licenses and Confirm Success
     [Documentation]     Creates enough devices to consume all available pilot licenses

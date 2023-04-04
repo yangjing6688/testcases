@@ -10,5 +10,13 @@
 *** Variables ***
 
 ### Helpdesk account
-${XIQ_HD_USER}          helpdesk@cust001.com
-${XIQ_HD_PASSWORD}      aerohive
+${XIQ_HD_USER}                    cloudhelpdeskautomationuser@gmail.com
+${XIQ_HD_PASSWORD}                Aerohive123
+
+${HELPDESK_EMAIL}                 cloudhelpdeskautomationuser@gmail.com
+${HELPDESK_APP_PASSWORD}          urfurxuppbxvdxpo
+${HELPDESK_NAME}                  xiqextreme helpdesk
+${help_username}                  cloudhelpdeskautomationuser@gmail.com
+${help_password}                  Aerohive123
+${TIMEOUT}                        120
+&{HELPDESK_ROLE}                  email=${HELPDESK_EMAIL}     name=${HELPDESK_NAME}     timeout=${TIMEOUT}     role=Helpdesk

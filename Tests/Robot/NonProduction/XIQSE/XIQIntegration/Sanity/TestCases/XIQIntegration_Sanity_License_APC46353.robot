@@ -52,6 +52,10 @@ ${PILOT_LICENSE}          XIQ-PIL-S-C
 ${NAVIGATOR_LICENSE}      XIQ-NAV-S-C
 ${WORLD_SITE}             World
 
+${PIL_ENTITLEMENT}        Pilot
+${NAV_ENTITLEMENT}        Navigator
+${COLUMN_1}               Device License
+
 
 *** Test Cases ***
 Test 1: Check Baseline License Counts
@@ -98,7 +102,13 @@ Test 3: Create Pilot Device and Check License Counts
     XIQ Confirm Expected Pilot Licenses Consumed        2
     XIQ Confirm Expected Navigator Licenses Consumed    0
 
-Test 4: Create Navigator Device and Check License Counts
+Test 4: Verify Device License Column Value For Pilot Device
+    [Documentation]     Confirms the Device License to verify device consumed the appropriate license
+    [Tags]              nightly3    release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test5
+
+    Navigate and Confirm XIQ Device License      ${PIL1_SERIAL}    ${PIL_ENTITLEMENT}
+
+Test 5: Create Navigator Device and Check License Counts
     [Documentation]     Creates a navigator type device in XIQSE and confirms the license counts
     [Tags]              nightly3    release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test4
 
@@ -115,7 +125,13 @@ Test 4: Create Navigator Device and Check License Counts
     XIQ Confirm Expected Pilot Licenses Consumed        2
     XIQ Confirm Expected Navigator Licenses Consumed    1
 
-Test 5: Delete Pilot Device and Check License Counts
+Test 6: Verify Device License Column Value For Navigator Device
+    [Documentation]     Confirms the Device License to verify device consumed the appropriate license or not
+    [Tags]              nightly3    release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test5
+
+    Navigate and Confirm XIQ Device License      ${NAV1_SERIAL}    ${NAV_ENTITLEMENT}
+
+Test 7: Delete Pilot Device and Check License Counts
     [Documentation]     Deletes a pilot type device in XIQSE and confirms the license counts
     [Tags]              nightly3    release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test5
 
@@ -131,7 +147,7 @@ Test 5: Delete Pilot Device and Check License Counts
     XIQ Confirm Expected Pilot Licenses Consumed        1
     XIQ Confirm Expected Navigator Licenses Consumed    1
 
-Test 6: Delete Navigator Device and Check License Counts
+Test 8: Delete Navigator Device and Check License Counts
     [Documentation]     Deletes a navigator type device in XIQSE and confirms the license counts
     [Tags]              nightly3    release_testing    license_testing    staging_testing    known_issue    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test6
 
@@ -149,7 +165,7 @@ Test 6: Delete Navigator Device and Check License Counts
     XIQ Confirm Expected Pilot Licenses Consumed        1
     XIQ Confirm Expected Navigator Licenses Consumed    0
 
-Test 7: Remove XIQSE from XIQ and Check License Counts
+Test 9: Remove XIQSE from XIQ and Check License Counts
     [Documentation]     Removes XIQSE from XIQ and confirms the license counts (nothing consumed)
     [Tags]              nightly3    release_testing    license_testing    staging_testing    tccs_11877    apc_46353    development    xiqse    xiq_integration    license_sanity    test7
 
@@ -219,6 +235,9 @@ Set Up XIQ Components
 
     # Remove XIQSE if it is already present
     Navigate and Remove Device by MAC From XIQ  ${XIQSE_MAC}
+
+    ${selected}=    Column Picker Select        ${COLUMN_1}
+    Should Be Equal As Integers                 ${selected}     1
 
 Clean Up XIQ Components
     [Documentation]     Cleans up components used in XIQ during the test and logs out

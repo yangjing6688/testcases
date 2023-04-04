@@ -7,6 +7,5 @@ Resource    ../../../../../Libraries/XIQ/lib_rbac_config.robot
 
 Variables   Environments/Config/waits.yaml
 
-Variables   TestBeds/${TESTBED}
 Variables   Environments/${TOPO}
 Variables   Environments/${ENV}

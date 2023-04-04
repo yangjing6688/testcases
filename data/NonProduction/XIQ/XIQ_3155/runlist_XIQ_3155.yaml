@@ -1,0 +1,16 @@
+runlist_XIQ_3155:
+  suitemap:
+    - suitemap_XIQ_3155.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ['exos']
+    node_stack:
+      run_os: ["exos"]
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_19906 # testbed_1_node|testbed_stack
+    - tcxm_19907 # testbed_1_node|testbed_stack
+    - tcxm_19911 # testbed_1_node|testbed_stack
+    - tcxm_19912 # testbed_1_node|testbed_stack
+    - tcxm_xiq_onboarding_cleanup

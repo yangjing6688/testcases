@@ -1,0 +1,16 @@
+runlist_XIQ_3012:
+  suitemap:
+    - suitemap_XIQ_3012.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ['exos']
+        create_network_policy: no
+    node_stack:
+      run_os: ["exos"]
+      create_network_policy: no
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_20549 # one node
+    - tcxm_20561 # stack
+    - tcxm_xiq_onboarding_cleanup

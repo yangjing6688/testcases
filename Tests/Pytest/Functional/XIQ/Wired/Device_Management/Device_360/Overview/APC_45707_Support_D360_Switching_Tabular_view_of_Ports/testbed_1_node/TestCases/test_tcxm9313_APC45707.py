@@ -50,8 +50,7 @@ class TCXM9313Tests(xiqBase):
         )
         logger.info(f"Found these ports available on switch: {ports}")
         
-        self.suite_udk.change_device_management_settings(
-            option="disable", platform=onboarded_switch.cli_type.upper())
+        self.suite_udk.change_device_management_settings(option="disable")
 
         policy_name = self.suite_udk.generate_policy_name()
         self.suite_udk.create_network_policy(policy_name=policy_name)
