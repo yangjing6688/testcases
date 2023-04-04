@@ -2970,7 +2970,7 @@ def cleanup(
 
                 logger.step(f"Delete this device: '{dut.name}' (mac='{dut.mac}').")
                 
-                if xiq.xflowscommonDevices.search_device(device_mac=node.mac, IRV=False) == -1:
+                if xiq.xflowscommonDevices.search_device(device_mac=dut.mac, IRV=False) == -1:
                     screen.save_screen_shot()
                     logger.info(f"Did not find this device onboarded: '{dut.name}' (mac='{dut.mac}').")
                     continue
