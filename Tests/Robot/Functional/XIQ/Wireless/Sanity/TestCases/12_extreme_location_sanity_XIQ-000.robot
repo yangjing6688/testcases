@@ -5,6 +5,7 @@
 # Topology      :
 # AP1----- Cloud-----Ubuntu
 
+
 # Pre-Condtion
 # 1. AP should be onboarded and it should be in online in XIQ.
 # 2. AP and Client should Present Inside RF Box Environment
@@ -62,6 +63,8 @@ Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_locati
 
 Suite Setup      Pre Condition
 
+Force Tags   testbed_wireless
+
 *** Keywords ***
 Pre Condition
     [Documentation]   AP Should be onboarded  and it is online
@@ -82,7 +85,7 @@ Pre Condition
 
 Test1: Check Extreme Location Subscription Flow For Existing Customer
     [Documentation]                 Check Extreme Location Subscription Flow
-    [Tags]                          sanity  aerohive  P1   production   regression
+    [Tags]                          sanity  aerohive  p1   production   regression
     ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
 
     ${LOCATION_RESULT}=             Assign Location With Device Actions         ${ap1.serial}       ${LOCATION}
@@ -130,7 +133,7 @@ Test1: Check Extreme Location Subscription Flow For Existing Customer
 
 Test2: Presence TC-Validate Client Presence after Connecting Client For Existing Customer
     [Documentation]         Presence TC-Validate Client Presence after Connecting Client
-    [Tags]                  sanity  aerohive  P1   production   regression
+    [Tags]                  sanity  aerohive  p1   production   regression
     Depends On          Test1
     ${LOGIN_XIQ}=                  Login User          ${tenant_username}     ${tenant_password}
 
@@ -172,7 +175,7 @@ Test2: Presence TC-Validate Client Presence after Connecting Client For Existing
 
 Test3: Category TC-Validate Client Presence Category after Connecting Client For Existing Customer
     [Documentation]         Category TC-Validate Client Presence Category after Connecting Client For Existing Customer
-    [Tags]                  sanity  aerohive  P1   production   regression
+    [Tags]                  sanity  aerohive  p1   production   regression
     Depends On          Test1  Test2
     ${LOGIN_XIQ}=                  Login User          ${tenant_username}     ${tenant_password}
 
@@ -194,7 +197,7 @@ Test3: Category TC-Validate Client Presence Category after Connecting Client For
 
 Test4: Switch off Client WiFi Interface
     [Documentation]         Switch off Client WiFi Interface
-    [Tags]                  sanity  aerohive  P1   production   regression
+    [Tags]                  sanity  aerohive  p1   production   regression
     Depends On          Test1
     ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
 
@@ -213,7 +216,7 @@ Test4: Switch off Client WiFi Interface
 
 Test5: Presence TC-Validate Client Presence on Sites Page after DisConnecting Client For Existing Customer
     [Documentation]         Presence TC-Validate Client Presence after DisConnecting Client For Existing Customer
-    [Tags]                  aerohive  P1  regression
+    [Tags]                  aerohive  p1  regression
     Depends On          Test1  Test3
 
 
@@ -232,7 +235,7 @@ Test5: Presence TC-Validate Client Presence on Sites Page after DisConnecting Cl
 
 Test6: Presence TC-Validate Client Presence on wireless Devices Page after DisConnecting Client For Existing Customer
     [Documentation]         Presence TC-Validate Client Presence after DisConnecting Client For Existing Customer
-    [Tags]                  aerohive  P1  regression
+    [Tags]                  aerohive  p1  regression
     Depends On          Test1  Test4  Test5
 
     ${LOGIN_XIQ}=                   Login User          ${tenant_username}     ${tenant_password}
@@ -254,7 +257,7 @@ Test6: Presence TC-Validate Client Presence on wireless Devices Page after DisCo
 
 Test7: Onboard AP on New customer Account
     [Documentation]         Onboard AP on New customer Account
-    [Tags]                  sanity  aerohive  P1   production   regression
+    [Tags]                  sanity  aerohive  p1   production   regression
     ${LOGIN_XIQ}=               Login User          ${TENANT_USERNAME2}     ${TENANT_PASSWORD2}
 
     ${IMPORT_MAP}=                Import Map In Network360Plan  ${MAP_FILE_NAME}
@@ -282,14 +285,14 @@ Test7: Onboard AP on New customer Account
 
 Test8: Check Extreme Location Subscription Flow For New Customer
     [Documentation]         heck Extreme Location Subscription Flow For New Customer
-    [Tags]                  sanity  aerohive  P1   production   regression
+    [Tags]                  sanity  aerohive  p1   production   regression
     Depends On          Test7
     ${LOGIN_XIQ}=                   Login User          ${TENANT_USERNAME2}     ${TENANT_PASSWORD2}
 
     ${CREATE_POLICY1}=              Create Network Policy   ${NW_POLICY_NAME}      ${LOCATION_OPEN_NW}
     Should Be Equal As Strings      '${CREATE_POLICY1}'   '1'
 
-    ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${AP_TEMPLATE_CONFIG}
+    ${CREATE_AP_TEMPLATE}=          Add AP Template     ${ap1.model}    ${ap1.template}    ${AP_TEMPLATE_CONFIG}
     Should Be Equal As Strings      '${CREATE_AP_TEMPLATE}'   '1'
 
     Enable Nw Presence Analytics    ${NW_POLICY_NAME}
@@ -328,7 +331,7 @@ Test8: Check Extreme Location Subscription Flow For New Customer
 
 Test9: Presence TC-Validate Client Presence after Connecting Client for New Customer
     [Documentation]         Presence TC-Validate Client Presence after Connecting Client for New Customer
-    [Tags]                  sanity  aerohive  P1   production   regression
+    [Tags]                  sanity  aerohive  p1   production   regression
     Depends On          Test8
     ${LOGIN_XIQ}=                  Login User          ${TENANT_USERNAME2}     ${TENANT_PASSWORD2}
     ${CLIENT_MAC_FORMAT}=          Convert To Client MAC  ${mu5.wifi_mac}
@@ -366,7 +369,7 @@ Test9: Presence TC-Validate Client Presence after Connecting Client for New Cust
 
 Test Suite Clean Up
     [Documentation]         Test Suite Clean Up: Reset Customer Account Data
-    [Tags]                  sanity  aerohive  P1   production   regression
+    [Tags]                  sanity  aerohive  p1   production   regression
 
     ${LOGIN_XIQ}=                   Login User          ${TENANT_USERNAME2}     ${TENANT_PASSWORD2}
     ${BACKUP_VIQ_DATA}=             Backup VIQ Data

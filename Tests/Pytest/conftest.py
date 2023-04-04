@@ -2332,11 +2332,13 @@ def get_nodes_data(
                     dev_cmd.send_cmd(dut.name, 'enable iqagent')
                     time.sleep(3)
                     output = dev_cmd.send_cmd(dut.name, 'show iqagent')[0].return_text
+                    logger.cli(output)
                     if iqagent_version_match := re.search(r"Version\s+\s([\d\.]+)\s+\r\n", output):
                         iqagent_version = iqagent_version_match.group(1)
                 
                 elif dut.cli_type.upper() == "VOSS":
                     output = dev_cmd.send_cmd(dut.name, 'show application iqagent')[0].return_text
+                    logger.cli(output)
                     if iqagent_version_match := re.search(fr"Agent Version\s+:\s([\d\.]+)\r\n", output):
                         iqagent_version = iqagent_version_match.group(1)
                 
@@ -2350,7 +2352,8 @@ def get_nodes_data(
 
                 if dut.cli_type.upper() == "EXOS":
                     output = dev_cmd.send_cmd(dut.name, 'show version')[0].return_text
-
+                    logger.cli(output)
+                    
                     if dut.platform.upper() == "STACK":
                         system_version = re.findall(r"(Slot-\d).*\sIMG:\s([\d\.]+)", output)
                     else:
@@ -2358,6 +2361,7 @@ def get_nodes_data(
 
                 elif dut.cli_type.upper() == "VOSS":
                     output = dev_cmd.send_cmd(dut.name, 'show sys software', ignore_cli_feedback=True)[0].return_text
+                    logger.cli(output)
                     system_version = re.search(r"Version\s+:\sBuild\s([\d\.]+)\s", output).group(1)
                 else:
                     logger.warning("OS not yet supported.")
@@ -2370,6 +2374,7 @@ def get_nodes_data(
                 if dut.cli_type.upper() == "EXOS":
                     output = dev_cmd.send_cmd(
                         dut.name, 'show vlan', max_wait=10, interval=2)[0].return_text
+                    logger.cli(output)
                     pattern = fr'(\w+)(\s+)(\d+)(\s+)({dut.ip})(\s+)(\/.*)(\s+)(\w+)(\s+/)(.*)(VR-\w+)'
                     match = re.search(pattern, output)
                     try:
@@ -2402,11 +2407,19 @@ def get_nodes_data(
                     elif dut.cli_type.lower() == 'exos':
                         dev_cmd.send_cmd(dut.name, 'enable telnet')
                         dev_cmd.send_cmd(dut.name, 'disable cli paging')
+                        
                         result = dev_cmd.send_cmd(
                             dut.name, 'show inline-power', max_wait=30, 
                             interval=10)[0].cmd_obj._return_text
                         logger.cli(result)
                         assert re.search('Inline Power System Information', result)
+                        
+                        result = dev_cmd.send_cmd(
+                            dut.name, 'show inline-power info ports', max_wait=30, 
+                            interval=10, ignore_cli_feedback=True)[0].cmd_obj._return_text
+                        logger.cli(result)
+                        assert not re.search('None of the specified ports are inline-power capable', result)
+
                     else:
                         assert False, "OS not yet supported."
                         

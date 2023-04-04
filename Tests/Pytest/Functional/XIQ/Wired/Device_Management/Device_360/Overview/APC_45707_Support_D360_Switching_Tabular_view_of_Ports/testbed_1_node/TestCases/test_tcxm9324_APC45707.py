@@ -140,8 +140,7 @@ class TCXM9324Tests(xiqBase):
 
             request.addfinalizer(func)
 
-            self.suite_udk.change_device_management_settings(
-                option="disable", platform=onboarded_switch.cli_type.upper())
+            self.suite_udk.change_device_management_settings(option="disable")
 
             if onboarded_switch.cli_type.upper() == "VOSS":
                 
