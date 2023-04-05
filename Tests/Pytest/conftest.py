@@ -1640,7 +1640,7 @@ def pytest_runtest_call(item):
             test_data = pytest.suitemap_tests[f"{item.cls.__name__}::{item.originalname}"]
             
         data = defaultdict(lambda: dict())
-        for key, value in test_data.items():
+        for key, value in {k: test_data.get(k) for k in mandatory_fields}.items():
             if value:
                 if key == "steps":
                     data["Test Steps"] = str(len(value))
