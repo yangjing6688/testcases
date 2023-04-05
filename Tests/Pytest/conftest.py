@@ -1640,7 +1640,7 @@ def pytest_runtest_call(item):
             test_data = pytest.suitemap_tests[f"{item.cls.__name__}::{item.originalname}"]
             
         data = defaultdict(lambda: dict())
-        for key, value in test_data.items():
+        for key, value in {k: test_data.get(k) for k in mandatory_fields}.items():
             if value:
                 if key == "steps":
                     data["Test Steps"] = str(len(value))
@@ -2967,9 +2967,16 @@ def cleanup(
             xiq.xflowscommonDevices._goto_devices()
             
             for dut in duts:
-                try:
+
+                logger.step(f"Delete this device: '{dut.name}' (mac='{dut.mac}').")
+                
+                if xiq.xflowscommonDevices.search_device(device_mac=dut.mac, IRV=False, skip_refresh=True, skip_navigation=True) == -1:
                     screen.save_screen_shot()
-                    logger.step(f"Delete this device: '{dut.name}' (mac='{dut.mac}').")
+                    logger.info(f"Did not find this device onboarded: '{dut.name}' (mac='{dut.mac}').")
+                    continue
+
+                try:             
+                    screen.save_screen_shot()
                     xiq.xflowscommonDevices._goto_devices()
                     xiq.xflowscommonDevices.delete_device(
                         device_mac=dut.mac)
@@ -3583,11 +3590,27 @@ def update_devices(
                     initial_network_policy_push_flag
                 ]
             ):
+
                 if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac) != 1:
+                    
                     screen.save_screen_shot()
-                    error_msg = f"It look like the update failed this switch: '{dut.mac}'."
-                    logger.error(error_msg)
-                    pytest.fail(error_msg) 
+                    logger.warning(
+                        f"It looks like the update failed for this switch: '{dut.mac}'. "
+                        "Will try to do a delta configuration update for this switch.")
+                    
+                    if xiq.xflowscommonDevices.update_device_delta_configuration(dut.mac) != 1:
+                        screen.save_screen_shot()
+                        logger.fail(f"Failed to do a delta confguration update for this switch: '{dut.mac}'.")
+                    
+                    logger.info(f"Successfully initialised a delta configuration update for this switch: '{dut.mac}'.")
+                    
+                    if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac) != 1:
+                        screen.save_screen_shot()
+                        logger.fail(f"It looks like both type of device update failed for this switch: '{dut.mac}'.")
+
+                    logger.info(f"Successfully completed the delta configuration update for this switch: '{dut.mac}'.")
+                else:
+                    logger.info(f"Successfully completed the network policy update for this switch: '{dut.mac}'.")
 
     return update_devices_func
 
