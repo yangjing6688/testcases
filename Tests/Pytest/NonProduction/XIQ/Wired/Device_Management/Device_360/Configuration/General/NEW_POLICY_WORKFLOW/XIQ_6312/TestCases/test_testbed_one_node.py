@@ -24,7 +24,8 @@ class XIQ6312OneNodeTests:
     @pytest.mark.dependson("tcxm_23826")
     @pytest.mark.EXOS
     @pytest.mark.VOSS
-    def test_23827(self, logger, xiq_library_at_class_level, node_1, node_1_policy_name, node_1_template_name, utils):
+    def test_23827(self, logger, xiq_library_at_class_level, node_1, node_1_policy_name, node_1_template_name,
+                   utils, navigator):
 
         logger.step("Verify user can create port-type")
         port_type_name = xiq_library_at_class_level.xflowsconfigureNetworkPolicy.get_random_name("test_port_type")
@@ -51,6 +52,7 @@ class XIQ6312OneNodeTests:
                     f"using Port types Section")
 
         logger.step("Verify user can edit port-type")
+        navigator.wait_until_loading_is_done()
         xiq_library_at_class_level.xflowsconfigureNetworkPolicy.edit_port_type(port_type_name)
         xiq_library_at_class_level.xflowsconfigureNetworkPolicy.go_to_specific_tab_in_port_type_configuration(
             tab_name="NAME")
