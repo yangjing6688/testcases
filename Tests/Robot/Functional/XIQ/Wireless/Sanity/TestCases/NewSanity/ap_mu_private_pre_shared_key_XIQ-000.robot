@@ -156,11 +156,14 @@ Suite Teardown
         Should Be Equal As Integers     ${DELETE_DEVICE_RESULT}             1
     END
 
-    ${DELETE_POLICIES_RESULT}=      Delete Network Polices          ${OPEN_POLICY}
-    Should Be Equal As Integers     ${DELETE_POLICIES_RESULT}       1
+    ${DELETE_POLICIES_RESULT}=      Delete Network Polices          ${OPEN_POLICY}      ${BULK_CLOUD_NW_POLICY}     ${BULK_LOCAL_NW_POLICY}
+    Should Be Equal As Integers     ${DELETE_POLICIES_RESULT}           1
 
-    ${DELETE_SSID_RESULT}=          Delete SSIDs                    ${OPEN_SSID}
-    Should Be Equal As Integers     ${DELETE_SSID_RESULT}           1
+    ${DELETE_SSID_RESULT}=          Delete SSIDs                    ${OPEN_SSID}        ${BULK_CLOUD_NW_SSID}       ${BULK_LOCAL_NW_SSID}
+    Should Be Equal As Integers     ${DELETE_SSID_RESULT}               1
+
+    ${DELETE_UG_RESULT}=            Delete User Groups              ${BULK_CLOUD_USER_GROUP}        ${BULK_LOCAL_USER_GROUP}
+    Should Be Equal As Integers     ${DELETE_UG_RESULT}                 1
 
     ${LOGOUT_RESULT}=               Logout User
     Should Be Equal As Integers     ${LOGOUT_RESULT}                1
@@ -244,8 +247,7 @@ TCCS-7678: Cloud DB PPSK Network Client Connectivity With Bulk Users Group
 
     Positive Internet Connectivity Check
 
-    [Teardown]
-    Test Case Teardown      ${BULK_CLOUD_NW_POLICY}     ${BULK_CLOUD_NW_SSID}   ${BULK_CLOUD_USER_GROUP}
+    [Teardown]      run keyword     Test Case Teardown      ${BULK_CLOUD_NW_POLICY}     ${BULK_CLOUD_NW_SSID}   ${BULK_CLOUD_USER_GROUP}
 
 TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
     [Documentation]     Check client connectivity to Wi-Fi PPSK network with user group and local password DB
@@ -281,5 +283,4 @@ TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
 
     Positive Internet Connectivity Check
 
-    [Teardown]
-    Test Case Teardown      ${BULK_LOCAL_NW_POLICY}     ${BULK_LOCAL_NW_SSID}   ${BULK_LOCAL_USER_GROUP}
+    [Teardown]      run keyword     Test Case Teardown      ${BULK_LOCAL_NW_POLICY}     ${BULK_LOCAL_NW_SSID}   ${BULK_LOCAL_USER_GROUP}
