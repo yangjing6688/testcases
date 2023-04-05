@@ -327,8 +327,7 @@ TCCS-11614: Social login with facebook
     ${SHOW_STATION}=        Send            ${MAIN_DEVICE_SPAWN}         ${cmd_show_station}
     Should Not Contain      ${SHOW_STATION}     ${mu1.wifi_mac}
 
-    [Teardown]
-    Run Keywords    Close CP Browser
+    [Teardown]      run keyword     Close CP Browser
 
 TCCS-14366: Social login with Linkedin
     [Documentation]   CWP Social login with Linkedin
@@ -372,10 +371,6 @@ TCCS-14366: Social login with Linkedin
     Log to Console      Sleep for ${auth_logs_duration_wait} seconds
     Sleep               ${auth_logs_duration_wait}
 
-    ${CURRENT_DATE_TIME}=           Get Current Date Time
-    Log To Console      Current date and time: ${CURRENT_DATE_TIME}
-    Log to Console      Sleep for ${auth_logs_duration_wait} seconds
-    Sleep               ${auth_logs_duration_wait}
     ${AUTH_LOGS}=                   Get Authentication Logs Details     ${CURRENT_DATE_TIME}        ${CWP_MAIL_ID}
     IF  ${AUTH_LOGS} == &{EMPTY}
         ${TIME_STAMP_FLAG2}=         Set Variable    True
@@ -432,6 +427,5 @@ TCCS-14366: Social login with Linkedin
     ${SHOW_STATION}=        Send            ${MAIN_DEVICE_SPAWN}         ${cmd_show_station}
     Should Not Contain      ${SHOW_STATION}     ${mu1.wifi_mac}
 
-    [Teardown]
-    Run Keywords    Close CP Browser
+    [Teardown]      run keyword     Close CP Browser
     
