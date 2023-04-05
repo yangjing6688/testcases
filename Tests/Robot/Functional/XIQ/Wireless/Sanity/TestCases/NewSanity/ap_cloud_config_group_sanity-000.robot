@@ -109,17 +109,17 @@ Pre Condition
     ${DEVICE_STATUS}=       Get Device Status           device_mac=${device1.mac}
     Should Contain Any              ${DEVICE_STATUS}    green   config audit mismatch
 
-    Upgrade the device to latest/supported version to avoid config push issues.
+    #Upgrade the device to latest/supported version to avoid config push issues.
     ${LATEST_VERSION}=      Upgrade Device      ${device1}
     Should Not be Empty     ${LATEST_VERSION}
 
     Sleep                   ${ap_reboot_wait}
 
-    ${CONNECTED_STATUS}=    Wait Until Device Online                ${device1.serial}       retry_count=15
-    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
-
     ${REBOOT_STATUS}=    Wait Until Device Reboots               ${device1.serial}
     Should Be Equal as Integers             ${REBOOT_STATUS}          1
+
+    ${CONNECTED_STATUS}=    Wait Until Device Online                ${device1.serial}       retry_count=15
+    Should Be Equal as Integers             ${CONNECTED_STATUS}          1
 
     set suite variable    ${device}
 
