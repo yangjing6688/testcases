@@ -1,7 +1,7 @@
 lab:                        "CHENNAI"
 
 netelem1:
-  name:                     "EXOS"
+  name:                     "dut1"
   hostname:                 ""
   serial:                   "JA082142G-00079"
   mac:                      "E444E5828400"
@@ -16,7 +16,7 @@ netelem1:
   mgmt_vlan:                "mgmt"
   mgmt_vr:                  "vr-mgmt"
   platform:                 "5420"
-  model:                    "5420F-24S-4XE-SwitchEngine"
+  model:                    "SwitchEngine5420F_24S_4XE"
   make:                     "exos"
   auth_mode:                "basic"
   location:                 "auto_location_01, Santa Clara, building_02, floor_04"
