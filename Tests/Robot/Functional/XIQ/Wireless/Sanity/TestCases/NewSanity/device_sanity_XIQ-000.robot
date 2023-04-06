@@ -150,7 +150,11 @@ TCCS-13684: Advanced Onboard Device on XIQ
     ${ONBOARD_RESULT}=      Advance Onboard Device         ${device1.serial}    device_make=${device1.make}   dev_location=${LOCATION}  device_mac=${device1.mac}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
-    configure device to connect to cloud    ${device1.cli_type}    ${generic_capwap_url}  ${MAIN_DEVICE_SPAWN}
+    ${CONF_RESULT}=         Configure Device To Connect To Cloud            ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${CONF_RESULT}          1
+
+    ${WAIT_CONF_RESULT}=    Wait For Configure Device To Connect To Cloud   ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${WAIT_CONF_RESULT}     1
 
     ${ONLINE_STATUS_RESULT}=    wait until device online     ${device1.serial}
     Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1
@@ -173,7 +177,11 @@ TCCS-13685: Simple Onboard Device on XIQ
     ${ONBOARD_RESULT}=          onboard device quick      ${device1}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
-    configure device to connect to cloud    ${device1.cli_type}   ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    ${CONF_RESULT}=         Configure Device To Connect To Cloud            ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${CONF_RESULT}          1
+
+    ${WAIT_CONF_RESULT}=    Wait For Configure Device To Connect To Cloud   ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${WAIT_CONF_RESULT}     1
 
     ${ONLINE_STATUS_RESULT}=    wait until device online     ${device1.serial}
     Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1
