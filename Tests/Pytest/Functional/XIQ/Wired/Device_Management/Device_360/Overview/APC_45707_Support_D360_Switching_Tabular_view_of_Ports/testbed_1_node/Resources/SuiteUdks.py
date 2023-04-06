@@ -296,9 +296,7 @@ class SuiteUdk:
         rows = xiq.xflowscommonDevices.devices_web_elements.get_port_details_info()
         matchers = ['Type', 'LACP Status', 'Port Mode', 'Port Status',
                     'Transmission Mode', 'Access VLAN', 'Tagged VLAN(s)', 'LLDP Neighbor', 'Traffic Received',
-                    'Traffic Sent', 'Unicast Pkts Received', 'Unicast Pkts Sent', 'Multicast Pkts Received',
-                    'Multicast Pkts Sent', 'Broadcast Pkts Received', 'Broadcast Pkts Sent', 'Port Errors',
-                    'STP Port State', 'Port Speed']
+                    'Traffic Sent', 'Port Errors', 'STP Port State', 'Port Speed']
         if rows:
             xiq.xflowscommonDevices.utils.print_debug(f"Searching {len(rows)} rows")
             for row in rows:
@@ -1112,13 +1110,7 @@ class SuiteUdk:
         time.sleep(15)
         self.setup_cls_obj.xiq.xflowscommonDeviceCommon.go_to_device360_window(device_mac=dut.mac)
         time.sleep(5)
-
-        if not self.dev360.get_device360_configure_button().is_selected():
-            self.auto_actions.click(self.dev360.get_device360_configure_button())
-        time.sleep(4)
-
-        self.auto_actions.click(self.dev360.get_device360_configure_port_configuration_button())
-        time.sleep(20)
+        self.setup_cls_obj.xiq.xflowscommonNavigator.navigate_to_port_configuration_d360()
 
     def get_no_of_ports(self, onboarded_switch):
         try:
