@@ -54,6 +54,15 @@ class TCXM9331Tests(xiqBase):
             self.devCmd.send_cmd(onboarded_switch.name, 'configure terminal',
                                     max_wait=10,
                                     interval=2)
+
+            self.devCmd.send_cmd(onboarded_switch.name, 'save config file config9331.cfg',
+                                    max_wait=10,
+                                    interval=2)
+
+            self.devCmd.send_cmd(onboarded_switch.name, 'boot config choice primary config-file config9331.cfg',
+                                    max_wait=10,
+                                    interval=2)
+
             output = self.devCmd.send_cmd(onboarded_switch.name, 'show interfaces GigabitEthernet channelize',
                                             max_wait=10,
                                             interval=2)[0].return_text
@@ -252,6 +261,15 @@ class TCXM9331Tests(xiqBase):
             self.devCmd.send_cmd(onboarded_switch.name, 'remove ' + config_file,
                                  confirmation_phrases='Are you sure (y/n) ?',
                                  confirmation_args='y')
+
+            self.devCmd.send_cmd(onboarded_switch.name, 'configure terminal',
+                                    max_wait=10,
+                                    interval=2)
+
+            self.devCmd.send_cmd(onboarded_switch.name, 'boot config choice primary config-file config.cfg',
+                                    max_wait=10,
+                                    interval=2)
+
             self.devCmd.send_cmd(onboarded_switch.name, 'reset -y',
                                  max_wait=10,
                                  interval=2)
