@@ -5,6 +5,7 @@
 #----------------------------------------------------------------------
 #
 # Author        : John Borges
+# Modified By   : Ramkumar Vellasamy
 # Description   : Test Suite for testing the device utilities menu
 # Topology      :
 # 1 AP(Any AP), 1 Switch(Any non EXOS/VOSS Switch) and 1 Router(Any Router)
@@ -16,6 +17,9 @@ Library          common/TestFlow.py
 Library          common/Cli.py
 Library          xiq/flows/common/DeviceCommon.py
 Library          xiq/flows/manage/DevicesUtilities.py
+Library          xiq/flows/manage/Devices.py
+Library          ExtremeAutomation/Imports/CommonObjectUtils.py
+Library          ExtremeAutomation/Keywords/UserDefinedKeywords/NetworkElements/SetupTeardown/SetupTeardownUdks.py
 
 Resource         ../../ManageDevices/Resources/AllResources.robot
 
@@ -23,7 +27,6 @@ Force Tags       testbed_3_node
 
 Suite Setup      Log Into XIQ and Set Up Test
 Suite Teardown   Tear Down Test and Close Session
-
 
 *** Variables ***
 ${XIQ_URL}            ${xiq.test_url}
@@ -33,35 +36,8 @@ ${XIQ_CAPWAP_URL}     ${xiq.capwap_url}
 ${IQAGENT}            ${xiq.sw_connection_host}
 
 ${AP_SERIAL}          ${ap1.serial}
-${AP_MAKE}            ${ap1.make}
-${AP_CLI_TYPE}        ${ap1.cli_type}
-${AP_LOCATION}        ${ap1.location}
-${AP_CONSOLE_IP}      ${ap1.ip}
-${AP_CONSOLE_PORT}    ${ap1.port}
-${AP_USERNAME}        ${ap1.username}
-${AP_PASSWORD}        ${ap1.password}
-${AP_PLATFORM}        ${ap1.platform}
-
 ${SW_SERIAL}          ${aerohive_sw1.serial}
-${SW_MAKE}            ${aerohive_sw1.make}
-${SW_CLI_TYPE}        ${aerohive_sw1.cli_type}
-${SW_LOCATION}        ${aerohive_sw1.location}
-${SW_CONSOLE_IP}      ${aerohive_sw1.ip}
-${SW_CONSOLE_PORT}    ${aerohive_sw1.port}
-${SW_USERNAME}        ${aerohive_sw1.username}
-${SW_PASSWORD}        ${aerohive_sw1.password}
-${SW_PLATFORM}        ${aerohive_sw1.platform}
-
 ${RT_SERIAL}          ${router1.serial}
-${RT_MAKE}            ${router1.make}
-${RT_CLI_TYPE}        ${router1.cli_type}
-${RT_LOCATION}        ${router1.location}
-${RT_CONSOLE_IP}      ${router1.ip}
-${RT_CONSOLE_PORT}    ${router1.port}
-${RT_USERNAME}        ${router1.username}
-${RT_PASSWORD}        ${router1.password}
-${RT_PLATFORM}        ${router1.platform}
-
 
 *** Test Cases ***
 TCXM-16933: Confirm Client Information Tool Is Available Only For A Single AP or Router
@@ -76,19 +52,19 @@ TCXM-16933: Confirm Client Information Tool Is Available Only For A Single AP or
     Should Be Equal As Integers  ${nav_result}  1
     ${verify_result}=   Wait Until Device Tool Client Information Is Open
     Should Be Equal As Integers  ${verify_result}  1
-    ${close_result}=    Close Device Tool Client Information
+    ${close_result}=    Close Device Tool Client Information  ignore_failure=True
     Should Be Equal As Integers  ${close_result}  1
 
     # Client Information Tool is NOT available for multiple devices
     Select Devices      ${AP_SERIAL}   ${RT_SERIAL}
-    ${nav_result}=      Navigate To Device Client Information
+    ${nav_result}=      Navigate To Device Client Information  expect_failure=True
     Should Be Equal As Integers  ${nav_result}  -1
 
     Refresh Devices Page
 
     # Client Information Tool is NOT available for a single switch
     Select Device       ${SW_SERIAL}
-    ${nav_result}=      Navigate To Device Client Information
+    ${nav_result}=      Navigate To Device Client Information  expect_failure=True
     Should Be Equal As Integers  ${nav_result}  -1
 
     Refresh Devices Page
@@ -156,14 +132,14 @@ TCXM-16935: Confirm Locate Device Tool Is Available Only For A Single AP or Rout
 
     # Locate Device Tool is NOT available for multiple devices
     Select Devices      ${AP_SERIAL}   ${RT_SERIAL}
-    ${nav_result}=      Navigate To Device Locate Device
+    ${nav_result}=      Navigate To Device Locate Device  expect_failure=True
     Should Be Equal As Integers  ${nav_result}  -1
 
     Refresh Devices Page
 
     # Locate Device Tool is NOT available for a single switch
     Select Device       ${SW_SERIAL}
-    ${nav_result}=      Navigate To Device Locate Device
+    ${nav_result}=      Navigate To Device Locate Device  expect_failure=True
     Should Be Equal As Integers  ${nav_result}  -1
 
     Refresh Devices Page
@@ -198,14 +174,14 @@ TCXM-16936: Confirm L2 Neighbor Info Tool Is Available Only For A Single AP or R
 
     # L2 Neighbor Info Tool is NOT available for multiple devices
     Select Devices      ${AP_SERIAL}   ${RT_SERIAL}
-    ${nav_result}=      Navigate To Device Layer Neighbor Info
+    ${nav_result}=      Navigate To Device Layer Neighbor Info  expect_failure=True
     Should Be Equal As Integers  ${nav_result}  -1
 
     Refresh Devices Page
 
     # L2 Neighbor Info Tool is NOT available for a single switch
     Select Device       ${SW_SERIAL}
-    ${nav_result}=      Navigate To Device Layer Neighbor Info
+    ${nav_result}=      Navigate To Device Layer Neighbor Info  expect_failure=True
     Should Be Equal As Integers  ${nav_result}  -1
 
     Refresh Devices Page
@@ -267,21 +243,21 @@ TCXM-16937: Confirm Packet Capture Tool Is Available Only For A Single AP
 
     # Packet Capture Tool is NOT available for multiple devices
     Select Devices      ${AP_SERIAL}   ${SW_SERIAL}
-    ${nav_result}=      Navigate To Device Packet Capture
+    ${nav_result}=      Navigate To Device Packet Capture  expect_failure=True
     Should Be Equal As Integers  ${nav_result}  -1
 
     Refresh Devices Page
 
     # Packet Capture Tool is NOT available for single switch
     Select Device       ${SW_SERIAL}
-    ${nav_result}=      Navigate To Device Packet Capture
+    ${nav_result}=      Navigate To Device Packet Capture  expect_failure=True
     Should Be Equal As Integers  ${nav_result}  -1
 
     Refresh Devices Page
 
     # Packet Capture Tool is NOT available for single router
     Select Device       ${RT_SERIAL}
-    ${nav_result}=      Navigate To Device Packet Capture
+    ${nav_result}=      Navigate To Device Packet Capture  expect_failure=True
     Should Be Equal As Integers  ${nav_result}  -1
 
 TCXM-16931: Confirm Ping Tool Is Available Only For A Single Device
@@ -289,7 +265,6 @@ TCXM-16931: Confirm Ping Tool Is Available Only For A Single Device
     [Tags]              tcxm_16931   development
 
     Refresh Devices Page
-
     # Ping is available for a single AP
     Select Device       ${AP_SERIAL}
     ${nav_result}=      Navigate To Device Ping
@@ -314,7 +289,7 @@ TCXM-16931: Confirm Ping Tool Is Available Only For A Single Device
 
     # Ping is NOT available for multiple devices
     Select Devices      ${AP_SERIAL}   ${RT_SERIAL}
-    ${nav_result}=      Navigate To Device Ping
+    ${nav_result}=      Navigate To Device Ping  expect_failure=True
     Should Be Equal As Integers  ${nav_result}  -1
 
     Refresh Devices Page
@@ -345,62 +320,65 @@ TCXM-16932: Confirm Show Roaming Cache Tool Is Available For A Single AP
 
     # Show Roaming Cache tool is NOT available for multiple devices
     Select Devices      ${AP_SERIAL}   ${SW_SERIAL}
-    ${nav_result}=      Navigate To Device Show Roaming Cache
+    ${nav_result}=      Navigate To Device Show Roaming Cache  expect_failure=True
     Should Be Equal As Integers  ${nav_result}  -1
 
     Refresh Devices Page
 
     # Show Roaming Cache tool is NOT available for single switch
     Select Device       ${SW_SERIAL}
-    ${nav_result}=      Navigate To Device Show Roaming Cache
+    ${nav_result}=      Navigate To Device Show Roaming Cache  expect_failure=True
     Should Be Equal As Integers  ${nav_result}  -1
 
     Refresh Devices Page
 
     # Show Roaming Cache is NOT available for single router
     Select Device       ${RT_SERIAL}
-    ${nav_result}=      Navigate To Device Show Roaming Cache
+    ${nav_result}=      Navigate To Device Show Roaming Cache  expect_failure=True
     Should Be Equal As Integers  ${nav_result}  -1
 
 
 *** Keywords ***
 Log Into XIQ and Set Up Test
     [Documentation]     Logs into XIQ and sets up the elements necessary to complete this test suite
+    ${ap1_spawn}=           Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}  connection_method=${ap1.connection_method}
+    ${router1_spawn}=       Open Spawn          ${router1.ip}   ${router1.port}      ${router1.username}       ${router1.password}        ${router1.cli_type}   connection_method=${router1.connection_method}
+    ${switch1_spawn}=       Open Spawn          ${aerohive_sw1.ip}   ${aerohive_sw1.port}      ${aerohive_sw1.username}       ${aerohive_sw1.password}        ${aerohive_sw1.cli_type}  connection_method=${aerohive_sw1.connection_method}
 
-    Log Into XIQ and Confirm Success  ${XIQ_USER}  ${XIQ_PASSWORD}  ${XIQ_URL}
-    Onboard Test Devices
+     set suite variable    ${ap1_spawn}
+     set suite variable    ${router1_spawn}
+     set suite variable    ${switch1_spawn}
 
-Onboard Test Devices
-    [Documentation]     Onboards the test devices
+     Log Into XIQ and Confirm Success   ${XIQ_USER}   ${XIQ_PASSWORD}   ${XIQ_URL}
 
-    # Configure the IQAgent or Hive Agent on the devices
-    Configure CAPWAP               ${AP_CONSOLE_IP}  ${AP_CONSOLE_PORT}  ${AP_USERNAME}
-    ...                            ${AP_PASSWORD}  ${AP_PLATFORM}  ${XIQ_CAPWAP_URL}
+    ${devices}       Create List        ${ap1}    ${router1}   ${aerohive_sw1}
+    FOR     ${device}   IN    @{devices}
+        ${DELETE_DEVICE_STATUS}=        Delete Device       device_serial=${device}[serial]   ignore_failure=True
+        should be equal as integers     ${DELETE_DEVICE_STATUS}       1
 
-    Configure CAPWAP               ${RT_CONSOLE_IP}  ${RT_CONSOLE_PORT}  ${RT_USERNAME}
-    ...                            ${RT_PASSWORD}  ${RT_PLATFORM}  ${XIQ_CAPWAP_URL}
+        ${ONBOARD_STATUS}               Onboard Device Quick    ${device}
+        should be equal as integers     ${ONBOARD_STATUS}       1
 
-    Configure iqagent for Aerohive Switch  ${SW_CONSOLE_IP}  ${SW_CONSOLE_PORT}  ${SW_USERNAME}
-    ...                                    ${SW_PASSWORD}  ${IQAGENT}
+        ${SEARCH_RESULT}=               Search Device    device_serial=${device}[serial]   ignore_failure=True
+        should be equal as integers     ${SEARCH_RESULT}        1
+    END
 
-    Navigate to Devices and Confirm Success
+    ${CONF_RESULT1}=         Configure Device To Connect To Cloud            ${ap1.cli_type}     ${XIQ_CAPWAP_URL}    ${ap1_spawn}
+    Should Be Equal As Integers     ${CONF_RESULT1}          1
 
-    # Onboard the devices for the test
-    ${dut1_result}=     Search Device Serial   ${AP_SERIAL}
-    Run Keyword If      '${dut1_result}' != '1'  onboard device quick    ${ap1}
-    ${dut2_result}=     Search Device Serial   ${SW_SERIAL}
-    Run Keyword If      '${dut2_result}' != '1'  onboard device quick    ${aerohive_sw1}
-    ${dut3_result}=     Search Device Serial   ${RT_SERIAL}
-    Run Keyword If      '${dut3_result}' != '1'  onboard device quick    ${router1}
+    ${CONF_RESULT2}=         Configure Device To Connect To Cloud            ${aerohive_sw1.cli_type}     ${IQAGENT}   ${switch1_spawn}
+    Should Be Equal As Integers     ${CONF_RESULT2}          1
 
-    # Confirm the devices were onboarded
-    Confirm Device Serial Present  ${AP_SERIAL}
-    Confirm Device Serial Present  ${SW_SERIAL}
-    Confirm Device Serial Present  ${RT_SERIAL}
+    ${CONF_RESULT3}=         Configure Device To Connect To Cloud            ${router1.cli_type}     ${XIQ_CAPWAP_URL}    ${router1_spawn}
+    Should Be Equal As Integers     ${CONF_RESULT3}          1
 
-    Wait Until Device Online  ${AP_SERIAL}
-    Wait Until Device Online  ${RT_SERIAL}
-    Wait Until Device Online  ${SW_SERIAL}
+    FOR     ${device}   IN    @{devices}
+        ${ONLINE_STATUS1}=       Wait Until Device Online    ${device}[serial]
+        Should Be Equal As Integers     ${ONLINE_STATUS1}        1
+
+        ${DEVICE_STATUS1}=       Get Device Status           device_mac=${device}[mac]
+        Should Contain Any       ${DEVICE_STATUS1}           green   config audit mismatch
+    END
 
 Select Device
     [Documentation]     Selects the specified device and confirms the action was successful
@@ -431,30 +409,3 @@ Clean Up Test Device and Confirm Success
     Navigate to Devices and Confirm Success
     Delete Device and Confirm Success  ${serial}
     Confirm Device Serial Not Present  ${serial}
-
-Configure CAPWAP
-    [Documentation]     Configures the CAPWAP client
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}  ${capwap_server}
-
-    ${spawn}=           Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  ${cli_type}
-
-    Send                ${spawn}   capwap client server name ${capwap_server}
-    Send                ${spawn}   capwap client default-server-name ${capwap_server}
-    Send                ${spawn}   capwap client server backup name ${capwap_server}
-    Send                ${spawn}   no capwap client enable
-    Send                ${spawn}   capwap client enable
-    Send                ${spawn}   save config
-
-    Close Spawn         ${spawn}
-
-Configure iqagent for Aerohive Switch
-    [Documentation]     Configures the iqagent for the Aerohive switch
-    [Arguments]         ${ip}  ${port}  ${user}  ${pwd}  ${iqagent}
-
-    ${spawn}=               Open Spawn  ${ip}  ${port}  ${user}  ${pwd}  aerohive-switch
-
-    ${conf_results}=        Send Commands  ${spawn}
-    ...  enable, no hivemanager address, hivemanager address ${iqagent}, application stop hiveagent, application start hiveagent, exit
-    Log To Console          Command results are ${conf_results}
-
-    [Teardown]              Close Spawn  ${spawn}
