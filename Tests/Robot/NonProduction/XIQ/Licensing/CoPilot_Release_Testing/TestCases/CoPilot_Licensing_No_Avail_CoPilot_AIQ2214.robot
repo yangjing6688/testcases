@@ -207,7 +207,7 @@ Test 9: Verify CoPilot Licenses Warning Message Is Displayed
 
     Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
-    Get CoPilot Licenses
+    Navigate To Copilot Menu
     Navigate to Devices and Confirm Success
     Verify CoPilot Licenses Message Displayed
 
@@ -234,7 +234,7 @@ Test 12: Verify CoPilot Licenses Warning Message Is Not Displayed
 
     Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
-    Get CoPilot Licenses
+    Navigate To Copilot Menu
     Navigate to Devices and Confirm Success
     Verify CoPilot Licenses Message Not Displayed
 
