@@ -3591,7 +3591,7 @@ def update_devices(
                 ]
             ):
 
-                if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac) != 1:
+                if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac, IRV=False) != 1:
                     
                     screen.save_screen_shot()
                     logger.warning(
@@ -3604,7 +3604,7 @@ def update_devices(
                     
                     logger.info(f"Successfully initialised a delta configuration update for this switch: '{dut.mac}'.")
                     
-                    if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac) != 1:
+                    if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac, IRV=False) != 1:
                         screen.save_screen_shot()
                         logger.fail(f"It looks like both type of device update failed for this switch: '{dut.mac}'.")
 
