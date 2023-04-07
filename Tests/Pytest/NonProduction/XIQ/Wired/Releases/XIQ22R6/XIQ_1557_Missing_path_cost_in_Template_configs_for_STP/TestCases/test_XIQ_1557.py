@@ -50,7 +50,7 @@ class XIQ1557Tests:
         logger.info(
             f"Go to the port configuration of '{node_template_name}' template")
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(
-            node_policy_name, node_template_name)
+            node_policy_name, node_template_name, node.cli_type)
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.click_on_stp_tab()
@@ -102,7 +102,7 @@ class XIQ1557Tests:
         logger.info(
             f"Go to the port configuration of '{node_template_name}' template")
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(
-            node_policy_name, node_template_name)
+            node_policy_name, node_template_name, node.cli_type)
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
         for slot_index in range(1, (len(node.stack) if node.platform.upper() == "STACK" else 1) + 1):
@@ -112,27 +112,29 @@ class XIQ1557Tests:
             
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.click_on_stp_tab()
             rows = xiq_library_at_class_level.xflowsconfigureSwitchTemplate.get_stp_port_configuration_rows()
-
+            assert rows, "Failed to get the STP port configuration rows"
+            
             results = defaultdict(lambda: {"msg": "", "status": False})
             
             for row in rows:
                 
-                port_match = re.search(r"^(.*)\n", row.text)
-                assert port_match, f"Failed to get the port from '{row.text}'"
-                port = port_match.group(1)
-                
-                path_cost_element, _ = utils.wait_till(
-                    func=lambda:
-                    xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_web_elements.get_sw_template_path_cost_row(row),
-                    exp_func_resp=True,
-                    delay=1
-                )
-                
-                path_cost_value = path_cost_element.get_attribute("value")
-                results[port]["status"] = path_cost_value == ""
-                results[port]["msg"] = f"Expected the path cost value to be '' but found '{path_cost_value}'" \
-                                    f" for row with port='{port}'" if path_cost_value != "" else \
-                    f"Successfully verified the default value of path cost for row with port={port}"
+                if text := row.text:
+                    port_match = re.search(r"^(.*)\n", text)
+                    assert port_match, f"Failed to get the port from '{text}'"
+                    port = port_match.group(1)
+                    
+                    path_cost_element, _ = utils.wait_till(
+                        func=lambda:
+                        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_web_elements.get_sw_template_path_cost_row(row),
+                        exp_func_resp=True,
+                        delay=1
+                    )
+                    
+                    path_cost_value = path_cost_element.get_attribute("value")
+                    results[port]["status"] = path_cost_value == ""
+                    results[port]["msg"] = f"Expected the path cost value to be '' but found '{path_cost_value}'" \
+                                        f" for row with port='{port}'" if path_cost_value != "" else \
+                        f"Successfully verified the default value of path cost for row with port={port}"
             
             for port, data in {port: data for port, data in results.items() if data["status"] is True}.items():
                 logger.info(data["msg"])
@@ -174,7 +176,7 @@ class TestbedOneNodeXIQ1557Tests:
         logger.info(f"Port Type Configuration: {port_config}")
 
         logger.info(f"Go to the port configuration of '{node_1_template_name}' template")
-        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(node_1_policy_name, node_1_template_name)
+        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(node_1_policy_name, node_1_template_name, node_1.cli_type)
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.click_on_port_details_tab()
 
@@ -256,7 +258,8 @@ class TestbedOneNodeXIQ1557Tests:
             verify_delta_cli=test_data.get("verify_delta_cli", False),
             stp_mode=test_data.get("stp_mode", "mstp"),
             revert_mode=test_data.get("revert_mode", "revert_template"),
-            revert_configuration=test_data.get("revert_configuration", True)
+            revert_configuration=test_data.get("revert_configuration", True),
+            cli_type=node_1.cli_type
         )
 
     @pytest.mark.tcxm_22147
@@ -273,7 +276,7 @@ class TestbedOneNodeXIQ1557Tests:
         ports = xiq_library_at_class_level.xflowsmanageDevice360.get_one_port_from_each_asic_flow(dut=node_1, order=4)
 
         logger.info(f"Go to the port configuration of '{node_1_template_name}' template")
-        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(node_1_policy_name, node_1_template_name)
+        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(node_1_policy_name, node_1_template_name, node_1.cli_type)
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.click_on_port_details_tab()
         
@@ -332,7 +335,7 @@ class TestbedOneNodeXIQ1557Tests:
         logger.info(f"Port Type Configuration: {port_config}")
 
         logger.info(f"Go to the port configuration of '{node_1_template_name}' template")
-        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(node_1_policy_name, node_1_template_name)
+        xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(node_1_policy_name, node_1_template_name, node_1.cli_type)
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.click_on_port_details_tab()
 
@@ -384,7 +387,7 @@ class TestbedOneNodeXIQ1557Tests:
             
             logger.info(f"Go to the port configuration of '{node_1_template_name}' template")
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(
-                node_1_policy_name, node_1_template_name)
+                node_1_policy_name, node_1_template_name, node_1.cli_type)
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
                     
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.revert_port_configuration_template_level(
@@ -399,12 +402,12 @@ class TestbedOneNodeXIQ1557Tests:
     @pytest.mark.p1
     def test_22151_verify_not_valid_path_cost_values_in_honeycomb(
             self, logger, xiq_library_at_class_level, node_1, auto_actions,
-            node_1_policy_name, node_1_template_name, make_sure_windows_are_closed):
+            node_1_policy_name, node_1_template_name, make_sure_windows_are_closed, utils):
         """
         TCXM-22151 - Verify you cannot set a negative value, 0, 200000001 or a character for Path Cost for the second port on each ASIC.
         Author: vstefan
         """
-        wrong_values = [-1, 200000001, "#", "b"]
+        wrong_values = ["-1", "200000001", "#", "b"]
         ports = xiq_library_at_class_level.xflowsmanageDevice360.get_one_port_from_each_asic_flow(
             dut=node_1, order=2)
         port_type_name = f"port_type_{''.join(random.sample(list(string.ascii_letters) + list(string.digits), k=6))}"
@@ -412,7 +415,7 @@ class TestbedOneNodeXIQ1557Tests:
         logger.info(
             f"Go to the port configuration of '{node_1_template_name}' template")
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(
-            node_1_policy_name, node_1_template_name)
+            node_1_policy_name, node_1_template_name, node_1.cli_type)
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.click_on_port_details_tab()
 
@@ -435,6 +438,13 @@ class TestbedOneNodeXIQ1557Tests:
                     logger.info(
                         f"Try to set '{value}' as path_cost for port '{port}'")
                     xiq_library_at_class_level.xflowsmanageDevice360.set_path_cost_in_honeycomb(value)
+                    
+                    utils.wait_till(timeout=5)
+                    path_cost_value = xiq_library_at_class_level.xflowsmanageDevice360.get_select_element_port_type("path cost").get_attribute("value")
+                    if path_cost_value != value:
+                        logger.info(f"Path cost input element did not update to the wrong given value '{value}'.")
+                        continue
+                    
                     xiq_library_at_class_level.xflowsmanageDevice360.go_to_next_editor_tab()
                     
                     try:
@@ -447,7 +457,9 @@ class TestbedOneNodeXIQ1557Tests:
                         logger.info(msg)
                         logger.info(repr(err))
                         pytest.fail(msg)
-                    
+                    else:
+                        logger.info(f"Path cost input element did not update to the wrong given value '{value}'.")
+                        
                 logger.info(
                     f"Successfully verified that these values cannot be set"
                     f" (port '{port}'): '{wrong_values}'"
@@ -481,7 +493,8 @@ class TestbedOneNodeXIQ1557Tests:
                 template_switch=node_1_template_name,
                 network_policy=node_1_policy_name,
                 revert_configuration=False,
-                ports=ports
+                ports=ports,
+                cli_type=node_1.cli_type
             )
 
             with test_bed.enter_switch_cli(node_1):
@@ -499,7 +512,7 @@ class TestbedOneNodeXIQ1557Tests:
             for port in ports:
                 
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.verify_path_cost_in_port_configuration_stp_tab(
-                    node_1_template_name, node_1_policy_name, port, path_cost)
+                    node_1.cli_type, node_1_template_name, node_1_policy_name, port, path_cost)
                 cli.verify_path_cost_on_device(
                     node_1,
                     port=port, 
@@ -515,7 +528,7 @@ class TestbedOneNodeXIQ1557Tests:
                 )
                 
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(
-                    node_1_policy_name, node_1_template_name)
+                    node_1_policy_name, node_1_template_name, node_1.cli_type)
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.click_on_port_details_tab()
                         
@@ -557,7 +570,8 @@ class TestbedStackXIQ1557Tests:
             port_order_in_asic=3,
             template_switch=node_stack_template_name,
             network_policy=node_stack_policy_name,
-            slot="2"
+            slot="2",
+            cli_type=node_stack.cli_type
         )
 
     @pytest.mark.tcxm_22164
@@ -576,7 +590,8 @@ class TestbedStackXIQ1557Tests:
             port_order_in_asic=20,
             template_switch=node_stack_template_name,
             network_policy=node_stack_policy_name,
-            slot="1"
+            slot="1",
+            cli_type=node_stack.cli_type
         )
 
         xiq_library_at_class_level.xflowsmanageXiqVerifications.verify_path_cost_at_template_level(
@@ -585,7 +600,8 @@ class TestbedStackXIQ1557Tests:
             port_order_in_asic=20,
             template_switch=node_stack_template_name,
             network_policy=node_stack_policy_name,
-            slot="2"
+            slot="2",
+            cli_type=node_stack.cli_type
         )
 
     @pytest.mark.tcxm_22167
@@ -612,7 +628,7 @@ class TestbedStackXIQ1557Tests:
                 logger.info(f"Port Type Configuration: {port_config}")
 
                 logger.info(f"Go to the port configuration of '{node_stack_template_name}' template")
-                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(node_stack_policy_name, node_stack_template_name)
+                xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(node_stack_policy_name, node_stack_template_name, node_stack.cli_type)
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
                 required_slot = node_stack_template_name + "-" + slot
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.navigate_to_slot_template(required_slot)
@@ -664,7 +680,7 @@ class TestbedStackXIQ1557Tests:
 
             logger.info(f"Go to the port configuration of '{node_stack_template_name}' template")
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(
-                node_stack_policy_name, node_stack_template_name)
+                node_stack_policy_name, node_stack_template_name, node_stack.cli_type)
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.revert_port_configuration_template_level("Access Port")
@@ -697,7 +713,8 @@ class TestbedStackXIQ1557Tests:
                 network_policy=node_stack_policy_name,
                 revert_configuration=False,
                 ports=ports_slot1,
-                slot="1"
+                slot="1",
+                cli_type=node_stack.cli_type
             )
 
             xiq_library_at_class_level.xflowsmanageXiqVerifications.verify_path_cost_at_template_level(
@@ -707,7 +724,8 @@ class TestbedStackXIQ1557Tests:
                 network_policy=node_stack_policy_name,
                 revert_configuration=False,
                 ports=ports_slot2,
-                slot="2"
+                slot="2",
+                cli_type=node_stack.cli_type
             )
 
             reboot_utils = NetworkElementResetDeviceUtilsKeywords()
@@ -726,7 +744,7 @@ class TestbedStackXIQ1557Tests:
 
             for port in ports_slot1:
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.verify_path_cost_in_port_configuration_stp_tab(
-                    node_stack_template_name, node_stack_policy_name, port, path_cost, slot="1")
+                    node_stack.cli_type, node_stack_template_name, node_stack_policy_name, port, path_cost, slot="1")
                 cli.verify_path_cost_on_device(
                     node_stack,
                     port=port,
@@ -735,7 +753,7 @@ class TestbedStackXIQ1557Tests:
 
             for port in ports_slot2:
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.verify_path_cost_in_port_configuration_stp_tab(
-                    node_stack_template_name, node_stack_policy_name, port, path_cost, slot="2")
+                    node_stack.cli_type, node_stack_template_name, node_stack_policy_name, port, path_cost, slot="2")
                 cli.verify_path_cost_on_device(
                     node_stack,
                     port=port,
@@ -751,7 +769,7 @@ class TestbedStackXIQ1557Tests:
                 )
 
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(
-                    node_stack_policy_name, node_stack_template_name)
+                    node_stack_policy_name, node_stack_template_name, node_stack.cli_type)
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.click_on_port_details_tab()
 
@@ -775,12 +793,12 @@ class TestbedStackXIQ1557Tests:
     @pytest.mark.p2
     def test_22190_verify_not_valid_path_cost_values_in_honeycomb(
             self, test_data, logger, node_stack_policy_name, node_stack_template_name,
-            node_stack, xiq_library_at_class_level, make_sure_windows_are_closed, auto_actions):
+            node_stack, xiq_library_at_class_level, make_sure_windows_are_closed, auto_actions, utils):
         """
         TCXM-22190 - Verify you cannot set a negative value, 0, 200000001 or a character for Path Cost for the 3rd port on each ASIC on both stack slots.
         Author: rvisterineanu
         """
-        wrong_values = [-1, 200000001, "#", "b"]
+        wrong_values = ["-1", "200000001", "#", "b"]
 
         for slot in range(1, len(node_stack.stack) + 1):
             slot = str(slot)
@@ -790,7 +808,7 @@ class TestbedStackXIQ1557Tests:
             logger.info(
                 f"Go to the port configuration of '{node_stack_template_name}' template")
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(
-                node_stack_policy_name, node_stack_template_name)
+                node_stack_policy_name, node_stack_template_name, node_stack.cli_type)
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
             required_slot = node_stack_template_name + "-" + slot
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.navigate_to_slot_template(required_slot)
@@ -811,15 +829,22 @@ class TestbedStackXIQ1557Tests:
                     xiq_library_at_class_level.xflowsmanageDevice360.go_to_stp_settings_tab_in_honeycomb()
 
                     for value in wrong_values:
-
+                        
                         logger.info(
                             f"Try to set '{value}' as path_cost for port '{port}'")
                         xiq_library_at_class_level.xflowsmanageDevice360.set_path_cost_in_honeycomb(value)
+                        
+                        utils.wait_till(timeout=5)
+                        path_cost_value = xiq_library_at_class_level.xflowsmanageDevice360.get_select_element_port_type("path cost").get_attribute("value")
+                        if path_cost_value != value:
+                            logger.info(f"Path cost input element did not update to the wrong given value '{value}'.")
+                            continue
+                        
                         xiq_library_at_class_level.xflowsmanageDevice360.go_to_next_editor_tab()
-
+                        
                         try:
                             xiq_library_at_class_level.xflowsmanageDevice360.verify_port_type_editor_still_in_stp_tab()
-
+                        
                         except AssertionError as err:
                             msg = f"Failed! Expected the honeycomb editor to " \
                                 f"still be in the STP tab after " \
@@ -827,7 +852,9 @@ class TestbedStackXIQ1557Tests:
                             logger.info(msg)
                             logger.info(repr(err))
                             pytest.fail(msg)
-
+                        else:
+                            logger.info(f"Path cost input element did not update to the wrong given value '{value}'.")
+                        
                     logger.info(
                         f"Successfully verified that these values cannot be set"
                         f" (port '{port}'): '{wrong_values}'"
