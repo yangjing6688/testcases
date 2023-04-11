@@ -292,11 +292,16 @@ class SuiteUdk:
         except Exception as e:
             return False
 
-    def list_port_element(self, xiq, port_no):
+    def list_port_element(self, xiq, port_no, dut):
         rows = xiq.xflowscommonDevices.devices_web_elements.get_port_details_info()
-        matchers = ['Type', 'LACP Status', 'Port Mode', 'Port Status',
-                    'Transmission Mode', 'Access VLAN', 'Tagged VLAN(s)', 'LLDP Neighbor', 'Traffic Received',
-                    'Traffic Sent', 'Port Errors', 'STP Port State', 'Port Speed']
+        if dut.cli_type.upper() == "VOSS":
+            matchers = ['Type', 'LACP Status', 'Port Mode', 'Port Status',
+                        'Transmission Mode', 'Access VLAN', 'Tagged VLAN(s)', 'LLDP Neighbor', 'Traffic Received',
+                        'Traffic Sent', 'Port Errors', 'STP Port State', 'Port Speed']
+        elif dut.cli_type.upper() == "EXOS":
+            matchers = ['Type', 'Link Aggregation Status', 'Port Mode', 'Port Status',
+                        'Transmission Mode', 'Access VLAN', 'Tagged VLAN(s)', 'LLDP Neighbor', 'Traffic Received',
+                        'Traffic Sent', 'Port Errors', 'STP Port State', 'Port Speed']
         if rows:
             xiq.xflowscommonDevices.utils.print_debug(f"Searching {len(rows)} rows")
             for row in rows:
