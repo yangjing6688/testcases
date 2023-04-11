@@ -46,7 +46,7 @@ class TCXM9322Tests(xiqBase):
                                 break
 
                             self.xiq.xflowsmanageDevice360.device360_left_click_on_port_icon(i)
-                            port_no = self.suite_udk.list_port_element(self.xiq, i)
+                            port_no = self.suite_udk.list_port_element(self.xiq, i, onboarded_switch)
                             assert port_no == 1, 'Port details missing'
                         else:
                             print(f'Port {i} is not displayed on the graphical representation of the DUT!')
