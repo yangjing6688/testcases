@@ -106,8 +106,8 @@ Pre Condition
     ${MANAGED_STATUS}=      Wait Until Device Managed   ${device1.serial}
     Should Be Equal As Integers     ${MANAGED_STATUS}       1
 
-    ${DEVICE_STATUS}=       Get Device Status           device_mac=${device1.mac}
-    Should Contain Any              ${DEVICE_STATUS}    green   config audit mismatch
+    ${DEVICE_STATUS_RESULT}=       Get Device Status           device_mac=${device1.mac}
+    Should contain any                  ${DEVICE_STATUS_RESULT}    green     config audit mismatch
 
     #Upgrade the device to latest/supported version to avoid config push issues.
     ${LATEST_VERSION}=      Upgrade Device      ${device1}

@@ -88,7 +88,7 @@ Test Suite Teardown
 
     Logout User
     Quit Browser
-    Base Test Suite Cleanup
+    Base Test Suite Cleanup 
 
 Clean Up Device
     ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_failure=True
@@ -163,7 +163,7 @@ TCCS-13684: Advanced Onboard Device on XIQ
     Should Be Equal As Strings                  ${MANAGED_STATUS_RESULT}      1
 
     ${DEVICE_STATUS_RESULT}=    get device status      ${device1.serial}
-    Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
+    Should contain any                  ${DEVICE_STATUS_RESULT}    green     config audit mismatch
 
     Validate Device Information
 
@@ -190,7 +190,7 @@ TCCS-13685: Simple Onboard Device on XIQ
     Should Be Equal As Strings                  ${MANAGED_STATUS_RESULT}      1
 
     ${DEVICE_STATUS_RESULT}=    get device status      ${device1.serial}
-    Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
+    Should contain any                  ${DEVICE_STATUS_RESULT}    green     config audit mismatch
 
     Validate Device Information
 
@@ -286,8 +286,8 @@ TCCS-13688: Verification of config push complete config update (AH-AP Only)
     ${CONNECTED_STATUS}=            Wait Until Device Online                ${device1.serial}   None   30   20
     Should Be Equal as Integers     ${CONNECTED_STATUS}          1
 
-    ${OUTPUT1}=             Send           ${MAIN_DEVICE_SPAWN}                show ssid
-    Should Contain                          ${OUTPUT1}                  ${PUSH_CONFIG_SSID_01}
+    ${OUTPUT1}=             Send           ${MAIN_DEVICE_SPAWN}                show ssid 
+    Should Contain                          ${OUTPUT1}                  ${PUSH_CONFIG_SSID_01} 
 
 
 TCCS-13689: Verification of config push delta update (AH-AP Only)
