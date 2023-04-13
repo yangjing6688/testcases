@@ -190,7 +190,7 @@ class xiqTests():
                 for a_serial in cls.tb.dut1_serial.split(","):
                     if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial, ignore_failure=True) == 1:
                         print(f'Found device using serial-number {a_serial}')
-                        cls.xiq.xflowscommonDevices.delete_device(a_serial)
+                        cls.xiq.xflowscommonDevices.delete_device(device_serial=a_serial)
                     else:
                         print(f'Did not find device with mac-address {cls.tb.dut1.mac} or serial number(s) {cls.tb.dut1_serial}')
 
@@ -215,7 +215,7 @@ class xiqTests():
             for a_serial in cls.tb.dut1_serial.split(","):
                 if cls.xiq.xflowscommonDevices.search_device(device_serial=a_serial, ignore_failure=True) == 1:
                     print(f'Found device using serial-number {a_serial}')
-                    cls.xiq.xflowscommonDevices.delete_device(a_serial)
+                    cls.xiq.xflowscommonDevices.delete_device(device_serial=a_serial)
                 else:
                     print(f'Did not find device with mac-address {cls.tb.dut1.mac} or serial number(s) {cls.tb.dut1_serial}')
         cls.screen.save_screen_shot()

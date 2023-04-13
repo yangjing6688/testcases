@@ -214,7 +214,7 @@ Test 10: Verify Fourth Device Not Onboarded and Not Present In Devices panel
 
     Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
-    ${result_search}=    Search Device          ${DUT4_SERIAL}      expect_error=True
+    ${result_search}=    Search Device          device_serial=${DUT4_SERIAL}      expect_error=True
     Should Be Equal As Integers                 ${result_search}     -1
 
 Test 11: Delete All Devices and Verify Success

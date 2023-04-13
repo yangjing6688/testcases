@@ -306,9 +306,9 @@ Delete Test Device and Confirm Success
 
 Delete Device and Confirm Success
     [Documentation]     Deletes the specified device from XIQ and confirms it was removed successfully
-    [Arguments]         ${ip}
+    [Arguments]         ${serial}
 
-    ${del_result}=  Delete Device                     ${ip}
+    ${del_result}=  Delete Device                     device_serial=${serial}
     Should Be Equal As Integers                       ${del_result}      1
 
 Delete All Devices and Confirm Success

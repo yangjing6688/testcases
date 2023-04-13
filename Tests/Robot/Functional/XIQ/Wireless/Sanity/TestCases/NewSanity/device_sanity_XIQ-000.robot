@@ -6,7 +6,6 @@ Library     Collections
 Library     extauto/common/Utils.py
 Library     extauto/common/Cli.py
 Library     extauto/xiq/flows/common/Login.py
-Library     extauto/xiq/flows/manage/Devices.py
 Library     extauto/xiq/flows/manage/Device360.py
 Library     extauto/xiq/flows/manage/Switch.py
 Library     extauto/xiq/flows/manage/Tools.py
@@ -24,6 +23,7 @@ Library     extauto/xiq/flows/configure/AutoProvisioning.py
 Library     extauto/xiq/flows/configure/CommonObjects.py
 Library     extauto/xiq/flows/configure/ExpressNetworkPolicies.py
 Library     extauto/xiq/flows/configure/RouterTemplate.py
+Library     extauto/xiq/flows/manage/Devices.py
 Variables   Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/voss_config.py
 
 Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/device_sanity_XIQ_config.robot
@@ -91,7 +91,7 @@ Test Suite Teardown
     Base Test Suite Cleanup 
 
 Clean Up Device
-    ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_failure=True
+    ${search_result}=   Search Device       device_serial=${device1.serial}   ignore_failure=True
     # Disconnect from Extreme Cloud IQ
     Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud
 
@@ -136,7 +136,7 @@ Clean Up Test Device and Confirm Success
     [Arguments]         ${serial}
 
     Navigate to Devices and Confirm Success
-    ${del_result}=  Delete Device   ${serial}
+    ${del_result}=  Delete Device   device_serial=${serial}
     Should Be Equal As Integers     ${del_result}  1
 
 *** Test Cases ***
