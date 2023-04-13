@@ -83,7 +83,7 @@ Test 2: Onboard First Device and Verify Success
     [Documentation]     Onboards first test device and verifies success
     [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test2
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator and Pilot Baseline License Counts
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT1_IP}   ${DUT1_PORT}   ${DUT1_USERNAME}   ${DUT1_PASSWORD}   ${DUT1_CLI_TYPE}
@@ -108,7 +108,7 @@ Test 3: Verify First Device Consumes Navigator License Within Global Settings Li
     [Documentation]     Confirms the license count for Navigator and Pilot within Global Settings->License Management
     [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test3
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator and Pilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       1    1    2
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}     3    0    3
@@ -117,7 +117,7 @@ Test 4: Onboard Second Device and Verify Success
     [Documentation]     Onboards second test device and verifies success
     [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test4
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator and Pilot Baseline License Counts
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT2_IP}   ${DUT2_PORT}   ${DUT2_USERNAME}   ${DUT2_PASSWORD}   ${DUT2_CLI_TYPE}
@@ -142,7 +142,7 @@ Test 5: Verify Second Device Consumes Navigator License Within Global Settings L
     [Documentation]     Confirms the license count for Navigator and Pilot within Global Settings->License Management
     [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test5
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator and Pilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       0    2    2
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}     3    0    3
@@ -151,7 +151,7 @@ Test 6: Verify Device License Column Value
     [Documentation]     Checks the Device License column to verify devices consumed the appropriate license or not
     [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test6
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator and Pilot Baseline License Counts
 
     # Confirm the device row shows the correct navigator license status
     ${nav1_result}=      Get Device Details    ${DUT1_SERIAL}    DEVICE LICENSE
@@ -164,7 +164,7 @@ Test 7: Onboard Third Test Device and Verify Device Consumes Pilot License Since
     [Documentation]     Onboard a third test device and verifies it was onboarded but consumed pilot license due to navigator license limit exceeded
     [Tags]              tccs-13492    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    pilot    test7
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator and Pilot Baseline License Counts
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT3_IP}   ${DUT3_PORT}   ${DUT3_USERNAME}   ${DUT3_PASSWORD}   ${DUT3_CLI_TYPE}
@@ -186,7 +186,7 @@ Test 8: Verify Third Device Consumes Pilot License Within Global Settings Licens
     [Documentation]     Confirms the license count for Navigator and Pilot within Global Settings->License Management
     [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test8
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator and Pilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}       0    2    2
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}     2    1    3
@@ -195,7 +195,7 @@ Test 9: Verify Device License Column Value
     [Documentation]     Checks the Device License column to verify devices consumed the appropriate license or not
     [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test9
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator and Pilot Baseline License Counts
 
     # Confirm the device row shows the correct navigator license status
     ${nav1_result}=      Get Device Details    ${DUT1_SERIAL}    DEVICE LICENSE
@@ -211,7 +211,7 @@ Test 10: Delete All Devices and Verify Success
     [Documentation]     Deletes all devices and verifies success
     [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test10
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator and Pilot Baseline License Counts
 
     Delete All devices and Confirm Success
 
@@ -219,7 +219,7 @@ Test 11: Verify Navigator License Revoked Within Global Settings License Managem
     [Documentation]     Confirms the Navigator and Pilot licenses was revoked
     [Tags]              tccs-13550    navigator_release_testing    navigator_license_testing    aiq-2214    development    xiq    navigator    test11
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Navigator and Pilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${NAV_ENTITLEMENT}        2    0    2
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}      3    0    3
@@ -306,9 +306,9 @@ Delete Test Device and Confirm Success
 
 Delete Device and Confirm Success
     [Documentation]     Deletes the specified device from XIQ and confirms it was removed successfully
-    [Arguments]         ${ip}
+    [Arguments]         ${serial}
 
-    ${del_result}=  Delete Device                     ${ip}
+    ${del_result}=  Delete Device                     device_serial=${serial}
     Should Be Equal As Integers                       ${del_result}      1
 
 Delete All Devices and Confirm Success

@@ -83,7 +83,7 @@ Test 1: XIQ-SE SSO - Role: Administrator - ACTIONS > Open Site Engine
     [Tags]              nightly2    release_testing    tccs_11879    apc_44688    development    xiqse    xiq_integration    sso    test1
 
     XIQ Navigate to Devices and Confirm Success
-    Select Device                                   ${DUT1_MAC}
+    Select Device                                   device_mac=${DUT1_MAC}
     XIQ Actions Open Site Engine Link
     Confirm XIQ User Logged in to XIQ Site Engine
 

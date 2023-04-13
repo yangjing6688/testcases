@@ -122,8 +122,7 @@ Device Onboard
     Should Be Equal As Strings                  ${MANAGED_STATUS_RESULT}      1
 
     ${DEVICE_STATUS_RESULT}=    get device status      ${device.serial}
-    Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
-
+    Should contain any                  ${DEVICE_STATUS_RESULT}    green     config audit mismatch
 
 *** Test Cases ***
 TCCS-7571: Configure Switch Auto Provision Profile

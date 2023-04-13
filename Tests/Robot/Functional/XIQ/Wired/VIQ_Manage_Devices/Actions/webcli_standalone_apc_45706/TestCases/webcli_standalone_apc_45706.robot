@@ -152,7 +152,7 @@ Pre Condition
 
     create_location_building_floor           ${location}         ${building}     ${floor}
 
-    Delete Device       ${netelem1.serial}
+    Delete Device       device_serial=${netelem1.serial}
 
     ${DUT_LOCATION}      Set Variable       ${location},${building},${floor}
 
@@ -184,7 +184,7 @@ Log Into XIQ and Confirm Success
 
 Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, closes the browser, and resets the NOS version
-    run keyword if  """${netelem1.cli_type}""" == "exos" and """${netelem1.platform}""" != "Stack"       Delete Device       ${netelem1.serial}
+    run keyword if  """${netelem1.cli_type}""" == "exos" and """${netelem1.platform}""" != "Stack"       Delete Device       device_serial=${netelem1.serial}
     ...  ELSE   run keywords  log to console  The testbed runs on OS ${netelem1.cli_type} and platform ${netelem1.platform}, where this story not supported on VOSS or Stack. Hence skipping all testcases
     ...  AND    skip
 

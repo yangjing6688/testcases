@@ -94,7 +94,7 @@ Clean Up Test Device and Confirm Success
                 Delete Device       device_serial=${serialnumber}
     END
 
-    ${del_result}=  Delete Device   ${serial}
+    ${del_result}=  Delete Device   device_serial=${serial}
 
 Navigate to Devices and Confirm Success
     [Documentation]     Navigates to the Manage> Devices view and confirms the action was successful

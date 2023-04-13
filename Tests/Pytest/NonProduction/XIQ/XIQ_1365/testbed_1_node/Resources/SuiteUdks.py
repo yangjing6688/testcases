@@ -1341,7 +1341,7 @@ class SuiteUdk():
         """
         latest_version = -1
         time.sleep(5)
-        if self.xiq.xflowscommonDevices.select_device(device_serial):
+        if self.xiq.xflowscommonDevices.select_device(device_serial=device_serial):
             def _click_update_devices_button():
                 return AutoActions().click(DeviceUpdate().get_update_devices_button())
             self.xiq.Utils.wait_till(_click_update_devices_button, timeout=30, delay=20, msg="Selecting Update Devices button")

@@ -84,7 +84,7 @@ Test 2: Onboard First Device and Verify Success
     [Documentation]     Onboards first test device and verifies success
     [Tags]              tccs-13549    pilot_release_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test2
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT1_IP}   ${DUT1_PORT}   ${DUT1_USERNAME}   ${DUT1_PASSWORD}   ${DUT1_CLI_TYPE}
@@ -109,7 +109,7 @@ Test 3: Verify First Device Consumes Pilot License Within Global Settings Licens
     [Documentation]     Confirms the license count for Pilot within Global Settings->License Management
     [Tags]              tccs-13549    pilot_release_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test3
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
 
@@ -117,7 +117,7 @@ Test 4: Onboard Second Test Device and Verify Success
     [Documentation]     Onboards a second test device and verifies success
     [Tags]              tccs-13549    pilot_release_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test4
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT2_IP}   ${DUT2_PORT}   ${DUT2_USERNAME}   ${DUT2_PASSWORD}   ${DUT2_CLI_TYPE}
@@ -139,7 +139,7 @@ Test 5: Verify Second Device Consumes Pilot License Within Global Settings Licen
     [Documentation]     Confirms the license counts for Pilot within Global Settings->License Management
     [Tags]              tccs-13549    pilot_release_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test5
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       1    2    3
 
@@ -147,7 +147,7 @@ Test 6: Onboard Third Test Device and Verify Success
     [Documentation]     Onboards a third test device and verifies success
     [Tags]              tccs-13549    pilot_release_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test6
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT3_IP}   ${DUT3_PORT}   ${DUT3_USERNAME}   ${DUT3_PASSWORD}   ${DUT3_CLI_TYPE}
@@ -169,7 +169,7 @@ Test 7: Verify Third Device Consumes Pilot License Within Global Settings Licens
     [Documentation]     Confirms the license count for Pilot within Global Settings->License Management
     [Tags]              tccs-13549    pilot_release_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test7
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       0    3    3
 
@@ -177,7 +177,7 @@ Test 8: Verify Device License Column Values On All Devices
     [Documentation]     Confirms the Device License column values to verify device consumed the appropriate license or not
     [Tags]              tccs-13549    pilot_release_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test8
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT1_SERIAL}    DEVICE LICENSE
@@ -195,7 +195,7 @@ Test 9: Onboard Fourth Test Device and Verify Device Not Onboarded Due to Licens
     [Documentation]     Attemps to onboard a fourth test device and verifies it was not onboarded due to license limit exceeded
     [Tags]              tccs-13549    pilot_release_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test9
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT4_IP}   ${DUT4_PORT}   ${DUT4_USERNAME}   ${DUT4_PASSWORD}   ${DUT4_CLI_TYPE}
@@ -212,16 +212,16 @@ Test 10: Verify Fourth Device Not Onboarded and Not Present In Devices panel
     [Documentation]     Confirms the fourth device was not onboarded and is not present in the Devices panel
     [Tags]              tccs-13549    pilot_release_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test10
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
-    ${result_search}=    Search Device          ${DUT4_SERIAL}      expect_error=True
+    ${result_search}=    Search Device          device_serial=${DUT4_SERIAL}      expect_error=True
     Should Be Equal As Integers                 ${result_search}     -1
 
 Test 11: Delete All Devices and Verify Success
     [Documentation]     Deletes all devices and verifies success
     [Tags]              tccs-13549    pilot_release_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test11
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     Delete All devices and Confirm Success
 
@@ -229,7 +229,7 @@ Test 12: Verify All Pilot Licenses Revoked
     [Documentation]     Confirms all licenses have been revoked after devices deleted
     [Tags]              tccs-13549    pilot_release_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test12
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
 

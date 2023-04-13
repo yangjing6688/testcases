@@ -1,0 +1,267 @@
+data:
+  feature_name: Missing path cost in Template configs for STP
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-1557
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=27426951
+
+
+tests:
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  # Jira -  https://jira.extremenetworks.com/browse/XIQ-1557 ########
+  # qTest - https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=27426951
+
+  #################### TESTBED ONE NODE ###########################
+
+  XIQ1557Tests::test_22138_verify_path_cost_column_is_present:
+    author: vstefan
+    tc: tcxm_22138
+    title: "Verify that Path Cost column is present under the STP tab in Switch Template Port Configuration."
+    steps:
+      - Onboard the EXOS device.
+      - Create a Network Policy with specific EXOS device template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Go to Network Policy -> Switch Template -> Port Configuration -> STP tab and check that Path Cost Column is present.
+  
+  XIQ1557Tests::test_22139_verify_default_values_of_path_cost_at_template_level:
+    author: vstefan
+    tc: tcxm_22139
+    title: "Verify that Path Cost for every port is set initially to default value (empty field)."
+    steps:
+      - Onboard the EXOS device.
+      - Create a Network Policy with specific EXOS device template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Go in device's CLI and set Path Cost for all ports to auto (configure stpd s0 ports cost auto [ports]).
+      - Go to Network Policy -> Switch Template -> Port Configuration -> STP tab and verify that the field for Path Cost is empty (meaning the Path Cost value is default).
+
+  TestbedOneNodeXIQ1557Tests::test_22140_verify_path_cost_field_is_editable_template_level:
+    author: vstefan
+    tc: tcxm_22140
+    title: "Verify that Path Cost field is present under the STP tab when creating Port Type for the second port on each ASIC and has an editable field."
+    steps:
+      - Onboard the EXOS device.
+      - Create a Network Policy with specific EXOS device template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Go in device's CLI and set Path Cost for all ports to auto (configure stpd s0 ports cost auto [ports]).
+      - Go to Network Policy -> Switch Template -> Port Configuration -> STP tab and verify that the field for Path Cost is empty (meaning the Path Cost value is default).
+  
+  TestbedOneNodeXIQ1557Tests::test_verify_path_cost:
+    author: vstefan
+    steps:
+      - Onboard the EXOS device.
+      - Create a Network Policy with specific EXOS device template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Go to Network Policy -> Switch Template -> Port Configuration and  click Create Port Type for the {port_order_in_asic}th port on each ASIC ("+" button).
+      - For Port Name & Usage, fill in the Name field for the port.
+      - Go to the STP tab in Create Port Type window.
+      - Set value {path_cost} for Path Cost and save the configuration.
+      - Go to Network Policy -> Switch Template -> Port Configuration -> STP tab and verify that the value for the modified Path Cost is 1.
+      - Save the Switch Template, update the device and check the results in CLI (show stpd s0 ports [port]).
+      - Unassign the previous created Port Types for ports and delete Port Types from Configure -> Common Objects -> Policy -> Port Types.
+      - Save the Switch Template, update the device and check the results in CLI (show stpd s0 ports [port]).
+    tests:
+      - tc: tcxm_22141
+        title: "Verify that value 1 can be set for Path Cost for the 7th port on each ASIC."
+        path_cost: 1
+        port_order_in_asic: 7
+
+      - tc: tcxm_22142
+        title: "Verify that value 200000000 can be set for Path Cost for the second port on each ASIC."
+        path_cost: 200000000
+        port_order_in_asic: 2
+
+      - tc: tcxm_22143
+        title: "Verify that a random value between 1 and 200000000 can be set for Path Cost for the third port on each ASIC."
+        path_cost: random
+        port_order_in_asic: 3
+
+      - tc: tcxm_22144
+        title: "Verify that port Path Cost can be set to default for the4th port on each ASIC."
+        path_cost: random
+        port_order_in_asic: 4
+        revert_mode: edit_honeycomb_with_empty_path_cost
+
+      - tc: tcxm_22145
+        title: "Verify that Configuration Audit reflects the changes when modifying Path Cost for the second port on each ASIC."
+        path_cost: random
+        port_order_in_asic: 2
+        verify_delta_cli: yes
+
+      - tc: tcxm_22201
+        title: "Verify that Path Cost can be modified for the 8th port from each ASIC when Port Usage is \"Trunk Port (802.1Q VLAN Tagging)\""
+        path_cost: random
+        port_order_in_asic: 8
+        port_type: trunk
+
+      - tc: tcxm_22268
+        title: "Verify that Path Cost can be modified for the 9th port from each ASIC when STP MODE is RSTP"
+        path_cost: random
+        port_order_in_asic: 9
+        verify_delta_cli: yes
+        stp_mode: rstp
+
+  TestbedOneNodeXIQ1557Tests::test_22147_verify_path_cost_value_in_create_port_type_window:
+    author: vstefan
+    tc: tcxm_22147
+    title: "Verify that the Path Cost Value is present and correct in Create Port Type window, Summary tab."
+    steps:
+      - Onboard the EXOS device.
+      - Create a Network Policy with specific EXOS device template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Go to Network Policy -> Switch Template -> Port Configuration and  click Create Port Type for the 4th port on each ASIC ("+" button).
+      - For Port Name & Usage, fill in the Name field for the port.
+      - Go to the STP tab in Create Port Type window.
+      - Set a random value between 1 and 200000000 for Path Cost.
+      - Go to Summary tab under Create Port Type window and verify the value for Path Cost.
+
+  TestbedOneNodeXIQ1557Tests::test_22148_verify_path_cost_value_in_edit_port_type_window:
+    author: vstefan
+    tc: tcxm_22148
+    title: "Verify that the Path Cost Value is present and correct in Edit Port Type window, Summary tab."
+    steps:
+      - Onboard the EXOS device.
+      - Create a Network Policy with specific EXOS device template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Go to Network Policy -> Switch Template -> Port Configuration and  click Create Port Type for the 5th port on each ASIC ("+" button).
+      - For Port Name & Usage, fill in the Name field for the port.
+      - Go to the STP tab in Create Port Type window.
+      - Set a random value between 1 and 200000000 for Path Cost and save the configuration.
+      - Go to Network Policy -> Switch Template -> Port Configuration and  click Edit Port Type ("Edit" button).
+      - Go to Summary tab under Edit Port Type window and check the value for Path Cost.
+      - Unassign the previous created Port Types for ports and delete Port Types from Configure -> Common Objects -> Policy -> Port Types.
+
+  TestbedOneNodeXIQ1557Tests::test_22151_verify_not_valid_path_cost_values_in_honeycomb:
+    author: vstefan
+    tc: tcxm_22151
+    title: "Verify you cannot set a negative value, 0, 200000001 or a character for Path Cost for the second port on each ASIC."
+    steps:
+      - Onboard the EXOS device.
+      - Create a Network Policy with specific EXOS device template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Go to Network Policy -> Switch Template -> Port Configuration and  click Create Port Type for the second port on each ASIC ("+" button).
+      - For Port Name & Usage tab, fill in the Name field for the port.
+      - Go to the STP tab in Create Port Type window.
+      - Set by turn a negative value, 0, 200000001 and a character (e.g. \#,%,*) for Path Cost and save the configuration.
+
+  TestbedOneNodeXIQ1557Tests::test_22152_verify_path_cost_value_after_reboot_of_device:
+    author: vstefan
+    tc: tcxm_22152
+    title: "Verify that rebooting the device doesn't affect the configured Path Cost values"
+    steps:
+      - Onboard the EXOS device.
+      - Create a Network Policy with specific EXOS device template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Go to Network Policy -> Switch Template -> Port Configuration and  click Create Port Type for the first, middle and last port from each ASIC  ("+" button).
+      - For Port Name & Usage tab, fill in the Name field for the port.
+      - Go to the STP tab in Create Port Type window.
+      - Set a random value between 1 and 200000000 for Path Cost and save the configuration.
+      - Go to Network Policy -> Switch Template -> Port Configuration -> STP tab and verify that the value for the modified Path Cost is the random value.
+      - Save the Switch Template, update the device and check the results in CLI (show stpd s0 ports [port]).
+      - Reboot the device
+      - After the device reboots, go to Network Policy -> Switch Template -> Port Configuration -> STP tab and verify that the value for the modified Path Cost is the random value.
+      - Unassign the previous created Port Types for ports and delete Port Types from Configure -> Common Objects -> Policy -> Port Types.
+      - Save the Switch Template, update the device and check the results in CLI (show stpd s0 ports [port]).
+
+  #################### TESTBED ONE NODE ###########################
+
+  #################### TESTBED STACK ###########################
+
+  TestbedStackXIQ1557Tests::test_22161_verify_random_value_as_path_cost:
+    author: sstaut
+    tc: tcxm_22161
+    title: "Verify that a random value between 1 and 200000000 can be set for Path Cost the third port on each ASIC on stack slot 2."
+    path_cost: random
+    port_order_in_asic: 3
+    slot: 2
+    steps:
+      - Onboard the EXOS device.
+      - Create a Network Policy with specific EXOS device template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Go to Network Policy -> Switch Template -> Port Configuration -> slot 2 Template and  click Create Port Type for the last port on each ASIC ("+" button).
+      - For Port Name & Usage, fill in the Name and Description fields for the port.
+      - Go to the STP tab in Create Port Type window.
+      - Set a random value between 1 and 200000000 for Path Cost and save the configuration.
+      - Go to Network Policy -> Switch Template -> Port Configuration -> STP tab and verify that the value for the modified Path Cost is the random value.
+      - Save the Switch Template, update the device and check the results in CLI (show stpd s0 ports [port]).
+      - Unassign the previous created Port Types for ports and delete Port Types from Configure -> Common Objects -> Policy -> Port Types.
+      - Save the Switch Template, update the device and check the results in CLI (show stpd s0 ports [port]).
+
+  TestbedStackXIQ1557Tests::test_22164_verify_random_value_as_path_cost:
+    author: rvisterineanu
+    tc: tcxm_22164
+    title: "Verify that a random value between 1 and 200000000 can be set for Path Cost the last port on each ASIC on both stack slots."
+    steps:
+      - Onboard the EXOS/SR stack.
+      - Create a Network Policy with specific EXOS/SR device template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Go to Network Policy -> Switch Template -> Port Configuration -> slot 1 Template and  click Create Port Type for the last port on each ASIC ("+" button).
+      - For Port Name & Usage, fill in the Name and Description fields for the port.
+      - Go to the STP tab in Create Port Type window.
+      - Set a random value between 1 and 200000000 for Path Cost and save the configuration.
+      - Go to Network Policy -> Switch Template -> Port Configuration -> STP tab and verify that the value for the modified Path Cost is the random value.
+      - Repeat steps 4-8 for slot 2 template.
+      - Save the Switch Template, update the device and check the results in CLI (show stpd s0 ports [port]).
+      - Unassign the previous created Port Types for ports and delete Port Types from Configure -> Common Objects -> Policy -> Port Types.
+      - Save the Switch Template, update the device and check the results in CLI (show stpd s0 ports [port]).
+
+  TestbedStackXIQ1557Tests::test_22167_verify_random_value_as_path_cost:
+    author: rvisterineanu
+    tc: tcxm_22167
+    title: "Verify that the Path Cost Value is present and correct in Edit Port Type window, Summary tab for the second port on each ASIC on both stack slots."
+    steps:
+      - Onboard the EXOS/SR stack.
+      - Create a Network Policy with specific EXOS/SR device template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Go to Network Policy -> Switch Template -> Port Configuration -> slot 1 Template and click Create Port Type for the second port on each ASIC ("+" button).
+      - For Port Name & Usage, fill in the Name field for the port.
+      - Go to the STP tab in Create Port Type window.
+      - Set a random value between 1 and 200000000 for Path Cost and save the configuration.
+      - Go to Network Policy -> Switch Template -> Port Configuration and  click Edit Port Type ("Edit" button).
+      - Go to Summary tab under Edit Port Type window and check the value for Path Cost.
+      - Repeat steps 4-9 for slot 2 template.
+
+  TestbedStackXIQ1557Tests::test_22171_verify_path_cost_value_after_reboot_of_device:
+    author: rvisterineanu
+    tc: tcxm_22171
+    title: "Verify that rebooting the stack doesn't affect the configured Path Cost values"
+    steps:
+      - Onboard the EXOS/SR stack.
+      - Create a Network Policy with specific EXOS/SR device template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Go to Network Policy -> Switch Template -> Port Configuration and  click Create Port Type for the middle port from each ASIC on wach unit ("+" button).
+      - For Port Name & Usage tab, fill in the Name field for the port.
+      - Go to the STP tab in Create Port Type window.
+      - Set a random value between 1 and 200000000 for Path Cost and save the configuration.
+      - Go to Network Policy -> Switch Template -> Port Configuration -> STP tab and verify that the value for the modified Path Cost is the random value.
+      - Save the Switch Template, update the device and check the results in CLI (show stpd s0 ports [port]).
+      - Reboot the device
+      - After the device reboots, go to Network Policy -> Switch Template -> Port Configuration -> STP tab and verify that the value for the modified Path Cost is the random value.
+      - Unassign the previous created Port Types for ports and delete Port Types from Configure -> Common Objects -> Policy -> Port Types.
+      - Save the Switch Template, update the device and check the results in CLI (show stpd s0 ports [port]).
+
+  TestbedStackXIQ1557Tests::test_22190_verify_not_valid_path_cost_values_in_honeycomb:
+    author: rvisterineanu
+    tc: tcxm_22190
+    title: "Verify you cannot set a negative value, 0, 200000001 or a character for Path Cost for the 3rd port on each ASIC on both stack slots."
+    steps:
+      - Onboard the EXOS/SR stack.
+      - Create a Network Policy with specific EXOS/SR device template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Go to Network Policy -> Switch Template -> Port Configuration and  click Create Port Type for the 3rd port on each ASIC ("+" button).
+      - For Port Name & Usage tab, fill in the Name field for the port.
+      - Go to the STP tab in Create Port Type window.
+      - Set by turn a negative value, 0, 200000001 and a character (e.g. \#,%,*) for Path Cost and save the configuration.
+      - Repeat steps 4-6 for slot 2 template.
+
+  #################### TESTBED STACK ###########################
