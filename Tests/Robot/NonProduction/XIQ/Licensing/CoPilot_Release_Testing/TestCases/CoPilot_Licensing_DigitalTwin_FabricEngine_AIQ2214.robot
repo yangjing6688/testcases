@@ -58,6 +58,8 @@ Test 2: Onboard Digital Twin Fabric Engine Device
     [Documentation]     Onboard "Digital Twin" Fabric Engine device
     [Tags]              tccs-13505    copilot_release_testing    copilot_license_testing    aiq-2214     development    xiq    copilot    digital_twin    test2
 
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
+
     Navigate to Devices and Confirm Success
 
     ${selected}=    Column Picker Select                    ${COLUMN_1}     ${COLUMN_2}    ${COLUMN_3}    ${COLUMN_4}
@@ -86,7 +88,7 @@ Test 3: Verify Device Does Not Consume Pilot or CoPilot License Within Global Se
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
     [Tags]              tccs-13505    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    digital_twin    test3
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Log To Console  Sleeping for 10 minutes to wait for the maximum 10 minute license update to come in
     Count Down in Minutes  10
@@ -98,7 +100,7 @@ Test 4: Verify Device License and CoPilot Column Values On Device
     [Documentation]     Confirms the Device License and CoPilot column values to verify device did not consume the appropriate licenses
     [Tags]              tccs-13505    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    digital_twin    test4
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DT_FE_SERIAL}    DEVICE LICENSE

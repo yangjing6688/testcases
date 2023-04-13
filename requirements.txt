@@ -1,4 +1,4 @@
-# ------------------   From Wireless  ----------------------  need robot b/c used in builtin used in some python methods.
+# ------------------   From Wireless  ----------------------
 Flask==1.1.1
 image==1.5.28
 netmiko==3.0.0
@@ -36,6 +36,5 @@ xmlrunner==1.7.7
 textfsm==0.4.1
 PyMySQL==1.0.2
 wheel==0.36.2
-extremecloudiq-api==22.6.4.1
 ansi2html==1.8.0
 GitPython==3.1.29

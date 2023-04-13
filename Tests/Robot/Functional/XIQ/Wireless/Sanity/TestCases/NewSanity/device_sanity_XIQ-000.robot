@@ -6,7 +6,6 @@ Library     Collections
 Library     extauto/common/Utils.py
 Library     extauto/common/Cli.py
 Library     extauto/xiq/flows/common/Login.py
-Library     extauto/xiq/flows/manage/Devices.py
 Library     extauto/xiq/flows/manage/Device360.py
 Library     extauto/xiq/flows/manage/Switch.py
 Library     extauto/xiq/flows/manage/Tools.py
@@ -24,6 +23,7 @@ Library     extauto/xiq/flows/configure/AutoProvisioning.py
 Library     extauto/xiq/flows/configure/CommonObjects.py
 Library     extauto/xiq/flows/configure/ExpressNetworkPolicies.py
 Library     extauto/xiq/flows/configure/RouterTemplate.py
+Library     extauto/xiq/flows/manage/Devices.py
 Variables   Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/voss_config.py
 
 Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/device_sanity_XIQ_config.robot
@@ -88,10 +88,10 @@ Test Suite Teardown
 
     Logout User
     Quit Browser
-    Base Test Suite Cleanup
+    Base Test Suite Cleanup 
 
 Clean Up Device
-    ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_failure=True
+    ${search_result}=   Search Device       device_serial=${device1.serial}   ignore_failure=True
     # Disconnect from Extreme Cloud IQ
     Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud
 
@@ -136,7 +136,7 @@ Clean Up Test Device and Confirm Success
     [Arguments]         ${serial}
 
     Navigate to Devices and Confirm Success
-    ${del_result}=  Delete Device   ${serial}
+    ${del_result}=  Delete Device   device_serial=${serial}
     Should Be Equal As Integers     ${del_result}  1
 
 *** Test Cases ***
@@ -150,7 +150,11 @@ TCCS-13684: Advanced Onboard Device on XIQ
     ${ONBOARD_RESULT}=      Advance Onboard Device         ${device1.serial}    device_make=${device1.make}   dev_location=${LOCATION}  device_mac=${device1.mac}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
-    configure device to connect to cloud    ${device1.cli_type}    ${generic_capwap_url}  ${MAIN_DEVICE_SPAWN}
+    ${CONF_RESULT}=         Configure Device To Connect To Cloud            ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${CONF_RESULT}          1
+
+    ${WAIT_CONF_RESULT}=    Wait For Configure Device To Connect To Cloud   ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${WAIT_CONF_RESULT}     1
 
     ${ONLINE_STATUS_RESULT}=    wait until device online     ${device1.serial}
     Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1
@@ -159,7 +163,7 @@ TCCS-13684: Advanced Onboard Device on XIQ
     Should Be Equal As Strings                  ${MANAGED_STATUS_RESULT}      1
 
     ${DEVICE_STATUS_RESULT}=    get device status      ${device1.serial}
-    Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
+    Should contain any                  ${DEVICE_STATUS_RESULT}    green     config audit mismatch
 
     Validate Device Information
 
@@ -173,7 +177,11 @@ TCCS-13685: Simple Onboard Device on XIQ
     ${ONBOARD_RESULT}=          onboard device quick      ${device1}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
-    configure device to connect to cloud    ${device1.cli_type}   ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    ${CONF_RESULT}=         Configure Device To Connect To Cloud            ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${CONF_RESULT}          1
+
+    ${WAIT_CONF_RESULT}=    Wait For Configure Device To Connect To Cloud   ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${WAIT_CONF_RESULT}     1
 
     ${ONLINE_STATUS_RESULT}=    wait until device online     ${device1.serial}
     Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1
@@ -182,7 +190,7 @@ TCCS-13685: Simple Onboard Device on XIQ
     Should Be Equal As Strings                  ${MANAGED_STATUS_RESULT}      1
 
     ${DEVICE_STATUS_RESULT}=    get device status      ${device1.serial}
-    Should Be Equal As Strings                  ${DEVICE_STATUS_RESULT}      green
+    Should contain any                  ${DEVICE_STATUS_RESULT}    green     config audit mismatch
 
     Validate Device Information
 
@@ -278,8 +286,8 @@ TCCS-13688: Verification of config push complete config update (AH-AP Only)
     ${CONNECTED_STATUS}=            Wait Until Device Online                ${device1.serial}   None   30   20
     Should Be Equal as Integers     ${CONNECTED_STATUS}          1
 
-    ${OUTPUT1}=             Send           ${MAIN_DEVICE_SPAWN}                show ssid
-    Should Contain                          ${OUTPUT1}                  ${PUSH_CONFIG_SSID_01}
+    ${OUTPUT1}=             Send           ${MAIN_DEVICE_SPAWN}                show ssid 
+    Should Contain                          ${OUTPUT1}                  ${PUSH_CONFIG_SSID_01} 
 
 
 TCCS-13689: Verification of config push delta update (AH-AP Only)

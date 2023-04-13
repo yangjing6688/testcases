@@ -1,0 +1,145 @@
+data:
+
+  feature_name: D360 Port Configuration "Multi Edit" VLAN configuration not configurable
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-247
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=57319746
+
+tests:
+
+  #################### XIQ ONBOARDING #########################################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING #########################################
+
+  #################### TESTBED 1 NODE, TESTBED STACK ##########################
+
+  XIQ247Tests::test_tcxm_25562:
+    author: gviorelstefanescu
+    tc: tcxm_25562
+    title: Check availability of "VLAN" field when Port Type is "Access Port"
+    description: 'Check availability of "VLAN" field when Port Type is "Access Port",
+        configure all fields and verify if the settings are saved successfully and update the device without error.'
+    steps:
+      - Onboard a device.
+      - In D360, select at least two ports and click on Multi Edit button.
+      - In Multi Edit button complete all setting with a non-default values when port usage is Access Port.
+      - Save configuration and check the successful message.
+      - Upload the config on the device and verify if the config is correct configred in Delta view.
+      - For Fabric Engine devices, verify that VLAN should not be checked when for Port Usage is selected Auto-sense.
+      - Select the same ports and revert all settings to default.
+
+  XIQ247Tests::test_tcxm_25563:
+    author: gviorelstefanescu
+    tc: tcxm_25563
+    title: Check availability of  "Native" and "Allowed" fields when Port Type is configured to "Trunk Port"
+    description: 'Check availability of "VLAN" field when Port Type is "Trunk Port",
+        configure all fields and verify if the settings are saved and upload on the device without errors.'
+    steps:
+      - Onboard a device.
+      - In D360, select at least two ports and click on Multi Edit button.
+      - In Multi Edit button complete all setting with a non-default values when port usage is Trunk Port.
+      - Save configuration and check the successful message.
+      - Upload the config on the device and verify if the config is correct configred in Delta view.
+      - Select the same ports and revert all settings to default.
+
+  XIQ247Tests::test_tcxm_25564:
+    author: gviorelstefanescu
+    tc: tcxm_25564
+    title: Check availability of "Voice" and "Data" fields when Port Type is configured to "Phone Data Port"
+    description: 'This test is applied only on Switch Engine devices: Check availability of "VLAN" field when
+         Port Type is "Phone Data Port", configure all fields and verify if the settings are saved successfully
+         and upload on the device without errors.'
+    steps:
+      - Onboard a device.
+      - In D360, select one port (the first port used also for multi edit configuration) and create a new profile with Phone Data Port specifications.
+      - Save the new profile created.
+      - In D360, select at least two ports and click on Multi Edit button.
+      - In Multi Edit tab select the new Profile created at step 2 and after that complete all fields with new values.
+      - Save configuration and check the successful message.
+      - Upload the config on the device and verify if the config is correct configred in Delta view.
+      - Select the same ports and revert all settings to default.
+
+  XIQ247Tests::test_tcxm_25565:
+    author: gviorelstefanescu
+    tc: tcxm_25565
+    title: Check the display of correct fields for "Auto-sense Port"
+    description: 'Check the display of correct fields when Port Type is configured from "Access Port" to "Auto-sense Port"'
+    steps:
+      - Onboard a device.
+      - In D360, select at least two ports and click on Multi Edit button.
+      - In Multi Edit button complete all setting with a non-default values when port usage is Access Port.
+      - Save configuration and check the successful message.
+      - Upload the config on the device and verify if the config is correct configred in Delta view.
+      - For Fabric Engine devices, check that the correct fields are displayed when for Port Usage is selected Auto-sense.
+      - For Fabric Engine devices, verify that VLAN should not be checked when for Port Usage is selected Auto-sense.
+      - Select the same ports and revert all settings to default.
+
+  XIQ247Tests::test_tcxm_25566:
+    author: gviorelstefanescu
+    tc: tcxm_25566
+    title: Check the display of correct fields when Port Type is configured to an existing Port Type Profile
+    description: 'Select at least 2 ports that are configured on "Access Port" Port Type, enter on "Multi-Edit" window,
+    select an existing Port Type profile and check if the correct fields are available.'
+    steps:
+      - Onboard a device.
+      - In D360, select at least two ports and click on Multi Edit button.
+      - In Multi Edit button complete all setting with a non-default values when port usage is Access Port.
+      - Save configuration and check the successful message.
+      - In Multi Edit tab, for the same ports, configure the settings with a new port profile.
+      - Save the configuration and verify if the successful message is displayed correctly.
+      - Upload the config on the device and verify if the config is correct configred in Delta view.
+      - Select the same ports and revert all settings to default.
+
+  XIQ247Tests::test_tcxm_25573:
+    author: gviorelstefanescu
+    tc: tcxm_25573
+    title:  Check successful save when Port Type is configured from "Access Port" to a new Port Type Profile.
+    description: 'Select at least 2 ports that are configured on "Access Port" Port Type,
+        enter on "Multi-Edit" window, create a new Port Type profile, save the configuration
+        and check if the updates are successfully.'
+    steps:
+      - Onboard a device.
+      - In D360, select at least two ports and click on Multi Edit button.
+      - In Multi Edit button complete all setting with a non-default values when port usage is Access Port.
+      - Save configuration and check the successful message.
+      - In Multi Edit tab, for the same ports, configure the settings with a new port profile (the new profile should be created from ADD button from Multi Edit).
+      - Save the configuration and verify if the successful message is displayed correctly.
+      - Upload the config on the device and verify if the config is correct configred in Delta view.
+      - Select the same ports and revert all settings to default.
+
+  XIQ247Tests::test_tcxm_25577:
+    author: gviorelstefanescu
+    tc: tcxm_25577
+    title: Select at least 2 ports, and edit all available fields in the Multi Edit window.
+    description: 'Select at least 2 ports, and edit all available fields in the Multi Edit window.'
+    steps:
+      - Onboard a device.
+      - In D360, select at least two ports and click on Multi Edit button.
+      - In Multi Edit button complete all setting with a non-default values when port usage is Access Port/Trunk Port.
+      - Save configuration and check the successful message.
+      - Upload the config on the device and verify if the config is correct configred in Delta view.
+      - Select the same ports and revert all settings to default.
+
+  XIQ247Tests::test_tcxm_25579:
+    author: gviorelstefanescu
+    tc: tcxm_25579
+    title: Validate successful multi-edit configuration.
+    description: 'Select at least 2 ports, enter on "Multi-Edit" window, after editing, update the device successfully.'
+    steps:
+      - Onboard a device.
+      - In D360, select at least two ports and click on Multi Edit button.
+      - In Multi Edit button complete all setting with a non-default values when port usage is Access Port/Trunk Port.
+      - Save configuration and check the successful message.
+      - Upload the config on the device and verify if the config is correct configred in Delta view.
+      - Select the same ports and revert all settings to default.
+
+  #################### TESTBED 1 NODE, TESTBED STACK ##########################

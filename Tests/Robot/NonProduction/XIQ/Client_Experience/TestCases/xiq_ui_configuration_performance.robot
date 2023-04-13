@@ -109,7 +109,7 @@ XIQ-10314 - TCXM-25835 - Automation: XIQ Measure time taken to Onboard device
     ${ONBOARD_RESULT}=       onboard device quick     ${ap1}
     should be equal as integers     ${ONBOARD_RESULT}       1
 
-    ${SEARCH_AP}=            Search Device     ${ap1.serial}
+    ${SEARCH_AP}=            Search Device     device_serial=${ap1.serial}
     should be equal as integers     ${SEARCH_AP}        1
 
     ${AP_SPAWN}=             Open Spawn          ${ap1.ip}   ${ap1.port}      ${ap1.username}       ${ap1.password}        ${ap1.cli_type}

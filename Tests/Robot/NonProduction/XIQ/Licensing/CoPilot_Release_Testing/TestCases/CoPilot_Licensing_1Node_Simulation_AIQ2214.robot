@@ -52,7 +52,7 @@ Test 2: Onboard Device and Verify Success
     [Documentation]     Onboards test device and verifies success
     [Tags]              tcxm-21006    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test2
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     ${onboard_result}=       Onboard Device Quick       ${netelem1}
     Should Be Equal As Integers          ${onboard_result}    1
@@ -72,7 +72,7 @@ Test 3: Verify Device Does Not Consume Pilot or CoPilot License Within Global Se
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
     [Tags]              tcxm-21006    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test3
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Log To Console  Sleeping for 10 minutes to wait for the maximum 10 minute license update to come in
     Count Down in Minutes  10
@@ -84,7 +84,7 @@ Test 4: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify device consumed the appropriate license or not
     [Tags]              tcxm-21006    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test4
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${SIM_SERIAL}    DEVICE LICENSE
@@ -98,7 +98,7 @@ Test 5: Delete Device and Verify Success
     [Documentation]     Deletes the device and verifies success
     [Tags]              tcxm-21006    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test5
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Delete Test Device and Confirm Success          ${SIM_SERIAL}
 
@@ -106,7 +106,7 @@ Test 6: Verify Pilot and CoPilot Licenses Revoked Within Global Settings License
     [Documentation]     Confirms the Pilot and CoPilot licenses are revoked
     [Tags]              tcxm-21006    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test6
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
@@ -190,5 +190,5 @@ Delete Device and Confirm Success
     [Documentation]     Deletes the specified device from XIQ and confirms it was removed successfully
     [Arguments]         ${serial}
 
-    ${del_result}=  Delete Device                     ${serial}
+    ${del_result}=  Delete Device                     device_serial=${serial}
     Should Be Equal As Integers                       ${del_result}      1

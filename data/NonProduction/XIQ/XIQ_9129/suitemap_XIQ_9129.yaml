@@ -1,0 +1,128 @@
+data:
+  feature_name: Network 360 Switch - Individual Switch Health Score
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-9192
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=57264371
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  XIQ9129Tests::test_tcxm_25174:
+    author: tpodar
+    tc: tcxm_25174
+    title: Test tcxm_25174
+    description: Verify Devices Health pop-up window opens correctly, shows the graphs and contains the pop-up with summarized information.
+    steps:
+      - Onboard 1 device.
+      - Navigate to ML INSIGHTS-> NETWORK 360 MONITOR.
+      - Select ALL SWITCHES from the drop down top left corner.
+      - Click on the card box labeled "DEVICES"
+      - Mouse Hover over BLUE line you should see a small pop-up which contains overall status for all device
+      - Mouse Hover over RED line you should see a small pop-up which contains overall status for all devices.
+      - Mouse Hover over YELLOW line you should see a small pop-up which contains overall status for all devices.
+
+  XIQ9129Tests::test_tcxm_25176:
+    author: tpodar
+    tc: tcxm_25176
+    title: Test tcxm_25176
+    description: Check if  pagination is not displayed when less than 11 devices are onboarded.
+    steps:
+      - Onboard 1 device.
+      - Navigate to ML INSIGHTS-> NETWORK 360 MONITOR.
+      - Select ALL SWITCHES from the drop down top left corner.
+      - Click on the card box labeled "DEVICES"
+      - Click on one of the colored lines from the graph.
+      - Check if pagination section is not present under the table.
+
+  XIQ9129Tests::test_tcxm_25179:
+    author: tpodar
+    tc: tcxm_25179
+    title: Test tcxm_25179
+    description: Verify Search box functionality by typing the full HOSTNAME and full MAC.
+    steps:
+      - Onboard 2 or more devices with at least one client each
+      - Navigate to ML INSIGHTS-> NETWORK 360 MONITOR.
+      - Select ALL SWITCHES from the drop down top left corner
+      - Click on the card box labeled "DEVICES"
+      - Click on one of the colored lines from the graph.
+      - In the Search box type the exact MAC ADDRESS of the device and hit Enter..
+      - In the SEARCH BOX type the exact HOSTNAME of the device and hit Enter.
+
+
+  XIQ9129Tests::test_tcxm_25193:
+    author: tpodar
+    tc: tcxm_25193
+    title: Test tcxm_25193
+    description: Verify if the search box, download button, table header and total usage fields are present.
+    steps:
+      - Onboard 1 device.
+      - Navigate to ML INSIGHTS-> NETWORK 360 MONITOR.
+      - Select ALL SWITCHES from the drop down top lef
+      - Click on the card box labeled "DEVICES"
+      - Click on one of the colored lines from the gra
+      - Verify new window contains all the elements in the left side corner a button "Back to Timeline", Search Box,
+                            A text displaying the Total Usage, A download sign, A table containing all the onboarded devices,
+                            Page numbers with first last previous next and jump to page shortcuts.
+
+
+  XIQ9129Tests::test_tcxm_25194:
+    author: tpodar
+    tc: tcxm_25194
+    title: Test tcxm_25194
+    description: Verify if the HOSTNAME AND MAC ADDRESS from CLI and XIQ are equal -- 1 node
+    steps:
+      - Onboard 1 device.
+      - Navigate to ML INSIGHTS-> NETWORK 360 MONITOR.
+      - Select ALL SWITCHES from the drop down top left corner.
+      - Click on the card box labeled "DEVICES"
+      - Click on one of the colored lines from the graph.
+      - Verify if the XIQ MAC ADDRESS AND HOSTNAME are the same with the ones from CLI
+
+
+  #################### TESTBED 1 NODE ##########################
+
+  #################### TESTBED 2 NODE ##########################
+
+  XIQ9129Tests::test_tcxm_25195:
+    author: tpodar
+    tc: tcxm_25195
+    title: Test tcxm_25195
+    description: Verify if the HOSTNAME AND MAC ADDRESS from CLI and XIQ are equal -- 2 nodes
+    steps:
+      - Onboard 2 devices.
+      - Navigate to ML INSIGHTS-> NETWORK 360 MONITOR.
+      - Select ALL SWITCHES from the drop down top left corner.
+      - Click on the card box labeled "DEVICES"
+      - Click on one of the colored lines from the graph.
+      - Verify if the XIQ MAC ADDRESS AND HOSTNAME are the same with the ones from CLI
+
+  XIQ9129Tests::test_tcxm_25196:
+    author: tpodar
+    tc: tcxm_25196
+    title: Test tcxm_25196
+    description: Verify if the table can be sorted
+    steps:
+      - Onboard 2 devices.
+      - Navigate to ML INSIGHTS-> NETWORK 360 MONITOR.
+      - Select ALL SWITCHES from the drop down top left corner.
+      - Click on the card box labeled "DEVICES"
+      - Click on one of the colored lines from the graph.
+      - Verify if table can be sorted.
+
+
+  #################### TESTBED 2 NODE ##########################
+

@@ -10,7 +10,7 @@ Resource    ../../../../../Libraries/XIQ/lib_license.robot
 
 Library     OperatingSystem
 Library     common/Utils.py
-Library     common/TestFlow.py
+Library     DependencyLibrary
 Library     xiq/flows/manage/FilterManageDevices.py
 Library     ExtremeAutomation/Imports/CommonObjectUtils.py
 Library     xiq/flows/copilot/Copilot.py
