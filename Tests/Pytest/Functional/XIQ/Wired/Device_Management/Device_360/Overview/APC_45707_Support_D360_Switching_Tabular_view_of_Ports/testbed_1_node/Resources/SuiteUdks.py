@@ -183,13 +183,13 @@ class SuiteUdk:
             self.close_connection_with_error_handling(dut)
 
     def bounce_IQAgent(self, dut, xiq_ip_address=None, connect_to_dut=True, disconnect_from_dut=True, wait=True):
-        
+    
         try:
-            
+    
             if connect_to_dut:
                 self.close_connection_with_error_handling(dut)
                 self.setup_cls_obj.network_manager.connect_to_network_element_name(dut.name)
-
+    
             if dut.cli_type.upper() == "EXOS":
                 self.setup_cls_obj.devCmd.send_cmd(dut.name, 'disable iqagent', max_wait=10, interval=2,
                                                    confirmation_phrases='Do you want to continue?',
@@ -198,7 +198,7 @@ class SuiteUdk:
                     self.setup_cls_obj.devCmd.send_cmd(
                         dut.name, "configure iqagent server ipaddress {xiq_ip_address}", max_wait=10, interval=2)
                 self.setup_cls_obj.devCmd.send_cmd(dut.name, 'enable iqagent', max_wait=10, interval=2)
-            
+    
             elif dut.cli_type.upper() == "VOSS":
                 self.setup_cls_obj.devCmd.send_cmd(dut.name, 'enable', max_wait=10, interval=2)
                 self.setup_cls_obj.devCmd.send_cmd(dut.name, 'configure terminal', max_wait=10, interval=2)
