@@ -1,0 +1,355 @@
+data:
+  feature_name: Add Network Policy Switch/Fabric Engine (EXOS/VOSS) Common Settings Section
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-6164
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=57215031
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  XIQ6164OneNodeTests::test_tcxm_precondition_policy:
+    author: dsofiea
+    tc: tcxm_precondition_policy
+
+  XIQ6164OneNodeTests::test_tcxm_23823:
+    author: aprihotin
+    tc: tcxm_23823
+    title: Verify that the changes made in common settings are reflected in the default switch template for each policy
+    description: This test will modify a common settings parameter and check if the change is reflected in a newly created switch template
+    steps:
+      - Create new policy
+      - Go to switching --> common settings
+      - Modify a parameter( like STP)
+      - Add a new switch template
+      - Check the state of the modified parameter in the default template view
+
+  XIQ6164OneNodeTests::test_tcxm_23808:
+    author: aprihotin
+    tc: tcxm_23808
+    title: Verifiy that the EXOS/Switch Engine subsection contains the STP parameter
+    description: This test will check the common settings for EXOS and check if all the parameters are present
+    steps:
+      - Onboard device
+      - Create new policy
+      - Go to common settings
+      - Get page text for EXOS
+      - Search the page text for the requiered parameters
+
+  XIQ6164OneNodeTests::test_tcxm_23809:
+    author: aprihotin
+    tc: tcxm_23809
+    title: Verify that the EXOS/Switch Engine subsection contains the IGMP Settings parameter
+    description: Covered by test_tcxm_23808
+    steps:
+      - Onboard device
+      - Create new policy
+      - Go to common settings
+      - Get page text for EXOS
+      - Search the page text for the requiered parameters
+
+  XIQ6164OneNodeTests::test_tcxm_23810:
+    author: aprihotin
+    tc: tcxm_23810
+    title: Verify that the EXOS/Switch Engine subsection contains the MTU Settings parameter
+    description: Covered by test_tcxm_23808
+    steps:
+      - Onboard device
+      - Create new policy
+      - Go to common settings
+      - Get page text for EXOS
+      - Search the page text for the requiered parameters
+
+  XIQ6164OneNodeTests::test_tcxm_23811:
+    author: aprihotin
+    tc: tcxm_23811
+    title: Verify that the EXOS/Switch Engine subsection contains the MAC Locking Settings parameter
+    description: Covered by test_tcxm_23808
+    steps:
+      - Onboard device
+      - Create new policy
+      - Go to common settings
+      - Get page text for EXOS
+      - Search the page text for the requiered parameters
+
+  XIQ6164OneNodeTests::test_tcxm_23812:
+    author: aprihotin
+    tc: tcxm_23812
+    title: Verify that the EXOS/Switch Engine subsection contains the ELRP Settings parameter
+    description: Covered by test_tcxm_23808
+    steps:
+      - Onboard device
+      - Create new policy
+      - Go to common settings
+      - Get page text for EXOS
+      - Search the page text for the requiered parameters
+
+  XIQ6164OneNodeTests::test_tcxm_23813:
+    author: aprihotin
+    tc: tcxm_23813
+    title: Verify that the EXOS/Switch Engine subsection contains the PSE Settings parameter
+    description: Covered by test_tcxm_23808
+    steps:
+      - Onboard device
+      - Create new policy
+      - Go to common settings
+      - Get page text for EXOS
+      - Search the page text for the requiered parameters
+
+  XIQ6164OneNodeTests::test_tcxm_23814:
+    author: aprihotin
+    tc: tcxm_23814
+    title: Verify that the EXOS/Switch Engine subsection contains the Management Interface Settings parameter
+    description: Covered by test_tcxm_23808
+    steps:
+      - Onboard device
+      - Create new policy
+      - Go to common settings
+      - Get page text for EXOS
+      - Search the page text for the requiered parameters
+
+  XIQ6164OneNodeTests::test_tcxm_23815:
+    author: aprihotin
+    tc: tcxm_23815
+    title: Verifiy that the VOSS/Fabric Engine subsection contains the STP parameter
+    description: This test will check all the VOSS common settings page text for the requiered parameters
+    steps:
+      - Create new policy
+      - Go to switching section --> common settings for VOSS
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164OneNodeTests::test_tcxm_23816:
+    author: aprihotin
+    tc: tcxm_23816
+    title: Verify that the VOSS/Fabric Engine subsection contains the IGMP Settings parameter
+    description: Covered by test_tcxm_23815
+    steps:
+      - Create new policy
+      - Go to switching section --> common settings for VOSS
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164OneNodeTests::test_tcxm_23817:
+    author: aprihotin
+    tc: tcxm_23817
+    title: Verify that the VOSS/Fabric Engine subsection contains the MTU Settings parameter
+    description: Covered by test_tcxm_23815
+    steps:
+      - Create new policy
+      - Go to switching section --> common settings for VOSS
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164OneNodeTests::test_tcxm_23818:
+    author: aprihotin
+    tc: tcxm_23818
+    title: Verify that the VOSS/Fabric Engine subsection contains the PSE Settings parameter
+    description: Covered by test_tcxm_23815
+    steps:
+      - Create new policy
+      - Go to switching section --> common settings for VOSS
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164OneNodeTests::test_tcxm_23806:
+    author: aprihotin
+    tc: tcxm_23806
+    title: Verify that the common settings section is in the Extreme Switching/TBD tab
+    description: Covered by test_tcxm_23815
+    steps:
+      - Create new policy
+      - Go to switching section --> common settings for VOSS
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164OneNodeTests::test_tcxm_23807:
+    author: aprihotin
+    tc: tcxm_23807
+    title: Verify that there are 2 subsections to the common settings section, one for Exos/Switch Engine and one for VOSS/Fabric engine
+    description: Covered by test_tcxm_23815
+    steps:
+      - Create new policy
+      - Go to switching section --> common settings for VOSS
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  #################### TESTBED 1 NODE ##########################
+  #################### TESTBED STACK ###########################
+
+  XIQ6164StackTests::test_tcxm_23823:
+    author: aprihotin
+    tc: tcxm_23823
+    title: Verify that the changes made in common settings are reflected in the default switch template for each policy
+    description: This test will modify a common settings parameter and check if the change is reflected in a newly created switch template
+    steps:
+      - Create new policy
+      - Go to switching --> common settings
+      - Modify a parameter( like STP)
+      - Add a new switch template
+      - Check the state of the modified parameter in the default template view
+
+  XIQ6164StackTests::test_tcxm_23808:
+    author: aprihotin
+    tc: tcxm_23808
+    title: Verifiy that the EXOS/Switch Engine subsection contains the STP parameter
+    description: This test will check the common settings for EXOS and check if all the parameters are present
+    steps:
+      - Onboard device
+      - Create new policy
+      - Go to common settings
+      - Get page text for EXOS
+      - Search the page text for the requiered parameters
+
+  XIQ6164StackTests::test_tcxm_23809:
+    author: aprihotin
+    tc: tcxm_23809
+    title: Verify that the EXOS/Switch Engine subsection contains the IGMP Settings parameter
+    description: Covered by test_tcxm_23808
+    steps:
+      - Onboard device
+      - Create new policy
+      - Go to common settings
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164StackTests::test_tcxm_23810:
+    author: aprihotin
+    tc: tcxm_23810
+    title: Verify that the EXOS/Switch Engine subsection contains the MTU Settings parameter
+    description: Covered by test_tcxm_23808
+    steps:
+      - Onboard device
+      - Create new policy
+      - Go to common settings
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164StackTests::test_tcxm_23811:
+    author: aprihotin
+    tc: tcxm_23811
+    title: Verify that the EXOS/Switch Engine subsection contains the MAC Locking Settings parameter
+    description: Covered by test_tcxm_23808
+    steps:
+      - Onboard device
+      - Create new policy
+      - Go to common settings
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164StackTests::test_tcxm_23812:
+    author: aprihotin
+    tc: tcxm_23812
+    title: Verify that the EXOS/Switch Engine subsection contains the ELRP Settings parameter
+    description: Covered by test_tcxm_23808
+    steps:
+      - Onboard device
+      - Create new policy
+      - Go to common settings
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164StackTests::test_tcxm_23813:
+    author: aprihotin
+    tc: tcxm_23813
+    title: Verify that the EXOS/Switch Engine subsection contains the PSE Settings parameter
+    description: Covered by test_tcxm_23808
+    steps:
+      - Onboard device
+      - Create new policy
+      - Go to common settings
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164StackTests::test_tcxm_23814:
+    author: aprihotin
+    tc: tcxm_23814
+    title: Verify that the EXOS/Switch Engine subsection contains the Management Interface Settings parameter
+    description: Covered by test_tcxm_23808
+    steps:
+      - Onboard device
+      - Create new policy
+      - Go to common settings
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164StackTests::test_tcxm_23815:
+    author: aprihotin
+    tc: tcxm_23815
+    title: Verifiy that the VOSS/Fabric Engine subsection contains the STP parameter
+    description: This test will check all the VOSS common settings page text for the requiered parameters
+    steps:
+      - Create new policy
+      - Go to switching section --> common settings for VOSS
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164StackTests::test_tcxm_23816:
+    author: aprihotin
+    tc: tcxm_23816
+    title: Verify that the VOSS/Fabric Engine subsection contains the IGMP Settings parameter
+    description: Covered by test_tcxm_23815
+    steps:
+      - Create new policy
+      - Go to switching section --> common settings for VOSS
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164StackTests::test_tcxm_23817:
+    author: aprihotin
+    tc: tcxm_23817
+    title: Verify that the VOSS/Fabric Engine subsection contains the MTU Settings parameter
+    description: Covered by test_tcxm_23815
+    steps:
+      - Create new policy
+      - Go to switching section --> common settings for VOSS
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164StackTests::test_tcxm_23818:
+    author: aprihotin
+    tc: tcxm_23818
+    title: Verify that the VOSS/Fabric Engine subsection contains the PSE Settings parameter
+    description: Covered by test_tcxm_23815
+    steps:
+      - Create new policy
+      - Go to switching section --> common settings for VOSS
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164StackTests::test_tcxm_23806:
+    author: aprihotin
+    tc: tcxm_23806
+    title: Verify that the common settings section is in the Extreme Switching/TBD tab
+    description: Covered by test_tcxm_23815
+    steps:
+      - Create new policy
+      - Go to switching section --> common settings for VOSS
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+  XIQ6164StackTests::test_tcxm_23807:
+    author: aprihotin
+    tc: tcxm_23807
+    title: Verify that there are 2 subsections to the common settings section, one for Exos/Switch Engine and one for VOSS/Fabric engine
+    description: Covered by test_tcxm_23815
+    steps:
+      - Create new policy
+      - Go to switching section --> common settings for VOSS
+      - Get title of each section in the page
+      - Check for the requiered parameters
+
+#################### TESTBED STACK ###########################
