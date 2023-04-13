@@ -1,13 +1,13 @@
 ap1:
   name:                     bui-flo-0042
   connection_method:        "ssh"
-  ip:                       10.234.178.60
+  ip:                       10.234.207.69
   port:                     22
   username:                 admin
   password:                 Aerohive123
   serial:                   '24602001170042'
-  console_ip:               10.234.178.230
-  console_port:             7009
+  console_ip:               10.234.207.230
+  console_port:             7013
   mac:                      BCF3102A9880
   cli_type:                 "AH-AP"
   platform:                 aerohive
@@ -36,7 +36,7 @@ ap1:
       neighbour_mac:            BCF31018EAC0
 
 mu1:
-  ip:             10.234.178.226
+  ip:             10.234.207.226
   port:           8270
   username:       extreme
   password:       Extreme@123
