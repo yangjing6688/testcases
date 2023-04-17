@@ -47,5 +47,5 @@ mu1:
   interface:      wlan0
   wifi_mac:       2CDB073D8547
   ethernet_mac:   8C47BE4F65C2
-  wifi_network:   10.234.105
-  wifi_network_vlan10:    10.234.105
+  wifi_network:   10.234.206
+  wifi_network_vlan10:    10.234.206
