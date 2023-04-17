@@ -1,18 +1,18 @@
 ap1:
-  name:                     bui-flo-0072
+  name:                     AH-1ec000#
   connection_method:        ssh
-  ip:                       10.16.168.118
+  ip:                       10.16.168.200
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   '24602001170072'
+  serial:                   '04101912120142'
   console_ip:               10.16.168.23
-  console_port:             10003
-  mac:                      BCF3102AA000
-  cli_type:                 "AH-AP"
+  console_port:             10005
+  mac:                      BCF3101EC000
+  cli_type:                 AH-AP
   platform:                 aerohive
-  model:                    AP460C
-  template:                 AP460C-default-template
+  model:                    AP410C
+  template:                 AP410C-default-template
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
@@ -20,29 +20,30 @@ ap1:
   onboard_device_type:      Real
 
 ap2:
-  name:                     bui-flo-0100
+  name:                     AH-86cc80#
   connection_method:        ssh
-  ip:                       10.16.168.202
+  ip:                       10.16.168.227
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   '01501707240100'
+  serial:                   'WM032212W-31330'
   console_ip:               10.16.168.23
-  console_port:             10006
-  mac:                      7C95B1006200
+  console_port:             10008
+  mac:                      B027CF86CC80
   cli_type:                 AH-AP
   platform:                 aerohive
-  model:                    AP150W
-  template:                 AP_150W-default-template
+  model:                    AP5050U
+  template:                 AP_5050U-default-template
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
-  location:                 auto_location_01, Milpitas, building_04, floor_05
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
   onboard_device_type:      Real
 
 mu1:
-  ip:             10.16.168.35
+  ip:             10.16.168.36
   port:           8270
   username:       admin
   password:       aerohive
   platform:       macmini
+
