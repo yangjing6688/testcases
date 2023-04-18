@@ -1,0 +1,154 @@
+data:
+  feature_name: XIQ-1365
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-1365
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=18894070
+
+tests:
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  Xiq1365Tests::test_tcxm_20574:
+    author: tpodar
+    tc: tcxm_20574
+    title: "Verify that Advanced settings TAB is present in Configuration Menu in Switch Template Configuration."
+    steps:
+      - Create a network policy
+      - In Device Template TAB select an EXOS switch template and
+      - check Advanced Settings TAB is present in Configuration Menu
+      - Click on Advanced Settings TAB
+
+  Xiq1365Tests::test_tcxm_20576:
+    author: tpodar
+    tc: tcxm_20576
+    title: "Verify that Toggle for Upgrade device firmware upon device authentication is present."
+    steps:
+      - Create a network policy
+      - In Device Template TAB select an EXOS switch template and check Advanced Settings TAB is
+      - present in Configuration Menu
+      - Click on Advanced Settings TAB
+      - Upgrade device firmware upon device authentication should be off by default
+
+  Xiq1365Tests::test_tcxm_20577:
+    author: tpodar
+    tc: tcxm_20577
+    title: "Verify that Option  for Upgrade firmware to the latest version is present."
+    steps:
+      - Create a network policy
+      - In Device Template TAB select an EXOS switch template and check Advanced Settings TAB is present in Configuration Menu
+      - Click on Advanced Settings TAB
+      - There is a option for "Upgrade firmware to the latest version" and can be selected.
+      - Then click Save button.
+      - Check that after a device is onboarded and network policy is set, firmware is updated to the latest version.
+
+  Xiq1365Tests::test_tcxm_20578:
+    author: tpodar
+    tc: tcxm_20578
+    title: "Verify that Option for Upgrade to the specific device firmware version is present."
+    steps: 
+      - Create a network policy.
+      - In Device Template TAB select an EXOS switch template and check Advanced Settings TAB is present in
+      - Configuration Menu.
+      - Click on Advanced Settings TAB.
+      - There is a option for "Upgrade to the specific device firmware version" and can be selected.Then click
+      - Save button.
+      - After selecting this option a list of firmware available should appear and user can choose one.
+      - After selecting one firmware from the list, when a device is onboarded and network policy is set,
+      - firmware will automatically update to the chosen firmware from the list.
+      - "Check that the image list that are shown from the drop-down are based on the switch template that is
+        a.	if the template selected is X440G2 then it should not list the Summit_arm/Summit_arm_lite/Onie/VOSS images.
+        b.	If the template selected is 5320/5720 then it should list only the supported images by these platforms (it should not list all the summit _arm images)."
+
+  Xiq1365Tests::test_tcxm_20579:
+    author: tpodar
+    tc: tcxm_20579
+    title: "Verify that Toggle for Upload configuration automatically is present and off by default."
+    steps:
+      - Create a network policy
+      - In Device Template TAB select an EXOS switch template and check if Advanced Settings TAB is present in Configuration Menu
+      - Click on Advanced Settings TAB
+      - Check if "Upload configuration automatically" button is OFF by default and switch it to ON then click on Save button
+      - Onboard an EXOS device and attach the network policy during onboarding 
+      - check if the device has been onboarded and the configuration has been automatically pushed
+
+  Xiq1365Tests::test_tcxm_20580:
+    author: tpodar
+    tc: tcxm_20580
+    title: "Check that if the DUT is already onboarded and has a network policy, changing Upload configuration automatically or Upgrade device firmware upon device firmware authentication from off to on will not have any effect."
+    steps:
+      - Create a network policy
+      - Onboard an EXOS device and attach the policy to it
+      - In Device Template TAB select an EXOS switch template and check Advanced Settings TAB is present in Configuration Menu
+      - Click on Advanced Settings TAB
+      - Turn on the toggle for "Upload configuration automatically" and "Upgrade device firmware upon device firmware authentication"
+      - Check that nothing happens since the expected behaviour is that the node_1 uploads automatically the firmware and the configuration only if the toggle for these options are already on before
+      - Check the device is onboarded and the network policy applied.
+
+  Xiq1365Tests::test_tcxm_20582:
+    author: tpodar
+    tc: tcxm_20582
+    title: "Check that all appropriate alarms/events should be triggered for upgrade firmware and auto upload config."
+    steps:
+      - Create a network policy.
+      - In Device Template TAB select an EXOS switch template and check Advanced Settings TAB is present in Configuration Menu.
+      - Click on Advanced Settings TAB.
+      - Select "Upgrade firmware to the latest version" and also "Upload configuration automatically" and click Save.
+      - Onboard the node_1 using the network policy configured.
+      - Check in the alarms TAB that all appropriate alarms regarding firmware and configuration upgrade appear as expected.
+
+  Xiq1365Tests::test_tcxm_20583:
+    author: tpodar
+    tc: tcxm_20583
+    title: "Verify that Option for Upgrade to the specific device firmware version is present."
+    steps:
+      - Create a network policy
+      - In Device Template TAB select an EXOS switch template and check Advanced Settings TAB is present in Configuration Menu
+      - Click on Advanced Settings TAB
+      - Select "Upgrade to the specific device firmware version" and also "Upload configuration automatically" and click Save.
+      - Check that the firmware selected to upgrade is the same with the firmware that is already on node_1
+      - Onboard the node_1 using the network policy configured.
+      - Check that upgrade is not triggered since the image on the node_1 is the same as the one selected for upgrade.
+
+  Xiq1365Tests::test_tcxm_20589:
+    author: tpodar
+    tc: tcxm_20589
+    title: "Check that the Upgrade firmware and Upload Configuration automatically functions are triggered after DUT transitions from unmanaged to managed."
+    steps:
+       - Create a network policy.
+       - In Device Template TAB select an EXOS switch template and check Advanced Settings TAB is present in Configuration Menu.
+       - Click on Advanced Settings TAB.
+       - Select "Upgrade firmware to the latest version" and also "Upload configuration automatically" and click Save.
+       - Onboard the node_1 without  assigning the network policy configured.
+       - Once the device is onboarded and managed make the device as unmanaged and assign the policy template.
+       - Now move the device to managed and ensure the firmware upgrade and config upload are triggered for the
+       - device.
+
+  Xiq1365Tests::test_tcxm_20590:
+    author: tpodar
+    tc: tcxm_20590
+    title: "Check for the Upgrade firmware and Upload Configuration automatically functions are not
+            triggered if the procedure is already made and device is switched from managed to unmanaged
+            and from unmanaged to managed back."
+    steps:
+       - Create a network policy.
+       - In Device Template TAB select an EXOS switch template and check Advanced Settings TAB is present in Configuration Menu.
+       - Click on Advanced Settings TAB.
+       - Select "Upgrade firmware to the latest version" and also "Upload configuration automatically" and click Save.
+       - Onboard the node_1 assigning the network policy configured.
+       - Check that the upgrade firmware and config procedure are triggered.
+       - Move the device from managed to unmanaged and from unmanaged to managed back.
+       - Check that the firmware procedure and config upload are not triggered once again.
+
+  #################### TESTBED 1 NODE ##########################

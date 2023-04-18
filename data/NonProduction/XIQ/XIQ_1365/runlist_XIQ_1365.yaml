@@ -1,0 +1,24 @@
+runlist_XIQ_1365:
+  run_options:
+    # skip_setup: yes
+    skip_teardown: yes
+  suitemap: 
+    - suitemap_XIQ_1365.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ['exos']
+        create_network_policy: no
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_20574
+    - tcxm_20576
+    - tcxm_20577
+    - tcxm_20578
+    - tcxm_20579
+    - tcxm_20580
+    - tcxm_20582
+    - tcxm_20583
+    - tcxm_20589
+    - tcxm_20590
+    - tcxm_xiq_onboarding_cleanup
