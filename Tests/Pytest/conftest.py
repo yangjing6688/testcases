@@ -50,6 +50,7 @@ from extauto.common.Rest import Rest
 from extauto.common.WebElementHandler import WebElementHandler
 from extauto.common.Tshark import Tshark
 from extauto.common.WebElementController import WebElementController
+from extauto.xiq.elements.Network360MonitorElements import Network360MonitorElements
 from extauto.xiq.flows.common.Navigator import Navigator
 from extauto.common.Utils import Utils
 from extauto.common.CloudDriver import CloudDriver
@@ -5278,6 +5279,9 @@ def default_library() -> DefaultLibrary:
 def udks() -> Udks:
     return Udks()
 
+@pytest.fixture(scope="session")
+def network_360_monitor_elements() -> Network360MonitorElements:
+    return Network360MonitorElements()
 
 @pytest.fixture(scope="session")
 def poll(debug, logger):

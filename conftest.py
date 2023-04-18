@@ -102,7 +102,7 @@ def pytest_addoption(parser):
     parser.addoption("--customReportTitle", action="store", default=None, help="Adds a Custom title to the report htmls file")
     parser.addoption("--runlist", action="store", help="The path to the runlist", default="default")
     parser.addoption("--runlist-filtering-markers", action="store", default=None, help="The tests from the runlist will be finally filtered using these markers")
-    parser.addoption("--xapienable", action="store_true", default=False, help="Set the XAPI_ENABLE flag")
+    parser.addoption("--xapi_enable", "--XAPI_ENABLE", action="store_true", default=False, help="Set the XAPI_ENABLE flag")
 
 def pytest_html_report_title(report):
     # Update title on web page
@@ -138,14 +138,14 @@ def pytest_configure(config):
         patch_http_connection_pool(maxsize=100)
 
         # Enable the xapi on the command line
-        if config.option.xapienable:
+        if config.option.xapi_enable:
             try:
                 # Add both the robot and pytest variable
                 pytest_config["XAPI_ENABLE"] = True
                 pytest_config["${XAPI_ENABLE}"] = True
-                print('XAPIENABLE is True')
+                print('XAPI_ENABLE is True')
             except Exception as e:
-                print(f'Exception trying to add xapienable: {e}')
+                print(f'Exception trying to add xapi_enable: {e}')
 
         if config.option.customReportDate:
             # set the timestamp

@@ -54,7 +54,7 @@ Test 2: Onboard Device and Verify Success
     [Documentation]     Onboards test device and verifies success
     [Tags]              tccs-13509    pilot_sanity_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test2
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT_IP}   ${DUT_PORT}   ${DUT_USERNAME}   ${DUT_PASSWORD}   ${DUT_CLI_TYPE}
@@ -79,7 +79,7 @@ Test 3: Verify Device Consumes Pilot License Within Global Settings License Mana
     [Documentation]     Confirms the license count for Pilot within Global Settings->License Management
     [Tags]              tccs-13509    pilot_sanity_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test3
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
 
@@ -87,7 +87,7 @@ Test 4: Verify Device License Column Value
     [Documentation]     Confirms the Device License column to verify device consumed the appropriate license or not
     [Tags]              tccs-13509    pilot_sanity_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test4
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT_SERIAL}    DEVICE LICENSE
@@ -97,7 +97,7 @@ Test 5: Delete Device and Verify Success
     [Documentation]     Deletes the device and verifies success
     [Tags]              tccs-13509    pilot_sanity_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test5
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     Delete Test Device and Confirm Success          ${DUT_SERIAL}
 
@@ -105,7 +105,7 @@ Test 6: Verify Pilot License Revoked Within Global Settings License Management
     [Documentation]     Confirms the Pilot license was revoked
     [Tags]              tccs-13509    pilot_sanity_testing    pilot_license_testing    aiq-2214    development    xiq    pilot    test6
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
 
@@ -187,7 +187,7 @@ Delete Test Device and Confirm Success
 
 Delete Device and Confirm Success
     [Documentation]     Deletes the specified device from XIQ and confirms it was removed successfully
-    [Arguments]         ${ip}
+    [Arguments]         ${serial}
 
-    ${del_result}=  Delete Device                     ${ip}
+    ${del_result}=  Delete Device                     device_serial=${serial}
     Should Be Equal As Integers                       ${del_result}      1

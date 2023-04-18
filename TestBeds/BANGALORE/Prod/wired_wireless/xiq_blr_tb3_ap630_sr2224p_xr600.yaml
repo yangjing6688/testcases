@@ -1,0 +1,77 @@
+ap1:
+  name:                     bui-flo-1046
+  connection_method:        "ssh"
+  ip:                       10.234.106.13
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   '06301909141046'
+  console_ip:               10.234.212.230
+  console_port:             7029
+  mac:                      3485843E7700
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP630
+  template:                 AP_630-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           Test_np
+      ssid:                     BLR_TB1_AP630_01
+      version:                  6.5
+      neighbour_serial:         01501810030852
+      neighbour_mac:            7C95B11A0800
+
+aerohive_sw1:
+  name:               AH-Switch
+  model:              SR2224P
+  device_template:    SR2348P-default-template
+  serial:             '22241605201989'
+  cli_type:           "AH-FASTPATH"
+  ip:                 10.234.212.230
+  port:               7004
+  connection_method:  "telnet"
+  mac:                B87CF20146E0
+  network_policy:
+  username:           admin
+  password:           Aerohive123
+  platform:           aerohive-fastpath
+  console_ip:         10.234.212.230
+  console_port:       7004
+  test_port:
+  make:               Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+
+router1:
+  name:                     bui-flo-0807
+  model:                    XR600P
+  device_template:          XR600P_test_automation
+  serial:                   '60018082100807'
+  cli_type:                 "AH-XR"
+  connection_method:        "telnet"
+  ip:                       10.234.212.230
+  port:                     7027
+  mac:                      F4EAB52D5480
+  network_policy:           Test_np
+  username:                 admin
+  password:                 Aerohive123
+  platform:                 aerohive
+  console_ip:               10.234.212.230
+  console_port:             7027
+  make:                     Extreme - Aerohive
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real

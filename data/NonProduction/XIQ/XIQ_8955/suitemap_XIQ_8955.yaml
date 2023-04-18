@@ -1,0 +1,172 @@
+data:
+  feature_name: Add Rollback/Reboot Option for Switch Engine/EXOS Template auto update config
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-8955
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=47641357
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  XIQ8955Tests::test_tcxm_22592:
+    author: dciupitu
+    tc: tcxm_22592
+    title: test tcxm_22592
+    description: Verify that if the upload config toggle is turned off, the "Reboot and revert Extreme
+                 Networks switch configuration if IQAgent is unresponsive after configuration update"
+                 checkbox is not present.
+    steps:
+      - Create a Network Policy with specific EXOS device template.
+      - Go to Device Template TAB.
+      - Select an EXOS switch template.
+      - Verify that Advanced Settings TAB is present in Configuration Menu.
+      - Click on Advanced Settings TAB.
+      - Verify that  "Upload configuration automatically" is present in Advanced Settings TAB.
+      - Verify that the Toggle for "Upload configuration automatically" is OFF by default.
+      - Verify that the Toggle for "Upload configuration automatically" is not present.
+      - Onboard the EXOS device and assign the previously created Network Policy during onboarding.
+
+  XIQ8955Tests::test_tcxm_22591:
+    author: dciupitu
+    tc: tcxm_22591
+    title: test tcxm_22591
+    description: Verify that "Reboot and revert Extreme Networks switch configuration if IQAgent is
+                unresponsive after configuration update" checkbox from Advanced settings TAB within template
+                under Upload configuration automatically (when enabled) is present and disabled by default.
+    steps:
+      - Create a Network Policy with specific EXOS device template.
+      - Go to Device Template TAB.
+      - Select an EXOS switch template.
+      - Verify that Advanced Settings TAB is present in Configuration Menu.
+      - Click on Advanced Settings TAB.
+      - Verify that  "Upload configuration automatically" is present in Advanced Settings TAB.
+      - Verify that the Toggle for "Upload configuration automatically" is OFF by default.
+      - Verify that the Toggle for "Upload configuration automatically" is not present.
+      - Onboard the EXOS device and assign the previously created Network Policy during onboarding.
+
+  XIQ8955Tests::test_tcxm_22593:
+    author: dciupitu
+    tc: tcxm_22593
+    title: test tcxm_22593
+    description: Verify that if the upload config toggle is turned off, the "Reboot and revert Extreme
+                 Networks switch configuration if IQAgent is unresponsive after configuration update"
+                 checkbox is not present.
+    steps:
+      - Verify that Advanced Settings TAB is present in Configuration Menu.
+      - Click on Advanced Settings TAB.
+      - There is a Toggle  for "Upload configuration automatically" and can be switched on
+        (is off by default).
+      - Under upload configuration automatically toggle there is a checkbox called "Reboot and
+        revert Extreme Networks switch configuration if IQAgent is unresponsive after configuration
+        update" which is disabled by default.
+      - Verify if the text displayed for the checkbox is correct according to the initial specifications.
+      - Onboard the EXOS device and assign the previously created Network Policy during onboarding.
+
+  XIQ8955Tests::test_tcxm_22595:
+    author: dciupitu
+    tc: tcxm_22595
+    title: test tcxm_22595
+    description: Verify that "Reboot and revert Extreme Networks switch configuration if IQAgent is
+                 unresponsive after configuration update" checkbox from Advanced settings TAB within template
+                 under Upload configuration automatically (when enabled) can be selected.
+    steps:
+      - Create a Network Policy with specific EXOS device template.
+      - Go to Device Template TAB.
+      - Select an EXOS switch template.
+      - Verify that Advanced Settings TAB is present in Configuration Menu.
+      - Click on Advanced Settings TAB.
+      - Verify that  "Upload configuration automatically" is present in Advanced Settings TAB.
+      - Verify that the Toggle for "Upload configuration automatically" is OFF by default.
+      - Verify that the Toggle for "Upload configuration automatically" can be switched to ON.
+      - Verify that "Reboot and revert Extreme Networks switch configuration if IQAgent is
+        unresponsive after configuration update" checkbox is visible.
+      - Verify that "Reboot and revert Extreme Networks switch configuration if IQAgent is
+        unresponsive after configuration update" checkbox is disabled by default.
+      - Select the specified checkbox.
+      - Click Save button for the template.
+      - Click yes on the new opened box.
+      - Onboard the EXOS device and assign the previously created Network Policy during onboarding.
+
+  XIQ8955Tests::test_tcxm_22594:
+    author: dciupitu
+    tc: tcxm_22594
+    title: test tcxm_22594
+    description: Verify that additional message that's used for validating option to user should be displayed
+                 when customer saves template. The user can select to ignore the message.
+    steps:
+      - Create a Network Policy with specific EXOS device template.
+      - Go to Device Template TAB.
+      - Select an EXOS switch template.
+      - Verify that Advanced Settings TAB is present in Configuration Menu.
+      - Click on Advanced Settings TAB.
+      - Verify that  "Upload configuration automatically" is present in Advanced Settings TAB.
+      - Verify that the Toggle for "Upload configuration automatically" is OFF by default.
+      - Verify that the Toggle for "Upload configuration automatically" can be switched to ON.
+      - Verify that "Reboot and revert Extreme Networks switch configuration if IQAgent is
+        unresponsive after configuration update" checkbox is visible.
+      - Verify that "Reboot and revert Extreme Networks switch configuration if IQAgent is
+        unresponsive after configuration update" checkbox is disabled by default.
+      - Select the specified checkbox.
+      - Click Save button for the template.
+      - Click yes on the new opened box.
+      - Onboard the EXOS device and assign the previously created Network Policy during onboarding.
+
+  XIQ8955Tests::test_tcxm_22599:
+    author: dciupitu
+    tc: tcxm_22599
+    title: test tcxm_22599
+    description: Verify that the rebooting process is triggered if the IQAgent is unresponsive during the
+                 upload configuration process.
+    steps:
+      - Go to Global Settings Section.
+      - Go to the VIQ Management tab.
+      - Turn ON the supplemental cli button.
+      - Create a Network Policy with specific EXOS device template.
+      - Go to Device Template TAB.
+      - Select an EXOS switch template.
+      - Verify that Advanced Settings TAB is present in Configuration Menu.
+      - Click on Advanced Settings TAB.
+      - Verify that  "Upload configuration automatically" is present in Advanced Settings TAB.
+      - Verify that the Toggle for "Upload configuration automatically" is OFF by default.
+      - Verify that the Toggle for "Upload configuration automatically" can be switched to ON.
+      - Verify that "Reboot and revert Extreme Networks switch configuration if IQAgent is
+        unresponsive after configuration update" checkbox is visible.
+      - Verify that "Reboot and revert Extreme Networks switch configuration if IQAgent is
+        unresponsive after configuration update" checkbox is disabled by default.
+      - Select the specified checkbox
+      - Turn ON the supplemental cli button from advanced settings tab.
+      - Enter "unconfigure Mgmt ipaddress" command.
+      - Click Save button for the template.
+      - Click yes on the new opened box.
+      - Onboard the EXOS device and assign the previously created Network Policy during onboarding.
+      - Wait for approx. 15 minutes until updated columns displays the update device failed message
+      - and the device is still connected.
+      - Check that by hovering the error message link the "IQAgent unresponsive after configuration
+        update. The device was rebooted and reverted to the previous configuration" message is displayed.
+      - Verify that all appropriate alarms/events should be triggered
+      - Check that the audit icon remains orange and no configuration update was made
+
+  XIQ8955Tests::test_tcxm_22603:
+    author: dciupitu
+    tc: tcxm_22603
+    title: test tcxm_22603
+    description: Verify that  the rebooting process is triggered if the IQAgent is unresponsive during the
+                 upload configuration process (the policy isn't assigned at onboarding). The DUT transitions
+                 from unmanaged to managed.
+    steps:
+      - Create a Network Policy with specific EXOS device template.
+
+  #################### TESTBED 1 NODE ##########################

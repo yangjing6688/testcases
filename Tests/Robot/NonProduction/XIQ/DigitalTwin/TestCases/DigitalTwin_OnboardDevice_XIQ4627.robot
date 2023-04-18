@@ -85,7 +85,7 @@ Test 2: Onboard Digital Twin Switch Engine Device
 
     Confirm Digital Twin Serial Number                      ${DT_SE_SERIAL}
     Confirm Device Status Icon                              ${DT_SE_SERIAL}     expected_icon=digital_twin
-    Select Device                                           ${DT_SE_SERIAL}
+    Select Device                                           device_serial=${DT_SE_SERIAL}
     Confirm Actions Relaunch Digital Twin Option Visible
     Confirm Actions Shutdown Digital Twin Option Hidden
     Confirm Device Serial Online                            ${DT_SE_SERIAL}     retry_duration=10    retry_count=60

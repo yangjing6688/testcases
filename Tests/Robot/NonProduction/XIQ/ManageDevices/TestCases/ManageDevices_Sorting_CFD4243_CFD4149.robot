@@ -189,10 +189,10 @@ Onboard and Configure Test Devices
     Navigate to Devices and Confirm Success
 
     # Onboard the devices for the test
-    ${dut1_result}=     Search Device   ${DUT1_SERIAL}      ignore_failure=True
-    ${dut2_result}=     Search Device   ${DUT2_SERIAL}      ignore_failure=True
-    ${dut3_result}=     Search Device   ${DUT3_SERIAL}      ignore_failure=True
-    ${dut4_result}=     Search Device   ${DUT4_SERIAL}      ignore_failure=True
+    ${dut1_result}=     Search Device   device_serial=${DUT1_SERIAL}      ignore_failure=True
+    ${dut2_result}=     Search Device   device_serial=${DUT2_SERIAL}      ignore_failure=True
+    ${dut3_result}=     Search Device   device_serial=${DUT3_SERIAL}      ignore_failure=True
+    ${dut4_result}=     Search Device   device_serial=${DUT4_SERIAL}      ignore_failure=True
     Run Keyword If      '${dut1_result}' != '1'  onboard device quick    ${ap1}
     Run Keyword If      '${dut2_result}' != '1'  onboard device quick    ${ap2}
     Run Keyword If      '${dut3_result}' != '1'  onboard device quick    ${ap3}

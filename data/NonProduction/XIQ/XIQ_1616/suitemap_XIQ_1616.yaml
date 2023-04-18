@@ -1,0 +1,288 @@
+data:
+  feature_name: N360 Port connection speed
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-1616
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=57264094
+
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  TCXM25126Tests::test_tcxm_25126:
+    author: rvisterineanu
+    tc: tcxm_25126
+    title: Verify legend and halfpie speeds in Port Connection Speed section
+    description: "Verify in the Port Connection Speed section that the 10M hyperlink can be clicked and the table with 10M ports information is opened
+                 Verify in the Port Connection Speed Speed section that each colour of the halfpie chart corresponding to a different speed can be clicked and the corresponding port speed table will open
+                 Verify that clicking the Back button in the table for 10M ports for both legend and halfpie chart will return the user to Port Connection Speed Speed window
+                 'Verify if the table's title for 10M ports is Port Speed: 10M when accessed from legend and halfpie chart'
+                 Verify if the table's header for 10M ports contains all the columns( HOST NAME, MAC ADDRESS and Number of Ports ) for both legend and halfpie chart"
+    steps:
+      - Onboard 2 or more devices having links of 10M, 100M, 1G, 2.5G, 5G, 10G connected.
+      - Go to ML Insights -> Network 360 Monitor.
+      - Select All Switches option from the dropdown at the top left of the page and click on the Devices card.
+      - In the Port Connection Speed Speed section, click on 10M hyperlink.
+      - In the Port Connection Speed Speed section, click on the colour corresponding to 10M speed.
+      - Click the "Back" button.
+      - Verify  if the table s title for 10M ports is "Port Speed 10M"
+      - Verify  if the table's header for 10M ports contains  all the columns (HOST NAME, MAC ADDRESS and Number of Ports).
+      - Repeat steps for all available link speeds.
+
+  TCXM25152Tests::test_tcxm_25152:
+    author: rvisterineanu
+    tc: tcxm_25152
+    title: Verify if the information in the table for 10M ports is correct according to CLI (Hostname, MAC Address) for both legend and halfpie chart
+    description: Verify if the information in the table for 10M ports is correct according to CLI (Hostname, MAC Address) for both legend and halfpie chart
+    steps:
+      - Onboard 2 or more devices having links of 10M, 100M, 1G, 2.5G, 5G, 10G connected.
+      - Go to ML Insights -> Network 360 Monitor.
+      - Select All Switches option from the dropdown at the top left of the page and click on the Devices card.
+      - In the Port Connection Speed Speed section, click on 10M hyperlink.
+      - For each device in the table, the information in the table (HOST NAME, MAC Address) will be checked with those in CLI.
+      - Click the "Back" button
+      - Repeat step 4-5 for all available link speeds.
+      - In the halfpie chart, click on the colour corresponding to 10M ports.
+      - For each device in the table, the information in the table (HOST NAME, MAC Address) will be checked with those in CLI.
+      - Click the "Back" button.
+      - Repeat step 8-10 for all available link speeds.
+
+  TCXM25153Tests::test_tcxm_25153:
+    author: rvisterineanu
+    tc: tcxm_25153
+    title: "Verify if the devices in the table for 10M ports for both legend and halfpie chart are also present in the list of devices in Manage-->Devices
+              for the corresponding location and that the information regarding the Hostname and MAC Address are identical."
+    description: "Verify if the devices in the table for 10M ports for both legend and halfpie chart are also present in the list of devices in Manage-->Devices
+              for the corresponding location and that the information regarding the Hostname and MAC Address are identical."
+    steps:
+      - Onboard 2 or more devices having links of 10M, 100M, 1G, 2.5G, 5G, 10G connected.
+      - Go to ML Insights -> Network 360 Monitor.
+      - Select All Switches option from the dropdown at the top left of the page and click on the Devices card.
+      - In the Port Connection Speed Speed section, click on 10M hyperlink.
+      - Get the information about all the devices in the table for the corresponding location.
+      - Go to Manage-->Devices.
+      - For the specific location, verify if the devices from the Port Connection Speed table are also present here and the information is displayed correctly.
+      - Repeat step 4-6 for all available link speeds.
+      - In the halfpie chart, click on the colour corresponding to 10M ports.
+      - Get the information about all the devices in the table for the corresponding location.
+      - Go to Manage-->Devices.
+      - For the specific location, verify if the devices from the Port Connection Speed table are also present here and the information is displayed correctly.
+      - Repeat step 9-12 for all available link speeds.
+
+  TCXM25154Tests::test_tcxm_25154:
+    author: rvisterineanu
+    tc: tcxm_25154
+    title: Verify if the values for HOST NAME and MAC ADDRESS in the table for 10M ports for both legend and halfpie chart are hyperlinks
+    description: Verify if the values for HOST NAME and MAC ADDRESS in the table for 10M ports for both legend and halfpie chart are hyperlinks
+    steps:
+      - Onboard 2 or more devices having links of 10M, 100M, 1G, 2.5G, 5G, 10G connected.
+      - Go to ML Insights -> Network 360 Monitor.
+      - Select All Switches option from the dropdown at the top left of the page and click on the Devices card.
+      - In the Port Connection Speed Speed section, click on 10M hyperlink.
+      - For the HOST NAME and MAC ADDRESS columns, verify if the corresponding values are hyperlinks.
+      - Click the "Back" button
+      - Repeat step 4-6 for all available link speeds.
+      - In the halfpie chart, click on the colour corresponding to 10M ports.
+      - For the HOST NAME and MAC ADDRESS columns, verify if the corresponding values are hyperlinks.
+      - Click the "Back" button.
+      - Repeat step 8-10 for all available link speeds.
+
+  TCXM25155Tests::test_tcxm_25155:
+    author: rvisterineanu
+    tc: tcxm_25155
+    title: Verify clicking hostnames and macs and checking the number of ports for each speed in Port Connection Speed Section
+    description: "Verify if clicking one Hostname from the 10M ports table for both legend and halfpie chart will open the D360 page for the device
+                 Verify if clicking one Mac Address from the 10M ports table for both legend and halfpie chart will open the D360 page for the device
+                 Verify if the Number of Ports column from the 10M ports table for both legend and halfpie chart has the correct 10M number of ports per device"
+    steps:
+      - Onboard 2 or more devices having links of 10M, 100M, 1G, 2.5G, 5G, 10G connected.
+      - Go to ML Insights -> Network 360 Monitor.
+      - Select All Switches option from the dropdown at the top left of the page and click on the Devices card.
+      - In the Port Connection Speed Speed section, click on 10M hyperlink.
+      - Verify if the number of ports of 10M for each device is displayed accurately.
+      - Click on a Hostname hyperlink.
+      - Click on a Mac Address hyperlink.
+      - Close the D360 page.
+      - Repeat step 4-6 for all available link speeds.
+      - In the halfpie chart, click on the colour corresponding to 10M ports.
+      - Click on a Hostname hyperlink.
+      - Click on a Mac Address hyperlink.
+      - Close the D360 page.
+      - Repeat step 8-10 for all available link speeds.
+
+  TCXM25164Tests::test_tcxm_25164:
+    author: rvisterineanu
+    tc: tcxm_25164
+    title: Verify behavior and refresh button when disconnecting some links
+    description: "Verify if port speed tables for both legend and halfpie chart are consistent when disconnecting some links
+                 Verify that clicking the Refresh button will close the opened 10M table for both legend and halfpie chart and when reopened, the changed information is present in the tables"
+    steps:
+      - Onboard 2 or more devices having links of 10M, 100M, 1G, 2.5G, 5G, 10G connected.
+      - Go to ML Insights -> Network 360 Monitor.
+      - Select All Switches option from the dropdown at the top left of the page and click on the Devices card.
+      - In the Port Connection Speed Speed section, click on 10M hyperlink.
+      - Verify in the 10M ports table if the number of ports is correctly displayed.
+      - Click the "Back" button.
+      - Repeat steps 4-6 for all available link speeds.
+      - In the halfpie chart, click on the colour corresponding to 10M ports.
+      - Verify in the 10M ports table if the number of ports is correctly displayed.
+      - Click the "Back" button.
+      - Reapeat steps 8-10 for all available link speeds.
+      - Disconnect some cables of different speeds(shutdown ports).
+      - Reapeat steps 4-11  to verify that the disconnected links are missing.
+      - Reconnect the previous links.
+      - Reapeat steps 4-11  to verify that the previously disconnected links are present now.
+
+  TCXM25165Tests::test_tcxm_25165:
+    author: rvisterineanu
+    tc: tcxm_25165
+    title: Verify if port speed tables for both legend and halfpie chart are consistent when ports' speed change
+    description: Verify if port speed tables for both legend and halfpie chart are consistent when ports' speed change
+    steps:
+      - Onboard 2 or more devices having links of 10M, 100M, 1G, 2.5G, 5G, 10G connected.
+      - Go to ML Insights -> Network 360 Monitor.
+      - Select All Switches option from the dropdown at the top left of the page and click on the Devices card.
+      - In the Port Connection Speed Speed section, click on 10M hyperlink.
+      - Verify in the 10M ports table if the number of ports is correctly displayed.
+      - Click the "Back" button.
+      - Repeat steps 4-6 for all available link speeds.
+      - In the halfpie chart, click on the colour corresponding to 10M ports.
+      - Verify in the 10M ports table if the number of ports is correctly displayed.
+      - Click the "Back" button.
+      - Reapeat steps 8-10 for all available link speeds.
+      - Configure links to operate at different speed.
+      - Repeat steps 4-11  to verify that the port speed tables are displaying the correct information.
+      - Configure links to operate at the initial speed.
+      - Reapeat steps 4-11  to verify that the links are operating at the initial speed.
+
+  TCXM25166Tests::test_tcxm_25166:
+    author: rvisterineanu
+    tc: tcxm_25166
+    title: Verify if port speed tables for both legend and halfpie chart are consistent when rebooting the unit
+    description: Verify if port speed tables for both legend and halfpie chart are consistent when rebooting the unit
+    steps:
+      - Onboard 2 or more devices having links of 10M, 100M, 1G, 2.5G, 5G, 10G connected.
+      - Go to ML Insights -> Network 360 Monitor.
+      - Select All Switches option from the dropdown at the top left of the page and click on the Devices card.
+      - In the Port Connection Speed Speed section, click on 10M hyperlink.
+      - Verify in the 10M ports table if the number of ports is correctly displayed.
+      - Click the "Back" button.
+      - Repeat steps 4-5 for all available link speeds.
+      - In the halfpie chart, click on the colour corresponding to 10M ports.
+      - Verify in the 10M ports table if  the number of ports is correctly displayed.
+      - Click the "Back" button.
+      - Repeat steps 7-10 for all available link speeds.
+      - Reboot the unit.
+      - After the unit reboots, repeat steps 4-10 to verify that the number of ports is correctly displayed.
+
+  TCXM25167Tests::test_tcxm_25167:
+    author: rvisterineanu
+    tc: tcxm_25167
+    title: Verify if port speed tables for both legend and halfpie chart are consistent when onboarding/offboarding the device
+    description: Verify if port speed tables for both legend and halfpie chart are consistent when onboarding/offboarding the device
+    steps:
+      - Onboard 2 or more devices having links of 10M, 100M, 1G, 2.5G, 5G, 10G connected.
+      - Go to ML Insights -> Network 360 Monitor.
+      - Select All Switches option from the dropdown at the top left of the page and click on the Devices card.
+      - In the Port Connection Speed Speed section, click on 10M hyperlink.
+      - Verify in the 10M ports table if the number of ports is correctly displayed.
+      - Click the "Back" button.
+      - Repeat steps 4-5 for all available link speeds.
+      - In the halfpie chart, click on the colour corresponding to 10M ports.
+      - Verify in the 10M ports table if  the number of ports is correctly displayed.
+      - Click the "Back" button.
+      - Repeat steps 7-10 for all available link speeds.
+      - Offboard the device.
+      - Onboard the device again.
+      - Repeat steps 4-11 to verify that the information regarding the onboarded device is present.
+
+  TCXM25168Tests::test_tcxm_25168:
+    author: rvisterineanu
+    tc: tcxm_25168
+    title: Verify if port speed tables for both legend and halfpie chart are consistent when bouncing the IQAgent
+    description: Verify if port speed tables for both legend and halfpie chart are consistent when bouncing the IQAgent
+    steps:
+      - Onboard 2 or more devices having links of 10M, 100M, 1G, 2.5G, 5G, 10G connected.
+      - Go to ML Insights -> Network 360 Monitor.
+      - Select All Switches option from the dropdown at the top left of the page and click on the Devices card.
+      - In the Port Connection Speed Speed section, click on 10M hyperlink.
+      - Verify in the 10M ports table if the number of ports is correctly displayed.
+      - Click the "Back" button.
+      - Repeat steps 4-5 for all available link speeds.
+      - In the halfpie chart, click on the colour corresponding to 10M ports.
+      - Verify in the 10M ports table if  the number of ports is correctly displayed.
+      - Click the "Back" button.
+      - Repeat steps 7-10 for all available link speeds.
+      - Bounce the IQAgent.
+      - After the agent is reconnected,Reapeat steps 4-10 to verify that the information is the one before the bouncing of IQAgent.
+
+  #################### TESTBED 1 NODE ##########################
+
+  #################### TESTBED 2 NODE ##########################
+
+  TCXM25159Tests::test_tcxm_25159:
+    author: rvisterineanu
+    tc: tcxm_25159
+    title: Verify sorting in Port Connection Speed tables
+    description: "Verify if the sorting of the table is done by default according to the HOST NAME column in alphabetical order for 10M ports table for both legend and halfpie chart
+                 Verify if the sorting of the table can be done top-down and bottom-up according to HOST NAME, MAC ADDRESS and Number of Ports columns for 10M ports table for both legend and halfpie chart"
+    steps:
+      - Onboard 2 or more devices having links of 10M, 100M, 1G, 2.5G, 5G, 10G connected.
+      - Go to ML Insights -> Network 360 Monitor.
+      - Select All Switches option from the dropdown at the top left of the page and click on the Devices card.
+      - In the Port Connection Speed Speed section, click on 10M hyperlink.
+      - Verify if the sorting of the table is done by default according to the HOST NAME column in alphabetical order.
+      - Click in turn on the sorting arrow for HOST NAME,  MAC ADDRESS and Number of Ports columns.
+      - Click the "Back" button.
+      - Repeat step 4-6 for all available link speeds.
+      - In the halfpie chart, click on the colour corresponding to 10M ports.
+      - Verify if the sorting of the table is done by default according to the HOST NAME column in alphabetical order.
+      - Click in turn on the sorting arrow for HOST NAME,  MAC ADDRESS and Ports columns.
+      - Click the "Back" button.
+      - Repeat step 8-10 for all available link speeds.
+
+  #################### TESTBED 2 NODE ##########################
+
+  #################### TESTBED STACK ##########################
+
+  TCXM25169Tests::test_tcxm_25169:
+    author: rvisterineanu
+    tc: tcxm_25169
+    title: Verify hostname, mac address and ports for stack
+    description: "Verify the Hostname and Mac Address are maintained accordingly in speed port tables for both legend and halfpie chart when the master slot is powered off/on
+                 Verify the Port Information is consistent in speed port tables for both legend and halfpie chart when powering off/on the master slot from stack"
+    steps:
+      - Onboard 2 or more devices having links of 10M, 100M, 1G, 2.5G, 5G, 10G connected.
+      - Go to ML Insights -> Network 360 Monitor.
+      - Select All Switches option from the dropdown at the top left of the page and click on the Devices card.
+      - In the Port Connection Speed Speed section, click on 10M hyperlink.
+      - Verify in the 10M ports table the HOST NAME  and MAC Address of the stack.
+      - Verify in the 10M ports table if the number of ports is correctly displayed.
+      - Click the "Back" button.
+      - Repeat steps 4-7 for all available link speeds.
+      - In the halfpie chart, click on the colour corresponding to 10M ports.
+      - Verify in the 10M ports table if HOST NAME  and MAC Address  are correctly displayed.
+      - Verify in the 10M ports table if the number of ports is correctly displayed.
+      - Click the "Back" button.
+      - Repeat steps 9-12 for all available link speeds.
+      - Power off the master slot.
+      - Repeat step 4-13 to verify the HOST NAME  and MAC Address of the stack.
+      - Repeat step 4-13 to verify if the number of ports is correctly displayed.
+      - Power on the master slot.
+      - Repeat step 4-13 to verify the HOST NAME  and MAC Address of the stack.
+      - Repeat step 4-13 to verify if the number of ports is correctly displayed.
+
+  #################### TESTBED STACK ##########################

@@ -32,7 +32,7 @@ Delete Device and Confirm Success
     [Documentation]     Deletes the specified device from the Manage> Devices list and confirms the action was successful
     [Arguments]         ${serial}
 
-    ${result}=  Delete Device       ${serial}
+    ${result}=  Delete Device       device_serial=${serial}
     Should Be Equal As Integers     ${result}  1
 
 Confirm Device Serial Present
