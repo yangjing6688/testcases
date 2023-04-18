@@ -1,0 +1,21 @@
+runlist_XIQ_5721:
+  suitemap:
+    - suitemap_XIQ_5721.yaml
+  onboarding_options:                               
+    standalone:
+      node_1:
+        run_os: ["exos", "voss"]                    
+        initial_network_policy_push: no            
+      node_2:
+        run_os: ["exos", "voss"]
+        create_network_policy: no
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_precondition
+    - tcxm_24842
+    - tcxm_24843
+    - tcxm_24844
+    - tcxm_24845
+    - tcxm_24846
+    - tcxm_24847
+    - tcxm_xiq_onboarding_cleanup
