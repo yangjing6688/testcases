@@ -25,6 +25,7 @@ from contextlib import contextmanager
 from typing import List, Dict, DefaultDict, Callable, Tuple, Iterator, Protocol, NewType, Union, Any
 from pathlib import Path
 from itertools import permutations
+from collections.abc import MutableMapping
 
 from ExtremeAutomation.Library.Utils.Singleton import Singleton
 from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
@@ -2959,6 +2960,16 @@ def cleanup(
     return cleanup_func
 
 
+def merge_dicts(dict_1, dict_2):
+    for k, v in dict_1.items():
+        if k in dict_2:
+            if all(isinstance(e, MutableMapping) for e in (v, dict_2[k])):
+                dict_2[k] = merge_dicts(v, dict_2[k])
+    dict_3 = dict_1.copy()
+    dict_3.update(dict_2)
+    return dict_3
+
+
 @pytest.fixture(scope="session")
 def configure_network_policies(
         logger: PytestLogger, 
@@ -2966,7 +2977,9 @@ def configure_network_policies(
         policy_config: PolicyConfig,
         screen: Screen,
         debug: Callable,
-        request: fixtures.SubRequest
+        request: fixtures.SubRequest,
+        navigator: Navigator,
+        utils: Utils
 ) -> ConfigureNetworkPolicies:
     """
     Fixture that configures the network policies and the switch templates for the onboarded nodes.
@@ -3005,16 +3018,39 @@ def configure_network_policies(
                 logger.info(f"Successfully created the network policy '{network_policy}' for dut '{dut}' (node: '{node_name}').")
                 
                 pytest.created_network_policies.append(network_policy)
+                
+                default_network_policy_onboarding_options = {
+                    "dns_server_options": {
+                        "status": "disable"
+                    }
+                }
+                
+                if network_policy_onboarding_options := merge_dicts(default_network_policy_onboarding_options, onb_options.get("network_policy_onboarding_options", {})):
+                
+                    xiq.xflowsconfigureNetworkPolicy.navigate_to_np_edit_tab(network_policy)
+                    
+                    if dns_server_options := network_policy_onboarding_options.get("dns_server_options", {}):
+                        xiq.xflowsconfigureNetworkPolicy.go_to_dns_server_tab()
+                        
+                        if status := dns_server_options.get("status", "disable"):
+                            xiq.xflowsconfigureNetworkPolicy.set_dns_server_status(status)
+
+                        xiq.xflowsconfigureNetworkPolicy.save_dns_server_tab()
 
                 if create_switch_template_flag:
+                    
+                    navigator.navigate_to_devices()
+                    navigator.navigate_configure_network_policies()
+                    utils.wait_till(timeout=5)
+
                     logger.step(f"Create and attach this switch template to '{dut}' dut (node: '{node_name}'): '{template_switch}'.")
                     if node_name == "node_stack":
                         xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(
                             units_model, network_policy,
-                            model_template, template_switch)
+                            model_template, template_switch, cli_type=node_info.cli_type.upper())
                     else:
                         xiq.xflowsconfigureSwitchTemplate.add_sw_template(
-                            network_policy, model_template, template_switch)
+                            network_policy, model_template, template_switch, cli_type=node_info.cli_type.upper())
                         screen.save_screen_shot()
                     logger.info(
                         f"Successfully created and attached this switch template to the network policy"
