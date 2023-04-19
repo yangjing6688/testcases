@@ -70,7 +70,7 @@ class Xiq921Tests:
             self.get_delete_port_type(xiq_library_at_class_level, port_type_exos_name)
 
     def configure_port_type_local(self, xiq_library_at_class_level, node, template_voss_auto_sense_off, template_exos, voss_port, exos_port,
-                                  policy_name=None, device_name=None, d360=True):
+                                  policy_name=None, device_template_name=None, d360=True):
         delete_port_type = False
         create_new_port_type_and_check_summary = -1
         time.sleep(10)
@@ -109,11 +109,11 @@ class Xiq921Tests:
                 delete_port_type = True
 
         else:
-            print("***Selecting SW template ", device_name)
+            print("***Selecting SW template ", device_template_name)
             time.sleep(10)
-            select_template = xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(policy_name, device_name, node.cli_type)
+            select_template = xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(policy_name, device_template_name, node.cli_type)
             if select_template != 1:
-                pytest.fail("Could not select switch template ", device_name)
+                pytest.fail("Could not select switch template ", device_template_name)
 
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.go_to_port_configuration()
             time.sleep(10)
@@ -2032,7 +2032,7 @@ class Xiq921Tests:
         # Configure port type
         print(
             f"Configuring Port Type in network policy {node_policy_name} and sw template {node_template_name}")
-        delete_port_type = self.configure_port_type_local(xiq_library_at_class_level, template_voss_auto_sense_off, template_exos,
+        delete_port_type = self.configure_port_type_local(xiq_library_at_class_level, node, template_voss_auto_sense_off, template_exos,
                                                           voss_or_exos_port,
                                                           voss_or_exos_port, node_policy_name,
                                                           node_template_name,
