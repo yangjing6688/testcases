@@ -5,8 +5,8 @@
 #----------------------------------------------------------------------
 #
 # Author        : David W. Truesdell
-# Description   : Test Suite for testing CoPilot license filter
-#               : This is qTest test case TCCS-15092 in the CSIT project.
+# Description   : Test Suite for testing CoPilot license filter combinations
+#               : This is qTest test case TCCS-15101 in the CSIT project.
 
 
 *** Settings ***
@@ -69,14 +69,14 @@ ${COLUMN_3}                 Device License
 *** Test Cases ***
 Test 1: Verify Pilot and CoPilot Baseline License Counts
     [Documentation]     Confirms license counts are at expected values in XIQ to begin with (nothing consumed)
-    [Tags]              tccs-15092    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test1
+    [Tags]              tccs-15101    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test1
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
 
 Test 2: Onboard First Test Device and Verify Success
     [Documentation]     Onboards test device and verifies success
-    [Tags]              tccs-15092    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test2
+    [Tags]              tccs-15101    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test2
 
     Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
@@ -101,7 +101,7 @@ Test 2: Onboard First Test Device and Verify Success
 
 Test 3: Onboard Second Test Device and Verify Success
     [Documentation]     Onboards a second test device and verifies success
-    [Tags]              tccs-15092    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test3
+    [Tags]              tccs-15101    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test3
 
     Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
@@ -123,7 +123,7 @@ Test 3: Onboard Second Test Device and Verify Success
 
 Test 4: Onboard Third Test Device and Verify Success
     [Documentation]     Onboards a third test device and verifies success
-    [Tags]              tccs-15092    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test4
+    [Tags]              tccs-15101    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test4
 
     Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
@@ -145,7 +145,7 @@ Test 4: Onboard Third Test Device and Verify Success
 
 Test 5: Verify Devices Consume Pilot And CoPilot Licenses Within Global Settings License Management
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
-    [Tags]              tccs-15092    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test5
+    [Tags]              tccs-15101    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test5
 
     Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
@@ -154,7 +154,7 @@ Test 5: Verify Devices Consume Pilot And CoPilot Licenses Within Global Settings
 
 Test 6: Verify Device License and CoPilot Column Values On All Devices
     [Documentation]     Confirms the Device License and CoPilot column values to verify device consumed the appropriate license or not
-    [Tags]              tccs-15092    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test6
+    [Tags]              tccs-15101    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test6
 
     Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
@@ -182,69 +182,46 @@ Test 6: Verify Device License and CoPilot Column Values On All Devices
     ${copilot3_result}=    Get Device Details    ${DUT3_SERIAL}    COPILOT
     Should Contain         ${copilot3_result}    ${COPILOT_NONE}
 
-Test 7: Filter For CoPilot License Active
-    [Documentation]     Filters by the CoPilot License group 'CoPilot Active' to show devices that have an Active CoPilot license
-    [Tags]              tccs-15092    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test7
+Test 7: Filter For CoPilot License Active AND None and Verify Devices In Devices panel
+    [Documentation]     Filters by the CoPilot License group 'CoPilot Active' and 'CoPilot None'
+    [Tags]              tccs-15101    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test7
 
     Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
-    
-    Set Filter For CoPilot License Active
 
-    Confirm Device Serial Present in Filtered Devices Panel             ${DUT1_SERIAL}
-    Confirm Device Serial Present in Filtered Devices Panel             ${DUT2_SERIAL}
-    Confirm Device Serial Not Present in Filtered Devices Panel         ${DUT3_SERIAL}
     Clear All Filters
+    Set Filter For CoPilot License Active
+    Set Filter For CoPilot License None
 
-Test 8: Filter For CoPilot License None
-    [Documentation]     Filters by the CoPilot License group 'CoPilot None' to show devices that have a None CoPilot license
-    [Tags]              tccs-15092    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test8
+    Confirm Device Serial Present in Filtered Devices Panel         ${DUT1_SERIAL}
+    Confirm Device Serial Present in Filtered Devices Panel         ${DUT2_SERIAL}
+    Confirm Device Serial Present in Filtered Devices Panel         ${DUT3_SERIAL}
+
+Test 8: Filter For CoPilot License None AND Expired and Verify Devices In Devices panel
+    [Documentation]     Filters by the CoPilot License group 'CoPilot None' and 'CoPilot Expired'
+    [Tags]              tccs-15101    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test8
 
     Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
-    
+
+    Clear All Filters
     Set Filter For CoPilot License None
+    Set Filter For CoPilot License Expired
 
     Confirm Device Serial Present in Filtered Devices Panel             ${DUT3_SERIAL}
     Confirm Device Serial Not Present in Filtered Devices Panel         ${DUT1_SERIAL}
     Confirm Device Serial Not Present in Filtered Devices Panel         ${DUT2_SERIAL}
-    Clear All Filters
 
-Test 9: Filter For CoPilot License All
-    [Documentation]     Filters by the CoPilot License group 'All' to show all CoPilot devices
-    [Tags]              tccs-15092    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test9
-
-    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
-    
-    Set Filter For CoPilot License All
-
-    Confirm Device Serial Present in Filtered Devices Panel             ${DUT1_SERIAL}
-    Confirm Device Serial Present in Filtered Devices Panel             ${DUT2_SERIAL}
-    Confirm Device Serial Present in Filtered Devices Panel             ${DUT3_SERIAL}
-    Clear All Filters
-
-Test 10: Filter For CoPilot License Expired
-    [Documentation]     Filters by the CoPilot License group 'Expired' to show devices that have an Expired CoPilot license
-    [Tags]              tccs-15092    copilot_filter_testing    copilot_license_testing    xiq-16250   development    xiq    copilot    test10
-
-    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
-    
-    Set Filter For CoPilot License Expired
-
-    Confirm Device Serial Not Present in Filtered Devices Panel             ${DUT1_SERIAL}
-    Confirm Device Serial Not Present in Filtered Devices Panel             ${DUT2_SERIAL}
-    Confirm Device Serial Not Present in Filtered Devices Panel             ${DUT3_SERIAL}
-    Clear All Filters
-
-Test 11: Delete All Devices and Verify Success
+Test 9: Delete All Devices and Verify Success
     [Documentation]     Deletes all devices and verifies success
-    [Tags]              tccs-15092    copilot_sanity_testing    copilot_license_testing    xiq-16250    development    xiq    copilot    test11
+    [Tags]              tccs-15101    copilot_sanity_testing    copilot_license_testing    xiq-16250    development    xiq    copilot    test9
 
     Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
+    Clear All Filters
     Delete All devices and Confirm Success
 
-Test 12: Verify All Pilot and CoPilot Licenses Revoked Within Global Settings License Management
+Test 10: Verify All Pilot and CoPilot Licenses Revoked Within Global Settings License Management
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
-    [Tags]              tccs-15092    copilot_release_testing    copilot_license_testing    xiq-16250    development    xiq    copilot    test12
+    [Tags]              tccs-15101    copilot_release_testing    copilot_license_testing    xiq-16250    development    xiq    copilot    test10
 
     Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
@@ -269,8 +246,8 @@ Tear Down Test and Close Session
     [Documentation]     Cleans up test data, logs out of XIQ, and closes the browser
 
     Disable CoPilot Feature and Confirm Success
-    Delete All devices and Confirm Success
     Clear All Filters
+    Delete All devices and Confirm Success
     Log Out of XIQ and Quit Browser
 
 Enable CoPilot Feature and Confirm Success
@@ -359,18 +336,9 @@ Change Management Status and Confirm Success
     ${set_managed_state}=    Change Manage Device Status     ${manage_type}      device_serial=${serial}
     Should Be Equal As Integers                                ${set_managed_state}  1
 
-Set Filter For CoPilot License All
-    [Documentation]     Filters by the CoPilot License group
-
-    Clear All Filters
-    ${filter_result}=  Set CoPilot License Filter    All   true
-    Should Be Equal As Integers                      ${filter_result}  1
-    Apply Filters
-
 Set Filter For CoPilot License Active
     [Documentation]     Filters by the CoPilot License group
 
-    Clear All Filters
     ${filter_result}=  Set CoPilot License Filter    CoPilot Active    true
     Should Be Equal As Integers                      ${filter_result}  1
     Apply Filters
@@ -378,7 +346,6 @@ Set Filter For CoPilot License Active
 Set Filter For CoPilot License Expired
     [Documentation]     Filters by the CoPilot License group
 
-    Clear All Filters
     ${filter_result}=  Set CoPilot License Filter    CoPilot Expired    true
     Should Be Equal As Integers                      ${filter_result}  1
     Apply Filters
@@ -386,7 +353,6 @@ Set Filter For CoPilot License Expired
 Set Filter For CoPilot License None
     [Documentation]     Filters by the CoPilot License group
 
-    Clear All Filters
     ${filter_result}=  Set CoPilot License Filter    CoPilot None    true
     Should Be Equal As Integers                      ${filter_result}  1
     Apply Filters
