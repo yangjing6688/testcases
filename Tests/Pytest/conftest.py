@@ -56,6 +56,8 @@ from extauto.common.Utils import Utils
 from extauto.common.CloudDriver import CloudDriver
 from extauto.common.AutoActions import AutoActions
 from extauto.common.Cli import Cli
+from ExtremeAutomation.Keywords.NetworkElementKeywords.Utils.NetworkElementListUtils import NetworkElementListUtils
+from extauto.xiq.elements.ClientWebElements import ClientWebElements
 
 
 Node = NewType("Node", Dict[str, Union[str, Dict[str, str]]])
@@ -5282,6 +5284,16 @@ def udks() -> Udks:
 @pytest.fixture(scope="session")
 def network_360_monitor_elements() -> Network360MonitorElements:
     return Network360MonitorElements()
+
+@pytest.fixture(scope="session")
+def netelem_listutils() -> NetworkElementListUtils:
+    return NetworkElementListUtils()
+
+
+@pytest.fixture(scope="session")
+def client_web_elements() -> ClientWebElements:
+    return ClientWebElements()
+
 
 @pytest.fixture(scope="session")
 def poll(debug, logger):
