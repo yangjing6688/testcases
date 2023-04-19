@@ -1,0 +1,190 @@
+data:
+  feature_name: Support Honeycomb Port Editor for EXOS(Single/Stack)/VOSS
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-921
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=18675789
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  #################### TESTBED STACK ##########################
+
+  Xiq921Tests::test_tcxm_18417:
+    author: aldeab
+    tc: tcxm_18417
+    description: D360 View - Add Port Name&Usage Configuration in Create Port Type tab for U100 device and check
+         config Summary tab.
+    title: D360 View - Add Port Name&Usage Configuration in Create Port Type tab for U100 device and check
+         config Summary tab.
+    steps:
+      - D360 View - Add Port Name&Usage Configuration in Create Port Type tab for U100 device and check
+        config Summary tab.
+
+  Xiq921Tests::test_tcxm_18420:
+    author: aldeab
+    tc: tcxm_18420
+    description: D360 View - Add Vlan in VLAN tab for U100 device and check config Summary tab.
+    title: D360 View - Add Vlan in VLAN tab for U100 device and check config Summary tab.
+    steps:
+      - D360 View - Add Vlan in VLAN tab for U100 device and check config Summary tab.
+
+  Xiq921Tests::test_tcxm_18423:
+    author: aldeab
+    tc: tcxm_18423
+    description: D360 View - Add Transmission Settings in Create Port Type tab for U100 device and check config Summary tab.
+    title: D360 View - Add Transmission Settings in Create Port Type tab for U100 device and check config Summary tab.
+    steps:
+      - D360 View - Add Transmission Settings in Create Port Type tab for U100 device and check config Summary tab.
+
+  Xiq921Tests::test_tcxm_18426:
+    author: aldeab
+    tc: tcxm_18426
+    description: D360 View - Add STP Settings in Create Port Type tab for U100 device and check config Summary tab.
+    title: D360 View - Add STP Settings in Create Port Type tab for U100 device and check config Summary tab.
+    steps:
+      - D360 View - Add STP Settings in Create Port Type tab for U100 device and check config Summary tab.
+
+  Xiq921Tests::test_tcxm_18429:
+    author: aldeab
+    tc: tcxm_18429
+    description: D360 View - Add Storm Control Settings in Create Port Type tab for U100 device and check config Summary tab.
+    title: D360 View - Add Storm Control Settings in Create Port Type tab for U100 device and check config Summary tab.
+    steps:
+      - D360 View - Add Storm Control Settings in Create Port Type tab for U100 device and  check config Summary tab.
+
+  Xiq921Tests::test_tcxm_18432:
+    author: aldeab
+    tc: tcxm_18432
+    description: D360 View - Add PSE Settings in Create Port Type tab for U100 device and check config Summary tab.
+    title: D360 View - Add PSE Settings in Create Port Type tab for U100 device and check config Summary tab.
+    steps:
+      - D360 View - Add PSE Settings in Create Port Type tab for U100 device and check config Summary tab.
+
+  Xiq921Tests::test_tcxm_18440:
+    author: aldeab
+    tc: tcxm_18440
+    description: D360 View - Created a Port Type Template on U100 VOSS device and toggle Auto-Sense button.
+    title: D360 View - Created a Port Type Template on U100 VOSS device and toggle Auto-Sense button.
+    steps:
+      - D360 View - Created a Port Type Template on U100 VOSS device and toggle Auto-Sense button.
+
+  Xiq921Tests::test_tcxm_18473:
+    author: aldeab
+    tc: tcxm_18473
+    description: Policy Template - Add Port Name&Usage Configuration in Create Port Type tab for U100 device and check config Summary tab.
+    title: Policy Template - Add Port Name&Usage Configuration in Create Port Type tab for U100 device and check config Summary tab.
+    steps:
+      - Policy Template - Add Port Name&Usage Configuration in Create Port Type tab for U100 device and check config Summary tab.
+
+  Xiq921Tests::test_tcxm_18476:
+    author: aldeab
+    tc: tcxm_18476
+    description: Policy Template - Add Vlan in VLAN tab for U100 device and check config Summary tab.
+    title: Policy Template - Add Vlan in VLAN tab for U100 device and check config Summary tab.
+    steps:
+      - Policy Template - Add Vlan in VLAN tab for U100 device and check config Summary tab.
+
+  Xiq921Tests::test_tcxm_18479:
+    author: aldeab
+    tc: tcxm_18479
+    description: Policy Template - Add Transmission Settings in Create Port Type tab for U100 device and check config Summary tab.
+    title: Policy Template - Add Transmission Settings in Create Port Type tab for U100 device and check config Summary tab.
+    steps:
+      - Policy Template - Add Transmission Settings in Create Port Type tab for U100 device and check config Summary tab.
+
+  Xiq921Tests::test_tcxm_18482:
+    author: aldeab
+    tc: tcxm_18482
+    description: Policy Template - Add STP Settings in Create Port Type tab for U100 device and check config in Summary tab.
+    title: Policy Template - Add STP Settings in Create Port Type tab for U100 device and check config in Summary tab.
+    steps:
+      - Policy Template - Add STP Settings in Create Port Type tab for U100 device and check config in Summary tab.
+
+  Xiq921Tests::test_tcxm_18485:
+    author: aldeab
+    tc: tcxm_18485
+    description: Policy Template - Add Storm Control Settings in Create Port Type tab for U100 device and check config Summary tab.
+    title: Policy Template - Add Storm Control Settings in Create Port Type tab for U100 device and check config Summary tab.
+    steps:
+      - Policy Template - Add Storm Control Settings in Create Port Type tab for U100 device and check config Summary tab.
+
+  Xiq921Tests::test_tcxm_18488:
+    author: aldeab
+    tc: tcxm_18488
+    description: Policy Template - Add PSE Settings in Create Port Type tab for U100 device and check config in Summary tab.
+    title: Policy Template - Add PSE Settings in Create Port Type tab for U100 device and check config in Summary tab.
+    steps:
+      - Policy Template - Add PSE Settings in Create Port Type tab for U100 device and check config in Summary tab.
+
+  Xiq921Tests::test_tcxm_18561:
+    author: aldeab
+    tc: tcxm_18561
+    description: Policy Template - Created a Port Type Template on U100 VOSS device and toggle Auto-Sense button.
+    title: Policy Template - Created a Port Type Template on U100 VOSS device and toggle Auto-Sense button.
+    steps:
+      - Policy Template - Created a Port Type Template on U100 VOSS device and toggle Auto-Sense button.
+
+  Xiq921Tests::test_tcxm_18493:
+    author: aldeab
+    tc: tcxm_18493
+    description: Policy Template - Edit Port Name&Usage in Create Port Type tab for U100 stack and check config in Summary tab
+    title: Policy Template - Edit Port Name&Usage in Create Port Type tab for U100 stack and check config in Summary tab
+    steps:
+      - Policy Template - Edit Port Name&Usage in Create Port Type tab for U100 stack and check config in Summary tab
+
+  Xiq921Tests::test_tcxm_18494:
+    author: aldeab
+    tc: tcxm_18494
+    description: Policy Template - Edit Vlan in VLAN tab for U100 device and check config Summary tab.
+    title: Policy Template - Edit Vlan in VLAN tab for U100 device and check config Summary tab.
+    steps:
+      - Policy Template - Edit Vlan in VLAN tab for U100 device and check config Summary tab.
+
+  Xiq921Tests::test_tcxm_18497:
+    author: aldeab
+    tc: tcxm_18497
+    description: Policy Template - Edit Transmission Settings in Create Port Type tab for U100 device and check config in Summary tab.
+    title: Policy Template - Edit Transmission Settings in Create Port Type tab for U100 device and check config in Summary tab.
+    steps:
+      - Policy Template - Edit Transmission Settings in Create Port Type tab for U100 device and check config in Summary tab.
+
+  Xiq921Tests::test_tcxm_18500:
+    author: aldeab
+    tc: tcxm_18500
+    description: Policy Template - Edit STP Settings in Create Port Type tab for U100 device and check config in Summary tab.
+    title: Policy Template - Edit STP Settings in Create Port Type tab for U100 device and check config in Summary tab.
+    steps:
+      - Policy Template - Edit STP Settings in Create Port Type tab for U100 device and check config in Summary tab.
+
+  Xiq921Tests::test_tcxm_18503:
+    author: aldeab
+    tc: tcxm_18503
+    description: Policy Template - Edit Storm Control Settings in Create Port Type tab for U100 device and check config in Summary tab.
+    title: Policy Template - Edit Storm Control Settings in Create Port Type tab for U100 device and check config in Summary tab.
+    steps:
+      - Policy Template - Edit Storm Control Settings in Create Port Type tab for U100 device and check config in Summary tab.
+
+  Xiq921Tests::test_tcxm_18506:
+    author: aldeab
+    tc: tcxm_18506
+    description: Policy Template - Edit PSE Settings in Create Port Type tab for U100 device and check config in Summary tab.
+    title: Policy Template - Edit PSE Settings in Create Port Type tab for U100 device and check config in Summary tab.
+    steps:
+      - Policy Template - Edit PSE Settings in Create Port Type tab for U100 device and check config in Summary tab.
+ 
