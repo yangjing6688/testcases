@@ -1,3 +1,8 @@
+data:
+  feature_name: Modify D360 Port Bounce behavior and support D360 PoE Bounce
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-1535
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=57221362
+
 tests:
   #################### XIQ ONBOARDING ##########################
 

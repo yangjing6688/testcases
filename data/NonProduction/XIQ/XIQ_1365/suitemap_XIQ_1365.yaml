@@ -132,8 +132,7 @@ tests:
        - Select "Upgrade firmware to the latest version" and also "Upload configuration automatically" and click Save.
        - Onboard the node_1 without  assigning the network policy configured.
        - Once the device is onboarded and managed make the device as unmanaged and assign the policy template.
-       - Now move the device to managed and ensure the firmware upgrade and config upload are triggered for the
-       - device.
+       - Now move the device to managed and ensure the firmware upgrade and config upload are triggered for the device.
 
   Xiq1365Tests::test_tcxm_20590:
     author: tpodar
