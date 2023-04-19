@@ -2537,7 +2537,7 @@ def revert_node(
     This fixture is used to easily revert the node to a specific state.
     It is useful in test cases where the node was deleted|default network policy is no longer assigned to the node.
     
-    All of its kwargs are True by default which means that the function will: 
+    All of its kwargs are True by default (except 'downgrade_iqagent' kwarg) which means that the function will: 
         - configure the iqagent on the node
         - onboard the node
         - assign the network policy to the node
@@ -2547,6 +2547,7 @@ def revert_node(
         :xiq: the XiqLibrary object
         :node: node_1|node_2|node_stack
     kwargs:
+        :downgrade_iqagent: specifies if the iqagent needs to be downgraded
         :configure_iqagent: specifies if the iqagent needs to be configured
         :onboard_node: specifies if the node needs to be onboarded
         :assign_network_policy: specifies if the default network policy needs to be assigned to the node
@@ -2554,12 +2555,12 @@ def revert_node(
     """
     
     @debug
-    def revert_node_func(node: Node, xiq: XiqLibrary, configure_iqagent=True, onboard_node=True, assign_network_policy=True, push_network_policy=True):
+    def revert_node_func(node: Node, xiq: XiqLibrary, configure_iqagent=True, downgrade_iqagent=False, onboard_node=True, assign_network_policy=True, push_network_policy=True):
         
         onboarding_location: str = request.getfixturevalue(f"{node.node_name}_onboarding_location")
         policy_name: str = request.getfixturevalue(f"{node.node_name}_policy_name")
 
-        if configure_iqagent:
+        if configure_iqagent or downgrade_iqagent:
             
             logger.step(f"Check that node '{node.node_name}' is reachable.")
             check_devices_are_reachable([node])
@@ -2567,13 +2568,19 @@ def revert_node(
             
             with open_spawn(node) as spawn:
                 
-                logger.step(f"Configure iqagent on node '{node.node_name}'.")
-                cli.configure_device_to_connect_to_cloud(
-                    node.cli_type, loaded_config['sw_connection_host'],
-                    spawn, vr=node.get("mgmt_vr", 'VR-Mgmt').upper(), retry_count=30
-                )
-                logger.info(f"Successfully configured iqagent on node '{node.node_name}'.")
-                
+                if downgrade_iqagent:
+                    logger.step(f"Downgrade iqagent on node '{node.node_name}'.")
+                    cli.downgrade_iqagent(node.cli_type, spawn)
+                    logger.info(f"Successfully downgraded iqagent on node '{node.node_name}'.")
+                    
+                if configure_iqagent:
+                    logger.step(f"Configure iqagent on node '{node.node_name}'.")
+                    cli.configure_device_to_connect_to_cloud(
+                        node.cli_type, loaded_config['sw_connection_host'],
+                        spawn, vr=node.get("mgmt_vr", 'VR-Mgmt').upper(), retry_count=30
+                    )
+                    logger.info(f"Successfully configured iqagent on node '{node.node_name}'.")
+                    
         xiq.xflowscommonDevices.column_picker_select("Template", "Network Policy", "MAC Address")
 
         if onboard_node:
