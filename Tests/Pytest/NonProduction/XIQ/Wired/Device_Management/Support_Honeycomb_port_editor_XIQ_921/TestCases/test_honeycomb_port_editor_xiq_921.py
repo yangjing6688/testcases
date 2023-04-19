@@ -134,7 +134,7 @@ class Xiq921Tests:
 
         return delete_port_type
 
-    def edit_port_type_local(self, node, xiq_library_at_class_level, policy_name, device_name, template_voss, template_exos, voss_port, exos_port):
+    def edit_port_type_local(self, node, xiq_library_at_class_level, template_voss, template_exos, voss_port, exos_port):
         delete_port_type = False
         create_new_port_type_and_check_summary = -1
         # Edit Port Type and check summary
@@ -1430,11 +1430,11 @@ class Xiq921Tests:
         # Create port type
         print("EDITING Port Type")
         if node.platform.lower() == "stack":
-            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level, node_policy_name, stack_template_name_original,
+            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level,
                                                          template_voss_auto_sense_off_edit, template_exos_edit,
                                                          voss_or_exos_port, voss_or_exos_port)
         else:
-            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level, node_policy_name, node_template_name,
+            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level,
                                                          template_voss_auto_sense_off_edit, template_exos_edit,
                                                          voss_or_exos_port, voss_or_exos_port)
         if delete_port_type != 1:
@@ -1539,11 +1539,11 @@ class Xiq921Tests:
         # Create port type
         print("EDITING Port Type")
         if node.platform.lower() == "stack":
-            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level, node_policy_name, stack_template_name_original,
+            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level,
                                                          template_voss_auto_sense_off_edit, template_exos_edit,
                                                          voss_or_exos_port, voss_or_exos_port)
         else:
-            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level, node_policy_name, node_template_name,
+            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level,
                                                          template_voss_auto_sense_off_edit, template_exos_edit,
                                                          voss_or_exos_port, voss_or_exos_port)
         if delete_port_type != 1:
@@ -1666,11 +1666,11 @@ class Xiq921Tests:
         # Create port type
         print("EDITING Port Type")
         if node.platform.lower() == "stack":
-            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level, node_policy_name, stack_template_name_original,
+            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level,
                                                          template_voss_auto_sense_off_edit, template_exos_edit,
                                                          voss_or_exos_port, voss_or_exos_port)
         else:
-            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level, node_policy_name, node_template_name,
+            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level,
                                                          template_voss_auto_sense_off_edit, template_exos_edit,
                                                          voss_or_exos_port, voss_or_exos_port)
         if delete_port_type != 1:
@@ -1794,11 +1794,11 @@ class Xiq921Tests:
         # Create port type
         print("EDITING Port Type")
         if node.platform.lower() == "stack":
-            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level, node_policy_name, stack_template_name_original,
+            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level,
                                                          template_voss_auto_sense_off_edit, template_exos_edit,
                                                          voss_or_exos_port, voss_or_exos_port)
         else:
-            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level, node_policy_name, node_template_name,
+            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level,
                                                          template_voss_auto_sense_off_edit, template_exos_edit,
                                                          voss_or_exos_port, voss_or_exos_port)
         if delete_port_type != 1:
@@ -1921,11 +1921,11 @@ class Xiq921Tests:
         # Create port type
         print("EDITING Port Type")
         if node.platform.lower() == "stack":
-            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level, node_policy_name, stack_template_name_original,
+            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level,
                                                          template_voss_auto_sense_off_edit, template_exos_edit,
                                                          voss_or_exos_port, voss_or_exos_port)
         else:
-            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level, node_policy_name, node_template_name,
+            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level,
                                                          template_voss_auto_sense_off_edit, template_exos_edit,
                                                          voss_or_exos_port, voss_or_exos_port)
         if delete_port_type != 1:
@@ -2100,11 +2100,11 @@ class Xiq921Tests:
         # Create port type
         print("EDITING Port Type")
         if node.platform.lower() == "stack":
-            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level, node_policy_name, stack_template_name_original,
+            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level,
                                                          template_voss_auto_sense_off_edit, template_exos_edit,
                                                          voss_or_exos_port, voss_or_exos_port)
         else:
-            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level, node_policy_name, node_template_name,
+            delete_port_type = self.edit_port_type_local(node, xiq_library_at_class_level,
                                                          template_voss_auto_sense_off_edit, template_exos_edit,
                                                          voss_or_exos_port, voss_or_exos_port)
         if delete_port_type != 1:
