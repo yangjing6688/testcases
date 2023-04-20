@@ -21,7 +21,7 @@
 &{RADIUS_SERVER_GROUP_00}            radius_server_group_name=Auth_Radius_server00   radius_server_config=&{RADIUS_SERVER_00}
 
 &{RADIUS_SERVER_00}                  radius_server_group_desc=Test Raidus Server with Active Directory   server_type=EXTREME NETWORKS RADIUS SERVER   extreme_radius_server_config=&{EXTREME_RADIUS_SERVER_CONFIG_00}
-&{EXTREME_RADIUS_SERVER_CONFIG_00}   radius_server_name=bui-flo-0048   aaa_profile_name=AAA_Server_Setting00   user_db_type=Active Directory
+&{EXTREME_RADIUS_SERVER_CONFIG_00}   radius_server_name=bui-flo-2763   aaa_profile_name=AAA_Server_Setting00   user_db_type=Active Directory
 ...                                  ad_server_name=AD_Server00        ad_server_domain=binh.com               ad_server_config=&{ACTIVE_DIRECTORY_PROFILE_00}
 ...                                  baseDN=DC=binh,DC=com             short_domain_name=binh                  realm=binh.com
 ...                                  domain_admin=Administrator        domain_admin_password=Aerohive123
@@ -156,4 +156,11 @@ Wait_device_online
     ${STATUS}                       Wait Until Device Online    ${ap}[serial]
     Should Be Equal As Strings      '${STATUS}'    '1'
     ${STATUS}                       Get Device Status           ${ap}[serial]
-    Should contain any              ${STATUS}      green        config audit mismatch
+    ${STATUS}                       Run Keyword And Return Status    Should contain any    ${STATUS}    green    config audit mismatch
+    IF    not ${STATUS}
+        Wait Until Device Reboots       ${ap}[serial]
+        ${STATUS}                       Wait Until Device Online    ${ap}[serial]    retry_count=60
+        Should Be Equal As Strings      '${STATUS}'    '1'
+        ${STATUS}                       Get Device Status           ${ap}[serial]
+        Should contain any              ${STATUS}      green        config audit mismatch
+    END

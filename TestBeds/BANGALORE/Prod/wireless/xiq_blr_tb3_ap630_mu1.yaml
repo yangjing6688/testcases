@@ -37,6 +37,7 @@ ap1:
 
 mu1:
   ip:             10.234.106.102
+  hostname:       MININT-JQ5MN
   port:           8270
   username:       extreme
   password:       Extreme@123
