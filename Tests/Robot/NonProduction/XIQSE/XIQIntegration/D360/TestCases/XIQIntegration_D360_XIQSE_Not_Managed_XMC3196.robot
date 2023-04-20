@@ -178,7 +178,7 @@ Remove Existing Site Engine from XIQ
     XIQ Navigate to Devices and Confirm Success
 
     # If the XIQ Site Engine has already been onboarded, delete it
-    ${search_result}=  Search Device   ${XIQSE_MAC}     ignore_failure=True
+    ${search_result}=  Search Device   device_mac=${XIQSE_MAC}     ignore_failure=True
     Run Keyword If  '${search_result}' == '1'    Delete Device  device_mac=${XIQSE_MAC}
 
 Auto Onboard XIQ Site Engine
@@ -219,7 +219,7 @@ Confirm Device Serial Present in XIQ
     [Arguments]         ${serial}
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
-    ${search_result}=  Search Device     ${serial}
+    ${search_result}=  Search Device     device_serial=${serial}
     Should Be Equal As Integers                 ${search_result}    1
 
 Clean Up XIQ Components

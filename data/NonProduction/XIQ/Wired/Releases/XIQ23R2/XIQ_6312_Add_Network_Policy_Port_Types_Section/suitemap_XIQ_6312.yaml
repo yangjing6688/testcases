@@ -25,31 +25,31 @@ tests:
     tc: tcxm_23826
     title: Verify that Port Types Section is present
     steps:
-      -Create a Network Policy
-      -Open the Network Policy and navigate to Switching TAB
-      -Check that Port Types Section is present
+      - Create a Network Policy
+      - Open the Network Policy and navigate to Switching TAB
+      - Check that Port Types Section is present
 
   XIQ6312OneNodeTests::test_23827:
     author: nburlacu
     tc: tcxm_23827
     title: Verify port type can be created, edited and deleted successfully using Port Types Section
     steps:
-      -Create a Network Policy
-      -Open the Network Policy and navigate to Switching TAB
-      -Check that Port Types Section is present
-      -Create an access port with default values
-      -Verify created port type is correctly displayed on page
-      -Verify edit function on previously created port
-      -Verify that port type created can be successfully deleted from Port Types Section
+      - Create a Network Policy
+      - Open the Network Policy and navigate to Switching TAB
+      - Check that Port Types Section is present
+      - Create an access port with default values
+      - Verify created port type is correctly displayed on page
+      - Verify edit function on previously created port
+      - Verify that port type created can be successfully deleted from Port Types Section
 
   XIQ6312OneNodeTests::test_23833:
     author: nburlacu
     tc: tcxm_23833
     title: Verify applying new policy to device using the new policy workflow generates delta
     steps:
-      -Create a Network Policy
-      -Open the Network Policy and navigate to Switching TAB
-      -Assign Network Policy to a device
-      -Verify that applying a new policy to a device after the upgrade to the new policy workflow generates delta
+      - Create a Network Policy
+      - Open the Network Policy and navigate to Switching TAB
+      - Assign Network Policy to a device
+      - Verify that applying a new policy to a device after the upgrade to the new policy workflow generates delta
 
   #################### TESTBED ONE NODE ###########################

@@ -50,11 +50,14 @@ from extauto.common.Rest import Rest
 from extauto.common.WebElementHandler import WebElementHandler
 from extauto.common.Tshark import Tshark
 from extauto.common.WebElementController import WebElementController
+from extauto.xiq.elements.Network360MonitorElements import Network360MonitorElements
 from extauto.xiq.flows.common.Navigator import Navigator
 from extauto.common.Utils import Utils
 from extauto.common.CloudDriver import CloudDriver
 from extauto.common.AutoActions import AutoActions
 from extauto.common.Cli import Cli
+from ExtremeAutomation.Keywords.NetworkElementKeywords.Utils.NetworkElementListUtils import NetworkElementListUtils
+from extauto.xiq.elements.ClientWebElements import ClientWebElements
 
 
 Node = NewType("Node", Dict[str, Union[str, Dict[str, str]]])
@@ -5277,6 +5280,19 @@ def default_library() -> DefaultLibrary:
 @pytest.fixture(scope="session")
 def udks() -> Udks:
     return Udks()
+
+@pytest.fixture(scope="session")
+def network_360_monitor_elements() -> Network360MonitorElements:
+    return Network360MonitorElements()
+
+@pytest.fixture(scope="session")
+def netelem_listutils() -> NetworkElementListUtils:
+    return NetworkElementListUtils()
+
+
+@pytest.fixture(scope="session")
+def client_web_elements() -> ClientWebElements:
+    return ClientWebElements()
 
 
 @pytest.fixture(scope="session")

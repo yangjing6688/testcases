@@ -32,14 +32,14 @@ Suite Teardown  Suite Teardown
 Suite Setup
     ${LOGIN_RESULT}=    Login User      ${tenant_username}      ${tenant_password}
     Should Be Equal as Integers         ${LOGIN_RESULT}         1
-    Delete Device                       ${aerohive_sw1.serial}
+    Delete Device                       device_serial=${aerohive_sw1.serial}
 
 Suite Teardown
     Run Keywords        logout user
     ...                 quit browser
 
 Test Case Teardown
-    ${DELETE_STATUS}=   Delete Device   ${aerohive_sw1.serial}
+    ${DELETE_STATUS}=   Delete Device   device_serial=${aerohive_sw1.serial}
     Should Be Equal as Integers         ${DELETE_STATUS}        1
 
 
@@ -90,9 +90,9 @@ TCCS-7748_Step4: Onboard Aerohive Switch via advanced Onboarding
     [teardown]  Test Case Teardown
 
     [Tags]                  production  tccs_7748   tccs_7748_step4
-    ${ONBOARD_RESULT}=      Advance Onboard Device              ${aerohive_sw1.serial}  device_make=${aerohive_sw1.cli_type}    dev_location=${LOCATION}
+    ${ONBOARD_RESULT}=      Advance Onboard Device              device_serial=${aerohive_sw1.serial}  device_make=${aerohive_sw1.cli_type}    dev_location=${LOCATION}
     Should Be Equal as Integers         ${ONBOARD_RESULT}       1
-    ${SEARCH_RESULT}=       Search Device                       ${aerohive_sw1.serial}
+    ${SEARCH_RESULT}=       Search Device                      device_serial=${aerohive_sw1.serial}
     Should Be Equal as Integers         ${SEARCH_RESULT}        1
     ${ONLINE_STATUS}=       Wait Until Device Online            device_serial=${aerohive_sw1.serial}
     Should Be Equal as Integers         ${ONLINE_STATUS}        1

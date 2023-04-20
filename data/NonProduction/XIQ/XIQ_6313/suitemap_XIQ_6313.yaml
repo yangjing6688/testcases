@@ -1,0 +1,63 @@
+data:
+
+  feature_name: Move Switch/Fabric Engine (EXOS/VOSS) Switch Templates into new switching section
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-1317
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=57195280
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: aprihotin
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: aprihotin
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  XIQ6313OneNodeTests::test_tcxm_23749:
+    author: aprihotin
+    tc: tcxm_23749
+    title: Verify that switch templates can override common settings parameters
+    description: This test will modify a parameter in the template and check if it overrides the common settings
+    steps:
+        - create new policy
+        - create new template
+        - modify a parameter that is also found in common settings
+        - save template
+        - apply policy to a device
+        - check delta for configurations changes regarding the modified parameter
+
+  XIQ6313OneNodeTests::test_tcxm_23747:
+    author: aprihotin
+    tc: tcxm_23747
+    title: Verify that all existing event/audit/delta CLI should be generated when Switch Templates are modified
+    description: covered by test_tcxm_23749
+    steps:
+      - create new policy
+        - create new template
+        - modify a parameter that is also found in common settings
+        - save template
+        - apply policy to a device
+        - check delta for configurations changes regarding the modified parameter
+
+  XIQ6313OneNodeTests::test_tcxm_23745:
+    author: aprihotin
+    tc: tcxm_23745
+    title: Verify that EXOS/Switch Engine and VOSS/Fabric Engine switch templates are located in the new Switch Templates section in the Extreme Switching/TBD tab under network policy
+    description: covered by test_tcxm_23749
+    steps:
+      - create new policy
+        - create new template
+        - modify a parameter that is also found in common settings
+        - save template
+        - apply policy to a device
+        - check delta for configurations changes regarding the modified parameter
+  #################### TESTBED 1 NODE ##########################

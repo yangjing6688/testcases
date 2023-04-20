@@ -57,7 +57,7 @@ Test 2: Onboard Device and Verify Success
     [Documentation]     Onboards test device and verifies success
     [Tags]              tcxm-20890    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test2
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Downgrade the device's iqagent if needed
     ${SPAWN_CONNECTION}=      Open Spawn        ${DUT_IP}   ${DUT_PORT}   ${DUT_USERNAME}   ${DUT_PASSWORD}   ${DUT_CLI_TYPE}
@@ -82,7 +82,7 @@ Test 3: Verify Device Consumes Pilot License but Not CoPilot License Within Glob
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
     [Tags]              tcxm-20890    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test3
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
@@ -91,7 +91,7 @@ Test 4: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify device consumed the appropriate license or not
     [Tags]              tcxm-20890    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test4
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT_SERIAL}    DEVICE LICENSE
@@ -105,7 +105,7 @@ Test 5: Unmanage Device and Confirm Success
     [Documentation]     Sets MANAGED state to UNMANAGE and verifies success
     [Tags]              tcxm-20890    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test5
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Navigate to Devices and Confirm Success
     Unmanage Device and Confirm Success         UNMANAGE    ${DUT_SERIAL}
@@ -117,7 +117,7 @@ Test 6: Verify Unmanaged Device Revokes Pilot License in Global Settings License
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
     [Tags]              tcxm-20890    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test6
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
@@ -126,7 +126,7 @@ Test 7: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns for unmanaged device to verify device revoked the copilot and pilot licenses
     [Tags]              tcxm-20890    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test7
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT_SERIAL}    DEVICE LICENSE
@@ -140,7 +140,7 @@ Test 8: Manage Device and Confirm Success
     [Documentation]     Sets MANAGED state to MANAGE and verifies success
     [Tags]              tcxm-20890    copilot_release_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test8
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Navigate to Devices and Confirm Success
     Change Management Status and Confirm Success        MANAGE       ${DUT_SERIAL}
@@ -152,7 +152,7 @@ Test 9: Verify Device Consumes Pilot License but Not CoPilot License Within Glob
     [Documentation]     Confirms the license counts for Pilot and CoPilot within Global Settings->License Management
     [Tags]              tcxm-20890    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test9
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       2    1    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
@@ -161,7 +161,7 @@ Test 10: Verify Device License and CoPilot Column Values
     [Documentation]     Confirms the Device License and CoPilot columns to verify device consumed the appropriate license or not
     [Tags]              tcxm-20890    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test10
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     # Confirm the device row shows the correct pilot license status
     ${pilot1_result}=      Get Device Details    ${DUT_SERIAL}    DEVICE LICENSE
@@ -175,7 +175,7 @@ Test 11: Delete Device and Verify Success
     [Documentation]     Deletes the device and verifies success
     [Tags]              tcxm-20890    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test11
 
-    Depends On          Test 1
+    Depends On Test     Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Delete Test Device and Confirm Success          ${DUT_SERIAL}
 
@@ -183,7 +183,7 @@ Test 12: Verify Pilot and CoPilot Licenses Revoked Within Global Settings Licens
     [Documentation]     Confirms the Pilot and CoPilot licenses are revoked
     [Tags]              tcxm-20890    copilot_sanity_testing    copilot_license_testing    aiq-2214    development    xiq    copilot    test12
 
-    Depends On          Test 1
+    Depends On Test      Test 1: Verify Pilot and CoPilot Baseline License Counts
 
     Confirm Entitlement Counts for Feature Matches Expected     ${PILOT_ENTITLEMENT}       3    0    3
     Confirm Entitlement Counts for Feature Matches Expected     ${COPILOT_ENTITLEMENT}     2    0    2
@@ -280,9 +280,9 @@ Delete Test Device and Confirm Success
 
 Delete Device and Confirm Success
     [Documentation]     Deletes the specified device from XIQ and confirms it was removed successfully
-    [Arguments]         ${ip}
+    [Arguments]         ${serial}
 
-    ${del_result}=  Delete Device                     ${ip}
+    ${del_result}=  Delete Device                     device_serial=${serial}
     Should Be Equal As Integers                       ${del_result}      1
 
 Unmanage Device and Confirm Success
