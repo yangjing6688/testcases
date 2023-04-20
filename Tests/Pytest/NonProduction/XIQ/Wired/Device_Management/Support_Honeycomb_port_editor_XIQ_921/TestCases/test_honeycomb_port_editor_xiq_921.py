@@ -1946,6 +1946,10 @@ class Xiq921Tests:
         #node_policy_name = "XIQ_921_np_HxVpL9H5"
         #node_template_name = "XIQ_921_template_BRFRyxpv"
 
+        #Skip if the device is 5320 running voss OS
+        if node.platform == "5320" and node.cli_type == "voss":
+            pytest.skip("SKIP the test . The 5320 voss device doesn't support PSE 802.3bt mode")
+
         # This test should skip if device does not support PSE
         self.verify_poe_supported(node)
 
