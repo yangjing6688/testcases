@@ -65,6 +65,7 @@ class Xiq1365Tests:
             with enter_switch_cli(node_1) as dev_cmd:
                 dev_cmd.send_cmd(node_1.name, 'disable iqagent', max_wait=10, interval=2,
                                  confirmation_phrases='Do you want to continue? (y/N)', confirmation_args='y')
+                
             xiq_library_at_class_level.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
                 network_policy_name)
 
@@ -129,19 +130,24 @@ class Xiq1365Tests:
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
             
             xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick({**node_1, "location": test_bed.node_1_onboarding_location}, policy_name=network_policy_name)
-            status_before = xiq_library_at_class_level.xflowscommonDevices.get_device_updated_status(
-                device_mac=node_1.serial)
+
+            with test_bed.open_spawn(node_1) as spawn:
+                cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn, vr=node_1.mgmt_vr)
+                
+            utils.wait_till(timeout=600)
+            logger.step("Wait for the update to finish")
+            if xiq_library_at_class_level.xflowscommonDevices._check_update_network_policy_status(network_policy_name, node_1.mac, IRV=False) != 1:
+                if xiq_library_at_class_level.xflowscommonDevices.update_device_delta_configuration(node_1.mac) != 1:
+                    logger.fail(f"Failed to do a delta confguration update for this switch: '{node_1.mac}'.")
+                
+                if xiq_library_at_class_level.xflowscommonDevices._check_update_network_policy_status(network_policy_name, node_1.mac, IRV=False) != 1:
+                    logger.fail(f"It looks like both type of device update failed for this switch: '{node_1.mac}'.")
+
+            xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
+            utils.wait_till(timeout=15)
 
             with test_bed.open_spawn(node_1) as spawn:
                 cli.downgrade_iqagent(node_1.cli_type, spawn)
-                cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn,
-                                                         vr=node_1.mgmt_vr)
-
-            utils.wait_till(timeout=5)
-            xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
-
-            logger.step("Checking for the update column to reflect the firmware update status")
-            xiq_library_at_class_level.xflowscommonDevices.check_update_column_change(node_1.serial, status_before)
 
             assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(node_1.serial) == 1, \
                 f"Device {node_1} didn't get online"
@@ -214,20 +220,35 @@ class Xiq1365Tests:
             if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
                 
-            xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick({**node_1, "location": test_bed.node_1_onboarding_location}, policy_name=network_policy_name)
+            xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick(
+                {**node_1, "location": test_bed.node_1_onboarding_location}, policy_name=network_policy_name)
             status_before = xiq_library_at_class_level.xflowscommonDevices.get_device_updated_status(
                 device_mac=node_1.serial)
             logger.info(f"Device updated status after onboarding is {status_before}")
 
             with test_bed.open_spawn(node_1) as spawn:
-                cli.downgrade_iqagent(node_1.cli_type, spawn)
                 cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn, vr=node_1.mgmt_vr)
 
             xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
 
+            utils.wait_till(timeout=600)
+            logger.step("Wait for the update to finish")
+            if xiq_library_at_class_level.xflowscommonDevices._check_update_network_policy_status(network_policy_name, node_1.mac, IRV=False) != 1:
+                if xiq_library_at_class_level.xflowscommonDevices.update_device_delta_configuration(node_1.mac) != 1:
+                    logger.fail(f"Failed to do a delta confguration update for this switch: '{node_1.mac}'.")
+                
+                if xiq_library_at_class_level.xflowscommonDevices._check_update_network_policy_status(network_policy_name, node_1.mac, IRV=False) != 1:
+                    logger.fail(f"It looks like both type of device update failed for this switch: '{node_1.mac}'.")
+
+            xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
+            utils.wait_till(timeout=15)
+            
             logger.step("Checking for the update column to reflect the firmware update status")
             xiq_library_at_class_level.xflowscommonDevices.check_update_column_change(node_1.serial, status_before)
 
+            with test_bed.open_spawn(node_1) as spawn:
+                cli.downgrade_iqagent(node_1.cli_type, spawn)
+                
             assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(node_1.serial) == 1, \
                 f"Device {node_1} didn't get online"
             assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(node_1.serial) == 1, \
@@ -285,20 +306,36 @@ class Xiq1365Tests:
             utils.wait_till(timeout=5)
             if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
-            xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick({**node_1, "location": test_bed.node_1_onboarding_location}, policy_name=network_policy_name)
+            
+            xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick(
+                {**node_1, "location": test_bed.node_1_onboarding_location}, policy_name=network_policy_name)
             xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
 
             status_before = xiq_library_at_class_level.xflowscommonDevices.get_device_updated_status(
                 device_mac=node_1.serial)
 
             with test_bed.open_spawn(node_1) as spawn:
-                cli.downgrade_iqagent(node_1.cli_type, spawn)
                 cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn, vr=node_1.mgmt_vr)
 
             xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
 
+            utils.wait_till(timeout=600)
+            logger.step("Wait for the update to finish")
+            if xiq_library_at_class_level.xflowscommonDevices._check_update_network_policy_status(network_policy_name, node_1.mac, IRV=False) != 1:
+                if xiq_library_at_class_level.xflowscommonDevices.update_device_delta_configuration(node_1.mac) != 1:
+                    logger.fail(f"Failed to do a delta confguration update for this switch: '{node_1.mac}'.")
+                
+                if xiq_library_at_class_level.xflowscommonDevices._check_update_network_policy_status(network_policy_name, node_1.mac, IRV=False) != 1:
+                    logger.fail(f"It looks like both type of device update failed for this switch: '{node_1.mac}'.")
+
+            xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
+            utils.wait_till(timeout=15)
+            
             logger.step("Checking for the update column to reflect the firmware update status")
             xiq_library_at_class_level.xflowscommonDevices.check_update_column_change(node_1.serial, status_before)
+
+            with test_bed.open_spawn(node_1) as spawn:
+                cli.downgrade_iqagent(node_1.cli_type, spawn)
 
             assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(node_1.serial) == 1, \
                 f"Device {node_1} didn't get online"
@@ -342,11 +379,11 @@ class Xiq1365Tests:
 
             sw_name_final, _ = test_bed.generate_template_for_given_model(node_1)
 
-            assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
-                                                                                            sw_name_final,
-                                                                                            device_template_name,
-                                                                                            node_1.cli_type) == 1, \
-                f"Failed to add switch template with model: {device_template_name}"
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(
+                network_policy_name,
+                sw_name_final,
+                device_template_name,
+                cli_type=node_1.cli_type)
 
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
 
@@ -355,12 +392,12 @@ class Xiq1365Tests:
             if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
                 
-            xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick({**node_1, "location": test_bed.node_1_onboarding_location}, policy_name=network_policy_name)
+            xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick(
+                {**node_1, "location": test_bed.node_1_onboarding_location}, policy_name=network_policy_name)
             utils.wait_till(timeout=5)
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
 
             with test_bed.open_spawn(node_1) as spawn:
-                cli.downgrade_iqagent(node_1.cli_type, spawn)
                 cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn, vr=node_1.mgmt_vr)
 
             xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
@@ -438,7 +475,7 @@ class Xiq1365Tests:
         network_policy_name = f"policy_XIQ1365_{test_bed.get_random_word()}"
         device_template_name = f"template_XIQ1365_{test_bed.get_random_word()}"
         sw_name_final, _ = test_bed.generate_template_for_given_model(node_1)
-                
+
         try:
             logger.step("Check test preconditions")
             with enter_switch_cli(node_1) as dev_cmd:
@@ -477,6 +514,9 @@ class Xiq1365Tests:
 
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
             
+                with test_bed.open_spawn(node_1) as spawn:
+                    cli.downgrade_iqagent(node_1.cli_type, spawn)
+                
             logger.step("Device onfiguration before test")
             with enter_switch_cli(node_1) as dev_cmd:
                 dev_cmd.send_cmd(node_1.name, 'disable iqagent', max_wait=10, interval=2,
@@ -514,14 +554,14 @@ class Xiq1365Tests:
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             utils.wait_till(timeout=5)
 
-            logger.step("Onboard device")
             if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
-                
-            xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick({**node_1, "location": test_bed.node_1_onboarding_location}, policy_name=network_policy_name)
+
+            logger.step("Onboard device")
+            xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick(
+                {**node_1, "location": test_bed.node_1_onboarding_location}, policy_name=network_policy_name)
 
             with test_bed.open_spawn(node_1) as spawn:
-                cli.downgrade_iqagent(node_1.cli_type, spawn)
                 cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn, vr=node_1.mgmt_vr)
 
             utils.wait_till(timeout=600)
@@ -535,6 +575,9 @@ class Xiq1365Tests:
 
             xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
             utils.wait_till(timeout=15)
+
+            with test_bed.open_spawn(node_1) as spawn:
+                cli.downgrade_iqagent(node_1.cli_type, spawn)
 
             logger.step(
                 "Check that all alarms and events are triggered and that config push and software update are triggered")
@@ -576,8 +619,8 @@ class Xiq1365Tests:
             with enter_switch_cli(node_1) as dev_cmd:
                 dev_cmd.send_cmd(node_1.name, 'disable iqagent', max_wait=10, interval=2,
                                  confirmation_phrases='Do you want to continue? (y/N)', confirmation_args='y')
-
                 output_cmd = dev_cmd.send_cmd(node_1.name, 'show version', max_wait=10, interval=2)[0].return_text
+
             image_version = re.findall(r"IMG:\s+(\d+\.\d+\.\d+\.\d+)", output_cmd)[0]
             logger.info(f"Initial image version on device is {image_version}")
 
@@ -607,16 +650,28 @@ class Xiq1365Tests:
             if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
                 
-            xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick({**node_1, "location": test_bed.node_1_onboarding_location}, policy_name=network_policy_name)
+            xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick(
+                {**node_1, "location": test_bed.node_1_onboarding_location}, policy_name=network_policy_name)
             xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
 
             status_before = xiq_library_at_class_level.xflowscommonDevices.get_device_updated_status(
                 device_mac=node_1.serial)
 
             with test_bed.open_spawn(node_1) as spawn:
-                cli.downgrade_iqagent(node_1.cli_type, spawn)
                 cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn, vr=node_1.mgmt_vr)
 
+            utils.wait_till(timeout=600)
+            logger.step("Wait for the update to finish")
+            if xiq_library_at_class_level.xflowscommonDevices._check_update_network_policy_status(network_policy_name, node_1.mac, IRV=False) != 1:
+                if xiq_library_at_class_level.xflowscommonDevices.update_device_delta_configuration(node_1.mac) != 1:
+                    logger.fail(f"Failed to do a delta confguration update for this switch: '{node_1.mac}'.")
+                
+                if xiq_library_at_class_level.xflowscommonDevices._check_update_network_policy_status(network_policy_name, node_1.mac, IRV=False) != 1:
+                    logger.fail(f"It looks like both type of device update failed for this switch: '{node_1.mac}'.")
+
+            with test_bed.open_spawn(node_1) as spawn:
+                cli.downgrade_iqagent(node_1.cli_type, spawn)
+                
             xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
 
             xiq_library_at_class_level.xflowscommonDevices.check_update_column_change(node_1.serial, status_before)
@@ -696,7 +751,10 @@ class Xiq1365Tests:
                     f"Device {node_1} didn't get in MANAGED state"
 
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
-
+                
+                with test_bed.open_spawn(node_1) as spawn:
+                    cli.downgrade_iqagent(node_1.cli_type, spawn)
+                    
             logger.info(f"Initial image version on device is {image_version}")
 
             assert xiq_library_at_class_level.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
@@ -722,7 +780,6 @@ class Xiq1365Tests:
                 {**node_1, "location": test_bed.node_1_onboarding_location})
 
             with test_bed.open_spawn(node_1) as spawn:
-                cli.downgrade_iqagent(node_1.cli_type, spawn)
                 cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn, vr=node_1.mgmt_vr)
                 
             assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(node_1.serial) == 1, \
@@ -749,6 +806,9 @@ class Xiq1365Tests:
                 if xiq_library_at_class_level.xflowscommonDevices._check_update_network_policy_status(network_policy_name, node_1.mac, IRV=False) != 1:
                     logger.fail(f"It looks like both type of device update failed for this switch: '{node_1.mac}'.")
 
+            with test_bed.open_spawn(node_1) as spawn:
+                cli.downgrade_iqagent(node_1.cli_type, spawn)
+                
             xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
             utils.wait_till(timeout=15)
             
@@ -825,6 +885,9 @@ class Xiq1365Tests:
 
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
 
+                with test_bed.open_spawn(node_1) as spawn:
+                    cli.downgrade_iqagent(node_1.cli_type, spawn)
+
             with enter_switch_cli(node_1) as dev_cmd:
                 dev_cmd.send_cmd(node_1.name, 'disable iqagent', max_wait=10, interval=2,
                                  confirmation_phrases='Do you want to continue? (y/N)', confirmation_args='y')
@@ -855,7 +918,6 @@ class Xiq1365Tests:
                 {**node_1, "location": test_bed.node_1_onboarding_location}, policy_name=network_policy_name)
 
             with test_bed.open_spawn(node_1) as spawn:
-                cli.downgrade_iqagent(node_1.cli_type, spawn)
                 cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn, vr=node_1.mgmt_vr)
                 
             xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
@@ -871,7 +933,10 @@ class Xiq1365Tests:
 
             xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
             utils.wait_till(timeout=15)
-            
+
+            with test_bed.open_spawn(node_1) as spawn:
+                cli.downgrade_iqagent(node_1.cli_type, spawn)
+
             logger.info("Get os version from device")
             os_version = xiq_library_at_class_level.xflowscommonDevices.get_device_row_values(node_1.mac, 'OS VERSION')
             nos_version = str(os_version['OS VERSION'])
