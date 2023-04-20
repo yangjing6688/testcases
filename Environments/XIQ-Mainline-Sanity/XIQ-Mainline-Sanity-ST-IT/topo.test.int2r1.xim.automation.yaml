@@ -1,5 +1,7 @@
+#Please find Steps to create unique Mail for private pre shared key test suite in Production Sanity in
+#https://wiki.iq.extremenetworks.com/wiki/display/XBQ/Steps+to+create+unique+Mail+for+private+pre+shared+key+test+suite+in+Production+Sanity
 test_url:             "https://int2.qa.xcloudiq.com"
-capwap_url:           "int2r1-cwpm-01.qa.xcloudiq.com"
+capwap_url:           "qa-redirector.extremecloudiq.com"
 sw_connection_host:   "int2r1.qa.xcloudiq.com"
 tenant_username:      "xiqproductionqa+auto1-blr-tb1-int2r1@gmail.com"
 tenant_password:      "Extreme@123"
@@ -12,3 +14,5 @@ wing_capwap_url:      "int2r1-wing.qa.xcloudiq.com"
 CLOUD_GDC_URL:        "https://int2.qa.xcloudiq.com"
 test_rdc_url:         "https://int2r1.qa.xcloudiq.com"
 server_name:          "qa-redirector.extremecloudiq.com"
+PPSK_MAIL_ID:         "mail.ppsk.int2r1@gmail.com"
+PPSK_MAIL_PASSWORD:   "szebvniivcgcjkgs"

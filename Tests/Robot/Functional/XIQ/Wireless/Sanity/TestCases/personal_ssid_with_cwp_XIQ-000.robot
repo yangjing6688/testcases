@@ -246,4 +246,11 @@ Wait_device_online
     ${STATUS}                       Wait Until Device Online    ${ap}[serial]
     Should Be Equal As Strings      '${STATUS}'    '1'
     ${STATUS}                       Get Device Status           ${ap}[serial]
-    Should contain any              ${STATUS}      green        config audit mismatch
+    ${STATUS}                       Run Keyword And Return Status    Should contain any    ${STATUS}    green    config audit mismatch
+    IF    not ${STATUS}
+        Wait Until Device Reboots       ${ap}[serial]
+        ${STATUS}                       Wait Until Device Online    ${ap}[serial]    retry_count=60
+        Should Be Equal As Strings      '${STATUS}'    '1'
+        ${STATUS}                       Get Device Status           ${ap}[serial]
+        Should contain any              ${STATUS}      green        config audit mismatch
+    END
