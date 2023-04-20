@@ -232,7 +232,7 @@ class Xiq921Tests:
     @pytest.mark.tcxm_18420
     def test_tcxm_18420(self, node, xiq_library_at_class_level, dev_cmd, network_manager):
         """	 TCXM-18420 - D360 View - Add Vlan in VLAN tab for U100 device and check config Summary tab.
-            TCXM-18422 - D360 View - Add Vlan in VLAN tab for U100 stack and check config Summary tab."""
+           """
 
         voss_port_check = "1/2"
         if node.platform.lower == 'stack':
@@ -386,7 +386,7 @@ class Xiq921Tests:
     @pytest.mark.p1
     def test_tcxm_18426(self, node, xiq_library_at_class_level, dev_cmd, network_manager):
         """	 TCXM-18426 - D360 View - Add STP Settings in Create Port Type tab for U100 device and check config Summary tab.
-            TCXM-18428 - D360 View - Add STP Settings in Create Port Type tab for U100 stack and check config Summary tab.
+
         """
         voss_port_check = "1/2"
         if node.platform.lower == 'stack':
@@ -467,8 +467,7 @@ class Xiq921Tests:
     def test_tcxm_18429(self, node, xiq_library_at_class_level, dev_cmd, network_manager):
         """	 TCXM-18429 - D360 View - Add Storm Control Settings in Create Port Type tab for U100 device and
         check config Summary tab.
-            TCXM-18431 - D360 View - Add Storm Control Settings in Create Port Type tab for U100 stack and
-        check config Summary tab."""
+           """
 
         voss_port_check = "1/2"
         if node.platform.lower == 'stack':
@@ -552,7 +551,7 @@ class Xiq921Tests:
     @pytest.mark.p1
     def test_tcxm_18432(self, node, xiq_library_at_class_level, dev_cmd, network_manager):
         """	 TCXM-18432 - D360 View - Add PSE Settings in Create Port Type tab for U100 device and check config Summary tab.
-             TCXM-18434 - D360 View - Add PSE Settings in Create Port Type tab for U100 stack and check config Summary tab.
+
         """
 
         # This test should skip if device does not support POE.
@@ -706,8 +705,7 @@ class Xiq921Tests:
     def test_tcxm_18473(self, node, xiq_library_at_class_level, dev_cmd, network_manager, node_policy_name, node_template_name):
         """	 TCXM-18473 - Policy Template - Add Port Name&Usage Configuration in Create Port Type tab for U100 device
         and check config Summary tab.
-            TCXM-18473 - Policy Template - Add Port Name&Usage Configuration in Create Port Type tab for U100 stack
-        and check config Summary tab."""
+            """
 
         # refresh page
         # xiq_library_at_class_level.CloudDriver.refresh_page()
@@ -788,7 +786,7 @@ class Xiq921Tests:
     @pytest.mark.p1
     def test_tcxm_18476(self, node, xiq_library_at_class_level, dev_cmd, network_manager, node_policy_name, node_template_name):
         """	 TCXM-18476 - Policy Template - Add Vlan in VLAN tab for U100 device and check config Summary tab.
-             TCXM-18478 - Policy Template - Add Vlan in VLAN tab for U100 stack and check config Summary tab."""
+            """
 
         # refresh page
         # xiq_library_at_class_level.CloudDriver.refresh_page()
@@ -873,8 +871,7 @@ class Xiq921Tests:
     def test_tcxm_18479(self, node, xiq_library_at_class_level, dev_cmd, network_manager, node_policy_name, node_template_name):
         """	 TCXM-18479 - Policy Template - Add Transmission Settings in Create Port Type tab for U100 device
         and check config Summary tab.
-             TCXM-18481 - Policy Template - Add Transmission Settings in Create Port Type tab for U100 stack
-        and check config Summary tab."""
+            """
 
 
         # refresh page
@@ -968,8 +965,7 @@ class Xiq921Tests:
     def test_tcxm_18482(self, node, xiq_library_at_class_level, dev_cmd, network_manager, node_policy_name, node_template_name):
         """	 TCXM-18482 - Policy Template - Add STP Settings in Create Port Type tab for U100 device and check config
             in Summary tab.
-            TCXM-18484 - Policy Template - Add STP Settings in Create Port Type tab for U100 stack and check config
-            in Summary tab.
+
         """
 
 
@@ -1063,8 +1059,7 @@ class Xiq921Tests:
     def test_tcxm_18485(self, node, xiq_library_at_class_level, dev_cmd, network_manager, node_policy_name, node_template_name):
         """	 TCXM-18485 - Policy Template - Add Storm Control Settings in Create Port Type tab for U100 device
         and check config Summary tab.
-            TCXM-18487 - Policy Template - Add Storm Control Settings in Create Port Type tab for U100 stack
-        and check config Summary tab."""
+           """
 
         # refresh page
         # xiq_library_at_class_level.CloudDriver.refresh_page()
@@ -1157,8 +1152,7 @@ class Xiq921Tests:
     def test_tcxm_18488(self, node, xiq_library_at_class_level, dev_cmd, network_manager, node_policy_name, node_template_name):
         """	 TCXM-18488 - Policy Template - Add PSE Settings in Create Port Type tab for U100 device and check
             config in Summary tab.
-            TCXM-18490 - Policy Template - Add PSE Settings in Create Port Type tab for U100 stack and check
-            config in Summary tab.
+
         """
 
         # BGD
@@ -1446,7 +1440,7 @@ class Xiq921Tests:
     @pytest.mark.p1
     def test_tcxm_18494(self, node, xiq_library_at_class_level, dev_cmd, network_manager, node_policy_name, node_template_name):
         """	 TCXM-18494 - Policy Template - Edit Vlan in VLAN tab for U100 device and check config Summary tab.
-             TCXM-18496 - Policy Template - Edit Vlan in VLAN tab for U100 stack and check config Summary tab."""
+             """
 
         # refresh page
         # xiq_library_at_class_level.CloudDriver.refresh_page()
@@ -1556,8 +1550,7 @@ class Xiq921Tests:
     def test_tcxm_18497(self, node, xiq_library_at_class_level, dev_cmd, network_manager, node_policy_name, node_template_name):
         """	 TCXM-18497 - Policy Template - Edit Transmission Settings in Create Port Type tab for U100 device and
             check config in Summary tab.
-            TCXM-18499 - Policy Template - Edit Transmission Settings in Create Port Type tab for U100 stack and
-            check config in Summary tab."""
+           """
 
         # refresh page
         # xiq_library_at_class_level.CloudDriver.refresh_page()
@@ -1683,8 +1676,7 @@ class Xiq921Tests:
     def test_tcxm_18500(self, node, xiq_library_at_class_level, dev_cmd, network_manager, node_policy_name, node_template_name):
         """	 TCXM-18500 - Policy Template - Edit STP Settings in Create Port Type tab for U100 device and check
             config in Summary tab.
-            TCXM-18502 - Policy Template - Edit STP Settings in Create Port Type tab for U100 stack and check
-            config in Summary tab.
+
         """
 
         # refresh page
@@ -1811,8 +1803,7 @@ class Xiq921Tests:
     def test_tcxm_18503(self, node, xiq_library_at_class_level, dev_cmd, network_manager, node_policy_name, node_template_name):
         """	 TCXM-18503 - Policy Template - Edit Storm Control Settings in Create Port Type tab for U100 device and
             check config in Summary tab.
-            TCXM-18505 - Policy Template - Edit Storm Control Settings in Create Port Type tab for U100 stack and
-            check config in Summary tab."""
+            """
 
 
         # refresh page
@@ -1937,8 +1928,6 @@ class Xiq921Tests:
     @pytest.mark.p1
     def test_tcxm_18506(self, node, xiq_library_at_class_level, dev_cmd, network_manager, node_policy_name, node_template_name):
         """	 TCXM-18506 - Policy Template - Edit PSE Settings in Create Port Type tab for U100 device and check
-            config in Summary tab.
-            TCXM-18508 - Policy Template - Edit PSE Settings in Create Port Type tab for U100 device and check
             config in Summary tab.
         """
 
