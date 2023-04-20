@@ -1,0 +1,174 @@
+data:
+  feature_name: Support EXOS limit MAC learned per port within Template/Device Level Config
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-1059
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=12121951
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  XIQ1059Tests::test_tcxm_19955:
+    author: icosmineanu
+    tc: tcxm_19955
+    title: Test tcxm_19955
+    description: Configure mac locking on a port type in Template configuration.
+    steps:
+      - Onboard one EXOS device
+      - Configure a policy-template with mac-locking on and click save
+      - Create a port type with mac-locking on
+      - Configure following Mac-locking properties "Maximum first arrival" as "10"
+      - Configure policy-template to device and push config
+      - Send 11 source MACs on port from traffic generator
+      - Check in Monitor - > Overview page
+      - Delete the onboarded device and logout from XIQ(Teardown)
+
+  XIQ1059Tests::test_tcxm_19956:
+    author: icosmineanu
+    tc: tcxm_19956
+    title: Test tcxm_19956
+    description: Configure mac locking on a port in device level configuration.
+    steps:
+      - Configure a policy-template with mac-locking on and click save, Configure policy-template to device.
+      - Configure following Mac-locking properties for a port in D360
+        "Mac-Locking" as "on"
+        "Maximum first arrival" as "10"
+        "Disable port" as "on"
+        "Link down action" as "Clear first arrival MACs when port link goes down"
+        "Remove aged MACs" as "on"
+      - Click on "Save port configuration" and Push config on device
+      - Send 11 source MACs on port from traffic generator
+      - Check in Monitor - > Overview page
+      - Check in Monitor - > Events page
+      - Delete the onboarded device and logout from XIQ(Teardown)
+
+  XIQ1059Tests::test_tcxm_19960:
+    author: icosmineanu
+    tc: tcxm_19960
+    title: Test tcxm_19960
+    description: Configure mac locking on a port type in Template configuration.
+    steps:
+      - Onboard one EXOS device
+      - Configure a policy-template with mac-locking on and click save
+      - Create a port type with mac-locking on
+      - Configure following Mac-locking properties "Maximum first arrival" as "5"
+      - Configure policy-template to device
+      - Create another port in d360 for the same  port with max first arrival as 10 and push config
+      - Send 11 source MACs on port from traffic generator
+      - Check in Monitor - > Overview page
+      - Delete the onboarded device and logout from XIQ(Teardown)
+  XIQ1059Tests::test_tcxm_19961:
+    author: icosmineanu
+    tc: tcxm_19961
+    title: Test tcxm_19961
+    description: Configure different "Maximum first arrival" values on a port type in Template configuration.
+    steps:
+      - Onboard one EXOS device
+      - Configure a policy-template with mac-locking on and click save
+      - Create a port type with mac-locking on
+      - Configure following Mac-locking properties "Maximum first arrival" as "300"
+      - Configure policy-template to device
+      - Configure max first arrival as 100
+      - Configure policy-template to device
+      - Configure following Mac-locking properties "Maximum first arrival" as "50"
+      - Configure policy-template to device
+      - Configure max first arrival as 10
+      - Configure policy-template to device
+      - Send 11 source MACs on port from traffic generator
+      - Check in Monitor - > Overview page
+      - Delete the onboarded device and logout from XIQ(Teardown)
+  XIQ1059Tests::test_tcxm_19963:
+    author: icosmineanu
+    tc: tcxm_19963
+    title: Test tcxm_19963
+    description: Configure mac locking on a port type and verify in Client360.
+    steps:
+      - Onboard one EXOS device
+      - Configure a policy-template with mac-locking on and click save
+      - Create a port type with mac-locking on
+      - Configure following Mac-locking properties
+        "Maximum first arrival" as "10"
+        "Disable port" as "off"
+        "Link down action" as "Clear first arrival MACs when port link goes down"
+        "Remove aged MACs" as "on"
+      - Configure policy-template to device and push config
+      - Send 11 source MACs on port from traffic generator
+      - Check in Monitor - > Overview page
+      - Delete the onboarded device and logout from XIQ(Teardown)
+  XIQ1059Tests::test_tcxm_19965:
+    author: icosmineanu
+    tc: tcxm_19965
+    title: Test tcxm_19965
+    description: Configure "link down action" as "retain macs" for a port type in Template configuration.
+    steps:
+      - Onboard one EXOS device
+      - Configure a policy-template with mac-locking on and click save
+      - Create a port type with mac-locking on
+      - Configure following Mac-locking properties
+        "Maximum first arrival" as "10"
+        "Disable port" as "on"
+        "Link down action" as "Retain first arrival MACs when port link goes down"
+        "Remove aged MACs" as "off"
+      - Configure policy-template to device and push config
+      - Send 11 source MACs on port from traffic generator
+      - Check in Monitor - > Overview page
+      - Delete the onboarded device and logout from XIQ(Teardown)
+
+  XIQ1059Tests::test_tcxm_19972:
+    author: icosmineanu
+    tc: tcxm_19972
+    title: Test tcxm_19972
+    description: Configure "on" and "off" for "Remove aged MACs" on a port type in Template configuration.
+    steps:
+      - Onboard one EXOS device
+      - Configure a policy-template with mac-locking on and click save
+      - Create a port type with mac-locking on
+      - Configure following Mac-locking properties
+        "Maximum first arrival" as "10"
+        "Disable port" as "on"
+        "Link down action" as "Clear first arrival MACs when port link goes down"
+        "Remove aged MACs" as "on"
+      - Configure policy-template to device and push config
+      - Send 11 source MACs on port from traffic generator
+      - Check in Monitor - > Overview page
+      - Delete the onboarded device and logout from XIQ(Teardown)
+
+  XIQ1059Tests::test_tcxm_19978:
+    author: icosmineanu
+    tc: tcxm_19978
+    title: Test tcxm_19978
+    description: Disable mac-locking on a port in Device level config, enable mac locking on the same port in CLI,
+                 Check in Monitor->Overview page after 10 mins.
+    steps:
+      - Onboard one EXOS device
+      - Disable mac-locking on a port in Device level config
+      - Enable mac locking on the same port in CLI
+      - Check in Monitor->Overview page
+      - Delete the onboarded device and logout from XIQ(Teardown)
+
+  XIQ1059Tests::test_tcxm_19983:
+    author: icosmineanu
+    tc: tcxm_19983
+    title: Test tcxm_19983
+    description: Configure invalid values for maximum first arrival.
+    steps:
+      - Onboard one EXOS device
+      - Navigate to Device360, Monitor, Overview
+      - Configure Maximum first arrival as 601
+      - Delete the onboarded device and logout from XIQ(Teardown)
+
+
+  #################### TESTBED 1 NODE ##########################

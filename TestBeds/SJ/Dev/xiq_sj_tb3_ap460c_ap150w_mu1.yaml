@@ -6,8 +6,8 @@ ap1:
   username:                 admin
   password:                 Aerohive123
   serial:                   '24602001170072'
-  console_ip:               10.16.168.37
-  console_port:             4000
+  console_ip:               10.16.168.23
+  console_port:             10003
   mac:                      BCF3102AA000
   cli_type:                 "AH-AP"
   platform:                 aerohive
@@ -27,8 +27,8 @@ ap2:
   username:                 admin
   password:                 Aerohive123
   serial:                   '01501707240100'
-  console_ip:               10.16.168.37
-  console_port:             4001
+  console_ip:               10.16.168.23
+  console_port:             10006
   mac:                      7C95B1006200
   cli_type:                 AH-AP
   platform:                 aerohive
@@ -37,7 +37,7 @@ ap2:
   make:                     Extreme - Aerohive
   mgmt_vlan:                10
   country:                  United States
-  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  location:                 auto_location_01, Milpitas, building_04, floor_05
   onboard_device_type:      Real
 
 mu1:

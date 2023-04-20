@@ -1,0 +1,23 @@
+runlist_XIQ_1059:
+  suitemap: 
+    - suitemap_XIQ_1059.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ['exos']
+        create_network_policy: yes                  # not mandatory (by default it is set to "yes"); it specifies if there will be created a network policy for the node
+        create_switch_template: yes                 # not mandatory (by default it is set to "yes"); it specifies if there will be created a new switch template for the node and its network policy
+        assign_network_policy_to_device: no        # not mandatory (by default it is set to "yes"); it specifies if the created network policy will be assigned to the node
+        initial_network_policy_push: no
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_19955
+    - tcxm_19956
+    - tcxm_19960
+    - tcxm_19961
+    - tcxm_19963
+    - tcxm_19965
+    - tcxm_19972
+    - tcxm_19978
+    - tcxm_19983
+    - tcxm_xiq_onboarding_cleanup
