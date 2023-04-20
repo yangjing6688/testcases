@@ -1,7 +1,7 @@
 data:
   feature_name: Support Honeycomb Port Editor for EXOS(Single/Stack)/VOSS
   feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-921
-  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=18675789
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=12140631
 
 tests:
 
