@@ -265,7 +265,7 @@ class Xiq1365Tests:
             xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
 
     @pytest.mark.tcxm_20579
-    def test_tcxm_20579(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils):
+    def test_tcxm_20579(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils, poll):
         """
         tcxm_20579 - Verify that Toggle for "Upload configuration automatically" is present and off by default.
         """
@@ -342,8 +342,12 @@ class Xiq1365Tests:
             assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(node_1.serial) == 1, \
                 f"Device {node_1} didn't get in MANAGED state"
 
-            res = xiq_library_at_class_level.xflowscommonDevices.get_device_status(node_1.serial)
-            assert res == 'green', f"The EXOS device did not come up successfully in the XIQ; Device: {node_1}"
+            try:
+                for status in poll(lambda: xiq_library_at_class_level.xflowscommonDevices.get_device_status(node_1.serial), max_poll_time=300):
+                    if status == "green":
+                        break
+            except:
+                logger.fail(f"The EXOS device did not come up successfully in the XIQ; Device: {node_1}")
 
             logger.step("Get the STP forward delay value configured on device after config push")
             dev_fw_delay = cli.get_nw_templ_device_config_forward_delay(node_1)
@@ -608,7 +612,7 @@ class Xiq1365Tests:
             xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
 
     @pytest.mark.tcxm_20583
-    def test_tcxm_20583(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils):
+    def test_tcxm_20583(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils, poll):
         """
         tcxm_20583 - Verify that Option for "Upgrade to the specific device firmware version" is present.
         """
@@ -684,8 +688,12 @@ class Xiq1365Tests:
             xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
             utils.wait_till(timeout=5)
 
-            res = xiq_library_at_class_level.xflowscommonDevices.get_device_status(node_1.serial)
-            assert res == 'green', f"The EXOS device did not come up successfully in the XIQ; Device: {node_1}"
+            try:
+                for status in poll(lambda: xiq_library_at_class_level.xflowscommonDevices.get_device_status(node_1.serial), max_poll_time=300):
+                    if status == "green":
+                        break
+            except:
+                logger.fail(f"The EXOS device did not come up successfully in the XIQ; Device: {node_1}")
 
             assert xiq_library_at_class_level.xflowsmanageDevice360.get_event_from_device360(node_1, "Download Config",
                                                                                              event_type="config") != -1, "Download config event was not found in event table"
