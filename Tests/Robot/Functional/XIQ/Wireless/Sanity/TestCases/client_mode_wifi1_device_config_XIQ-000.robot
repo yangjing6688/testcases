@@ -135,7 +135,7 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - TCXM-15120
     ${SELECT_AP_TEMPLATE}          add ap template to network policy      ${AP_TEMP_NAME_CM}      ${POLICY_CM}
     Should Be Equal As Strings     '${SELECT_AP_TEMPLATE}'   '1'
 
-    ${UPDATE}                      Update Network Policy To Ap    policy_name=${POLICY_CM}    ap_serial=${ap2.serial}     update_method=Complete
+    ${UPDATE}                      Update Network Policy To Ap            ${POLICY_CM}            ${ap2.serial}           Complete
     should be equal as strings     '${UPDATE}'               '1'
     Wait_device_online             ${ap2}
 
@@ -147,16 +147,15 @@ Test5: Client mode enable in device Configuration for AP2 - TCXM-15120
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2_WIFI1}   client_mode_profile=${CLIENT_MODE_PROFILE_WIFI1}
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2}         wifi1_configuration=${AP_TEMPLATE_CONFIG_2_WIFI1}
 
-    ${STATUS}                            override client mode in device config    ${ap2.mac}        wifi1                      ${CLIENT_MODE_PROFILE_WIFI1}
+    ${STATUS}                            override client mode in device config    ${ap2.mac}        wifi1            ${CLIENT_MODE_PROFILE_WIFI1}
     should be equal as strings           '${STATUS}'              '1'
     sleep                                20s
-    ${STATUS}                            update device delta configuration        ${ap2.serial}     update_method=Complete
+    ${STATUS}                            update device delta configuration        ${ap2.serial}     Complete
     Should Be Equal As Strings           '${STATUS}'               '1'
-    Wait_device_online                                             ${ap2}
-
-    ${UPDATE}                            Update Network Policy To Ap    policy_name=${POLICY}       ap_serial=${ap1.serial}     update_method=Complete
+    ${UPDATE}                            Update Network Policy To Ap              ${POLICY}         ${ap1.serial}    Complete
     should be equal as strings           '${UPDATE}'               '1'
-    Wait_device_online                                             ${ap1}
+    Wait_device_online                   ${ap2}
+    Wait_device_online                   ${ap1}
 
 Test6: Setup WIFI on STA2 and Connect to AP2 - TCXM-15120
     [Documentation]     Setup WIFI on STA2 and Connect to AP2 on Client Mode
@@ -179,7 +178,14 @@ Wait_device_online
     ${STATUS}                       Wait Until Device Online    ${ap}[serial]
     Should Be Equal As Strings      '${STATUS}'    '1'
     ${STATUS}                       Get Device Status           ${ap}[serial]
-    Should contain any              ${STATUS}      green        config audit mismatch
+    ${STATUS}                       Run Keyword And Return Status    Should contain any    ${STATUS}    green    config audit mismatch
+    IF    not ${STATUS}
+        Wait Until Device Reboots       ${ap}[serial]
+        ${STATUS}                       Wait Until Device Online    ${ap}[serial]    retry_count=60
+        Should Be Equal As Strings      '${STATUS}'    '1'
+        ${STATUS}                       Get Device Status           ${ap}[serial]
+        Should contain any              ${STATUS}      green        config audit mismatch
+    END
 
 Setup AP in Client Mode
     [Arguments]     ${ap}

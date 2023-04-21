@@ -269,7 +269,14 @@ Wait_device_online
     ${STATUS}                       Wait Until Device Online    ${ap}[serial]
     Should Be Equal As Strings      '${STATUS}'    '1'
     ${STATUS}                       Get Device Status           ${ap}[serial]
-    Should contain any              ${STATUS}      green        config audit mismatch
+    ${STATUS}                       Run Keyword And Return Status    Should contain any    ${STATUS}    green    config audit mismatch
+    IF    not ${STATUS}
+        Wait Until Device Reboots       ${ap}[serial]
+        ${STATUS}                       Wait Until Device Online    ${ap}[serial]    retry_count=60
+        Should Be Equal As Strings      '${STATUS}'    '1'
+        ${STATUS}                       Get Device Status           ${ap}[serial]
+        Should contain any              ${STATUS}      green        config audit mismatch
+    END
 
 Connect_to_client
     [Arguments]    ${ssid}    ${password}     ${delay}=5s
@@ -295,19 +302,19 @@ Connetion_SSID_to_AP_and_checked_client360
     ${OUT}                 get real time client360 details    ${mu1.wifi_mac}
     ${OUT}                 convert to string                  ${OUT}
     should match regexp    ${OUT}                             'userName':\\s+'${users}[0]',
-    should match regexp    ${OUT}                             'vlan':\\s+'${user_profile}[vlan_id]'
+    should match regexp    ${OUT}                             'vlanIpSortPair':\\s+'${user_profile}[vlan_id]'
     Run Keyword If         ${os_type_checked}    should contain any     ${OUT}    ${os}[0]    ${os}[1]
 
     Connect_to_client      ${wireless_ppsk}[ssid_name]        ${passwords}[1]
     ${OUT}                 get real time client360 details    ${mu1.wifi_mac}
     ${OUT}                 convert to string                  ${OUT}
     should match regexp    ${OUT}                             'userName':\\s+'${users}[1]',
-    should match regexp    ${OUT}                             'vlan':\\s+'${user_profile}[vlan_id]'
+    should match regexp    ${OUT}                             'vlanIpSortPair':\\s+'${user_profile}[vlan_id]'
     Run Keyword If         ${os_type_checked}    should contain any     ${OUT}    ${os}[0]    ${os}[1]
 
     Connect_to_client      ${wireless_ppsk}[ssid_name]        ${passwords}[2]
     ${OUT}                 get real time client360 details    ${mu1.wifi_mac}
     ${OUT}                 convert to string                  ${OUT}
     should match regexp    ${OUT}                             'userName':\\s+'${users}[2]',
-    should match regexp    ${OUT}                             'vlan':\\s+'${user_profile}[vlan_id]'
+    should match regexp    ${OUT}                             'vlanIpSortPair':\\s+'${user_profile}[vlan_id]'
     Run Keyword If         ${os_type_checked}    should contain any     ${OUT}    ${os}[0]    ${os}[1]

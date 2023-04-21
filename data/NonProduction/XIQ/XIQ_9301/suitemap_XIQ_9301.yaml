@@ -1,0 +1,185 @@
+data:
+  feature_name: Switching Diagnostics Page Enhancement
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-9301
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=57353207
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  Xiq9301neNodeTests::test_tcxm_25646:
+    author: sopopa
+    tc: tcxm_25646
+    title: Verify Port Details button is present
+    description: Verify that the new "Port Details" tab will display the selected ports from the switch slot wireframe in a table within the "Port Details" section
+    steps:
+      - Step 1 : Go to Monitor -> Diagnostics page
+      - Step 2: Verify Port Details button is present
+      - Step 3: Verify Port Details table contains all ports
+      - Step 4: Deselect all ports
+      - Step 5: Verify Port Details table is empty
+      - Step 6: Select all ports using the "Select all ports" button and verify all ports present in the table
+
+  Xiq9301neNodeTests::test_tcxm_25654:
+    author: sopopa
+    tc: tcxm_25654
+    title: Verify Port Details table is displayed
+    description: Verify that the new "Port Details" tab will display the selected ports from the switch wireframe in a table within the "Port Details" section
+    steps:
+      - Step 1: Verify Port Details table contains all ports
+      - Step 2: Deselect all ports
+      - Step 3: Verify Port Details table is empty
+      - Step 4: Select all ports using the "Select all ports" button and verify all ports present in the table
+      - Step 5: Verify all ports present in the table
+
+  Xiq9301neNodeTests::test_tcxm_25649:
+    author: sopopa
+    tc: tcxm_25649
+    title: Verify multiple ports can be selected on the switch wireframe
+    description: Verify that the multi-selection of the ports is available from the switch wireframe
+    steps:
+      - Step 1: Deselect all ports
+      - Step 2: Verify Port Details table is empty
+      - Step 3: Select ports from the switch wireframe
+      - Step 4: Verify selected ports appear in the Ports Details table
+      - Step 5: Deselect ports selected at step 3
+      - Step 6: Verify Ports Details table is empty
+
+  Xiq9301neNodeTests::test_tcxm_25656:
+    author: sopopa
+    tc: tcxm_25656
+    title: Verify that the check boxes on the "Select" column can be selected/deselected and Actions button is present
+    description: Verify that the check boxes on the "Select" column can be selected/deselected
+    steps:
+      - Step 1: Go to Port Details table under Monitor -> Diagnostics
+      - Step 2: Select ports in the Port Details table
+      - Step 3: Verify Actions button is present
+      - Step 4: Deselect ports
+      - Step 5: Verify Actions button no longer available
+
+  Xiq9301neNodeTests::test_tcxm_25677_1:
+    author: sopopa
+    tc: tcxm_25677_1
+    title: Verify Bounce Port actions button
+    description: Verify Bounce Port button is available for enabled ports and it is functional
+    steps:
+      - Step 1: Go to Port Details table under Monitor -> Diagnostics
+      - Step 2: Select multiple UP ports from the table
+      - Step 3: Click Actions button and verify Bounce port button is present
+      - Step 4: Click on the Bounce port button and verify action was successfull
+      - Step 5: Verify Bounce port button not available for disconnected ports
+
+  Xiq9301neNodeTests::test_tcxm_25677_2:
+    author: sopopa
+    tc: tcxm_25677_2
+    title: Verify Bounce Poe actions button
+    description: Verify Bounce Poe button is available and it is functional
+    steps:
+      - Step 1: Go to Port Details table under Monitor -> Diagnostics
+      - Step 2: Select multiple ports from the table
+      - Step 3: Click Actions button and verify Bounce Poe button is present
+      - Step 4: Click on the Bounce Poe button and verify action was successfull
+      - Step 5: Verify Bounce Poe button not available for ports on non Poe device
+
+  Xiq9301neNodeTests::test_tcxm_25677_3:
+    author: sopopa
+    tc: tcxm_25677_3
+    title: Verify Clear Mac Locking action button
+    description: Verify Clear Mac Locking button is available and it is functional
+    steps:
+      - Step 1: Go to Port Details table under Monitor -> Diagnostics
+      - Step 2: Enable Mac Locking on the network device
+      - Step 3: Send traffic so that port is disabled by Mac Locking
+      - Step 4: Select the disabled port in the Port Details table
+      - Step 5: Click Actions button and verify Clear Mac Locking button is present
+      - Step 6: Click on the Clear Mac Locking button and verify action was successfull
+
+  #################### TESTBED 1 NODE ##########################
+
+  ##################### TESTBED STACK ##########################
+  Xiq9301StackTests::test_tcxm_25659:
+    author: sopopa
+    tc: tcxm_25659
+    title: Verify Port Details button is present
+    description: Verify that the "Port Details" button is present in Diagnostics Page
+    steps:
+      - Step 1: Onboard the device
+      - Step 2: Navigate to Device360, Monitor, Diagnostics
+      - Step 3: Verify Port Details button is present
+
+  Xiq9301StackTests::test_tcxm_25668:
+    author: sopopa
+    tc: tcxm_25668
+    title: Verify Port Details table contains all selected ports
+    description: Verify all ports selected on the switch wireframe are present in the Port Details table
+    steps:
+      - Step 1: Verify Port Details table contains all ports
+      - Step 2: Deselect all ports
+      - Step 3: Verify Port Details table is empty
+      - Step 4: Select all ports using the "Select all ports" button
+      - Step 5: Verify all ports present in the table
+
+  Xiq9301StackTests::test_tcxm_25663:
+    author: sopopa
+    tc: tcxm_25663
+    title: Verify multiple ports can be selected on the switch wireframe
+    description: Verify that the multi-selection of the ports is available from the switch wireframe
+    steps:
+      - Step 1: Deselect all ports
+      - Step 2: Verify Port Details table is empty
+      - Step 3: Select ports from the switch wireframe
+      - Step 4: Verify selected ports appear in the Ports Details table
+      - Step 5: Deselect ports selected at step 3
+      - Step 6: Verify Ports Details table is empty
+
+  Xiq9301StackTests::test_tcxm_25670:
+    author: sopopa
+    tc: tcxm_25670
+    title: Verify that the check boxes on the "Select" column can be selected/deselected and Actions button is present
+    description: Verify that the check boxes on the "Select" column can be selected/deselected
+    steps:
+      - Step 1: Go to Port Details table under Monitor -> Diagnostics
+      - Step 2: Select ports in the Port Details table
+      - Step 3: Verify Actions button is present
+      - Step 4: Deselect ports
+      - Step 5: Verify Actions button no longer available
+
+  Xiq9301StackTests::test_tcxm_25664_1:
+    author: sopopa
+    tc: tcxm_25664_1
+    title: Verify Bounce Port actions button
+    description: Verify Bounce Port button is available for enabled ports and it is functional
+    steps:
+      - Step 1: Go to Port Details table under Monitor -> Diagnostics
+      - Step 2: Select multiple UP ports from the table
+      - Step 3: Click Actions button and verify Bounce port button is present
+      - Step 4: Click on the Bounce port button and verify action was successfull
+      - Step 5: Verify Bounce port button not available for disconnected ports
+
+  Xiq9301StackTests::test_tcxm_25664_2:
+    author: sopopa
+    tc: tcxm_25664_2
+    title: Verify Bounce Poe actions button
+    description: Verify Bounce Poe button is available and it is functional
+    steps:
+      - Step 1: Go to Port Details table under Monitor -> Diagnostics
+      - Step 2: Select multiple ports from the table
+      - Step 3: Click Actions button and verify Bounce Poe button is present
+      - Step 4: Click on the Bounce Poe button and verify action was successfull
+      - Step 5: Verify Bounce Poe button not available for ports on non Poe device
+
+  ##################### TESTBED STACK ##########################
