@@ -235,7 +235,7 @@ TCCS-7678: Cloud DB PPSK Network Client Connectivity With Bulk Users Group
 
     Negative Internet Connectivity Check
 
-    ${CREDENTIALS}=     Get Login Credential From Attachments       ${MAIL_ID1}     ${MAIL_ID1_PASS}
+    ${CREDENTIALS}=     Get Login Credential From Attachments       ${PPSK_MAIL_ID}     ${PPSK_MAIL_PASSWORD}
 
     Connect To PPSK Wireless Network        ${BULK_CLOUD_NW_SSID}       ${CREDENTIALS['user_1']['Access Key']}
 
@@ -271,7 +271,7 @@ TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
 
     Negative Internet Connectivity Check
 
-    ${CREDENTIALS}=     Get Login Credential From Attachments       ${MAIL_ID1}     ${MAIL_ID1_PASS}
+    ${CREDENTIALS}=     Get Login Credential From Attachments       ${PPSK_MAIL_ID}     ${PPSK_MAIL_PASSWORD}
 
     Connect To PPSK Wireless Network        ${BULK_LOCAL_NW_SSID}       ${CREDENTIALS['user2_1']['Access Key']}
 

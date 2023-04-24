@@ -138,12 +138,11 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - CXM-15129 - TCXM-15131 -
     ${SELECT_AP_TEMPLATE}          add ap template to network policy       ${AP_TEMP_NAME_CM}      ${POLICY_CM}
     Should Be Equal As Strings     '${SELECT_AP_TEMPLATE}'   '1'
 
-    ${UPDATE}                      Update Network Policy To Ap    policy_name=${POLICY}       ap_serial=${ap1.serial}     update_method=Complete
+    ${UPDATE}                      Update Network Policy To Ap             ${POLICY}               ${ap1.serial}           Complete
+    should be equal as strings     '${UPDATE}'               '1'
+    ${UPDATE}                      Update Network Policy To Ap             ${POLICY_CM}            ${ap2.serial}           Complete
     should be equal as strings     '${UPDATE}'               '1'
     Wait_device_online             ${ap1}
-
-    ${UPDATE}                      Update Network Policy To Ap    policy_name=${POLICY_CM}    ap_serial=${ap2.serial}     update_method=Complete
-    should be equal as strings     '${UPDATE}'               '1'
     Wait_device_online             ${ap2}
     Post_condition
 
@@ -185,7 +184,14 @@ Wait_device_online
     ${STATUS}                       Wait Until Device Online    ${ap}[serial]
     Should Be Equal As Strings      '${STATUS}'    '1'
     ${STATUS}                       Get Device Status           ${ap}[serial]
-    Should contain any              ${STATUS}      green        config audit mismatch
+    ${STATUS}                       Run Keyword And Return Status    Should contain any    ${STATUS}    green    config audit mismatch
+    IF    not ${STATUS}
+        Wait Until Device Reboots       ${ap}[serial]
+        ${STATUS}                       Wait Until Device Online    ${ap}[serial]    retry_count=60
+        Should Be Equal As Strings      '${STATUS}'    '1'
+        ${STATUS}                       Get Device Status           ${ap}[serial]
+        Should contain any              ${STATUS}      green        config audit mismatch
+    END
 
 Setup AP in Client Mode
     [Arguments]     ${ap}
