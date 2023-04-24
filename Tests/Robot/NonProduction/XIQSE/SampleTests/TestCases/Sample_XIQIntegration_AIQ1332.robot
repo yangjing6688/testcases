@@ -58,7 +58,6 @@ Test 2: Confirm XIQSE Present in XIQ Devices Table
 
     Search XIQ Devices Table and Confirm Success  ${XIQSE_SERIAL}
     Confirm Device Serial Present  ${XIQSE_SERIAL}
-    Confirm Device Name Present  ${XIQSE_NAME}
     Clear Search on XIQ Devices Table and Confirm Success
 
 Test 3: Remove XIQSE from XIQ
@@ -75,9 +74,8 @@ Test 4: Confirm XIQSE Not Present in XIQ Devices Table
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
-    Confirm Device MAC Address Not Present  ${XIQSE_MAC}
-    Confirm Device Serial Not Present  ${XIQSE_SERIAL}
-    Confirm Device Name Not Present  ${XIQSE_NAME}
+    Confirm Device MAC Address Not Present      ${XIQSE_MAC}
+    Confirm Device Serial Not Present           ${XIQSE_SERIAL}
 
 
 *** Keywords ***

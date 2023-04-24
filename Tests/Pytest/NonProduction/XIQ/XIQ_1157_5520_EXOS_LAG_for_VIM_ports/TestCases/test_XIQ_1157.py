@@ -142,7 +142,7 @@ class XIQ1157Tests:
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.remove_lag_in_template(main_lag_port, vim_ports, device='standalone')
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
                 assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                    node_1.mac) == 1, "Could not update the device"
+                    device_mac=node_1.mac) == 1, "Could not update the device"
                 with enter_switch_cli(node_1) as dev_cmd:
                     output = dev_cmd.send_cmd(node_1.name, 'show configuration | i sharing', max_wait=10, interval=2)
                 result = output[0].return_text
@@ -217,7 +217,7 @@ class XIQ1157Tests:
             main_lag_port = fourth_vim_port
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                node_1.mac) == 1, "Could not update the device"
+                device_mac=node_1.mac) == 1, "Could not update the device"
             with enter_switch_cli(node_1) as dev_cmd:
                 output = dev_cmd.send_cmd(node_1.name, 'show configuration | i sharing', max_wait=10, interval=2)
             result = output[0].return_text
@@ -239,7 +239,7 @@ class XIQ1157Tests:
                                                                                                 device='standalone')
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
                 assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                    node_1.mac) == 1, "Could not update the device"
+                    device_mac=node_1.mac) == 1, "Could not update the device"
                 with enter_switch_cli(node_1) as dev_cmd:
                     output = dev_cmd.send_cmd(node_1.name, 'show configuration | i sharing', max_wait=10, interval=2)
                 result = output[0].return_text
@@ -481,7 +481,7 @@ class XIQ1157Tests:
                                                                                                 device='standalone')
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
                 assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                    node_1.mac) == 1, "Could not update the device"
+                    device_mac=node_1.mac) == 1, "Could not update the device"
                 with enter_switch_cli(node_1) as dev_cmd:
                     output = dev_cmd.send_cmd(node_1.name, 'show configuration | i sharing', max_wait=10, interval=2)
                 result = output[0].return_text
@@ -908,7 +908,7 @@ class XIQ1157Tests:
 
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
                 assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                    node_1.mac) == 1, "Could not update the device"
+                    device_mac=node_1.mac) == 1, "Could not update the device"
                 with enter_switch_cli(node_1) as dev_cmd:
                     output = dev_cmd.send_cmd(node_1.name, 'show configuration | i sharing', max_wait=10, interval=2)
                 result = output[0].return_text
@@ -1101,7 +1101,7 @@ class XIQ1157Tests:
             xiq_library_at_class_level.xflowsmanageDevice360.close_device360_window()
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                node_stack.mac) == 1, \
+                device_mac=node_stack.mac) == 1, \
                 "Could not update the device"
 
             logger.step("Navigate to Device360->Port Configuration->Port Settings & Aggregation")
@@ -1134,7 +1134,7 @@ class XIQ1157Tests:
             xiq_library_at_class_level.xflowsmanageDevice360.close_device360_window()
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                node_stack.mac) == 1, "Could not update the device"
+                device_mac=node_stack.mac) == 1, "Could not update the device"
 
             logger.step("Navigate to Device360->Port Configuration->Port Settings & Aggregation")
             xiq_library_at_class_level.xflowscommonDeviceCommon.go_to_device360_window(device_mac=node_stack.mac)
@@ -1167,7 +1167,7 @@ class XIQ1157Tests:
             xiq_library_at_class_level.xflowsmanageDevice360.close_device360_window()
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                node_stack.mac) == 1, "Could not update the device"
+                device_mac=node_stack.mac) == 1, "Could not update the device"
 
             logger.step("Navigate to Device360->Port Configuration->Port Settings & Aggregation")
             xiq_library_at_class_level.xflowscommonDeviceCommon.go_to_device360_window(device_mac=node_stack.mac)
@@ -1205,7 +1205,7 @@ class XIQ1157Tests:
             xiq_library_at_class_level.xflowsmanageDevice360.close_device360_window()
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                node_stack.mac) == 1, "Could not update the device"
+                device_mac=node_stack.mac) == 1, "Could not update the device"
 
             logger.step("Navigate to Device360->Port Configuration->Port Settings & Aggregation")
             xiq_library_at_class_level.xflowscommonDeviceCommon.go_to_device360_window(device_mac=node_stack.mac)
@@ -1292,7 +1292,7 @@ class XIQ1157Tests:
                                                                                                    device='stack')
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                node_stack.mac) == 1, "Could not update the device"
+                device_mac=node_stack.mac) == 1, "Could not update the device"
 
             logger.info("Check with CLI for the first 2 VIM.")
             with enter_switch_cli(node_stack) as dev_cmd:
@@ -1314,7 +1314,7 @@ class XIQ1157Tests:
                                                                                                    device="stack")
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                node_stack.mac) == 1, "Could not update the device"
+                device_mac=node_stack.mac) == 1, "Could not update the device"
             logger.info("Check with CLI for the 3rd VIM port.")
             with enter_switch_cli(node_stack) as dev_cmd:
                 output = dev_cmd.send_cmd(node_stack.name, 'show configuration | i sharing', max_wait=10, interval=2)
@@ -1335,7 +1335,7 @@ class XIQ1157Tests:
                                                                                                    device="stack")
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                node_stack.mac) == 1, "Could not update the device"
+                device_mac=node_stack.mac) == 1, "Could not update the device"
             logger.info("Check with CLI for the 4th VIM port.")
             with enter_switch_cli(node_stack) as dev_cmd:
                 output = dev_cmd.send_cmd(node_stack.name, 'show configuration | i sharing', max_wait=10, interval=2)
@@ -1357,7 +1357,7 @@ class XIQ1157Tests:
                                                                                             device="stack")
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                node_stack.mac) == 1, "Could not update the device"
+                device_mac=node_stack.mac) == 1, "Could not update the device"
             logger.info("Check with CLI if ports were removed.")
             with enter_switch_cli(node_stack) as dev_cmd:
                 output = dev_cmd.send_cmd(node_stack.name, 'show configuration | i sharing', max_wait=10, interval=2)
@@ -1430,7 +1430,7 @@ class XIQ1157Tests:
             xiq_library_at_class_level.xflowsmanageDevice360.close_device360_window()
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                node_stack.mac) == 1, "Could not update the device"
+                device_mac=node_stack.mac) == 1, "Could not update the device"
             xiq_library_at_class_level.xflowscommonDeviceCommon.go_to_device360_window(device_mac=node_stack.mac)
             logger.info(f"Navigate to Device360->Port Configuration->Port Settings & Aggregation")
             xiq_library_at_class_level.xflowsmanageDevice360.device360_navigate_to_port_configuration()
@@ -1465,7 +1465,7 @@ class XIQ1157Tests:
             xiq_library_at_class_level.xflowsmanageDevice360.close_device360_window()
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                node_stack.mac) == 1, "Could not update the device"
+                device_mac=node_stack.mac) == 1, "Could not update the device"
             xiq_library_at_class_level.xflowscommonDeviceCommon.go_to_device360_window(device_mac=node_stack.mac)
             xiq_library_at_class_level.xflowsmanageDevice360.device360_navigate_to_port_configuration()
             auto_actions.click_reference(
@@ -1499,7 +1499,7 @@ class XIQ1157Tests:
             xiq_library_at_class_level.xflowsmanageDevice360.close_device360_window()
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                node_stack.mac) == 1, "Could not update the device"
+                device_mac=node_stack.mac) == 1, "Could not update the device"
             xiq_library_at_class_level.xflowscommonDeviceCommon.go_to_device360_window(device_mac=node_stack.mac)
             xiq_library_at_class_level.xflowsmanageDevice360.device360_navigate_to_port_configuration()
             auto_actions.click_reference(
@@ -2030,7 +2030,7 @@ class XIQ1157Tests:
             xiq_library_at_class_level.xflowsmanageDevice360.close_device360_window()
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                node_stack.mac) == 1, "Could not update the device"
+                device_mac=node_stack.mac) == 1, "Could not update the device"
 
             logger.step("Check aggregation ports added in Device360 and on dut CLI")
             xiq_library_at_class_level.xflowscommonDeviceCommon.go_to_device360_window(device_mac=node_stack.mac)
@@ -2084,7 +2084,7 @@ class XIQ1157Tests:
             xiq_library_at_class_level.xflowsmanageDevice360.close_device360_window()
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             assert xiq_library_at_class_level.xflowsmanageDevices.update_policy_and_configuration_stack(
-                node_stack.mac) == 1, "Could not update the device"
+                device_mac=node_stack.mac) == 1, "Could not update the device"
 
             logger.step("Check aggregation ports removed in Device360 and on dut CLI")
             xiq_library_at_class_level.xflowscommonDeviceCommon.go_to_device360_window(device_mac=node_stack.mac)

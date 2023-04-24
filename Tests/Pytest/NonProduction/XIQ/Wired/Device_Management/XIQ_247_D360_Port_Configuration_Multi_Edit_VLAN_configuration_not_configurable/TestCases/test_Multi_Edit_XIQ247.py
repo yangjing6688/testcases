@@ -168,7 +168,7 @@ class XIQ247Tests:
 
             xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                 pytest.fail("Failed to select")
 
             # Update configuration on device and check if the process is completed without error
@@ -340,7 +340,7 @@ class XIQ247Tests:
 
             xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                 pytest.fail("Failed to select")
 
             # Update configuration on device and check if the process is completed without error
@@ -518,7 +518,7 @@ class XIQ247Tests:
 
             xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                 pytest.fail("Failed to select")
 
             # Update configuration on device and check if the process is completed without error
@@ -617,7 +617,7 @@ class XIQ247Tests:
 
             xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                 pytest.fail("Failed to select")
 
             # Update configuration on device and check if the process is completed without error
@@ -788,7 +788,7 @@ class XIQ247Tests:
 
                 xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-                if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+                if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                     pytest.fail("Failed to select")
 
                 # Update Network Policy on device
@@ -870,7 +870,7 @@ class XIQ247Tests:
 
                 xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-                if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+                if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                     pytest.fail("Failed to select")
 
                 # Update configuration on device and check if the process is completed without error
@@ -1106,7 +1106,7 @@ class XIQ247Tests:
 
             xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                 pytest.fail("Failed to select")
 
             # Update configuration on device and check if the process is completed without error
@@ -1205,7 +1205,7 @@ class XIQ247Tests:
 
             xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                 pytest.fail("Failed to select")
 
             # Update configuration on device and check if the process is completed without error

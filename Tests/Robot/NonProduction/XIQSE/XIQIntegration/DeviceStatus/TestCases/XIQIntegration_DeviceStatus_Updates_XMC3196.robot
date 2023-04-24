@@ -243,7 +243,7 @@ Confirm XIQ Site Engine Onboarded to XIQ
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
-    ${search_result}=  Wait Until Device Added      ${XIQSE_SERIAL}
+    ${search_result}=  Wait Until Device Added      device_serial=${XIQSE_SERIAL}
     Should Be Equal As Integers                     ${search_result}    1
 
     ${device_status}=  Wait Until Device Online     device_mac=${XIQSE_MAC}
@@ -289,7 +289,7 @@ Confirm XIQSE Device Added to XIQ
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
-    ${search_result}=  Wait Until Device Added      ${serial}
+    ${search_result}=  Wait Until Device Added      device_serial=${serial}
     Should Be Equal As Integers                     ${search_result}    1
 
 Disconnect XIQSE Test Device and Confirm Success
