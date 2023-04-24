@@ -3007,8 +3007,6 @@ def cleanup(
                     if config["template_name"] == template_switch:
                         try:
                             logger.step("Enable the Override Policy Common Settings option from Switch Template configuration for '{template_switch}' template.")
-
-                            logger.info(f"Go to the port configuration of '{template_switch}' template")
                             xiq.xflowsconfigureSwitchTemplate.select_sw_template(
                                 config["policy_name"], template_switch, request.getfixturevalue(node_name).cli_type)
                             screen.save_screen_shot()
