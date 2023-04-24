@@ -13,7 +13,7 @@ class Xiq1365Tests:
         try:
             yield
         finally:
-            revert_node(node_1, xiq_library_at_class_level, assign_network_policy=False, push_network_policy=False, downgrade_iqagent=True)
+            revert_node(node_1, xiq_library_at_class_level, assign_network_policy=False, push_network_policy=False)
 
     @pytest.mark.tcxm_20574
     def test_tcxm_20574(self, xiq_library_at_class_level, node_1, test_bed, utils):

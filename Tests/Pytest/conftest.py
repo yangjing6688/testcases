@@ -2537,7 +2537,8 @@ def revert_node(
     This fixture is used to easily revert the node to a specific state.
     It is useful in test cases where the node was deleted|default network policy is no longer assigned to the node.
     
-    All of its kwargs are True by default (except 'downgrade_iqagent' kwarg) which means that the function will: 
+    All of its kwargs are True by default which means that the function will: 
+        - downgrade the iqagent on the node
         - configure the iqagent on the node
         - onboard the node
         - assign the network policy to the node
@@ -2555,7 +2556,7 @@ def revert_node(
     """
     
     @debug
-    def revert_node_func(node: Node, xiq: XiqLibrary, configure_iqagent=True, downgrade_iqagent=False, onboard_node=True, assign_network_policy=True, push_network_policy=True):
+    def revert_node_func(node: Node, xiq: XiqLibrary, configure_iqagent=True, downgrade_iqagent=True, onboard_node=True, assign_network_policy=True, push_network_policy=True):
         
         onboarding_location: str = request.getfixturevalue(f"{node.node_name}_onboarding_location")
         policy_name: str = request.getfixturevalue(f"{node.node_name}_policy_name")
