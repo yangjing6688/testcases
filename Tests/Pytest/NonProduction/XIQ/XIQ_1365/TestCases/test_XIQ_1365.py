@@ -5,6 +5,7 @@ import re
 @pytest.mark.p1
 @pytest.mark.development
 @pytest.mark.testbed_1_node
+@pytest.mark.dependson("tcxm_xiq_onboarding")
 class Xiq1365Tests:
 
     @pytest.fixture(scope="class", autouse=True)
@@ -91,7 +92,7 @@ class Xiq1365Tests:
 
     @pytest.mark.tcxm_20577
     def test_tcxm_20577(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed,
-                        logger, get_random_word, utils):
+                        logger, utils):
         """
         tcxm_20577 - Verify that Option  for "Upgrade firmware to the latest version" is present.           
         """
