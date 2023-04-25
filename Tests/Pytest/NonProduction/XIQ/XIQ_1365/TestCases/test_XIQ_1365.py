@@ -33,8 +33,12 @@ class Xiq1365Tests:
         except Exception as exc:
             logger.warning(repr(exc))
 
+    @pytest.fixture(scope="class", autouse=True)
+    def node_1_model(self, test_bed):
+        return test_bed.generate_template_for_given_model(test_bed.node_1)[0]
+    
     @pytest.mark.tcxm_20574
-    def test_tcxm_20574(self, xiq_library_at_class_level, node_1, test_bed, utils, logger):
+    def test_tcxm_20574(self, xiq_library_at_class_level, node_1, test_bed, utils, logger, node_1_model):
         """
         tcxm_20574 - Verify that Advanced settings TAB is present in Configuration Menu in Switch Template Configuration   
         """
@@ -52,10 +56,8 @@ class Xiq1365Tests:
 
             utils.wait_till(timeout=3)
 
-            sw_name_final, _ = test_bed.generate_template_for_given_model(node_1)
-
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
-                                                                                            sw_name_final,
+                                                                                            node_1_model,
                                                                                             device_template_name,
                                                                                             node_1.cli_type) == 1, \
                 f"Failed to add switch template with model: {device_template_name}"
@@ -69,7 +71,7 @@ class Xiq1365Tests:
             self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20576
-    def test_tcxm_20576(self, xiq_library_at_class_level, node_1, enter_switch_cli, test_bed, utils, logger):
+    def test_tcxm_20576(self, xiq_library_at_class_level, node_1, enter_switch_cli, test_bed, utils, logger, node_1_model):
         """
         tcxm_20576 - Verify that Toggle for "Upgrade device firmware upon device authentication" is present.
         """
@@ -81,29 +83,19 @@ class Xiq1365Tests:
                 dev_cmd.send_cmd(node_1.name, 'disable iqagent', max_wait=10, interval=2,
                                  confirmation_phrases='Do you want to continue? (y/N)', confirmation_args='y')
                 
-            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
-                network_policy_name)
-
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(network_policy_name)
             utils.wait_till(timeout=3)
-
-            sw_name_final, _ = test_bed.generate_template_for_given_model(node_1)
             
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(
-                network_policy_name,
-                sw_name_final,
-                device_template_name,
-                cli_type=node_1.cli_type)
-            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.device_templ_advanced_settings(network_policy_name,
-                                                                                                    device_template_name,
-                                                                                                    node_1.cli_type,
-                                                                                                    upgrade_device_upon_auth=True,
-                                                                                                    sw_model=node_1.model)
+                network_policy_name, node_1_model, device_template_name, cli_type=node_1.cli_type)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.device_templ_advanced_settings(
+                network_policy_name, device_template_name, node_1.cli_type, upgrade_device_upon_auth=True, sw_model=node_1.model)
         finally:   
             self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20577
     def test_tcxm_20577(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed,
-                        logger, utils):
+                        logger, utils, node_1_model):
         """
         tcxm_20577 - Verify that Option  for "Upgrade firmware to the latest version" is present.           
         """
@@ -121,10 +113,8 @@ class Xiq1365Tests:
 
             utils.wait_till(timeout=3)
 
-            sw_name_final, _ = test_bed.generate_template_for_given_model(node_1)
-
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
-                                                                                            sw_name_final,
+                                                                                            node_1_model,
                                                                                             device_template_name,
                                                                                             node_1.cli_type) == 1, \
                 f"Failed to add switch template with model: {device_template_name}"
@@ -188,7 +178,7 @@ class Xiq1365Tests:
             self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20578
-    def test_tcxm_20578(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils):
+    def test_tcxm_20578(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils, node_1_model):
         """
         tcxm_20578 - Verify that Option for "Upgrade to the specific device firmware version" is present.
         """
@@ -210,10 +200,8 @@ class Xiq1365Tests:
 
             utils.wait_till(timeout=3)
 
-            sw_name_final, _ = test_bed.generate_template_for_given_model(node_1)
-
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
-                                                                                            sw_name_final,
+                                                                                            node_1_model,
                                                                                             device_template_name,
                                                                                             node_1.cli_type) == 1, \
                 f"Failed to add switch template with model: {device_template_name}"
@@ -222,7 +210,7 @@ class Xiq1365Tests:
                                                                                                     node_1.cli_type,
                                                                                                     upgrade_device_upon_auth=True,
                                                                                                     current_image_version=image_version,
-                                                                                                    sw_model=sw_name_final)
+                                                                                                    sw_model=node_1_model)
 
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             
@@ -271,7 +259,7 @@ class Xiq1365Tests:
             self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20579
-    def test_tcxm_20579(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils, poll):
+    def test_tcxm_20579(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils, poll, node_1_model):
         """
         tcxm_20579 - Verify that Toggle for "Upload configuration automatically" is present and off by default.
         """
@@ -288,10 +276,8 @@ class Xiq1365Tests:
 
             utils.wait_till(timeout=3)
 
-            sw_name_final, _ = test_bed.generate_template_for_given_model(node_1)
-
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
-                                                                                            sw_name_final,
+                                                                                            node_1_model,
                                                                                             device_template_name,
                                                                                             node_1.cli_type) == 1, \
                 f"Failed to add switch template with model: {device_template_name}"
@@ -299,7 +285,7 @@ class Xiq1365Tests:
                                                                                                     device_template_name,
                                                                                                     node_1.cli_type,
                                                                                                     upload_auto=True,
-                                                                                                    sw_model=sw_name_final)
+                                                                                                    sw_model=node_1_model)
 
             logger.step("Change STP forward delay value; this change will be used to check if config push has been successfuly done")
             xiq_fw_delay = xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template_device_config_forw_delay(
@@ -368,7 +354,7 @@ class Xiq1365Tests:
             self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20580
-    def test_tcxm_20580(self, xiq_library_at_class_level, node_1, cli, test_bed, logger, utils):
+    def test_tcxm_20580(self, xiq_library_at_class_level, node_1, cli, test_bed, logger, utils, node_1_model):
         """
         tcxm_20580 - Check that if the node_1 is already onboarded and has a network policy, changing "Upload
                      configuration automatically" or "Upgrade device firmware upon device firmware authentication"
@@ -383,11 +369,9 @@ class Xiq1365Tests:
 
             utils.wait_till(timeout=3)
 
-            sw_name_final, _ = test_bed.generate_template_for_given_model(node_1)
-
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(
                 network_policy_name,
-                sw_name_final,
+                node_1_model,
                 device_template_name,
                 cli_type=node_1.cli_type)
 
@@ -413,7 +397,7 @@ class Xiq1365Tests:
                                                                                                     node_1.cli_type,
                                                                                                     upgrade_device_upon_auth=True,
                                                                                                     upload_auto=True,
-                                                                                                    sw_model=sw_name_final)
+                                                                                                    sw_model=node_1_model)
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
 
             logger.info("Get managed value from device")
@@ -470,13 +454,12 @@ class Xiq1365Tests:
             self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20582
-    def test_tcxm_20582(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils):
+    def test_tcxm_20582(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils, node_1_model):
         """
         tcxm_20582 - Check that all appropriate alarms/events should be triggered for upgrade firmware and auto upload config.
         """
         network_policy_name = f"policy_XIQ1365_{test_bed.get_random_word()}"
         device_template_name = f"template_XIQ1365_{test_bed.get_random_word()}"
-        sw_name_final, _ = test_bed.generate_template_for_given_model(node_1)
 
         try:
             logger.step("Check test preconditions")
@@ -489,7 +472,7 @@ class Xiq1365Tests:
                 device_image_version = device_image_version.strip()
 
             latest_image_version, image_versions = xiq_library_at_class_level.xflowsconfigureSwitchTemplate.get_latest_firmware_version_from_switch_template(
-                sw_name_final)
+                node_1_model)
             
             if device_image_version in latest_image_version:
 
@@ -536,7 +519,7 @@ class Xiq1365Tests:
             logger.step("Create switch template")
 
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
-                                                                                            sw_name_final,
+                                                                                            node_1_model,
                                                                                             device_template_name,
                                                                                             node_1.cli_type) == 1, \
                 f"Failed to add switch template with model: {device_template_name}"
@@ -545,7 +528,7 @@ class Xiq1365Tests:
                                                                                                     node_1.cli_type,
                                                                                                     upgrade_device_upon_auth=True,
                                                                                                     upload_auto=True,
-                                                                                                    sw_model=sw_name_final)
+                                                                                                    sw_model=node_1_model)
 
             logger.info(
                 "Change STP forward delay value; this change will be used to check if config push has been successfully")
@@ -606,7 +589,7 @@ class Xiq1365Tests:
             self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20583
-    def test_tcxm_20583(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils, poll):
+    def test_tcxm_20583(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils, poll, node_1_model):
         """
         tcxm_20583 - Verify that Option for "Upgrade to the specific device firmware version" is present.
         """
@@ -627,10 +610,8 @@ class Xiq1365Tests:
 
             utils.wait_till(timeout=3)
 
-            sw_name_final, _ = test_bed.generate_template_for_given_model(node_1)
-
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
-                                                                                            sw_name_final,
+                                                                                            node_1_model,
                                                                                             device_template_name,
                                                                                             node_1.cli_type) == 1, \
                 f"Failed to add switch template with model: {device_template_name}"
@@ -640,7 +621,7 @@ class Xiq1365Tests:
                                                                                                     upgrade_device_upon_auth=True,
                                                                                                     upload_auto=True,
                                                                                                     current_image_version=image_version,
-                                                                                                    sw_model=sw_name_final)
+                                                                                                    sw_model=node_1_model)
 
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
 
@@ -697,13 +678,12 @@ class Xiq1365Tests:
             self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
             
     @pytest.mark.tcxm_20589
-    def test_tcxm_20589(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils):
+    def test_tcxm_20589(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils, node_1_model):
         """
         tcxm_20589 - Check that the Upgrade firmware and Upload Configuration automatically functions are triggered after node_1 transitions from unmanaged to managed.
         """
         network_policy_name = f"policy_XIQ1365_{test_bed.get_random_word()}"
         device_template_name = f"template_XIQ1365_{test_bed.get_random_word()}"
-        sw_name_final, _ = test_bed.generate_template_for_given_model(node_1)
 
         try:
             logger.step("Check test preconditions")
@@ -716,7 +696,7 @@ class Xiq1365Tests:
                 device_image_version = device_image_version.strip()
 
             latest_image_version, image_versions = xiq_library_at_class_level.xflowsconfigureSwitchTemplate.get_latest_firmware_version_from_switch_template(
-                sw_name_final)
+                node_1_model)
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             image_version = device_image_version
             
@@ -759,10 +739,10 @@ class Xiq1365Tests:
                 network_policy_name) == 1, "Failed to create Switching and Routing network policy"
 
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
-                                                                                            sw_name_final,
+                                                                                            node_1_model,
                                                                                             device_template_name,
                                                                                             node_1.cli_type) == 1, \
-                f"Failed to add switch template with model: {sw_name_final}"
+                f"Failed to add switch template with model: {node_1_model}"
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.device_templ_advanced_settings(network_policy_name,
                                                                                                     device_template_name,
                                                                                                     node_1.cli_type,
@@ -827,7 +807,7 @@ class Xiq1365Tests:
             self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20590
-    def test_tcxm_20590(self, xiq_library_at_class_level, node_1, utils, enter_switch_cli, cli, logger, test_bed):
+    def test_tcxm_20590(self, xiq_library_at_class_level, node_1, utils, enter_switch_cli, cli, logger, test_bed, node_1_model):
         """
         tcxm_20590 - Check for the Upgrade firmware and Upload Configuration automatically functions are not
                     triggered if the procedure is already made and device is switched from managed to unmanaged
@@ -835,7 +815,6 @@ class Xiq1365Tests:
         """
         network_policy_name = f"policy_XIQ1365_{test_bed.get_random_word()}"
         device_template_name = f"template_XIQ1365_{test_bed.get_random_word()}"
-        sw_name_final, _ = test_bed.generate_template_for_given_model(node_1)
 
         try:
             logger.step("Check test preconditions")
@@ -848,7 +827,7 @@ class Xiq1365Tests:
                 device_image_version = device_image_version.strip()
 
             latest_image_version, image_versions = xiq_library_at_class_level.xflowsconfigureSwitchTemplate.get_latest_firmware_version_from_switch_template(
-                sw_name_final)
+                node_1_model)
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             
             if device_image_version in latest_image_version:
@@ -895,10 +874,10 @@ class Xiq1365Tests:
                 network_policy_name) == 1, \
                 "Failed to create Switching and Routing network policy"
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
-                                                                                            sw_name_final,
+                                                                                            node_1_model,
                                                                                             device_template_name,
                                                                                             node_1.cli_type) == 1, \
-                f"Failed to add switch template with model: {sw_name_final}"
+                f"Failed to add switch template with model: {node_1_model}"
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.device_templ_advanced_settings(network_policy_name,
                                                                                                     device_template_name,
                                                                                                     node_1.cli_type,
