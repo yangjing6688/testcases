@@ -599,7 +599,7 @@ class Xiq1365Tests:
                 f"Upload configuration automatically failed, STP forward delay value " \
                 f"configured on XIQ is different: {xiq_fw_delay}"
             assert xiq_library_at_class_level.xflowsmanageDevice360.get_event_from_device360(
-                node_1, "Download Config", event_type="config") != 1, "Download config event was not found in event table"
+                node_1, "Download Config", event_type="config") != -1, "Download config event was not found in event table"
             assert xiq_library_at_class_level.xflowsmanageDevice360.get_event_from_device360(
                 node_1, "firmware successful") != -1, "Download firmware successfull event was not found in event table"
 
