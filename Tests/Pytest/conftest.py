@@ -26,38 +26,38 @@ from typing import List, Dict, DefaultDict, Callable, Tuple, Iterator, Protocol,
 from pathlib import Path
 from itertools import permutations
 from collections.abc import MutableMapping
+from selenium.webdriver.common.action_chains import ActionChains
+from pytest_testconfig import config as pytest_config
 
 from ExtremeAutomation.Library.Utils.Singleton import Singleton
-from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
-from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
 from ExtremeAutomation.Library.Logger.PytestLogger import PytestLogger
 from ExtremeAutomation.Library.Logger.Colors import Colors
-from selenium.webdriver.common.action_chains import ActionChains
 from ExtremeAutomation.Keywords.NetworkElementKeywords.StaticKeywords.NetworkElementResetDeviceUtilsKeywords import NetworkElementResetDeviceUtilsKeywords
 from ExtremeAutomation.Keywords.NetworkElementKeywords.NetworkElementConnectionManager import NetworkElementConnectionManager
+from ExtremeAutomation.Keywords.NetworkElementKeywords.Utils.NetworkElementListUtils import NetworkElementListUtils
 from ExtremeAutomation.Keywords.NetworkElementKeywords.Utils.NetworkElementCliSend import NetworkElementCliSend
 from ExtremeAutomation.Imports.DefaultLibrary import DefaultLibrary
 from ExtremeAutomation.Imports.Udks import Udks
+from ExtremeAutomation.Imports.pytestConfigHelper import PytestConfigHelper
+from ExtremeAutomation.Imports.XiqLibrary import XiqLibrary
 from ExtremeAutomation.Imports.EndSystemUtils import EndSystemUtils
 from ExtremeAutomation.Imports.LowLevelApis import LowLevelApis
 from ExtremeAutomation.Imports.VirtualMachineUtils import VirtualMachineUtils
 from ExtremeAutomation.Imports.NetElementUtils import NetElementUtils
 from ExtremeAutomation.Imports.LowLevelTrafficApis import LowLevelTrafficApis
 from ExtremeAutomation.Imports.CommonObjectUtils import CommonObjectUtils
-from pytest_testconfig import config as pytest_config
 from extauto.common.Screen import Screen
 from extauto.common.Rest import Rest
 from extauto.common.WebElementHandler import WebElementHandler
 from extauto.common.Tshark import Tshark
 from extauto.common.WebElementController import WebElementController
-from extauto.xiq.elements.Network360MonitorElements import Network360MonitorElements
-from extauto.xiq.flows.common.Navigator import Navigator
 from extauto.common.Utils import Utils
 from extauto.common.CloudDriver import CloudDriver
 from extauto.common.AutoActions import AutoActions
 from extauto.common.Cli import Cli
-from ExtremeAutomation.Keywords.NetworkElementKeywords.Utils.NetworkElementListUtils import NetworkElementListUtils
 from extauto.xiq.elements.ClientWebElements import ClientWebElements
+from extauto.xiq.elements.Network360MonitorElements import Network360MonitorElements
+from extauto.xiq.flows.common.Navigator import Navigator
 
 
 Node = NewType("Node", Dict[str, Union[str, Dict[str, str]]])
@@ -2960,7 +2960,8 @@ def cleanup(
         logger: PytestLogger,
         screen: Screen, 
         debug: Callable,
-        request: fixtures.SubRequest
+        request: fixtures.SubRequest,
+        utils: Utils
 ) -> Cleanup:
     """
     Fixture that does the cleanup in XIQ.
@@ -3007,13 +3008,32 @@ def cleanup(
                 except Exception as exc:
                     screen.save_screen_shot()
                     logger.warning(repr(exc))   
-                                    
+            
+            policy_config: PolicyConfig = request.getfixturevalue("policy_config")
+            for template_switch in templates_switch:
+                for node_name, config in policy_config.items():
+                    if config["template_name"] == template_switch:
+                        try:
+                            logger.step("Enable the Override Policy Common Settings option from Switch Template configuration for '{template_switch}' template.")
+                            xiq.xflowsconfigureSwitchTemplate.select_sw_template(
+                                config["policy_name"], template_switch, request.getfixturevalue(node_name).cli_type)
+                            screen.save_screen_shot()
+                            xiq.xflowsconfigureSwitchTemplate.set_override_policy_common_settings(state=True)
+                            screen.save_screen_shot()
+                            utils.wait_till(timeout=2)
+                            xiq.xflowsconfigureSwitchTemplate.switch_template_save()
+                            screen.save_screen_shot()
+                            utils.wait_till(timeout=4)
+                            break
+                        except Exception as exc:
+                            screen.save_screen_shot()
+                            logger.warning(repr(exc))
+
             for network_policy in network_policies:
                 try:
                     screen.save_screen_shot()
                     logger.step(f"Delete this network policy: '{network_policy}'.")
-                    xiq.xflowsconfigureNetworkPolicy.delete_network_policy(
-                        network_policy)
+                    xiq.xflowsconfigureNetworkPolicy.delete_network_polices(network_policy)
                     logger.info(f"Successfully deleted this network policy: '{network_policy}'")
                     screen.save_screen_shot()
                 except Exception as exc:
