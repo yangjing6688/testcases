@@ -15,8 +15,26 @@ class Xiq1365Tests:
         finally:
             revert_node(node_1, xiq_library_at_class_level, assign_network_policy=False, push_network_policy=False)
 
+    def cleanup(self, xiq, node, network_policy, switch_template, utils, logger):
+
+        try:
+            xiq.xflowscommonNavigator.navigate_to_devices()
+            xiq.xflowscommonDevices.delete_device(device_serial=node.serial)
+            
+            xiq.xflowsconfigureSwitchTemplate.select_sw_template(
+                network_policy, switch_template, node.cli_type)
+            xiq.xflowsconfigureSwitchTemplate.set_override_policy_common_settings(state=True)
+            utils.wait_till(timeout=2)
+            xiq.xflowsconfigureSwitchTemplate.switch_template_save()
+            utils.wait_till(timeout=4)
+            xiq.xflowsconfigureNetworkPolicy.delete_network_polices(network_policy)
+            utils.wait_till(timeout=4)
+            xiq.xflowsconfigureCommonObjects.delete_switch_template(switch_template)
+        except Exception as exc:
+            logger.warning(repr(exc))
+
     @pytest.mark.tcxm_20574
-    def test_tcxm_20574(self, xiq_library_at_class_level, node_1, test_bed, utils):
+    def test_tcxm_20574(self, xiq_library_at_class_level, node_1, test_bed, utils, logger):
         """
         tcxm_20574 - Verify that Advanced settings TAB is present in Configuration Menu in Switch Template Configuration   
         """
@@ -47,15 +65,11 @@ class Xiq1365Tests:
                                                                                                     sw_model=node_1.model,
                                                                                                     upgrade_device_upon_auth=True
                                                                                                     )
-
         finally:
-            xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-            test_bed.add_switch_template_to_teardown(device_template_name)
-            test_bed.add_network_policy_to_teardown(network_policy_name)
-            xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
+            self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20576
-    def test_tcxm_20576(self, xiq_library_at_class_level, node_1, enter_switch_cli, test_bed, utils):
+    def test_tcxm_20576(self, xiq_library_at_class_level, node_1, enter_switch_cli, test_bed, utils, logger):
         """
         tcxm_20576 - Verify that Toggle for "Upgrade device firmware upon device authentication" is present.
         """
@@ -84,11 +98,8 @@ class Xiq1365Tests:
                                                                                                     node_1.cli_type,
                                                                                                     upgrade_device_upon_auth=True,
                                                                                                     sw_model=node_1.model)
-        finally:
-            xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-            test_bed.add_switch_template_to_teardown(device_template_name)
-            test_bed.add_network_policy_to_teardown(network_policy_name)
-            xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
+        finally:   
+            self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20577
     def test_tcxm_20577(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed,
@@ -174,10 +185,7 @@ class Xiq1365Tests:
                 f"The EXOS device did not come up successfully in the XIQ; Device: {node_1}"
 
         finally:
-            xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-            test_bed.add_switch_template_to_teardown(device_template_name)
-            test_bed.add_network_policy_to_teardown(network_policy_name)
-            xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
+            self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20578
     def test_tcxm_20578(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils):
@@ -260,10 +268,7 @@ class Xiq1365Tests:
                 f"The EXOS device did not come up successfully in the XIQ; Device: {node_1}"
 
         finally:
-            xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-            test_bed.add_switch_template_to_teardown(device_template_name)
-            test_bed.add_network_policy_to_teardown(network_policy_name)
-            xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
+            self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20579
     def test_tcxm_20579(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils, poll):
@@ -360,11 +365,7 @@ class Xiq1365Tests:
         finally:
             delay_xiq = cli.set_nw_templ_device_config_forward_delay(node_1)
             logger.info(f"STP forward delay default value has been restored: {delay_xiq}")
-
-            xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-            test_bed.add_switch_template_to_teardown(device_template_name)
-            test_bed.add_network_policy_to_teardown(network_policy_name)
-            xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
+            self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20580
     def test_tcxm_20580(self, xiq_library_at_class_level, node_1, cli, test_bed, logger, utils):
@@ -466,11 +467,7 @@ class Xiq1365Tests:
 
             delay_xiq = cli.set_nw_templ_device_config_forward_delay(node_1)
             logger.info(f"STP forward delay default value has been restored: {delay_xiq}")
-            xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-
-            test_bed.add_switch_template_to_teardown(device_template_name)
-            test_bed.add_network_policy_to_teardown(network_policy_name)
-            xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
+            self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20582
     def test_tcxm_20582(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils):
@@ -606,11 +603,7 @@ class Xiq1365Tests:
         finally:
             delay_xiq = cli.set_nw_templ_device_config_forward_delay(node_1)
             logger.info(f"STP forward delay default value has been restored: {delay_xiq}")
-
-            xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-            test_bed.add_switch_template_to_teardown(device_template_name)
-            test_bed.add_network_policy_to_teardown(network_policy_name)
-            xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
+            self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20583
     def test_tcxm_20583(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils, poll):
@@ -701,12 +694,8 @@ class Xiq1365Tests:
             assert xiq_library_at_class_level.xflowsmanageDevice360.get_event_from_device360(node_1,
                                                                                              "firmware successful") != -1, "Download firmware successfull event was not found in event table"
         finally:
-            xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-
-            test_bed.add_switch_template_to_teardown(device_template_name)
-            test_bed.add_network_policy_to_teardown(network_policy_name)
-            xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
-
+            self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
+            
     @pytest.mark.tcxm_20589
     def test_tcxm_20589(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils):
         """
@@ -835,10 +824,7 @@ class Xiq1365Tests:
                 "The IQAgent unresponsive event was not triggered!"
 
         finally:
-            xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-            test_bed.add_switch_template_to_teardown(device_template_name)
-            test_bed.add_network_policy_to_teardown(network_policy_name)
-            xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
+            self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20590
     def test_tcxm_20590(self, xiq_library_at_class_level, node_1, utils, enter_switch_cli, cli, logger, test_bed):
@@ -982,7 +968,4 @@ class Xiq1365Tests:
             assert "Firmware Updating" not in status_after_manange_unamanage, "The device is doing Firmware Update after manage/unamange and it should not do this."
             
         finally:
-            xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-            test_bed.add_switch_template_to_teardown(device_template_name)
-            test_bed.add_network_policy_to_teardown(network_policy_name)
-            xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
+            self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
