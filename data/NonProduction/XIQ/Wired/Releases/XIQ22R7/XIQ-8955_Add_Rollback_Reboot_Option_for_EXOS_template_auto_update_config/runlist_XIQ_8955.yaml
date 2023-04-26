@@ -6,9 +6,6 @@ runlist_XIQ_8955:
       node_1:
         run_os: ['exos']
         create_network_policy: no
-        create_switch_template: no
-        assign_network_policy_to_device: no
-        initial_network_policy_push: no
   tests:
     - tcxm_22592 # 1 node
     - tcxm_22591 # 1 node

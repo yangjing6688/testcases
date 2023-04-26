@@ -1,7 +1,4 @@
 runlist_XIQ_1535:
-#  run_options:
-#    - skip_teardown: yes
-#    - skip_setup: yes
   suitemap:
     - suitemap_XIQ_1535.yaml
   onboarding_options:
@@ -12,9 +9,8 @@ runlist_XIQ_1535:
     node_stack:
       run_os: [ "exos" ]
       create_network_policy: no
-
   tests:
-    - tcxm_xiq_onboarding                               # the onboarding test should be the first one
+    - tcxm_xiq_onboarding
     - tcxm_23835          # one node
     - tcxm_23837          # one node -depends on txcm_23835
     - tcxm_23843          # one node -depends on txcm_23835
@@ -26,4 +22,4 @@ runlist_XIQ_1535:
     - tcxm_23849          # one node
     - txcm_23850          # one node -depends on txcm_23849
     - tcxm_26870          # one node
-    - tcxm_xiq_onboarding_cleanup                       # the last one should be the onboarding cleanup test
+    - tcxm_xiq_onboarding_cleanup

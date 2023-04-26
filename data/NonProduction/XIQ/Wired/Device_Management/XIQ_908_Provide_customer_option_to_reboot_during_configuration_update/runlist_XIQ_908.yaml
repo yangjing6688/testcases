@@ -5,9 +5,7 @@ runlist_XIQ_908:
     standalone:
       node_1:
         run_os: ['exos', 'voss']
-        create_switch_template: yes
         initial_network_policy_push: no
-
   tests:
     - tcxm_xiq_onboarding
     - tcxm_19668  #1 node

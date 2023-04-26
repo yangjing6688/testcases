@@ -1,0 +1,20 @@
+runlist_XIQ_247:
+  suitemap:
+    - suitemap_XIQ_247.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ['exos', "voss"]
+    node_stack:
+      run_os: [ "exos" ]
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_25562 # testbed_1_node|testbed_stack
+    - tcxm_25565 # testbed_1_node|testbed_stack // depends on tcxm_25562
+    - tcxm_25563 # testbed_1_node|testbed_stack
+    - tcxm_25577 # testbed_1_node|testbed_stack // depends on tcxm_25562 and tcxm_25563
+    - tcxm_25579 # testbed_1_node|testbed_stack // depends on tcxm_25562 and tcxm_25563
+    - tcxm_25564 # testbed_1_node|testbed_stack
+    - tcxm_25573 # testbed_1_node|testbed_stack
+    - tcxm_25566 # testbed_1_node|testbed_stack //depends on tcxm_25573
+    - tcxm_xiq_onboarding_cleanup

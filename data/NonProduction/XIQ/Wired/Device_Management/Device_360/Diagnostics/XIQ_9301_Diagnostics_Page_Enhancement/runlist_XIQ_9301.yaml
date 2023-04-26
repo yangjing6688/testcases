@@ -4,11 +4,10 @@ runlist_XIQ_9301:
   onboarding_options:
     standalone:
       node_1:
-        run_os: ['exos', "voss"] # it will raise an error if it does not find in the devices.yaml a standalone dut with cli_type voss or exos
+        run_os: ['exos', "voss"]
         create_network_policy: no
-
     node_stack:
-      run_os: ["exos"] # it will raise an error if it does not find in the devices.yaml a stack dut with cli_type exos
+      run_os: ["exos"] 
       create_network_policy: no
   tests:
     - tcxm_xiq_onboarding

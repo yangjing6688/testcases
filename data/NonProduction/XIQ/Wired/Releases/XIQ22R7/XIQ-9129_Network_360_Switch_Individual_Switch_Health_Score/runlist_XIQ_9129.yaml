@@ -5,17 +5,10 @@ runlist_XIQ_9129:
     standalone:
       node_1:
         run_os: ['exos', "voss"]
-        initial_network_policy_push: no
         create_network_policy: no
-        create_switch_template: no
-        assign_network_policy_to_device: no
       node_2:
         run_os: ['exos', "voss"]
-        initial_network_policy_push: no
         create_network_policy: no
-        create_switch_template: no
-        assign_network_policy_to_device: no
-
   tests:
     - tcxm_xiq_onboarding
     - tcxm_25174

@@ -6,13 +6,10 @@ runlist_XIQ_1317:
       node_1:
         run_os: [ "exos", "voss" ]
         initial_network_policy_push: no
-
       node_2:
         run_os: ["exos", "voss"]
         create_switch_template: no
         assign_network_policy_to_device: no
-        initial_network_policy_push: no
-
   tests:
     - tcxm_xiq_onboarding
     - tcxm_22472 # 2 node
