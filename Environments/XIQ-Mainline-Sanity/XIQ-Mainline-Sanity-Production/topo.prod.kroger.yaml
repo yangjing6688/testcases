@@ -1,3 +1,5 @@
+#Please find Steps to create unique Mail for private pre shared key test suite in Production Sanity in
+#https://wiki.iq.extremenetworks.com/wiki/display/XBQ/Steps+to+create+unique+Mail+for+private+pre+shared+key+test+suite+in+Production+Sanity
 test_url:             "https://extremecloudiq.com"
 capwap_url:           "redirector.aerohive.com"
 sw_capwap_url:        "kc.extremecloudiq.com"
@@ -9,3 +11,5 @@ base_url:             "https://api.extremecloudiq.com"
 test_rdc_url:         "https://kc.extremecloudiq.com"
 CLOUD_GDC_URL:        "www.extremecloudiq.com"
 server_name:          "redirector.aerohive.com"
+PPSK_MAIL_ID:         "mail.ppsk.kroger@gmail.com"
+PPSK_MAIL_PASSWORD:   "dvpwcjilcdvrzsiz"

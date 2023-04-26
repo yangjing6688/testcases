@@ -1,3 +1,5 @@
+#Please find Steps to create unique Mail for private pre shared key test suite in Production Sanity in
+#https://wiki.iq.extremenetworks.com/wiki/display/XBQ/Steps+to+create+unique+Mail+for+private+pre+shared+key+test+suite+in+Production+Sanity
 test_url:             "https://tcfi01.extremecloudiq.com"
 capwap_url:           "redirector.aerohive.com"
 sw_capwap_url:        "tcfi01.extremecloudiq.com"
@@ -8,3 +10,5 @@ tenant_password:      "Aerohive123"
 base_url:             "https://api.extremecloudiq.com"
 CLOUD_GDC_URL:        "www.extremecloudiq.com"
 server_name:          "redirector.aerohive.com"
+PPSK_MAIL_ID:         "mail.ppsk.tcfi01@gmail.com"
+PPSK_MAIL_PASSWORD:   "azfqwjdoxskvccvs"

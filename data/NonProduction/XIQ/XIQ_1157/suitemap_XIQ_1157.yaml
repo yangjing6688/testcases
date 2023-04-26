@@ -1,0 +1,270 @@
+data:
+  feature_name: Support 5520 EXOS LACP for VIM ports (Single/Stack) and enhance aggregate button option for single EXOS switches
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-1157
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=18969231
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+    #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED STACK ##########################
+
+  XIQ1157Tests::test_tcxm_20636:
+    author: rvisterineanu
+    tc: tcxm_20636
+    title: Test tcxm_20636.
+    description: Verify that VIM ports can be removed from the existing LACP.
+    steps:
+      - Onboard the EXOS 5520 stack.
+      - Create a Network Policy with specific 5520 template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Using D360 -> Port configuration aggregate 2 VIM ports.
+      - Update the device, check the results in CLI and check the number of LACP ports in D360.
+      - Using D360 -> Port Configuration add 3rd VIM port to the LACP.
+      - Update the device, check the results in CLI and check the number of LACP ports in D360.
+      - Using D360 -> Port Configuration add 4th VIM port to the LACP.
+      - Update the device, check the results in CLI and check the number of LACP ports in D360.
+      - Using D360 -> Port Configuration remove all VIM ports from the LACP.
+      - Update the device, check the results in CLI and check the number of LACP ports in D360.
+
+  XIQ1157Tests::test_tcxm_20637:
+    author: rvisterineanu
+    tc: tcxm_20637
+    title: Test tcxm_20637.
+    description: Verify that LACP for VIM ports can be created using Aggregate Ports Across Stack button from Switch Template.
+    steps:
+      - Onboard the EXOS 5520 stack with only one VIM module.
+      - Create a Network Policy with specific 5520 template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Using the Aggregate Ports Across Stack button from Switch Template -> Port configuration aggregate 2 VIM ports.
+      - Update the device, check the results in CLI.
+      - Using the Switch Template -> Port Configuration add 3rd VIM port to the LACP.
+      - Update the device, check the results in CLI.
+      - Using the Switch Template -> Port Configuration add 4th VIM port to the LACP.
+      - Update the device, check the results in CLI.
+      - Using the Switch Template -> Port Configuration remove all VIM ports from the LACP.
+
+  XIQ1157Tests::test_tcxm_20638:
+    author: rvisterineanu
+    tc: tcxm_20638
+    title: Test tcxm_20638.
+    description: Verify that VIM ports can be removed from the existing LACP.
+    steps:
+      - Onboard the EXOS 5520 stack.
+      - Create a Network Policy with specific 5520 template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Using D360 -> Port configuration aggregate 4 VIM ports.
+      - Update the device, check the results in CLI and check the number of LACP ports in D360.
+      - Using D360 -> Port configuration remove 2 VIM ports from the LACP.
+      - Update the device, check the results in CLI and check the number of LACP ports in D360.
+      - Using D360 -> Port Configuration remove all VIM ports from the LACP.
+      - Update the device, check the results in CLI and check the number of LACP ports in D360.
+
+  XIQ1157Tests::test_tcxm_20640:
+    author: gburlacu
+    tc: tcxm_20640
+    title: Test tcxm_20640.
+    description: Verify that LACP cannot be formed between VIM and fixed panel ports using Aggregate Ports
+                         Across Stack button from Switch Template.
+    steps:
+      - Onboard the EXOS 5520 stack with only one VIM module.
+      - Create a Network Policy with specific 5520 template.
+      - Using the Aggregate Ports Across Stack button from Switch Template -> Port Configuration aggregate
+      - 1 VIM port and 1 fixed panel port from the same stack slot.
+      - Check if an error message appears.
+      - Using the Aggregate Ports Across Stack button from Switch Template -> Port Configuration aggregate
+      - 1 VIM port and 1 fixed panel port from different stack slot.
+      - Check if an error message appears.
+
+  XIQ1157Tests::test_tcxm_20641:
+    author: scostache
+    tc: tcxm_20641
+    title: Test tcxm_20641.
+    description: Verify that a fixed panel port cannot be added to and existing LACP for VIM ports
+        when LACP was created using Aggregate Ports Across Stack button from Switch Template.
+    steps:
+      - Onboard the EXOS 5520 stack with only one VIM module.
+      - Create a Network Policy with specific 5520 template.
+      - Using the Aggregate Ports Across Stack button from Switch Template -> Port Configuration aggregate 2 VIM ports.
+      - Check if an error message appears.
+      - To existing LACP add a fixed panel port from the same stack slot.
+      - When editing the created LACP, there is no possibility of adding other ports besides the VIM ports from the same
+      - VIM module.
+      - To existing LACP add a fixed panel port from different stack slot.
+      - When editing the created LACP, there is no possibility of adding other ports besides the VIM ports from the same VIM module.
+
+  XIQ1157Tests::test_tcxm_20651:
+    author: abolojan
+    tc: tcxm_20651
+    title: Test tcxm_20651.
+    description: Verify that Configuration Audit reflects the changes when VIM ports are added to the LACP using Aggregate Ports button from Switch Template.
+    steps:
+      - Use devices with 4 ports VIM module (10 or 25 G ports) and aggregate them according to tests requirements.
+      - Onboard the EXOS 5520 stack with only one VIM module.
+      - Create a Network Policy with specific 5520 template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Using the Aggregate Ports button from Switch Template -> Port Configuration aggregate 2 VIM ports.
+      - Check Devices -> Configuration Audit button status and Delta CLI.
+      - Update the device, check the results in CLI and check the number of LACP ports in Switch Template -> Port Configuration table.
+      - Using the Switch Template -> Port Configuration remove all VIM ports from the LACP.
+      - Check Devices -> Configuration Audit button status and Delta CLI.
+      - Update the device, check the results in CLI and check the number of LACP ports in Switch Template -> Port Configuration table.
+
+  XIQ1157Tests::test_tcxm_20658:
+    author: tapostol
+    tc: tcxm_20658
+    title: Test tcxm_20658.
+    description: Verify that different LAGs can be configured across different port modules when LACP is
+                  created using Device Level Configuration.
+    steps:
+      - Onboard the EXOS 5520 stack with 2 VIM modules.
+      - Create a Network Policy with specific 5520 template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Using D360 -> Port Configuration aggregate 2 VIM ports from one VIM module.
+      - Using D360 -> Port Configuration aggregate 2 VIM ports from the same VIM module.
+      - Using D360 -> Port Configuration aggregate 2 VIM ports from the other VIM module.
+      - Using D360 -> Port Configuration aggregate 2 fixed panel ports from different stack slots.
+      - Update the device, check the results in CLI and check the number of LACP ports in D360 ->
+      - Port Configuration table.
+      - Using D360 -> Port Configuration remove all ports from all LAGs.
+      - Update the device, check the results in CLI and check the number of LACP ports in D360 ->
+      - Port Configuration table.
+
+  #################### TESTBED STACK ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  XIQ1157Tests::test_tcxm_20603:
+    author: sstaut
+    tc: tcxm_20603
+    title: Test tcxm_20603.
+    description: Verify that LACP for VIM ports can be created using Assign button from Switch Template
+                 for EXOS 5520.
+    steps:
+      - Onboard the EXOS 5520 standalone.
+      - Create a Network Policy with specific 5520 template.
+      - Assign the previously created Network Policy to the device.
+      - Using the Assign button from Switch Template -> Port configuration aggregate 2 VIM ports.
+      - Update the device, check the results in CLI.
+      - Using the Switch Template -> Port Configuration add the 3rd VIM port to the LACP.
+      - Update the device, check the results in CLI.
+      - Using the Switch Template -> Port Configuration add the 4rd VIM port to the LACP.
+      - Update the device, check the results in CLI.
+      - Using the Switch Template -> Port Configuration remove all VIM ports from the LACP.
+      - Update the device, check the results in CLI.
+
+  XIQ1157Tests::test_tcxm_20604:
+    author: rvisterineanu
+    tc: tcxm_20604
+    title: Test tcxm_20604.
+    description: Verify that VIM ports can be removed from the existing LACP.
+    steps:
+      - Onboard the EXOS 5520 standalone.
+      - Create a Network Policy with specific 5520 template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Using the Assign Button from Switch Template -> Port configuration aggregate 4 VIM ports.
+      - Update the device, check the results in CLI and check the number of LACP ports in Switch Template
+      - Using the Switch Template -> Port configuration remove 2 VIM ports from the LACP.
+      - Update the device, check the results in CLI and check the number of LACP ports in Switch Template
+      - Using the Switch Template remove all VIM ports from the LACP.
+      - Update the device, check the results in CLI and check the number of LACP ports in Switch Template
+
+  XIQ1157Tests::test_tcxm_20605:
+    author: rvisterineanu
+    tc: tcxm_20605
+    title: Test tcxm_20605.
+    description: Verify that LACP for VIM ports can be created using Device Level Configuration.
+    steps:
+      - Onboard the EXOS 5520 standalone.
+      - Create a Network Policy with specific 5520 template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Using D360 -> Port configuration aggregate 2 VIM ports.
+      - Update the device, check the results in CLI and check the number of LACP ports in D360.
+      - Using D360 -> Port Configuration add 3rd VIM port to the LACP.
+      - Update the device, check the results in CLI and check the number of LACP ports in D360.
+      - Using D360 -> Port Configuration add 4th VIM port to the LACP.
+      - Update the device, check the results in CLI and check the number of LACP ports in D360.
+      - Using D360 -> Port Configuration remove all VIM ports from the LACP.
+
+  XIQ1157Tests::test_tcxm_20606:
+    author: gburlacu
+    tc: tcxm_20606
+    title: Test tcxm_20606.
+    description: Verify that LACP for VIM ports can be created using Aggregate Ports button from Switch Template
+                  for EXOS 5520.
+    steps:
+      - Onboard the EXOS 5520 standalone.
+      - Create a Network Policy with specific 5520 template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Using the Aggregate Ports button from Switch Template -> Port configuration aggregate 2 VIM ports.
+      - Update the device, check the results in CLI.
+      - Using the Switch Template -> Port Configuration add the 3rd VIM port to the LACP.
+      - Update the device, check the results in CLI.
+      - Using the Switch Template -> Port Configuration add the 4rd VIM port to the LACP.
+      - Update the device, check the results in CLI.
+      - Using the Switch Template -> Port Configuration remove all VIM ports from the LACP.
+      - Update the device, check the results in CLI.
+
+  XIQ1157Tests::test_tcxm_20608:
+    author: scostache
+    tc: tcxm_20608
+    title: Test tcxm_20608.
+    description: Verify that LACP cannot be formed between VIM and fixed panel ports using Assign button from
+                Switch Template.
+    steps:
+      - Onboard the EXOS 5520 standalone.
+      - Device is onboarded successfully.
+      - Create a Network Policy with specific 5520 template.
+      - Network Policy is created successfully.
+      - Using the Assign button from Switch Template -> Port configuration aggregate 1 VIM port and
+        1 fixed panel port
+
+  XIQ1157Tests::test_tcxm_20618:
+    author: abolojan
+    tc: tcxm_20618
+    title: Test tcxm_20618.
+    description: Verify that LACP for VIM ports can be created using Assign button from Switch Template
+      for EXOS 5520.
+    steps:
+      - Use devices with 4 ports VIM module (10 or 25 G ports) and aggregate them according to tests requirements.
+      - Onboard the EXOS 5520 standalone.
+      - Create a Network Policy with specific 5520 template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Using the Aggregate Ports button from Switch Template -> Port Configuration aggregate 2 VIM ports.
+      - Check Devices -> Configuration Audit button status and Delta CLI.
+      - Update the device, check the results in CLI and check the number of LACP ports in Switch Template -> Port Configuration table.
+      - Using the Switch Template -> Port Configuration remove all VIM ports from the LACP.
+      - Check Devices -> Configuration Audit button status and Delta CLI.
+      - Update the device, check the results in CLI and check the number of LACP ports in Switch Template -> Port Configuration table.
+
+  XIQ1157Tests::test_tcxm_20630:
+    author: tapostol
+    tc: tcxm_20630
+    title: Test tcxm_20630.
+    description: Verify that different LAGs can be configured across different port modules when LACP is created
+                 using Device Level Configuration.
+    steps:
+      - Onboard the EXOS 5520 standalone.
+      - Create a Network Policy with specific 5520 template.
+      - Assign the previously created Network Policy to the device and update the device.
+      - Using D360 -> Port Configuration aggregate 2 VIM ports from the VIM module.
+      - Using D360 -> Port Configuration aggregate 2 VIM ports from the same VIM module.
+      - Using D360 -> Port Configuration aggregate 2 fixed panel ports.
+      - Update the device, check the results in CLI and check the number of LACP ports in D360 -> Port Configuration table.
+      - Using D360 -> Port Configuration remove all ports from all LAGs.
+      - Update the device, check the results in CLI and check the number of LACP ports in D360 -> Port Configuration table.
+
+  #################### TESTBED 1 NODE ##########################
+

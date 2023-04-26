@@ -6,8 +6,8 @@ ap1:
   username:                 admin
   password:                 Aerohive123
   serial:                   '04101912120142'
-  console_ip:               10.16.168.37
-  console_port:             4003
+  console_ip:               10.16.168.23
+  console_port:             10005
   mac:                      BCF3101EC000
   cli_type:                 AH-AP
   platform:                 aerohive
@@ -27,8 +27,8 @@ ap2:
   username:                 admin
   password:                 Aerohive123
   serial:                   'WM052209W-30260'
-  console_ip:               10.16.166.228
-  console_port:             4006
+  console_ip:               10.16.168.23
+  console_port:             10007
   mac:                      B027CF805400
   cli_type:                 AH-AP
   platform:                 aerohive
