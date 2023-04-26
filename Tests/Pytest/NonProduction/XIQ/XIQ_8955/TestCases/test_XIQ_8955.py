@@ -632,8 +632,6 @@ class XIQ8955Tests:
         network_policy_name = f"XIQ_8955_np_{''.join(random.sample(pool, k=6))}"
         device_template_name = f"XIQ_8955_template_{''.join(random.sample(pool, k=6))}"
         supplemental_cli_name = f"scli_8955_{''.join(random.sample(pool, k=6))}"
-        import code;
-        code.interact(local={**locals(), **globals()})
         try:
             with enter_switch_cli(node_1) as dev_cmd:
                 dev_cmd.send_cmd(dut.name, 'disable iqagent', max_wait=10, interval=2,
