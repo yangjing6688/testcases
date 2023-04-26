@@ -11,6 +11,12 @@ ${MSP_USER_EMAIL_1}     msp_admin_email+3@extremenetworks.com
 ${VIQ_USER}           viq_admin_user1
 ${VIQ_USER_EMAIL}     viq_admin_email+1@extremenetworks.com
 ${VIQ_USER_EMAIl_1}   viq_admin_email+2@extremenetworks.com
+${CUSTOMER_NAME_1}    customer_1
+${CUSTOMER_First_NAME_1}     Customer_1
+${CUSTOMER_Last_NAME_1}      Qa
+${CUSTOMER_EMAIL_1}          customer_1@extremenetworks.com
+${CUSTOMER_PASSWORD_1}       Aerohive123
+
 *** Settings ***
 Documentation  robot -v ENV:environment.local.chrome.yaml -v TOPO:topo.test.g2.portal.yaml  PortalRedesign_XIQ14314.robot
 
@@ -75,6 +81,34 @@ TCXM-31052: Verify User should be able to add a VIQ-Admin account with MSP-Admin
     Should Be Equal As Integers    ${CHECK_RESULT}        1
 
     [Teardown]   Delete User    ${VIQ_USER}
+
+ TCXM-31055: Verify User should be able to Create account(customer) with VIQ-Admin account
+    [Documentation]         User should be able to add an account(customer) with VIQ-Admin account
+    [Tags]                  tcxm_31055  development
+    #edit a VIQ-Admin with MSP-Admin
+    depends on          TCXM-31054
+    Logout User
+    Quit Browser
+    ${Login_Portal}=                  Login User              ${viq_username}      ${viq_password}
+    Should Be Equal As Integers    ${Login_Portal}          1
+    ${Check_Result}=            Create Xiq Account         ${CUSTOMER_NAME_1}        ${CUSTOMER_First_NAME_1}      ${CUSTOMER_Last_NAME_1}      ${CUSTOMER_EMAIL_1}     ${CUSTOMER_PASSWORD_1}
+
+
+    [Teardown]   Delete Customer     ${CUSTOMER_NAME_1}
+
+ TCXM-31056: Verify User should be able to Create account(customer) with MSP-Admin account
+    [Documentation]         User should be able to add a VIQ-Admin account with MSP-Admin account
+    [Tags]                  tcxm_31056  development
+    #edit a VIQ-Admin with MSP-Admin
+    depends on          TCXM-31056
+    Logout User
+    Quit Browser
+    ${Login_Portal}=                  Login User              ${msp_username}      ${msp_password}
+    Should Be Equal As Integers    ${Login_Portal}          1
+    ${Check_Result}=            Create Xiq Account         ${CUSTOMER_NAME_1}        ${CUSTOMER_First_NAME_1}      ${CUSTOMER_Last_NAME_1}      ${CUSTOMER_EMAIL_1}     ${CUSTOMER_PASSWORD_1}
+
+
+    [Teardown]   Delete Customer     ${CUSTOMER_NAME_1}
 
 *** Keywords ***
 Pre Condition
