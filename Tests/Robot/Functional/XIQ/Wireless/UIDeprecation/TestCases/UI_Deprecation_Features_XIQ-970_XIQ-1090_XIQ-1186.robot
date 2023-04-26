@@ -2,8 +2,8 @@
 # Date            : 14 Feb 2022
 # Description     : Automation for XIQ UI Deprecation Features
 # User Stroy      : https://jira.extremenetworks.com/browse/XIQ-970
-                    https://jira.extremenetworks.com/browse/XIQ-1090
-                    https://jira.extremenetworks.com/browse/XIQ-1186
+#                    https://jira.extremenetworks.com/browse/XIQ-1090
+#                    https://jira.extremenetworks.com/browse/XIQ-1186
 #Execution Command:  robot  -v TOPO:topo.ui.deprecation.yaml -v ENV:environment.remote.win10.chrome.yaml UI_Deprecation_Features_XIQ-970_XIQ-1090_XIQ-1186.robot
 
 

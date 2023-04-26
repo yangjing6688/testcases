@@ -2,7 +2,7 @@
 # Date            : 30 Mar 2022
 # Description     : Automation for XIQ UI Deprecation Features
 # User Stroy      : https://jira.extremenetworks.com/browse/XIQ-1523
-                    https://jira.extremenetworks.com/browse/XIQ-4143
+#                    https://jira.extremenetworks.com/browse/XIQ-4143
 #Execution Command:  robot -v TOPO:topo.ui.deprecation.yaml -v ENV:environment.remote.win10.chrome.yaml UI_Deprecation_Features_XIQ-1523_XIQ-4143.robot
 
 *** Variables ***
@@ -12,8 +12,6 @@ ${WAIT}                        5
 
 
 *** Settings ***
-Force Tags   testbed_1_node
-Suite Setup  Test Suite Setup
 
 Library      String
 Library      Collections
@@ -23,18 +21,22 @@ Library      extauto/xiq/flows/common/Login.py
 Library      extauto/xiq/flows/common/Navigator.py
 Library      extauto/xiq/flows/manage/Applications.py
 
-Resource    ../../UIDeprecation/Resources/AllResources.robot
+Variables   Environments/Config/waits.yaml
+Variables   Environments/${TOPO}
+Variables   Environments/${ENV}
 
-
+Force Tags   testbed_none
+Suite Setup  Test Suite Setup
+Suite Teardown    Run Keyword And Warn On Failure  Test suite Cleanup
 
 *** Keywords ***
 Test Suite Setup
-# Create a random string for application group name
-    ${random_string}=         Get Random String
-    ${GROUP_NAME}=            Catenate    GROUP_NAME_${random_string}
+    ${result}=                 Login User             ${tenant_username}    ${tenant_password}
+    should be equal as strings       '${result}'                    '1'
 
-    Set Global Variable       ${GROUP_NAME}
-
+Test suite Cleanup
+    Logout User
+    Quit Browser
 
 *** Test Cases ***
 
@@ -42,10 +44,7 @@ TCXM-18052 : Verify Navigation to 'Client Monitor and Diagnosis' page
 
 	[Documentation]         Verify that user is able to navigate to 'Client Monitor and Diagnosis' page under Manage
 
-    [Tags]       tcxm_18052         development
-
-    ${result}=                 Login User             ${tenant_username}    ${tenant_password}
-    should be equal as strings       '${result}'                    '1'
+    [Tags]       tcxm-18052         development
 
     ${client_monitor_tab}      Navigate To Client Monitor And Diagnosis Tab
 
@@ -53,21 +52,11 @@ TCXM-18052 : Verify Navigation to 'Client Monitor and Diagnosis' page
 
     Log                               ${client_monitor_tab}
 
-    [Teardown]
-    Logout User
-    Quit Browser
-
-
-
 TCXM-17452 : Verify Navigation to 'Applications' page
 
 	[Documentation]         Verify that user is able to navigate to 'Applications' page under Manage
 
-    [Tags]       tcxm_17452         development
-
-    ${result}=                 Login User             ${tenant_username}  ${tenant_password}
-
-    should be equal as strings       '${result}'                   '1'
+    [Tags]       tcxm-17452         development
 
     ${applications_tab}        Navigate To Applications Tab
 
@@ -75,24 +64,16 @@ TCXM-17452 : Verify Navigation to 'Applications' page
 
     Log                               ${applications_tab}
 
-    [Teardown]
-    Logout User
-    Quit Browser
-
-
-
 TCXM-17491 : Create Custom Application
 
 	[Documentation]         Verify that user is able to create custom applications
 
-    [Tags]       tcxm_17491         development
+    [Tags]       tcxm-17491         development
 
-    ${result}=                Login User             ${tenant_username}    ${tenant_password}
-
-    should be equal as strings       '${result}'                   '1'
+    ${random_string}=         Get Random String
+    ${GROUP_NAME}=            Catenate    GROUP_NAME_${random_string}
 
     ${app_tab}=               Navigate To Applications Tab
-
     should be equal as strings       '${app_tab}'                  '1'
 
     sleep                             ${WAIT}
@@ -103,21 +84,13 @@ TCXM-17491 : Create Custom Application
 
     Log                               ${add_custom}
 
-    [Teardown]
-    Logout User
-    Quit Browser
-
-
-
 TCXM-17493 : Edit Custom Application
 
    [Documentation]         Verify that user is able to edit custom applications
 
-    [Tags]       tcxm_17493         development
+    [Tags]       tcxm-17493         development
 
-    ${result}=                 Login User             ${tenant_username}     ${tenant_password}
-
-    should be equal as strings       '${result}'                   '1'
+    Depends On         TCXM-17491
 
     ${app_tab}=                Navigate To Applications Tab
 
@@ -131,21 +104,13 @@ TCXM-17493 : Edit Custom Application
 
     Log                               ${edit_custom}
 
-    [Teardown]
-    Logout User
-    Quit Browser
-
-
-
 TCXM-17494 : Delete Custom Application
 
     [Documentation]         Verify that user is able to delete custom applications
 
-    [Tags]       tcxm_17493         development
+    [Tags]       tcxm-17493         development
 
-    ${result}=                 Login User             ${tenant_username}    ${tenant_password}
-
-    should be equal as strings       '${result}'                   '1'
+    Depends On         TCXM-17493
 
     ${app_tab}=               Navigate To Applications Tab
 
@@ -157,9 +122,5 @@ TCXM-17494 : Delete Custom Application
 
     should be equal as strings       '${delete_custom}'                '1'
 
-
     Log                               ${delete_custom}
 
-    [Teardown]
-    Logout User
-    Quit Browser
