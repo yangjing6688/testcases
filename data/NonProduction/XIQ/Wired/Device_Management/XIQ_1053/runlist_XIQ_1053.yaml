@@ -1,0 +1,37 @@
+
+runlist_XIQ_1053:
+  suitemap: 
+    - suitemap_XIQ_1053.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ["exos", "voss"]
+    node_stack:
+      run_os: ["exos"]
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_17596 # one node
+    - tcxm_17597 # one node
+    - tcxm_17588 # one node
+    - tcxm_17589 # one node
+    - tcxm_17590 # one node // depends on tcxm_17588
+    - tcxm_17591 # one node // depends on tcxm_17589
+    - tcxm_17598 # one node
+    - tcxm_17600 # one node // depends on tcxm_17598
+    - tcxm_17606 # one node
+    - tcxm_19995 # one node
+    - tcxm_19996 # one node
+    - tcxm_19997 # one node
+    - tcxm_19998 # one node // depends on tcxm_19996
+    - tcxm_19999 # one node
+    - tcxm_20000 # one node // depends on tcxm_19999
+    - tcxm_20001 # one node
+    - tcxm_20002 # one node
+    - tcxm_21055 # stack
+    - tcxm_21056 # stack
+    - tcxm_21057 # stack
+    - tcxm_21058 # stack
+    - tcxm_21059 # stack
+    - tcxm_21060 # stack
+    - tcxm_21061 # stack
+    - tcxm_xiq_onboarding_cleanup
