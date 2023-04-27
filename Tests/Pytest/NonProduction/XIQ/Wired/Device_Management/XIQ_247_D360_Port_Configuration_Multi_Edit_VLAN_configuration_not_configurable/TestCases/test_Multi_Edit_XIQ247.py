@@ -138,8 +138,7 @@ class XIQ247Tests:
             if not xiq_library_at_class_level.xflowsmanageDevice360.exit_d360_Page() == 1:
                 pytest.fail("Fail to exit from D360 page")
 
-            # Check the config in Delta vi
-            # ew
+            # Check the config in Delta view
             for port in voss_or_exos_port:
                 if node.cli_type.lower() == 'voss':
                     commands_into_delta = [
