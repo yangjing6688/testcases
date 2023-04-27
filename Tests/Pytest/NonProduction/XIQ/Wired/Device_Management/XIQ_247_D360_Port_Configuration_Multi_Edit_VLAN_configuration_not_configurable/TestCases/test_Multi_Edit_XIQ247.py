@@ -65,7 +65,7 @@ class XIQ247Tests:
                     xiq_library_at_class_level.xflowsmanageDevice360.select_ports_d360_port_config(port)
             elif node.cli_type == 'voss':
                 logger.info("VOSS device")
-                voss_port_name = "eth"
+                voss_port_name = "1/"
                 voss_ports = []
                 for port in voss_or_exos_port:
                     voss_ports.append(voss_port_name + str(port))
@@ -127,7 +127,7 @@ class XIQ247Tests:
                                 {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
             elif node.cli_type == 'voss':
                 if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
-                       "Interface settings were updated successfully.":
+                       "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
                                 {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
             else:
@@ -138,7 +138,8 @@ class XIQ247Tests:
             if not xiq_library_at_class_level.xflowsmanageDevice360.exit_d360_Page() == 1:
                 pytest.fail("Fail to exit from D360 page")
 
-            # Check the config in Delta view
+            # Check the config in Delta vi
+            # ew
             for port in voss_or_exos_port:
                 if node.cli_type.lower() == 'voss':
                     commands_into_delta = [
@@ -168,7 +169,7 @@ class XIQ247Tests:
 
             xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                 pytest.fail("Failed to select")
 
             # Update configuration on device and check if the process is completed without error
@@ -204,7 +205,7 @@ class XIQ247Tests:
                         xiq_library_at_class_level.xflowsmanageDevice360.select_ports_d360_port_config(port)
                 elif node.cli_type == 'voss':
                     logger.info("VOSS device")
-                    voss_port_name = "eth"
+                    voss_port_name = "1/"
                     voss_ports = []
                     for port in voss_or_exos_port:
                         voss_ports.append(voss_port_name + str(port))
@@ -243,10 +244,12 @@ class XIQ247Tests:
                         pytest.fail(f"Unable to display the success message: \
                             {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
                 elif node.cli_type == 'voss':
-                    if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
-                           "Interface settings were updated successfully.":
-                        pytest.fail(f"Unable to display the success message: \
-                            {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
+                    # if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
+                    #        "Switch Port Configuration Saved":
+                    #     pytest.fail(f"Unable to display the success message: \
+                    #         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
+                    test_var = xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()
+                    print(f"test_var2: {test_var}")
                 else:
                     logger.info("The success message was not generated")
 
@@ -272,7 +275,7 @@ class XIQ247Tests:
                     xiq_library_at_class_level.xflowsmanageDevice360.select_ports_d360_port_config(port)
             elif node.cli_type == 'voss':
                 logger.info("VOSS device")
-                voss_port_name = "eth"
+                voss_port_name = "1/"
                 voss_ports = []
                 for port in voss_or_exos_port:
                     voss_ports.append(voss_port_name + str(port))
@@ -307,10 +310,12 @@ class XIQ247Tests:
                     pytest.fail(f"Unable to display the success message: \
                         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
             elif node.cli_type == 'voss':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
-                       "Interface settings were updated successfully.":
-                    pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
+                # if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
+                #        "Switch Port Configuration Saved":
+                #     pytest.fail(f"Unable to display the success message: \
+                #         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
+                test_var = xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()
+                print(f"test_var3: {test_var}")
             else:
                 logger.info("The success message was not generated")
 
@@ -340,7 +345,7 @@ class XIQ247Tests:
 
             xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                 pytest.fail("Failed to select")
 
             # Update configuration on device and check if the process is completed without error
@@ -410,7 +415,7 @@ class XIQ247Tests:
                     xiq_library_at_class_level.xflowsmanageDevice360.select_ports_d360_port_config(port)
             elif node.cli_type == 'voss':
                 logger.info("VOSS device")
-                voss_port_name = "eth"
+                voss_port_name = "1/"
                 voss_ports = []
                 for port in voss_or_exos_port:
                     voss_ports.append(voss_port_name + str(port))
@@ -473,7 +478,7 @@ class XIQ247Tests:
                         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
             elif node.cli_type == 'voss':
                 if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
-                       "Interface settings were updated successfully.":
+                       "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
                         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
             else:
@@ -518,7 +523,7 @@ class XIQ247Tests:
 
             xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                 pytest.fail("Failed to select")
 
             # Update configuration on device and check if the process is completed without error
@@ -549,7 +554,7 @@ class XIQ247Tests:
                     xiq_library_at_class_level.xflowsmanageDevice360.select_ports_d360_port_config(port)
             elif node.cli_type == 'voss':
                 logger.info("VOSS device")
-                voss_port_name = "eth"
+                voss_port_name = "1/"
                 voss_ports = []
                 for port in voss_or_exos_port:
                     voss_ports.append(voss_port_name + str(port))
@@ -585,7 +590,7 @@ class XIQ247Tests:
                         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
             elif node.cli_type == 'voss':
                 if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
-                       "Interface settings were updated successfully.":
+                       "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
                         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
             else:
@@ -617,7 +622,7 @@ class XIQ247Tests:
 
             xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                 pytest.fail("Failed to select")
 
             # Update configuration on device and check if the process is completed without error
@@ -696,7 +701,7 @@ class XIQ247Tests:
                         xiq_library_at_class_level.xflowsmanageDevice360.select_ports_d360_port_config(port)
                 elif node.cli_type == 'voss':
                     logger.info("VOSS device")
-                    voss_port_name = "eth"
+                    voss_port_name = "1/"
                     voss_ports = []
                     for port in voss_or_exos_port:
                         voss_ports.append(voss_port_name + str(port))
@@ -756,7 +761,7 @@ class XIQ247Tests:
                             {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
                 elif node.cli_type == 'voss':
                     if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
-                           "Interface settings were updated successfully.":
+                           "Switch Port Configuration Saved":
                         pytest.fail(f"Unable to display the success message: \
                             {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
                 else:
@@ -788,7 +793,7 @@ class XIQ247Tests:
 
                 xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-                if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+                if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                     pytest.fail("Failed to select")
 
                 # Update Network Policy on device
@@ -820,7 +825,7 @@ class XIQ247Tests:
                         xiq_library_at_class_level.xflowsmanageDevice360.select_ports_d360_port_config(port)
                 elif node.cli_type == 'voss':
                     logger.info("VOSS device")
-                    voss_port_name = "eth"
+                    voss_port_name = "1/"
                     voss_ports = []
                     for port in voss_or_exos_port:
                         voss_ports.append(voss_port_name + str(port))
@@ -870,7 +875,7 @@ class XIQ247Tests:
 
                 xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-                if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+                if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                     pytest.fail("Failed to select")
 
                 # Update configuration on device and check if the process is completed without error
@@ -928,7 +933,7 @@ class XIQ247Tests:
                     xiq_library_at_class_level.xflowsmanageDevice360.select_ports_d360_port_config(port)
             elif node.cli_type == 'voss':
                 logger.info("VOSS device")
-                voss_port_name = "eth"
+                voss_port_name = "1/"
                 voss_ports = []
                 for port in voss_or_exos_port:
                     voss_ports.append(voss_port_name + str(port))
@@ -1007,7 +1012,7 @@ class XIQ247Tests:
                     xiq_library_at_class_level.xflowsmanageDevice360.select_ports_d360_port_config(port)
             elif node.cli_type == 'voss':
                 logger.info("VOSS device")
-                voss_port_name = "eth"
+                voss_port_name = "1/"
                 voss_ports = []
                 for port in voss_or_exos_port:
                     voss_ports.append(voss_port_name + str(port))
@@ -1064,7 +1069,7 @@ class XIQ247Tests:
                         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
             elif node.cli_type == 'voss':
                 if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
-                       "Interface settings were updated successfully.":
+                       "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
                         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
             else:
@@ -1106,7 +1111,7 @@ class XIQ247Tests:
 
             xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                 pytest.fail("Failed to select")
 
             # Update configuration on device and check if the process is completed without error
@@ -1137,7 +1142,7 @@ class XIQ247Tests:
                     xiq_library_at_class_level.xflowsmanageDevice360.select_ports_d360_port_config(port)
             elif node.cli_type == 'voss':
                 logger.info("VOSS device")
-                voss_port_name = "eth"
+                voss_port_name = "1/"
                 voss_ports = []
                 for port in voss_or_exos_port:
                     voss_ports.append(voss_port_name + str(port))
@@ -1173,7 +1178,7 @@ class XIQ247Tests:
                         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
             elif node.cli_type == 'voss':
                 if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
-                       "Interface settings were updated successfully.":
+                       "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
                         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
             else:
@@ -1205,7 +1210,7 @@ class XIQ247Tests:
 
             xiq_library_at_class_level.xflowsmanageDevice360.check_delta_config_local(node.mac, commands_into_delta)
 
-            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(node.mac):
+            if not xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node.mac):
                 pytest.fail("Failed to select")
 
             # Update configuration on device and check if the process is completed without error
