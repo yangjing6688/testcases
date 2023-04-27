@@ -4,7 +4,7 @@ runlist_XIQ_3155:
   onboarding_options:
     standalone:
       node_1:
-        run_os: ['exos']
+        run_os: ["exos"]
     node_stack:
       run_os: ["exos"]
   tests:

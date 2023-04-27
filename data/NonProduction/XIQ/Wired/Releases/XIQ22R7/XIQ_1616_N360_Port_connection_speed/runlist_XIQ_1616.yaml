@@ -4,10 +4,10 @@ runlist_XIQ_1616:
   onboarding_options:
     standalone:
       node_1:
-        run_os: ['exos', "voss"]
+        run_os: ["exos", "voss"]
         create_network_policy: no
       node_2:
-        run_os: ['exos', "voss"]
+        run_os: ["exos", "voss"]
         create_network_policy: no
     node_stack:
       run_os: ["exos"]

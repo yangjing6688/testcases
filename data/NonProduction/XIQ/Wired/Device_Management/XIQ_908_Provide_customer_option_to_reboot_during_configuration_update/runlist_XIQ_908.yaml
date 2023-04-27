@@ -4,7 +4,7 @@ runlist_XIQ_908:
   onboarding_options:
     standalone:
       node_1:
-        run_os: ['exos', 'voss']
+        run_os: ["exos", "voss"]
         initial_network_policy_push: no
   tests:
     - tcxm_xiq_onboarding

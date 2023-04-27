@@ -16,7 +16,7 @@ runlist_XIQ_200:
   onboarding_options:
     standalone:
       node_1:
-        run_os: ['exos', "voss"] # it will raise an error if it does not find in the devices.yaml a standalone dut with cli_type voss or exos
+        run_os: ["exos", "voss"] # it will raise an error if it does not find in the devices.yaml a standalone dut with cli_type voss or exos
                                  # because we did not specify any option, the onboarding procedure by default will:
                                  #  - create a network policy for node_1
                                  #  - create a switch template for the created network policy
