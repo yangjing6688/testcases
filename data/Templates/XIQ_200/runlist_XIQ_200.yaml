@@ -39,12 +39,14 @@ runlist_XIQ_200:
   tests:
     - tcxm_xiq_onboarding
     - tcxm_201 # 1 node
+    - tcxm_201 # 1 node
     - tcxm_202 # 1 node
     - tcxm_203 # 1 node
     - tcxm_204 # 1 node
     - tcxm_205 # 1 node
     - tcxm_206 # none
     - tcxm_207 # none
+    - tcxm_206 # none
     - tcxm_208 # 2 node
     - tcxm_209 # 2 node
     - tcxm_210 # stack
@@ -52,6 +54,8 @@ runlist_XIQ_200:
     - tcxm_212 # none
     - tcxm_213 # 1 node // depends on 212
     - tcxm_214 # 1 node // depends on 213
+    - tcxm_214 # 1 node // depends on 213
+    - tcxm_213 # 1 node // depends on 212
     - tcxm_xiq_onboarding_cleanup
 
 
