@@ -1,0 +1,26 @@
+runlist_XIQ_1157:
+  suitemap: 
+    - suitemap_XIQ_1157.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ["exos"]
+    node_stack:
+      run_os: ["exos"]
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_20636 # stack
+    - tcxm_20637
+    - tcxm_20638
+    - tcxm_20640
+    - tcxm_20641
+    - tcxm_20651
+    - tcxm_20658
+    - tcxm_20603 # standalone
+    - tcxm_20604
+    - tcxm_20605
+    - tcxm_20606
+    - tcxm_20608
+    - tcxm_20618
+    - tcxm_20630
+    - tcxm_xiq_onboarding_cleanup

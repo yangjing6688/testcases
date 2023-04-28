@@ -1,0 +1,101 @@
+# How to run this runlist
+#
+# pytest 
+# --runlist extreme_automation_tests/data/NonProduction/XIQ/XIQ_200/runlist_XIQ_200.yaml
+# extreme_automation_tests/Tests/Pytest/NonProduction/XIQ/Wired/template_XIQ_200
+# --tc-file extreme_automation_tests/vstefan/topo.yaml
+# --tc-file extreme_automation_tests/vstefan/env.yaml
+# --tc-file extreme_automation_tests/vstefan/devices.yaml
+
+
+# The runlist for the XIQ_200 test story looks like this:
+
+runlist_XIQ_200:
+  suitemap: 
+    - suitemap_XIQ_200.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ["exos", "voss"] # it will raise an error if it does not find in the devices.yaml a standalone dut with cli_type voss or exos
+                                 # because we did not specify any option, the onboarding procedure by default will:
+                                 #  - create a network policy for node_1
+                                 #  - create a switch template for the created network policy
+                                 #  - will assign the policy to node_1
+                                 #  - finally, it will push the policy to node_1
+        onboarding_location: "bucharest,bld_01,floor_11"
+        create_onboarding_location: yes
+      node_2:
+        run_os: ["exos"] # it will raise an error if it does not find in the devices.yaml a standalone dut with cli_type exos
+        initial_network_policy_push: no # because we did use the 'initial_network_policy_push' option, the onboarding will:
+                                        #  - create a network policy for node_2
+                                        #  - create a switch template for the created network policy
+                                        #  - will assign the policy to node_2
+                                        #  - but it won't push the policy to node_2
+        onboarding_location: "bucharest,bld_01,floor_11"
+    node_stack:
+      run_os: ["exos"] # it will raise an error if it does not find in the devices.yaml a stack dut with cli_type exos
+      onboarding_location: "bucharest,bld_01,floor_11"
+      create_onboarding_location: yes
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_201 # 1 node
+    - tcxm_201 # 1 node
+    - tcxm_202 # 1 node
+    - tcxm_203 # 1 node
+    - tcxm_204 # 1 node
+    - tcxm_205 # 1 node
+    - tcxm_206 # none
+    - tcxm_207 # none
+    - tcxm_206 # none
+    - tcxm_208 # 2 node
+    - tcxm_209 # 2 node
+    - tcxm_210 # stack
+    - tcxm_211 # stack
+    - tcxm_212 # none
+    - tcxm_213 # 1 node // depends on 212
+    - tcxm_214 # 1 node // depends on 213
+    - tcxm_214 # 1 node // depends on 213
+    - tcxm_213 # 1 node // depends on 212
+    - tcxm_xiq_onboarding_cleanup
+
+
+# The above runlist can be simplified.
+#
+# Because the "run_os" field is not specified, it will take default value (an empty list - []) for each node.
+#
+# This means that:
+#  - it won't check the cli_type of the duts
+#  - it will take the first available dut from the devices.yaml for each node
+#
+# runlist_XIQ_200:
+#   suitemap: 
+#     - extreme_automation_tests/data/NonProduction/XIQ/XIQ_200/suitemap_XIQ_200.yaml
+#   tests:
+#     - tcxm_xiq_onboarding
+#     - tcxm_201 # 1 node
+#     - tcxm_202 # 1 node
+#     - tcxm_203 # 1 node
+#     - tcxm_204 # 1 node
+#     - tcxm_205 # 1 node
+#     - tcxm_206 # none
+#     - tcxm_207 # none
+#     - tcxm_208 # 2 node
+#     - tcxm_209 # 2 node
+#     - tcxm_210 # stack
+#     - tcxm_211 # stack
+#     - tcxm_212 # none
+#     - tcxm_213 # 1 node // depends on 212
+#     - tcxm_214 # 1 node // depends on 213
+#     - tcxm_xiq_onboarding_cleanup
+
+
+# This runlist does not use the onboarding tests.
+# It has only tests that do not depend on the onboarding procedure.
+#
+# runlist_XIQ_200:
+#   suitemap: 
+#     - extreme_automation_tests/data/NonProduction/XIQ/XIQ_200/suitemap_XIQ_200.yaml
+#   tests:
+#     - tcxm_206 # none
+#     - tcxm_207 # none
+#     - tcxm_212 # none

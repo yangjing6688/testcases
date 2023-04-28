@@ -8,7 +8,7 @@ runlist_XIQ_1219:
           supplemental_cli_option: enable
     standalone:
       node_1:
-        run_os: ['exos', "voss"]
+        run_os: ["exos", "voss"]
     node_stack:
       run_os: ["exos"]
   tests:

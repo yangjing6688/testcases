@@ -1,0 +1,32 @@
+runlist_XIQ_921:
+  suitemap:
+    - suitemap_XIQ_921.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ["exos", "voss"]
+    node_stack:
+      run_os: ["exos"]
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_18417
+    - tcxm_18420
+    - tcxm_18423
+    - tcxm_18426
+    - tcxm_18429
+    - tcxm_18432
+    - tcxm_18440
+    - tcxm_18473
+    - tcxm_18476
+    - tcxm_18479
+    - tcxm_18482
+    - tcxm_18485
+    - tcxm_18488
+    - tcxm_18561
+    - tcxm_18493
+    - tcxm_18494
+    - tcxm_18497
+    - tcxm_18500
+    - tcxm_18503
+    - tcxm_18506
+    - tcxm_xiq_onboarding_cleanup

@@ -1,0 +1,27 @@
+runlist_XIQ_9301:
+  suitemap:
+    - suitemap_XIQ_9301.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ["exos", "voss"]
+        create_network_policy: no
+    node_stack:
+      run_os: ["exos"] 
+      create_network_policy: no
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_25646     # 1 node
+    - tcxm_25654     # 1 node
+    - tcxm_25649     # 1 node
+    - tcxm_25656     # 1 node
+    - tcxm_25677_1   # 1 node
+    - tcxm_25677_2   # 1 node
+    - tcxm_25677_3   # 1 node
+    - tcxm_25659     # stack
+    - tcxm_25668     # stack
+    - tcxm_25663     # stack
+    - tcxm_25670     # stack
+    - tcxm_25664_1   # stack
+    - tcxm_25664_2   # stack
+    - tcxm_xiq_onboarding_cleanup
