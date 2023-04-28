@@ -22,8 +22,6 @@ def random_word(x=12):
 class XIQ247Tests:
 
     @pytest.mark.tcxm_25562
-    @pytest.mark.exos
-    @pytest.mark.voss
     @pytest.mark.p1
     def test_tcxm_25562(self, node, logger, xiq_library_at_class_level):
         """ TCXM-25562 - Check availability of "VLAN" field when Port Type is "Access Port"
@@ -116,20 +114,20 @@ class XIQ247Tests:
 
             # Check if the successful message is displayed correctly after the config is saved
             if node.cli_type.lower() == 'exos' and node.platform.lower() == 'stack':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Stack Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                                {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                                {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             elif node.cli_type.lower() == 'exos':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                                {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                                {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             elif node.cli_type == 'voss':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                                {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
+                                {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             else:
                 logger.info("The success message was not generated")
 
@@ -233,21 +231,21 @@ class XIQ247Tests:
 
                 # Check if the successful message is displayed correctly after the config is saved
                 if node.cli_type.lower() == 'exos' and node.platform.lower() == 'stack':
-                    if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                    if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                            "Stack Port Configuration Saved":
                         pytest.fail(f"Unable to display the success message: \
-                            {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                            {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
                 elif node.cli_type.lower() == 'exos':
-                    if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                    if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                            "Switch Port Configuration Saved":
                         pytest.fail(f"Unable to display the success message: \
-                            {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                            {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
                 elif node.cli_type == 'voss':
-                    # if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
+                    # if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                     #        "Switch Port Configuration Saved":
                     #     pytest.fail(f"Unable to display the success message: \
-                    #         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
-                    test_var = xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()
+                    #         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
+                    test_var = xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()
                     print(f"test_var2: {test_var}")
                 else:
                     logger.info("The success message was not generated")
@@ -299,21 +297,21 @@ class XIQ247Tests:
 
             # Check if the successful message is displayed correctly after the config is saved
             if node.cli_type.lower() == 'exos' and node.platform.lower() == 'stack':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Stack Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             elif node.cli_type.lower() == 'exos':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             elif node.cli_type == 'voss':
-                # if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
+                # if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                 #        "Switch Port Configuration Saved":
                 #     pytest.fail(f"Unable to display the success message: \
-                #         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
-                test_var = xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()
+                #         {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
+                test_var = xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()
                 print(f"test_var3: {test_var}")
             else:
                 logger.info("The success message was not generated")
@@ -358,8 +356,6 @@ class XIQ247Tests:
 
     @pytest.mark.tcxm_25565
     @pytest.mark.dependson("tcxm_25562")
-    @pytest.mark.exos
-    @pytest.mark.voss
     @pytest.mark.p1
     def test_tcxm_25565(self, node, logger, xiq_library_at_class_level):
         """ TCXM-25562 - Check availability of "VLAN" field when Port Type is "Access Port"
@@ -372,8 +368,6 @@ class XIQ247Tests:
             logger.info("The test TCXM_25565 was run in the test TCXM_25562")
 
     @pytest.mark.tcxm_25563
-    @pytest.mark.exos
-    @pytest.mark.voss
     @pytest.mark.p1
     def test_tcxm_25563(self, node, logger, xiq_library_at_class_level):
         """ TCXM-25563 - Check availability of "VLAN" fields (native VLAN and allowed VLAN)
@@ -466,20 +460,20 @@ class XIQ247Tests:
 
             # Check if the successful message is displayed correctly after the config is saved
             if node.cli_type.lower() == 'exos' and node.platform.lower() == 'stack':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Stack Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             elif node.cli_type.lower() == 'exos':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             elif node.cli_type == 'voss':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
+                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             else:
                 logger.info("The success message was not generated")
 
@@ -578,20 +572,20 @@ class XIQ247Tests:
 
             # Check if the successful message is displayed correctly after the config is saved
             if node.cli_type.lower() == 'exos' and node.platform.lower() == 'stack':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Stack Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             elif node.cli_type.lower() == 'exos':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             elif node.cli_type == 'voss':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
+                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             else:
                 logger.info("The success message was not generated")
 
@@ -634,8 +628,6 @@ class XIQ247Tests:
                 pytest.fail("The update was not finished successfully")
 
     @pytest.mark.tcxm_25564
-    @pytest.mark.exos
-    @pytest.mark.voss
     @pytest.mark.p2
     def test_tcxm_25564(self, node, logger, xiq_library_at_class_level):
 
@@ -749,20 +741,20 @@ class XIQ247Tests:
                 time.sleep(5)
                 # Check if the successful message is displayed correctly after the config is saved
                 if node.cli_type.lower() == 'exos' and node.platform.lower() == 'stack':
-                    if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                    if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                            "Stack Port Configuration Saved":
                         pytest.fail(f"Unable to display the success message: \
-                            {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                            {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
                 elif node.cli_type.lower() == 'exos':
-                    if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                    if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                            "Switch Port Configuration Saved":
                         pytest.fail(f"Unable to display the success message: \
-                            {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                            {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
                 elif node.cli_type == 'voss':
-                    if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
+                    if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                            "Switch Port Configuration Saved":
                         pytest.fail(f"Unable to display the success message: \
-                            {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
+                            {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
                 else:
                     logger.info("The success message was not generated")
 
@@ -890,8 +882,6 @@ class XIQ247Tests:
             pytest.skip("The device does not support Phone Port")
 
     @pytest.mark.tcxm_25573
-    @pytest.mark.exos
-    @pytest.mark.voss
     @pytest.mark.p2
     def test_tcxm_25573(self, node, logger, xiq_library_at_class_level):
 
@@ -1057,20 +1047,20 @@ class XIQ247Tests:
             time.sleep(5)
             # Check if the successful message is displayed correctly after the config is saved
             if node.cli_type.lower() == 'exos' and node.platform.lower() == 'stack':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Stack Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             elif node.cli_type.lower() == 'exos':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             elif node.cli_type == 'voss':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
+                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             else:
                 logger.info("The success message was not generated")
 
@@ -1166,20 +1156,20 @@ class XIQ247Tests:
 
             # Check if the successful message is displayed correctly after the config is saved
             if node.cli_type.lower() == 'exos' and node.platform.lower() == 'stack':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Stack Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             elif node.cli_type.lower() == 'exos':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_exos()}")
+                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             elif node.cli_type == 'voss':
-                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss() == \
+                if not xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config() == \
                        "Switch Port Configuration Saved":
                     pytest.fail(f"Unable to display the success message: \
-                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_voss()}")
+                        {xiq_library_at_class_level.xflowsmanageDevice360.succesful_message_multi_edit_config()}")
             else:
                 logger.info("The success message was not generated")
 
@@ -1223,8 +1213,6 @@ class XIQ247Tests:
 
     @pytest.mark.tcxm_25566
     @pytest.mark.dependson("tcxm_25573")
-    @pytest.mark.exos
-    @pytest.mark.voss
     @pytest.mark.p1
     def test_tcxm_25566(self, node, logger, xiq_library_at_class_level):
         """ TCXM-25573 - Select at least 2 ports that are configured on "Access Port" Port Type,
@@ -1238,8 +1226,6 @@ class XIQ247Tests:
     @pytest.mark.tcxm_25577
     @pytest.mark.dependson("tcxm_25562")
     @pytest.mark.dependson("tcxm_25563")
-    @pytest.mark.exos
-    @pytest.mark.voss
     @pytest.mark.p2
     def test_tcxm_25577(self, node, logger, xiq_library_at_class_level):
         """ TCXM-25562 - Check availability of "VLAN" field when Port Type is "Access Port"
@@ -1254,8 +1240,6 @@ class XIQ247Tests:
     @pytest.mark.tcxm_25579
     @pytest.mark.dependson("tcxm_25562")
     @pytest.mark.dependson("tcxm_25563")
-    @pytest.mark.exos
-    @pytest.mark.voss
     @pytest.mark.p1
     def test_tcxm_25579(self, node, logger, xiq_library_at_class_level):
         """ TCXM-25562 - Check availability of "VLAN" field when Port Type is "Access Port"
