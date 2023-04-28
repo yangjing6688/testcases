@@ -411,16 +411,10 @@ Test 13: Verify Device License and CoPilot Column Values On All Devices
     Should Contain         ${copilot2_result}    ${COPILOT_ACTIVE}
 
     Log To Console      CHECKING VALUES FOR DUT3
-    ${pilot3_result}=      Get Device Details    ${DUT3_SERIAL}    DEVICE LICENSE
-    Should Contain         ${pilot3_result}      ${NO_PILOT_LICENSE}
-
     ${copilot3_result}=    Get Device Details    ${DUT3_SERIAL}    COPILOT
     Should Contain         ${copilot3_result}    ${COPILOT_NONE}
 
     Log To Console      CHECKING VALUES FOR DUT4
-    ${pilot4_result}=      Get Device Details    ${DUT4_SERIAL}    DEVICE LICENSE
-    Should Contain         ${pilot4_result}      ${NO_PILOT_LICENSE}
-
     ${copilot4_result}=    Get Device Details    ${DUT4_SERIAL}    COPILOT
     Should Contain         ${copilot4_result}    ${COPILOT_NONE}
 

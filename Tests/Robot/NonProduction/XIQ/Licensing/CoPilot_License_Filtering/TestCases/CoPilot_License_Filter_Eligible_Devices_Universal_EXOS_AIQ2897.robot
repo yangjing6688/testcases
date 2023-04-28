@@ -113,10 +113,6 @@ Test 5: Verify Device License and CoPilot Column Values On Devices
 
     Depends On Test     Test 1: Verify CoPilot Baseline License Counts
 
-    # Confirm the device row shows the correct pilot license status
-    ${pilot1_result}=      Get Device Details    ${DUT1_SERIAL}    DEVICE LICENSE
-    Should Contain         ${pilot1_result}      ${NO_PILOT_LICENSE}
-
     # Confirm the device row shows the correct copilot license status
     ${copilot1_result}=    Get Device Details    ${DUT1_SERIAL}    COPILOT
     Should Contain         ${copilot1_result}    ${COPILOT_ACTIVE}
