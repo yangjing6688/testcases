@@ -293,7 +293,7 @@ class NewCascadeTests:
     @pytest.mark.p1
     @pytest.mark.testbed_none
     @pytest.mark.tcxm_212
-    def test_12(self, logger):
+    def test_12(self, logger, test_data):
         """
         This test does not deppend on any test.
         """
@@ -304,7 +304,7 @@ class NewCascadeTests:
     @pytest.mark.tcxm_213
     @pytest.mark.dependson("tcxm_212")
     @pytest.mark.dependson("tcxm_xiq_onboarding")
-    def test_13(self, logger):
+    def test_13(self, logger, test_data):
         """
         This test dependson tcxm_212.
         If tcxm_212 fails -> tcxm_213 is skipped.
@@ -317,7 +317,7 @@ class NewCascadeTests:
     @pytest.mark.tcxm_214
     @pytest.mark.dependson("tcxm_213")
     @pytest.mark.dependson("tcxm_xiq_onboarding")
-    def test_14(self, logger):
+    def test_14(self, logger, test_data):
         """
         This test dependson tcxm_213.
         If tcxm_213 fails -> tcxm_214 is skipped.
