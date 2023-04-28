@@ -17,7 +17,7 @@ class XIQ8955Tests:
     @pytest.mark.p1
     @pytest.mark.testbed_1_node
     def test_tcxm_22592(self, node_1, logger, test_bed, xiq_library_at_class_level, loaded_config, enter_switch_cli,
-                        cli):
+                        cli, navigator):
         """
         Author          :   Dennis-Mircea Ciupitu (id: dciupitu)
         Description     :
@@ -59,11 +59,23 @@ class XIQ8955Tests:
                 network_policy_name) == 1, \
                 "Failed to create Switching and Routing network policy"
 
+            logger.info("Disable DNS server so we do not have out of sync config.")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.navigate_to_np_edit_tab(network_policy_name)
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.go_to_dns_server_tab()
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.set_dns_server_status("disable")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.save_dns_server_tab()
+            navigator.wait_until_loading_is_done()
+
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
                                                                                             sw_model_template,
                                                                                             device_template_name, node_1.cli_type) == 1, \
                 f"Failed to add switch template with model: {sw_model_template}"
-
+            logger.info("Set override so we can delete policy!")
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name,
+                                                                                        device_template_name,
+                                                                                        node_1.cli_type)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.set_override_policy_common_settings(state=True)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.save_template()
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_adv_settings_tab(network_policy_name,
                                                                                                     device_template_name, node_1.cli_type) == 1, \
                 "Failed to open Advanced Settings tab"
@@ -118,8 +130,9 @@ class XIQ8955Tests:
             try:
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=dut.serial)
-                xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_switch_template(device_template_name)
                 xiq_library_at_class_level.xflowsconfigureNetworkPolicy.delete_network_polices(network_policy_name)
+                xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_switch_template(device_template_name)
+
 
             except Exception as exc:
                 logger.info(exc)
@@ -144,7 +157,7 @@ class XIQ8955Tests:
     @pytest.mark.p1
     @pytest.mark.testbed_1_node
     def test_tcxm_22593(self, node_1, logger, test_bed, xiq_library_at_class_level, loaded_config, enter_switch_cli,
-                        cli):
+                        cli, navigator):
         """
         Author          :   Dennis-Mircea Ciupitu (id: dciupitu)
         Description     :   Verify that if the upload config toggle is turned off, the "Reboot and revert Extreme
@@ -186,11 +199,23 @@ class XIQ8955Tests:
                 network_policy_name) == 1, \
                 "Failed to create Switching and Routing network policy"
 
+            logger.info("Disable DNS server so we do not have out of sync config.")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.navigate_to_np_edit_tab(network_policy_name)
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.go_to_dns_server_tab()
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.set_dns_server_status("disable")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.save_dns_server_tab()
+            navigator.wait_until_loading_is_done()
+
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
                                                                                             sw_model_template,
                                                                                             device_template_name, node_1.cli_type) == 1, \
                 f"Failed to add switch template with model: {sw_model_template}"
-
+            logger.info("Set override so we can delete policy!")
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name,
+                                                                                        device_template_name,
+                                                                                        node_1.cli_type)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.set_override_policy_common_settings(state=True)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.save_template()
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_adv_settings_tab(network_policy_name,
                                                                                                     device_template_name, node_1.cli_type) == 1, \
                 "Failed to open Advanced Settings tab"
@@ -243,8 +268,8 @@ class XIQ8955Tests:
             try:
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=dut.serial)
-                xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_switch_template(device_template_name)
                 xiq_library_at_class_level.xflowsconfigureNetworkPolicy.delete_network_polices(network_policy_name)
+                xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_switch_template(device_template_name)
 
             except Exception as exc:
                 logger.info(exc)
@@ -254,7 +279,7 @@ class XIQ8955Tests:
     @pytest.mark.p1
     @pytest.mark.testbed_1_node
     def test_tcxm_22595(self, node_1, logger, test_bed, xiq_library_at_class_level, loaded_config, enter_switch_cli,
-                        cli):
+                        cli, navigator):
         """
         Author          :   Dennis-Mircea Ciupitu (id: dciupitu)
         Description     :
@@ -303,11 +328,23 @@ class XIQ8955Tests:
                 network_policy_name) == 1, \
                 "Failed to create Switching and Routing network policy"
 
+            logger.info("Disable DNS server so we do not have out of sync config.")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.navigate_to_np_edit_tab(network_policy_name)
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.go_to_dns_server_tab()
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.set_dns_server_status("disable")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.save_dns_server_tab()
+            navigator.wait_until_loading_is_done()
+
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
                                                                                             sw_model_template,
                                                                                             device_template_name, node_1.cli_type) == 1, \
                 f"Failed to add switch template with model: {sw_model_template}"
-
+            logger.info("Set override so we can delete policy!")
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name,
+                                                                                        device_template_name,
+                                                                                        node_1.cli_type)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.set_override_policy_common_settings(state=True)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.save_template()
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_adv_settings_tab(network_policy_name,
                                                                                                     device_template_name, node_1.cli_type) == 1, \
                 "Failed to open Advanced Settings tab"
@@ -359,8 +396,8 @@ class XIQ8955Tests:
             try:
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=dut.serial)
-                xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_switch_template(device_template_name)
                 xiq_library_at_class_level.xflowsconfigureNetworkPolicy.delete_network_polices(network_policy_name)
+                xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_switch_template(device_template_name)
             except Exception as exc:
                 logger.info(exc)
 
@@ -383,7 +420,7 @@ class XIQ8955Tests:
     @pytest.mark.p1
     @pytest.mark.testbed_1_node
     def test_tcxm_22599(self, node_1, logger, test_bed, xiq_library_at_class_level, loaded_config, enter_switch_cli,
-                        cli):
+                        cli, navigator):
         """
         Author          :   Dennis-Mircea Ciupitu (id: dciupitu)
         Description     :   Verify that the rebooting process is triggered if the IQAgent is unresponsive during the
@@ -456,7 +493,6 @@ class XIQ8955Tests:
         network_policy_name = f"XIQ_8955_np_{''.join(random.sample(pool, k=6))}"
         device_template_name = f"XIQ_8955_template_{''.join(random.sample(pool, k=6))}"
         supplemental_cli_name = f"scli_8955_{''.join(random.sample(pool, k=6))}"
-
         try:
             with enter_switch_cli(node_1) as dev_cmd:
                 dev_cmd.send_cmd(dut.name, 'disable iqagent', max_wait=10, interval=2,
@@ -470,6 +506,12 @@ class XIQ8955Tests:
                 network_policy_name) == 1, \
                 "Failed to create Switching and Routing network policy"
 
+            logger.info("Disable DNS server so we do not have out of sync config.")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.navigate_to_np_edit_tab(network_policy_name)
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.go_to_dns_server_tab()
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.set_dns_server_status("disable")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.save_dns_server_tab()
+            navigator.wait_until_loading_is_done()
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
                                                                                             sw_model_template,
                                                                                             device_template_name, node_1.cli_type) == 1, \
@@ -478,6 +520,7 @@ class XIQ8955Tests:
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, device_template_name, node_1.cli_type)
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.set_override_policy_common_settings(state=True)
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.save_template()
+
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_adv_settings_tab(network_policy_name,
                                                                                                     device_template_name, node_1.cli_type) == 1, \
                 "Failed to open Advanced Settings tab"
@@ -555,7 +598,7 @@ class XIQ8955Tests:
     @pytest.mark.p1
     @pytest.mark.testbed_1_node
     def test_tcxm_22603(self, node_1, logger, test_bed, xiq_library_at_class_level, loaded_config, enter_switch_cli,
-                        cli):
+                        cli, navigator):
         """
         Author          :   Dennis-Mircea Ciupitu (id: dciupitu)
         Description     :   Verify that  the rebooting process is triggered if the IQAgent is unresponsive during the
@@ -645,6 +688,12 @@ class XIQ8955Tests:
             assert network_policy.create_switching_routing_network_policy(network_policy_name) == 1, \
                 "Failed to create Switching and Routing network policy"
 
+            logger.info("Disable DNS server so we do not have out of sync config.")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.navigate_to_np_edit_tab(network_policy_name)
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.go_to_dns_server_tab()
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.set_dns_server_status("disable")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.save_dns_server_tab()
+            navigator.wait_until_loading_is_done()
             switch_template = xiq_library_at_class_level.xflowsconfigureSwitchTemplate
             assert switch_template.add_sw_template(network_policy_name,
                                                    sw_model_template,
