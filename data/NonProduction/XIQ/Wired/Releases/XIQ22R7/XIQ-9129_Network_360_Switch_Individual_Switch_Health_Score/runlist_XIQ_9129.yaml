@@ -1,0 +1,21 @@
+runlist_XIQ_9129:
+  suitemap: 
+    - suitemap_XIQ_9129.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ["exos", "voss"]
+        create_network_policy: no
+      node_2:
+        run_os: ["exos", "voss"]
+        create_network_policy: no
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_25174
+    - tcxm_25176
+    - tcxm_25179
+    - tcxm_25193
+    - tcxm_25194
+    - tcxm_25195
+    - tcxm_25196
+    - tcxm_xiq_onboarding_cleanup
