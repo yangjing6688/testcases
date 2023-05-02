@@ -41,7 +41,7 @@ ap2:
   onboard_device_type:      Real
 
 mu1:
-  ip:             10.16.168.35
+  ip:             10.16.190.35
   port:           8270
   username:       admin
   password:       aerohive
