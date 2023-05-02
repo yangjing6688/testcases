@@ -456,10 +456,15 @@ def log_git():
                 except (InvalidGitRepositoryError, NoSuchPathError):
                     pass
                 else:
-                    logger_obj.step(f"{repo_name} git dir: '{git_repo.git_dir}'.")
-                    logger_obj.step(f"{repo_name} working tree dir: '{git_repo.working_tree_dir}'.")
-                    logger_obj.step(f"{repo_name} feature branch: '{git_repo.active_branch.name}'.")
-                    logger_obj.step(f"{repo_name} HEAD commit: '{git_repo.head.commit}'.")
+                    try:
+                        logger_obj.step(f"{repo_name} git dir: '{git_repo.git_dir}'.")
+                        logger_obj.step(f"{repo_name} working tree dir: '{git_repo.working_tree_dir}'.")
+                        logger_obj.step(f"{repo_name} feature branch: '{git_repo.active_branch.name}'.")
+                        logger_obj.step(f"{repo_name} HEAD commit: '{git_repo.head.commit}'.")
+                    except:
+                        # TypeError: HEAD is a detached symbolic reference as it points to 'e893b741b753c3032f170500e19006c4cdbf6bde'
+                        # FIX XAT-260
+                        pass
                     break
 
 
