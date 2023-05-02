@@ -1312,10 +1312,15 @@ def pytest_sessionfinish(session):
                         except (InvalidGitRepositoryError, NoSuchPathError):
                             pass
                         else:
-                            session.config._metadata[f"{repo_name} git dir"] = git_repo.git_dir
-                            session.config._metadata[f"{repo_name} working tree dir"] = git_repo.working_tree_dir
-                            session.config._metadata[f"{repo_name} feature branch"] = git_repo.active_branch.name
-                            session.config._metadata[f"{repo_name} HEAD commit"] = git_repo.head.commit
+                            try:
+                                session.config._metadata[f"{repo_name} git dir"] = git_repo.git_dir
+                                session.config._metadata[f"{repo_name} working tree dir"] = git_repo.working_tree_dir
+                                session.config._metadata[f"{repo_name} feature branch"] = git_repo.active_branch.name
+                                session.config._metadata[f"{repo_name} HEAD commit"] = git_repo.head.commit
+                            except:
+                                # TypeError: HEAD is a detached symbolic reference as it points to 'e893b741b753c3032f170500e19006c4cdbf6bde'
+                                # FIX XAT-260
+                                pass
                             break
 
         session.config._metadata["Runlist Path"] = pytest.runlist_path
