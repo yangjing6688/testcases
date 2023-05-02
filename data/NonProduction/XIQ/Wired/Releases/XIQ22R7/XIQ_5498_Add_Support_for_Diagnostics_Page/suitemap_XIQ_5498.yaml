@@ -1,0 +1,95 @@
+data:
+  feature_name: Add Support for Diagnostics Page for Switch Engine/EXOS Stacks
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-5498
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=30092060
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  Xiq5498OneNodeTests::test_tcxm_22209:
+    author: icosmineanu
+    tc: tcxm_22209
+    title: Verify that the Diagnostics option is available under the Monitor Tab
+    steps:
+      - Onboard the EXOS device
+      - Navigate to Device360
+      - In Monitor Tab check that the Diagnostics option is present in Monitoring Menu
+      - Click on the Diagnostics TAB
+      - Verify if the slot selector dropdown isn't present
+
+  Xiq5498OneNodeTests::test_tcxm_22211:
+    author: icosmineanu
+    tc: tcxm_22211
+    title: Verify that the slot dropdown selector is not present for standalone.
+  
+  #################### TESTBED 1 NODE ##########################
+
+  #################### TESTBED STACK ##########################
+
+  Xiq5498StackTests::test_tcxm_22213:
+    author: icosmineanu
+    tc: tcxm_22213
+    title: Verify that the Diagnostics option is available under the Monitor Tab for a stack (Step 1-4)
+    steps:
+      - Onboard the EXOS device
+      - Navigate to Device360
+      - In Monitor Tab check that the Diagnostics option is present in Monitoring Menu
+      - Click on the Diagnostics TAB
+      - For each value displayed in the header part(device information), verify if it coincides with the cli value
+
+  Xiq5498StackTests::test_tcxm_22221:
+    author: icosmineanu
+    tc: tcxm_22221
+    title: Verify if the device information(ip, mac address, software version, model, serial, make, iqagent version) from the header side is displayed correctly according to the cli (Master Unit) (Step 1-5)
+
+  Xiq5498StackTests::test_tcxm_22215:
+    author: tpodar
+    tc: tcxm_22215
+    title: Verify that the slot dropdown selector is present and contains all the individual
+    steps:
+      - Onboard the EXOS stack.
+      - Navigate to Device360.
+      - Navigate to the Monitor Tab --> Diagnostics TAB.
+      - Check if the dropdown at the top of the page is present and correctly displays all the devices in the stack
+      - Click on each item in the dropdown in order to verify that it redirects the user to the correct option
+      - Verify if the select all ports button is present.
+      - Click on the select all ports button.
+      - Verify if the DeSelect all ports button is present.
+      - Click on the DeSelect all ports button.
+
+  Xiq5498StackTests::test_tcxm_22217:
+    author: tpodar
+    tc: tcxm_22217
+    title: Verify if the Select All Ports button is present and clickable
+
+  Xiq5498StackTests::test_tcxm_22219:
+    author: tpodar
+    tc: tcxm_22219
+    title: Verify if the DeSelect All Ports button is present and clickable
+
+  Xiq5498StackTests::test_tcxm_22223:
+    author: tpodar
+    tc: tcxm_22223
+    title: Verify if it's possible to hover over the first 7 icons in the port diagnostics section(CPU Usage, Memory, Temperature etc) and the opened box displays correctly the information(Master Unit).
+    steps:
+      - Onboard the EXOS stack.
+      - Navigate to Device360.
+      - Navigate to the Monitor Tab --> Diagnostics TAB.
+      - Hover over each item from the seven icons in the port diagnostics section.
+
+  #################### TESTBED STACK ##########################

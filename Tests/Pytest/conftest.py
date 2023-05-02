@@ -688,14 +688,29 @@ def pytest_collection_modifyitems(session, items):
                         )
 
         for item in items:
+            
             if callspec := getattr(item, "callspec", None):
                 test_data = callspec.params["test_data"]
+            else:
+                test_data = pytest.suitemap_tests[f"{item.cls.__name__}::{item.originalname}"]
+            
+            try:
                 test_marker_from_test_data = test_data["tc"]
-                tc_markers = get_test_marker(item)
-                for marker in tc_markers:
-                    if marker != test_marker_from_test_data:
-                        [marker_obj] = [mk for mk in item.own_markers if mk.name == marker]
-                        item.own_markers.pop(item.own_markers.index(marker_obj))
+            except KeyError:
+                logger_obj.fail(
+                    "Make sure the tests that use test parameterization use the 'test_data' fixture."
+                    f"\nFailed at function '{item.nodeid}'.")
+
+            tc_markers = get_test_marker(item)
+            
+            for marker in tc_markers:
+                if marker != test_marker_from_test_data:
+                    [marker_obj] = [mk for mk in item.own_markers if mk.name == marker]
+                    item.own_markers.pop(item.own_markers.index(marker_obj))
+
+            if re.search(r"(.*)_rerun_\d+$", test_marker_from_test_data):
+                item.add_marker(
+                    getattr(pytest.mark, test_marker_from_test_data))
 
         collected_items: List[pytest.Function] = []
             
@@ -1168,9 +1183,103 @@ def pytest_sessionstart(session):
                 suitemap_data_dict = suitemap_dict.get('data', {})
                 pytest.suitemap_tests = {**pytest.suitemap_tests, **suitemap_tests_dict}
                 pytest.suitemap_data = {**pytest.suitemap_data, **suitemap_data_dict}
+
+        rerun_mapping = defaultdict(lambda: int())
         
+        for test in pytest.runlist_tests:
+            rerun_mapping[test] += 1
+
+        rerun_mapping = {k: v for k, v in rerun_mapping.items() if v > 1}
+
+        temp_pytest_tests = list(pytest.runlist_tests)
+        pytest.runlist_tests = []
+        
+        count = defaultdict(lambda: 1)
+        for test in temp_pytest_tests:
+            if test not in rerun_mapping:
+                pytest.runlist_tests.append(test)
+            else:
+                cnt = count[test]
+                if cnt == 1:
+                    pytest.runlist_tests.append(test)
+                else:
+                    pytest.runlist_tests.append(f"{test}_rerun_{cnt - 1}")
+                count[test] += 1
+
+        for test in pytest.runlist_tests:
+            if match := re.search(r"(.*)_rerun_\d+$", test):
+                base_test = match.group(1)
+                
+                if base_test in pytest.runlist_tests:
+                    for entry, data in pytest.suitemap_tests.items():
+                        if data.get("tc") == base_test:
+                            pytest.suitemap_tests[entry]["tests"] = [{"tc": base_test}, {"tc": test}]
+                            del pytest.suitemap_tests[entry]["tc"]
+                            break
+                        
+                        elif "tests" in data:
+                            entry_tests = data.get("tests")
+                            for entry_test in entry_tests:
+                                if entry_test["tc"] == base_test:
+                                    temp_data = entry_test.copy()
+                                    temp_data["tc"] = test
+                                    pytest.suitemap_tests[entry]["tests"].append(temp_data)
+                                    break
+
         pytest.onboarding_options: Options = pytest.runlist[pytest.runlist_name].get('onboarding_options', {})
         pytest.run_options: Options = pytest.runlist[pytest.runlist_name].get("run_options", {}) or {}
+
+
+def print_run_status(session, tests):
+    
+    try:
+        max_tb_length = max(len(", ".join(m.upper() for m in get_testbed_markers(item))) for item in tests)
+        max_tb_length = max([max_tb_length, 9])
+        max_tc_length = max([len(get_test_marker(item)[0]) for item in tests])
+        max_tc_length = max([max_tc_length, 9])
+        result_witdh = 17
+        line_width = max_tc_length + max_tb_length + 6 * result_witdh + 36
+        
+        output = "\n+" + "-" * line_width + "+"
+        output += f"\n| {'ORDER':^5} | {'TEST CASE':^{max_tc_length}} | {'P':^2} | {'TESTBED':^{max_tb_length}} | {'SETUP_RESULT':^{result_witdh}} | " \
+                    f"{'CALL_RESULT':^{result_witdh}} | {'TEARDOWN_RESULT':^{result_witdh}} | " \
+                    f"{'SETUP_DURATION':^{result_witdh}} | {'CALL_DURATION':^{result_witdh}} | " \
+                    f"{'TEARDOWN_DURATION':^{result_witdh}} |"
+        output += "\n+" + "-" * line_width + "+"
+        
+        for index, item in enumerate(tests):
+            
+            test_marker: TestCaseMarker
+            [test_marker] = get_test_marker(item)
+            
+            test_priority: PriorityMarker = "P0" if (is_onboarding_cleanup_test(item) or is_onboarding_test(item)) else get_priority_marker(item)[0].upper()
+            testbed_marker: TestbedMarker = "N/A" if (is_onboarding_cleanup_test(item) or is_onboarding_test(item)) else ", ".join(m.upper() for m in get_testbed_markers(item))
+            
+            setup_results = session.setup_results.get(item)
+            setup_outcome = setup_results.outcome.upper()
+            setup_duration = round(setup_results.duration, 2)
+
+            if call_results := session.results.get(item):
+                call_outcome = call_results.outcome.upper()
+                call_duration = round(call_results.duration, 2)
+            else:
+                call_outcome, call_duration = "N/A", 0.0
+            
+            teardown_results = session.teardown_results.get(item)
+            teardown_outcome = teardown_results.outcome.upper()
+            teardown_duration = round(teardown_results.duration - call_duration - setup_duration, 2)
+            teardown_duration = 0.0 if teardown_duration <= 0 else teardown_duration
+            
+            output += f"\n| {index + 1:^5} | {test_marker:^{max_tc_length}} | {test_priority:^2} | {testbed_marker:^{max_tb_length}} | {setup_outcome:^{result_witdh}} | " \
+                        f"{call_outcome:^{result_witdh}} | {teardown_outcome:^{result_witdh}} | " \
+                        f"{setup_duration:^{result_witdh}} | {call_duration:^{result_witdh}} | " \
+                        f"{teardown_duration:^{result_witdh}} |"
+            output += "\n+" + "-" * line_width + "+"
+        
+        logger_obj.info(output)
+
+    except:
+        pass
 
 
 @pytest.hookimpl(tryfirst=True)
@@ -1178,57 +1287,9 @@ def pytest_sessionfinish(session):
 
     if pytest.runlist_path != "default":
         
-        try:
-            config['${TEST_NAME}'] = "RESULTS"
-            
-            max_tb_length = max(len(", ".join(m.upper() for m in get_testbed_markers(item))) for item in pytest.items)
-            max_tb_length = max([max_tb_length, 9])
-            max_tc_length = max([len(get_test_marker(item)[0]) for item in pytest.items])
-            max_tc_length = max([max_tc_length, 9])
-            result_witdh = 17
-            line_width = max_tc_length + max_tb_length + 6 * result_witdh + 38
-            
-            output = "\n" + "-" * line_width
-            output += f"\n| {'ORDER':^5} | {'TEST CASE':^{max_tc_length}} | {'P':^2} | {'TESTBED':^{max_tb_length}} | {'SETUP_RESULT':^{result_witdh}} | " \
-                      f"{'CALL_RESULT':^{result_witdh}} | {'TEARDOWN_RESULT':^{result_witdh}} | " \
-                      f"{'SETUP_DURATION':^{result_witdh}} | {'CALL_DURATION':^{result_witdh}} | " \
-                      f"{'TEARDOWN_DURATION':^{result_witdh}} |"
-            output += "\n" + "-" * line_width
-            
-            for index, item in enumerate(pytest.items):
-                
-                test_marker: TestCaseMarker
-                [test_marker] = get_test_marker(item)
-                
-                test_priority: PriorityMarker = "P0" if (is_onboarding_cleanup_test(item) or is_onboarding_test(item)) else get_priority_marker(item)[0].upper()
-                testbed_marker: TestbedMarker = "N/A" if (is_onboarding_cleanup_test(item) or is_onboarding_test(item)) else ", ".join(m.upper() for m in get_testbed_markers(item))
-                
-                setup_results = session.setup_results.get(item)
-                setup_outcome = setup_results.outcome.upper()
-                setup_duration = round(setup_results.duration, 2)
-
-                if call_results := session.results.get(item):
-                    call_outcome = call_results.outcome.upper()
-                    call_duration = round(call_results.duration, 2)
-                else:
-                    call_outcome, call_duration = "N/A", 0.0
-                
-                teardown_results = session.teardown_results.get(item)
-                teardown_outcome = teardown_results.outcome.upper()
-                teardown_duration = round(teardown_results.duration - call_duration - setup_duration, 2)
-                teardown_duration = 0.0 if teardown_duration <= 0 else teardown_duration
-                
-                output += f"\n| {index + 1:^5} | {test_marker:^{max_tc_length}} | {test_priority:^2} | {testbed_marker:^{max_tb_length}} | {setup_outcome:^{result_witdh}} | " \
-                          f"{call_outcome:^{result_witdh}} | {teardown_outcome:^{result_witdh}} | " \
-                          f"{setup_duration:^{result_witdh}} | {call_duration:^{result_witdh}} | " \
-                          f"{teardown_duration:^{result_witdh}} |"
-                output += "\n" + "-" * line_width
-            
-            logger_obj.info(f"Results of runlist '{pytest.runlist_name}' (path '{pytest.runlist_path}')")
-            logger_obj.info(output)
-
-        except:
-            pass
+        config['${TEST_NAME}'] = "RESULTS"
+        logger_obj.info(f"Results of runlist '{pytest.runlist_name}' (path '{pytest.runlist_path}')")
+        print_run_status(session, pytest.items)
 
         repos = ['extreme_automation_framework', 'extreme_automation_tests']
     
@@ -1382,6 +1443,10 @@ def pytest_runtest_setup(item):
         
         [current_test_marker] = get_test_marker(item)
         
+        if tests := pytest.items[:pytest.items.index(item)]:
+            logger_obj.info("The results for the tests that have run so far:")
+            print_run_status(item.session, tests=tests)
+
         try:
             config['${TEST_NAME}'] = f"{current_test_marker} | SETUP | {pytest.items.index(item) + 1}/{len(pytest.items)}"
         except:
