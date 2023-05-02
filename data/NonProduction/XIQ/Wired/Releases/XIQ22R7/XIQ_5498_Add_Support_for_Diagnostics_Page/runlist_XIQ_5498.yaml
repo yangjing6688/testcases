@@ -1,0 +1,22 @@
+runlist_XIQ_5498:
+  suitemap: 
+    - suitemap_XIQ_5498.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ["exos"]
+        create_network_policy: no
+    node_stack:
+      run_os: ["exos"]
+      create_network_policy: no
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_22209 # one node
+    - tcxm_22211 # one node, depends on tcxm_22209
+    - tcxm_22213 # stack
+    - tcxm_22221 # stack, depends on tcxm_22213
+    - tcxm_22215 # stack
+    - tcxm_22217 # stack, depends on tcxm_22215
+    - tcxm_22219 # stack, depends on tcxm_22215
+    - tcxm_22223 # stack
+    - tcxm_xiq_onboarding_cleanup
