@@ -4,7 +4,7 @@ import time
 
 
 @pytest.mark.p1
-@pytest.mark.dependson("tcxm_xiq_onboarding")
+#@pytest.mark.dependson("tcxm_xiq_onboarding")
 class XIQ9129Tests:
     @pytest.mark.testbed_1_node
     @pytest.mark.tcxm_25174
@@ -50,7 +50,7 @@ class XIQ9129Tests:
                     auto_actions.click(network_360_monitor_elements.get_graph_legend_names(i - 1))
                     logger.info(f'Hovering on RED line:')
                 auto_actions.move_to_element(elem1(i))
-                auto_actions.move_mouse_with_offset(10, 0)
+                auto_actions.move_mouse_with_offset((elem1(0).size["width"]-11)//2, 0)
                 auto_actions.move_to_element(elem2(i))
                 auto_actions.move_to_element(elem3(i))
                 assert network_360_monitor_elements.get_n360_graph_tooltip().get_attribute(
@@ -146,13 +146,12 @@ class XIQ9129Tests:
             auto_actions.click(network_360_monitor_elements.get_graph_legend_names(1))
             auto_actions.click(network_360_monitor_elements.get_graph_legend_names(2))
             auto_actions.move_to_element(elem1(0))
-            auto_actions.move_mouse_with_offset(10, 0)
+            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-11)//2, 0)
             auto_actions.move_to_element(elem2(0))
             auto_actions.move_to_element(elem3(0))
             logger.info('Clicking on line.')
             auto_actions.mouse_left_click()
             utils.wait_till(timeout=5)
-            navigator.wait_until_loading_is_done()
             logger.info('Verify if the searchbox is present: ')
             search_box = network_360_monitor_elements.get_n360_device_health_search_box()
             assert search_box != -1, "Unable to verify if the searchbox is present"
@@ -210,13 +209,12 @@ class XIQ9129Tests:
             auto_actions.click(network_360_monitor_elements.get_graph_legend_names(1))
             auto_actions.click(network_360_monitor_elements.get_graph_legend_names(2))
             auto_actions.move_to_element(elem1(0))
-            auto_actions.move_mouse_with_offset(10, 0)
+            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-11)//2, 0)
             auto_actions.move_to_element(elem2(0))
             auto_actions.move_to_element(elem3(0))
             logger.info('Clicking on line.')
             auto_actions.mouse_left_click()
             utils.wait_till(timeout=5)
-            navigator.wait_until_loading_is_done()
             logger.info('Get HOSTNAME and MAC ADDRESS from dut')
 
             table_elem = network_360_monitor_elements.get_n360_monitor_port_device_health_usage_table_rows()
@@ -273,13 +271,12 @@ class XIQ9129Tests:
             auto_actions.click(network_360_monitor_elements.get_graph_legend_names(1))
             auto_actions.click(network_360_monitor_elements.get_graph_legend_names(2))
             auto_actions.move_to_element(elem1(0))
-            auto_actions.move_mouse_with_offset(10, 0)
+            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-11)//2, 0)
             auto_actions.move_to_element(elem2(0))
             auto_actions.move_to_element(elem3(0))
             logger.info('Clicking on line.')
             auto_actions.mouse_left_click()
-            utils.wait_till(timeout=2)
-            navigator.wait_until_loading_is_done()
+            utils.wait_till(timeout=5)
 
             logger.info('Verify if the searchbox is present: ')
             search_box = network_360_monitor_elements.get_n360_device_health_search_box()
@@ -353,13 +350,12 @@ class XIQ9129Tests:
             auto_actions.click_reference(lambda: network_360_monitor_elements.get_graph_legend_names(1))
             auto_actions.click_reference(lambda: network_360_monitor_elements.get_graph_legend_names(2))
             auto_actions.move_to_element(elem1(0))
-            auto_actions.move_mouse_with_offset(10, 0)
+            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-11)//2, 0)
             auto_actions.move_to_element(elem2(0))
             auto_actions.move_to_element(elem3(0))
             logger.info('Clicking on line.')
             auto_actions.mouse_left_click()
             utils.wait_till(timeout=5)
-            navigator.wait_until_loading_is_done()
 
             logger.info('Verify if the devices are sorted in the table')
             xiq_library_at_class_level.xflowsmlinsightsNetwork360Monitor.n360_device_health_sorting_table()
@@ -400,18 +396,17 @@ class XIQ9129Tests:
             auto_actions.click_reference(lambda: network_360_monitor_elements.get_graph_legend_names(1))
             auto_actions.click_reference(lambda: network_360_monitor_elements.get_graph_legend_names(2))
             auto_actions.move_to_element(elem1(0))
-            auto_actions.move_mouse_with_offset(10, 0)
+            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-11)//2, 0)
             auto_actions.move_to_element(elem2(0))
             auto_actions.move_to_element(elem3(0))
             logger.info('Clicking on line.')
             auto_actions.mouse_left_click()
             utils.wait_till(timeout=5)
-            navigator.wait_until_loading_is_done()
 
             logger.info('Entering Hostname in search box')
             auto_actions.send_keys(network_360_monitor_elements.get_n360_device_health_search_box(), node_1_hostname)
             auto_actions.send_enter(network_360_monitor_elements.get_n360_device_health_search_box())
-            navigator.wait_until_loading_is_done()
+            utils.wait_till(timeout=5)
             table_elem = network_360_monitor_elements.get_n360_monitor_port_device_health_usage_table_rows()
             if not table_elem:
                 pytest.fail("No elements were found on the table. Search is not working")
