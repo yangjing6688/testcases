@@ -431,8 +431,6 @@ class Xiq1365Tests:
             assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(node_1.serial) == 1, \
                 f"Device {node_1} didn't get in MANAGED state"
 
-            res = xiq_library_at_class_level.xflowscommonDevices.get_device_status(device_serial=node_1.serial)
-
             logger.step("Get the STP forward delay value configured on device after config push")
             dev_fw_delay = cli.get_nw_templ_device_config_forward_delay(node_1)
             logger.info(f"STP forward delay value configured on device after config push is: {dev_fw_delay}")
