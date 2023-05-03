@@ -126,8 +126,8 @@ class Xiq1365Tests:
 
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
 
-            utils.wait_till(timeout=5)
-
+            utils.wait_till(timeout=30)
+            xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
             if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
             
@@ -214,6 +214,8 @@ class Xiq1365Tests:
 
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
             
+            utils.wait_till(timeout=30)
+            xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
             if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
                 
@@ -295,7 +297,8 @@ class Xiq1365Tests:
 
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
 
-            utils.wait_till(timeout=5)
+            utils.wait_till(timeout=30)
+            xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
             if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
             
@@ -377,8 +380,8 @@ class Xiq1365Tests:
 
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
 
-            utils.wait_till(timeout=5)
-            
+            utils.wait_till(timeout=30)
+            xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
             if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
                 
@@ -474,10 +477,24 @@ class Xiq1365Tests:
             
             if device_image_version in latest_image_version:
 
+                with test_bed.open_spawn(node_1) as spawn:
+                    cli.downgrade_iqagent(node_1.cli_type, spawn)
+                    cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn, vr=node_1.mgmt_vr)
+                
+                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(node_1.serial) == 1, \
+                    f"Device {node_1} didn't get online"
+                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(node_1.serial) == 1, \
+                    f"Device {node_1} didn't get in MANAGED state"
+                    
                 if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac,
                                                                                 ignore_failure=True) == 1:
                     xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
                 xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick({**node_1, "location": test_bed.node_1_onboarding_location})
+
+                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(node_1.serial) == 1, \
+                    f"Device {node_1} didn't get online"
+                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(node_1.serial) == 1, \
+                    f"Device {node_1} didn't get in MANAGED state"
 
                 test_upgrade_version = None
                 for version in image_versions:
@@ -535,8 +552,9 @@ class Xiq1365Tests:
                 device_template_name)
             logger.info(f"STP forward delay has been configured in device template: {xiq_fw_delay}")
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-            utils.wait_till(timeout=5)
 
+            utils.wait_till(timeout=30)
+            xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
             if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
 
@@ -623,7 +641,8 @@ class Xiq1365Tests:
 
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
 
-            utils.wait_till(timeout=5)
+            utils.wait_till(timeout=30)
+            xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
             if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
                 
@@ -704,11 +723,21 @@ class Xiq1365Tests:
                     cli.downgrade_iqagent(node_1.cli_type, spawn)
                     cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn, vr=node_1.mgmt_vr)
                 
+                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(node_1.serial) == 1, \
+                    f"Device {node_1} didn't get online"
+                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(node_1.serial) == 1, \
+                    f"Device {node_1} didn't get in MANAGED state"
+                
                 if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                     xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
                     
                 xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick({**node_1, "location": test_bed.node_1_onboarding_location})
 
+                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(node_1.serial) == 1, \
+                    f"Device {node_1} didn't get online"
+                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(node_1.serial) == 1, \
+                    f"Device {node_1} didn't get in MANAGED state"
+                    
                 test_upgrade_version = None
                 for version in image_versions:
                     if version and (device_image_version not in version):
@@ -748,6 +777,8 @@ class Xiq1365Tests:
                                                                                                     upload_auto=True)
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
 
+            utils.wait_till(timeout=30)
+            
             logger.step("Onboard the node_1 without assigning the network policy configured.")
             if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
@@ -834,11 +865,21 @@ class Xiq1365Tests:
                     cli.downgrade_iqagent(node_1.cli_type, spawn)
                     cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn, vr=node_1.mgmt_vr)
                 
+                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(node_1.serial) == 1, \
+                    f"Device {node_1} didn't get online"
+                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(node_1.serial) == 1, \
+                    f"Device {node_1} didn't get in MANAGED state"
+                
                 if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                     xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
                 
                 xiq_library_at_class_level.xflowscommonDevices.onboard_device_quick({**node_1, "location": test_bed.node_1_onboarding_location})
 
+                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(node_1.serial) == 1, \
+                    f"Device {node_1} didn't get online"
+                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(node_1.serial) == 1, \
+                    f"Device {node_1} didn't get in MANAGED state"
+                    
                 test_upgrade_version = None
                 for version in image_versions:
                     if version and (device_image_version not in version):
@@ -883,6 +924,8 @@ class Xiq1365Tests:
                                                                                                     upload_auto=True)
 
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
+            utils.wait_till(timeout=30)
+            xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
             if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
                 
