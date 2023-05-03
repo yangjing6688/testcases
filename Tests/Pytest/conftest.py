@@ -2631,7 +2631,16 @@ def revert_node(
     """
     
     @debug
-    def revert_node_func(node: Node, xiq: XiqLibrary, configure_iqagent=True, downgrade_iqagent=True, onboard_node=True, assign_network_policy=True, push_network_policy=True):
+    def revert_node_func(
+        node: Node,
+        xiq: XiqLibrary,
+        configure_iqagent=True,
+        downgrade_iqagent=True,
+        onboard_node=True,
+        assign_network_policy=True,
+        push_network_policy=True,
+        navigate_to_devices=True
+        ):
         
         onboarding_location: str = request.getfixturevalue(f"{node.node_name}_onboarding_location")
         policy_name: str = request.getfixturevalue(f"{node.node_name}_policy_name")
@@ -2656,7 +2665,10 @@ def revert_node(
                         spawn, vr=node.get("mgmt_vr", 'VR-Mgmt').upper(), retry_count=30
                     )
                     logger.info(f"Successfully configured iqagent on node '{node.node_name}'.")
-                    
+        
+        if navigate_to_devices:
+            xiq.xflowscommonNavigator.navigate_to_devices()
+            
         xiq.xflowscommonDevices.column_picker_select("Template", "Network Policy", "MAC Address")
 
         if onboard_node:
