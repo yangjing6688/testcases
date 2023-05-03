@@ -403,22 +403,31 @@ class XIQ9129Tests:
             auto_actions.mouse_left_click()
             utils.wait_till(timeout=5)
 
-            logger.info('Entering Hostname in search box')
-            auto_actions.send_keys(network_360_monitor_elements.get_n360_device_health_search_box(), node_1_hostname)
+            logger.info('Entering MAC address in search box')
+            auto_actions.send_keys(network_360_monitor_elements.get_n360_device_health_search_box(), node_1.mac)
             auto_actions.send_enter(network_360_monitor_elements.get_n360_device_health_search_box())
             utils.wait_till(timeout=5)
             table_elem = network_360_monitor_elements.get_n360_monitor_port_device_health_usage_table_rows()
             if not table_elem:
                 pytest.fail("No elements were found on the table. Search is not working")
-            elif len(table_elem) != 1:
-                pytest.fail("Search result is zero or more than 1 row which is not correct!")
-            else:
+            elif len(table_elem) == 1:
                 for row in table_elem:
                     logger.info(f"Table elements are: {row.text}")
-                    if row.text.split()[0] == node_1_hostname:
-                        logger.info("Test is successfully. Searched hostname is returned.")
+                    if row.text.split()[1] == node_1.mac:
+                        logger.info("Test is successfully. Searched MAC is returned.")
                     else:
                         pytest.fail("Search result did not returned the expected result.")
+            elif len(table_elem) == 2:
+                logger.info("Two results were returned this means the switches are interconnected.")
+                for row in table_elem:
+                    logger.info(f"Table elements are: {row.text}")
+                    if row.text.split()[1] == node_1.mac or row.text.split()[1] == node_2.mac:
+                        logger.info("Test is successfully. Searched MAC is returned.")
+                    else:
+                        pytest.fail("Search result did not returned the expected result.")
+            else:
+                pytest.fail("Search result returned more than 2 row which is not correct!")
+            logger.info("Clear the search box by pressing 'Show All' button.")
             show_all_btn = network_360_monitor_elements.get_n360_show_all_btn()
             if "fn-hidden" in show_all_btn.get_attribute("class"):
                 pytest.fail("The 'Show All' button is missing")
