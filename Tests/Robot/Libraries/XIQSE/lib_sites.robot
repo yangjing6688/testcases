@@ -72,6 +72,8 @@ Navigate and Delete Site
     [Arguments]         ${site}
 
     Navigate to Site Tree Node and Confirm Success  World
+    # Give the callbacks time to run.
+    Sleep   1s
     Delete Site and Confirm Success                 ${site}
 
 Create Site and Confirm Success
