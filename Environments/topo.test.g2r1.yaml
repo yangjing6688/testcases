@@ -2,7 +2,7 @@ test_url: "https://g2r1.qa.xcloudiq.com"
 capwap_url: "g2r1-cwpm-01.qa.xcloudiq.com"
 sw_connection_host: "g2r1.qa.xcloudiq.com"
 xapi_url:           "g2-api.extremecloudiq.com"
-tenant_username: "april_wired3@gmail.com"
+tenant_username: "may_wired3@gmail.com"
 tenant_password: "Aerohive123"
 base_url: "https://g2-api.qa.xcloudiq.com"
 aio_xiq: 0

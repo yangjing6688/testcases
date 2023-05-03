@@ -723,11 +723,6 @@ class Xiq1365Tests:
                     cli.downgrade_iqagent(node_1.cli_type, spawn)
                     cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn, vr=node_1.mgmt_vr)
                 
-                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(node_1.serial) == 1, \
-                    f"Device {node_1} didn't get online"
-                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(node_1.serial) == 1, \
-                    f"Device {node_1} didn't get in MANAGED state"
-                
                 if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                     xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
                     
@@ -818,7 +813,12 @@ class Xiq1365Tests:
                 
             xiq_library_at_class_level.xflowscommonDevices.refresh_devices_page()
             utils.wait_till(timeout=15)
-            
+
+            assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(node_1.serial) == 1, \
+                f"Device {node_1} didn't get online"
+            assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(node_1.serial) == 1, \
+                f"Device {node_1} didn't get in MANAGED state"
+                                
             logger.info("Get OS version from device")
             os_version = xiq_library_at_class_level.xflowscommonDevices.get_device_row_values(node_1.mac, 'OS VERSION')
             nos_version = str(os_version['OS VERSION'])
@@ -864,11 +864,6 @@ class Xiq1365Tests:
                 with test_bed.open_spawn(node_1) as spawn:
                     cli.downgrade_iqagent(node_1.cli_type, spawn)
                     cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn, vr=node_1.mgmt_vr)
-                
-                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(node_1.serial) == 1, \
-                    f"Device {node_1} didn't get online"
-                assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(node_1.serial) == 1, \
-                    f"Device {node_1} didn't get in MANAGED state"
                 
                 if xiq_library_at_class_level.xflowscommonDevices.search_device(device_mac=node_1.mac, ignore_failure=True) == 1:
                     xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=node_1.serial)
@@ -952,6 +947,11 @@ class Xiq1365Tests:
             with test_bed.open_spawn(node_1) as spawn:
                 cli.downgrade_iqagent(node_1.cli_type, spawn)
 
+            assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(node_1.serial) == 1, \
+                f"Device {node_1} didn't get online"
+            assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(node_1.serial) == 1, \
+                f"Device {node_1} didn't get in MANAGED state"
+                    
             logger.info("Get os version from device")
             os_version = xiq_library_at_class_level.xflowscommonDevices.get_device_row_values(node_1.mac, 'OS VERSION')
             nos_version = str(os_version['OS VERSION'])
