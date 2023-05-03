@@ -104,13 +104,6 @@ Confirm Device Serial Present
     ${result}=  Wait Until Device Added    device_serial=${serial}
     Should Be Equal As Integers            ${result}    1
 
-Confirm Device Name Present
-    [Documentation]     Confirms the device with the specified host name is present in the Devices table
-    [Arguments]         ${name}
-
-    ${result}=  Wait Until Device Added    device_name=${name}
-    Should Be Equal As Integers            ${result}    1
-
 Confirm Device MAC Address Present
     [Documentation]     Confirms the device with the specified MAC address is present in the Devices table
     [Arguments]         ${mac}
@@ -130,13 +123,6 @@ Confirm Device Serial Not Present
     [Arguments]         ${serial}
 
     ${result}=  Wait Until Device Removed    device_serial=${serial}
-    Should Be Equal As Integers              ${result}    1
-
-Confirm Device Name Not Present
-    [Documentation]     Confirms the device with the specified host name is not present in the Devices table
-    [Arguments]         ${name}
-
-    ${result}=  Wait Until Device Removed    device_name=${name}
     Should Be Equal As Integers              ${result}    1
 
 Confirm Device MAC Address Not Present

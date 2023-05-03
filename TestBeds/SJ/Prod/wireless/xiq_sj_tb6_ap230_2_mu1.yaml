@@ -1,0 +1,48 @@
+ap1:
+  name:                     bui-flo-0925
+  connection_method:        "ssh"
+  ip:                       10.16.171.91
+  port:                     22
+  username:                 admin
+  password:                 Aerohive123
+  serial:                   "02301405040925"
+  mac:                      9C5D1217DE00
+  cli_type:                 "AH-AP"
+  platform:                 aerohive
+  model:                    AP230
+  template:                 AP230-default-template
+  make:                     Extreme - Aerohive
+  mgmt_vlan:                10
+  country:                  United States
+  location:                 auto_location_01, Santa Clara, building_02, floor_04
+  onboard_device_type:      Real
+  power_strip:
+    ip:
+    port:
+    username:
+    password:
+    plug:
+        plug_a:
+        plug_b:
+    type:
+  extra:
+      country:                  United Kingdom
+      network_policy:           BLR_TB2_AP230_01
+      ssid:                     AP230_01
+      version:                  6.5
+      neighbour_serial:         06301908310556
+      neighbour_mac:            3485843A5CC0
+
+mu1:
+  ip:             10.16.171.35
+  port:           8270
+  username:       admin
+  password:       aerohive
+  platform:       mac
+  cli_type:       "MU-MAC"
+  mac_wifi_port:  en1
+  wifi_mac:       F018988B2B5D
+  interface:      wlan0
+  ethernet_mac:   14C213ED70BB
+  wifi_network:   10.16.171
+  wifi_network_vlan10:  10.16.171.84

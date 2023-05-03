@@ -84,7 +84,7 @@ class TCXM20583Tests(xiqBase):
 
             self.xiq.xflowscommonDevices.refresh_devices_page()
 
-            status_before = self.xiq.xflowscommonDevices.get_device_updated_status(device_mac=dut.serial)
+            status_before = self.xiq.xflowscommonDevices.get_device_updated_status(device_serial=dut.serial)
 
             self.localsuiteudks.configure_iqagent(dut, xiq_ip_address)
 
