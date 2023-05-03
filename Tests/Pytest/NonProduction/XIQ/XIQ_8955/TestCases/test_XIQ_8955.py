@@ -5,9 +5,9 @@ from pytest_testconfig import config
 
 event = "IQagent lost connectivity during configuration update, switch rebooted, and previous configuration has been " \
         "loaded"
-failure_message = "*IQAgent unresponsive after configuration update. The device was rebooted and reverted to " \
-                  "previous configuration.Review configuration delta that resulted in IQAgent connectivity loss " \
-                  "and make necessary changes."
+failure_message = "*IQAgent unresponsive after configuration update. The device was rebooted and reverted to previous " \
+                  "configuration.<br><br>Review configuration delta that resulted in IQAgent connectivity loss and make" \
+                  " necessary changes."
 
 
 class XIQ8955Tests:
@@ -17,7 +17,7 @@ class XIQ8955Tests:
     @pytest.mark.p1
     @pytest.mark.testbed_1_node
     def test_tcxm_22592(self, node_1, logger, test_bed, xiq_library_at_class_level, loaded_config, enter_switch_cli,
-                        cli):
+                        cli, navigator):
         """
         Author          :   Dennis-Mircea Ciupitu (id: dciupitu)
         Description     :
@@ -47,8 +47,8 @@ class XIQ8955Tests:
         sw_model_template = test_bed.generate_template_for_given_model(node_1)[0]
         # Create random network policy & switch template names
         pool = list(string.ascii_letters) + list(string.digits)
-        network_policy_name = f"policy_{''.join(random.sample(pool, k=6))}"
-        device_template_name = f"template_{''.join(random.sample(pool, k=6))}"
+        network_policy_name = f"XIQ_8955_np_{''.join(random.sample(pool, k=6))}"
+        device_template_name = f"XIQ_8955_template_{''.join(random.sample(pool, k=6))}"
 
         try:
             with enter_switch_cli(node_1) as dev_cmd:
@@ -59,13 +59,25 @@ class XIQ8955Tests:
                 network_policy_name) == 1, \
                 "Failed to create Switching and Routing network policy"
 
+            logger.info("Disable DNS server so we do not have out of sync config.")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.navigate_to_np_edit_tab(network_policy_name)
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.go_to_dns_server_tab()
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.set_dns_server_status("disable")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.save_dns_server_tab()
+            navigator.wait_until_loading_is_done()
+
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
                                                                                             sw_model_template,
-                                                                                            device_template_name) == 1, \
+                                                                                            device_template_name, node_1.cli_type) == 1, \
                 f"Failed to add switch template with model: {sw_model_template}"
-
+            logger.info("Set override so we can delete policy!")
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name,
+                                                                                        device_template_name,
+                                                                                        node_1.cli_type)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.set_override_policy_common_settings(state=True)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.save_template()
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_adv_settings_tab(network_policy_name,
-                                                                                                    device_template_name) == 1, \
+                                                                                                    device_template_name, node_1.cli_type) == 1, \
                 "Failed to open Advanced Settings tab"
 
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.verify_upload_config_auto_button() == 1, \
@@ -99,13 +111,18 @@ class XIQ8955Tests:
             assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(dut.serial) == 1, \
                 f"Device {dut} didn't get in MANAGED state"
 
-            assert xiq_library_at_class_level.xflowscommonDevices.device_update_progress(
-                device_serial=dut.serial) != -1, \
-                "Failed to push the configuration to the device"
+            # assert xiq_library_at_class_level.xflowscommonDevices.device_update_progress(
+            #     device_serial=dut.serial) != -1, \
+            #     "Failed to push the configuration to the device"
 
-            res = xiq_library_at_class_level.xflowscommonDevices.get_device_status(device_serial=dut.serial)
-            assert res == 'config audit mismatch', \
-                f"The EXOS device did not come up successfully in the XIQ; Device: {dut}"
+            update_status = xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(
+                node_1.mac, IRV=False)
+            if update_status == -1:
+                logger.step("Update failed due to mismatch, trying to do a Delta Update")
+                xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node_1.serial)
+                xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node_1.mac)
+            else:
+                logger.info("Successfully update the device.")
 
         finally:
             loaded_config['${TEST_NAME}'] = 'test_tcxm_22592_teardown'
@@ -113,8 +130,10 @@ class XIQ8955Tests:
             try:
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=dut.serial)
-                xiq_library_at_class_level.xflowsconfigureNetworkPolicy.delete_network_policy(network_policy_name)
+                xiq_library_at_class_level.xflowsconfigureNetworkPolicy.delete_network_polices(network_policy_name)
                 xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_switch_template(device_template_name)
+
+
             except Exception as exc:
                 logger.info(exc)
 
@@ -138,7 +157,7 @@ class XIQ8955Tests:
     @pytest.mark.p1
     @pytest.mark.testbed_1_node
     def test_tcxm_22593(self, node_1, logger, test_bed, xiq_library_at_class_level, loaded_config, enter_switch_cli,
-                        cli):
+                        cli, navigator):
         """
         Author          :   Dennis-Mircea Ciupitu (id: dciupitu)
         Description     :   Verify that if the upload config toggle is turned off, the "Reboot and revert Extreme
@@ -168,8 +187,8 @@ class XIQ8955Tests:
 
         # Create random network policy & switch template names
         pool = list(string.ascii_letters) + list(string.digits)
-        network_policy_name = f"policy_{''.join(random.sample(pool, k=6))}"
-        device_template_name = f"template_{''.join(random.sample(pool, k=6))}"
+        network_policy_name = f"XIQ_8955_np_{''.join(random.sample(pool, k=6))}"
+        device_template_name = f"XIQ_8955_template_{''.join(random.sample(pool, k=6))}"
 
         try:
             with enter_switch_cli(node_1) as dev_cmd:
@@ -180,13 +199,25 @@ class XIQ8955Tests:
                 network_policy_name) == 1, \
                 "Failed to create Switching and Routing network policy"
 
+            logger.info("Disable DNS server so we do not have out of sync config.")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.navigate_to_np_edit_tab(network_policy_name)
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.go_to_dns_server_tab()
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.set_dns_server_status("disable")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.save_dns_server_tab()
+            navigator.wait_until_loading_is_done()
+
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
                                                                                             sw_model_template,
-                                                                                            device_template_name) == 1, \
+                                                                                            device_template_name, node_1.cli_type) == 1, \
                 f"Failed to add switch template with model: {sw_model_template}"
-
+            logger.info("Set override so we can delete policy!")
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name,
+                                                                                        device_template_name,
+                                                                                        node_1.cli_type)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.set_override_policy_common_settings(state=True)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.save_template()
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_adv_settings_tab(network_policy_name,
-                                                                                                    device_template_name) == 1, \
+                                                                                                    device_template_name, node_1.cli_type) == 1, \
                 "Failed to open Advanced Settings tab"
 
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.set_upload_config_auto_button() == 1, \
@@ -218,13 +249,18 @@ class XIQ8955Tests:
             assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(dut.serial) == 1, \
                 f"Device {dut} didn't get in MANAGED state"
 
-            assert xiq_library_at_class_level.xflowscommonDevices.device_update_progress(
-                device_serial=dut.serial) != -1, \
-                "Failed to push the configuration to the device"
+            # assert xiq_library_at_class_level.xflowscommonDevices.device_update_progress(
+            #     device_serial=dut.serial) != -1, \
+            #     "Failed to push the configuration to the device"
 
-            res = xiq_library_at_class_level.xflowscommonDevices.get_device_status(device_serial=dut.serial)
-            assert res == 'green', \
-                f"The EXOS device did not come up successfully in the XIQ; Device: {dut}"
+            update_status = xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(
+                node_1.mac, IRV=False)
+            if update_status == -1:
+                logger.step("Update failed due to mismatch, trying to do a Delta Update")
+                xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node_1.serial)
+                xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node_1.mac)
+            else:
+                logger.info("Successfully update the device.")
 
         finally:
             loaded_config['${TEST_NAME}'] = 'test_tcxm_22593_teardown'
@@ -232,8 +268,9 @@ class XIQ8955Tests:
             try:
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=dut.serial)
-                xiq_library_at_class_level.xflowsconfigureNetworkPolicy.delete_network_policy(network_policy_name)
+                xiq_library_at_class_level.xflowsconfigureNetworkPolicy.delete_network_polices(network_policy_name)
                 xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_switch_template(device_template_name)
+
             except Exception as exc:
                 logger.info(exc)
 
@@ -242,7 +279,7 @@ class XIQ8955Tests:
     @pytest.mark.p1
     @pytest.mark.testbed_1_node
     def test_tcxm_22595(self, node_1, logger, test_bed, xiq_library_at_class_level, loaded_config, enter_switch_cli,
-                        cli):
+                        cli, navigator):
         """
         Author          :   Dennis-Mircea Ciupitu (id: dciupitu)
         Description     :
@@ -279,8 +316,8 @@ class XIQ8955Tests:
 
         # Create random network policy & switch template names
         pool = list(string.ascii_letters) + list(string.digits)
-        network_policy_name = f"policy_{''.join(random.sample(pool, k=6))}"
-        device_template_name = f"template_{''.join(random.sample(pool, k=6))}"
+        network_policy_name = f"XIQ_8955_np_{''.join(random.sample(pool, k=6))}"
+        device_template_name = f"XIQ_8955_template_{''.join(random.sample(pool, k=6))}"
 
         try:
             with enter_switch_cli(node_1) as dev_cmd:
@@ -291,13 +328,25 @@ class XIQ8955Tests:
                 network_policy_name) == 1, \
                 "Failed to create Switching and Routing network policy"
 
+            logger.info("Disable DNS server so we do not have out of sync config.")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.navigate_to_np_edit_tab(network_policy_name)
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.go_to_dns_server_tab()
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.set_dns_server_status("disable")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.save_dns_server_tab()
+            navigator.wait_until_loading_is_done()
+
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
                                                                                             sw_model_template,
-                                                                                            device_template_name) == 1, \
+                                                                                            device_template_name, node_1.cli_type) == 1, \
                 f"Failed to add switch template with model: {sw_model_template}"
-
+            logger.info("Set override so we can delete policy!")
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name,
+                                                                                        device_template_name,
+                                                                                        node_1.cli_type)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.set_override_policy_common_settings(state=True)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.save_template()
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_adv_settings_tab(network_policy_name,
-                                                                                                    device_template_name) == 1, \
+                                                                                                    device_template_name, node_1.cli_type) == 1, \
                 "Failed to open Advanced Settings tab"
 
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.set_upload_config_auto_button() == 1, \
@@ -329,21 +378,25 @@ class XIQ8955Tests:
             assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_managed(dut.serial) == 1, \
                 f"Device {dut} didn't get in MANAGED state"
 
-            assert xiq_library_at_class_level.xflowscommonDevices.device_update_progress(
-                device_serial=dut.serial) != -1, \
-                "Failed to push the configuration to the device"
+            # assert xiq_library_at_class_level.xflowscommonDevices.device_update_progress(
+            #     device_serial=dut.serial) != -1, \
+            #     "Failed to push the configuration to the device"
 
-            res = xiq_library_at_class_level.xflowscommonDevices.get_device_status(device_serial=dut.serial)
-            assert res == 'green', \
-                f"The EXOS device did not come up successfully in the XIQ; Device: {dut}"
-
+            update_status = xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(
+                node_1.mac, IRV=False)
+            if update_status == -1:
+                logger.step("Update failed due to mismatch, trying to do a Delta Update")
+                xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node_1.serial)
+                xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node_1.mac)
+            else:
+                logger.info("Successfully update the device.")
         finally:
             loaded_config['${TEST_NAME}'] = 'test_tcxm_22595_teardown'
 
             try:
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=dut.serial)
-                xiq_library_at_class_level.xflowsconfigureNetworkPolicy.delete_network_policy(network_policy_name)
+                xiq_library_at_class_level.xflowsconfigureNetworkPolicy.delete_network_polices(network_policy_name)
                 xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_switch_template(device_template_name)
             except Exception as exc:
                 logger.info(exc)
@@ -367,7 +420,7 @@ class XIQ8955Tests:
     @pytest.mark.p1
     @pytest.mark.testbed_1_node
     def test_tcxm_22599(self, node_1, logger, test_bed, xiq_library_at_class_level, loaded_config, enter_switch_cli,
-                        cli):
+                        cli, navigator):
         """
         Author          :   Dennis-Mircea Ciupitu (id: dciupitu)
         Description     :   Verify that the rebooting process is triggered if the IQAgent is unresponsive during the
@@ -437,10 +490,9 @@ class XIQ8955Tests:
 
         # Create random network policy & switch template names
         pool = list(string.ascii_letters) + list(string.digits)
-        network_policy_name = f"policy_{''.join(random.sample(pool, k=6))}"
-        device_template_name = f"template_{''.join(random.sample(pool, k=6))}"
-        supplemental_cli_name = f"scli_{''.join(random.sample(pool, k=6))}"
-
+        network_policy_name = f"XIQ_8955_np_{''.join(random.sample(pool, k=6))}"
+        device_template_name = f"XIQ_8955_template_{''.join(random.sample(pool, k=6))}"
+        supplemental_cli_name = f"scli_8955_{''.join(random.sample(pool, k=6))}"
         try:
             with enter_switch_cli(node_1) as dev_cmd:
                 dev_cmd.send_cmd(dut.name, 'disable iqagent', max_wait=10, interval=2,
@@ -454,13 +506,23 @@ class XIQ8955Tests:
                 network_policy_name) == 1, \
                 "Failed to create Switching and Routing network policy"
 
+            logger.info("Disable DNS server so we do not have out of sync config.")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.navigate_to_np_edit_tab(network_policy_name)
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.go_to_dns_server_tab()
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.set_dns_server_status("disable")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.save_dns_server_tab()
+            navigator.wait_until_loading_is_done()
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.add_sw_template(network_policy_name,
                                                                                             sw_model_template,
-                                                                                            device_template_name) == 1, \
+                                                                                            device_template_name, node_1.cli_type) == 1, \
                 f"Failed to add switch template with model: {sw_model_template}"
+            logger.info("Set override so we can delete policy!")
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, device_template_name, node_1.cli_type)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.set_override_policy_common_settings(state=True)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.save_template()
 
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_adv_settings_tab(network_policy_name,
-                                                                                                    device_template_name) == 1, \
+                                                                                                    device_template_name, node_1.cli_type) == 1, \
                 "Failed to open Advanced Settings tab"
 
             assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.set_upload_config_auto_button() == 1, \
@@ -496,8 +558,9 @@ class XIQ8955Tests:
                 cli.close_spawn(spawn)
 
             with enter_switch_cli(node_1) as dev_cmd:
-                dev_cmd.send_cmd(dut.name, 'enable iqagent', max_wait=10, interval=2)
-
+                #dev_cmd.send_cmd(dut.name, 'enable iqagent', max_wait=10, interval=2)
+                dev_cmd.send_cmd(dut.name, 'save configuration', confirmation_phrases='(y/N)',
+                                 confirmation_args="y", max_wait=10, interval=2)
             assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(dut.serial) == 1, \
                 f"Device {dut} didn't get online"
 
@@ -513,7 +576,6 @@ class XIQ8955Tests:
                 "The IQAgent unresponsive event was not triggered!"
 
             xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-
             res = xiq_library_at_class_level.xflowscommonDevices.get_device_status(device_serial=dut.serial)
             assert res == 'config audit mismatch', \
                 f"The EXOS device did not come up successfully in the XIQ; Device: {dut}"
@@ -524,7 +586,7 @@ class XIQ8955Tests:
             try:
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=dut.serial)
-                xiq_library_at_class_level.xflowsconfigureNetworkPolicy.delete_network_policy(network_policy_name)
+                xiq_library_at_class_level.xflowsconfigureNetworkPolicy.delete_network_polices(network_policy_name)
                 xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_switch_template(device_template_name)
                 xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_supplemental_cli_profile(
                     supplemental_cli_name)
@@ -536,7 +598,7 @@ class XIQ8955Tests:
     @pytest.mark.p1
     @pytest.mark.testbed_1_node
     def test_tcxm_22603(self, node_1, logger, test_bed, xiq_library_at_class_level, loaded_config, enter_switch_cli,
-                        cli):
+                        cli, navigator):
         """
         Author          :   Dennis-Mircea Ciupitu (id: dciupitu)
         Description     :   Verify that  the rebooting process is triggered if the IQAgent is unresponsive during the
@@ -610,10 +672,9 @@ class XIQ8955Tests:
 
         # Create random network policy & switch template names
         pool = list(string.ascii_letters) + list(string.digits)
-        network_policy_name = f"policy_{''.join(random.sample(pool, k=6))}"
-        device_template_name = f"template_{''.join(random.sample(pool, k=6))}"
-        supplemental_cli_name = f"scli_{''.join(random.sample(pool, k=6))}"
-
+        network_policy_name = f"XIQ_8955_np_{''.join(random.sample(pool, k=6))}"
+        device_template_name = f"XIQ_8955_template_{''.join(random.sample(pool, k=6))}"
+        supplemental_cli_name = f"scli_8955_{''.join(random.sample(pool, k=6))}"
         try:
             with enter_switch_cli(node_1) as dev_cmd:
                 dev_cmd.send_cmd(dut.name, 'disable iqagent', max_wait=10, interval=2,
@@ -627,13 +688,23 @@ class XIQ8955Tests:
             assert network_policy.create_switching_routing_network_policy(network_policy_name) == 1, \
                 "Failed to create Switching and Routing network policy"
 
+            logger.info("Disable DNS server so we do not have out of sync config.")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.navigate_to_np_edit_tab(network_policy_name)
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.go_to_dns_server_tab()
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.set_dns_server_status("disable")
+            xiq_library_at_class_level.xflowsconfigureNetworkPolicy.save_dns_server_tab()
+            navigator.wait_until_loading_is_done()
             switch_template = xiq_library_at_class_level.xflowsconfigureSwitchTemplate
             assert switch_template.add_sw_template(network_policy_name,
                                                    sw_model_template,
-                                                   device_template_name) == 1, \
+                                                   device_template_name, node_1.cli_type) == 1, \
                 f"Failed to add switch template with model: {sw_model_template}"
+            logger.info("Set override so we can delete policy!")
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(network_policy_name, device_template_name, node_1.cli_type)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.set_override_policy_common_settings(state=True)
+            xiq_library_at_class_level.xflowsconfigureSwitchTemplate.save_template()
 
-            assert switch_template.select_adv_settings_tab(network_policy_name, device_template_name) == 1, \
+            assert switch_template.select_adv_settings_tab(network_policy_name, device_template_name, node_1.cli_type) == 1, \
                 "Failed to open Advanced Settings tab"
 
             assert switch_template.set_upload_config_auto_button() == 1, \
@@ -666,7 +737,9 @@ class XIQ8955Tests:
             finally:
                 cli.close_spawn(spawn)
             with enter_switch_cli(node_1) as dev_cmd:
-                dev_cmd.send_cmd(dut.name, 'enable iqagent', max_wait=10, interval=2)
+                #dev_cmd.send_cmd(dut.name, 'enable iqagent', max_wait=10, interval=2)
+                dev_cmd.send_cmd(dut.name, 'save configuration', confirmation_phrases='(y/N)',
+                                 confirmation_args="y", max_wait=10, interval=2)
 
             assert xiq_library_at_class_level.xflowscommonDevices.wait_until_device_online(dut.serial) == 1, \
                 f"Device {dut} didn't get online"
@@ -707,7 +780,7 @@ class XIQ8955Tests:
             try:
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
                 xiq_library_at_class_level.xflowscommonDevices.delete_device(device_serial=dut.serial)
-                xiq_library_at_class_level.xflowsconfigureNetworkPolicy.delete_network_policy(network_policy_name)
+                xiq_library_at_class_level.xflowsconfigureNetworkPolicy.delete_network_polices(network_policy_name)
                 xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_switch_template(device_template_name)
                 xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_supplemental_cli_profile(
                     supplemental_cli_name)
