@@ -633,7 +633,6 @@ Confirm Ping Only Device Functionality
     Switch To Window    ${XIQ_WINDOW_INDEX}
     Navigate to XIQ Devices and Confirm Success
     Search XIQ Devices Table and Confirm Success  ${NAV3_IP}
-    Confirm Device Name Present  ${NAV3_IP}
     Clear Search on XIQ Devices Table and Confirm Success
 
     # Confirm the license entitlement counts are still the same

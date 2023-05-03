@@ -12,6 +12,7 @@ Documentation  robot -v ENV:environment.local.chrome.yaml -v TOPO:topo.test.g2.p
 Library     common/Utils.py
 Library     extauto/common/TestFlow.py
 Library     iam/flows/LoginXIQ.py
+Library     xiq/flows/common/Login.py
 Library     common/Cli.py
 Library     xiq/flows/manage/Devices.py
 Library     xiq/flows/manage/Device360.py

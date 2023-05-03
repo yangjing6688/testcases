@@ -454,7 +454,7 @@ Onboard New XIQ Device
     Run Keyword If  '${search_result}' != '1'    Sleep   ${device_onboarding_wait}
 
     # Confirm the device was added successfully
-    ${added_result}=  Wait Until Device Added  ${serial}
+    ${added_result}=  Wait Until Device Added       device_serial=${serial}
     Should Be Equal As Integers  ${added_result}  1
 
 XIQ Navigate to Devices and Confirm Success
@@ -519,7 +519,7 @@ Confirm XIQSE Device Added to XIQ and Connected
 
     Switch To Window  ${XIQ_WINDOW_INDEX}
 
-    ${search_result}=  Wait Until Device Added      ${serial}
+    ${search_result}=  Wait Until Device Added      device_serial=${serial}
     Should Be Equal As Integers                     ${search_result}    1
 
     ${device_status}=  Wait Until Device Online     ${serial}

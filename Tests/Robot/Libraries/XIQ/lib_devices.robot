@@ -42,13 +42,6 @@ Confirm Device Serial Present
     ${result}=  Wait Until Device Added    device_serial=${serial}  retry_duration=${retry_duration}  retry_count=${retry_count}
     Should Be Equal As Integers            ${result}    1
 
-Confirm Device Name Present
-    [Documentation]     Confirms the device with the specified host name is present in the Devices table
-    [Arguments]         ${name}  ${retry_duration}=30  ${retry_count}=10
-
-    ${result}=  Wait Until Device Added    device_name=${name}  retry_duration=${retry_duration}  retry_count=${retry_count}
-    Should Be Equal As Integers            ${result}    1
-
 Confirm Device MAC Address Present
     [Documentation]     Confirms the device with the specified MAC address is present in the Devices table
     [Arguments]         ${mac}  ${retry_duration}=30  ${retry_count}=10
@@ -61,13 +54,6 @@ Confirm Device Serial Not Present
     [Arguments]         ${serial}  ${retry_duration}=30  ${retry_count}=10
 
     ${result}=  Wait Until Device Removed    device_serial=${serial}  retry_duration=${retry_duration}  retry_count=${retry_count}
-    Should Be Equal As Integers              ${result}    1
-
-Confirm Device Name Not Present
-    [Documentation]     Confirms the device with the specified host name is not present in the Devices table
-    [Arguments]         ${name}  ${retry_duration}=30  ${retry_count}=10
-
-    ${result}=  Wait Until Device Removed    device_name=${name}  retry_duration=${retry_duration}  retry_count=${retry_count}
     Should Be Equal As Integers              ${result}    1
 
 Confirm Device MAC Address Not Present

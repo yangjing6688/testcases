@@ -87,7 +87,7 @@ class TCXM20578Tests(xiqBase):
                                                                policy_name=network_policy_name) == 1, \
                                                                 f"Failed to onboard this dut to XiQ: {dut}"
 
-            status_before = self.xiq.xflowscommonDevices.get_device_updated_status(device_mac=dut.serial)
+            status_before = self.xiq.xflowscommonDevices.get_device_updated_status(device_serial=dut.serial)
 
             self.localsuiteudks.configure_iqagent(dut, xiq_ip_address)
 
