@@ -95,7 +95,7 @@ class Xiq1365Tests:
 
     @pytest.mark.tcxm_20577
     def test_tcxm_20577(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed,
-                        logger, utils, node_1_model):
+                        logger, utils, node_1_model, poll):
         """
         tcxm_20577 - Verify that Option  for "Upgrade firmware to the latest version" is present.           
         """
@@ -164,9 +164,17 @@ class Xiq1365Tests:
             nos_version = str(os_version['OS VERSION'])
             logger.info(f"device os_version: {nos_version}")
 
-            latest_os_version = xiq_library_at_class_level.xflowscommonDevices.get_latest_version_from_device_update(
-                node_1)
-            assert nos_version == latest_os_version, f"The current device os version: {nos_version} is differet to the latest version {latest_os_version} after the update"
+            try:
+                for latest_os_version in poll(
+                    lambda: xiq_library_at_class_level.xflowscommonDevices.get_latest_version_from_device_update(node_1),
+                    max_poll_retries=10, poll_interval=1):
+                    
+                    xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node_1.mac)
+                    if nos_version == latest_os_version:
+                        break
+                    
+            except TimeoutError:
+                logger.fail(f"The current device os version: {nos_version} is differet to the latest version {latest_os_version} after the update")
 
             logger.info(f"device latest_os_version = {latest_os_version}")
 
@@ -695,7 +703,7 @@ class Xiq1365Tests:
             self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
             
     @pytest.mark.tcxm_20589
-    def test_tcxm_20589(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils, node_1_model):
+    def test_tcxm_20589(self, xiq_library_at_class_level, node_1, enter_switch_cli, cli, test_bed, logger, utils, node_1_model, poll):
         """
         tcxm_20589 - Check that the Upgrade firmware and Upload Configuration automatically functions are triggered after node_1 transitions from unmanaged to managed.
         """
@@ -824,8 +832,18 @@ class Xiq1365Tests:
             nos_version = str(os_version['OS VERSION'])
             logger.info(f"Device os_version = {nos_version}")
 
-            latest_os_version = xiq_library_at_class_level.xflowscommonDevices.get_latest_version_from_device_update(
-                node_1)
+            try:
+                for latest_os_version in poll(
+                    lambda: xiq_library_at_class_level.xflowscommonDevices.get_latest_version_from_device_update(node_1), 
+                    max_poll_retries=10, poll_interval=1):
+                    
+                    xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node_1.mac)
+                    if nos_version == latest_os_version:
+                        break
+                    
+            except TimeoutError:
+                logger.fail(f"The current device os version: {nos_version} is differet to the latest version {latest_os_version} after the update")
+                
             logger.info(f"Device latest_os_version = {latest_os_version}")
 
             assert xiq_library_at_class_level.xflowsmanageDevice360.get_event_from_device360(
@@ -836,7 +854,7 @@ class Xiq1365Tests:
             self.cleanup(xiq_library_at_class_level, node_1, network_policy_name, device_template_name, utils, logger)
 
     @pytest.mark.tcxm_20590
-    def test_tcxm_20590(self, xiq_library_at_class_level, node_1, utils, enter_switch_cli, cli, logger, test_bed, node_1_model):
+    def test_tcxm_20590(self, xiq_library_at_class_level, node_1, utils, enter_switch_cli, cli, logger, test_bed, node_1_model, poll):
         """
         tcxm_20590 - Check for the Upgrade firmware and Upload Configuration automatically functions are not
                     triggered if the procedure is already made and device is switched from managed to unmanaged
@@ -957,8 +975,18 @@ class Xiq1365Tests:
             nos_version = str(os_version['OS VERSION'])
             logger.info(f"Device OS version after upgrade is {nos_version}")
 
-            latest_os_version = xiq_library_at_class_level.xflowscommonDevices.get_latest_version_from_device_update(
-                node_1)
+            try:
+                for latest_os_version in poll(
+                    lambda: xiq_library_at_class_level.xflowscommonDevices.get_latest_version_from_device_update(node_1),
+                    max_poll_retries=10, poll_interval=1):
+                    
+                    xiq_library_at_class_level.xflowsmanageDevices.select_device(device_mac=node_1.mac)
+                    if nos_version == latest_os_version:
+                        break
+                    
+            except TimeoutError:
+                logger.fail(f"The current device os version: {nos_version} is differet to the latest version {latest_os_version} after the update")
+                
             logger.info(f"Latest OS image version from XIQ is {latest_os_version}")
 
             assert xiq_library_at_class_level.xflowsmanageDevice360.get_event_from_device360(
@@ -984,7 +1012,7 @@ class Xiq1365Tests:
                 f"Device {node_1} didn't get in 'MANAGED' state"
 
             status_after_manange_unamanage = xiq_library_at_class_level.xflowscommonDevices.get_device_updated_status(
-            device_mac=node_1.mac)
+                device_mac=node_1.mac)
             assert "Firmware Updating" not in status_after_manange_unamanage, "The device is doing Firmware Update after manage/unamange and it should not do this."
             
         finally:
