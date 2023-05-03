@@ -4,7 +4,7 @@ import time
 
 
 @pytest.mark.p1
-#@pytest.mark.dependson("tcxm_xiq_onboarding")
+@pytest.mark.dependson("tcxm_xiq_onboarding")
 class XIQ9129Tests:
     @pytest.mark.testbed_1_node
     @pytest.mark.tcxm_25174
