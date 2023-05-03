@@ -235,9 +235,9 @@ Delete Test Device and Confirm Success
 
 Delete Device and Confirm Success
     [Documentation]     Deletes the specified device from XIQ and confirms it was removed successfully
-    [Arguments]         ${ip}
+    [Arguments]         ${serial}
 
-    ${del_result}=  Delete Device                     ${ip}
+    ${del_result}=  Delete Device                     device_serial=${serial}
     Should Be Equal As Integers                       ${del_result}      1
 
 Delete All Devices and Confirm Success
@@ -270,7 +270,7 @@ Confirm Device Serial Present in Filtered Devices Panel
 
     Refresh Devices Page
 
-    ${search_result}=  Search Device        ${serial}
+    ${search_result}=  Search Device        device_serial=${serial}
     Should Be Equal As Integers             ${search_result}    1
 
 Confirm Device Serial Not Present In Filtered Devices Panel
@@ -279,5 +279,5 @@ Confirm Device Serial Not Present In Filtered Devices Panel
 
     Refresh Devices Page
 
-    ${search_result}=  Search Device        ${serial}      expect_error=True
+    ${search_result}=  Search Device        device_serial=${serial}      expect_error=True
     Should Be Equal As Integers             ${search_result}    -1

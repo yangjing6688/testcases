@@ -135,7 +135,7 @@ Test3: Sensor sends feeds to on-prem adsp even if it disconnects from XIQ
      Depends On              Test5
 
     Login User                      ${TENANT_USERNAME1}     ${TENANT_PASSWORD1}
-    change manage device status       UNMANAGE                  ${ap2.serial}
+    change manage device status       UNMANAGE                  device_serial=${ap2.serial}
 
     sleep   60s
 
@@ -167,7 +167,7 @@ Test3: Sensor sends feeds to on-prem adsp even if it disconnects from XIQ
 
      close spawn     ${ADSP_SPAWN}
      NAVIGATE TO DEVICES
-    change manage device status       MANAGE           ${ap2.serial}
+    change manage device status       MANAGE           device_serial=${ap2.serial}
     sleep  20s
     ${AP_SPAWN}=                     open spawn       ${ap2.ip}      ${ap2.port}   ${ap2.username}     ${ap2.password}        ${ap2.platform}
     ${OUTPUT0}=                      Send Commands       ${AP_SPAWN}    no capwap client enable, capwap client enable, save config

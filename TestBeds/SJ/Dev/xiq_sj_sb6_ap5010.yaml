@@ -1,0 +1,14 @@
+
+ap1:
+  name: AH-01fd80
+  make: Extreme - Aerohive
+  model: AP5010
+  serial: "WM052223W-30039"
+  os: Cloud IQ Engine
+  cli_type: AH-AP
+  platform: aerohive
+  connection_method: ssh
+  ip: 172.16.60.83
+  port: 22
+  username: admin
+  password: Aerohive123
