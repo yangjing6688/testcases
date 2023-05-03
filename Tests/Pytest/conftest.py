@@ -2615,6 +2615,7 @@ def revert_node(
     All of its kwargs are True by default which means that the function will: 
         - downgrade the iqagent on the node
         - configure the iqagent on the node
+        - navigate to the Devices page
         - onboard the node
         - assign the network policy to the node
         - push the network policy to the node
@@ -2625,11 +2626,13 @@ def revert_node(
     kwargs:
         :downgrade_iqagent: specifies if the iqagent needs to be downgraded
         :configure_iqagent: specifies if the iqagent needs to be configured
+        :navigate_to_devices: specifies if the browser needs to navigate to the Devices page
         :onboard_node: specifies if the node needs to be onboarded
         :assign_network_policy: specifies if the default network policy needs to be assigned to the node
         :push_network_policy: specifies if the network poliy needs to be pushed to the node
+        :raise_error: default value is True; if raise_error is False then in case of failure the error will be caught/won't be raised
     """
-    
+
     @debug
     def revert_node_func(
         node: Node,
@@ -2639,72 +2642,76 @@ def revert_node(
         onboard_node=True,
         assign_network_policy=True,
         push_network_policy=True,
-        navigate_to_devices=True
+        navigate_to_devices=True,
+        raise_error=True
         ):
         
         onboarding_location: str = request.getfixturevalue(f"{node.node_name}_onboarding_location")
         policy_name: str = request.getfixturevalue(f"{node.node_name}_policy_name")
 
-        if configure_iqagent or downgrade_iqagent:
-            
-            logger.step(f"Check that node '{node.node_name}' is reachable.")
-            check_devices_are_reachable([node])
-            logger.info(f"Successfully verified that node '{node.node_name}' is reachable.")
-            
-            with open_spawn(node) as spawn:
+        try:
+            if configure_iqagent or downgrade_iqagent:
                 
-                if downgrade_iqagent:
-                    logger.step(f"Downgrade iqagent on node '{node.node_name}'.")
-                    cli.downgrade_iqagent(node.cli_type, spawn)
-                    logger.info(f"Successfully downgraded iqagent on node '{node.node_name}'.")
+                logger.step(f"Check that node '{node.node_name}' is reachable.")
+                check_devices_are_reachable([node])
+                logger.info(f"Successfully verified that node '{node.node_name}' is reachable.")
+                
+                with open_spawn(node) as spawn:
                     
-                if configure_iqagent:
-                    logger.step(f"Configure iqagent on node '{node.node_name}'.")
-                    cli.configure_device_to_connect_to_cloud(
-                        node.cli_type, loaded_config['sw_connection_host'],
-                        spawn, vr=node.get("mgmt_vr", 'VR-Mgmt').upper(), retry_count=30
-                    )
-                    logger.info(f"Successfully configured iqagent on node '{node.node_name}'.")
-        
-        if navigate_to_devices:
-            xiq.xflowscommonNavigator.navigate_to_devices()
-            
-        xiq.xflowscommonDevices.column_picker_select("Template", "Network Policy", "MAC Address")
-
-        if onboard_node:
-            if xiq.xflowscommonDevices.search_device(device_mac=node.mac, IRV=False) == -1:
-                logger.step(f"Onboard node '{node.node_name}'.")
-                xiq.xflowscommonDevices.onboard_device_quick({**node, "location": onboarding_location})
-                check_devices_are_onboarded(xiq, [node])
-                logger.info(f"Successfully onboarded node '{node.node_name}'.")
-            else:
-                logger.info(f"Node '{node.node_name}' is already onboarded.")
-
-        if assign_network_policy:
-            dev = xiq.xflowscommonDevices._get_row("device_mac", node.mac)
-            
-            if dev != -1:
-                if not re.search(policy_name, dev.text):
-                    
-                    logger.step(f"Assign network policy '{policy_name}' to node '{node.node_name}'.")
-                    assert xiq.xflowsmanageDevices.assign_network_policy_to_switch_mac(
-                        policy_name=policy_name, mac=node.mac) == 1, \
-                        f"Couldn't assign policy {policy_name} to device '{node}' (node: '{node.name}')."
-                    logger.info(f"Successfully assigned network policy '{policy_name}' to node '{node.node_name}'.")
-                    
-                    if push_network_policy:
+                    if downgrade_iqagent:
+                        logger.step(f"Downgrade iqagent on node '{node.node_name}'.")
+                        cli.downgrade_iqagent(node.cli_type, spawn)
+                        logger.info(f"Successfully downgraded iqagent on node '{node.node_name}'.")
                         
-                        logger.step(f"Push network policy '{policy_name}' to node '{node.node_name}'.")
-                        xiq.xflowscommonDevices.get_update_devices_reboot_rollback(
-                            policy_name=policy_name, option="disable", device_mac=node.mac)
-                        xiq.xflowscommonDevices.check_device_update_status_by_using_mac(device_mac=node.mac)
-                        logger.info(f"Successfully pushed network policy '{policy_name}' to node '{node.node_name}'.")
-                        
+                    if configure_iqagent:
+                        logger.step(f"Configure iqagent on node '{node.node_name}'.")
+                        cli.configure_device_to_connect_to_cloud(
+                            node.cli_type, loaded_config['sw_connection_host'],
+                            spawn, vr=node.get("mgmt_vr", 'VR-Mgmt').upper(), retry_count=30
+                        )
+                        logger.info(f"Successfully configured iqagent on node '{node.node_name}'.")
+            
+            if navigate_to_devices:
+                xiq.xflowscommonNavigator.navigate_to_devices()
+                
+            xiq.xflowscommonDevices.column_picker_select("Template", "Network Policy", "MAC Address")
+
+            if onboard_node:
+                if xiq.xflowscommonDevices.search_device(device_mac=node.mac, IRV=False) == -1:
+                    logger.step(f"Onboard node '{node.node_name}'.")
+                    xiq.xflowscommonDevices.onboard_device_quick({**node, "location": onboarding_location})
+                    check_devices_are_onboarded(xiq, [node])
+                    logger.info(f"Successfully onboarded node '{node.node_name}'.")
                 else:
-                    logger.info(f"The network policy '{policy_name}' is already assigned to node '{node.node_name}'.")
-            else:
-                logger.info(f"Won't assign network policy '{policy_name}' to node '{node.node_name}' because the node is not found in the Devices page.")
+                    logger.info(f"Node '{node.node_name}' is already onboarded.")
+
+            if assign_network_policy:
+                dev = xiq.xflowscommonDevices._get_row("device_mac", node.mac)
                 
+                if dev != -1:
+                    if not re.search(policy_name, dev.text):
+                        
+                        logger.step(f"Assign network policy '{policy_name}' to node '{node.node_name}'.")
+                        assert xiq.xflowsmanageDevices.assign_network_policy_to_switch_mac(
+                            policy_name=policy_name, mac=node.mac) == 1, \
+                            f"Couldn't assign policy {policy_name} to device '{node}' (node: '{node.name}')."
+                        logger.info(f"Successfully assigned network policy '{policy_name}' to node '{node.node_name}'.")
+                        
+                        if push_network_policy:
+                            
+                            logger.step(f"Push network policy '{policy_name}' to node '{node.node_name}'.")
+                            xiq.xflowscommonDevices.get_update_devices_reboot_rollback(
+                                policy_name=policy_name, option="disable", device_mac=node.mac)
+                            xiq.xflowscommonDevices.check_device_update_status_by_using_mac(device_mac=node.mac)
+                            logger.info(f"Successfully pushed network policy '{policy_name}' to node '{node.node_name}'.")
+                            
+                    else:
+                        logger.info(f"The network policy '{policy_name}' is already assigned to node '{node.node_name}'.")
+                else:
+                    logger.info(f"Won't assign network policy '{policy_name}' to node '{node.node_name}' because the node is not found in the Devices page.")
+        except:
+            if raise_error:
+                raise   
     return revert_node_func
 
 

@@ -136,7 +136,7 @@ class Xiq1365Tests:
             with test_bed.open_spawn(node_1) as spawn:
                 cli.configure_device_to_connect_to_cloud(node_1.cli_type, test_bed.sw_connection_host, spawn, vr=node_1.mgmt_vr)
                 
-            utils.wait_till(timeout=600)
+            utils.wait_till(timeout=800)
             logger.step("Wait for the update to finish")
             if xiq_library_at_class_level.xflowscommonDevices._check_update_network_policy_status(network_policy_name, node_1.mac, IRV=False) != 1:
                 if xiq_library_at_class_level.xflowscommonDevices.update_device_delta_configuration(node_1.mac) != 1:
