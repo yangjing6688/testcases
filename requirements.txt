@@ -38,3 +38,5 @@ PyMySQL==1.0.2
 wheel==0.36.2
 ansi2html==1.8.0
 GitPython==3.1.29
+robotframework-dependencylibrary==4.0.1
+
