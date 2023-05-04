@@ -1,0 +1,47 @@
+data:
+  os_version_voss: 8.8.2.0
+  os_version_exos: 32.2.1.8
+  feature_name: Provide customer option to reboot during configuration update
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-908
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=12183870
+
+tests:
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE ##########################
+
+  Xiq908Tests::test_TCXM_19668:
+    author: aprihotin
+    tc: tcxm_19668
+
+  Xiq908Tests::test_TCXM_19669:
+    author: aprihotin
+    tc: tcxm_19669
+
+  Xiq908Tests::test_TCXM_19671:
+    author: aprihotin
+    tc: tcxm_19671
+
+  Xiq908Tests::test_TCXM_19672:
+    author: aprihotin
+    tc: tcxm_19672
+
+  Xiq908Tests::test_TCXM_19677:
+    author: aprihotin
+    tc: tcxm_19677
+
+  Xiq908Tests::test_TCXM_19678:
+    author: aprihotin
+    tc: tcxm_19678

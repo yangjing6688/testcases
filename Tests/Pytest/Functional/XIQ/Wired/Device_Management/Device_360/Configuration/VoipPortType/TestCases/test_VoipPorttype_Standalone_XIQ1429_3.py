@@ -256,13 +256,13 @@ class xiqTests():
         if navigation !=1:
             pytest.fail("Cannot navigate and create Network policy")
 
-        template_creation = self.xiq.xflowsconfigureSwitchTemplate.add_sw_template(nw_policy, sw_model, sw_template_name)
+        template_creation = self.xiq.xflowsconfigureSwitchTemplate.add_sw_template(nw_policy, sw_model, sw_template_name, self.tb.dut1.cli_type)
         if template_creation != 1:
             pytest.fail("Cannot create to Network template...")
         self.xiq.xflowscommonNavigator.navigate_to_devices()
         self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
         sleep(10)
-        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
+        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name, self.tb.dut1.cli_type)
         sleep(3)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
         sleep(10)
@@ -443,7 +443,7 @@ class xiqTests():
         self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
         sleep(10)
 
-        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
+        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name, self.tb.dut1.cli_type)
         sleep(3)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
         sleep(10)
@@ -494,7 +494,7 @@ class xiqTests():
         self.xiq.xflowscommonNavigator.navigate_configure_network_policies()
         sleep(10)
 
-        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name)
+        self.xiq.xflowsconfigureSwitchTemplate.select_sw_template(nw_policy, sw_template_name, self.tb.dut1.cli_type)
         sleep(3)
         self.xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
         sleep(10)

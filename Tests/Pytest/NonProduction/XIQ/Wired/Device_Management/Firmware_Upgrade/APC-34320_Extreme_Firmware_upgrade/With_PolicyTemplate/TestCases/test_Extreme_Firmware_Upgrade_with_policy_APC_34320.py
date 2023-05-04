@@ -278,7 +278,7 @@ class xiqTests():
                 # Deploy policy for stack devices.
                 if (cls.tb.dut1_platform.lower() == 'stack'):
                     # create switch template with name as SWITCH_TEMPLATE in SWITCH_POLICY for stack device for each slot device model.
-                    res = cls.xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(model_units, nw_policy, sw_model,sw_template_name)
+                    res = cls.xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(model_units, nw_policy, sw_model,sw_template_name, cls.tb.dut1.cli_type)
                     if res != 1:
                         pytest.fail(f"No Switch Template '{sw_template_name}' was created in the policy '{nw_policy}'")
                     print(f"Switch Template '{sw_template_name}' was created in the policy '{nw_policy}' successfully")
@@ -292,7 +292,7 @@ class xiqTests():
                 #deploy policy for standalone devices.
                 else:
                     # create switch template with name as SWITCH_TEMPLATE in SWITCH_POLICY for standalone device with respected device model.
-                    res = cls.xiq.xflowsconfigureSwitchTemplate.add_sw_template(nw_policy, sw_model, sw_template_name)
+                    res = cls.xiq.xflowsconfigureSwitchTemplate.add_sw_template(nw_policy, sw_model, sw_template_name, cls.tb.dut1.cli_type)
                     if res != 1:
                         pytest.fail(f"No Switch Template '{sw_template_name}' was created in the policy '{nw_policy}'")
                     print(f"Switch Template '{sw_template_name}' was created in the policy '{nw_policy}' successfully")

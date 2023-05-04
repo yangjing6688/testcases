@@ -56,6 +56,8 @@ from extauto.common.Utils import Utils
 from extauto.common.CloudDriver import CloudDriver
 from extauto.common.AutoActions import AutoActions
 from extauto.common.Cli import Cli
+from ExtremeAutomation.Keywords.NetworkElementKeywords.Utils.NetworkElementListUtils import NetworkElementListUtils
+from extauto.xiq.elements.ClientWebElements import ClientWebElements
 
 
 Node = NewType("Node", Dict[str, Union[str, Dict[str, str]]])
@@ -512,6 +514,7 @@ def is_onboarding_cleanup_test(
 def pytest_configure(config):
     pytest.runlist_name: str = ""
     pytest.runlist_path: str = "default"
+    pytest.runlist_filtering_markers: str = ""
     pytest.suitemaps_name: List[str] = []
     pytest.runlist_tests: List[TestCaseMarker] = []
     pytest.suitemap_tests: Dict[str, Union[str, Dict[str, str]]] = {}
@@ -685,7 +688,7 @@ def pytest_collection_modifyitems(session, items):
                         )
 
         for item in items:
-            if (callspec := getattr(item, "callspec", None)) is not None:
+            if callspec := getattr(item, "callspec", None):
                 test_data = callspec.params["test_data"]
                 test_marker_from_test_data = test_data["tc"]
                 tc_markers = get_test_marker(item)
@@ -913,6 +916,40 @@ def pytest_collection_modifyitems(session, items):
 
                 temp_items[:] = filtered_by_priority_items
             
+            if pytest.runlist_filtering_markers:
+               
+                runlist_filtering_markers = [word.strip() for word in pytest.runlist_filtering_markers.split(",")]
+                filtered_by_runlist_markers_items: List[pytest.Function] = []      
+               
+                logger_obj.info(
+                    f"Pytest argument '--runlist-filtering-markers' given. "
+                    f"Will filter current selected testcase using these markers: '{pytest.runlist_filtering_markers}'."
+                )
+                
+                for item in temp_items:
+                
+                    test_marker: TestCaseMarker = get_test_marker(item)[0]
+                    
+                    if is_onboarding_test(item) or is_onboarding_cleanup_test(item):
+                        filtered_by_runlist_markers_items.append(item)
+                        continue
+                    
+                    item_markers = item.own_markers
+                    for marker in getattr(item.cls, "pytestmark", []):
+                        if not any(marker.name == m.name for m in item_markers):
+                            item_markers.append(marker)
+                    
+                    for marker in item_markers:
+                        if any(marker.name.upper() == m.upper() for m in runlist_filtering_markers):
+                            filtered_by_runlist_markers_items.append(item)
+                            break
+                    else:
+                        logger_obj.warning(
+                            f"'{test_marker}' test will be unselected because it is not marked "
+                            f"with any of these CLI given markers: '{pytest.runlist_filtering_markers}'.")
+            
+                temp_items[:] = filtered_by_runlist_markers_items
+                
             for test in pytest.runlist_tests:
                 
                 test_found_in_suitemap: bool = test in suitemap_tcs
@@ -931,6 +968,8 @@ def pytest_collection_modifyitems(session, items):
                 if test_found_in_suitemap and found_item:
                     ordered_items.append(found_item[0])
 
+            all_tcs = [get_test_marker(item)[0] for item in ordered_items]
+            
             for item in ordered_items:
                 
                 [test_code] = get_test_marker(item)
@@ -1059,7 +1098,8 @@ def pytest_sessionstart(session):
     session.teardown_results = dict()
 
     pytest.runlist_path = session.config.option.runlist
-    
+    pytest.runlist_filtering_markers = session.config.option.runlist_filtering_markers
+
     if pytest.runlist_path != "default":
 
         if os.path.isfile(pytest.runlist_path):
@@ -1593,31 +1633,41 @@ def pytest_runtest_call(item):
 
         logger_obj.step(f"Start test function '{current_test_marker}': '{item.nodeid}'.")
 
-        output = ""
         test_data = {}
         mandatory_fields = ["author", "tc", "description", "title", "steps"]
 
-        if (callspec := getattr(item, "callspec", None)) is not None:
-            if (data := callspec.params.get("test_data")) is not None:
+        if callspec := getattr(item, "callspec", None):
+            if data := callspec.params.get("test_data"):
                 test_data = data
         else:
             test_data = pytest.suitemap_tests[f"{item.cls.__name__}::{item.originalname}"]
             
-        for field in mandatory_fields:
-            
-            if field == "steps":
-                if (steps := test_data.get("steps")) is not None:
-                    output += "\nSteps:"
-                    for index, step in enumerate(steps):
-                        output += f"\n  Step {(index + 1)}: '{step}'"
-            
-            elif (field_value := test_data.get(field)) is not None:
-                output += f"\n{field.capitalize()}: '{field_value}'"
+        data = defaultdict(lambda: dict())
+        for key, value in {k: test_data.get(k) for k in mandatory_fields}.items():
+            if value:
+                if key == "steps":
+                    data["Test Steps"] = str(len(value))
+                    for step_index, step in enumerate(value):
+                        data[f"  Step {step_index + 1}"] = step
+                elif key in mandatory_fields:
+                    data[key.capitalize()] = value
 
-        for k, v in test_data.items():
-            if k not in mandatory_fields:
-                output += f"\n{k}: '{v}'"
-        output and logger_obj.step(output)
+        if not_mandatory_data := {k: v for k, v in test_data.items() if k not in mandatory_fields}:
+            data["Test Data"] = ""
+            for key, value in not_mandatory_data.items():
+                data[f"  {key}"] = str(value)
+        
+        if data:
+            max_len_fields = max(len(str(k)) for k in data)
+            max_len_values = max(len(str(v)) for v in data.values())
+
+            temp_lines = ["\n+" + "-" * (max_len_fields + max_len_values + 4) + "+"]
+            for key, value in data.items():
+                if key in ["Test Steps", "Test Data"]:
+                    temp_lines.append("+" + "-" * (max_len_fields + max_len_values + 4) + "+")
+                temp_lines.append(f"| {key:<{max_len_fields}}: {value:<{max_len_values}} |")
+            temp_lines.append("+" + "-" * (max_len_fields + max_len_values + 4) + "+")
+            logger_obj.step("\n".join(temp_lines))
 
 
 @pytest.fixture(scope="session")
@@ -2285,11 +2335,13 @@ def get_nodes_data(
                     dev_cmd.send_cmd(dut.name, 'enable iqagent')
                     time.sleep(3)
                     output = dev_cmd.send_cmd(dut.name, 'show iqagent')[0].return_text
+                    logger.cli(output)
                     if iqagent_version_match := re.search(r"Version\s+\s([\d\.]+)\s+\r\n", output):
                         iqagent_version = iqagent_version_match.group(1)
                 
                 elif dut.cli_type.upper() == "VOSS":
                     output = dev_cmd.send_cmd(dut.name, 'show application iqagent')[0].return_text
+                    logger.cli(output)
                     if iqagent_version_match := re.search(fr"Agent Version\s+:\s([\d\.]+)\r\n", output):
                         iqagent_version = iqagent_version_match.group(1)
                 
@@ -2303,7 +2355,8 @@ def get_nodes_data(
 
                 if dut.cli_type.upper() == "EXOS":
                     output = dev_cmd.send_cmd(dut.name, 'show version')[0].return_text
-
+                    logger.cli(output)
+                    
                     if dut.platform.upper() == "STACK":
                         system_version = re.findall(r"(Slot-\d).*\sIMG:\s([\d\.]+)", output)
                     else:
@@ -2311,6 +2364,7 @@ def get_nodes_data(
 
                 elif dut.cli_type.upper() == "VOSS":
                     output = dev_cmd.send_cmd(dut.name, 'show sys software', ignore_cli_feedback=True)[0].return_text
+                    logger.cli(output)
                     system_version = re.search(r"Version\s+:\sBuild\s([\d\.]+)\s", output).group(1)
                 else:
                     logger.warning("OS not yet supported.")
@@ -2323,6 +2377,7 @@ def get_nodes_data(
                 if dut.cli_type.upper() == "EXOS":
                     output = dev_cmd.send_cmd(
                         dut.name, 'show vlan', max_wait=10, interval=2)[0].return_text
+                    logger.cli(output)
                     pattern = fr'(\w+)(\s+)(\d+)(\s+)({dut.ip})(\s+)(\/.*)(\s+)(\w+)(\s+/)(.*)(VR-\w+)'
                     match = re.search(pattern, output)
                     try:
@@ -2355,11 +2410,19 @@ def get_nodes_data(
                     elif dut.cli_type.lower() == 'exos':
                         dev_cmd.send_cmd(dut.name, 'enable telnet')
                         dev_cmd.send_cmd(dut.name, 'disable cli paging')
+                        
                         result = dev_cmd.send_cmd(
                             dut.name, 'show inline-power', max_wait=30, 
                             interval=10)[0].cmd_obj._return_text
                         logger.cli(result)
                         assert re.search('Inline Power System Information', result)
+                        
+                        result = dev_cmd.send_cmd(
+                            dut.name, 'show inline-power info ports', max_wait=30, 
+                            interval=10, ignore_cli_feedback=True)[0].cmd_obj._return_text
+                        logger.cli(result)
+                        assert not re.search('None of the specified ports are inline-power capable', result)
+
                     else:
                         assert False, "OS not yet supported."
                         
@@ -2509,7 +2572,7 @@ def revert_node(
                     node.cli_type, loaded_config['sw_connection_host'],
                     spawn, vr=node.get("mgmt_vr", 'VR-Mgmt').upper(), retry_count=30
                 )
-                logger.step(f"Configure iqagent on node '{node.node_name}'.")
+                logger.info(f"Successfully configured iqagent on node '{node.node_name}'.")
                 
         xiq.xflowscommonDevices.column_picker_select("Template", "Network Policy", "MAC Address")
 
@@ -2518,7 +2581,7 @@ def revert_node(
                 logger.step(f"Onboard node '{node.node_name}'.")
                 xiq.xflowscommonDevices.onboard_device_quick({**node, "location": onboarding_location})
                 check_devices_are_onboarded(xiq, [node])
-                logger.info(f"Successfully onboard node '{node.node_name}'.")
+                logger.info(f"Successfully onboarded node '{node.node_name}'.")
             else:
                 logger.info(f"Node '{node.node_name}' is already onboarded.")
 
@@ -2907,9 +2970,16 @@ def cleanup(
             xiq.xflowscommonDevices._goto_devices()
             
             for dut in duts:
-                try:
+
+                logger.step(f"Delete this device: '{dut.name}' (mac='{dut.mac}').")
+                
+                if xiq.xflowscommonDevices.search_device(device_mac=dut.mac, IRV=False, skip_refresh=True, skip_navigation=True) == -1:
                     screen.save_screen_shot()
-                    logger.step(f"Delete this device: '{dut.name}' (mac='{dut.mac}').")
+                    logger.info(f"Did not find this device onboarded: '{dut.name}' (mac='{dut.mac}').")
+                    continue
+
+                try:             
+                    screen.save_screen_shot()
                     xiq.xflowscommonDevices._goto_devices()
                     xiq.xflowscommonDevices.delete_device(
                         device_mac=dut.mac)
@@ -3028,26 +3098,32 @@ def configure_network_policies(
                 if network_policy_onboarding_options := merge_dicts(default_network_policy_onboarding_options, onb_options.get("network_policy_onboarding_options", {})):
                 
                     xiq.xflowsconfigureNetworkPolicy.navigate_to_np_edit_tab(network_policy)
+                    screen.save_screen_shot()
                     
                     if dns_server_options := network_policy_onboarding_options.get("dns_server_options", {}):
                         xiq.xflowsconfigureNetworkPolicy.go_to_dns_server_tab()
+                        screen.save_screen_shot()
                         
                         if status := dns_server_options.get("status", "disable"):
                             xiq.xflowsconfigureNetworkPolicy.set_dns_server_status(status)
-
+                            screen.save_screen_shot()
+                            
                         xiq.xflowsconfigureNetworkPolicy.save_dns_server_tab()
-
+                        screen.save_screen_shot()
+                        
                 if create_switch_template_flag:
                     
                     navigator.navigate_to_devices()
                     navigator.navigate_configure_network_policies()
                     utils.wait_till(timeout=5)
-
+                    screen.save_screen_shot()
+                    
                     logger.step(f"Create and attach this switch template to '{dut}' dut (node: '{node_name}'): '{template_switch}'.")
                     if node_name == "node_stack":
                         xiq.xflowsconfigureSwitchTemplate.add_5520_sw_stack_template(
                             units_model, network_policy,
                             model_template, template_switch, cli_type=node_info.cli_type.upper())
+                        screen.save_screen_shot()
                     else:
                         xiq.xflowsconfigureSwitchTemplate.add_sw_template(
                             network_policy, model_template, template_switch, cli_type=node_info.cli_type.upper())
@@ -3450,7 +3526,8 @@ def update_devices(
         policy_config: PolicyConfig,
         debug: Callable,
         wait_till: Callable,
-        request: fixtures.SubRequest
+        request: fixtures.SubRequest,
+        screen: Screen
 ) -> UpdateDevices:
     """ 
     Fixture that updates the onboarded nodes after the onboarding.
@@ -3466,7 +3543,8 @@ def update_devices(
         wait_till(timeout=5)
         xiq.xflowscommonDevices._goto_devices()
         wait_till(timeout=5)
-
+        screen.save_screen_shot()
+        
         for dut in duts:
             
             onb_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
@@ -3485,6 +3563,7 @@ def update_devices(
             ):
                 logger.step(f"Select switch row with serial '{dut.mac}'.")
                 if not xiq.xflowscommonDevices.select_device(device_mac=dut.mac):
+                    screen.save_screen_shot()
                     error_msg = f"Switch '{dut.mac}' is not present in the grid."
                     logger.error(error_msg)
                     pytest.fail(error_msg)
@@ -3492,6 +3571,7 @@ def update_devices(
                 
                 logger.step(f"Update the switch: '{dut.mac}'.")
                 if xiq.xflowscommonDevices._update_switch(update_method="PolicyAndConfig") != 1:
+                    screen.save_screen_shot()
                     error_msg = f"Failed to push the update to this switch: '{dut.mac}'."
                     logger.error(error_msg)
                     pytest.fail(error_msg)
@@ -3513,10 +3593,27 @@ def update_devices(
                     initial_network_policy_push_flag
                 ]
             ):
-                if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac) != 1:
-                    error_msg = f"It look like the update failed this switch: '{dut.mac}'."
-                    logger.error(error_msg)
-                    pytest.fail(error_msg) 
+
+                if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac, IRV=False) != 1:
+                    
+                    screen.save_screen_shot()
+                    logger.warning(
+                        f"It looks like the update failed for this switch: '{dut.mac}'. "
+                        "Will try to do a delta configuration update for this switch.")
+                    
+                    if xiq.xflowscommonDevices.update_device_delta_configuration(dut.mac) != 1:
+                        screen.save_screen_shot()
+                        logger.fail(f"Failed to do a delta confguration update for this switch: '{dut.mac}'.")
+                    
+                    logger.info(f"Successfully initialised a delta configuration update for this switch: '{dut.mac}'.")
+                    
+                    if xiq.xflowscommonDevices._check_update_network_policy_status(policy_name, dut.mac, IRV=False) != 1:
+                        screen.save_screen_shot()
+                        logger.fail(f"It looks like both type of device update failed for this switch: '{dut.mac}'.")
+
+                    logger.info(f"Successfully completed the delta configuration update for this switch: '{dut.mac}'.")
+                else:
+                    logger.info(f"Successfully completed the network policy update for this switch: '{dut.mac}'.")
 
     return update_devices_func
 
@@ -3543,7 +3640,8 @@ def onboarding(
         
         for location in pytest.created_onboarding_locations:
             create_location(xiq, location)
-                            
+            screen.save_screen_shot()
+            
         for dut in duts:
             
             if xiq.xflowscommonDevices.onboard_device_quick({**dut, "location": onboarding_locations[dut.node_name]}) == 1: 
@@ -3896,7 +3994,8 @@ def check_vim(
     request: pytest.FixtureRequest,
     debug: Callable,
     logger: PytestLogger,
-    node_list: List[Node]
+    node_list: List[Node],
+    screen: Screen
     ) -> CheckVim:
     
     @debug
@@ -3912,9 +4011,12 @@ def check_vim(
                 
                 try:
                     xiq.xflowscommonNavigator.navigate_to_device360_page_with_mac(node.mac)
+                    screen.save_screen_shot()
+                    
                     time.sleep(10)
                     assert xiq.xflowsmanageDevice360.d360_check_if_vim_is_installed()
                 except AssertionError:
+                    screen.save_screen_shot()
                     error = f"Invalid setup, no actual VIM module installed for chosen dut: '{node.name}' ({node.node_name})."
                     logger.error(error)
                     raise AssertionError(error)
@@ -5182,6 +5284,16 @@ def udks() -> Udks:
 @pytest.fixture(scope="session")
 def network_360_monitor_elements() -> Network360MonitorElements:
     return Network360MonitorElements()
+
+@pytest.fixture(scope="session")
+def netelem_listutils() -> NetworkElementListUtils:
+    return NetworkElementListUtils()
+
+
+@pytest.fixture(scope="session")
+def client_web_elements() -> ClientWebElements:
+    return ClientWebElements()
+
 
 @pytest.fixture(scope="session")
 def poll(debug, logger):

@@ -17,7 +17,7 @@ def make_sure_windows_are_closed(xiq_library_at_class_level, auto_actions):
         except:
             # close button not found
             pass
-        
+
         try:
             xiq_library_at_class_level.xflowsmanageDevice360.close_device360_window()
         except:
@@ -174,7 +174,8 @@ class Xiq1053OneNodeTests:
 
         try:
             logger.info(f"Go to the port configuration of {node_1_template_name} template")
-            xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name)
+            xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name,
+                                      cli_type=node_1.cli_type.upper())
             xiq_st.go_to_port_configuration()
 
             if node_1.cli_type.upper() == "VOSS":
@@ -204,7 +205,8 @@ class Xiq1053OneNodeTests:
                 xiq.xflowscommonDevices.update_and_wait_device(policy_name=node_1_policy_name, dut=node_1)
 
                 logger.info(f"Go to the port configuration of {node_1_template_name} template")
-                xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name)
+                xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name,
+                                          cli_type=node_1.cli_type.upper())
                 xiq_st.go_to_port_configuration()
 
             else:
@@ -265,7 +267,7 @@ class Xiq1053OneNodeTests:
         finally:
             logger.info("Performing test cleanup")
             logger.info(f"Go to the port configuration of {node_1_template_name} template")
-            xiq_st.select_sw_template(node_1_policy_name, node_1_template_name)
+            xiq_st.select_sw_template(node_1_policy_name, node_1_template_name, cli_type=node_1.cli_type.upper())
             xiq_st.go_to_port_configuration()
 
             logger.info(f"Set {configured_port} port type to '{default_port_type} Port'")
@@ -689,7 +691,8 @@ class Xiq1053OneNodeTests:
         try:
 
             logger.info(f"Go to the port configuration of {node_1_template_name} template")
-            xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name)
+            xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name,
+                                      cli_type=node_1.cli_type.upper())
             xiq_st.go_to_port_configuration()
 
             if node_1.cli_type.upper() == "VOSS":
@@ -717,7 +720,8 @@ class Xiq1053OneNodeTests:
                 xiq.xflowscommonDevices.update_and_wait_device(policy_name=node_1_policy_name, dut=node_1)
 
                 logger.info(f"Go to the port configuration of {node_1_template_name} template")
-                xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name)
+                xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name,
+                                          cli_type=node_1.cli_type.upper())
                 xiq_st.go_to_port_configuration()
 
             else:
@@ -774,7 +778,7 @@ class Xiq1053OneNodeTests:
             try:
 
                 logger.info(f"Go to the port configuration of {node_1_template_name} template")
-                xiq_st.select_sw_template(node_1_policy_name, node_1_template_name)
+                xiq_st.select_sw_template(node_1_policy_name, node_1_template_name, cli_type=node_1.cli_type.upper())
                 xiq_st.go_to_port_configuration()
 
                 logger.info(f"Set {configured_port} port type to '{default_port_type} Port'")
@@ -1085,20 +1089,21 @@ class Xiq1053OneNodeTests:
 
         vlan_id = str(random.choice(range(1024, 4096)))
         configured_port = str(random.choice(dut_ports['dut1']))
-        
+
         try:
             xiq_d360.go_to_device_360_port_config(node_1)
-            xiq_d360.enter_port_type_and_vlan_id(port=random.choice([p for p in dut_ports["dut1"] if p != configured_port]),
-                                                 port_type="Access Port", device_os=node_1.cli_type.upper(),
-                                                 access_vlan_id="1000")
+            xiq_d360.enter_port_type_and_vlan_id(
+                port=random.choice([p for p in dut_ports["dut1"] if p != configured_port]),
+                port_type="Access Port", device_os=node_1.cli_type.upper(),
+                access_vlan_id="1000")
         finally:
             xiq_d360.save_device_360_port_config()
             xiq_d360.close_device360_window()
-        
+
         logger.info("Push configuration to the switch and wait")
         xiq.xflowscommonDevices.update_and_wait_device(
             policy_name=node_1_policy_name, dut=node_1)
-                
+
         port_name_access = f"port_type_{''.join(random.sample(list(string.ascii_letters) + list(string.digits), k=6))}"
         port_name_trunk = f"port_type_{''.join(random.sample(list(string.ascii_letters) + list(string.digits), k=6))}"
 
@@ -1236,7 +1241,7 @@ class Xiq1053StackTests:
             logger.info(
                 f"Go to the port configuration of {node_stack_template_name} template")
             xiq.xflowsconfigureSwitchTemplate.select_sw_template(
-                node_stack_policy_name, node_stack_template_name)
+                node_stack_policy_name, node_stack_template_name, cli_type=node_stack.cli_type.upper())
             xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
             try:
@@ -1301,7 +1306,8 @@ class Xiq1053StackTests:
             try:
                 logger.info(f"Go to the port configuration of {node_stack_template_name} template")
                 xiq.xflowsconfigureSwitchTemplate.select_sw_template(node_stack_policy_name,
-                                                                     node_stack_template_name)
+                                                                     node_stack_template_name,
+                                                                     cli_type=node_stack.cli_type.upper())
                 xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
                 logger.info(f"Set {configured_port} port type to 'Access Port'")
@@ -1547,8 +1553,10 @@ class Xiq1053StackTests:
                 node_stack, configured_port, port_type="access")
 
         finally:
-
-            xiq_d360.close_port_type_config(IRV=False)
+            try:
+                xiq_d360.close_port_type_config(IRV=False)
+            except Exception as exc:
+                logger.warning(repr(exc))
 
             xiq.xflowscommonNavigator.navigate_to_devices()
             xiq.xflowsmanageDevices.revert_device_to_template(node_stack.mac)
@@ -1580,7 +1588,7 @@ class Xiq1053StackTests:
 
             logger.info(f"Go to the port configuration of {node_stack_template_name} template")
             xiq.xflowsconfigureSwitchTemplate.select_sw_template(
-                node_stack_policy_name, node_stack_template_name)
+                node_stack_policy_name, node_stack_template_name, cli_type=node_stack.cli_type.upper())
             xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
             try:
@@ -1636,11 +1644,15 @@ class Xiq1053StackTests:
 
         finally:
 
-            xiq_d360.close_port_type_config(IRV=False)
+            try:
+                xiq_d360.close_port_type_config(IRV=False)
+            except Exception as exc:
+                logger.warning(repr(exc))
 
             try:
                 logger.info(f"Go to the port configuration of {node_stack_template_name} template")
-                xiq.xflowsconfigureSwitchTemplate.select_sw_template(node_stack_policy_name, node_stack_template_name)
+                xiq.xflowsconfigureSwitchTemplate.select_sw_template(node_stack_policy_name, node_stack_template_name,
+                                                                     cli_type=node_stack.cli_type.upper())
                 xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
                 logger.info(f"Set {configured_port} port type to 'Access Port'")
@@ -1799,7 +1811,7 @@ class Xiq1053StackTests:
             finally:
                 xiq_d360.save_device_360_port_config()
                 xiq_d360.close_device360_window()
-                
+
             xiq.xflowscommonDevices.update_and_wait_device(
                 policy_name=node_stack_policy_name, dut=node_stack)
 

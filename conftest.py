@@ -101,6 +101,7 @@ def pytest_addoption(parser):
     parser.addoption("--customReportDate", action="store_true", default=False, help="Adds a report date to the report_<date>.html file")
     parser.addoption("--customReportTitle", action="store", default=None, help="Adds a Custom title to the report htmls file")
     parser.addoption("--runlist", action="store", help="The path to the runlist", default="default")
+    parser.addoption("--runlist-filtering-markers", action="store", default=None, help="The tests from the runlist will be finally filtered using these markers")
     parser.addoption("--xapi_enable", "--XAPI_ENABLE", action="store_true", default=False, help="Set the XAPI_ENABLE flag")
 
 def pytest_html_report_title(report):
