@@ -174,8 +174,7 @@ class Xiq1053OneNodeTests:
 
         try:
             logger.info(f"Go to the port configuration of {node_1_template_name} template")
-            xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name,
-                                      cli_type=node_1.cli_type.upper())
+            xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name, cli_type=node_1.cli_type.upper())
             xiq_st.go_to_port_configuration()
 
             if node_1.cli_type.upper() == "VOSS":
@@ -205,8 +204,7 @@ class Xiq1053OneNodeTests:
                 xiq.xflowscommonDevices.update_and_wait_device(policy_name=node_1_policy_name, dut=node_1)
 
                 logger.info(f"Go to the port configuration of {node_1_template_name} template")
-                xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name,
-                                          cli_type=node_1.cli_type.upper())
+                xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name, cli_type=node_1.cli_type.upper())
                 xiq_st.go_to_port_configuration()
 
             else:
@@ -691,8 +689,7 @@ class Xiq1053OneNodeTests:
         try:
 
             logger.info(f"Go to the port configuration of {node_1_template_name} template")
-            xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name,
-                                      cli_type=node_1.cli_type.upper())
+            xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name, cli_type=node_1.cli_type.upper())
             xiq_st.go_to_port_configuration()
 
             if node_1.cli_type.upper() == "VOSS":
@@ -720,8 +717,7 @@ class Xiq1053OneNodeTests:
                 xiq.xflowscommonDevices.update_and_wait_device(policy_name=node_1_policy_name, dut=node_1)
 
                 logger.info(f"Go to the port configuration of {node_1_template_name} template")
-                xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name,
-                                          cli_type=node_1.cli_type.upper())
+                xiq_st.select_sw_template(nw_policy=node_1_policy_name, sw_template=node_1_template_name, cli_type=node_1.cli_type.upper())
                 xiq_st.go_to_port_configuration()
 
             else:
@@ -1651,8 +1647,7 @@ class Xiq1053StackTests:
 
             try:
                 logger.info(f"Go to the port configuration of {node_stack_template_name} template")
-                xiq.xflowsconfigureSwitchTemplate.select_sw_template(node_stack_policy_name, node_stack_template_name,
-                                                                     cli_type=node_stack.cli_type.upper())
+                xiq.xflowsconfigureSwitchTemplate.select_sw_template(node_stack_policy_name, node_stack_template_name, cli_type=node_stack.cli_type.upper())
                 xiq.xflowsconfigureSwitchTemplate.go_to_port_configuration()
 
                 logger.info(f"Set {configured_port} port type to 'Access Port'")

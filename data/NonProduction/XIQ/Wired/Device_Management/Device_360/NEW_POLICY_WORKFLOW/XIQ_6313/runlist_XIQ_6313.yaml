@@ -1,0 +1,15 @@
+runlist_XIQ_6313:
+  suitemap:
+    - suitemap_XIQ_6313.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ["exos", "voss"]
+    node_stack:
+      run_os: ["exos"]
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_23749 #one node
+    - tcxm_23747 #one node, dependson tcxm_23749
+    - tcxm_23745 #one node, dependson tcxm_23749
+    - tcxm_xiq_onboarding_cleanup

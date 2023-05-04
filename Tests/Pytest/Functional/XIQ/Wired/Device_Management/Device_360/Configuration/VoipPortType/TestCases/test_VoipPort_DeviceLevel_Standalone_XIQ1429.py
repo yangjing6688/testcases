@@ -120,7 +120,12 @@ class XIQ1429Tests:
         dut = self.dut
         exos_port = str(self.inc_port())
         port_type_name = self.suite_udk.generate_port_type_name()
+        nw_policy = self.suite_udk.generate_policy_name()
+        self.xiq.xflowscommonNavigator.navigate_to_devices()
+        assert self.xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
+                policy_name=nw_policy) == 1, f"Failed to create this network policy: {nw_policy}"
 
+        self.xiq.xflowscommonDevices.assign_network_policy_to_switch_mac(nw_policy, dut.mac)
         self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
 
         try:
@@ -140,6 +145,11 @@ class XIQ1429Tests:
             self.xiq.xflowsconfigureCommonObjects.delete_port_type_profile(port_type_name)
             self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
 
+        try:
+            self.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(nw_policy)
+        except Exception as exc:
+            print(repr(exc))
+
     @mark.tcxm_19689
     @mark.p3
     @mark.testbed_1_node
@@ -155,7 +165,12 @@ class XIQ1429Tests:
         dut = self.dut
         exos_port = str(self.inc_port())
         port_type_name = self.suite_udk.generate_port_type_name()
+        nw_policy = self.suite_udk.generate_policy_name()
+        self.xiq.xflowscommonNavigator.navigate_to_devices()
+        assert self.xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
+                policy_name=nw_policy) == 1, f"Failed to create this network policy: {nw_policy}"
 
+        self.xiq.xflowscommonDevices.assign_network_policy_to_switch_mac(nw_policy, dut.mac)
         self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
 
         try:
@@ -181,6 +196,11 @@ class XIQ1429Tests:
                 self.auto_actions.click(cancel_port_type_editor_button)
             self.xiq.xflowsmanageDevice360.close_device360_window()
 
+        try:
+            self.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(nw_policy)
+        except Exception as exc:
+            print(repr(exc))
+
     @mark.tcxm_19692
     @mark.testbed_1_node
     @mark.p3
@@ -196,7 +216,12 @@ class XIQ1429Tests:
         dut = self.dut
         exos_port = str(self.inc_port())
         port_type_name = self.suite_udk.generate_port_type_name()
+        nw_policy = self.suite_udk.generate_policy_name()
+        self.xiq.xflowscommonNavigator.navigate_to_devices()
+        assert self.xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
+                policy_name=nw_policy) == 1, f"Failed to create this network policy: {nw_policy}"
 
+        self.xiq.xflowscommonDevices.assign_network_policy_to_switch_mac(nw_policy, dut.mac)
         self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
 
         try:
@@ -219,6 +244,11 @@ class XIQ1429Tests:
                 self.auto_actions.click(cancel_port_type_editor_button)
             self.xiq.xflowsmanageDevice360.close_device360_window()
 
+        try:
+            self.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(nw_policy)
+        except Exception as exc:
+            print(repr(exc))
+
     @mark.tcxm_19684
     @mark.p3
     @mark.testbed_1_node
@@ -234,7 +264,12 @@ class XIQ1429Tests:
         dut = self.dut
         exos_port = str(self.inc_port())
         port_type_name = self.suite_udk.generate_port_type_name()
+        nw_policy = self.suite_udk.generate_policy_name()
+        self.xiq.xflowscommonNavigator.navigate_to_devices()
+        assert self.xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
+                policy_name=nw_policy) == 1, f"Failed to create this network policy: {nw_policy}"
 
+        self.xiq.xflowscommonDevices.assign_network_policy_to_switch_mac(nw_policy, dut.mac)
         self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
 
         try:
@@ -260,6 +295,10 @@ class XIQ1429Tests:
                 self.auto_actions.click(cancel_port_type_editor_button)
             self.xiq.xflowsmanageDevice360.close_device360_window()
 
+        try:
+            self.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(nw_policy)
+        except Exception as exc:
+            print(repr(exc))
 
     @mark.tcxm_19498
     @mark.p3
@@ -399,7 +438,12 @@ class XIQ1429Tests:
         dut = self.dut
         exos_port = str(self.inc_port())
         port_type_name = self.suite_udk.generate_port_type_name()
+        nw_policy = self.suite_udk.generate_policy_name()
+        self.xiq.xflowscommonNavigator.navigate_to_devices()
 
+        assert self.xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
+                policy_name=nw_policy) == 1, f"Failed to create this network policy: {nw_policy}"
+        self.xiq.xflowscommonDevices.assign_network_policy_to_switch_mac(nw_policy, dut.mac)
         self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
 
         try:
@@ -455,6 +499,11 @@ class XIQ1429Tests:
                 self.auto_actions.click(cancel_port_type_editor_button)
             self.xiq.xflowsmanageDevice360.close_device360_window()
 
+        try:
+            self.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(nw_policy)
+        except Exception as exc:
+            print(repr(exc))
+
     @mark.tcxm_19687
     @mark.p1
     @mark.testbed_1_node
@@ -470,7 +519,11 @@ class XIQ1429Tests:
         dut = self.dut
         exos_port = str(self.inc_port())
         port_type_name = self.suite_udk.generate_port_type_name()
-
+        nw_policy = self.suite_udk.generate_policy_name()
+        self.xiq.xflowscommonNavigator.navigate_to_devices()
+        assert self.xiq.xflowsconfigureNetworkPolicy.create_switching_routing_network_policy(
+                policy_name=nw_policy) == 1, f"Failed to create this network policy: {nw_policy}"
+        self.xiq.xflowscommonDevices.assign_network_policy_to_switch_mac(nw_policy, dut.mac)
         self.xiq.xflowsmanageDevice360.navigator.navigate_to_devices()
 
         try:
@@ -525,6 +578,11 @@ class XIQ1429Tests:
             if cancel_port_type_editor_button:
                 self.auto_actions.click(cancel_port_type_editor_button)
             self.xiq.xflowsmanageDevice360.close_device360_window()
+
+        try:
+            self.xiq.xflowsconfigureNetworkPolicy.delete_network_policy(nw_policy)
+        except Exception as exc:
+            print(repr(exc))
 
     @mark.tcxm_19506
     @mark.p2
