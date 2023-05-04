@@ -96,7 +96,7 @@ Suite Setup
     ${ONBOARD_RESULT}=      Onboard Device Quick        ${device1}
     Should Be Equal As Strings      ${ONBOARD_RESULT}       1
 
-    ${CONF_RESULT}=         Configure Device To Connect To Cloud            ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    ${CONF_RESULT}=         Configure Device To Connect To Cloud             ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
     Should Be Equal As Integers     ${CONF_RESULT}          1
 
     ${WAIT_CONF_RESULT}=    Wait For Configure Device To Connect To Cloud   ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
@@ -108,7 +108,7 @@ Suite Setup
     ${MANAGED_STATUS}=      Wait Until Device Managed   ${device1.serial}
     Should Be Equal As Integers     ${MANAGED_STATUS}       1
 
-    ${DEVICE_STATUS_RESULT}=       Get Device Status           device_mac=${device1.mac}
+    ${DEVICE_STATUS_RESULT}=       Get Device Status           device_mac=${device1.mac} 
     Should contain any                  ${DEVICE_STATUS_RESULT}    green     config audit mismatch
 
     # Upgrade the device to latest/supported version to avoid config push issues.
@@ -220,13 +220,15 @@ TCCS-7678: Cloud DB PPSK Network Client Connectivity With Bulk Users Group
     ${USER_GROUP_CREATE_RESULT}=    Create User Group               ${BULK_CLOUD_USER_GROUP}    user_group_profile=&{USER_GROUP_PROFILE_CLOUD_BULK}
     Should Be Equal As Integers     ${USER_GROUP_CREATE_RESULT}     1
 
+    ${CREDENTIALS}=     Get Login Credential From Attachments       ${PPSK_MAIL_ID}     ${PPSK_MAIL_PASSWORD}
+
     ${CREATE_POLICY_RESULT}=        Create Network Policy           ${BULK_CLOUD_NW_POLICY}     ${WIRELESS_PPSK_NW_CLOUD_BULK}
     Should Be Equal As Integers     ${CREATE_POLICY_RESULT}         1
 
     ${UPDATE_POLICY_RESULT}=        Update Network Policy To Ap     policy_name=${BULK_CLOUD_NW_POLICY}    ap_serial=${device1.serial}
     Should Be Equal As Integers     ${UPDATE_POLICY_RESULT}         1
 
-    ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial}
+    ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial} 
     Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}            1
 
     # wait for SSID to become available
@@ -234,8 +236,6 @@ TCCS-7678: Cloud DB PPSK Network Client Connectivity With Bulk Users Group
     Sleep               ${client_connect_wait}
 
     Negative Internet Connectivity Check
-
-    ${CREDENTIALS}=     Get Login Credential From Attachments       ${PPSK_MAIL_ID}     ${PPSK_MAIL_PASSWORD}
 
     Connect To PPSK Wireless Network        ${BULK_CLOUD_NW_SSID}       ${CREDENTIALS['user_1']['Access Key']}
 
@@ -256,6 +256,8 @@ TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
     ${USER_GROUP_CREATE_RESULT}=    Create User Group               ${BULK_LOCAL_USER_GROUP}    user_group_profile=&{USER_GROUP_PROFILE_LOCAL_BULK}
     Should Be Equal As Integers     ${USER_GROUP_CREATE_RESULT}     1
 
+    ${CREDENTIALS}=     Get Login Credential From Attachments       ${PPSK_MAIL_ID}     ${PPSK_MAIL_PASSWORD}
+
     ${CREATE_POLICY_RESULT}=        Create Network Policy           ${BULK_LOCAL_NW_POLICY}     ${WIRELESS_PPSK_NW_LOCAL_BULK}
     Should Be Equal As Integers     ${CREATE_POLICY_RESULT}         1
 
@@ -270,8 +272,6 @@ TCCS-7691: Local DB PPSK Network Client Connectivity With Bulk Users Group
     Sleep               ${client_connect_wait}
 
     Negative Internet Connectivity Check
-
-    ${CREDENTIALS}=     Get Login Credential From Attachments       ${PPSK_MAIL_ID}     ${PPSK_MAIL_PASSWORD}
 
     Connect To PPSK Wireless Network        ${BULK_LOCAL_NW_SSID}       ${CREDENTIALS['user2_1']['Access Key']}
 
