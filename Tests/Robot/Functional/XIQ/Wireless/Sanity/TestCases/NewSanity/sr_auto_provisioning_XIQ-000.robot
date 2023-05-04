@@ -38,6 +38,8 @@ Library     extauto/xiq/flows/configure/AutoProvisioning.py
 Library     extauto/xiq/flows/configure/NetworkPolicy.py
 Library     extauto/xiq/flows/configure/CommonObjects.py
 Library     extauto/xiq/flows/configure/ExpressNetworkPolicies.py
+Library     ExtremeAutomation/Imports/CommonObjectUtils.py
+Library     ExtremeAutomation/Keywords/UserDefinedKeywords/NetworkElements/SetupTeardown/SetupTeardownUdks.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -53,48 +55,63 @@ Suite Setup     Test Suite Setup
 Suite Teardown    Run Keyword And Warn On Failure    Test Suite Teardown
 *** Keywords ***
 Test Suite Setup
+    # Use this method to convert the ap, wing, netelem to a generic device object
+    # ap1       => device1
+    # wing1     => device1
+    # netelem1  => device1 (EXOS / VOSS)
+    convert to generic device object   device  index=1
 
-    # Log into the device
-    ${SPAWN_SW}=  open spawn  ${aerohive_sw1.ip}  ${aerohive_sw1.port}  ${aerohive_sw1.username}  ${aerohive_sw1.password}  ${aerohive_sw1.cli_type}
-    Set Global Variable    ${MAIN_DEVICE_SPAWN_SW}    ${SPAWN_SW}
+    # Create the connection to the device(s)
+    Base Test Suite Setup
+    Set Global Variable    ${MAIN_DEVICE_SPAWN}    ${device1.name}
 
     # log in the user
-    Login User      ${tenant_username}      ${tenant_password}
+    ${LOGIN_STATUS}=                Login User          ${tenant_username}      ${tenant_password}     check_warning_msg=True
+    should be equal as integers     ${LOGIN_STATUS}               1
 
-    ${search_result}=   Search Device       device_serial=${aerohive_sw1.serial}    ignore_failure=True
+    ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_failure=True
     # Disconnect from Extreme Cloud IQ
-    Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud  ${aerohive_sw1}  ${MAIN_DEVICE_SPAWN_SW}
+    Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud  ${device1}  ${MAIN_DEVICE_SPAWN}
 
      # Clean up
     ${DLT_ALL_AUTOPROV_POLICIES}=       Delete All Auto Provision Policies
     should be equal as integers         ${DLT_ALL_AUTOPROV_POLICIES}               1
 
-    Delete Network Polices              ${POLICY_NAME_02}   ignore_cli_feedback=true
-    Delete SSIDs                        ${SSID_NAME_02}     ignore_cli_feedback=true
+    ${DELETE_POLICIES_RESULT}=      Delete Network Polices          ${POLICY_NAME_02}   ignore_cli_feedback=true
+    Should Be Equal As Integers     ${DELETE_POLICIES_RESULT}           1
+
+    ${DELETE_SSID_RESULT}=          Delete SSIDs                    ${SSID_NAME_02}             ignore_cli_feedback=true
+    Should Be Equal As Integers     ${DELETE_SSID_RESULT}               1
 
 Test Suite Teardown
-    Navigate To Devices
-    Refresh Devices Page
+    ${NAVIGATE_STATUS}=     Navigate To Devices
+    Should Be Equal As Integers     ${NAVIGATE_STATUS}               1
 
-    ${search_result}=   Search Device       device_serial=${aerohive_sw1.serial}    ignore_failure=True
+    ${REFRESH_PAGE_STATUS}=     Refresh Devices Page
+    Should Be Equal As Integers     ${REFRESH_PAGE_STATUS}               1
+
+    ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_failure=True
     # Disconnect from Extreme Cloud IQ
-    Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud  ${aerohive_sw1}  ${MAIN_DEVICE_SPAWN_SW}
+    Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud  ${device1}  ${MAIN_DEVICE_SPAWN}
 
     ${DLT_ALL_AUTOPROV_POLICIES}=       Delete All Auto Provision Policies
     should be equal as integers         ${DLT_ALL_AUTOPROV_POLICIES}               1
 
-    Delete Network Polices              ${POLICY_NAME_02}   ignore_cli_feedback=true
-    Delete SSIDs                        ${SSID_NAME_02}     ignore_cli_feedback=true
+    ${DELETE_POLICIES_RESULT}=      Delete Network Polices          ${POLICY_NAME_02}   ignore_cli_feedback=true
+    Should Be Equal As Integers     ${DELETE_POLICIES_RESULT}           1
 
-    close spawn  ${MAIN_DEVICE_SPAWN_SW}
+    ${DELETE_SSID_RESULT}=          Delete SSIDs                    ${SSID_NAME_02}             ignore_cli_feedback=true
+    Should Be Equal As Integers     ${DELETE_SSID_RESULT}               1
 
     [Teardown]   run keywords               logout user
     ...                                     quit browser
 
 Delete and Disconnect Device From Cloud
     [Arguments]                             ${device}  ${SPAWN}
-    delete device   device_serial=${device.serial}
-    disconnect device from cloud     ${device.cli_type}     ${SPAWN}
+    ${DELETE_DEVICE}=          delete device   device_serial=${device.serial}
+    Should Be Equal As Integers     ${DELETE_DEVICE}               1
+    ${DISCONNECT_RESULT}=          disconnect device from cloud     ${device.cli_type}     ${SPAWN}
+    Should Be Equal As Integers     ${DISCONNECT_RESULT}               1
 
 Clean Up Device
     [Arguments]                             ${device}  ${SPAWN}
@@ -110,7 +127,11 @@ Device Onboard
     ${ONBOARD_RESULT}=          onboard device quick     ${device}
     Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
-    configure device to connect to cloud    ${device.cli_type}   ${generic_capwap_url}   ${SPAWN}
+    ${CONF_RESULT}=         Configure Device To Connect To Cloud            ${device.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${CONF_RESULT}          1
+
+    ${WAIT_CONF_RESULT}=    Wait For Configure Device To Connect To Cloud   ${device.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
+    Should Be Equal As Integers     ${WAIT_CONF_RESULT}     1
 
     ${ONLINE_STATUS_RESULT}=    wait until device online     ${device.serial}
     Should Be Equal As Strings                  ${ONLINE_STATUS_RESULT}       1
@@ -133,11 +154,11 @@ TCCS-7571: Configure Switch Auto Provision Profile
     ${POLICY_STATUS}=           Create Open Auth Express Network Policy     ${POLICY_NAME_02}      ${SSID_NAME_02}
     should be equal as integers             ${POLICY_STATUS}                1
 
-    IF  '${aerohive_sw1.cli_type}'=='AH-FASTPATH'
-        &{SW_SR22_SR23_01}=    Create Dictionary      device_function=Extreme Networks SR22xx / SR23xx Switches       device_model=${aerohive_sw1.model}     service_tags=Disable   ip_subnetworks=Disable      network_policy=${POLICY_NAME_02}
+    IF  '${device1.cli_type}'=='AH-FASTPATH'
+        &{SW_SR22_SR23_01}=    Create Dictionary      device_function=Extreme Networks SR22xx / SR23xx Switches       device_model=${device1.model}     service_tags=Disable   ip_subnetworks=Disable      network_policy=${POLICY_NAME_02}
         ${APP_BASIC_STGS_STATUS}=     Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        ${SW_SR22_SR23_01}
         should be equal as integers             ${APP_BASIC_STGS_STATUS}        1
-    ELSE IF     '${aerohive_sw1.cli_type}'=='AH-AP'
+    ELSE IF     '${device1.cli_type}'=='AH-AP'
         ${APP_BASIC_STGS_STATUS}=   Auto Provision Basic Settings                   ${APP_POLICY_NAME_SW_01}        ${SW_SR20_SR21_01}
         should be equal as integers             ${APP_BASIC_STGS_STATUS}        1
     END
@@ -150,12 +171,12 @@ TCCS-7571: Configure Switch Auto Provision Profile
 
     Save and Enable Auto Provision Policy           ${APP_POLICY_NAME_SW_01}
 
-    Device Onboard   ${aerohive_sw1}  ${MAIN_DEVICE_SPAWN_SW}  ${sw_capwap_url}
+    Device Onboard   ${device1}  ${MAIN_DEVICE_SPAWN}  ${sw_capwap_url}
 
-    ${verify_result}=   Verify Auto Provision Policy Update     ${aerohive_sw1.serial}      ${SW_SR22_SR23_01}
+    Sleep       1min
+
+    ${verify_result}=   Verify Auto Provision Policy Update     ${device1.serial}      ${SW_SR22_SR23_01}
     Should Be Equal As Integers                     ${verify_result}        1
 
-    ${update_result}=   Wait Until device update done   device_serial=${aerohive_sw1.serial}
+    ${update_result}=   Wait Until device update done   device_serial=${device1.serial}
     Should Be Equal As Integers                     ${update_result}        1
-
-    Sleep       ${max_config_push_time}
