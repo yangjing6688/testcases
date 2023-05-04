@@ -58,6 +58,8 @@ from extauto.common.Cli import Cli
 from extauto.xiq.elements.ClientWebElements import ClientWebElements
 from extauto.xiq.elements.Network360MonitorElements import Network360MonitorElements
 from extauto.xiq.flows.common.Navigator import Navigator
+from ExtremeAutomation.Keywords.NetworkElementKeywords.Utils.NetworkElementListUtils import NetworkElementListUtils
+from extauto.xiq.elements.ClientWebElements import ClientWebElements
 
 
 Node = NewType("Node", Dict[str, Union[str, Dict[str, str]]])
@@ -71,629 +73,632 @@ logger_obj: PytestLogger = PytestLogger()
 
 
 class EnterSwitchCli(Protocol):
-    def __call__(
-        self,
-        dut: Node
-        ) -> Iterator[NetworkElementCliSend]: ...
+def __call__(
+self,
+dut: Node
+) -> Iterator[NetworkElementCliSend]: ...
 
 
 class OpenSpawn(Protocol):
-    def __call__(
-        self, 
-        dut: Node
-        ) -> Iterator[pxssh]: ...
+def __call__(
+self, 
+dut: Node
+) -> Iterator[pxssh]: ...
 
 
 class OpenPxsshSpawn(Protocol):
-    def __call__(
-        self, 
-        dut: Node,
-        debug_mode: bool,
-        disable_strict_host_key_checking: bool,
-        **kwargs: Dict
-        ) -> Iterator[pxssh]: ...
+def __call__(
+self, 
+dut: Node,
+debug_mode: bool,
+disable_strict_host_key_checking: bool,
+**kwargs: Dict
+) -> Iterator[pxssh]: ...
 
 
 class LoginXiq(Protocol):
-    def __call__(
-        self,
-        username: str,
-        password: str,
-        url: str,
-        capture_version: bool,
-        code: str,
-        incognito_mode: str
-        ) -> Iterator[XiqLibrary]: ...
+def __call__(
+self,
+username: str,
+password: str,
+url: str,
+capture_version: bool,
+code: str,
+incognito_mode: str
+) -> Iterator[XiqLibrary]: ...
 
 
 class BounceIqagent(Protocol):
-    def __call__(
-        self,
-        dut: Node,
-        xiq: XiqLibrary,
-        wait: bool
-        ) -> None: ...
+def __call__(
+self,
+dut: Node,
+xiq: XiqLibrary,
+wait: bool
+) -> None: ...
 
 
 class CloseConnection(Protocol):
-    def __call__(
-        self,
-        dut: Node
-        ) -> None: ...
+def __call__(
+self,
+dut: Node
+) -> None: ...
 
 
 class CreateLocation(Protocol):
-    def __call__(
-        self,
-        xiq: XiqLibrary,
-        location: str
-        ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary,
+location: str
+) -> None: ...
 
 
 class ConfigureIqAgent(Protocol):
-    def __call__(
-        self,
-        duts: List[Node], 
-        ipaddress: str
-        ) -> None: ...
+def __call__(
+self,
+duts: List[Node], 
+ipaddress: str
+) -> None: ...
 
 
 class UnconfigureIqAgent(Protocol):
-    def __call__(
-        self,
-        duts: List[Node]
-        ) -> None: ...
+def __call__(
+self,
+duts: List[Node]
+) -> None: ...
 
 
 class CheckDevicesAreReachable(Protocol):
-    def __call__(
-        self, 
-        duts: List[Node],
-        retries: int,
-        step: int
-        ) -> None: ...
+def __call__(
+self, 
+duts: List[Node],
+retries: int,
+step: int
+) -> None: ...
 
 
 class CheckDevicesAreOnboarded(Protocol):
-    def __call__(
-        self,
-        xiq: XiqLibrary,
-        node_list: List[Node],
-        timeout: int
-        ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary,
+node_list: List[Node],
+timeout: int
+) -> None: ...
 
 
 class Cleanup(Protocol):
-    def __call__(
-        self, 
-        duts: List[Node], 
-        location: str, 
-        network_policies: List[str],
-        templates_switch: List[str],
-        ) -> None: ...
+def __call__(
+self, 
+duts: List[Node], 
+location: str, 
+network_policies: List[str],
+templates_switch: List[str],
+) -> None: ...
 
 
 class CheckVim(Protocol):
-    def __call__(
-        self,
-        xiq: XiqLibrary,
-        ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary,
+) -> None: ...
 
 
 class CheckPoe(Protocol):
-    def __call__(
-        self,
-    ) -> None: ...
+def __call__(
+self,
+) -> None: ...
 
 
 class ConfigureNetworkPolicies(Protocol):
-    def __call__(
-        self,
-        xiq: XiqLibrary,
-        dut_config: PolicyConfig
-        ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary,
+dut_config: PolicyConfig
+) -> None: ...
 
 
 class UpdateDevices(Protocol):
-    def __call__(
-        self,
-        xiq: XiqLibrary,
-        duts: List[Node]
-        ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary,
+duts: List[Node]
+) -> None: ...
 
 
 class Onboarding(Protocol):
-    def __call__(
-        self,
-        xiq: XiqLibrary,
-        duts: List[Node]
-        ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary,
+duts: List[Node]
+) -> None: ...
 
 
 class PreOnboardingConfiguration(Protocol):
-    def __call__(
-        self,
-        xiq: XiqLibrary,
-        duts: List[Node]
-        ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary,
+duts: List[Node]
+) -> None: ...
 
 
 class PostOnboardingConfiguration(Protocol):
-    def __call__(
-        self,
-        xiq: XiqLibrary,
-        duts: List[Node]
-        ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary,
+duts: List[Node]
+) -> None: ...
 
 
 class PreOnboardingVerifications(Protocol):
-    def __call__(
-    self,
-    xiq: XiqLibrary,
-    duts: List[Node]
-    ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary,
+duts: List[Node]
+) -> None: ...
 
 
 class PostOnboardingVerifications(Protocol):
-    def __call__(
-        self,
-        xiq: XiqLibrary,
-        duts: List[Node]
-        ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary,
+duts: List[Node]
+) -> None: ...
 
 class OnboardingFailure(Protocol):
-    def __call__(
-        self,
-        xiq: XiqLibrary,
-        duts: List[Node]
-        ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary,
+duts: List[Node]
+) -> None: ...
 
 
 class OnboardingSucceeded(Protocol):
-    def __call__(
-        self,
-        xiq: XiqLibrary,
-        duts: List[Node]
-        ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary,
+duts: List[Node]
+) -> None: ...
 
 
 class ResetSwitch(Protocol):
-    def __call__(
-        self,
-        ) -> None: ... 
+def __call__(
+self,
+) -> None: ... 
 
 
 class SetHostname(Protocol):
-    def __call__(
-        self,
-        duts: List[Node]
-        ) -> None: ... 
+def __call__(
+self,
+duts: List[Node]
+) -> None: ... 
 
 
 class DevicesConfiguration(Protocol):
-    def __call__(
-        self,
-        ) -> None: ...
+def __call__(
+self,
+) -> None: ...
 
 
 class DevicesCleanup(Protocol):
-    def __call__(
-        self,
-        ) -> None: ...
+def __call__(
+self,
+) -> None: ...
 
 
 class DevicesVerifications(Protocol):
-    def __call__(
-        self,
-        ) -> None: ...
+def __call__(
+self,
+) -> None: ...
 
 
 class AccountConfiguration(Protocol):
-    def __call__(
-        self,
-        xiq: XiqLibrary,
-        ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary,
+) -> None: ...
 
 
 class DumpSwitchLogs(Protocol):
-    def __call__(
-        self,
-        duts: List[Node]
-        ) -> None: ...
+def __call__(
+self,
+duts: List[Node]
+) -> None: ...
 
 
 class RebootDevice(Protocol):
-    def __call__(
-        self,
-        duts: List[Node]
-        ) -> None: ...
+def __call__(
+self,
+duts: List[Node]
+) -> None: ...
 
 
 class RebootStackUnit(Protocol):
-    def __call__(
-        self,
-        dut: Node,
-        slot: int,
-        save_config: str
-        ) -> None: ...
+def __call__(
+self,
+dut: Node,
+slot: int,
+save_config: str
+) -> None: ...
 
 
 class DeactivateXiqLibrary(Protocol):
-    def __call__(
-        self,
-        xiq: XiqLibrary
-        ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary
+) -> None: ...
 
 
 class GetXiqLibrary(Protocol):
-    def __call__(
-        self,
-        username: str,
-        password: str,
-        url: str,
-        capture_version: bool,
-        code: str,
-        incognito_mode: str
-        ) -> XiqLibrary: ...
+def __call__(
+self,
+username: str,
+password: str,
+url: str,
+capture_version: bool,
+code: str,
+incognito_mode: str
+) -> XiqLibrary: ...
 
 
 class GetStackSlots(Protocol):
-    def __call__(
-        self,
-        dut: Node
-        ) -> Dict[str, Dict[str, str]]: ...
+def __call__(
+self,
+dut: Node
+) -> Dict[str, Dict[str, str]]: ...
 
 
 class ModifyStackingNode(Protocol):
-    def __call__(
-        self, 
-        dut: Node,
-        node_mac_address: str, 
-        op: str
-        ) -> None: ...
+def __call__(
+self, 
+dut: Node,
+node_mac_address: str, 
+op: str
+) -> None: ...
 
 
 class SetLldp(Protocol):
-    def __call__(
-        self, 
-        dut: Node, 
-        ports: List[str],
-        action: str
-        ) -> None: ...
+def __call__(
+self, 
+dut: Node, 
+ports: List[str],
+action: str
+) -> None: ...
 
 
 class ChangeDeviceManagementSettings(Protocol):
-    def __call__(
-        self,
-        xiq: XiqLibrary,
-        option: str,
-        retries: int=5,
-        step: int=5
-        ) -> None: ...
+def __call__(
+self,
+xiq: XiqLibrary,
+option: str,
+retries: int=5,
+step: int=5
+) -> None: ...
 
 
 class ClearTrafficCounters(Protocol):
-    def __call__(
-        self,
-        dut: Node,
-        *ports: List[str]
-        ) -> None: ...
+def __call__(
+self,
+dut: Node,
+*ports: List[str]
+) -> None: ...
 
 
 valid_test_markers: List[TestCaseMarker] = [
-    "tcxm",
-    "tccs",
-    "xim_tcxm"
+"tcxm",
+"tccs",
+"xim_tcxm"
 ]
 
 
 valid_priority_markers: List[PriorityMarker] = [
-    "p0",
-    "p1",
-    "p2",
-    "p3",
-    "p4",
-    "p5"
+"p0",
+"p1",
+"p2",
+"p3",
+"p4",
+"p5"
 ]
 
 
 valid_testbed_markers: List[TestbedMarker] = [
-    "testbed_1_node",
-    "testbed_2_node",
-    "testbed_stack",
-    "testbed_none"
+"testbed_1_node",
+"testbed_2_node",
+"testbed_stack",
+"testbed_none"
 ]
 
 
 @pytest.fixture(scope="session")
 def debug(logger: PytestLogger) -> Callable:
-    def debug_func(func):
-        def wrapped_func(*args, **kwargs):
-            start_time = time.time()
-            try:
-                logger.step(f"Calling '{func.__name__}' function with args='{args}' and kwargs='{kwargs}'")
-                result = func(*args, **kwargs)
-            except Exception as exc:
-                logger.error(
-                    f"Failed during '{func.__name__}' function call with args='{args}' and kwargs='{kwargs}' "
-                    f"after {int(time.time()-start_time)} seconds: {repr(exc)}")
-                raise exc
-            else:
-                logger.info(
-                    f"Call for '{func.__name__}' with args='{args}' and kwargs='{kwargs}' ended "
-                    f"after {int(time.time()-start_time)} seconds")
-                return result
-        return wrapped_func
-    return debug_func
+def debug_func(func):
+def wrapped_func(*args, **kwargs):
+    start_time = time.time()
+    try:
+	logger.step(f"Calling '{func.__name__}' function with args='{args}' and kwargs='{kwargs}'")
+	result = func(*args, **kwargs)
+    except Exception as exc:
+	logger.error(
+	    f"Failed during '{func.__name__}' function call with args='{args}' and kwargs='{kwargs}' "
+	    f"after {int(time.time()-start_time)} seconds: {repr(exc)}")
+	raise exc
+    else:
+	logger.info(
+	    f"Call for '{func.__name__}' with args='{args}' and kwargs='{kwargs}' ended "
+	    f"after {int(time.time()-start_time)} seconds")
+	return result
+return wrapped_func
+return debug_func
 
 
 def pytest_cmdline_preparse(config, args):
-    args.extend([os.path.join(os.path.dirname(__file__), "conftest.py"), "-vv", "--tb=long"])
+args.extend([os.path.join(os.path.dirname(__file__), "conftest.py"), "-vv", "--tb=long"])
 
 
 def get_test_marker(
-        item: pytest.Function
+item: pytest.Function
 ) -> List[TestCaseMarker]:  
-    return [m.name for m in item.own_markers if any(re.search(rf"^{test_marker}_", m.name) for test_marker in valid_test_markers)]
+return [m.name for m in item.own_markers if any(re.search(rf"^{test_marker}_", m.name) for test_marker in valid_test_markers)]
 
 
 def log_git():
-    
-    repos = ['extreme_automation_framework', 'extreme_automation_tests']
-    
-    try:
-        from git import Repo
-        from git.exc import InvalidGitRepositoryError, NoSuchPathError
-    except ImportError:
-        logger_obj.warning("The 'GitPython' module is not installed.")
-        return
-    
-    for repo_name in repos:
-        for path in sys.path:
-            if re.search(rf"(.*/{repo_name})$", path):
-                try:
-                    git_repo = Repo(path)
-                except (InvalidGitRepositoryError, NoSuchPathError):
-                    pass
-                else:
-                    try:
-                        logger_obj.step(f"{repo_name} git dir: '{git_repo.git_dir}'.")
-                        logger_obj.step(f"{repo_name} working tree dir: '{git_repo.working_tree_dir}'.")
-                        logger_obj.step(f"{repo_name} feature branch: '{git_repo.active_branch.name}'.")
-                        logger_obj.step(f"{repo_name} HEAD commit: '{git_repo.head.commit}'.")
-                    except:
-                        # TypeError: HEAD is a detached symbolic reference as it points to 'e893b741b753c3032f170500e19006c4cdbf6bde'
-                        # FIX XAT-260
-                        pass
-                    break
+
+repos = ['extreme_automation_framework', 'extreme_automation_tests']
+
+try:
+from git import Repo
+from git.exc import InvalidGitRepositoryError, NoSuchPathError
+except ImportError:
+logger_obj.warning("The 'GitPython' module is not installed.")
+return
+
+for repo_name in repos:
+for path in sys.path:
+    if re.search(rf"(.*/{repo_name})$", path):
+	try:
+	    git_repo = Repo(path)
+	except (InvalidGitRepositoryError, NoSuchPathError):
+	    pass
+	else:
+	    try:
+		logger_obj.step(f"{repo_name} git dir: '{git_repo.git_dir}'.")
+		logger_obj.step(f"{repo_name} working tree dir: '{git_repo.working_tree_dir}'.")
+		logger_obj.step(f"{repo_name} feature branch: '{git_repo.active_branch.name}'.")
+		logger_obj.step(f"{repo_name} HEAD commit: '{git_repo.head.commit}'.")
+	    except:
+		# TypeError: HEAD is a detached symbolic reference as it points to 'e893b741b753c3032f170500e19006c4cdbf6bde'
+		# FIX XAT-260
+		pass
+	    break
 
 
 def get_priority_marker(
-        item: pytest.Function
+item: pytest.Function
 ) -> List[PriorityMarker]:
-    return [m.name for m in item.own_markers if m.name in valid_priority_markers]
+return [m.name for m in item.own_markers if m.name in valid_priority_markers]
 
 
 def get_testbed_markers(
-        item: pytest.Function
+item: pytest.Function
 ) -> List[TestbedMarker]:
-    return [m.name for m in item.own_markers if m.name in valid_testbed_markers]
+return [m.name for m in item.own_markers if m.name in valid_testbed_markers]
 
 
 def get_item_markers(
-        item: pytest.Function
+item: pytest.Function
 ) -> List[mark.structures.Mark]:
-    return item.own_markers
+return item.own_markers
 
 
 def get_node_markers(
-        item: pytest.Function
+item: pytest.Function
 ) -> List[mark.structures.Mark]:
-    return list(item.iter_markers())
+return list(item.iter_markers())
 
 
 def get_item_dependson_markers(
-        item: pytest.Function
+item: pytest.Function
 ) -> List[mark.structures.Mark]:
-    return [marker for marker in get_item_markers(item) if marker.name == "dependson"]
+return [marker for marker in get_item_markers(item) if marker.name == "dependson"]
 
 
 def get_node_dependson_markers(
-     item: pytest.Function
+item: pytest.Function
 ) -> List[mark.structures.Mark]:
-    return [marker for marker in get_node_markers(item) if marker.name == "dependson"]
+return [marker for marker in get_node_markers(item) if marker.name == "dependson"]
 
 
 def is_onboarding_test(
-    item: pytest.Function
+item: pytest.Function
 ) -> bool:
-    return get_test_marker(item)[0] == pytest.onboarding_test_name
+return get_test_marker(item)[0] == pytest.onboarding_test_name
 
 
 def is_onboarding_cleanup_test(
-    item: pytest.Function
+item: pytest.Function
 ) -> bool:
-    return get_test_marker(item)[0] == pytest.onboarding_cleanup_test_name
+return get_test_marker(item)[0] == pytest.onboarding_cleanup_test_name
 
 
 def pytest_configure(config):
-    pytest.runlist_name: str = ""
-    pytest.runlist_path: str = "default"
-    pytest.runlist_filtering_markers: str = ""
-    pytest.suitemaps_name: List[str] = []
-    pytest.runlist_tests: List[TestCaseMarker] = []
-    pytest.suitemap_tests: Dict[str, Union[str, Dict[str, str]]] = {}
-    pytest.suitemap_data: Dict[str, Union[str, Dict[str, str]]] = {}
-    pytest.onboarding_options: Options = {}
-    pytest.run_options: Options = {}
-    pytest.onboard_1_node: bool = False 
-    pytest.onboard_2_node: bool = False 
-    pytest.onboard_stack: bool = False 
-    pytest.onboard_none: bool = True
-    pytest.all_nodes: List[Node] = []
-    pytest.standalone_nodes: List[Node] = []
-    pytest.stack_nodes: List[Node] = []
-    pytest.config_helper: PytestConfigHelper = PytestConfigHelper(pytest_config)
-    pytest.onboarding_test_name: str = "tcxm_xiq_onboarding"
-    pytest.onboarding_cleanup_test_name: str = "tcxm_xiq_onboarding_cleanup"
-    pytest.created_onboarding_locations: List[str] = []
-    pytest.created_network_policies: List[str] = []
-    pytest.created_switch_templates: List[str] = []
-    pytest.items: List[pytest.Function] = []
-    pytest.testbed_one_node_items: List[pytest.Function] = []
-    pytest.testbed_two_node_items: List[pytest.Function] = []
-    pytest.testbed_stack_items: List[pytest.Function] = []
-    pytest.xiq_version: str = None
-    pytest.data: Dict[str, str] = {}
-    pytest.onboarding_config: str = "onboarding.config.json"
+pytest.runlist_name: str = ""
+pytest.runlist_path: str = "default"
+pytest.runlist_filtering_markers: str = ""
+pytest.suitemaps_name: List[str] = []
+pytest.runlist_tests: List[TestCaseMarker] = []
+pytest.suitemap_tests: Dict[str, Union[str, Dict[str, str]]] = {}
+pytest.suitemap_data: Dict[str, Union[str, Dict[str, str]]] = {}
+pytest.onboarding_options: Options = {}
+pytest.run_options: Options = {}
+pytest.onboard_1_node: bool = False 
+pytest.onboard_2_node: bool = False 
+pytest.onboard_stack: bool = False 
+pytest.onboard_none: bool = True
+pytest.all_nodes: List[Node] = []
+pytest.standalone_nodes: List[Node] = []
+pytest.stack_nodes: List[Node] = []
+pytest.config_helper: PytestConfigHelper = PytestConfigHelper(pytest_config)
+pytest.onboarding_test_name: str = "tcxm_xiq_onboarding"
+pytest.onboarding_cleanup_test_name: str = "tcxm_xiq_onboarding_cleanup"
+pytest.created_onboarding_locations: List[str] = []
+pytest.created_network_policies: List[str] = []
+pytest.created_switch_templates: List[str] = []
+pytest.items: List[pytest.Function] = []
+pytest.testbed_one_node_items: List[pytest.Function] = []
+pytest.testbed_two_node_items: List[pytest.Function] = []
+pytest.testbed_stack_items: List[pytest.Function] = []
+pytest.xiq_version: str = None
+pytest.data: Dict[str, str] = {}
+pytest.onboarding_config: str = "onboarding.config.json"
 
 
 def log_features():
 
-    root = Path(os.path.join(imp.find_module("extreme_automation_tests")[1], "data"))
-    suitemaps: List[str] = [str(path) for path in root.rglob("suitemap_*.yaml")]
-    suitemaps.sort()
+root = Path(os.path.join(imp.find_module("extreme_automation_tests")[1], "data"))
+suitemaps: List[str] = [str(path) for path in root.rglob("suitemap_*.yaml")]
+suitemaps.sort()
 
-    if suitemaps:
-        
-        data: Dict[str, Dict[str, str]] = {}
-        max_len_values = 0
-        automated_tests = 0
-        story_tests_mapping: Dict[str, int] = {}
-        story_directory_mapping: DefaultDict[str, List[str]] = defaultdict(lambda: [])
-        
-        for index, suitemap_path in enumerate(suitemaps):
+if suitemaps:
 
-            suitemap_file = re.search(r"suitemap_.*\.yaml", suitemap_path).group(0)
-            
-            try:
-                with open(suitemap_path, "r") as content:
-                    output_suitemap = yaml.safe_load(content.read())
-            except:
-                continue
+data: Dict[str, Dict[str, str]] = {}
+max_len_values = 0
+automated_tests = 0
+story_tests_mapping: Dict[str, int] = {}
+story_directory_mapping: DefaultDict[str, List[str]] = defaultdict(lambda: [])
 
-            if not (feature_name := output_suitemap.get("data", {}).get("feature_name")):
-                logger_obj.warning(f"{suitemap_file} suitemap file won't be parsed at it does not have the 'feature_name' key.")
-                continue
+for index, suitemap_path in enumerate(suitemaps):
 
-            feature_jira_link = output_suitemap.get("data", {}).get("feature_jira_link")
-            feature_qtest_link = output_suitemap.get("data", {}).get("feature_qtest_link")
-
-            for directory in root.iterdir():
-                if path_obj := Path(suitemap_path):
-                    if directory in path_obj.parents:
-                        story_directory_mapping[directory.name].append(feature_name)
-                        break
+    suitemap_file = re.search(r"suitemap_.*\.yaml", suitemap_path).group(0)
     
-            tests: List[TestCaseMarker] = []
+    try:
+	with open(suitemap_path, "r") as content:
+	    output_suitemap = yaml.safe_load(content.read())
+    except:
+	continue
 
-            for k, v in output_suitemap.get("tests", {}).items():
-                if tc := v.get("tc"):
-                    tests.append(tc)
-                else:
-                    tests.extend([x.get("tc") for x in v.get("tests", [])])
+    if not (feature_name := output_suitemap.get("data", {}).get("feature_name")):
+	logger_obj.warning(f"{suitemap_file} suitemap file won't be parsed at it does not have the 'feature_name' key.")
+	continue
 
-            feature_tests = [test for test in tests if test not in [pytest.onboarding_test_name, pytest.onboarding_cleanup_test_name]]
-            temp_lines: List[str] = []
-            automated_tests += len(feature_tests)
+    feature_jira_link = output_suitemap.get("data", {}).get("feature_jira_link")
+    feature_qtest_link = output_suitemap.get("data", {}).get("feature_qtest_link")
 
-            temp_data = {
-                "Feature Index": index + 1,
-                "Feature Name": feature_name,
-                "Suitemap File": suitemap_file,
-                "Suitemap Path": re.search("data/.*$", suitemap_path).group(0),
-                "Automated Tests": str(len(feature_tests)),
-                "Jira Link": feature_jira_link,
-                "qTest Link": feature_qtest_link,
-                "Data Directory": directory.name
-            }
+    for directory in root.iterdir():
+	if path_obj := Path(suitemap_path):
+	    if directory in path_obj.parents:
+		story_directory_mapping[directory.name].append(feature_name)
+		break
 
-            story_tests_mapping[feature_name] = len(feature_tests)
+    tests: List[TestCaseMarker] = []
 
-            data[suitemap_path] = temp_data
-            max_len_fields = max(len(str(k)) for k in temp_data)
-            temp_max_len_values = max(len(str(v)) for v in temp_data.values())
-            max_len_values = temp_max_len_values if temp_max_len_values > max_len_values else max_len_values
+    for k, v in output_suitemap.get("tests", {}).items():
+	if tc := v.get("tc"):
+	    tests.append(tc)
+	else:
+	    tests.extend([x.get("tc") for x in v.get("tests", [])])
 
-        temp_lines.append("\n+" + "-" * (max_len_fields + max_len_values + 4) + "+")
-        for _, values in data.items():
-            for k, v in values.items():
-                if v:
-                    temp_lines.append(f"| {k:<{max_len_fields}}: {v:<{max_len_values}} |")
-            temp_lines.append("+" + "-" * (max_len_fields + max_len_values + 4) + "+")
+    feature_tests = [test for test in tests if test not in [pytest.onboarding_test_name, pytest.onboarding_cleanup_test_name]]
+    temp_lines: List[str] = []
+    automated_tests += len(feature_tests)
 
-        logger_obj.info("\n".join(temp_lines))
-        logger_obj.info(f"Found {len(suitemaps)} automated features in the data/ directory.")
-        logger_obj.info(f"Found {automated_tests} automated tests definitions in the data/ directory.")
+    temp_data = {
+	"Feature Index": index + 1,
+	"Feature Name": feature_name,
+	"Suitemap File": suitemap_file,
+	"Suitemap Path": re.search("data/.*$", suitemap_path).group(0),
+	"Automated Tests": str(len(feature_tests)),
+	"Jira Link": feature_jira_link,
+	"qTest Link": feature_qtest_link,
+	"Data Directory": directory.name
+    }
 
-        for directory, features in story_directory_mapping.items():
-            if features:
-                logger_obj.info(f"Found {len(features)} automated stories in the '{directory}' directory: '" + ", '".join(features) + "'.")
-                logger_obj.info(f"Found {sum(v for k, v in story_tests_mapping.items() if k in features)} automated test cases in the '{directory}' directory.")
-            else:
-                logger_obj.info(f"Did not find any story in the '{directory}' directory.")
+    story_tests_mapping[feature_name] = len(feature_tests)
 
-        try:
-            logger_obj.info(f"The average number of automated test cases per story is {int(sum(story_tests_mapping.values())/len(story_tests_mapping))}.")
-            logger_obj.info(
-                f"The highest number of automated test cases per story is {max(story_tests_mapping.values())} ('" + \
-                "', '".join(k for k, v in story_tests_mapping.items() if v == max(story_tests_mapping.values())) + "' feature(s)).")
-            logger_obj.info(
-                f"The least number of automated test cases per story is {min(story_tests_mapping.values())} ('" + \
-                "', '".join(k for k, v in story_tests_mapping.items() if v == min(story_tests_mapping.values())) + "' feature(s)).")
-        except:
-            pass
+    data[suitemap_path] = temp_data
+    max_len_fields = max(len(str(k)) for k in temp_data)
+    temp_max_len_values = max(len(str(v)) for v in temp_data.values())
+    max_len_values = temp_max_len_values if temp_max_len_values > max_len_values else max_len_values
+
+temp_lines.append("\n+" + "-" * (max_len_fields + max_len_values + 4) + "+")
+for _, values in data.items():
+    for k, v in values.items():
+	if v:
+	    temp_lines.append(f"| {k:<{max_len_fields}}: {v:<{max_len_values}} |")
+    temp_lines.append("+" + "-" * (max_len_fields + max_len_values + 4) + "+")
+
+logger_obj.info("\n".join(temp_lines))
+logger_obj.info(f"Found {len(suitemaps)} automated features in the data/ directory.")
+logger_obj.info(f"Found {automated_tests} automated tests definitions in the data/ directory.")
+
+for directory, features in story_directory_mapping.items():
+    if features:
+	logger_obj.info(f"Found {len(features)} automated stories in the '{directory}' directory: '" + ", '".join(features) + "'.")
+	logger_obj.info(f"Found {sum(v for k, v in story_tests_mapping.items() if k in features)} automated test cases in the '{directory}' directory.")
     else:
-        logger_obj.info("Did not find any suitemap file in the data/ directory.")
+	logger_obj.info(f"Did not find any story in the '{directory}' directory.")
+
+try:
+    logger_obj.info(f"The average number of automated test cases per story is {int(sum(story_tests_mapping.values())/len(story_tests_mapping))}.")
+    logger_obj.info(
+	f"The highest number of automated test cases per story is {max(story_tests_mapping.values())} ('" + \
+	"', '".join(k for k, v in story_tests_mapping.items() if v == max(story_tests_mapping.values())) + "' feature(s)).")
+    logger_obj.info(
+	f"The least number of automated test cases per story is {min(story_tests_mapping.values())} ('" + \
+	"', '".join(k for k, v in story_tests_mapping.items() if v == min(story_tests_mapping.values())) + "' feature(s)).")
+except:
+    pass
+else:
+logger_obj.info("Did not find any suitemap file in the data/ directory.")
 
 
 def pytest_collection_modifyitems(session, items):
 
-    if pytest.runlist_path != "default":
-        
-        log_git()
-        log_features()
+if pytest.runlist_path != "default":
 
-        logger_obj.info(f"Collected {len(items)} test functions from given test directory path(s).")
-        logger_obj.info(f"Current runlist ('{pytest.runlist_name}') is located in this yaml file: '{pytest.runlist_path}'.")
-        logger_obj.info(f"Found {len(pytest.runlist_tests)} tests in given runlist: " + "'" + "', '".join(pytest.runlist_tests) + "'.")
-                
-        suitemap_tcs: List[TestCaseMarker] = []
-        
-        for _, test_info in pytest.suitemap_tests.items():
-            if tc := test_info.get("tc"):
-                suitemap_tcs.append(tc)
-            elif tcs := test_info.get("tests"):
-                for tc in tcs:
-                    suitemap_tcs.append(tc['tc'])
+log_git()
+log_features()
 
-        logger_obj.info(f"Found {len(suitemap_tcs)} test(s) defined in given suitemap yaml files: " + "'" + "', '".join(suitemap_tcs) + "'.")
-        
-        if tcs_found_in_runlist_but_not_in_suitemap := list(set(pytest.runlist_tests).difference(set(suitemap_tcs))):
-            logger_obj.warning(
-                f"Found {len(tcs_found_in_runlist_but_not_in_suitemap)} test case(s) in the runlist yaml file"
-                f" that do not have definitions in the given suitemap yaml files: " + "'" + "', '".join(tcs_found_in_runlist_but_not_in_suitemap) + "'.")
-        
-        if tcs_found_in_suitemap_but_not_in_runlist := list(set(suitemap_tcs).difference(set(pytest.runlist_tests))):
-            logger_obj.info(
-                f"Found {len(tcs_found_in_suitemap_but_not_in_runlist)} test case(s) defined in the suitemap yaml "
-                f"that are not used in the runlist yaml file: " + "'" + "', '".join(tcs_found_in_suitemap_but_not_in_runlist) + "'.")
-        
-        for item in items:
+logger_obj.info(f"Collected {len(items)} test functions from given test directory path(s).")
+logger_obj.info(f"Current runlist ('{pytest.runlist_name}') is located in this yaml file: '{pytest.runlist_path}'.")
+logger_obj.info(f"Found {len(pytest.runlist_tests)} tests in given runlist: " + "'" + "', '".join(pytest.runlist_tests) + "'.")
+	
+suitemap_tcs: List[TestCaseMarker] = []
+
+for _, test_info in pytest.suitemap_tests.items():
+    if tc := test_info.get("tc"):
+	suitemap_tcs.append(tc)
+    elif tcs := test_info.get("tests"):
+	for tc in tcs:
+	    suitemap_tcs.append(tc['tc'])
+
+logger_obj.info(f"Found {len(suitemap_tcs)} test(s) defined in given suitemap yaml files: " + "'" + "', '".join(suitemap_tcs) + "'.")
+
+if tcs_found_in_runlist_but_not_in_suitemap := list(set(pytest.runlist_tests).difference(set(suitemap_tcs))):
+    logger_obj.warning(
+	f"Found {len(tcs_found_in_runlist_but_not_in_suitemap)} test case(s) in the runlist yaml file"
+	f" that do not have definitions in the given suitemap yaml files: " + "'" + "', '".join(tcs_found_in_runlist_but_not_in_suitemap) + "'.")
+
+if tcs_found_in_suitemap_but_not_in_runlist := list(set(suitemap_tcs).difference(set(pytest.runlist_tests))):
+    logger_obj.info(
+	f"Found {len(tcs_found_in_suitemap_but_not_in_runlist)} test case(s) defined in the suitemap yaml "
+	f"that are not used in the runlist yaml file: " + "'" + "', '".join(tcs_found_in_suitemap_but_not_in_runlist) + "'.")
+
+for item in items:
+    
+    if cls_markers := getattr(item.cls, "pytestmark", None):
+	
+	item_testbed_marker = [m for m in item.own_markers if m.name in valid_testbed_markers]
+	cls_testbed_marker = [m for m in cls_markers if m.name in valid_testbed_markers]
+	
+	for cls_marker in cls_testbed_marker:
+	    if not any(cls_marker.name == m.name for m in item_testbed_marker):
+		item.add_marker(
+		    getattr(pytest.mark, cls_marker.name)
+		)
+
+for item in items:
+<<<<<<< HEAD
             
-            if cls_markers := getattr(item.cls, "pytestmark", None):
-                
-                item_testbed_marker = [m for m in item.own_markers if m.name in valid_testbed_markers]
-                cls_testbed_marker = [m for m in cls_markers if m.name in valid_testbed_markers]
-                
-                for cls_marker in cls_testbed_marker:
-                    if not any(cls_marker.name == m.name for m in item_testbed_marker):
-                        item.add_marker(
-                            getattr(pytest.mark, cls_marker.name)
-                        )
-
-        for item in items:
-            
+=======
+>>>>>>> main
             if callspec := getattr(item, "callspec", None):
                 test_data = callspec.params["test_data"]
             else:
@@ -2652,11 +2657,37 @@ def revert_node(
         try:
             if configure_iqagent or downgrade_iqagent:
                 
+<<<<<<< HEAD
                 logger.step(f"Check that node '{node.node_name}' is reachable.")
                 check_devices_are_reachable([node])
                 logger.info(f"Successfully verified that node '{node.node_name}' is reachable.")
                 
                 with open_spawn(node) as spawn:
+=======
+                logger.step(f"Configure iqagent on node '{node.node_name}'.")
+                cli.configure_device_to_connect_to_cloud(
+                    node.cli_type, loaded_config['sw_connection_host'],
+                    spawn, vr=node.get("mgmt_vr", 'VR-Mgmt').upper(), retry_count=30
+                )
+                logger.info(f"Successfully configured iqagent on node '{node.node_name}'.")
+                
+        xiq.xflowscommonDevices.column_picker_select("Template", "Network Policy", "MAC Address")
+
+        if onboard_node:
+            if xiq.xflowscommonDevices.search_device(device_mac=node.mac, IRV=False) == -1:
+                logger.step(f"Onboard node '{node.node_name}'.")
+                xiq.xflowscommonDevices.onboard_device_quick({**node, "location": onboarding_location})
+                check_devices_are_onboarded(xiq, [node])
+                logger.info(f"Successfully onboarded node '{node.node_name}'.")
+            else:
+                logger.info(f"Node '{node.node_name}' is already onboarded.")
+
+        if assign_network_policy:
+            dev = xiq.xflowscommonDevices._get_row("device_mac", node.mac)
+            
+            if dev != -1:
+                if not re.search(policy_name, dev.text):
+>>>>>>> main
                     
                     if downgrade_iqagent:
                         logger.step(f"Downgrade iqagent on node '{node.node_name}'.")

@@ -1,0 +1,44 @@
+data:
+  feature_name: Support for showing description of PSU and PoE power details for EXOS
+  feature_jira_link: https://jira.extremenetworks.com/browse/XIQ-3155
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=12193937
+
+tests:
+
+  #################### XIQ ONBOARDING ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING ##########################
+
+  #################### TESTBED 1 NODE, TESTBED STACK ##########################
+
+  XIQ3155Tests::test_verify_poe_details_tcxm19906:
+    author: aprihotin
+    tc: tcxm_19906
+    title: Verify if PoE details showing in XIQ are same as the details showing in CLI
+
+  XIQ3155Tests::test_verify_psu_details_tcxm19907:
+    author: aprihotin
+    tc: tcxm_19907
+    title: Veriy if Power Supply Status details values are shown correctly in XIQ
+
+  XIQ3155Tests::test_change_threshold_power_from_cli_tcxm19911:
+    author: aprihotin
+    tc: tcxm_19911
+    title: Change the POE Threshold Power value from CLI and verifiy that the value si shown correctly in XIQ
+
+  XIQ3155Tests::test_change_threshold_power_from_xiq_tcxm19912:
+    author: aprihotin
+    tc: tcxm_19912
+    title: Change the POE Threshold Power value from XIQ and verifiy that the value si shown correctly in CLI
+
+  #################### TESTBED 1 NODE, TESTBED STACK ##########################

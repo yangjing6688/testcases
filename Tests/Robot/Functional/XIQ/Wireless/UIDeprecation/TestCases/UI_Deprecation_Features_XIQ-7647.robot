@@ -5,13 +5,12 @@
 #Execution Command:  robot  -v TOPO:topo.ui.deprecation.yaml -v ENV:environment.remote.win10.chrome.yaml UI_Deprecation_Features_XIQ-7647.robot
 
 *** Variables ***
-${AP_MODEL}                     AP460C
 ${COUNTRY_CODE}                 France (250)
 ${COUNTRY_NAME}                 France_(250)
 
 
 *** Settings ***
-Force Tags   testbed_1_node
+
 
 Library      String
 Library      Collections
@@ -29,8 +28,10 @@ Library      ExtremeAutomation/Imports/CommonObjectUtils.py
 
 Resource    ../../UIDeprecation/Resources/AllResources.robot
 
-Suite Setup       Pre Condition
-Suite Teardown    Test suite Cleanup
+Force Tags   testbed_1_node
+Suite Setup  Pre Condition
+Suite Teardown    Run Keyword And Warn On Failure  Test suite Cleanup
+
 
 
 *** Keywords ***
@@ -59,19 +60,25 @@ Pre Condition
 
     ${AP_SPAWN}=                      Open Spawn                               ${device1.ip}          ${device1.port}           ${device1.username}        ${device1.password}     ${device1.cli_type}
     Should not be equal as Strings    '${AP_SPAWN}'                 '-1'
-    
+
+    ${SHOW_BOOT}=                     Send                        ${AP_SPAWN}             show boot
+    ${REGION_CODE}=                   Utils.Get Regexp Matches    ${SHOW_BOOT}            Region Code:\\s+([A-Za-z]+)     1
+    ${REGION_CODE_VALUE}=             Get From List   ${REGION_CODE}  0
+
+    Skip If	'${REGION_CODE_VALUE}' not in ['World', 'EU']    Testsuite Not supported Device with FCC Region Code
+
     Set Global Variable               ${AP_SPAWN}
-    
+
     ${disconnect_ap}=                 Disconnect Device From Cloud      ${device1.cli_type}      ${AP_SPAWN}
     should be equal as integers       ${disconnect_ap}             1
-    
+
     ${delete_ap}=                     Delete Device                           device_serial=${device1.serial}
     should be equal as integers       ${delete_ap}                   1
 
     ${np_list_view}=                  Navigate To Network Policies List View Page
     should be equal as integers       ${np_list_view}                1
 
-    ${country_code}=                  Add AP Template With Country Code       ${NW_POLICY_NAME}       ${AP_MODEL}        ${AP_TEMPLATE_NAME}     ${COUNTRY_CODE}
+    ${country_code}=                  Add AP Template With Country Code       ${NW_POLICY_NAME}       ${device1.model}        ${AP_TEMPLATE_NAME}     ${COUNTRY_CODE}
     should be equal as integers       ${country_code}                1
 
 
@@ -91,10 +98,8 @@ Test suite Cleanup
     ${delete_template}=               Delete AP Templates          ${AP_TEMPLATE_NAME}
     Log                               ${delete_template}
 
-    [Teardown]
-    Logout User
-    Quit Browser
-
+    [Teardown]   run keywords       Logout User
+    ...                             Quit Browser
 
 *** Test Cases ***
 
@@ -129,6 +134,3 @@ TCXM-21577: Unhide Country Code - AP templates
 
     ${country_code_status}=           Get Ap Country                          ${device1.serial}
     should be equal as strings        '${country_code_status}'                '${COUNTRY_NAME}'
-
-
-

@@ -1,0 +1,47 @@
+runlist_APC_45707:
+  suitemap:
+    - suitemap_APC_45707.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ['exos', "voss"]
+        create_network_policy: no
+      node_2:
+        run_os: ['exos', "voss"]
+        create_network_policy: no
+    node_stack:
+      run_os: ["exos"]
+      create_network_policy: no
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_9570 # 1 node
+    - tcxm_9568 # 1 node
+    - tcxm_9567 # 1 node
+    - tcxm_9310 # 1 node
+    - tcxm_9311 # 1 node
+    - tcxm_9312 # 1 node
+    - tcxm_9314 # 1 node
+    - tcxm_9315 # 1 node
+    - tcxm_9316 # 1 node
+    - tcxm_9317 # 1 node
+    - tcxm_9318 # 1 node
+    - tcxm_9319 # 1 node
+    - tcxm_9322 # 1 node
+    - tcxm_9324 # 1 node
+    - tcxm_9325 # 1 node
+    - tcxm_9326 # 1 node
+    - tcxm_9562 # 1 node
+    - tcxm_9565 # 1 node
+    - tcxm_9566 # 1 node
+    - tcxm_9569 # 1 node
+    - tcxm_9313 # 1 node
+    - tcxm_9327 # 1 node
+    - tcxm_9563 # 1 node
+    - tcxm_9331 # 1 node
+    - tcxm_9320 # 2 node
+    - tcxm_9321 # 2 node
+    - tcxm_9323 # 2 node
+    - tcxm_9564 # 2 node
+    - tcxm_9329 # stack
+    - tcxm_9330 # stack
+    - tcxm_xiq_onboarding_cleanup
