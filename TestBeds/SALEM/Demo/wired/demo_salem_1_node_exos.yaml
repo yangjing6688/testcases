@@ -21,6 +21,7 @@ netelem1:
   auth_mode:                "basic"
   image_family:             ""
   onboard_device_type:      "Real"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
 
   tgen:
     port_a:

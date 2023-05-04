@@ -66,7 +66,12 @@ class ReportReformatter:
                 file_point.write(html_str)
 
         if self._get_rename_report_file():
-            os.rename(self._get_input_report_file(), self._get_report_original_file_name())
+            original_file_rename = self._get_report_original_file_name()
+            current_platform = sys.platform
+            if 'win32' in current_platform and os.path.isfile(original_file_rename):
+                os.remove(original_file_rename)
+
+            os.rename(self._get_input_report_file(), original_file_rename)
             os.rename(self._get_reformat_report_file(), self._get_input_report_file())
 
     def _replace_html_values(self, html_str):
