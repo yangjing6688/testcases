@@ -8,3 +8,4 @@ aio_xiq: 0
 iapi_base_url: "https://int1.qa.xcloudiq.com"
 sw_capwap_url: "int1r1.qa.xcloudiq.com"
 wing_capwap_url: "int1r1-wing.qa.xcloudiq.com"
+xapi_url:  "int1-api.qa.xcloudiq.com"
