@@ -1,14 +1,14 @@
 ap1:
-  name:                     bui-flo-0067
+  name:                     bui-flo-0354
   connection_method:        "ssh"
   ip:                       10.16.166.249
   port:                     22
   username:                 admin
   password:                 Aerohive123
-  serial:                   "01501708180444"
+  serial:                   "01501708180354"
   console_ip:               10.16.166.228
   console_port:             4005
-  mac:                      7C95B100E8C0
+  mac:                      7C95B100D240
   cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP150W
