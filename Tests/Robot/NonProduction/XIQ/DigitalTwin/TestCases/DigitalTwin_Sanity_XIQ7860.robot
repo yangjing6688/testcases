@@ -17,7 +17,7 @@
 
 *** Settings ***
 Library         Collections
-Library         common/TestFlow.py
+Library         DependencyLibrary
 Library         xiq/flows/common/Login.py
 Library         xiq/flows/common/Navigator.py
 Library         xiq/flows/globalsettings/GlobalSetting.py
@@ -47,6 +47,8 @@ ${DT_MODEL}                 ${netelem1.model}
 ${DT_VERSION}               ${netelem1.digital_twin_version}
 ${DT_IP_ADDRESS}            ${netelem1.ip}
 ${LOCATION}                 ${netelem1.location}
+${DT_MAC}
+${DT_SERIAL}
 ${DT_IQAGENT}
 
 *** Test Cases ***
@@ -75,7 +77,7 @@ TCCS-13498: Onboard Digital Twin Device
     [Documentation]     Onboard "Digital Twin" device.
     [Tags]      tccs-13498      development    xiq    digital_twin    sanity
 
-    Depends On      TCCS-13497
+    Depends On Test     TCCS-13497: Enable Digital Twin Feature
 
     ${result}=  Navigate to Devices
     Should Be Equal As Integers                             ${result}       1
@@ -126,7 +128,7 @@ TCCS-13499: Digital Twin Device D360 Overview panel
     [Documentation]     Open D360 view.  Verify the device specific information is displayed.
     [Tags]      tccs-13499      development    xiq    digital_twin    sanity
 
-    Depends On      TCCS-13498
+    Depends On Test     TCCS-13498: Onboard Digital Twin Device
 
     ${result}=  Navigate to Devices
     Should Be Equal As Integers                             ${result}       1
@@ -163,7 +165,7 @@ TCCS-13500: Disable Digital Twin Feature
     ${result}=  validate digital twin option hidden
     Should Be Equal As Strings                              ${result}       True
 
-    Depends On      TCCS-13498
+    Depends On Test     TCCS-13498: Onboard Digital Twin Device
 
     ${status}=  Get Device Status                           device_serial=${DT_SERIAL}
     Should Contain                                          ${status}       disconnected
