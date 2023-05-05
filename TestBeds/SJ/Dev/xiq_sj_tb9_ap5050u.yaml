@@ -1,0 +1,14 @@
+
+ap1:
+  name: tyo-2nd-0111
+  make: Extreme - Aerohive
+  model: AP5050U
+  serial: "WM032241W-30111"
+  os: Cloud IQ Engine
+  cli_type: AH-AP
+  platform: aerohive
+  connection_method: ssh
+  ip: 10.254.156.107
+  port: 22
+  username: admin
+  password: Aerohive123

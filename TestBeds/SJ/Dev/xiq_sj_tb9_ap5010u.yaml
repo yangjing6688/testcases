@@ -1,0 +1,14 @@
+
+ap1:
+  name: add-Flo-0009
+  make: Extreme - Aerohive
+  model: AP5010U
+  serial: "WM012243W-30009"
+  os: Cloud IQ Engine
+  cli_type: AH-AP
+  platform: aerohive
+  connection_method: ssh
+  ip: 10.254.156.104
+  port: 22
+  username: admin
+  password: Aerohive123
