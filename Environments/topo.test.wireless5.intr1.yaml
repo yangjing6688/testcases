@@ -1,0 +1,9 @@
+test_url: "https://int1r1.qa.xcloudiq.com"
+capwap_url: "int1r1-cwpm-01.qa.xcloudiq.com"
+sw_capwap_url: "int1r1.qa.xcloudiq.com"
+wing_capwap_url: "int1r1-wing.qa.xcloudiq.com"
+xapi_url: "int1-api.qa.xcloudiq.com"
+tenant_username: "ahqatest+int1-1@gmail.com"
+tenant_password: "Aerohive123"
+base_url: "https://int1r1.qa.xcloudiq.com"
+
