@@ -2,16 +2,13 @@
 # Date            : 09 Apr 2022
 # Description     : Automation for XIQ UI Deprecation Features
 # User Stroy      : https://jira.extremenetworks.com/browse/XIQ-4520
-                    https://jira.extremenetworks.com/browse/XIQ-3825
-                    https://jira.extremenetworks.com/browse/XIQ-3564
-                    https://jira.extremenetworks.com/browse/XIQ-5862
+#                   https://jira.extremenetworks.com/browse/XIQ-3825
+#                   https://jira.extremenetworks.com/browse/XIQ-3564
+#                   https://jira.extremenetworks.com/browse/XIQ-5862
 #Execution Command:  robot -v TOPO:topo.uideprecate.yaml -v ENV:environment.remote.win10.chrome.yaml -v TESTBED:BANGALORE/Dev/testbed-hunise-all.yaml UI_Deprecation_Features_XIQ-4520_XIQ-3825_XIQ-3564_XIQ-5862.robot
 
 *** Variables ***
-${AP_POLICY_NAME}                    ap-template-np
-${AP_MODEL}                          AP250
 ${AP_SUPPL_CLI_CMDS}                 show capwap client
-${SWITCH_POLICY_NAME}                switch-template-np
 ${SWITCH_MODEL}                      SR2024P
 ${SWITCH_SUPPL_CLI_CMDS}             show version
 
@@ -47,13 +44,15 @@ Variables    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/location_sanit
 Library	     Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   MU1
 
 Suite Setup       Test Suite Setup
-Suite Teardown    Test suite Cleanup
+Suite Teardown    Run Keyword And Warn On Failure   Test suite Cleanup
 
 *** Keywords ***
 Test Suite Setup
     # Create a random string for the variables
     ${random_string}=         Get Random String
 
+    ${AP_POLICY_NAME}=          Catenate    AP_NP_NAME_${random_string}
+    ${SWITCH_POLICY_NAME}=      Catenate    SWITCH_NP_NAME_${random_string}
     ${AP_TMPL_NAME}=            Catenate    AP_TMPL_NAME_${random_string}
     ${SW_TMPL_NAME}=            Catenate    SW_TMPL_NAME_${random_string}
     ${AP_SCLI_NAME}=            Catenate    AP_SCLI_NAME_${random_string}
@@ -64,8 +63,9 @@ Test Suite Setup
     Set Global Variable         ${AP_SCLI_NAME}
     Set Global Variable         ${SW_SCLI_NAME}
 
-    Set Global Variable         ${POLICY_NAME}
-    Set Global Variable         ${SSID_NAME}
+
+    Set Global Variable         ${AP_POLICY_NAME}
+    Set Global Variable         ${SWITCH_POLICY_NAME}
 
     # Use this method to convert the ap, wing, netelem to a generic device object
     # ap1       => device1
@@ -75,18 +75,21 @@ Test Suite Setup
 
     ${login_status}=                  Login User               ${tenant_username}     ${tenant_password}
     should be equal as integers       ${login_status}          1
-    
+
     ${AP_SPAWN}=                      Open Spawn         ${device1.ip}    ${device1.port}    ${device1.username}    ${device1.password}     ${device1.cli_type}
     Should not be equal as Strings    '${AP_SPAWN}'      '-1'
 
     Set Global Variable               ${AP_SPAWN}
 
-    ${delete_ap}=                     Delete Device            device_serial=${device1.serial}
-    should be equal as integers       ${delete_ap}             1
+    ${SEARCH_RESULT}=           Search Device               device_serial=${device1.serial}     ignore_failure=True
+    IF  ${SEARCH_RESULT} == 1
+        ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}      ${AP_SPAWN}
+        Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
 
-    ${disconnect_ap}=                 Disconnect Device From Cloud      ${device1.cli_type}      ${AP_SPAWN}
-    should be equal as integers       ${disconnect_ap}             1
-    
+        ${DELETE_DEVICE_RESULT}=        Delete Device                       device_serial=${device1.serial}
+        Should Be Equal As Integers     ${DELETE_DEVICE_RESULT}             1
+    END
+
     ${delete_ap_nw_policies}=         Delete Network Polices    ${AP_POLICY_NAME}    ${SWITCH_POLICY_NAME}
     should be equal as integers       ${delete_ap_nw_policies}   1
 
@@ -114,11 +117,6 @@ Test Suite Setup
     ${device_status}=                 Get Device Status            device_mac=${device1.mac}
     Should Be Equal As Strings        '${device_status}'           'green'
 
-    [Teardown]
-    Logout User
-    Quit Browser
-
-
 Test suite Cleanup
 
     ${delete_device}=                 Delete Device            device_serial=${device1.serial}
@@ -139,11 +137,8 @@ Test suite Cleanup
     ${delete_ssids}=                  Delete ssids                    ${SSID_NAME}
     should be equal as integers       ${delete_ssids}          1
 
-
-    [Teardown]
-    Logout User
-    Quit Browser
-
+    [Teardown]  run keywords       logout user
+    ...                            Quit Browser
 
 *** Test Cases ***
 
@@ -153,43 +148,26 @@ TCXM-17532 : Relocate Supplemental CLI under Switch Template
 
     [Tags]       tcxm_17532         development
 
-    ${result}=                 Login User             ${tenant_username}      ${tenant_password}
-    should be equal as strings       '${result}'                   '1'
-
-    Delete Network Policy             ${SWITCH_POLICY_NAME}
+    ${delete_np}=                 Delete Network Policy             ${SWITCH_POLICY_NAME}
+    should be equal as strings       '${delete_np}'                   '1'
 
     ${switch_scli}              Enable Supplemental CLI In Switch Template    ${SWITCH_POLICY_NAME}    ${SWITCH_MODEL}     ${SW_TMPL_NAME}    ${SW_SCLI_NAME}    ${SWITCH_SUPPL_CLI_CMDS}
     should be equal as strings       '${switch_scli}'                   '1'
 
     Log                               ${switch_scli}
 
-    [Teardown]
-    Logout User
-    Quit Browser
-
-
-
 TCXM-17534 : Relocate Supplemental CLI under AP Template
 
 	[Documentation]         Verify that Supplemental CLI is relocated to AP Template under advanced settings
-
     [Tags]       tcxm_17534         development
 
-    ${result}=                 Login User             ${tenant_username}     ${tenant_password}
-    should be equal as strings       '${result}'                   '1'
+    ${delete_np}=                 Delete Network Policy             ${AP_POLICY_NAME}
+    should be equal as strings       '${delete_np}'                   '1'
 
-    Delete Network Policy             ${AP_POLICY_NAME}
-
-    ${ap_scli}                 Enable Supplemental CLI In AP Template    ${AP_POLICY_NAME}    ${AP_MODEL}     ${AP_TMPL_NAME}    ${AP_SCLI_NAME}   ${AP_SUPPL_CLI_CMDS}
+    ${ap_scli}                 Enable Supplemental CLI In AP Template    ${AP_POLICY_NAME}    ${device1.model}     ${AP_TMPL_NAME}    ${AP_SCLI_NAME}   ${AP_SUPPL_CLI_CMDS}
     should be equal as strings       '${ap_scli}'                   '1'
 
     Log                               ${ap_scli}
-
-    [Teardown]
-    Logout User
-    Quit Browser
-
-
 
 TCXM-20275 : Enable PING for Installer user for Aerohive AP
 
@@ -197,32 +175,17 @@ TCXM-20275 : Enable PING for Installer user for Aerohive AP
 
     [Tags]       tcxm_20275         development
 
-    ${result}=                 Login User             ${tenant_username_installer}     ${tenant_password}
-    should be equal as strings       '${result}'                   '1'
-
     ${select_ap}               select device                         device_serial=${device1.serial}
     should be equal as strings       '${select_ap}'                 '1'
 
     ${ping}                    Installer Role Diagnostics Ping
-
     should be equal as strings       '${ping}'                      '1'
 
     Log                               ${ping}
 
-    [Teardown]
-    Logout User
-    Quit Browser
-
-
-
 TCXM-17544 : Point client hyperlink to Client 360 page
-
 	[Documentation]         Verify that clicking on clients hyperlink points to ML Insights Client 360 page
-
     [Tags]       tcxm_17544         development
-
-    ${result}=                        Login User             ${tenant_username}     ${tenant_password}
-    should be equal as strings       '${result}'                   '1'
 
     ${CONNECT_STATUS}=              MU1.Connect Open Network        ${SSID_NAME}
     should be equal as strings      '${CONNECT_STATUS}'    '1'
