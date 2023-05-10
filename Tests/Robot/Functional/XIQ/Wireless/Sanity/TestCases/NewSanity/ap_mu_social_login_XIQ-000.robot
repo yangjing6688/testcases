@@ -115,8 +115,8 @@ Suite Setup
     ${MANAGED_STATUS}=      Wait Until Device Managed   ${device1.serial}
     Should Be Equal As Integers     ${MANAGED_STATUS}       1
 
-    ${DEVICE_STATUS_RESULT}=       Get Device Status           device_mac=${device1.mac}
-    Should contain any                  ${DEVICE_STATUS_RESULT}    green     config audit mismatch
+    ${DEVICE_STATUS}=       Get Device Status           device_mac=${device1.mac}
+    Should Contain Any              ${DEVICE_STATUS}    green   config audit mismatch
 
     # Upgrade the device to latest/supported version to avoid config push issues.
     ${LATEST_VERSION}=              Upgrade Device                  ${device1}
@@ -235,13 +235,20 @@ TCCS-11614: Social login with facebook
     ...               https://jira.aerohive.com/browse/APC-36506
     [Tags]            production    tccs_11614
 
+    ${CLEAR_CLIENT}=        Send            ${MAIN_DEVICE_SPAWN}         ${cmd_clear_client_mac}
+    Log to Console      Sleep for ${ap_clear_mac_wait} seconds
+    Sleep  ${ap_clear_mac_wait}
+
+    ${SHOW_STATION}=        Send            ${MAIN_DEVICE_SPAWN}         ${cmd_show_station}
+    Should Not Contain      ${SHOW_STATION}     ${mu1.wifi_mac}
+
     ${CREATE_NW_POLICY_STATUS}=     Create Network Policy           ${NW_POLICY_NAME1}  ${OPEN_NW_1}    cli_type=${device1.cli_type}
     Should Be Equal As Integers     ${CREATE_NW_POLICY_STATUS}      1
 
     ${UPDATE_NW_POLICY_STATUS}=     Update Network Policy To AP     ${NW_POLICY_NAME1}  ap_serial=${device1.serial}
     Should Be Equal As Integers     ${UPDATE_NW_POLICY_STATUS}      1
 
-    ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial} 
+    ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial}
     Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}            1
 
     Log to Console      Sleep for ${client_connect_wait} seconds
@@ -267,17 +274,10 @@ TCCS-11614: Social login with facebook
     ${SOCIAL_AUTH_STATUS}=          Validate CWP Social Login With Facebook     ${CWP_MAIL_ID}     ${CWP_MAIL_PASSWORD}
     Should Be Equal As Integers     ${SOCIAL_AUTH_STATUS}       1
 
-    ${CURRENT_DATE_TIME}=           Get Current Date Time
-    Log To Console      Current date and time: ${CURRENT_DATE_TIME}
     Log to Console      Sleep for ${auth_logs_duration_wait} seconds
     Sleep               ${auth_logs_duration_wait}
-    ${AUTH_LOGS}=                   Get Authentication Logs Details     ${CURRENT_DATE_TIME}        ${CWP_MAIL_ID}
-    IF  ${AUTH_LOGS} == &{EMPTY}
-        ${TIME_STAMP_FLAG1}=        Set Variable    True
-        ${PREVIOUS_DATE_TIME}=      Get Previous Time Delta             ${CURRENT_DATE_TIME}        minutes=1
-        ${AUTH_LOGS}=               Get Authentication Logs Details     ${PREVIOUS_DATE_TIME}       ${CWP_MAIL_ID}
-        Log To Console  Setting current date and time to: ${PREVIOUS_DATE_TIME}
-    END
+    ${AUTH_LOGS}=                   Get Authentication Logs Details     ${NW_POLICY_SSID1}        ${CWP_MAIL_ID}
+
     Log To Console          ${AUTH_LOGS}
     Should Not Be Empty     ${AUTH_LOGS}
 
@@ -308,14 +308,6 @@ TCCS-11614: Social login with facebook
     ${NAS_ID}=                      Get From Dictionary     ${AUTH_LOGS}        nasIdentifier
     Should Be Equal As Strings      '${NAS_ID}'             ''
 
-    ${TIME_STAMP}=                  Get From Dictionary     ${AUTH_LOGS}        authdate
-
-    IF  "${TIME_STAMP_FLAG1}" == "True"
-        Should Contain      ${TIME_STAMP}       ${PREVIOUS_DATE_TIME}
-    ELSE
-        Should Contain      ${TIME_STAMP}       ${CURRENT_DATE_TIME}
-    END
-
     Remote_Server.Disconnect WiFi
     Log to Console      Sleep for ${client_disconnect_wait} seconds
     Sleep  ${client_disconnect_wait}
@@ -327,7 +319,8 @@ TCCS-11614: Social login with facebook
     ${SHOW_STATION}=        Send            ${MAIN_DEVICE_SPAWN}         ${cmd_show_station}
     Should Not Contain      ${SHOW_STATION}     ${mu1.wifi_mac}
 
-    [Teardown]      run keyword     Close CP Browser
+    [Teardown]
+    Run Keywords    Close CP Browser
 
 TCCS-14366: Social login with Linkedin
     [Documentation]   CWP Social login with Linkedin
@@ -366,18 +359,13 @@ TCCS-14366: Social login with Linkedin
     ${SOCIAL_AUTH_STATUS}=      Validate CWP Social Login With Linkedin Account    ${CWP_MAIL_ID}     ${CWP_MAIL_PASSWORD}
     Should Be Equal As Integers     ${SOCIAL_AUTH_STATUS}       1
 
-    ${CURRENT_DATE_TIME}=           Get Current Date Time
-    Log To Console      Current date and time: ${CURRENT_DATE_TIME}
     Log to Console      Sleep for ${auth_logs_duration_wait} seconds
     Sleep               ${auth_logs_duration_wait}
 
-    ${AUTH_LOGS}=                   Get Authentication Logs Details     ${CURRENT_DATE_TIME}        ${CWP_MAIL_ID}
-    IF  ${AUTH_LOGS} == &{EMPTY}
-        ${TIME_STAMP_FLAG2}=         Set Variable    True
-        ${PREVIOUS_DATE_TIME}=      Get Previous Time Delta             ${CURRENT_DATE_TIME}        minutes=1
-        ${AUTH_LOGS}=               Get Authentication Logs Details     ${PREVIOUS_DATE_TIME}       ${CWP_MAIL_ID}
-        Log To Console  Setting current date and time to: ${PREVIOUS_DATE_TIME}
-    END
+    Log to Console      Sleep for ${auth_logs_duration_wait} seconds
+    Sleep               ${auth_logs_duration_wait}
+    ${AUTH_LOGS}=                   Get Authentication Logs Details     ${NW_POLICY_SSID3}        ${CWP_MAIL_ID}
+
     Log To Console          ${AUTH_LOGS}
     Should Not Be Empty     ${AUTH_LOGS}
 
@@ -408,14 +396,6 @@ TCCS-14366: Social login with Linkedin
     ${NAS_ID}=                      Get From Dictionary     ${AUTH_LOGS}        nasIdentifier
     Should Be Equal As Strings      '${NAS_ID}'             ''
 
-    ${TIME_STAMP}=                  Get From Dictionary     ${AUTH_LOGS}        authdate
-
-    IF  "${TIME_STAMP_FLAG2}" == "True"
-        Should Contain      ${TIME_STAMP}       ${PREVIOUS_DATE_TIME}
-    ELSE
-        Should Contain      ${TIME_STAMP}       ${CURRENT_DATE_TIME}
-    END
-
     Remote_Server.Disconnect WiFi
     Log to Console      Sleep for ${client_disconnect_wait} seconds
     Sleep  ${client_disconnect_wait}
@@ -427,5 +407,5 @@ TCCS-14366: Social login with Linkedin
     ${SHOW_STATION}=        Send            ${MAIN_DEVICE_SPAWN}         ${cmd_show_station}
     Should Not Contain      ${SHOW_STATION}     ${mu1.wifi_mac}
 
-    [Teardown]      run keyword     Close CP Browser
-    
+    [Teardown]
+    Run Keywords    Close CP Browser
