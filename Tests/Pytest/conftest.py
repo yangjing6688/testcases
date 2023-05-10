@@ -2606,7 +2606,8 @@ def revert_node(
     debug: Callable,
     check_devices_are_onboarded: CheckDevicesAreOnboarded, 
     check_devices_are_reachable: CheckDevicesAreReachable,
-    logger: PytestLogger
+    logger: PytestLogger,
+    screen: Screen
 ) -> Callable:
     """
     This fixture is used to easily revert the node to a specific state.
@@ -2631,6 +2632,8 @@ def revert_node(
         :assign_network_policy: specifies if the default network policy needs to be assigned to the node
         :push_network_policy: specifies if the network poliy needs to be pushed to the node
         :raise_error: default value is True; if raise_error is False then in case of failure the error will be caught/won't be raised
+        :custom_network_policy_name: a specific network policy to be assgined or the one created in the onboarding test
+        :custom_onboarding_location: a specific location to be used or the one used in the onboarding test
     """
 
     @debug
@@ -2643,11 +2646,13 @@ def revert_node(
         assign_network_policy=True,
         push_network_policy=True,
         navigate_to_devices=True,
-        raise_error=True
+        raise_error=True,
+        custom_network_policy_name=None,
+        custom_onboarding_location=None
         ):
         
-        onboarding_location: str = request.getfixturevalue(f"{node.node_name}_onboarding_location")
-        policy_name: str = request.getfixturevalue(f"{node.node_name}_policy_name")
+        onboarding_location: str = custom_onboarding_location or request.getfixturevalue(f"{node.node_name}_onboarding_location")
+        policy_name: str = custom_network_policy_name or request.getfixturevalue(f"{node.node_name}_policy_name")
 
         try:
             if configure_iqagent or downgrade_iqagent:
@@ -2672,15 +2677,30 @@ def revert_node(
                         logger.info(f"Successfully configured iqagent on node '{node.node_name}'.")
             
             if navigate_to_devices:
+                screen.save_screen_shot()
                 xiq.xflowscommonNavigator.navigate_to_devices()
+                screen.save_screen_shot()
                 
             xiq.xflowscommonDevices.column_picker_select("Template", "Network Policy", "MAC Address")
-
+            screen.save_screen_shot()
+            
             if onboard_node:
-                if xiq.xflowscommonDevices.search_device(device_mac=node.mac, IRV=False) == -1:
+                node_not_onboarded = xiq.xflowscommonDevices.search_device(device_mac=node.mac, IRV=False) == -1
+                
+                if not node_not_onboarded and not assign_network_policy:
+                    logger.step(f"Node '{node.node_name}' is already onboarded but the assign network policy flag is disabled. "
+                                "Will delete the device and then it will be onboarded again without any network policy assigned.")
+                    screen.save_screen_shot()
+                    xiq.xflowscommonDevices.delete_device(device_mac=node.mac)
+                    screen.save_screen_shot()
+                    node_not_onboarded = True
+
+                if node_not_onboarded:
                     logger.step(f"Onboard node '{node.node_name}'.")
+                    screen.save_screen_shot()
                     xiq.xflowscommonDevices.onboard_device_quick({**node, "location": onboarding_location})
                     check_devices_are_onboarded(xiq, [node])
+                    screen.save_screen_shot()
                     logger.info(f"Successfully onboarded node '{node.node_name}'.")
                 else:
                     logger.info(f"Node '{node.node_name}' is already onboarded.")
@@ -2692,17 +2712,22 @@ def revert_node(
                     if not re.search(policy_name, dev.text):
                         
                         logger.step(f"Assign network policy '{policy_name}' to node '{node.node_name}'.")
+                        screen.save_screen_shot()
                         assert xiq.xflowsmanageDevices.assign_network_policy_to_switch_mac(
                             policy_name=policy_name, mac=node.mac) == 1, \
                             f"Couldn't assign policy {policy_name} to device '{node}' (node: '{node.name}')."
+                        screen.save_screen_shot()
                         logger.info(f"Successfully assigned network policy '{policy_name}' to node '{node.node_name}'.")
                         
                         if push_network_policy:
                             
                             logger.step(f"Push network policy '{policy_name}' to node '{node.node_name}'.")
+                            screen.save_screen_shot()
                             xiq.xflowscommonDevices.get_update_devices_reboot_rollback(
                                 policy_name=policy_name, option="disable", device_mac=node.mac)
+                            screen.save_screen_shot()
                             xiq.xflowscommonDevices.check_device_update_status_by_using_mac(device_mac=node.mac)
+                            screen.save_screen_shot()
                             logger.info(f"Successfully pushed network policy '{policy_name}' to node '{node.node_name}'.")
                             
                     else:
@@ -3312,8 +3337,8 @@ def policy_config(
         else:
             onboarding_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
             
-            random_policy_name = f"{pytest.runlist_name.replace('runlist_', '')}_np_{get_random_word(length=8)}"[:28]
-            random_template_name = f"{pytest.runlist_name.replace('runlist_', '')}_template_{get_random_word(length=8)}"[:28]
+            random_policy_name = f"{get_random_word(length=4)}_np_{pytest.runlist_name.replace('runlist_', '')}"[:27]
+            random_template_name = f"{get_random_word(length=4)}_template_{pytest.runlist_name.replace('runlist_', '')}"[:27]
             
             policy_name: str = onboarding_options.get("policy_name", random_policy_name)
             template_name: str = onboarding_options.get("template_name", random_template_name)
