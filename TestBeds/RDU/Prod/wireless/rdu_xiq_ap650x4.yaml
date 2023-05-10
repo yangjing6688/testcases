@@ -1,6 +1,5 @@
 ap1:
   name:                     bui-flo-0027
-  connection_method:        "telnet"
   ip:                       10.69.61.137
   port:                     22
   connection_method:        "ssh"
@@ -9,7 +8,7 @@ ap1:
   serial:                   "16501811280027"
   console_ip:               10.69.1.112
   console_port:             2008
-  mac:                      348584147f80
+  mac:                      348584147F80
   cli_type:                 "AH-AP"
   platform:                 aerohive
   model:                    AP650X
