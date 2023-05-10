@@ -88,14 +88,14 @@ Clean Up Test Device and Confirm Success
     Navigate to Devices and Confirm Success
 
     RUN KEYWORD IF  '${netelem1.platform}' == 'Stack'  Delete Device   device_mac=${netelem1.mac}
-
-    @{result} =    Split String    ${netelem1.serial}    ,
-    FOR         ${serialnumber}     IN    @{result}
-                Delete Device       device_serial=${serialnumber}
+    IF   '${netelem1.platform}' == 'Stack'
+        @{result} =    Split String    ${netelem1.serial}    ,
+        FOR         ${serialnumber}     IN    @{result}
+                    Delete Device       device_serial=${serialnumber}
+        END
+    ELSE
+        ${del_result}=  Delete Device   device_serial=${serial}
     END
-
-    ${del_result}=  Delete Device   device_serial=${serial}
-
 Navigate to Devices and Confirm Success
     [Documentation]     Navigates to the Manage> Devices view and confirms the action was successful
 

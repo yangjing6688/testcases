@@ -43,15 +43,18 @@ TCXM-14733: Login to a VIQ via XAPI
     # Sleep of 10s added as a temporary fix for XIQ-9267. Sleep needs be removed once the defect is fixed.
     sleep    10s 
 
-    Delete Device      device_serial=${netelem1.serial}
+    
+    IF   '${netelem1.platform}' == 'Stack' or '${netelem1.platform}' == 'stack'
 
-    @{result} =    Split String    ${netelem1.serial}    ,
-    FOR         ${serialnumber}     IN    @{result}
+    	@{result} =    Split String    ${netelem1.serial}    ,
+    	FOR         ${serialnumber}     IN    @{result}
                 Delete Device       device_serial=${serialnumber}
+    	END
+    ELSE
+    	Delete Device      device_serial=${netelem1.serial}
     END
-
+    
     Delete Device         device_mac=${netelem1.mac}
-
     ${LOCATION}      Set Variable       ${location},${building},${floor}
 
     set global variable   ${onboard_flag}  1

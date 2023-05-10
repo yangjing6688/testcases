@@ -54,11 +54,16 @@ TCXM-14733: Login to a VIQ via XAPI
     Navigate to Devices and Confirm Success
     sleep    10s 
 
-    Delete Device       device_serial=${netelem1.serial}
-    @{result} =    Split String    ${netelem1.serial}    ,
-    FOR		${serialnumber}     IN    @{result}
-    		Delete Device       device_serial=${serialnumber}
+    
+    IF   '${netelem1.platform}' == 'Stack' or '${netelem1.platform}' == 'stack'
+	    @{result} =    Split String    ${netelem1.serial}    ,
+	    FOR		${serialnumber}     IN    @{result}
+			Delete Device       device_serial=${serialnumber}
+	    END
+    ELSE
+    	    Delete Device       device_serial=${netelem1.serial}
     END
+    
     Delete Device         device_mac=${netelem1.mac}
 
     ${LOCATION}      Set Variable       ${location},${building},${floor}
