@@ -8,8 +8,8 @@ def random_word(x=12):
 
 @pytest.mark.dependson("tcxm_xiq_onboarding")
 @pytest.mark.testbed_stack
-@pytest.mark.EXOS
-@pytest.mark.VOSS
+@pytest.mark.exos
+@pytest.mark.voss
 @pytest.mark.testbed_1_node
 class Xiq921Tests:
 

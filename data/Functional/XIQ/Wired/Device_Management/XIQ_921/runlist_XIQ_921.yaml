@@ -4,9 +4,15 @@ runlist_XIQ_921:
   onboarding_options:
     standalone:
       node_1:
-        run_os: ["exos", "voss"]
+        run_os: ['exos','voss']
+        create_network_policy: yes
+        initial_network_policy_push: yes
+        assign_network_policy_to_device: yes
     node_stack:
       run_os: ["exos"]
+      create_network_policy: yes
+      initial_network_policy_push: yes
+      assign_network_policy_to_device: yes
   tests:
     - tcxm_xiq_onboarding
     - tcxm_18417
