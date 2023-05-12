@@ -825,15 +825,13 @@ def pytest_collection_modifyitems(session, items):
         if items_without_valid_test_markers:
             error = '\n' + '\n'.join(items_without_valid_test_markers)
             error += f"\nValid test markers should begin with any of these markers - {valid_test_markers}."
-            logger_obj.error(error)
-            pytest.fail(error)
+            logger_obj.fail(error)
 
         for test_code, functions in item_test_marker_mapping.items():
             if len(functions) > 1:
                 error = f"Test marker '{test_code}' is used as marker for more than one test function:\n" +\
                         "\n".join(functions)
-                logger_obj.error(error)
-                pytest.fail(error)
+                logger_obj.fail(error)
 
         for item, test_markers in test_marker_item_mapping.items():
             if len(test_markers) > 1:
@@ -892,15 +890,13 @@ def pytest_collection_modifyitems(session, items):
             if items_without_priority_markers:
                 error = '\n' + '\n'.join(items_without_priority_markers)
                 error += f"\nValid test priorities: {valid_priority_markers}."
-                logger_obj.error(error)
-                pytest.fail(error)
+                logger_obj.fail(error)
                         
             for item, priority in priority_item_mapping.items():
                 if len(priority) > 1:
                     error = f"\nThis test function has more than one valid priority marker: " \
                             f"{item.nodeid} (markers: '{priority}')."
-                    logger_obj.error(error)
-                    pytest.fail(error)
+                    logger_obj.fail(error)
 
             temp_items.extend([item_onboarding, item_onboarding_cleanup])
             
@@ -1134,20 +1130,26 @@ def pytest_sessionstart(session):
             #                 is equivalent to
             #           --runlist extreme_automation_tests/data/NonProduction/XIQ/runlists/smoke_runlist.yaml
             try:
-                [pytest.runlist_path] = list(Path(os.path.join(imp.find_module("extreme_automation_tests")[1], "data")).rglob(pytest.runlist_path))
-                pytest.runlist_path = str(pytest.runlist_path)
+                
+                [runlist_path, *same_name_runlists] = list(Path(os.path.join(imp.find_module("extreme_automation_tests")[1], "data")).rglob(pytest.runlist_path))
+                
+                if same_name_runlists:
+                    logger_obj.warning(
+                        f"Found multiple runlist yamls named '{pytest.runlist_path}':\n" + "\n".join(str(p) for p in [runlist_path, *same_name_runlists]) + \
+                        f"\nWill use the first runlist yaml: '{runlist_path}'.")
+                
+                pytest.runlist_path = str(runlist_path)
+    
             except ValueError:
                 error = f"Failed to find this runlist yaml: '{pytest.runlist_path}'."
-                logger_obj.error(error)
-                pytest.fail(error)
+                logger_obj.fail(error)
 
         try:
             with open(pytest.runlist_path, "r") as run_list:
                 output_runlist = run_list.read()
         except:
             error = f"Failed to read the content of this runlist file: '{pytest.runlist_path}'."
-            logger_obj.error(error)
-            pytest.fail(error)
+            logger_obj.fail(error)
 
         try:
             pytest.runlist = yaml.safe_load(output_runlist)
@@ -5243,6 +5245,13 @@ def change_device_management_settings(
 
 
 @pytest.fixture(scope="session")
+def sw_connection_host(
+    loaded_config: Dict[str, str]
+) -> str:
+    return loaded_config.get("sw_connection_host", "")
+
+
+@pytest.fixture(scope="session")
 def dut1(
         config_helper: PytestConfigHelper,
         logger: PytestLogger
@@ -5601,7 +5610,7 @@ class Testbed(metaclass=Singleton):
         self.username: str = self.config.get("tenant_username")
         self.password: str = self.config.get("tenant_password")
         self.test_url: str = self.config.get("test_url")
-        self.sw_connection_host: str = self.config.get("sw_connection_host")
+        self.sw_connection_host: str = request.getfixturevalue("sw_connection_host")
         self.xiq_version: str = request.getfixturevalue("xiq_version")
         self.cloud_driver_capabilities: Dict[str, Union[str, Dict[str, Union[str, int, bool]]]] = request.getfixturevalue("cloud_driver_capabilities")
 
