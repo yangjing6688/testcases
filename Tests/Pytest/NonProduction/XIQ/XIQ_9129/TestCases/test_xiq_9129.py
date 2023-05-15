@@ -25,16 +25,24 @@ class XIQ9129Tests:
             elem3 = network_360_monitor_elements.get_graph_point_hover
             x = elem1(0)
             retries = 0
-            while x is None or x.size['width'] < 1000:
+            while x is None:
+                logger.info('Waiting for graph to appear.')
+                utils.wait_till(timeout=5)
+                auto_actions.click(network_360_monitor_elements.get_n360_device_health_refresh_btn())
+                x = elem1(0)
+                logger.info('Waiting another 5 sec for the device to send data.')
+                retries += 1
+                if retries >= 50:
+                    pytest.fail(f'To many retries: {retries}')
+            while x.size['width'] < 1000:
                 logger.info('Waiting for graph to get populated with data.')
                 utils.wait_till(timeout=5)
                 auto_actions.click(network_360_monitor_elements.get_n360_device_health_refresh_btn())
                 x = elem1(0)
                 logger.info('Waiting another 5 sec for the device to send data.')
                 retries += 1
-                if retries >= 20:
-                    logger.info(f'To many retries: {retries}')
-                    break
+                if retries >= 50:
+                    pytest.fail(f'To many retries: {retries}')
             for i in range(0, 3):
                 utils.wait_till(timeout=3)
                 if i == 0:
@@ -50,7 +58,7 @@ class XIQ9129Tests:
                     auto_actions.click(network_360_monitor_elements.get_graph_legend_names(i - 1))
                     logger.info(f'Hovering on RED line:')
                 auto_actions.move_to_element(elem1(i))
-                auto_actions.move_mouse_with_offset((elem1(0).size["width"]-11)//2, 0)
+                auto_actions.move_mouse_with_offset((elem1(0).size["width"]-20)//2, 0)
                 auto_actions.move_to_element(elem2(i))
                 auto_actions.move_to_element(elem3(i))
                 assert network_360_monitor_elements.get_n360_graph_tooltip().get_attribute(
@@ -131,22 +139,30 @@ class XIQ9129Tests:
             elem3 = network_360_monitor_elements.get_graph_point_hover
             x = elem1(0)
             retries = 0
-            while x is None or x.size['width'] < 1000:
+            while x is None:
+                logger.info('Waiting for graph to appear.')
+                utils.wait_till(timeout=5)
+                auto_actions.click(network_360_monitor_elements.get_n360_device_health_refresh_btn())
+                x = elem1(0)
+                logger.info('Waiting another 5 sec for the device to send data.')
+                retries += 1
+                if retries >= 50:
+                    pytest.fail(f'To many retries: {retries}')
+            while x.size['width'] < 1000:
                 logger.info('Waiting for graph to get populated with data.')
                 utils.wait_till(timeout=5)
                 auto_actions.click(network_360_monitor_elements.get_n360_device_health_refresh_btn())
                 x = elem1(0)
                 logger.info('Waiting another 5 sec for the device to send data.')
                 retries += 1
-                if retries >= 20:
-                    logger.info(f'To many retries: {retries}')
-                    break
+                if retries >= 50:
+                    pytest.fail(f'To many retries: {retries}')
             logger.info("Entering table view.")
 
             auto_actions.click(network_360_monitor_elements.get_graph_legend_names(1))
             auto_actions.click(network_360_monitor_elements.get_graph_legend_names(2))
             auto_actions.move_to_element(elem1(0))
-            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-11)//2, 0)
+            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-20)//2, 0)
             auto_actions.move_to_element(elem2(0))
             auto_actions.move_to_element(elem3(0))
             logger.info('Clicking on line.')
@@ -195,21 +211,29 @@ class XIQ9129Tests:
             elem3 = network_360_monitor_elements.get_graph_point_hover
             x = elem1(0)
             retries = 0
-            while x is None or x.size['width'] < 1000:
+            while x is None:
+                logger.info('Waiting for graph to appear.')
+                utils.wait_till(timeout=5)
+                auto_actions.click(network_360_monitor_elements.get_n360_device_health_refresh_btn())
+                x = elem1(0)
+                logger.info('Waiting another 5 sec for the device to send data.')
+                retries += 1
+                if retries >= 50:
+                    pytest.fail(f'To many retries: {retries}')
+            while x.size['width'] < 1000:
                 logger.info('Waiting for graph to get populated with data.')
                 utils.wait_till(timeout=5)
                 auto_actions.click(network_360_monitor_elements.get_n360_device_health_refresh_btn())
                 x = elem1(0)
                 logger.info('Waiting another 5 sec for the device to send data.')
                 retries += 1
-                if retries >= 20:
-                    logger.info(f'To many retries: {retries}')
-                    break
+                if retries >= 50:
+                    pytest.fail(f'To many retries: {retries}')
             logger.info("Entering table view.")
             auto_actions.click(network_360_monitor_elements.get_graph_legend_names(1))
             auto_actions.click(network_360_monitor_elements.get_graph_legend_names(2))
             auto_actions.move_to_element(elem1(0))
-            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-11)//2, 0)
+            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-20)//2, 0)
             auto_actions.move_to_element(elem2(0))
             auto_actions.move_to_element(elem3(0))
             logger.info('Clicking on line.')
@@ -257,21 +281,29 @@ class XIQ9129Tests:
             elem3 = network_360_monitor_elements.get_graph_point_hover
             x = elem1(0)
             retries = 0
-            while x is None or x.size['width'] < 1000:
-                logger.info('Waiting for graph to get populated with data.')
-                time.sleep(5)
+            while x is None:
+                logger.info('Waiting for graph to appear.')
+                utils.wait_till(timeout=5)
                 auto_actions.click(network_360_monitor_elements.get_n360_device_health_refresh_btn())
                 x = elem1(0)
                 logger.info('Waiting another 5 sec for the device to send data.')
                 retries += 1
-                if retries >= 20:
-                    logger.info(f'To many retries: {retries}')
-                    break
+                if retries >= 50:
+                    pytest.fail(f'To many retries: {retries}')
+            while x.size['width'] < 1000:
+                logger.info('Waiting for graph to get populated with data.')
+                utils.wait_till(timeout=5)
+                auto_actions.click(network_360_monitor_elements.get_n360_device_health_refresh_btn())
+                x = elem1(0)
+                logger.info('Waiting another 5 sec for the device to send data.')
+                retries += 1
+                if retries >= 50:
+                    pytest.fail(f'To many retries: {retries}')
             logger.info("Entering table view.")
             auto_actions.click(network_360_monitor_elements.get_graph_legend_names(1))
             auto_actions.click(network_360_monitor_elements.get_graph_legend_names(2))
             auto_actions.move_to_element(elem1(0))
-            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-11)//2, 0)
+            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-20)//2, 0)
             auto_actions.move_to_element(elem2(0))
             auto_actions.move_to_element(elem3(0))
             logger.info('Clicking on line.')
@@ -305,14 +337,26 @@ class XIQ9129Tests:
                 table_dict[i] = table_elem[i].text
             if len(table_dict) < 2:
                 pytest.fail("Need at least 2 devices in N360 for this test.")
-
-            else:
-                for value in table_dict.values():
-                    logger.info(f"Table elements are: {value}")
+            logger.info("Checking each element from table to see if it matches the values from CLI.")
+            found = 0
+            while True:
+                for key, value in table_dict.items():
+                    logger.info(f"Table element {key} is: {value.split()}")
                     if value.split()[0] == node_1_hostname and value.split()[1] == node_1.mac or value.split()[0] == node_2_hostname and value.split()[1] == node_2.mac:
-                        logger.info("Test is successfully. Values from the table matches those on CLI.")
-                    else:
-                        pytest.fail("No match found!")
+                        logger.info("Found 1 device. Looking for the second.")
+                        found += 1
+                    if found == 2:
+                        logger.info("Test is successful. Values from the table match those on CLI.")
+                        break  # Exit the while loop if both matches are found
+                else:
+                    # The for loop completed without finding a match, so repeat the loop
+                    continue
+                # If the for loop is exited by the break statement, the following line is executed
+                break  # Exit the while loop after a match is found
+            if key is None or value is None:
+                pytest.fail("No match found!")
+            if found != 2:
+                pytest.fail(f"Found {found} devices on the table , should be 2.")
         finally:
             loaded_config['${TEST_NAME}'] = 'test_tcxm_25195_finally'
             auto_actions.click_reference(network_360_monitor_elements.get_close_n360_dialog_box)
@@ -336,21 +380,29 @@ class XIQ9129Tests:
             elem3 = network_360_monitor_elements.get_graph_point_hover
             x = elem1(0)
             retries = 0
-            while x is None or x.size['width'] < 1000:
-                logger.info('Waiting for graph to get populated with data.')
+            while x is None:
+                logger.info('Waiting for graph to appear.')
+                utils.wait_till(timeout=5)
                 auto_actions.click(network_360_monitor_elements.get_n360_device_health_refresh_btn())
-                time.sleep(10)
                 x = elem1(0)
-                logger.info('Waiting another 10 sec for the device to send data.')
+                logger.info('Waiting another 5 sec for the device to send data.')
                 retries += 1
-                if retries >= 60:
-                    logger.info(f'To many retries: {retries}')
-                    break
+                if retries >= 50:
+                    pytest.fail(f'To many retries: {retries}')
+            while x.size['width'] < 1000:
+                logger.info('Waiting for graph to get populated with data.')
+                utils.wait_till(timeout=5)
+                auto_actions.click(network_360_monitor_elements.get_n360_device_health_refresh_btn())
+                x = elem1(0)
+                logger.info('Waiting another 5 sec for the device to send data.')
+                retries += 1
+                if retries >= 50:
+                    pytest.fail(f'To many retries: {retries}')
             logger.info("Entering table view.")
             auto_actions.click_reference(lambda: network_360_monitor_elements.get_graph_legend_names(1))
             auto_actions.click_reference(lambda: network_360_monitor_elements.get_graph_legend_names(2))
             auto_actions.move_to_element(elem1(0))
-            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-11)//2, 0)
+            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-20)//2, 0)
             auto_actions.move_to_element(elem2(0))
             auto_actions.move_to_element(elem3(0))
             logger.info('Clicking on line.')
@@ -382,21 +434,29 @@ class XIQ9129Tests:
             elem3 = network_360_monitor_elements.get_graph_point_hover
             x = elem1(0)
             retries = 0
-            while x is None or x.size['width'] < 1000:
-                logger.info('Waiting for graph to get populated with data.')
-                time.sleep(5)
+            while x is None:
+                logger.info('Waiting for graph to appear.')
+                utils.wait_till(timeout=5)
                 auto_actions.click(network_360_monitor_elements.get_n360_device_health_refresh_btn())
                 x = elem1(0)
                 logger.info('Waiting another 5 sec for the device to send data.')
                 retries += 1
-                if retries >= 20:
-                    logger.info(f'To many retries: {retries}')
-                    break
+                if retries >= 50:
+                    pytest.fail(f'To many retries: {retries}')
+            while x.size['width'] < 1000:
+                logger.info('Waiting for graph to get populated with data.')
+                utils.wait_till(timeout=5)
+                auto_actions.click(network_360_monitor_elements.get_n360_device_health_refresh_btn())
+                x = elem1(0)
+                logger.info('Waiting another 5 sec for the device to send data.')
+                retries += 1
+                if retries >= 50:
+                    pytest.fail(f'To many retries: {retries}')
             logger.info("Entering table view.")
             auto_actions.click_reference(lambda: network_360_monitor_elements.get_graph_legend_names(1))
             auto_actions.click_reference(lambda: network_360_monitor_elements.get_graph_legend_names(2))
             auto_actions.move_to_element(elem1(0))
-            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-11)//2, 0)
+            auto_actions.move_mouse_with_offset((elem1(0).size["width"]-20)//2, 0)
             auto_actions.move_to_element(elem2(0))
             auto_actions.move_to_element(elem3(0))
             logger.info('Clicking on line.')
