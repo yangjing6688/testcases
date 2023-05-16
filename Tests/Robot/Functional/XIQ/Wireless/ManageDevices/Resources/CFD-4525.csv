@@ -1,0 +1,2 @@
+SerialNumber,ServiceTag,BranchId,HostName,Location,StaticIPAddress,Netmask,DefaultGateway,Wifi0RadioProfile,Wifi0AdminState,Wifi0OperationMode,Wifi0Channel,Wifi0Power,Wifi1RadioProfile,Wifi1AdminState,Wifi1OperationMode,Wifi1Channel,Wifi1Power,SDRProfile
+02501607150339,,,,,10.234.103.97,255.255.255.0,10.234.103.254,,,,,,,,,,,
