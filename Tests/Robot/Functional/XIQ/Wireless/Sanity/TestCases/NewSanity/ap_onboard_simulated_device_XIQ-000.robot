@@ -19,8 +19,19 @@ Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 
 Force Tags   testbed_none
+Suite Teardown    Run Keyword And Warn On Failure     Test Suite Teardown
 
 *** Keywords ***
+
+Test Suite Teardown
+    ${DELETE_AP}=                   Delete Devices              ${SIM_SERIAL}
+    should be equal as integers     ${DELETE_AP}               1
+
+    ${LOGOUT_RESULT}=               Logout User
+    Should Be Equal As Integers     ${LOGOUT_RESULT}                1
+
+    ${QUIT_BROWSER_RESULT}=         Quit Browser
+    Should Be Equal As Integers     ${QUIT_BROWSER_RESULT}          1
 
 *** Test Cases ***
 TCCS-13211: Quick Add Onboard Simulated Device
@@ -29,7 +40,7 @@ TCCS-13211: Quick Add Onboard Simulated Device
 
     ${device}=      Create Dictionary
     ...     name=simulated_dut08
-    ...     model=AP460C
+    ...     model=AP122
     ...     simulated_count=1
     ...     onboard_device_type=Simulated
     ...     location=auto_location_01, Santa Clara, building_02, floor_04
@@ -43,8 +54,3 @@ TCCS-13211: Quick Add Onboard Simulated Device
 
     ${SIM_SERIAL}=     set variable    ${${device.name}.serial}
     Set Suite Variable         ${SIM_SERIAL}
-
-    ${DELETE_AP}=                   Delete Devices              ${SIM_SERIAL}
-    should be equal as integers     ${DELETE_AP}               1
-
-    [Teardown]  Run Keywords    Logout User   Quit Browser
