@@ -147,11 +147,11 @@ TCCS-13684: Advanced Onboard Device on XIQ
 
     Clean Up Device
 
-    ${ONBOARD_RESULT}=      Advance Onboard Device         ${device1.serial}    device_make=${device1.make}   dev_location=${LOCATION}  device_mac=${device1.mac}
-    Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
-
     ${CONF_RESULT}=         Configure Device To Connect To Cloud            ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
     Should Be Equal As Integers     ${CONF_RESULT}          1
+
+    ${ONBOARD_RESULT}=      Advance Onboard Device         ${device1.serial}    device_make=${device1.make}   dev_location=${LOCATION}  device_mac=${device1.mac}
+    Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
     ${WAIT_CONF_RESULT}=    Wait For Configure Device To Connect To Cloud   ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
     Should Be Equal As Integers     ${WAIT_CONF_RESULT}     1
@@ -174,11 +174,11 @@ TCCS-13685: Simple Onboard Device on XIQ
 
     Clean Up Device
 
-    ${ONBOARD_RESULT}=          onboard device quick      ${device1}
-    Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
-
     ${CONF_RESULT}=         Configure Device To Connect To Cloud            ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
     Should Be Equal As Integers     ${CONF_RESULT}          1
+
+    ${ONBOARD_RESULT}=          onboard device quick      ${device1}
+    Should Be Equal As Strings                  ${ONBOARD_RESULT}       1
 
     ${WAIT_CONF_RESULT}=    Wait For Configure Device To Connect To Cloud   ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
     Should Be Equal As Integers     ${WAIT_CONF_RESULT}     1

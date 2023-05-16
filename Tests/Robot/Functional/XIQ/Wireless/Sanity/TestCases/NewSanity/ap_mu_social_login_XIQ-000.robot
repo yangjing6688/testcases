@@ -100,11 +100,11 @@ Suite Setup
         Should Be Equal As Integers     ${DELETE_DEVICE_RESULT}             1
     END
 
-    ${ONBOARD_RESULT}=      Onboard Device Quick        ${device1}
-    Should Be Equal As Strings      ${ONBOARD_RESULT}       1
-
     ${CONF_RESULT}=         Configure Device To Connect To Cloud            ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
     Should Be Equal As Integers     ${CONF_RESULT}          1
+
+    ${ONBOARD_RESULT}=      Onboard Device Quick        ${device1}
+    Should Be Equal As Strings      ${ONBOARD_RESULT}       1
 
     ${WAIT_CONF_RESULT}=    Wait For Configure Device To Connect To Cloud   ${device1.cli_type}     ${generic_capwap_url}   ${MAIN_DEVICE_SPAWN}
     Should Be Equal As Integers     ${WAIT_CONF_RESULT}     1
