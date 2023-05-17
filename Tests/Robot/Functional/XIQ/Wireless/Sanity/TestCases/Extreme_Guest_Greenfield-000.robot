@@ -16,7 +16,8 @@ Variables    Environments/${TOPO}
 Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 
-Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_guest/variables.robot
+variables    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_guest/variables.py
+#Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_guest/variables.robot
 Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_guest/extreme_guest_sanity_config.robot
 Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_guest/settings.robot
 Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/extreme_guest/email_ids.robot
@@ -46,14 +47,17 @@ Pre Condition
     ${ONBOARD_AP}=        onboard device quick        ${device1}
     Should Be Equal As Strings      '${ONBOARD_AP}'   '1'
 
-    ${AP_SPAWN}=        Open Spawn          ${device1.ip}   ${device1.port}      ${device1.username}       ${device1.password}        ${device1.cli_type}
-    Set Suite Variable  ${AP_SPAWN}
+    ${DEVICE1_SPAWN}=        Open Spawn          ${device1.ip}   ${device1.port}      ${device1.username}       ${device1.password}        ${device1.cli_type}
+    Set Suite Variable  ${DEVICE1_SPAWN}
+    
+    ${CONF_RESULT}=         Configure Device To Connect To Cloud            ${device1.cli_type}     ${generic_capwap_url}   ${DEVICE1_SPAWN}
+    Should Be Equal As Integers     ${CONF_RESULT}          1
 
-    ${OUTPUT0}=         Send Commands       ${AP_SPAWN}         capwap client server name ${CAPWAP_URL}, capwap client default-server-name ${CAPWAP_URL}, capwap client server backup name ${CAPWAP_URL}, no capwap client enable, capwap client enable, save config
+    ${WAIT_CONF_RESULT}=    Wait For Configure Device To Connect To Cloud   ${device1.cli_type}     ${generic_capwap_url}   ${DEVICE1_SPAWN}
+    Should Be Equal As Integers     ${WAIT_CONF_RESULT}     1
 
     ${ONLINE_STATUS}=        Wait Until Device Online                ${device1.serial}
     Should Be Equal As Strings      '${ONLINE_STATUS}'   '1'
-    Refresh Devices Page
 
     ${DEVICE_STATUS_RESULT}=                  get device status       ${device1.serial}
     Should Be Equal As Strings      '${DEVICE_STATUS_RESULT}'     'green'
@@ -140,14 +144,25 @@ Test Case Level AP Cleanup
     ${XIQ_PAGE}=                  go back to xiq
     Should Be Equal As Strings      '${XIQ_PAGE}'     '1'
 
+Delete User from Teardown
+    [Documentation]    Delete the Guest User in user page
+
+    [Arguments]    ${UserName}
+
+    ${NAVIGATE_TO_CONFIGURE_PAGE}=             go to configure users page
+    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'     '1'
+
+    ${DELETE_USER}=             delete user  ${UserName}
+    Should Be Equal As Strings      '${DELETE_USER}'     '1'
+
 *** Test Cases ***
  
-TCCS-12991: Guest Enablement Pre-check
+TCCS-12993: Guest Enablement Pre-check and Enable Guest Essentials
 
-    [Documentation]         Launch Extreme Guest Subscription Page
+    [Documentation]         Launch Extreme Guest and Subscribe to Guest Application
 
-    [Tags]                  development    greenfield    subscription    tccs-12991
-
+    [Tags]                  development    greenfield    subscription    tccs-12993
+    
     ${CREATE_SSID}=             create open ssid in common objects  ${SSID_NAME4}
     Should Be Equal As Strings      '${CREATE_SSID}'     '1'
 
@@ -155,16 +170,9 @@ TCCS-12991: Guest Enablement Pre-check
     Should Be Equal As Strings      '${CHECK_CREATED_SSID}'     '1'
     save screen shot
 
-    [Teardown]   go back to xiq
-
-TCCS-12993: Enable Guest Essentials
-
-    [Documentation]         Launch Extreme Guest and Subscribe to Guest Application
-
-    [Tags]                  development    greenfield    subscription    tccs-12993
-
-    Depends On              TCCS-12991
-
+    ${XIQ_PAGE}=    go back to xiq
+    Should Be Equal As Strings      '${XIQ_PAGE}'     '1'
+    
     ${APPLY_OPEN_SSID}=             apply selected open ssid  ${SSID_NAME4}
     Should Be Equal As Strings      '${APPLY_OPEN_SSID}'     '1'
     save screen shot
@@ -279,7 +287,6 @@ TCCS-13119: Clone Splash Template, Onboarding Policy and Onboarding Rules
     ${EG_RULE_NAME_7}=             ADD ONBOARDING RULE     rule_name=${EG_RULE_NAME7}  policy_name=${EG_POLICY_NAME4}  location_name=${LOCATION_TREE}    network_name=${SSID_NAME8}
     Should Be Equal As Strings      '${EG_RULE_NAME_7}'     '1'
 
-
     [Teardown]   run keywords       Test Case Level Cleanup
 
 TCCS-12997: Verify User registration and authenticate CP with Facebook
@@ -309,7 +316,7 @@ TCCS-12997: Verify User registration and authenticate CP with Facebook
     Should Be Equal As Strings      '${APPLY_USER_TEMPLATE}'     '1'
 
     ${SEND_CMD_STATUS}=             send wg cmd to ap  ${SSID_NAME1}    @{fb_cli_obj}
-    
+
     Log to Console      Sleep for ${CONFIG_PUSH_WAIT}
     Sleep                         ${CONFIG_PUSH_WAIT}
 
@@ -323,27 +330,21 @@ TCCS-12997: Verify User registration and authenticate CP with Facebook
     Sleep  ${CP_PAGE_OPEN_WAIT}
 
     ${SOCIAL_AUTH_STATUS}=                 validate eguest social login with facebook     ${MAIL_ID3}      ${MAIL_ID3_PASS}
-    
+    Should Be Equal As Strings     '${SOCIAL_AUTH_STATUS}'  '1'
+
     get gp page screen shot
 
     ${FACEBOOK_USER_COUNT}=    Get Extreme Social Users Count    social_name=Facebook
     Log to Console     Number of Facebook Users: ${FACEBOOK_USER_COUNT}
+    Should Be Equal As Strings     '${FACEBOOK_USER_COUNT}'  '1'
 
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
     Should Be Equal As Strings      '${WIFI_DISCONNECT}'     '1'
 
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
     Sleep  ${CLIENT_DISCONNECT_WAIT}
-
-    ${NAVIGATE_TO_CONFIGURE_PAGE}=             go to configure users page
-    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'     '1'
-
-    ${DELETE_USER_FB}=             delete user  facebook
-    Should Be Equal As Strings      '${DELETE_USER_FB}'     '1'
     
-    Should Be Equal As Strings     '${SOCIAL_AUTH_STATUS}'  '1'
-
-    [Teardown]   run keywords       Test Case Level AP Cleanup
+    [Teardown]   run keywords       Delete User from Teardown  facebook    AND    Test Case Level AP Cleanup
 
 TCCS-13695: Verify Number of Facebook Registration
 
@@ -394,26 +395,20 @@ TCCS-12998: Verify User registration and authenticate CP with LinkedIn
     Sleep  ${CP_PAGE_OPEN_WAIT}
 
     ${SOCIAL_AUTH_STATUS}=                 validate eguest social login with linkedin    ${MAIL_ID3}      ${MAIL_ID3_PASS}
+    Should Be Equal As Strings      '${SOCIAL_AUTH_STATUS}'       '1'
     
     get gp page screen shot
 
     ${LINKENDIN_USER_COUNT}=    Get Extreme Social Users Count    social_name=Linkedin
     Log to Console     Number of Linkedin Users: ${LINKENDIN_USER_COUNT}
+    Should Be Equal As Strings      '${SOCIAL_AUTH_STATUS}'       '1'
 
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
     Should Be Equal As Strings      '${WIFI_DISCONNECT}'     '1'
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
     Sleep  ${CLIENT_DISCONNECT_WAIT}
 
-    ${NAVIGATE_TO_CONFIGURE_PAGE}=             go to configure users page
-    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
-    
-    ${DELETE_USER_LINKEDIN}=             delete user  linkedin
-    Should Be Equal As Strings      '${DELETE_USER_LINKEDIN}'       '1'
-
-    Should Be Equal As Strings      '${SOCIAL_AUTH_STATUS}'       '1'
-
-    [Teardown]   run keywords       Test Case Level AP Cleanup
+    [Teardown]   run keywords       Delete User from Teardown  linkedin    AND    Test Case Level AP Cleanup
 
 TCCS-13696: Verify Number of LinkedIn Registration
 
@@ -448,6 +443,7 @@ TCCS-13014: Verify Default System template (Accept and Connect)
     Sleep       ${CP_PAGE_OPEN_WAIT}
 
     ${USER_AUTH_STATUS}=                 validate eguest default template with no mapping
+    Should Be Equal As Strings      '${USER_AUTH_STATUS}'       '1'
 
     get gp page screen shot
 
@@ -455,8 +451,6 @@ TCCS-13014: Verify Default System template (Accept and Connect)
     Should Be Equal As Strings      '${WIFI_DISCONNECT}'       '1'
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
     Sleep       ${CLIENT_DISCONNECT_WAIT}
-
-    Should Be Equal As Strings      '${USER_AUTH_STATUS}'       '1'
 
     [Teardown]   run keywords       Test Case Level AP Cleanup
 
@@ -505,21 +499,15 @@ TCCS-12994: Verify Device registration and authenticate CP with OTP notified ove
 
     ${ACCESS_STATUS}=    Validate Sponsored Guest Access    ${USER_EMAIL}    ${USER_PASSWORD}    ${SEND_OTP_TO_USER}
     get gp page screen shot
+    Should Be Equal As Strings     '${ACCESS_STATUS}'  '1'
 
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
     Should Be Equal As Strings      '${WIFI_DISCONNECT}'     '1'
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
     Sleep  ${CLIENT_DISCONNECT_WAIT}
 
-    ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
-    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
+    [Teardown]   run keywords       Delete User from Teardown  ${USER_EMAIL}    AND    Test Case Level AP Cleanup
 
-    ${DELETE_USER_EMAIL}=             Delete User  ${USER_EMAIL}
-    Should Be Equal As Strings     '${DELETE_USER_EMAIL}'  '1'
-
-    Should Be Equal As Strings     '${ACCESS_STATUS}'  '1'
-
-    [Teardown]   run keywords       Test Case Level AP Cleanup
 
 TCCS-13012: Verify User registration and authenticate CP with passcode notified over email
 
@@ -564,6 +552,7 @@ TCCS-13012: Verify User registration and authenticate CP with passcode notified 
     Sleep                         ${RECEIVE_MAIL}
 
     ${ACCESS_STATUS}=    Validate Sponsored Guest Access    ${USER_EMAIL}    ${USER_PASSWORD}    ${SEND_OTP_TO_USER}
+    Should Be Equal As Strings     '${ACCESS_STATUS}'  '1'
     get gp page screen shot
 
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
@@ -571,16 +560,7 @@ TCCS-13012: Verify User registration and authenticate CP with passcode notified 
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
     Sleep  ${CLIENT_DISCONNECT_WAIT}
 
-    ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
-    Should Be Equal As Strings     '${NAVIGATE_TO_CONFIGURE_PAGE}'  '1'
-
-    ${DELETE_USER_EMAIL}=             Delete User  ${USER_EMAIL}
-    Should Be Equal As Strings     '${DELETE_USER_EMAIL}'  '1'
-
-    Should Be Equal As Strings     '${ACCESS_STATUS}'  '1'
-
-    [Teardown]   run keywords       Test Case Level AP Cleanup
-
+    [Teardown]   run keywords       Delete User from Teardown  ${USER_EMAIL}    AND    Test Case Level AP Cleanup
 
 TCCS-13694: Sponsor Approval-Verify on sponsor Permit login passcode sent to user mail
 
@@ -625,6 +605,7 @@ TCCS-13694: Sponsor Approval-Verify on sponsor Permit login passcode sent to use
     Sleep                         ${RECEIVE_MAIL}
 
     ${ACCESS_STATUS}=    Validate Sponsored Guest Access    ${USER_EMAIL}    ${USER_PASSWORD}    ${SEND_OTP_TO_USER}
+    Should Be Equal As Strings     '${ACCESS_STATUS}'  '1'
     get gp page screen shot
 
     ${WIFI_DISCONNECT}=             Remote_Server.Disconnect WiFi
@@ -632,15 +613,7 @@ TCCS-13694: Sponsor Approval-Verify on sponsor Permit login passcode sent to use
     Log to Console      Sleep for ${CLIENT_DISCONNECT_WAIT}
     Sleep  ${CLIENT_DISCONNECT_WAIT}
 
-    ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
-    Should Be Equal As Strings      '${NAVIGATE_TO_CONFIGURE_PAGE}'       '1'
-
-    ${DELETE_USER_EMAIL}=             Delete User  ${USER_EMAIL}
-    Should Be Equal As Strings     '${DELETE_USER_EMAIL}'  '1'
-
-    Should Be Equal As Strings     '${ACCESS_STATUS}'  '1'
-
-    [Teardown]   run keywords       Test Case Level AP Cleanup
+    [Teardown]   run keywords       Delete User from Teardown  ${USER_EMAIL}    AND    Test Case Level AP Cleanup
 
 
 TCCS-12995: Verify user authentication with guest bulk vouchers
@@ -700,16 +673,10 @@ TCCS-12995: Verify user authentication with guest bulk vouchers
     ${USERNAME1}=                 Get Username from vouchers   ${VOUCHER_CREDENTIALS}
     ${NAVIGATE_TO_CONFIGURE_PAGE}=             Go to Configure Users Page
     Should Be Equal As Strings     '${NAVIGATE_TO_CONFIGURE_PAGE}'  '1'
-
-    ${DELETE_USER}=             Delete User    ${USERNAME1}
-    Should Be Equal As Strings     '${DELETE_USER}'  '1'
-
+    
     Should Be Equal As Strings      '${USER_AUTH_STATUS}'       '1'
-
-    [Teardown]   run keywords       switch_to_extreme_guest_window
-    ...                             close_extreme_guest_window
-    ...                             Test Case Level AP Cleanup
-
+    
+    [Teardown]   run keywords       Delete User from Teardown  ${USERNAME1}    AND   switch_to_extreme_guest_window    AND    close_extreme_guest_window    AND    Test Case Level AP Cleanup
 
 TCCS-12996: Verify User registration and get CP access using E-mail
 
