@@ -14,7 +14,7 @@ class XIQ6313OneNodeTests:
         Verify that switch templates can override common settings parameters.
         """
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(node_1_policy_name,
-                                                                                    node_1_template_name)
+                                                                                    node_1_template_name, node_1.cli_type)
         auto_actions.click_reference(xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_web_elements.
                                      get_device_template_override_policy)
         assert xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_web_elements. \
