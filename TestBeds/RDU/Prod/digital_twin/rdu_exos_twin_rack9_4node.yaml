@@ -31,9 +31,8 @@ netelem1:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
-  onboard_device_type:      "Digital Twin"
-  digital_twin_persona:     "SwitchEngine"
-  digital_twin_version:     "32.1.1.6"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  onboard_device_type:      "Real"
 
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod9_4node/rdu_vm_pod9_4node_netelem1.cfg"
@@ -139,9 +138,8 @@ netelem2:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
-  onboard_device_type:      "Digital Twin"
-  digital_twin_persona:     "SwitchEngine"
-  digital_twin_version:     "32.1.1.6"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  onboard_device_type:      "Real"
 
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod9_4node/rdu_vm_pod9_4node_netelem2.cfg"
@@ -248,9 +246,8 @@ netelem3:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
-  onboard_device_type:      "Digital Twin"
-  digital_twin_persona:     "SwitchEngine"
-  digital_twin_version:     "32.1.1.6"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  onboard_device_type:      "Real"
 
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod9_4node/rdu_vm_pod9_4node_netelem3.cfg"
@@ -356,9 +353,8 @@ netelem4:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
-  onboard_device_type:      "Digital Twin"
-  digital_twin_persona:     "SwitchEngine"
-  digital_twin_version:     "32.1.1.6"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  onboard_device_type:      "Real"
 
   vm_location:
   base_cfg_location:        "ExtremeAutomation/Resources/TestEnvironments/Swdev/Rdu/Physical/Exos/netelem_base_configs/rdu_vm_pod9_4node/rdu_vm_pod9_4node_netelem4.cfg"

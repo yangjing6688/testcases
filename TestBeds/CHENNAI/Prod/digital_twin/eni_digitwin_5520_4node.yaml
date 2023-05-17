@@ -30,9 +30,9 @@ netelem1:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
-  onboard_device_type:      "Digital Twin"
-  digital_twin_persona:     "SwitchEngine"
-  digital_twin_version:     "32.1.1.6"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  onboard_device_type:      "Real"
+
   extra:
     vm_info:
       vmhost:               "10.127.22.4"
@@ -119,9 +119,9 @@ netelem2:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
-  onboard_device_type:      "Digital Twin"
-  digital_twin_persona:     "SwitchEngine"
-  digital_twin_version:     "32.1.1.6"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  onboard_device_type:      "Real"
+
   extra:
     vm_info:
       vmhost:               "10.127.22.4"
@@ -208,9 +208,9 @@ netelem3:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
-  onboard_device_type:      "Digital Twin"
-  digital_twin_persona:     "SwitchEngine"
-  digital_twin_version:     "32.1.1.6"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  onboard_device_type:      "Real"
+
   extra:
     vm_info:
       vmhost:               "10.127.22.4"
@@ -297,9 +297,9 @@ netelem4:
   snmp_auth_password:       "extreme123"
   snmp_privacy_protocol:    "des"
   snmp_privacy_password:    "extreme123"
-  onboard_device_type:      "Digital Twin"
-  digital_twin_persona:     "SwitchEngine"
-  digital_twin_version:     "32.1.1.6"
+  location:                 "auto_location_01, Santa Clara, building_02, floor_04"
+  onboard_device_type:      "Real"
+
   extra:
     vm_info:
       vmhost:               "10.127.22.4"
