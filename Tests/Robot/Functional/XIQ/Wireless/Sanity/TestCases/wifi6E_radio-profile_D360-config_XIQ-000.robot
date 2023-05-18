@@ -1,6 +1,8 @@
 # Author        : Pranav Chauhan
 # Date          : December 2021
 # Description   : APC-45525 - WiFi 6E - d360 Device configuration for AP4000/AP4000U & APC-44617 - WiFi 6E - radio profile for AP4000/AP4000U
+# qTest location: https://aerohive.qtestnet.com/p/101056/portal/project#tab=testdesign&object=0&id=12178609
+# CSIT > System Testing > XIQ Wifi-6E Support > Automated - APC-45525_WiFi6E: D360 configuration and APC-44617 Radio profile
 
 # Pre-Condtion
 # 1. Wireless policy "AP1-policy" should be assigned to AP4000. AP CLI should be reachable by SSH console.
@@ -243,6 +245,11 @@ TCXM-17714: APC-45525: wifi0: Verify default d360 channel width and channels
     [Tags]              tcxm_17714    development    xiq-mainline   tcxm-17714    t3     apc-45525    d360   wifi0
 
     navigate_to_device_config_interface_wireless  ${ap1.mac}   interface=wifi0
+
+    ${rc}    check_interface_channel_width_and_channels   ${wifi0-20-mhz-channels}   mode=disabled    channel_width=20  interface=wifi0
+    Should Be Equal    '${rc}'     '1'
+
+    enabe_override_channel_exclusion_setting_in_radio_profile   interface=wifi0
 
     ${rc}    check_interface_channel_width_and_channels   ${wifi0-20-mhz-channels}   mode=enabled    channel_width=20  interface=wifi0
     Should Be Equal    '${rc}'     '1'
