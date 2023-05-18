@@ -133,12 +133,15 @@ Suite Setup
     ${CREATE_POLICY_RESULT}=        Create Network Policy           ${OPEN_POLICY}      ${CONFIG_PUSH_OPEN_NW_01}       cli_type=${device1.cli_type}
     Should Be Equal As Integers     ${CREATE_POLICY_RESULT}             1
 
-    ${UPDATE_POLICY_RESULT}=        Update Network Policy To AP     ${OPEN_POLICY}      ap_serial=${device1.serial}
+    ${UPDATE_POLICY_RESULT}=        Update Network Policy To AP     ${OPEN_POLICY}      ap_serial=${device1.serial}     update_method=Complete
     Should Be Equal As Integers     ${UPDATE_POLICY_RESULT}             1
 
     ${WAIT_UNTIL_UPDATE}=           Wait Until Device Update Done   device_serial=${device1.serial}
     Should Be Equal As Integers     ${WAIT_UNTIL_UPDATE}                1
 
+    ${CONNECTED_STATUS}=            Wait Until Device Online                ${device1.serial}   None   30   20
+    Should Be Equal as Integers     ${CONNECTED_STATUS}          1
+    
     mu1.Disconnect WiFi
 
 Suite Teardown
