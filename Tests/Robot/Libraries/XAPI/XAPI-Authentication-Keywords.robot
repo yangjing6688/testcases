@@ -1,8 +1,8 @@
 *** Settings ***
 
-Library     common/Xapi.py
-Library     common/Cli.py
-Library     common/Utils.py
+Library     extauto/common/Xapi.py
+Library     extauto/common/Cli.py
+Library     extauto/common/Utils.py
 
 
 Variables   Environments/Config/waits.yaml

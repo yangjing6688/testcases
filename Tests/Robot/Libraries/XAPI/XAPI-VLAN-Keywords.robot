@@ -3,11 +3,11 @@ ${VLAN_PROFILE_URL}=               /vlan-profiles
 ${VLAN_PROFILE_ID}=                -1
 
 *** Settings ***
-Library     common/TestFlow.py
-Library     common/Xapi.py
-Library     common/Utils.py
-Library     xiq/flows/common/Login.py
-Library     xiq/flows/configure/CommonObjects.py
+Library     extauto/common/TestFlow.py
+Library     extauto/common/Xapi.py
+Library     extauto/common/Utils.py
+Library     extauto/xiq/flows/common/Login.py
+Library     extauto/xiq/flows/configure/CommonObjects.py
 
 Variables   Environments/Config/waits.yaml
 
