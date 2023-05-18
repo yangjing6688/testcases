@@ -40,10 +40,10 @@ ${retry}     3
 *** Settings ***
 Library     String
 Library     Collections
+Library     DependencyLibrary
 
 Library     common/Cli.py
 Library     common/Utils.py
-Library     common/TestFlow.py
 Library     common/tools/remote/WinMuConnect.py
 
 Library     xiq/flows/common/Login.py
@@ -66,29 +66,15 @@ Variables    Environments/Config/device_commands.yaml
 
 Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   rem_mu
 
-Force Tags      testbed_1_node     testbed_2_node     testbed_3_node
+Force Tags       testbed_none
 Suite Setup      Pre_condition
 Suite Teardown   Post_condition
 
 *** Test Cases ***
-Step0: Onboard AP
-    [Documentation]    Onboard AP
-    [Tags]             tccs-13557     development     step0   steps
-    ${STATUS}       onboard device quick                            ${ap1}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    ${AP_SPAWN}     Open Spawn                                      ${ap1.ip}         ${ap1.port}      ${ap1.username}   ${ap1.password}   ${ap1.cli_type}
-    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-
-    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    Wait_device_online                                              ${ap1}
-    [Teardown]      Close Spawn                                     ${AP_SPAWN}
-
 Step1: Create Policy - Enterprise with Cloud and Radius auth
     [Documentation]     Create policy, select wifi0,1,2, and update policy to AP
-    [Tags]              tccs-13557    development     step1      steps
-    Depends On          Step0
+    [Tags]              tccs-13557   development   step1   steps
+
     Set Suite Variable             ${POLICY}                       enterprise_AD
     Set Suite Variable             ${SSID_00}                      w0_1_AD
     Set Suite Variable             ${AP_TEMP_NAME}                 ${ap1.model}_AD
@@ -102,8 +88,9 @@ Step1: Create Policy - Enterprise with Cloud and Radius auth
 
 Step2: Assign network policy to AP
     [Documentation]     Assign network policy to AP
-    [Tags]              tccs-13557    development     step2      steps
-    Depends On          Step1
+    [Tags]              tccs-13557   development   step2   steps
+
+    Depends On Test     Step1: Create Policy - Enterprise with Cloud and Radius auth
     ${UPDATE}                      Update Network Policy To Ap    ${POLICY}     ${ap1.serial}    Complete
     should be equal as strings     '${UPDATE}'    '1'
     Wait_device_online             ${ap1}
@@ -111,8 +98,9 @@ Step2: Assign network policy to AP
 
 Step3: MU connect to wifi0-1 - Auth service from AD Server
     [Documentation]     MU connect to wifi0-1 - Enterprise SSID using Auth service from AD Server
-    [Tags]              tccs-13557     development     step3      steps
-    Depends On          Step2
+    [Tags]              tccs-13557   development   step3   steps
+
+    Depends On Test     Step2: Assign network policy to AP
     FOR    ${i}    IN RANGE    ${retry}
         ${STATUS}               rem_mu.connect wifi network        ${SSID_00}
         exit for loop if        '${STATUS}'=='1'
@@ -122,7 +110,8 @@ Step3: MU connect to wifi0-1 - Auth service from AD Server
 Step4: Verify Client360 to wifi0-1 - Auth service from AD Server
     [Documentation]     Verify Client360 to wifi0-1 - Enterprise SSID using Auth service from AD Server
     [Tags]              tccs-13557    development     step4      steps
-    Depends On          Step3
+
+    Depends On Test    Step3: MU connect to wifi0-1 - Auth service from AD Server
     ${OUT}             get client360 current connection status      ${mu1.wifi_mac}
     should contain     ${OUT['USER']}                               ${EXTREME_RADIUS_SERVER_CONFIG_00}[domain_user]
 
@@ -140,10 +129,23 @@ Pre_condition
     delete aaa server profile           ${EXTREME_RADIUS_SERVER_CONFIG_00}[aaa_profile_name]
     delete all ap templates
     delete ad server                    ${EXTREME_RADIUS_SERVER_CONFIG_00}[ad_server_name]
+    Onboard_AP
 
 Post_condition
     Logout User
     Quit Browser
+
+Onboard_AP
+    ${STATUS}       onboard device quick                            ${ap1}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    ${AP_SPAWN}     Open Spawn                                      ${ap1.ip}         ${ap1.port}      ${ap1.username}   ${ap1.password}   ${ap1.cli_type}
+    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+
+    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    Wait_device_online                                              ${ap1}
+    [Teardown]      Close Spawn                                     ${AP_SPAWN}
 
 Enable_disable_client_Wifi_device
     [Arguments]     ${mu}

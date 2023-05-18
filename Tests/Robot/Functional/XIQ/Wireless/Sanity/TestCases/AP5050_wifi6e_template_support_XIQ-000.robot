@@ -39,10 +39,10 @@
 *** Settings ***
 Library     String
 Library     Collections
+Library     DependencyLibrary
 
 Library     common/Cli.py
 Library     common/Utils.py
-Library     common/TestFlow.py
 Library     common/tools/remote/WinMuConnect.py
 
 Library     xiq/flows/common/Login.py
@@ -64,28 +64,15 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/waits.yaml
 Variables    Environments/Config/device_commands.yaml
 
-Force Tags       testbed_1_node     testbed_2_node     testbed_3_node
+Force Tags       testbed_none
 Suite Setup      Pre_condition
 Suite Teardown   Post_condition
 
 *** Test Cases ***
-Step0: Onboard AP
-    [Documentation]    Onboard AP
-    [Tags]             tcxm-9350   development   step0    steps
-    ${STATUS}       onboard device quick                            ${ap1}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    ${AP_SPAWN}     Open Spawn                                      ${ap1.ip}         ${ap1.port}      ${ap1.username}   ${ap1.password}   ${ap1.cli_type}
-    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-
-    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    Wait_device_online                                              ${ap1}
-    [Teardown]      Close Spawn                                     ${AP_SPAWN}
-
 Step1: Verify device template wireless interface wifi0-1-2 details and wired interface details
     [Documentation]    Get device template wireless interface wifi0-1-2 details and wired interface details
-    [Tags]             tcxm-9348       tcxm-9349     tcxm-9351    development     step1    steps
+    [Tags]             tcxm-9348   tcxm-9349   tcxm-9351   development   step1   steps
+
     &{AP_TEMPLATE_1_WIFI0}    create dictionary     radio_status=get    radio_profile=get   client_access=get   backhaul_mesh_link=get   sensor=get   enable_SDR=get
     &{AP_TEMPLATE_1_WIFI1}    create dictionary     radio_status=get    radio_profile=get   client_access=get   backhaul_mesh_link=get   sensor=get
     &{AP_TEMPLATE_1_WIFI2}    create dictionary     radio_status=get    radio_profile=get   client_access=get   backhaul_mesh_link=get   sensor=get
@@ -113,8 +100,8 @@ Step1: Verify device template wireless interface wifi0-1-2 details and wired int
 
 Step2: Verify device configure wireless interface wifi0-1-2 details and wired interface details
     [Documentation]    Get device configure wireless interface wifi0-1-2 details and wired interface details
-    [Tags]             tcxm-9348       tcxm-9349     tcxm-9351    development     step2    steps
-    Depends On         Step0
+    [Tags]             tcxm-9348   tcxm-9349   tcxm-9351   development   step2   steps
+
     &{AP_TEMPLATE_1_WIFI0}    create dictionary     radio_status=get    radio_profile=get   client_access=get   backhaul_mesh_link=get   sensor=get   enable_SDR=get
     &{AP_TEMPLATE_1_WIFI1}    create dictionary     radio_status=get    radio_profile=get   client_access=get   backhaul_mesh_link=get   sensor=get
     &{AP_TEMPLATE_1_WIFI2}    create dictionary     radio_status=get    radio_profile=get   client_access=get   backhaul_mesh_link=get   sensor=get
@@ -148,8 +135,8 @@ Step2: Verify device configure wireless interface wifi0-1-2 details and wired in
 
 Step3: Create and Assign network policy to AP
     [Documentation]    Create and Assign network policy to AP
-    [Tags]             tcxm-9350    development     step3     steps
-    Depends On         Step0
+    [Tags]             tcxm-9350   development   step3   steps
+
     ${NUM}                         Generate Random String    5     012345678
     Set Suite Variable             ${POLICY}                       personal_w0_1_${NUM}
     Set Suite Variable             ${SSID_00}                      w0_1_M1_${NUM}
@@ -176,8 +163,9 @@ Step3: Create and Assign network policy to AP
 
 step4: verify client access and backhaul mesh link support for wifi0-1
     [Documentation]    Get client access and backhaul mesh link support for wifi0-1
-    [Tags]             tcxm-9350    development    step4    steps
-    Depends On         Step3
+    [Tags]             tcxm-9350   development   step4   steps
+
+    Depends On Test    Step3: Create and Assign network policy to AP
     &{AP_TEMPLATE_01_WIFI0}   create dictionary     client_access=Enable       backhaul_mesh_link=Enable
     &{AP_TEMPLATE_01_WIFI1}   create dictionary     client_access=Enable       backhaul_mesh_link=Enable
     &{AP_TEMPLATE_01}         create dictionary     wifi0_configuration=&{AP_TEMPLATE_01_WIFI0}   wifi1_configuration=&{AP_TEMPLATE_01_WIFI1}
@@ -208,8 +196,9 @@ step4: verify client access and backhaul mesh link support for wifi0-1
 
 step5: verify backhaul mesh link support for wifi0-1
     [Documentation]    Get backhaul mesh link support for wifi0-1
-    [Tags]             tcxm-9350    development    step5    steps
-    Depends On         Step3
+    [Tags]             tcxm-9350   development   step5   steps
+
+    Depends On Test    Step3: Create and Assign network policy to AP
     &{AP_TEMPLATE_02_WIFI0}   create dictionary     client_access=Disable      backhaul_mesh_link=Enable
     &{AP_TEMPLATE_02_WIFI1}   create dictionary     client_access=Disable      backhaul_mesh_link=Enable
     &{AP_TEMPLATE_02}         create dictionary     wifi0_configuration=&{AP_TEMPLATE_02_WIFI0}   wifi1_configuration=&{AP_TEMPLATE_02_WIFI1}
@@ -232,10 +221,23 @@ Pre_condition
     delete all network policies
     delete all ssids
     delete all ap templates
+    Onboard_AP
 
 Post_condition
     Logout User
     Quit Browser
+
+Onboard_AP
+    ${STATUS}       onboard device quick                            ${ap1}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    ${AP_SPAWN}     Open Spawn                                      ${ap1.ip}         ${ap1.port}      ${ap1.username}   ${ap1.password}   ${ap1.cli_type}
+    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+
+    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    Wait_device_online                                              ${ap1}
+    [Teardown]      Close Spawn                                     ${AP_SPAWN}
 
 Wait_device_online
     [Arguments]    ${ap}

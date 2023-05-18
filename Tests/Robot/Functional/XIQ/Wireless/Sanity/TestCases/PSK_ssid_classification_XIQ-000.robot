@@ -38,10 +38,10 @@ ${retry}         3
 *** Settings ***
 Library     String
 Library     Collections
+Library     DependencyLibrary
 
 Library     common/Cli.py
 Library     common/Utils.py
-Library     common/TestFlow.py
 
 Library     xiq/flows/common/Login.py
 Library     xiq/flows/manage/Location.py
@@ -68,43 +68,10 @@ Suite Setup      Pre_condition
 Suite Teardown   Post_condition
 
 *** Test Cases ***
-Step0: Advance Onboard AP1 and AP2
-    [Documentation]    Advance Onboard AP1 and AP2
-    [Tags]             tcxm-50782    tcxm-50784    development     p0    px
-    ${aps}       Create List        ${ap1}        ${ap2}
-    FOR     ${ap}   IN    @{aps}
-        ${ONBOARD_STATUS}             onboard device quick    ${ap}
-        should be equal as integers   ${ONBOARD_STATUS}       1
-    END
-
-Step1: Config AP1 and AP2 Capwap to Report AIO
-    [Documentation]     Configure Capwap client server
-    [Tags]              tcxm-50782    tcxm-50784    development    p1    px
-    Depends On          Step0
-    ${aps}       Create List        ${ap1}        ${ap2}
-    FOR    ${ap}    IN    @{aps}
-        ${AP_SPAWN}        Open Spawn          ${ap}[ip]   ${ap}[port]   ${ap}[username]   ${ap}[password]   ${ap}[cli_type]
-        ${STATUS}          Configure Device To Connect To Cloud            ${ap}[cli_type]   ${capwap_url}    ${AP_SPAWN}
-        Should Be Equal As Strings      '${STATUS}'       '1'
-        ${STATUS}          Wait for Configure Device to Connect to Cloud   ${ap}[cli_type]   ${capwap_url}    ${AP_SPAWN}
-        Should Be Equal As Strings      '${STATUS}'       '1'
-        Close Spawn        ${AP_SPAWN}
-    END
-    [Teardown]      Run Keyword If Test Failed      Close Spawn     ${AP_SPAWN}
-
-Step2: Check AP1 and AP2 Status On UI
-    [Documentation]     Checks for ap1 ap2 status
-    [Tags]              tcxm-50782    tcxm-50784    development    p2    px
-    Depends On          Step1
-    ${aps}=      Create List        ${ap1}        ${ap2}
-    FOR    ${ap}    IN    @{aps}
-         Wait_device_online     ${ap}
-    END
-
-Step3: Create Policies with Classication Rules
+Step1: Create Policies with Classication Rules
     [Documentation]     Create Policies with Classication Rules
-    [Tags]              tcxm-50782    tcxm-50784    development     p3      px
-    Depends On          Step2
+    [Tags]              tcxm-50782   tcxm-50784   development   p1   px
+
     Set Suite Variable             ${POLICY_00}                    per_ssid_class_loc
     Set Suite Variable             ${POLICY_01}                    per_ssid_class_ccg
     Set Suite Variable             ${AP_TEMP_NAME_00}              ${ap1.model}_ssid_classification
@@ -157,35 +124,39 @@ Step3: Create Policies with Classication Rules
     ${STATUS}                      add ap template to network policy          ${AP_TEMP_NAME_01}   ${POLICY_01}
     Should Be Equal As Strings     '${STATUS}'        '1'
 
-Step4: Assign network policy with Classification on location to AP1 and AP2
+Step2: Assign network policy with Classification on location to AP1 and AP2
     [Documentation]     Assign network policy with Classification on location to AP1 and AP2
-    [Tags]              tcxm-50782    development     p4      px
-    Depends On          Step3
+    [Tags]              tcxm-50782   development   p2   px
+
+    Depends On Test     Step1: Create Policies with Classication Rules
     ${UPDATE}                      Update Network Policy To All Devices        ${POLICY_00}         Complete
     should be equal as strings     '${UPDATE}'         '1'
     Wait_device_online             ${ap1}
     Wait_device_online             ${ap2}
 
-Step5: Verify AP1 and AP2 with Classification on location
+Step3: Verify AP1 and AP2 with Classification on location
     [Documentation]     Verify AP1 and AP2 with Classification on location
-    [Tags]              tcxm-50782    development     p5      px
-    Depends On          Step4
+    [Tags]              tcxm-50782   development   p3   px
+
+    Depends On Test     Step2: Assign network policy with Classification on location to AP1 and AP2
     Verify_AP_with_Classification     ${ap1}    ${CLASS_LOC_00}    ${WIRELESS_PESRONAL_00}
     Verify_AP_with_Classification     ${ap2}    ${CLASS_LOC_01}    ${WIRELESS_PESRONAL_01}
 
-Step6: Assign network policy with Classification on ccg to AP1 and AP2
+Step4: Assign network policy with Classification on ccg to AP1 and AP2
     [Documentation]     Assign network policy with Classification on ccg to AP1 and AP2
-    [Tags]              tcxm-50784    development     p6      px
-    Depends On          Step3
+    [Tags]              tcxm-50784   development   p4   px
+
+    Depends On Test     Step1: Create Policies with Classication Rules
     ${UPDATE}                      Update Network Policy To All Devices        ${POLICY_01}         Complete
     should be equal as strings     '${UPDATE}'         '1'
     Wait_device_online             ${ap1}
     Wait_device_online             ${ap2}
 
-Step7: Verify AP1 and AP2 with Classification on ccg
+Step5: Verify AP1 and AP2 with Classification on ccg
     [Documentation]     Verify AP1 and AP2 with Classification on ccg
-    [Tags]              tcxm-50784    development     p7      px
-    Depends On          Step6
+    [Tags]              tcxm-50784   development   p5   px
+
+    Depends On Test     Step4: Assign network policy with Classification on ccg to AP1 and AP2
     Verify_AP_with_Classification    ${ap1}    ${CLASS_LOC_00}    ${WIRELESS_PESRONAL_02}
     Verify_AP_with_Classification    ${ap2}    ${CLASS_LOC_01}    ${WIRELESS_PESRONAL_03}
 
@@ -203,9 +174,36 @@ Pre_condition
     Delete Classification rules     ${CLASS_LOC_00}[classification_rule_name]    ${CLASS_LOC_01}[classification_rule_name]
     ...                             ${CLASS_CCG_00}[classification_rule_name]    ${CLASS_CCG_01}[classification_rule_name]
     delete cloud config groups      ${CCG_00}[name]                              ${CCG_01}[name]
+    Onboard_AP
 
 Post_condition
     Quit Browser
+
+Onboard_AP
+    ${aps}   Create List   ${ap1}   ${ap2}
+    FOR   ${ap}   IN   @{aps}
+        ${ONBOARD_STATUS}             onboard device quick    ${ap}
+        should be equal as integers   ${ONBOARD_STATUS}       1
+    END
+
+    FOR   ${ap}   IN   @{aps}
+        ${AP_SPAWN}        Open Spawn          ${ap}[ip]   ${ap}[port]   ${ap}[username]   ${ap}[password]   ${ap}[cli_type]
+        ${STATUS}          Configure Device To Connect To Cloud          ${ap}[cli_type]   ${capwap_url}     ${AP_SPAWN}
+        Should Be Equal As Strings      '${STATUS}'       '1'
+        Close Spawn        ${AP_SPAWN}
+    END
+
+    FOR   ${ap}   IN   @{aps}
+        ${AP_SPAWN}        Open Spawn          ${ap}[ip]   ${ap}[port]     ${ap}[username]   ${ap}[password]   ${ap}[cli_type]
+        ${STATUS}          Wait for Configure Device to Connect to Cloud   ${ap}[cli_type]   ${capwap_url}     ${AP_SPAWN}
+        Should Be Equal As Strings      '${STATUS}'       '1'
+        Close Spawn        ${AP_SPAWN}
+    END
+
+    FOR   ${ap}   IN   @{aps}
+         Wait_device_online     ${ap}
+    END
+    [Teardown]      Run Keyword If Test Failed      Close Spawn     ${AP_SPAWN}
 
 Wait_device_online
     [Arguments]    ${ap}

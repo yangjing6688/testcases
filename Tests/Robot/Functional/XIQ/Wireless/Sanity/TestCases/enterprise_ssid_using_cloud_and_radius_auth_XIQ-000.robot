@@ -72,10 +72,10 @@ ${retry}     3
 *** Settings ***
 Library     String
 Library     Collections
+Library     DependencyLibrary
 
 Library     common/Cli.py
 Library     common/Utils.py
-Library     common/TestFlow.py
 Library     common/tools/remote/WinMuConnect.py
 
 Library     xiq/flows/common/Login.py
@@ -98,29 +98,15 @@ Variables    Environments/Config/device_commands.yaml
 
 Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   rem_mu
 
-Force Tags      testbed_1_node     testbed_2_node     testbed_3_node
+Force Tags       testbed_none
 Suite Setup      Pre_condition
 Suite Teardown   Post_condition
 
 *** Test Cases ***
-Step0: Onboard AP
-    [Documentation]    Onboard AP
-    [Tags]             tcxm-17744     development     step0   steps
-    ${STATUS}       onboard device quick                            ${ap1}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    ${AP_SPAWN}     Open Spawn                                      ${ap1.ip}         ${ap1.port}      ${ap1.username}   ${ap1.password}   ${ap1.cli_type}
-    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-
-    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    Wait_device_online                                              ${ap1}
-    [Teardown]      Close Spawn                                     ${AP_SPAWN}
-
 Step1: Create Policy - Enterprise with Cloud and Radius auth
     [Documentation]     Create policy, select wifi0,1,2, and update policy to AP
-    [Tags]              tcxm-17744    tcxm-17745    tcxm-17746    tcxm-17747    tcxm-17748    tcxm-17750    development     step1      steps
-    Depends On          Step0
+    [Tags]              tcxm-17744   tcxm-17745   tcxm-17746   tcxm-17747   tcxm-17748   tcxm-17750   development   step1   steps
+
     ${NUM}                         Generate Random String     5    012345678
     Set Suite Variable             ${POLICY}                       enterprise_${NUM}
     Set Suite Variable             ${SSID_00}                      w0_1_cld
@@ -151,8 +137,9 @@ Step1: Create Policy - Enterprise with Cloud and Radius auth
 
 Step2: Assign network policy to AP
     [Documentation]     Assign network policy to AP
-    [Tags]              tcxm-17744    tcxm-17745    tcxm-17746    tcxm-17747    tcxm-17748    tcxm-17750    development     step2      steps
-    Depends On          Step1
+    [Tags]              tcxm-17744   tcxm-17745   tcxm-17746   tcxm-17747   tcxm-17748   tcxm-17750   development   step2   steps
+
+    Depends On Test     Step1: Create Policy - Enterprise with Cloud and Radius auth
     ${UPDATE}                      Update Network Policy To Ap             ${POLICY}          ${ap1.serial}      Complete
     should be equal as strings     '${UPDATE}'        '1'
     Wait_device_online             ${ap1}
@@ -160,8 +147,9 @@ Step2: Assign network policy to AP
 
 Step3: MU connect to wifi0-1 - Cloud Auth service
     [Documentation]     MU connect to wifi0-1 - Enterprise SSID using cloud Auth service
-    [Tags]              tcxm-17746     tcxm-17748     development     step3      steps
-    Depends On          Step2
+    [Tags]              tcxm-17746   tcxm-17748   development   step3   steps
+
+    Depends On Test     Step2: Assign network policy to AP
     FOR    ${i}    IN RANGE    ${retry}
         ${STATUS}               rem_mu.connect wifi network        ${SSID_00}
         exit for loop if        '${STATUS}'=='1'
@@ -170,15 +158,17 @@ Step3: MU connect to wifi0-1 - Cloud Auth service
 
 Step4: Verify Client360 to wifi0-1 - Cloud Auth service
     [Documentation]     Verify Client360 to wifi0-1 - Enterprise SSID using cloud Auth service
-    [Tags]              tcxm-17746     tcxm-17748     development     step4      steps
-    Depends On          Step3
+    [Tags]              tcxm-17746   tcxm-17748   development   step4    steps
+
+    Depends On Test     Step3: MU connect to wifi0-1 - Cloud Auth service
     ${OUT}             get client360 current connection status      ${mu1.wifi_mac}
     should contain     ${OUT['USER']}                               ${SINGLE_USER_INFO_00}[name]
 
 Step5: MU connect to wifi0-1 - Radius Auth service
     [Documentation]     MU connect to wifi0-1 - Enterprise SSID using radius Auth service
-    [Tags]              tcxm-17747     tcxm-17750     development     step5      steps
-    Depends On          Step2
+    [Tags]              tcxm-17747   tcxm-17750   development   step5   steps
+
+    Depends On Test     Step2: Assign network policy to AP
     FOR    ${i}    IN RANGE    ${retry}
         ${STATUS}               rem_mu.connect wifi network        ${SSID_01}
         exit for loop if        '${STATUS}'=='1'
@@ -187,15 +177,17 @@ Step5: MU connect to wifi0-1 - Radius Auth service
 
 Step6: Verify Client360 to wifi0-1 - Radius Auth service
     [Documentation]     Verify Client360 to wifi0-1 - Enterprise SSID using radius Auth service
-    [Tags]              tcxm-17747     tcxm-17750     development     step6      steps
-    Depends On          Step5
+    [Tags]              tcxm-17747   tcxm-17750   development   step6   steps
+
+    Depends On Test     Step5: MU connect to wifi0-1 - Radius Auth service
     ${OUT}             get client360 current connection status      ${mu1.wifi_mac}
     should contain     ${OUT['USER']}                               ${SINGLE_USER_INFO_00}[name]
 
 Step7: MU connect to wifi2 - Cloud Auth service
     [Documentation]     MU connect to wifi0-1 - Enterprise SSID using cloud Auth service
-    [Tags]              tcxm-17744     tcxm-17746     development     step7      steps
-    Depends On          Step2
+    [Tags]              tcxm-17744   tcxm-17746   development   step7   steps
+
+    Depends On Test     Step2: Assign network policy to AP
     FOR    ${i}    IN RANGE    ${retry}
         ${STATUS}               rem_mu.connect wifi network        ${SSID_02}
         exit for loop if        '${STATUS}'=='1'
@@ -204,15 +196,17 @@ Step7: MU connect to wifi2 - Cloud Auth service
 
 Step8: Verify Client360 to wifi2- Cloud Auth service
     [Documentation]     Verify Client360 to wifi0-1 - Enterprise SSID using cloud Auth service
-    [Tags]              tcxm-17744     tcxm-17746     development     step8      steps
-    Depends On          Step7
+    [Tags]              tcxm-17744   tcxm-17746   development   step8   steps
+
+    Depends On Test     Step7: MU connect to wifi2 - Cloud Auth service
     ${OUT}             get client360 current connection status      ${mu1.wifi_mac}
     should contain     ${OUT['USER']}                               ${SINGLE_USER_INFO_00}[name]
 
 Step9: MU connect to wifi2 - Radius Auth service
     [Documentation]     MU connect to wifi0-1 - Enterprise SSID using radius Auth service
-    [Tags]              tcxm-17745     tcxm-17747     development     step9      steps
-    Depends On          Step2
+    [Tags]              tcxm-17745   tcxm-17747   development   step9   steps
+
+    Depends On Test     Step2: Assign network policy to AP
     FOR    ${i}    IN RANGE    ${retry}
         ${STATUS}               rem_mu.connect wifi network        ${SSID_03}
         exit for loop if        '${STATUS}'=='1'
@@ -221,8 +215,9 @@ Step9: MU connect to wifi2 - Radius Auth service
 
 Step10: Verify Client360 to wifi2 - Radius Auth service
     [Documentation]     Verify Client360 to wifi0-1 - Enterprise SSID using radius Auth service
-    [Tags]              tcxm-17745     tcxm-17747     development     step10      steps
-    Depends On          Step9
+    [Tags]              tcxm-17745   tcxm-17747   development   step10   steps
+
+    Depends On Test     Step9: MU connect to wifi2 - Radius Auth service
     ${OUT}             get client360 current connection status      ${mu1.wifi_mac}
     should contain     ${OUT['USER']}                               ${SINGLE_USER_INFO_00}[name]
 
@@ -237,10 +232,23 @@ Pre_condition
     delete all network policies
     delete all ssids
     delete all ap templates
+    Onboard_AP
 
 Post_condition
     Logout User
     Quit Browser
+
+Onboard_AP
+    ${STATUS}       onboard device quick                            ${ap1}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    ${AP_SPAWN}     Open Spawn                                      ${ap1.ip}         ${ap1.port}      ${ap1.username}   ${ap1.password}   ${ap1.cli_type}
+    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+
+    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    Wait_device_online                                              ${ap1}
+    [Teardown]      Close Spawn                                     ${AP_SPAWN}
 
 Enable_disable_client_Wifi_device
     [Arguments]     ${mu}

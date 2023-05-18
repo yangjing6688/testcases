@@ -85,10 +85,10 @@ ${retry}         3
 *** Settings ***
 Library     String
 Library     Collections
+Library     DependencyLibrary
 
 Library     common/Cli.py
 Library     common/Utils.py
-Library     common/TestFlow.py
 Library     common/tools/remote/WinMuConnect.py
 
 Library     xiq/flows/common/Login.py
@@ -115,28 +115,14 @@ Variables    Environments/Config/device_commands.yaml
 
 Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   rem_mu
 
-Force Tags       testbed_1_node     testbed_2_node     testbed_3_node
+Force Tags       testbed_none
 Suite Setup      Pre_condition
 Suite Teardown   Post_condition
 
 *** Test Cases ***
-Step0: Onboard AP
-    [Documentation]    Onboard AP
-    [Tags]             tcho-14022    tcho-14026    tcho-14027    tcho-14028    development     step0    steps
-    ${STATUS}       onboard device quick                            ${ap1}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    ${AP_SPAWN}     Open Spawn                                      ${ap1.ip}         ${ap1.port}      ${ap1.username}   ${ap1.password}   ${ap1.cli_type}
-    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-
-    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    Wait_device_online                                              ${ap1}
-    [Teardown]      Close Spawn                                     ${AP_SPAWN}
-
 Step1: Create Policy
     [Documentation]     Creat Policy, User Profile, VLAN Profile, and Classification Rule.
-    [Tags]              tcho-14022    tcho-14026    tcho-14027    tcho-14028    development     step1      steps
+    [Tags]              tcho-14022   tcho-14026   tcho-14027   tcho-14028   development   step1   steps
 
     Set Suite Variable             ${POLICY}            ppsk_vlan_usr_grp
     Set Suite Variable             ${AP_TEMP_NAME}      ${ap1.model}_${POLICY}
@@ -191,8 +177,9 @@ Step1: Create Policy
 
 Step2: Assign network policy with VLANs to AP1
     [Documentation]     Assign network policy with VLAN 105 to AP1
-    [Tags]              tcho-14022    tcho-14026    tcho-14027    tcho-14028   development     step2      steps
-    Depends On          Step1
+    [Tags]              tcho-14022   tcho-14026   tcho-14027   tcho-14028   development   step2   steps
+
+    Depends On Test     Step1: Create Policy
     ${UPDATE}                      Update Network Policy To Ap     ${POLICY}     ${ap1.serial}    Complete
     should be equal as strings     '${UPDATE}'        '1'
     Wait_device_online                                             ${ap1}
@@ -200,50 +187,58 @@ Step2: Assign network policy with VLANs to AP1
 
 Step3: Verify (VLAN 106) by assignment the SSID to AP and upload the config
     [Documentation]     Verify (VLAN 106) by assignment the SSID to AP and upload the config
-    [Tags]              tcho-14022    development     step3     stepv      steps
-    Depends On          Step2
+    [Tags]              tcho-14022   development   step3   stepv    steps
+
+    Depends On Test     Step2: Assign network policy with VLANs to AP1
     Connetion_SSID_to_AP_and_checked_client360   ${LOCAL_MULTI_USER_GROUP}   ${WIRELESS_PPSK_00}   ${USER_PROFILE_00}
 
 $tep4: Verify (VLAN 107) by assignment the SSID to AP and upload the config
     [Documentation]     Verify (VLAN 107) by assignment the SSID to AP and upload the config
-    [Tags]              tcho-14022    development     step4     stepv      steps
-    Depends On          Step2
+    [Tags]              tcho-14022   development   step4   stepv   steps
+
+    Depends On Test     Step2: Assign network policy with VLANs to AP1
     Connetion_SSID_to_AP_and_checked_client360   ${LOCAL_MULTI_GUEST_GROUP}   ${WIRELESS_PPSK_00}   ${USER_PROFILE_01}
 
 Step5: Verify (VLAN 108) by assignment the SSID to AP and upload the config
     [Documentation]     Verify (VLAN 108) by assignment the SSID to AP and upload the config
-    [Tags]              tcho-14026    development     step5     stepv      steps
-    Depends On          Step2
+    [Tags]              tcho-14026   development   step5   stepv   steps
+
+    Depends On Test     Step2: Assign network policy with VLANs to AP1
     Connetion_SSID_to_AP_and_checked_client360   ${LOCAL_MULTI_USER_GROUP}   ${WIRELESS_PPSK_01}   ${USER_PROFILE_02}   ${LOCAL_PPSK_USR_GRP_OS_RULE}    ${True}
 
 $tep6: Verify (VLAN 109) by assignment the SSID to AP and upload the config
     [Documentation]     Verify (VLAN 109) by assignment the SSID to AP and upload the config
     [Tags]              tcho-14026    development     step6     stepv      steps
-    Depends On          Step2
+
+    Depends On Test     Step2: Assign network policy with VLANs to AP1
     Connetion_SSID_to_AP_and_checked_client360   ${LOCAL_MULTI_GUEST_GROUP}   ${WIRELESS_PPSK_01}   ${USER_PROFILE_03}   ${LOCAL_PPSK_GST_GRP_OS_RULE}    ${True}
 
 Step7: Verify (VLAN 110) by assignment the SSID to AP and upload the config
     [Documentation]     Verify (VLAN 110) by assignment the SSID to AP and upload the config
     [Tags]              tcho-14027    development     step7     stepv      steps
-    Depends On          Step2
+
+    Depends On Test     Step2: Assign network policy with VLANs to AP1
     Connetion_SSID_to_AP_and_checked_client360   ${CLOUD_MULTI_USER_GROUP}   ${WIRELESS_PPSK_02}   ${USER_PROFILE_04}
 
 $tep8: Verify (VLAN 111) by assignment the SSID to AP and upload the config
     [Documentation]     Verify (VLAN 111) by assignment the SSID to AP and upload the config
     [Tags]              tcho-14027    development     step8     stepv      steps
-    Depends On          Step2
+
+    Depends On Test     Step2: Assign network policy with VLANs to AP1
     Connetion_SSID_to_AP_and_checked_client360   ${CLOUD_MULTI_GUEST_GROUP}   ${WIRELESS_PPSK_02}   ${USER_PROFILE_05}
 
 Step9: Verify (VLAN 112) by assignment the SSID to AP and upload the config
     [Documentation]     Verify (VLAN 112) by assignment the SSID to AP and upload the config
     [Tags]              tcho-14028    development     step9     stepv      steps
-    Depends On          Step2
+
+    Depends On Test     Step2: Assign network policy with VLANs to AP1
     Connetion_SSID_to_AP_and_checked_client360   ${CLOUD_MULTI_USER_GROUP}   ${WIRELESS_PPSK_03}   ${USER_PROFILE_06}    ${CLOUD_PPSK_USR_GRP_OS_RULE}    ${True}
 
 $tep10: Verify (VLAN 113) by assignment the SSID to AP and upload the config
     [Documentation]     Verify (VLAN 113) by assignment the SSID to AP and upload the config
     [Tags]              tcho-14028    development     step10     stepv      steps
-    Depends On          Step2
+
+    Depends On Test     Step2: Assign network policy with VLANs to AP1
     Connetion_SSID_to_AP_and_checked_client360   ${CLOUD_MULTI_GUEST_GROUP}   ${WIRELESS_PPSK_03}   ${USER_PROFILE_07}   ${CLOUD_PPSK_GST_GRP_OS_RULE}    ${True}
 
 *** Keywords ***
@@ -259,10 +254,23 @@ Pre_condition
     delete all ap templates
     Delete All User Profiles
     Delete All Vlan Profiles
+    Onboard_AP
 
 Post_condition
     Logout User
     Quit Browser
+
+Onboard_AP
+    ${STATUS}       onboard device quick                            ${ap1}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    ${AP_SPAWN}     Open Spawn                                      ${ap1.ip}         ${ap1.port}      ${ap1.username}   ${ap1.password}   ${ap1.cli_type}
+    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+
+    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    Wait_device_online                                              ${ap1}
+    [Teardown]      Close Spawn                                     ${AP_SPAWN}
 
 Wait_device_online
     [Arguments]    ${ap}

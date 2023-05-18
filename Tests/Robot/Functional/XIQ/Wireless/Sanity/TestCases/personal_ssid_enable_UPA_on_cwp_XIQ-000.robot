@@ -50,10 +50,10 @@ ${retry}     3
 *** Settings ***
 Library     String
 Library     Collections
+Library     DependencyLibrary
 
 Library     common/Cli.py
 Library     common/Utils.py
-Library     common/TestFlow.py
 Library     common/tools/remote/WinMuConnect.py
 
 Library     xiq/flows/common/Login.py
@@ -77,29 +77,15 @@ Variables    Environments/Config/device_commands.yaml
 
 Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   rem_mu
 
-Force Tags       testbed_1_node     testbed_2_node     testbed_3_node
+Force Tags       testbed_none
 Suite Setup      Pre_condition
 Suite Teardown   Post_condition
 
 *** Test Cases ***
-Step0: Onboard AP
-    [Documentation]    Onboard AP
-    [Tags]             tcxm-18034     development     step0    steps
-    ${STATUS}       onboard device quick                            ${ap1}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    ${AP_SPAWN}     Open Spawn                                      ${ap1.ip}         ${ap1.port}      ${ap1.username}   ${ap1.password}   ${ap1.cli_type}
-    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-
-    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    Wait_device_online                                              ${ap1}
-    [Teardown]      Close Spawn                                     ${AP_SPAWN}
-
 Step1: Create Policy - Personal SSID with CWP
     [Documentation]     Create policy, select wifi0-1, and update policy to AP
-    [Tags]              tcxm-18034     tcxm-18035     tcxm-18036     tcxm-18037     tcxm-18038     tcxm-18039     development     step1      steps
-    Depends On          Step0
+    [Tags]              tcxm-18034  tcxm-18035   tcxm-18036   tcxm-18037   tcxm-18038   tcxm-18039   development   step1   steps
+
     ${NUM}                         Generate Random String    5     012345678
     Set Suite Variable             ${POLICY}                       personal_w0_1_${NUM}
     Set Suite Variable             ${SSID_00}                      w0_1_dis_${NUM}
@@ -133,8 +119,9 @@ Step1: Create Policy - Personal SSID with CWP
 
 Step2: Assign network policy to AP
     [Documentation]     Assign network policy to AP
-    [Tags]              tcxm-18034     tcxm-18035     tcxm-18036     tcxm-18037     tcxm-18038     tcxm-18039     development     step2      steps
-    Depends On          Step1
+    [Tags]              tcxm-18034   tcxm-18035   tcxm-18036   tcxm-18037   tcxm-18038   tcxm-18039   development   step2   steps
+
+    Depends On Test     Step1: Create Policy - Personal SSID with CWP
     ${UPDATE}                      Update Network Policy To Ap             ${POLICY}          ${ap1.serial}      Complete
     should be equal as strings     '${UPDATE}'        '1'
     Wait_device_online              ${ap1}
@@ -142,8 +129,9 @@ Step2: Assign network policy to AP
 
 Step3: MU connect to wifi0-1 - CWP disabled
     [Documentation]     MU connect to wifi0-1 - Personal SSID with CWP disabled
-    [Tags]              tcxm-18037     tcxm-18039     development     step3    step00     steps
-    Depends On          Step2
+    [Tags]              tcxm-18037   tcxm-18039   development   step3   step00    steps
+
+    Depends On Test     Step2: Assign network policy to AP
     FOR    ${i}    IN RANGE    ${retry}
         ${STATUS}               rem_mu.connect wpa2 psk network      ${SSID_00}      ${WIRELESS_PESRONAL_00}[auth_profile][key_encryption][key_value]
         exit for loop if        '${STATUS}'=='1'
@@ -152,16 +140,18 @@ Step3: MU connect to wifi0-1 - CWP disabled
 
 Step4: Verify Client360 to wifi0_1 - CWP disabled
     [Documentation]     Verify Client360 to wifi0_1 - Personal SSID with CWP disabled
-    [Tags]              tcxm-18037     tcxm-18039     development     step4    step00    steps
-    Depends On          Step3
+    [Tags]              tcxm-18037   tcxm-18039   development   step4   step00   steps
+
+    Depends On Test     Step3: MU connect to wifi0-1 - CWP disabled
     ${OUT}            get real time client360 details    ${mu1.wifi_mac}
     ${OUT}            convert to string                  ${OUT}
     should contain    ${OUT}                             ${mu1.wifi_mac}
 
 Step5: MU connect to wifi0-1 - CWP enable
     [Documentation]     MU connect to wifi0-1 - Personal SSID with CWP enable
-    [Tags]              tcxm-18036     tcxm-18038     development     step5    step01    steps
-    Depends On          Step2
+    [Tags]              tcxm-18036   tcxm-18038   development   step5   step01   steps
+
+    Depends On Test     Step2: Assign network policy to AP
     FOR    ${i}    IN RANGE    ${retry}
         ${STATUS}               rem_mu.connect wpa2 psk network      ${SSID_01}        ${WIRELESS_PESRONAL_01}[auth_profile][key_encryption][key_value]
         exit for loop if        '${STATUS}'=='1'
@@ -174,15 +164,17 @@ Step5: MU connect to wifi0-1 - CWP enable
 
 Step6: Verify Client360 to wifi0-1 - CWP enable
     [Documentation]     Verify Client360 to wifi0-1 - Personal SSID with CWP enable
-    [Tags]              tcxm-18036     tcxm-18038     development     step6     step01    steps
-    Depends On          Step5
+    [Tags]              tcxm-18036   tcxm-18038   development   step6   step01   steps
+
+    Depends On Test     Step5: MU connect to wifi0-1 - CWP enable
     ${OUT}             get client360 current connection status      ${mu1.wifi_mac}
     should contain     ${OUT['CWP']}                     Used
 
 Step7: MU connect to wifi2 - CWP disabled
     [Documentation]     MU connect to wifi2 - Personal SSID with CWP disabled
-    [Tags]              tcxm-18035     tcxm-18039     development     step7     step02    steps
-    Depends On          Step2
+    [Tags]              tcxm-18035   tcxm-18039   development   step7   step02   steps
+
+    Depends On Test     Step2: Assign network policy to AP
     FOR    ${i}    IN RANGE    ${retry}
         ${STATUS}               rem_mu.connect wpa3 psk network      ${SSID_02}      ${WIRELESS_PESRONAL_02}[auth_profile][key_encryption][key_value]
         exit for loop if        '${STATUS}'=='1'
@@ -191,16 +183,18 @@ Step7: MU connect to wifi2 - CWP disabled
 
 Step8: Verify Client360 to wifi2 - CWP disabled
     [Documentation]     Verify Client360 to wifi2 - Personal SSID with CWP disabled
-    [Tags]              tcxm-18035     tcxm-18039     development     step8    step02    steps
-    Depends On          Step7
+    [Tags]              tcxm-18035   tcxm-18039   development   step8   step02   steps
+
+    Depends On Test     Step7: MU connect to wifi2 - CWP disabled
     ${OUT}            get real time client360 details    ${mu1.wifi_mac}
     ${OUT}            convert to string                  ${OUT}
     should contain    ${OUT}                             ${mu1.wifi_mac}
 
 Step9: MU connect to wifi2 - CWP enable
     [Documentation]     MU connect to wifi2 - Personal SSID with CWP enable
-    [Tags]              tcxm-18034     tcxm-18038     development     step9     step03   steps
-    Depends On          Step2
+    [Tags]              tcxm-18034   tcxm-18038   development   step9   step03   steps
+
+    Depends On Test     Step2: Assign network policy to AP
     FOR    ${i}    IN RANGE    ${retry}
          ${STATUS}              rem_mu.connect wpa3 psk network      ${SSID_03}        ${WIRELESS_PESRONAL_03}[auth_profile][key_encryption][key_value]
          exit for loop if       '${STATUS}'=='1'
@@ -213,8 +207,9 @@ Step9: MU connect to wifi2 - CWP enable
 
 Step10: Verify Client360 to wifi2 - CWP enable
     [Documentation]     Verify Client360 to wifi2 - Personal SSID with CWP enable
-    [Tags]              tcxm-18034     tcxm-18038     development     step10     step03    steps
-    Depends On          Step9
+    [Tags]              tcxm-18034   tcxm-18038   development   step10   step03   steps
+
+    Depends On Test     Step9: MU connect to wifi2 - CWP enable
     ${OUT}             get client360 current connection status      ${mu1.wifi_mac}
     should contain     ${OUT['CWP']}                     Used
 
@@ -230,10 +225,23 @@ Pre_condition
     delete all ssids
     delete all captive web portals      GA-UA-Self-Reg-CWP-Profile,GA-UPA-CWP-Profile
     delete all ap templates
+    Onboard_AP
 
 Post_condition
     Logout User
     Quit Browser
+
+Onboard_AP
+    ${STATUS}       onboard device quick                            ${ap1}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    ${AP_SPAWN}     Open Spawn                                      ${ap1.ip}         ${ap1.port}      ${ap1.username}   ${ap1.password}   ${ap1.cli_type}
+    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+
+    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    Wait_device_online                                              ${ap1}
+    [Teardown]      Close Spawn                                     ${AP_SPAWN}
 
 Enable_disable_client_Wifi_device
     [Arguments]     ${mu}

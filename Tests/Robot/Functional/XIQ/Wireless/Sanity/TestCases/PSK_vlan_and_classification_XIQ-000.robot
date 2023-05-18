@@ -40,10 +40,10 @@ ${retry}         3
 *** Settings ***
 Library     String
 Library     Collections
+Library     DependencyLibrary
 
 Library     common/Cli.py
 Library     common/Utils.py
-Library     common/TestFlow.py
 Library     common/tools/remote/WinMuConnect.py
 
 Library     xiq/flows/common/Login.py
@@ -68,30 +68,16 @@ Variables    Environments/Config/device_commands.yaml
 
 Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   rem_mu
 
-Force Tags       testbed_1_node     testbed_2_node     testbed_3_node
+Force Tags       testbed_none
 Suite Setup      Pre_condition
 Suite Teardown   Post_condition
 
 *** Test Cases ***
-Step0: Onboard AP
-    [Documentation]    Onboard AP
-    [Tags]             tcxm-6847    tcxm-8582    development     step0    steps
-    ${STATUS}       onboard device quick                            ${ap1}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    ${AP_SPAWN}     Open Spawn                                      ${ap1.ip}         ${ap1.port}      ${ap1.username}   ${ap1.password}   ${ap1.cli_type}
-    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-
-    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
-    Should Be Equal As Strings                                      '${STATUS}'       '1'
-    Wait_device_online                                              ${ap1}
-    [Teardown]      Close Spawn                                     ${AP_SPAWN}
-
 Step1: Create Policy
     [Documentation]     Creat Policy, User Profile, VLAN Profile, and Classification Rule.
-    [Tags]              tcxm-6847    tcxm-8582    development     step1      steps
-    Depends On          Step0
-    ${NUM}=                        Generate Random String    5     012345678
+    [Tags]              tcxm-6847   tcxm-8582   development   step1   steps
+
+    ${NUM}                         Generate Random String    5     012345678
     Set Suite Variable             ${POLICY}                       per_vlan_${NUM}
     Set Suite Variable             ${SSID_00}                      w0_1_105_${NUM}
     Set Suite Variable             ${SSID_01}                      w0_1_101_3_${NUM}
@@ -124,16 +110,18 @@ Step1: Create Policy
 
 Step2: Assign network policy with VLANs to AP1
     [Documentation]     Assign network policy with VLAN 105 to AP1
-    [Tags]              tcxm-6847   development     step2      steps
-    Depends On          Step1
+    [Tags]              tcxm-6847   development   step2   steps
+
+    Depends On Test     Step1: Create Policy
     ${UPDATE}                      Update Network Policy To Ap     ${POLICY}     ${ap1.serial}    Complete
     should be equal as strings     '${UPDATE}'        '1'
     Wait_device_online                                             ${ap1}
 
 Step3: Verify (105) cli user-profile attr and ssid security object attr - Default User Profile
     [Documentation]     Verify (105) cli user-profile attr and ssid security object attr - Default User Profile
-    [Tags]              tcxm-6847    development     step3     steps
-    Depends On          Step2
+    [Tags]              tcxm-6847   development   step3   steps
+
+    Depends On Test     Step2: Assign network policy with VLANs to AP1
     ${AP_SPAWN}         Open Spawn       ${ap1.ip}      ${ap1.port}    ${ap1.username}    ${ap1.password}    ${ap1.cli_type}
     ${OUT}              Send             ${AP_SPAWN}    show run | inc attr
     should contain      ${OUT}           security-object ${SSID_00} default-user-profile-attr 1
@@ -142,15 +130,17 @@ Step3: Verify (105) cli user-profile attr and ssid security object attr - Defaul
 
 Step4: Verify (105) cli vlanid assigned to the client - Default User Profile
     [Documentation]     Verify (105) cli vlanid assigned to the client - Default User Profile
-    [Tags]              tcxm-6847    development     step4     steps
-    Depends On          Step2
+    [Tags]              tcxm-6847   development   step4   steps
+
+    Depends On Test     Step2: Assign network policy with VLANs to AP1
     Connect_to_client    ${SSID_00}      ${WIRELESS_PESRONAL_00}[auth_profile][key_encryption][key_value]
     Show_station         ${ap1}          ${USER_PROFILE_00}[vlan_id]
 
 Step5: Verify (104) cli user-profile attr and ssid security object attr - Default User Profile
     [Documentation]     Verify (104) cli user-profile attr and ssid security object attr - Default User Profile
-    [Tags]              tcxm-6847    development     step5     steps
-    Depends On          Step2
+    [Tags]              tcxm-6847   development   step5   steps
+
+    Depends On Test     Step2: Assign network policy with VLANs to AP1
     ${STATUS}                            rem_mu.disconnect_wifi
     Should Be Equal As Strings           '${STATUS}'    '1'
     Change_ap_location_and_update        ${ap1}         auto_location_01, Santa Clara, building_02, floor_02
@@ -163,15 +153,17 @@ Step5: Verify (104) cli user-profile attr and ssid security object attr - Defaul
 
 Step6: Verify (104) cli vlanid assigned to the client - Default User Profile
     [Documentation]     Verify (104) cli vlanid assigned to the client - Default User Profile
-    [Tags]              tcxm-6847    development     step6     steps
-    Depends On          Step5
+    [Tags]              tcxm-6847   development   step6   steps
+
+    Depends On Test     Step5: Verify (104) cli user-profile attr and ssid security object attr - Default User Profile
     Connect_to_client    ${SSID_00}      ${WIRELESS_PESRONAL_00}[auth_profile][key_encryption][key_value]
     Show_station         ${ap1}          ${USER_PROFILE_01}[vlan_id]
 
 Step7: Verify (103) cli location1 and attribute - Multiple User Profile
     [Documentation]     Verify (103) cli location1 and attrible - Multiple User Profile
-    [Tags]              tcxm-8582    development     step7     steps
-    Depends On          Step2
+    [Tags]              tcxm-8582   development   step7   steps
+
+    Depends On Test      Step2: Assign network policy with VLANs to AP1
     ${STATUS}                            rem_mu.disconnect_wifi
     Should Be Equal As Strings           '${STATUS}'    '1'
     Change_ap_location_and_update        ${ap1}         auto_location_01, Santa Clara, building_03, floor_03
@@ -187,15 +179,17 @@ Step7: Verify (103) cli location1 and attribute - Multiple User Profile
 
 Step8: Verify (103) cli location1 vlanid assigned to the client - Multiple User Profile
     [Documentation]     Verify (103) cli location1 vlanid assigned to the client - Multiple User Profile
-    [Tags]              tcxm-8582    development     step8     steps
-    Depends On          Step7
+    [Tags]              tcxm-8582   development   step8   steps
+
+    Depends On Test     Step7: Verify (103) cli location1 and attribute - Multiple User Profile
     Connect_to_client    ${SSID_01}    ${WIRELESS_PESRONAL_01}[auth_profile][key_encryption][key_value]
     Show_station         ${ap1}        ${USER_PROFILE_02}[vlan_id]
 
 Step9: Verify (101) cli location2 and attribute - Multiple User Profile
     [Documentation]     Verify cli location2 and attrible - Multiple User Profile
-    [Tags]              tcxm-8582    development     step9     steps
-    Depends On          Step2
+    [Tags]              tcxm-8582   development   step9   steps
+
+    Depends On Test     Step2: Assign network policy with VLANs to AP1
     ${STATUS}                            rem_mu.disconnect_wifi
     Should Be Equal As Strings           '${STATUS}'    '1'
     Change_ap_location_and_update        ${ap1}         auto_location_01, Santa Clara, building_01, floor_01
@@ -211,8 +205,9 @@ Step9: Verify (101) cli location2 and attribute - Multiple User Profile
 
 Step10: Verify (101) cli location2 vlanid assigned to the client - Multiple User Profile
     [Documentation]     Verify (101) cli location2 vlanid assigned to the client - Multiple User Profile
-    [Tags]              tcxm-8582    development     step10     steps
-    Depends On          Step9
+    [Tags]              tcxm-8582   development   step10   steps
+
+    Depends On Test     Step9: Verify (101) cli location2 and attribute - Multiple User Profile
     Connect_to_client    ${SSID_01}    ${WIRELESS_PESRONAL_01}[auth_profile][key_encryption][key_value]
     Show_station         ${ap1}        ${USER_PROFILE_03}[vlan_id]
 
@@ -230,10 +225,23 @@ Pre_condition
     Delete All User Profiles
     Delete All Vlan Profiles
     Delete Classification rules     ${USER_PROFILE_00}[classification_rule_name]    ${USER_PROFILE_01}[classification_rule_name]
+    Onboard_AP
 
 Post_condition
     Logout User
     Quit Browser
+
+Onboard_AP
+    ${STATUS}       onboard device quick                            ${ap1}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    ${AP_SPAWN}     Open Spawn                                      ${ap1.ip}         ${ap1.port}      ${ap1.username}   ${ap1.password}   ${ap1.cli_type}
+    ${STATUS}       Configure Device To Connect To Cloud            ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+
+    ${STATUS}       Wait for Configure Device to Connect to Cloud   ${ap1.cli_type}   ${capwap_url}    ${AP_SPAWN}
+    Should Be Equal As Strings                                      '${STATUS}'       '1'
+    Wait_device_online                                              ${ap1}
+    [Teardown]      Close Spawn                                     ${AP_SPAWN}
 
 Change_ap_location_and_update
     [Arguments]    ${ap}   ${location}

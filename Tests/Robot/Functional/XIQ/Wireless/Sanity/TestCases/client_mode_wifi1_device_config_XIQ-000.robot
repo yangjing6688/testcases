@@ -36,10 +36,10 @@
 *** Settings ***
 Library     String
 Library     Collections
+Library     DependencyLibrary
 
 Library     common/Cli.py
 Library     common/Utils.py
-Library     common/TestFlow.py
 Library     common/tools/remote/MacMuConnect.py
 
 Library     xiq/flows/common/Login.py
@@ -65,48 +65,15 @@ Variables    Environments/Config/device_commands.yaml
 
 Library	    Remote 	http://${mu1.ip}:${mu1.port}   WITH NAME   mu1
 
-Force Tags       testbed_1_node      testbed_2_node     testbed_3_node
+Force Tags       testbed_none
 Suite Setup      Pre_condition
 Suite Teardown   Post_condition
 
 *** Test Cases ***
-Test1: Advance Onboard AP1 and AP2 - TCXM-15120
-    [Documentation]    Advance Onboard AP1 and AP2
-    [Tags]             tcxm-15120     development     test1     test
-    ${aps}       Create List        ${ap1}        ${ap2}
-    FOR     ${ap}   IN    @{aps}
-        ${ONBOARD_STATUS}             onboard device quick    ${ap}
-        should be equal as integers   ${ONBOARD_STATUS}       1
-    END
-
-Test2: Config AP1 and AP2 Capwap to Report AIO - TCXM-15120
-    [Documentation]     Configure Capwap client server
-    [Tags]              tcxm-15120     development    test2      test
-    Depends On          Test1
-    ${aps}       Create List        ${ap1}        ${ap2}
-    FOR    ${ap}    IN    @{aps}
-        ${AP_SPAWN}        Open Spawn          ${ap}[ip]   ${ap}[port]   ${ap}[username]   ${ap}[password]   ${ap}[cli_type]
-        ${STATUS}          Configure Device To Connect To Cloud            ${ap}[cli_type]   ${capwap_url}    ${AP_SPAWN}
-        Should Be Equal As Strings      '${STATUS}'       '1'
-        ${STATUS}          Wait for Configure Device to Connect to Cloud   ${ap}[cli_type]   ${capwap_url}    ${AP_SPAWN}
-        Should Be Equal As Strings      '${STATUS}'       '1'
-        Close Spawn        ${AP_SPAWN}
-    END
-    [Teardown]      Run Keyword If Test Failed      Close Spawn     ${AP_SPAWN}
-
-Test3: Check AP1 and AP2 Status On UI - TCXM-15120
-    [Documentation]     Checks for ap1 ap2 status
-    [Tags]              tcxm-15120    development     test3       test
-    Depends On          Test2
-    ${aps}=      Create List        ${ap1}        ${ap2}
-    FOR    ${ap}    IN    @{aps}
-         Wait_device_online     ${ap}
-    END
-
-Test4: Create Policy and Update Policy to AP1 and AP2 - TCXM-15120
+Step1: Create Policy and Update Policy to AP1 and AP2
     [Documentation]     Create policy and Update policy to AP1 and AP2
-    [Tags]              tcxm-15120    development     test4      test
-    Depends On          Test3
+    [Tags]              tcxm-15120   development   step1   steps
+
     ${NUM}                      Generate Random String    5     0123456789
     Set Suite Variable          ${POLICY}                       BkHaul_wifi1_${NUM}
     Set Suite Variable          ${SSID}                         bk_1_${NUM}
@@ -139,10 +106,11 @@ Test4: Create Policy and Update Policy to AP1 and AP2 - TCXM-15120
     should be equal as strings     '${UPDATE}'               '1'
     Wait_device_online             ${ap2}
 
-Test5: Client mode enable in device Configuration for AP2 - TCXM-15120
+Step2: Client mode enable in device Configuration for AP2
     [Documentation]     Client mode enable in device Configuration for AP2
-    [Tags]              tcxm-15120    development     test5      test
-    Depends On          Test4
+    [Tags]              tcxm-15120   development   step2   steps
+
+    Depends On Test     Step1: Create Policy and Update Policy to AP1 and AP2
     Set To Dictionary           ${CLIENT_MODE_PROFILE_WIFI1}    client_mode_profile_name=${CLIENT_PROFLE_NAME_CM}    ssid_name=${SSID}     password=${WIRELESS_PESRONAL_ENT_01}[auth_profile][key_encryption][key_value]
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2_WIFI1}   client_mode_profile=${CLIENT_MODE_PROFILE_WIFI1}
     Set To Dictionary           ${AP_TEMPLATE_CONFIG_2}         wifi1_configuration=${AP_TEMPLATE_CONFIG_2_WIFI1}
@@ -157,17 +125,19 @@ Test5: Client mode enable in device Configuration for AP2 - TCXM-15120
     Wait_device_online                   ${ap2}
     Wait_device_online                   ${ap1}
 
-Test6: Setup WIFI on STA2 and Connect to AP2 - TCXM-15120
+Step3: Setup WIFI on STA2 and Connect to AP2
     [Documentation]     Setup WIFI on STA2 and Connect to AP2 on Client Mode
-    [Tags]              tcxm-15120      development        test6      test
-    Depends On          Test5
+    [Tags]              tcxm-15120   development   step3   steps
+
+    Depends On Test     Step2: Client mode enable in device Configuration for AP2
     Setup AP in Client Mode          ${ap2}
     mu1.connect wpa2 ppsk network    ${SSID_CM}          aerohive
 
-Test7: Verify Connection - TCXM-15120
-    [Documentation]     Setup WIFI on STA2 and Connect to AP2 on Client Mode
-    [Tags]              tcxm-15120    development    test7      test
-    Depends On          Test6
+Step4: Verify Client mode and a Client Connection
+    [Documentation]     Verify Client mode and a Client Connection
+    [Tags]              tcxm-15120   development   step4   steps
+
+    Depends On Test     Step3: Setup WIFI on STA2 and Connect to AP2
     sleep               20s
     Verify client mode ap     ${ap2}
     Verify station            ${mu1}     ${AP_TEMPLATE_CONFIG_2}[wifi1_configuration][client_mode_profile][dhcp_server_scope]
@@ -236,6 +206,32 @@ Verify station
     Send            ${spawn}       no interface eth0 shutdown
     Close Spawn     ${spawn}
 
+Onboard_AP
+    ${aps}         Create List   ${ap1}   ${ap2}
+    FOR   ${ap}   IN   @{aps}
+        ${ONBOARD_STATUS}             onboard device quick   ${ap}
+        should be equal as integers   ${ONBOARD_STATUS}      1
+    END
+
+    FOR   ${ap}   IN   @{aps}
+        ${AP_SPAWN}        Open Spawn          ${ap}[ip]   ${ap}[port]   ${ap}[username]   ${ap}[password]   ${ap}[cli_type]
+        ${STATUS}          Configure Device To Connect To Cloud          ${ap}[cli_type]   ${capwap_url}     ${AP_SPAWN}
+        Should Be Equal As Strings      '${STATUS}'       '1'
+        Close Spawn        ${AP_SPAWN}
+    END
+
+    FOR   ${ap}   IN   @{aps}
+        ${AP_SPAWN}        Open Spawn          ${ap}[ip]   ${ap}[port]     ${ap}[username]   ${ap}[password]   ${ap}[cli_type]
+        ${STATUS}          Wait for Configure Device to Connect to Cloud   ${ap}[cli_type]   ${capwap_url}     ${AP_SPAWN}
+        Should Be Equal As Strings      '${STATUS}'       '1'
+        Close Spawn        ${AP_SPAWN}
+    END
+
+    FOR   ${ap}   IN   @{aps}
+       Wait_device_online   ${ap}
+    END
+    [Teardown]      Run Keyword If Test Failed   Close Spawn   ${AP_SPAWN}
+
 Pre_condition
     ${STATUS}                           Login User    ${tenant_username}   ${tenant_password}
     should be equal as strings          '${STATUS}'   '1'
@@ -247,6 +243,7 @@ Pre_condition
     delete all ssids
     delete all ap templates
     delete_all_client_mode_profiles
+    Onboard_AP
 
 Post_condition
     Logout User
