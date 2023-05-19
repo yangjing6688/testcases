@@ -217,7 +217,6 @@ Onboard_AP
     FOR   ${ap}   IN   @{aps}
        Wait_device_online   ${ap}
     END
-    [Teardown]      Run Keyword If Test Failed   Close Spawn   ${AP_SPAWN}
 
 Pre_condition
     ${STATUS}                           Login User    ${tenant_username}   ${tenant_password}

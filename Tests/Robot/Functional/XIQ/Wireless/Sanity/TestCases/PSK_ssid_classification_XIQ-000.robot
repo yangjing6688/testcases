@@ -203,7 +203,6 @@ Onboard_AP
     FOR   ${ap}   IN   @{aps}
          Wait_device_online     ${ap}
     END
-    [Teardown]      Run Keyword If Test Failed      Close Spawn     ${AP_SPAWN}
 
 Wait_device_online
     [Arguments]    ${ap}
