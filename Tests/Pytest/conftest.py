@@ -404,6 +404,19 @@ valid_testbed_markers: List[TestbedMarker] = [
     "testbed_none"
 ]
 
+hardcoded_locations: List[str] = [
+    "auto_location_01, Santa Clara, building_02, floor_04",
+]
+max_length_network_policy_name = 27
+max_length_switch_template_name = 27
+length_random_word_in_network_policy_name = 4
+length_random_word_in_switch_template_name = 4
+network_policy_name_format = "{random_word}_np_{story_name}"
+switch_template_name_format = "{random_word}_template_{story_name}"
+rerun_keyword = "_rerun_"
+rerun_test_name_regex =  r"^((?:{string_valid_test_markers})_[\d\w]+){rerun_keyword}\d+$".format(string_valid_test_markers="|".join(valid_test_markers), rerun_keyword=rerun_keyword)
+rerun_test_format = "{test_name}{keyword}{index}"
+
 
 @pytest.fixture(scope="session")
 def debug(logger: PytestLogger) -> Callable:
@@ -530,6 +543,7 @@ def pytest_configure(config):
     pytest.onboard_2_node: bool = False 
     pytest.onboard_stack: bool = False 
     pytest.onboard_none: bool = True
+    pytest.onboarding_needed: bool = False
     pytest.all_nodes: List[Node] = []
     pytest.standalone_nodes: List[Node] = []
     pytest.stack_nodes: List[Node] = []
@@ -713,7 +727,7 @@ def pytest_collection_modifyitems(session, items):
                     [marker_obj] = [mk for mk in item.own_markers if mk.name == marker]
                     item.own_markers.pop(item.own_markers.index(marker_obj))
 
-            if re.search(r"(.*)_rerun_\d+$", test_marker_from_test_data):
+            if re.search(rerun_test_name_regex, test_marker_from_test_data):
                 item.add_marker(
                     getattr(pytest.mark, test_marker_from_test_data))
 
@@ -1087,6 +1101,7 @@ def pytest_collection_modifyitems(session, items):
             else:
                 item._nodeid = f"{nodeid}[{test_marker}][{priority_marker}][#{item_index + 1}]"
         
+        pytest.onboarding_needed = any(getattr(pytest, f"onboard_{ntype}") for ntype in [tb.split("testbed_")[1] for tb in valid_testbed_markers if tb != "testbed_none"])
         pytest.items = ordered_items
         items[:] = ordered_items
         
@@ -1210,11 +1225,11 @@ def pytest_sessionstart(session):
                 if cnt == 1:
                     pytest.runlist_tests.append(test)
                 else:
-                    pytest.runlist_tests.append(f"{test}_rerun_{cnt - 1}")
+                    pytest.runlist_tests.append(rerun_test_format.format(test_name=test, keyword=rerun_keyword, index=cnt - 1))
                 count[test] += 1
 
         for test in pytest.runlist_tests:
-            if match := re.search(r"(.*)_rerun_\d+$", test):
+            if match := re.search(rerun_test_name_regex, test):
                 base_test = match.group(1)
                 
                 if base_test in pytest.runlist_tests:
@@ -1933,7 +1948,7 @@ class OnboardingTests:
             request.getfixturevalue("test_bed")
             return
 
-        if not any(getattr(pytest, f"onboard_{ntype}") for ntype in [tb.split("testbed_")[1] for tb in valid_testbed_markers if tb != "testbed_none"]): 
+        if not pytest.onboarding_needed: 
             logger.info(
                 "There are no devices given in the yaml files or there are no tests left to run "
                 "so the onboarding test won't configure anything.")
@@ -1957,7 +1972,7 @@ class OnboardingTests:
                 "The 'skip_teardown' option is given in runlist. The onboarding cleanup test case is skipped.")
             return
         
-        if not any(getattr(pytest, f"onboard_{ntype}") for ntype in [tb.split("testbed_")[1] for tb in valid_testbed_markers if tb != "testbed_none"]): 
+        if not pytest.onboarding_needed: 
             logger.info(
                 "There are no devices given in the yaml files or there were no tests left to run"
                 " so the onboarding cleanup test won't unconfigure anything.")
@@ -2437,12 +2452,14 @@ def get_nodes_data(
                     if dut.platform.upper() == "STACK":
                         system_version = re.findall(r"(Slot-\d).*\sIMG:\s([\d\.]+)", output)
                     else:
-                        system_version = re.search(r"IMG:\s([\d\.]+)", output).group(1)
+                        if system_version_match := re.search(r"IMG:\s([\d\.]+)", output):
+                            system_version = system_version_match.group(1)
 
                 elif dut.cli_type.upper() == "VOSS":
                     output = dev_cmd.send_cmd(dut.name, 'show sys software', ignore_cli_feedback=True)[0].return_text
                     logger.cli(output)
-                    system_version = re.search(r"Version\s+:\sBuild\s([\d\.]+)\s", output).group(1)
+                    if system_version_match := re.search(r"Version\s+:\sBuild\s([\d\.]+)", output):
+                        system_version = system_version_match.group(1)
                 else:
                     logger.warning("OS not yet supported.")
 
@@ -2828,10 +2845,6 @@ def onboarding_locations(
     """
     
     ret: Dict[str, str] = {}
-    
-    hardcoded_locations = [
-        "San Jose,building_01,floor_01",
-    ]
 
     skip_setup: bool = run_options.get("skip_setup", False)
   
@@ -3080,6 +3093,7 @@ def check_devices_are_onboarded(
 def cleanup(
         logger: PytestLogger,
         screen: Screen, 
+        poll: Callable,
         debug: Callable,
         request: fixtures.SubRequest,
         utils: Utils
@@ -3098,23 +3112,80 @@ def cleanup(
     ) -> None:
             
             xiq.xflowscommonDevices._goto_devices()
+            xiq.xflowscommonDevices.column_picker_select("MAC Address", "Updated On", "Serial #")
             
+            @debug
+            def check_device_status_before_delete(device):
+                """ Helper function that verifies the status of the device before proceeding to delete it.
+                """
+                statuses = [
+                    'Querying', "IQ Engine Firmware Updating", "Firmware Updating", "User Configuration Updating", "Configuration Updating", 
+                    "Rebooting", "Certification Updating", "Application Signature Downloading"
+                ]
+                
+                try:
+                    for device_updated_status in poll(
+                        lambda: xiq.xflowscommonDevices.get_device_updated_status(device_mac=device.mac), max_poll_time=600, poll_interval=5):
+                        
+                        if (not any(re.search(device_updated_status, status, re.IGNORECASE) for status in statuses)) or (not device_updated_status):
+                            logger.info(f"Device '{device.name}' is not updating. It can be deleted.")
+                            break
+
+                        xiq.xflowscommonDevices.refresh_devices_page()
+                        screen.save_screen_shot()
+                        logger.warning(f"Device '{device.name}' cannot be deleted yet because it has status '{device_updated_status}'. Will sleep 5 seconds.")
+
+                except TimeoutError:
+                    screen.save_screen_shot()
+                    logger.warning(f"Device '{device.name}' cannot be deleted because of its current update status.")
+    
             for dut in duts:
 
                 logger.step(f"Delete this device: '{dut.name}' (mac='{dut.mac}').")
-                
-                if xiq.xflowscommonDevices.search_device(device_mac=dut.mac, IRV=False, skip_refresh=True, skip_navigation=True) == -1:
-                    screen.save_screen_shot()
-                    logger.info(f"Did not find this device onboarded: '{dut.name}' (mac='{dut.mac}').")
-                    continue
 
                 try:             
                     screen.save_screen_shot()
                     xiq.xflowscommonDevices._goto_devices()
-                    xiq.xflowscommonDevices.delete_device(
-                        device_mac=dut.mac)
-                    logger.info(f"Successfully deleted this device: '{dut.name}' (mac='{dut.mac}').")
-                    screen.save_screen_shot()
+                    
+                    logger.step(f"Searching for device '{dut.name}' using its mac '{dut.mac}'.")
+                    if xiq.xflowscommonDevices.search_device(device_mac=dut.mac, IRV=False) == 1:
+                        logger.step(f"Check that device '{dut.name}' (mac='{dut.mac}') is not updating so it can be deleted.")
+                        check_device_status_before_delete(dut)
+                        logger.info(f"Successfully found device: '{dut.name}' (mac='{dut.mac}')")
+                        xiq.xflowscommonDevices.delete_device(
+                            device_mac=dut.mac)
+                        logger.info(f"Successfully deleted this device: '{dut.name}' (mac='{dut.mac}').")
+                        screen.save_screen_shot()
+                    else:
+                        logger.warning(f"Did not find device '{dut.name}' using its mac '{dut.mac}'.")
+                        
+                        # this branch should cover the case when the devices were added to XIQ but they did not connect at all due to various reasons
+                        # this means that the devices can be identified and then deleted from XIQ/Devices only through the serial field
+                        
+                        if dut.platform.upper() != "STACK":
+                            logger.step(f"Searching for device '{dut.name}' using its serial '{dut.serial}'.")
+                            if xiq.xflowscommonDevices.search_device(device_serial=dut.serial, IRV=False) == 1:
+                                logger.info(f"Successfully found this device: '{dut.name}' (serial='{dut.serial}').")
+                                xiq.xflowscommonDevices.delete_device(
+                                    device_serial=dut.serial)
+                                logger.info(f"Successfully deleted this device: '{dut.name}' (serial='{dut.serial}').")
+                                screen.save_screen_shot()
+                            else:
+                                logger.warning(f"Did not find device '{dut.name}' using its serial '{dut.serial}'.")       
+                        else:                            
+                            for slot_name, slot_data in dut.stack.items():
+                                
+                                logger.step(f"Searching for slot '{slot_name}' of device '{dut.name}' using its serial '{slot_data.serial}'.")
+                                
+                                if xiq.xflowscommonDevices.search_device(device_serial=slot_data.serial, IRV=False) == 1:
+                                    logger.info(f"Successfully found tslot '{slot_name}' of device '{dut.name}' using its serial '{dut.serial}'.")
+                                    xiq.xflowscommonDevices.delete_device(
+                                        device_serial=slot_data.serial)
+                                    logger.info(f"Successfully deleted slot '{slot_name}' of device '{dut.name}' using its serial '{dut.serial}'.")
+                                    screen.save_screen_shot()
+                                else:
+                                    logger.warning(f"Did not find slot '{slot_name}' of device '{dut.name}' using its serial '{dut.serial}'.")
+                                    
                 except Exception as exc:
                     screen.save_screen_shot()
                     logger.warning(repr(exc))
@@ -3339,8 +3410,15 @@ def policy_config(
         else:
             onboarding_options: Options = request.getfixturevalue(f"{dut.node_name}_onboarding_options")
             
-            random_policy_name = f"{get_random_word(length=4)}_np_{pytest.runlist_name.replace('runlist_', '')}"[:27]
-            random_template_name = f"{get_random_word(length=4)}_template_{pytest.runlist_name.replace('runlist_', '')}"[:27]
+            random_policy_name = network_policy_name_format.format(
+                random_word=get_random_word(length=length_random_word_in_network_policy_name),
+                story_name=pytest.runlist_name.replace('runlist_', '')
+            )[:max_length_network_policy_name]
+            
+            random_template_name = switch_template_name_format.format(
+                random_word=get_random_word(length=length_random_word_in_switch_template_name),
+                story_name=pytest.runlist_name.replace('runlist_', '')
+            )[:max_length_switch_template_name]
             
             policy_name: str = onboarding_options.get("policy_name", random_policy_name)
             template_name: str = onboarding_options.get("template_name", random_template_name)
