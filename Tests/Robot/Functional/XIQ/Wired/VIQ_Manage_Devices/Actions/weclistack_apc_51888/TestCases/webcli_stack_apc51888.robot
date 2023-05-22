@@ -22,7 +22,7 @@ Force Tags      testbed_1_node
 TCXM-15265: Verify that WEB CLI is available for EXOS Stack
     #Onboarding:
     [Documentation]	This testcase Onboard and checks the Web CLI is available for stack
-    [Tags]              tcxm_15265   production              p1
+    [Tags]              tcxm_15265   production   production   p1
 
     Delete Device     device_mac=${netelem1.mac}
     @{result} =    Split String    ${netelem1.serial}    ,
@@ -82,7 +82,7 @@ TCXM-15266: Ping command can be executed to a specific destination
 
 TCXM-15267: Traceroute command can be executed to a specific destination
     [Documentation]	Verify that the user can iniate a traceroute command from EXOS Stack through WEB CLI
-    [Tags]              tcxm_15267   production              p1
+    [Tags]              tcxm_15267   production   production   p1
     Navigate to Devices and Confirm Success
     refresh devices page
     ${output}=              test device cli    traceroute www.google.com   device_mac=${netelem1.mac}      delay=60
@@ -122,7 +122,7 @@ TCXM-15269 Verify that the user can iniate bogus commands through WEB CLI
 
 TCXM-15270: Verify that the user has the ability for configuring items are supported in XIQ, through WEB CLI
     [Documentation]	Verify that the user has the ability for configuring items not supported in XIQ, through WEB CLI
-    [Tags]              tcxm_15270   production              p1
+    [Tags]              tcxm_15270   production   production   p1
     Navigate to Devices and Confirm Success
     refresh devices page
     ${output}=              test device cli

@@ -109,7 +109,7 @@ class XIQ1429Tests:
     @mark.tcxm_19696
     @mark.p2
     @mark.testbed_1_node
-    @mark.itsanity
+    @mark.production
     def test_create_voip_port_type_at_device360_level(self):
         """
         TCXM-19696 - Create VOIP Port type at Device360 Level
@@ -153,7 +153,7 @@ class XIQ1429Tests:
     @mark.tcxm_19689
     @mark.p3
     @mark.testbed_1_node
-    @mark.itsanity
+    @mark.production
     def test_verify_voice_signaling_vlan_dscp_value_device_360(self):
         """
         TCXM-19689 - Device360 - Verify med Voice Signalling VLAN - DSCP value between 0-63
@@ -204,7 +204,7 @@ class XIQ1429Tests:
     @mark.tcxm_19692
     @mark.testbed_1_node
     @mark.p3
-    @mark.itsanity
+    @mark.production
     def test_verify_voice_vlan_dscp_value_device_360(self):
         """
         TCXM-19692 - Verify Device360 Voice VLAN - DSCP value between 0-63
@@ -252,7 +252,7 @@ class XIQ1429Tests:
     @mark.tcxm_19684
     @mark.p3
     @mark.testbed_1_node
-    @mark.itsanity
+    @mark.production
     def test_voice_data_should_not_be_the_same_device_360(self):
         """
         TCXM-19684 - Text Box validation - Voice and Data vlan should not be same
@@ -303,7 +303,7 @@ class XIQ1429Tests:
     @mark.tcxm_19498
     @mark.p3
     @mark.testbed_1_node
-    @mark.itsanity
+    @mark.production
     def test_verify_voice_signaling_vlan_dscp_value_template(self):
         """
         TCXM-19498 - Verify Template med Voice Signalling VLAN - DSCP value between 0-63
@@ -364,7 +364,7 @@ class XIQ1429Tests:
     @mark.tcxm_19496
     @mark.p3
     @mark.testbed_1_node
-    @mark.itsanity
+    @mark.production
     def test_verify_voice_vlan_dscp_value_template(self):
         """
         TCXM-19496 - Verify Template Voice VLAN - DSCP value between 0-63
@@ -426,7 +426,7 @@ class XIQ1429Tests:
     @mark.tcxm_19703
     @mark.p3
     @mark.testbed_1_node
-    @mark.itsanity
+    @mark.production
     def test_verify_device360_summary_when_lldp_cdp_are_disabled(self):
         """
         TCXM-19703 - Verify Device360 summary view - when lldp and cdp advertisements are disabled
@@ -507,7 +507,7 @@ class XIQ1429Tests:
     @mark.tcxm_19687
     @mark.p1
     @mark.testbed_1_node
-    @mark.itsanity
+    @mark.production
     def test_verify_voice_and_data_vlan_can_be_created_device_360_level(self):
         """
         TCXM-19687 - Device360 - Check Voice VLAN and Data VLAN can be created
@@ -587,7 +587,7 @@ class XIQ1429Tests:
     @mark.tcxm_19506
     @mark.p2
     @mark.testbed_1_node
-    @mark.itsanity
+    @mark.production
     def test_verify_voice_and_data_vlan_can_be_created_template_level(self):
         """
         TCXM-19506 - Check Voice VLAN and Data VLAN can be created
@@ -675,7 +675,7 @@ class XIQ1429Tests:
     @mark.tcxm_19742
     @mark.p3
     @mark.testbed_1_node
-    @mark.itsanity
+    @mark.production
     def test_verify_voip_port_type_not_available_for_voss_template(self):
         """
         TCXM-19742 - Negative scenario - Voip port type is not available in VOSS

@@ -37,7 +37,7 @@ ${EXOSDevice}             -1
 *** Test Cases ***
 TCXM-14733: Login to a VIQ via XAPI
     [Documentation]     Generates the access token for logging into XIQ
-    [Tags]              tcxm_14733    p1   
+    [Tags]              tcxm_14733   production   p1
     [Setup]    Navigate to Devices and Confirm Success
 
     # Sleep of 10s added as a temporary fix for XIQ-9267. Sleep needs be removed once the defect is fixed.
@@ -84,7 +84,7 @@ TCXM-14733: Login to a VIQ via XAPI
 	
 TCXM-14738 : Get List of Devices
     [Documentation]     Gets the list of devices
-    [Tags]              tcxm_14738       p1
+    [Tags]              tcxm_14738   production   p1
 
 
     skip if   ${onboard_flag} == -1   msg="onboarding failed"
@@ -113,7 +113,7 @@ TCXM-14738 : Get List of Devices
 
 TCXM-14742 : XAPI CLI Execution on a single EXOS Device
     [Documentation]     Execute a show switch CLI on an EXOS standalone switch
-    [Tags]              tcxm_14742   p2 
+    [Tags]              tcxm_14742   production   p2
 
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
     skip if  ${EXOSDevice} == -1   msg="Skipping as device is not EXOS Standalone"
@@ -123,7 +123,7 @@ TCXM-14742 : XAPI CLI Execution on a single EXOS Device
 
 TCXM-14750 : XAPI CLI Execution on a single VOSS Device
     [Documentation]     Execute a show sys-info CLI on a VOSS switch
-    [Tags]              tcxm_14750      p2 
+    [Tags]              tcxm_14750   production   p2
 
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
     skip if  ${VOSSDevice} == -1   msg="Skipping as device is not VOSS"
@@ -133,7 +133,7 @@ TCXM-14750 : XAPI CLI Execution on a single VOSS Device
 
 TCXM-14735 : XAPI CLI Execution on a stack
     [Documentation]     Execute a show switch CLI on an EXOS stack
-    [Tags]              tcxm_14735   p2
+    [Tags]              tcxm_14735   production   p2
 
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
     skip if  ${EXOSStack} == -1   msg="Skipping as device is not EXOS Stack"
@@ -143,7 +143,7 @@ TCXM-14735 : XAPI CLI Execution on a stack
 
 TCXM-14739 : Multiple CLI Execution on a single EXOS Device
     [Documentation]     Execute multiple CLI on an EXOS standalone switch
-    [Tags]              tcxm_14739   p2
+    [Tags]              tcxm_14739   production   p2
 	
 	skip if   ${onboard_flag} == -1   msg="onboarding failed" 
     skip if  ${EXOSDevice} == -1   msg="Skipping as device is not EXOS Standalone"
@@ -153,7 +153,7 @@ TCXM-14739 : Multiple CLI Execution on a single EXOS Device
 
 TCXM-14736 : Multiple CLI Execution on a single VOSS Device
     [Documentation]     Execute Multiple CLI on a VOSS switch
-    [Tags]              tcxm_14736   p2
+    [Tags]              tcxm_14736   production   p2
 
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
     skip if  ${VOSSDevice} == -1   msg="Skipping as device is not VOSS"
@@ -163,7 +163,7 @@ TCXM-14736 : Multiple CLI Execution on a single VOSS Device
 
 TCXM-14741 : Multiple CLI Execution on a stack
     [Documentation]     Execute Multiple CLI on an EXOS stack
-    [Tags]              tcxm_14741    p2
+    [Tags]              tcxm_14741   production   p2
 
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
     skip if  ${EXOSStack} == -1   msg="Skipping as device is not EXOS Stack"
@@ -173,7 +173,7 @@ TCXM-14741 : Multiple CLI Execution on a stack
 
 TCXM-14760 : CLI Execution on specific EXOS Device
     [Documentation]     Execute a show switch CLI on a specific EXOS switch using device endpoint
-    [Tags]              tcxm_14760    p2
+    [Tags]              tcxm_14760   production   p2
 
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
     skip if  ${EXOSDevice} == -1   msg="Skipping as device is not EXOS Standalone"
@@ -183,7 +183,7 @@ TCXM-14760 : CLI Execution on specific EXOS Device
 
 TCXM-14764 : XAPI CLI Execution on a single VOSS Device
     [Documentation]     Execute a show switch CLI on a specific VOSS switch using device endpoint
-    [Tags]              tcxm_14764    p2
+    [Tags]              tcxm_14764   production   p2
  
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
     skip if  ${VOSSDevice} == -1   msg="Skipping as device is not VOSS"
@@ -193,7 +193,7 @@ TCXM-14764 : XAPI CLI Execution on a single VOSS Device
 
 TCXM-14767 : XAPI CLI Execution on a stack
     [Documentation]     Execute a show switch CLI on a specific EXOS stack using device endpoint
-    [Tags]              tcxm_14767    p2
+    [Tags]              tcxm_14767   production   p2
 
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
     skip if  ${EXOSStack} == -1   msg="Skipping as device is not EXOS Stack"
@@ -203,7 +203,7 @@ TCXM-14767 : XAPI CLI Execution on a stack
 
 TCXM-14770 : Multiple CLI Execution on specific EXOS Device
     [Documentation]     Execute multiple CLI on a specific EXOS switch using device endpoint
-    [Tags]              tcxm_14770    p2
+    [Tags]              tcxm_14770   production   p2
 
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
     skip if  ${EXOSDevice} == -1   msg="Skipping as device is not EXOS Standalone"
@@ -213,7 +213,7 @@ TCXM-14770 : Multiple CLI Execution on specific EXOS Device
 
 TCXM-14772 : Multiple CLI Execution on specific VOSS Device
     [Documentation]     Execute multiple CLI on a specific VOSS switch using device endpoint
-    [Tags]              tcxm_14772   p2
+    [Tags]              tcxm_14772   production   p2
 
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
     skip if  ${VOSSDevice} == -1   msg="Skipping as device is not VOSS"
@@ -223,7 +223,7 @@ TCXM-14772 : Multiple CLI Execution on specific VOSS Device
 
 TCXM-14737 : Multiple CLI Execution on specific stack
     [Documentation]     Execute multiple CLI on a specific EXOS stack using device endpoint
-    [Tags]              tcxm_14737    p2
+    [Tags]              tcxm_14737   production   p2
 
 	skip if   ${onboard_flag} == -1   msg="onboarding failed"
     skip if  ${EXOSStack} == -1   msg="Skipping as device is not EXOS Stack"

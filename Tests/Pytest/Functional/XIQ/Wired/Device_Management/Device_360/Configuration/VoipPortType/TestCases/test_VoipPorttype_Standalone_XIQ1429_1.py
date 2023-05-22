@@ -233,7 +233,7 @@ class xiqTests():
     @mark.p1
     @mark.testbed_1_node
     @mark.tcxm_19208
-    @mark.itsanity
+    @mark.production
     def test_Create_VOIP_Port_type_at_template_Level(self):
         """Test Objective: Create VOIP Port type at template Level"""
         self.executionHelper.testSkipCheck()
@@ -279,7 +279,7 @@ class xiqTests():
     @mark.p1
     @mark.testbed_1_node
     @mark.tcxm_19433
-    @mark.itsanity
+    @mark.production
     def test_In_new_port_type_editor_Phone_with_Data_Port_should_present(self):
         """In new port type editor - "Phone with a Data Port" should present"""
         self.xiq.xflowscommonNavigator.navigate_to_devices()
@@ -309,7 +309,7 @@ class xiqTests():
     @mark.p1
     @mark.testbed_1_node
     @mark.tcxm_19476
-    @mark.itsanity
+    @mark.production
     def test_verify_template_voice_view_when_lldp_cdp_advertisements_are_disabled(self):
         """Verify Template voice view - when lldp and cdp advertisements are disabled"""
         self.xiq.xflowscommonNavigator.navigate_to_devices()
@@ -326,7 +326,7 @@ class xiqTests():
     @mark.p1
     @mark.testbed_1_node
     @mark.tcxm_19489
-    @mark.itsanity
+    @mark.production
     def test_verify_template_voice_view_when_lldp_disabled_cdp_advertisements_are_enabled(self):
         """ Verify Template voice view - when lldp advertisement - disabled & cdp advertisements - enabled"""
 
@@ -366,7 +366,7 @@ class xiqTests():
     @mark.p1
     @mark.testbed_1_node
     @mark.tcxm_19491
-    @mark.itsanity
+    @mark.production
     def test_verify_template_voice_view_when_lldp_enabled_med_voice_vlan_enabled_cdp_advertisements_are_disabled(self):
         """ Verify Template voice view - when lldp advertisement - enabled and MED  Voice VLAN/DSCP	"""
         self.xiq.xflowscommonNavigator.navigate_to_devices()
@@ -411,7 +411,7 @@ class xiqTests():
     @mark.p1
     @mark.testbed_1_node
     @mark.tcxm_19494
-    @mark.itsanity
+    @mark.production
     def test_verify_template_voice_view_when_lldp_disabled_cdp_advertisements_are_enabled_voice_vlan_enabled(self):
         """ Verify Template voice view - cdp advertisements - enabled and Enable CDP advertisement of Voice VLAN"""
         self.xiq.xflowscommonNavigator.navigate_to_devices()
@@ -451,7 +451,7 @@ class xiqTests():
     @mark.p2
     @mark.testbed_1_node
     @mark.tcxm_19434
-    @mark.itsanity
+    @mark.production
     def test_verify_voice_vlan_and_data_vlan_is_visible_on_selection_phone_with_a_data_port(self):
         """ Check Voice VLAN and Data VLAN can be created"""
         self.xiq.xflowscommonNavigator.navigate_to_devices()

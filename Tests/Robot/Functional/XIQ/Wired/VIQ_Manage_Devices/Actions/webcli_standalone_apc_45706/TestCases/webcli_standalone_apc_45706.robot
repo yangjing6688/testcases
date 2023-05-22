@@ -21,7 +21,7 @@ Force Tags      testbed_1_node
 *** Test Cases ***
 TCXM-13367: CLI Access is available for an EXOS device
     [Documentation]     Verify that CLI Access is available for an EXOS device
-    [Tags]              tcxm_13367                 p2
+    [Tags]              tcxm_13367   production   p2
 
     sleep  2s
     refresh devices page
@@ -43,7 +43,7 @@ TCXM-13373: Show commands can be executed from WEB CLI on an EXOS switch
 
 TCXM-13369: Traceroute command can be executed to a specific destination
     [Documentation]     Verify that Traceroute command can be executed to a specific destination from an onboarded EXOS switch
-    [Tags]              tcxm_13369                 p2
+    [Tags]              tcxm_13369   production   p2
 
     refresh devices page
     ${output}=              test device cli     traceroute www.google.com	device_serial=${netelem1.serial}      delay=60
@@ -85,7 +85,7 @@ TCXM-13370 Protocol status commands can be executed from WEB CLI on an EXOS swit
 
 TCXM-13372 User can send configuration commands from WEB CLI
     [Documentation]     Verify that user can send configuration commands from WEB CLI
-    [Tags]              tcxm_13372                 p2
+    [Tags]              tcxm_13372   production   p2
 
     refresh devices page
     ${output}=              test device cli
@@ -112,7 +112,7 @@ TCXM-13377 Execute multiple commands from WEB CLI on an EXOS switch
 
 TCXM-13376 Invalid commands cannot be executed from WEB CLI on an EXOS switch
     [Documentation]     Verify that invalid commands cannot be executed from WEB CLI on an EXOS switch
-    [Tags]              tcxm_13376                 p2
+    [Tags]              tcxm_13376   production   p2
 
     refresh devices page
     ${output}=              test device cli    randomtext		device_serial=${netelem1.serial}
