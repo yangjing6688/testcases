@@ -5,17 +5,8 @@
 # Topology      :
 # Host ----- Cloud
 
-# Pre-Condtion
-#===============
-# 1. Onboard 1 AP (DEVICE1) and Make it online on XIQ
-
 *** Variables ***
 ${DEVICE_MAKE}              Extreme - Aerohive
-${LOCATION}                 auto_location_01, San Jose, building_01, floor_01
-${LOCATION_DISPLAY}         auto_location_01 >> San Jose >> building_01 >> floor_01
-${MAP_FILE_COMMA_FORMAT}    auto_location_02_cfd4589.tar.gz
-${MAP_FILE_NAME}            auto_location_01_1595321828282.tar.gz
-${LOCATION_WITH_COMMA}      auto_location_02 >> Bangalore, city >> Building_3B >> Floor_02
 ${DEFAULT_POLICY_NAME}      default_network_policy
 ${COLUMN_PICKER_MGMT_IP}    MGT IP Address
 
@@ -77,24 +68,48 @@ Pre Condition
     Set Global Variable     ${device1_spawn}            ${device1.name}
 
     ${result}=          Login User          ${TENANT_USERNAME}     ${TENANT_PASSWORD}
-    ${device_update}=    Update Device Delta Configuration   device_serial=${device1.serial}
-    Should Be Equal As Integers  ${device_update}    1
-    ${AP_STATUS}=       get device status       device_mac=${device1.mac}
-    Should Be Equal As Strings  '${AP_STATUS}'     'green'
+    
     ${CREATE_DEFAULT_POLICY}        Create Network Policy If Does Not Exist     ${DEFAULT_POLICY_NAME}     ${CONFIG_PUSH_OPEN_NW_01}
     Should Be Equal As Strings      '${CREATE_DEFAULT_POLICY}'   '1'
-    ${UPADATE_AP1}      Update Network Policy To AP     ${DEFAULT_POLICY_NAME}      ap_serial=${device1.serial}
-    Should Be Equal As Strings      '${UPADATE_AP1}'       '1'
+
     Logout User
     Quit Browser
 
 Test Case Level Cleanup
-    ${UPADATE_AP1}      Update Network Policy To AP     ${DEFAULT_POLICY_NAME}     ap_serial=${device1.serial}
-    Should Be Equal As Strings      '${UPADATE_AP1}'       '1'
     Logout User
     Quit Browser
 
 *** Test Cases ***
+TCCS-15510: Onboard Device through csv file with serial number
+    [Documentation]         Onboard Device through csv file with serial number
+    [Tags]                  p2   regression   manage-device  onboard  csv   tccs_15510
+    ${LOGIN_XIQ} =                  Login User          ${TENANT_USERNAME}      ${TENANT_PASSWORD}
+
+    Delete Device                   device_serial=${device1.serial}
+    ${RESOURCE_PATH}                Get Suite Resource Path         ${SUITE SOURCE}
+    ${CSV_FILE}=                    Set Variable               ${RESOURCE_PATH}/AP1.csv
+    ${device_json_str}=             Catenate                {"onboard_device_type":"${device1.onboard_device_type}", "serial":"${device1.serial}", "device_make":"${device1.make}", "location":"${device1.location}", "csv_location":"${CSV_FILE}"}
+    ${device_json}=                 get json from string    ${device_json_str}
+
+    ${ONBOARD_AP}=                  Onboard Device Quick     ${device_json}
+    Should Be Equal As Strings      ${ONBOARD_AP}       1
+
+    ${CONF_RESULT}=                Configure Device To Connect To Cloud            ${device1.cli_type}     ${generic_capwap_url}   ${device1_spawn}
+    Should Be Equal As Integers     ${CONF_RESULT}          1
+
+    ${ONLINE_STATUS}=                Wait Until Device Online        ${device1.serial}
+    Should Be Equal As Integers      ${ONLINE_STATUS}       1
+    Refresh Devices Page
+
+    ${AP1_UPDATE_CONFIG}=           Update Network Policy To AP   default_network_policy     ap_serial=${device1.serial}
+    Should Be Equal As Strings      '${AP1_UPDATE_CONFIG}'       '1'
+    sleep                           ${CONFIG_PUSH_WAIT}
+
+    ${AP1_STATUS}=                   get device status       device_mac=${device1.mac}
+    Should Be Equal As Strings       '${AP1_STATUS}'     'green'
+
+    [Teardown]   run keywords       Test Case Level Cleanup
+
 TCCS-6862: CFD-4525 Setting static IP during import from .csv not working
     [Documentation]         CFD-4525 : Setting static IP during import from .csv not working
     [Tags]                  p2   regression   manage-device  onboard  csv     tccs_6862
