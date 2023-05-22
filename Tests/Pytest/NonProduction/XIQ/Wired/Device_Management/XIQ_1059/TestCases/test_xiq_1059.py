@@ -100,7 +100,12 @@ class XIQ1059Tests:
                 assert xiq_library_at_class_level.xflowscommonDevices.assign_network_policy_to_switch_mac(
                     node_policy_name, node.mac)
 
-                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(serial=node.serial)
+                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(serial=node.serial,
+                                                                            policy_name=node_policy_name, IRV=False)
+                if res == -1:
+                    logger.step("Update failed, trying to do a Delta Update")
+                    xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node.serial)
+                    xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
                 assert res == 1, f"Failed to update network policy to the device"
 
                 loaded_config['${TEST_NAME}'] = 'test_tcxm_19955 : Traffic'
@@ -188,8 +193,8 @@ class XIQ1059Tests:
 
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.switch_template_save()
                     xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-                    res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(
-                        serial=node.serial)
+                    res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name)
                     assert res == 1, f"Failed to update network policy to the device"
 
                     # Delete the port type created
@@ -279,14 +284,19 @@ class XIQ1059Tests:
                 else:
                     logger.info("Policy was assigned")
 
-                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(serial=node.serial)
+                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name, IRV=False)
+                if res == -1:
+                    logger.step("Update failed, trying to do a Delta Update")
+                    xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node.serial)
+                    xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
                 assert res == 1, f"Failed to update network policy to the device"
 
                 xiq_library_at_class_level.xflowscommonDeviceCommon.go_to_device360_window(node.mac)
 
                 utils.wait_till(
                     xiq_library_at_class_level.xflowsmanageDevice360.device360_navigate_to_port_configuration, delay=2)
-
+                assert xiq_library_at_class_level.xflowsmanageDevice360.unlock_device360_port_config() == 1
                 loaded_config['${TEST_NAME}'] = 'test_tcxm_19956 - Configure D360PortTypes'
                 create_port = xiq_library_at_class_level.xflowsmanageDevice360.create_new_port_type(template_mac,
                                                                                                     isl_ports_dut[0],
@@ -302,7 +312,12 @@ class XIQ1059Tests:
                 is_configured = True
 
                 xiq_library_at_class_level.xflowscommonDevices._goto_devices()
-                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(serial=node.serial)
+                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name, IRV=False)
+                if res == -1:
+                    logger.step("Update failed, trying to do a Delta Update")
+                    xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node.serial)
+                    xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
                 assert res == 1, f"Failed to update network policy to the device"
 
                 loaded_config['${TEST_NAME}'] = 'test_tcxm_19956 - Traffic'
@@ -508,6 +523,7 @@ class XIQ1059Tests:
 
                 xiq_library_at_class_level.xflowscommonDeviceCommon.go_to_device360_window(node.mac)
                 xiq_library_at_class_level.xflowsmanageDevice360.device360_navigate_to_port_configuration()
+                assert xiq_library_at_class_level.xflowsmanageDevice360.unlock_device360_port_config() == 1
 
                 create_port = xiq_library_at_class_level.xflowsmanageDevice360.create_new_port_type(template_mac_d360,
                                                                                                     isl_ports_dut[0],
@@ -523,7 +539,12 @@ class XIQ1059Tests:
                 is_configured = True
 
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-                xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(serial=node.serial)
+                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name, IRV=False)
+                if res == -1:
+                    logger.step("Update failed, trying to do a Delta Update")
+                    xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node.serial)
+                    xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
 
                 loaded_config['${TEST_NAME}'] = 'test_tcxm_19960 - Traffic'
                 default_library.apiUdks.setupTeardownUdks.Base_Test_Suite_Setup()
@@ -735,7 +756,12 @@ class XIQ1059Tests:
                 is_configured = True
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.switch_template_save()
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-                xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(serial=node.serial)
+                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name, IRV=False)
+                if res == -1:
+                    logger.step("Update failed, trying to do a Delta Update")
+                    xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node.serial)
+                    xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
                 is_configured = True
                 loaded_config['${TEST_NAME}'] = 'test_tcxm_19961 - Traffic'
                 default_library.apiUdks.setupTeardownUdks.Base_Test_Suite_Setup()
@@ -815,8 +841,12 @@ class XIQ1059Tests:
                 xiq_library_at_class_level.xflowsconfigureSwitchTemplate.switch_template_save()
 
                 xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(
-                    serial=node.serial)
+                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name, IRV=False)
+                if res == -1:
+                    logger.step("Update failed, trying to do a Delta Update")
+                    xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node.serial)
+                    xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
                 assert res == 1, f"Failed to update network policy to the device"
 
                 xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_port_type_profile(
@@ -906,7 +936,12 @@ class XIQ1059Tests:
                 assert xiq_library_at_class_level.xflowscommonDevices.assign_network_policy_to_switch_mac(
                     node_policy_name, node.mac)
 
-                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(serial=node.serial)
+                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name, IRV=False)
+                if res == -1:
+                    logger.step("Update failed, trying to do a Delta Update")
+                    xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node.serial)
+                    xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
                 assert res == 1, f"Failed to update network policy to the device"
 
                 loaded_config['${TEST_NAME}'] = 'test_tcxm_19963- Traffic'
@@ -971,8 +1006,12 @@ class XIQ1059Tests:
 
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.switch_template_save()
                     xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-                    res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(
-                        serial=node.serial)
+                    res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name, IRV=False)
+                    if res == -1:
+                        logger.step("Update failed, trying to do a Delta Update")
+                        xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node.serial)
+                        xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
                     assert res == 1, f"Failed to update network policy to the device"
 
                     xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_port_type_profile(
@@ -1068,7 +1107,12 @@ class XIQ1059Tests:
                 assert xiq_library_at_class_level.xflowscommonDevices.assign_network_policy_to_switch_mac(
                     node_policy_name, node.mac)
 
-                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(serial=node.serial)
+                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name, IRV=False)
+                if res == -1:
+                    logger.step("Update failed, trying to do a Delta Update")
+                    xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node.serial)
+                    xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
                 assert res == 1, f"Failed to update network policy to the device"
 
                 loaded_config['${TEST_NAME}'] = 'test_tcxm_19965 : Traffic'
@@ -1154,8 +1198,12 @@ class XIQ1059Tests:
 
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.switch_template_save()
                     xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-                    res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(
-                        serial=node.serial)
+                    res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name, IRV=False)
+                    if res == -1:
+                        logger.step("Update failed, trying to do a Delta Update")
+                        xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node.serial)
+                        xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
                     assert res == 1, f"Failed to update network policy to the device"
 
                     xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_port_type_profile(
@@ -1249,7 +1297,12 @@ class XIQ1059Tests:
                 assert xiq_library_at_class_level.xflowscommonDevices.assign_network_policy_to_switch_mac(
                     node_policy_name, node.mac)
 
-                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(serial=node.serial)
+                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name, IRV=False)
+                if res == -1:
+                    logger.step("Update failed, trying to do a Delta Update")
+                    xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node.serial)
+                    xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
                 assert res == 1, f"Failed to update network policy to the device"
 
                 loaded_config['${TEST_NAME}'] = 'test_tcxm_19972 : Traffic'
@@ -1334,8 +1387,12 @@ class XIQ1059Tests:
 
                     xiq_library_at_class_level.xflowsconfigureSwitchTemplate.switch_template_save()
                     xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-                    res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(
-                        serial=node.serial)
+                    res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name, IRV=False)
+                    if res == -1:
+                        logger.step("Update failed, trying to do a Delta Update")
+                        xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node.serial)
+                        xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
                     assert res == 1, f"Failed to update network policy to the device"
 
                     xiq_library_at_class_level.xflowsconfigureCommonObjects.delete_port_type_profile(
@@ -1413,7 +1470,12 @@ class XIQ1059Tests:
                 assert xiq_library_at_class_level.xflowscommonDevices.assign_network_policy_to_switch_mac(
                     node_policy_name, node.mac)
 
-                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(serial=node.serial)
+                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name, IRV=False)
+                if res == -1:
+                    logger.step("Update failed, trying to do a Delta Update")
+                    xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node.serial)
+                    xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
                 assert res == 1, f"Failed to update network policy to the device"
 
                 logger.step("Disable mac-locking on a port in Device level config")
@@ -1423,7 +1485,12 @@ class XIQ1059Tests:
                     mac_lock="OFF")
                 xiq_library_at_class_level.xflowsmanageDevice360.d360_save_port_configuration()
                 D360Flag = -(xiq_library_at_class_level.xflowsmanageDevice360.close_device360_window())
-                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(serial=node.serial)
+                res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name, IRV=False)
+                if res == -1:
+                    logger.step("Update failed, trying to do a Delta Update")
+                    xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(node.serial)
+                    xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(node.mac)
                 assert res == 1, f"Failed to update network policy to the device"
 
                 logger.step("Enable mac locking on the same port in CLI")
@@ -1488,8 +1555,14 @@ class XIQ1059Tests:
 
                         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.switch_template_save()
                         xiq_library_at_class_level.xflowscommonNavigator.navigate_to_devices()
-                        res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_exos(
-                            serial=node.serial)
+                        res = xiq_library_at_class_level.xflowscommonDevices.update_network_policy_to_switch(
+                        serial=node.serial, policy_name=node_policy_name, IRV=False)
+                        if res == -1:
+                            logger.step("Update failed, trying to do a Delta Update")
+                            xiq_library_at_class_level.xflowsmanageDevices.update_device_delta_configuration(
+                                node.serial)
+                            xiq_library_at_class_level.xflowsmanageDevices.check_device_update_status_by_using_mac(
+                                node.mac)
                         assert res == 1, f"Failed to update network policy to the device"
 
                         # Delete the port type created
