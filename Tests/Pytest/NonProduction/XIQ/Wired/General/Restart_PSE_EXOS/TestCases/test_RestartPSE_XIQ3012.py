@@ -5,6 +5,7 @@ import pytest
 @pytest.mark.development
 @pytest.mark.testbed_1_node
 @pytest.mark.dependson("tcxm_xiq_onboarding")
+@pytest.mark.skip_if_node_does_not_support_poe
 class XIQ3012OneNodeTests:
     @pytest.mark.tcxm_20549
     def test_tcxm_20549(self, node_1, xiq_library_at_class_level):
@@ -28,6 +29,7 @@ class XIQ3012OneNodeTests:
 @pytest.mark.development
 @pytest.mark.dependson("tcxm_xiq_onboarding")
 @pytest.mark.testbed_stack
+@pytest.mark.skip_if_node_does_not_support_poe
 class XIQ3012StackTests:
     @pytest.mark.tcxm_20561
     def test_tcxm_20561(self, node_stack, xiq_library_at_class_level):
