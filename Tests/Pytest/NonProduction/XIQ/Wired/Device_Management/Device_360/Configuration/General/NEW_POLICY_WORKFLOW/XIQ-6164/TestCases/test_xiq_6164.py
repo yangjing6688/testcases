@@ -21,7 +21,7 @@ class XIQ6164OneNodeTests:
         xiq_np.navigate_to_np_edit_tab(node_policy_name)
         navigator.wait_until_loading_is_done()
         logger.info("Click on Device Template tab button")
-        auto_actions.click_reference(dev_temp.device_template_web_elements.get_add_device_template_menu)
+        auto_actions.click_reference(dev_temp.device_template_web_elements.get_policy_switching_tab)
         navigator.wait_until_loading_is_done()
         if node.cli_type == "voss":
             auto_actions.click_reference(xiq_np.np_web_elements.get_common_settings_voss)
@@ -50,12 +50,12 @@ class XIQ6164OneNodeTests:
             "Fail to save common settings"
 
         xiq_library_at_class_level.xflowsconfigureSwitchTemplate.select_sw_template(node_policy_name,
-                                                                                    node_template_name)
+                                                                                    node_template_name, node.cli_type)
         navigator.wait_until_loading_is_done()
         logger.info("Checking if configuration from common settings is overriding template config")
         assert dev_temp.sw_template_web_elements.get_sw_template_enable_spanningtree().is_selected() == \
                current_status_from_comm_sett, "Device status in template is not matching the one configured in " \
-                                              "commong settings "
+                                              "common settings "
         if node.platform.lower() == "stack":
             xiq_library_at_class_level.xflowsconfigureSwitchTemplate.sw_template_stack_select_slot(2)
             navigator.wait_until_loading_is_done()
@@ -85,7 +85,7 @@ class XIQ6164OneNodeTests:
         xiq_np.navigate_to_np_edit_tab(node_1_policy_name)
         navigator.wait_until_loading_is_done()
         logger.info("Click on Device Template tab button")
-        auto_actions.click_reference(dev_temp.device_template_web_elements.get_add_device_template_menu)
+        auto_actions.click_reference(dev_temp.device_template_web_elements.get_policy_switching_tab)
         navigator.wait_until_loading_is_done()
         if node_1.cli_type == "voss":
             auto_actions.click_reference(xiq_np.np_web_elements.get_common_settings_voss)
