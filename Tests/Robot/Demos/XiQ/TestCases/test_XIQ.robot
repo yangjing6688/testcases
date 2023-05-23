@@ -10,7 +10,10 @@
 
 *** Settings ***
 Library     common/Cli.py
-Library     xiq/flows/common/Login.py
+# The keywords in Login.py have been moved to the keywords directory.
+# If the moved keyword is not working correctly import the original library and remove the keywords/gui/login/KeywordsLogin.py version.
+#Library     xiq/flows/common/Login.py
+Library     keywords/gui/login/KeywordsLogin.py
 Library     xiq/flows/manage/Devices.py
 
 Variables    Environments/${TOPO}

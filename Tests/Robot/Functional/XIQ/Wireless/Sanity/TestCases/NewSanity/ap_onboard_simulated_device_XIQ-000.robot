@@ -12,7 +12,10 @@
 ${LOCATION}                 auto_location_01, Santa Clara, building_02, floor_04
 
 *** Settings ***
-Library     extauto/xiq/flows/common/Login.py
+# The keywords in Login.py have been moved to the keywords directory.
+# If the moved keyword is not working correctly import the original library and remove the keywords/gui/login/KeywordsLogin.py version.
+#Library     extauto/xiq/flows/common/Login.py
+Library     keywords/gui/login/KeywordsLogin.py
 Library     extauto/xiq/flows/manage/Devices.py
 
 Variables    Environments/${TOPO}

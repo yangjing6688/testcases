@@ -14,7 +14,10 @@ ${device_type2}           AP410C
 *** Settings ***
 Documentation  robot -v ENV:environment.local.chrome.yaml -v TOPO:topo.test.cp8r1.yaml  ESPAlert_XIQ6344.robot
 
-Library     xiq/flows/common/Login.py
+# The keywords in Login.py have been moved to the keywords directory.
+# If the moved keyword is not working correctly import the original library and remove the keywords/gui/login/KeywordsLogin.py version.
+#Library     xiq/flows/common/Login.py
+Library     keywords/gui/login/KeywordsLogin.py
 Library     common/Cli.py
 Library     xiq/flows/manage/Devices.py
 Library     xiq/flows/manage/Device360.py

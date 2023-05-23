@@ -35,7 +35,10 @@ Library     keywords/xapi_base/XapiBaseLocationApi.py
 Library     extauto/xiq/xapi/common/XapiLogin.py
 Library     extauto/xiq/xapi/configure/XapiVlan.py
 Library     extauto/xiq/flows/manage/Location.py
-Library     extauto/xiq/flows/common/Login.py
+# The keywords in Login.py have been moved to the keywords directory.
+# If the moved keyword is not working correctly import the original library and remove the keywords/gui/login/KeywordsLogin.py version.
+#Library     extauto/xiq/flows/common/Login.py
+Library     keywords/gui/login/KeywordsLogin.py
 
 Resource    Tests/Robot/Libraries/XAPI/XAPI-Authentication-Keywords.robot
 Resource    Tests/Robot/Libraries/XAPI/XAPI-VLAN-Keywords.robot

@@ -9,7 +9,10 @@
 
 Library     extauto/common/Cli.py
 Library     extauto/common/TestFlow.py
-Library     extauto/xiq/flows/common/Login.py
+# The keywords in Login.py have been moved to the keywords directory.
+# If the moved keyword is not working correctly import the original library and remove the keywords/gui/login/KeywordsLogin.py version.
+#Library     extauto/xiq/flows/common/Login.py
+Library     keywords/gui/login/KeywordsLogin.py
 Library     extauto/xiq/flows/manage/AdvanceOnboarding.py
 Library     extauto/xiq/flows/manage/AdvOnboard.py
 Library     extauto/xiq/flows/common/Navigator.py

@@ -21,7 +21,10 @@ Library      extauto/common/Utils.py
 Library      extauto/common/Cli.py
 Library      extauto/common/TestFlow.py
 Library      extauto/common/tools/remote/WinMuConnect.py
-Library      extauto/xiq/flows/common/Login.py
+# The keywords in Login.py have been moved to the keywords directory.
+# If the moved keyword is not working correctly import the original library and remove the keywords/gui/login/KeywordsLogin.py version.
+#Library      extauto/xiq/flows/common/Login.py
+Library      keywords/gui/login/KeywordsLogin.py
 Library      extauto/xiq/flows/common/Navigator.py
 Library      extauto/xiq/flows/configure/DeviceTemplate.py
 Library      extauto/xiq/flows/configure/CommonObjects.py

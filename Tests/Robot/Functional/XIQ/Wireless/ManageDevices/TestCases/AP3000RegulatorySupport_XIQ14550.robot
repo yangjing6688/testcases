@@ -219,7 +219,10 @@ ${AP3000_Mode}    3K_2GHz
 # import libraries
 Library     String
 Library     Collections
-Library     xiq/flows/common/Login.py
+# The keywords in Login.py have been moved to the keywords directory.
+# If the moved keyword is not working correctly import the original library and remove the keywords/gui/login/KeywordsLogin.py version.
+#Library     xiq/flows/common/Login.py
+Library     keywords/gui/login/KeywordsLogin.py
 Library     common/Utils.py
 Library     common/Screen.py
 Library     common/ImageHandler.py
@@ -236,7 +239,10 @@ Library     xiq/flows/configure/CommonObjects.py
 Library     xiq/flows/configure/DeviceTemplate.py
 Library     extauto/common/Cli.py
 Library     extauto/common/TestFlow.py
-Library     extauto/xiq/flows/common/Login.py
+# The keywords in Login.py have been moved to the keywords directory.
+# If the moved keyword is not working correctly import the original library and remove the keywords/gui/login/KeywordsLogin.py version.
+#Library     extauto/xiq/flows/common/Login.py
+Library     keywords/gui/login/KeywordsLogin.py
 Library     extauto/xiq/flows/common/Navigator.py
 
 
