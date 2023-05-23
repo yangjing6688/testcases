@@ -1,0 +1,25 @@
+runlist_APC_34320_policy:
+  suitemap: 
+    - suitemap_APC_34320_policy.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ['exos','voss']
+        create_network_policy: yes
+        initial_network_policy_push: yes
+        assign_network_policy_to_device: yes
+    node_stack:
+      run_os: ['exos']
+      create_network_policy: yes
+      initial_network_policy_push: yes
+      assign_network_policy_to_device: yes
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_20112 # testbed_1_node|testbed_stack
+    - tcxm_20113 # testbed_1_node|testbed_stack
+    - tcxm_20115 # testbed_1_node|testbed_stack
+    - tcxm_20116 # testbed_1_node|testbed_stack
+    - tcxm_20114 # testbed_1_node|testbed_stack
+    - tcxm_20117 # testbed_1_node|testbed_stack
+    - tcxm_20676 # testbed_1_node|testbed_stack
+    - tcxm_xiq_onboarding_cleanup

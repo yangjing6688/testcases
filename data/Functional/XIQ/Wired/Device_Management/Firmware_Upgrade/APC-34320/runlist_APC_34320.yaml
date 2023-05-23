@@ -1,0 +1,21 @@
+runlist_APC_34320:
+  suitemap: 
+    - suitemap_APC_34320.yaml
+  onboarding_options:
+    standalone:
+      node_1:
+        run_os: ['exos','voss']
+        create_network_policy: no
+    node_stack:
+      run_os: ['exos']
+      create_network_policy: no
+  tests:
+    - tcxm_xiq_onboarding
+    - tcxm_20120 # testbed_1_node|testbed_stack
+    - tcxm_20121 # testbed_1_node|testbed_stack
+    - tcxm_20123 # testbed_1_node|testbed_stack
+    - tcxm_20124 # testbed_1_node|testbed_stack
+    - tcxm_20122 # testbed_1_node|testbed_stack
+    - tcxm_20125 # testbed_1_node|testbed_stack
+    - tcxm_20677 # testbed_1_node|testbed_stack
+    - tcxm_xiq_onboarding_cleanup

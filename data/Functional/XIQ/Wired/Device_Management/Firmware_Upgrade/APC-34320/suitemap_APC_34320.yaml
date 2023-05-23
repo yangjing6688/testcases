@@ -1,0 +1,74 @@
+data:
+  feature_name: Provides firmware upgrade for both EXOS and VOSS devices
+  feature_jira_link: https://jira.extremenetworks.com/browse/APC-34320
+  feature_qtest_link: https://aerohive.qtestnet.com/p/101323/portal/project#tab=testdesign&object=0&id=12228680
+
+tests:
+
+  #################### XIQ ONBOARDING AND CLEANUP ##########################
+
+  OnboardingTests::test_xiq_onboarding:
+    author: vstefan
+    tc: tcxm_xiq_onboarding
+    title: This testcase does the onboarding procedure for given devices.
+
+  OnboardingTests::test_xiq_onboarding_cleanup:
+    author: vstefan
+    tc: tcxm_xiq_onboarding_cleanup
+    title: This testcase does the onboarding cleanup procedure for given devices.
+
+  #################### XIQ ONBOARDING AND CLEANUP ##########################
+
+  #################### TESTBED 1 NODE, TESTBED STACK ##########################
+  
+  Apc34320Tests::test_firmware_update:
+    author: Natarajan Periannan
+    tests:
+      - tc: tcxm_20120
+        title: Verify the firmware upgrade function to the latest version even if versions are the same
+        version: "default"
+        forceDownloadImage: "true"
+        performUpgrade: "true"
+        updateTo: "latest"
+        updatefromD360Page: "false"
+      - tc: tcxm_20121
+        title: Verify the firmware upgrade to the latest version without selecting the option perform upgrade even if versions are same
+        version: "default"
+        forceDownloadImage: "false"
+        performUpgrade: "true"
+        updateTo: "latest"
+        updatefromD360Page: "false"
+      - tc: tcxm_20123
+        title: Verify the firmware upgrade for a specific version and perform upgrade with upgrade even if versions are the same option selected
+        version: "latest"
+        forceDownloadImage: "true"
+        performUpgrade: "true"
+        updateTo: "Specific"
+        updatefromD360Page: "false"
+      - tc: tcxm_20124
+        title: Verify firmware upgrade to a specific firmware version and perform upgrade without upgrade even if versions are same option
+        version: "latest"
+        forceDownloadImage: "false"
+        performUpgrade: "true"
+        updateTo: "Specific"
+        updatefromD360Page: "false"
+      - tc: tcxm_20122
+        title: Verify the firmware upgrade for the specific firmware version and perform upgrade but the versions are not same 
+        version: "noncurrent"
+        forceDownloadImage: "false"
+        performUpgrade: "true"
+        updateTo: "specific"
+        updatefromD360Page: "false"
+      - tc: tcxm_20125
+        title: Verify the firmware upgrade button is present and can be launching the firmware upgrade window from D360 page
+        version: "default"
+        forceDownloadImage: "false"
+        performUpgrade: "true"
+        updateTo: "latest"
+        updatefromD360Page: "true"
+    
+  Apc34320Tests::test_validating_the_close_button_function:
+    author: Natarajan Periannan
+    tc: tcxm_20677
+    title:  Verify the close button operation on the firmware update window
+  ##################### TESTBED 1 NODE, TESTBED STACK ##########################
