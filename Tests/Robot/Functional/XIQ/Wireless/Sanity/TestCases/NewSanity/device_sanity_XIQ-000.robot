@@ -3,6 +3,8 @@
 
 *** Settings ***
 Library     Collections
+Library     DependencyLibrary
+
 Library     extauto/common/Utils.py
 Library     extauto/common/Cli.py
 # The keywords in Login.py have been moved to the keywords directory.
@@ -14,7 +16,6 @@ Library     extauto/xiq/flows/manage/Switch.py
 Library     extauto/xiq/flows/manage/Tools.py
 Library     extauto/xiq/flows/configure/NetworkPolicy.py
 Library     extauto/xiq/flows/globalsettings/GlobalSetting.py
-Library     extauto/common/TestFlow.py
 Library     ExtremeAutomation/Imports/CommonObjectUtils.py
 Library     extauto/xiq/flows/manage/AdvanceOnboarding.py
 Library     extauto/xiq/flows/manage/Alarms.py
@@ -202,7 +203,7 @@ TCCS-13686: Enable SSH on Device and Confirm Only a Single SSH Session Can Be Es
 
     [Tags]              ssh      development    tccs_13686
 
-    Depends On           TCCS-13685
+    Depends on Test     TCCS-13685: Simple Onboard Device on XIQ
 
     # Create the SSH connection
     &{ip_port_info}=                    Device360 Enable SSH CLI Connectivity   ${device1.mac}  run_time=30
@@ -228,7 +229,7 @@ TCCS-13687: Firmware upgrade to lastest version (AH-AP Only)
 
     [Tags]			        push_config     development     tccs_13687
 
-    Depends On              TCCS-13685
+    Depends on Test     TCCS-13685: Simple Onboard Device on XIQ
 
     @{supported_cli_types}=    Create List   AH-AP
     check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
@@ -272,7 +273,7 @@ TCCS-13688: Verification of config push complete config update (AH-AP Only)
 
     [Tags]                      push_config     development     tccs_13688      tccs_13689
 
-    Depends On                  TCCS-13685
+    Depends on Test     TCCS-13685: Simple Onboard Device on XIQ
 
     @{supported_cli_types}=    Create List   AH-AP
     check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
@@ -298,7 +299,7 @@ TCCS-13689: Verification of config push delta update (AH-AP Only)
 
     [Tags]                  push_config     development     tccs_13689
 
-    Depends On              TCCS-13688
+    Depends on Test     TCCS-13688: Verification of config push complete config update (AH-AP Only)
 
     @{supported_cli_types}=    Create List   AH-AP
     check_cli_type_and_skip     ${supported_cli_types}     ${device1.cli_type}
