@@ -24,6 +24,7 @@ Variables    Environments/${ENV}
 Variables    Environments/Config/device_commands.yaml
 
 Force Tags       testbed_none
+
 Suite Setup      Pre_condition
 Suite Teardown   Post_condition
 
@@ -32,9 +33,10 @@ ${Expected_Clients}     2
 ${Clients}              1
 
 ${retry}                3
+&{all_variables}    Expected_Status=Connected   Expected_firmware_score=90  device_hardware_health=100   device_availability_score=100     firmware=Current    Configuration=Updated   Expected_memo_utilization=38%   Expected_adequate_supply=100%   Expected_cpu_percent=0  EXPECTED_Device_Overall_Score=100
 
 *** Keywords ***
-Pre Condition
+Pre_Condition
     [Documentation]   AP Should be onboarded  and it is online. One wifi 6e client should be connetced on this AP.
     log to console                      Wait for 10 minutes for Device 360 connection update . . .
     sleep                               10m
@@ -45,7 +47,46 @@ Post_condition
     Logout User
     Quit Browser
 
+
 *** Test Cases ***
+TCCS-8235-AP D360 Monitor overview - Device health - 5/5 (Overall Score)
+    [Documentation]  calculate overallscore of device
+    [Tags]      tccs-8235   xiq-19610     p1    px    sanity    development
+
+    &{OVERVIEW_GET}    create dictionary     device_availability_score=get  device_hardware_health=get  config_firmware_score=get  device_overall_score=get     expected_device_overall_score=get
+    &{MONITOR_GET}     create dictionary     overview=&{OVERVIEW_GET}
+    &{D360_INFO_GET}   create dictionary     monitor=&{MONITOR_GET}
+
+
+
+     FOR    ${i}    IN RANGE    ${retry}
+        ${OUTP}      D360 Get Info   ${ap1.mac}    ${D360_INFO_GET}
+        Log To Console    ${OUTP}
+        exit for loop if    '${OUTP}[monitor][overview][device_overall_score]' == '${OUTP}[monitor][overview][expected_device_overall_score]'
+        Sleep    3m
+     END
+     Sleep    60s
+TCCS-8235:AP D360 Monitor overview - Device health - 1/5 (Capture overall score widget values and status)
+    [Documentation]  Capture AP-D360 Monitoring Overview overall score widget values and status
+    [Tags]      tccs-8235    xiq-19418     p1    px    sanity   development
+
+    &{OVERVIEW_GET_STATUS}    create dictionary     connected_status=get    config_firmware_score=get  device_availability_score=get   device_hardware_health=get
+    &{MONITOR_GET}     create dictionary     overview=&{OVERVIEW_GET_STATUS}
+    &{D360_INFO_GET}   create dictionary     monitor=&{MONITOR_GET}
+
+    FOR    ${i}    IN RANGE    ${retry}
+        ${OUTP}      D360 Get Info   ${ap1.mac}    ${D360_INFO_GET}
+        Log To Console  ${OUTP}
+        exit for loop if         '${OUTP}[monitor][overview][connected_status]' == &{all_variables['Expected_Status']}
+        log to console           Wait for 3 minutes
+        sleep                    3m
+    END
+    Should Be Equal As Strings   '${OUTP}[monitor][overview][connected_status]'    &{all_variables['Expected_Status']}
+    Should Be Equal As Strings   '${OUTP}[monitor][overview][config_firmware_score]'    '${all_variables['Expected_firmware_score']}'
+    Should Be Equal As Strings   '${OUTP}[monitor][overview][device_availability_score]'    '${all_variables['device_availability_score']}'
+    Should Be Equal As Strings   '${OUTP}[monitor][overview][device_hardware_health]'    '${all_variables['device_hardware_health']}'
+
+
 TCXM-11490:APC-45641_func_Overview_ConnectedClientsBar
     [Documentation]  Find connetced clients count from D360 overview page
     [Tags]      tcxm-11490     p1    px    regression
