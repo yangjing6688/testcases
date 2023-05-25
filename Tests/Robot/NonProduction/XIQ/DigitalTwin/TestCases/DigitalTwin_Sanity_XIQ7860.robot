@@ -18,7 +18,7 @@
 *** Settings ***
 Library         Collections
 Library         DependencyLibrary
-Library         xiq/flows/common/Login.py
+Library         keywords/gui/login/KeywordsLogin.py
 Library         xiq/flows/common/Navigator.py
 Library         xiq/flows/globalsettings/GlobalSetting.py
 Library         xiq/flows/globalsettings/LicenseManagement.py
