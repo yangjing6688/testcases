@@ -91,7 +91,7 @@ TCCS-13498: Onboard Digital Twin Device
     ${result}=  Length Should Be                            ${DT_SERIAL}    14
     Should Be Equal                                         ${result}       ${None}
 
-    Select Device                                           device_serial=${DT_SERIAL}
+    Select Device                                           device_serial=${DT_SERIAL}  skip_refresh=True  skip_navigation=True
 
     ${action_menu}=  Verify Actions Relaunch Digital Twin Visible
     Should Be Equal As Strings                              ${action_menu}  1
@@ -170,9 +170,9 @@ TCCS-13500: Disable Digital Twin Feature
     ${status}=  Get Device Status                           device_serial=${DT_SERIAL}
     Should Contain                                          ${status}       disconnected
 
-    Select Device                                           device_serial=${DT_SERIAL}
+    Select Device                                           device_serial=${DT_SERIAL}  skip_refresh=True  skip_navigation=True
 
-    ${result}=    Verify Actions Button Enable      expect_failure=True
+    ${result}=    Verify Actions Button Enable              expect_failure=True
     Should Be Equal As Strings                              ${result}       -1
 
     [Teardown]    Refresh Page
