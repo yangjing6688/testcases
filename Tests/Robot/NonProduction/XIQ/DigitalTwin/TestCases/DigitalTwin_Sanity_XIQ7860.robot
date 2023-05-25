@@ -59,7 +59,7 @@ TCCS-13497: Enable Digital Twin Feature
     ${result}=  Navigate to Devices
     Should Be Equal As Integers                             ${result}       1
 
-    ${result}=  validate digital twin option hidden
+    ${result}=  Validate Digital Twin Option Hidden
     Should Be Equal As Strings                              ${result}       True
 
     ${result}=  Enable CoPilot Feature For This VIQ
@@ -68,7 +68,7 @@ TCCS-13497: Enable Digital Twin Feature
     ${result}=  Navigate to Devices
     Should Be Equal As Integers                             ${result}       1
 
-    ${result}=  validate digital twin option visible
+    ${result}=  Validate Digital Twin Option Visible
     Should Be Equal As Strings                              ${result}       True
 
     [Teardown]    Refresh Page
@@ -110,16 +110,16 @@ TCCS-13498: Onboard Digital Twin Device
     ${result}=    Wait Until Device Managed                 ${DT_SERIAL}    retry_duration=5    retry_count=60
     Should Be Equal As Integers                             ${result}       1
 
-    ${status}=  Get Device Status                           device_serial=${DT_SERIAL}
+    ${status}=  Get Device Status                           device_serial=${DT_SERIAL}  skip_navigation=True
     Should Contain                                          ${status}       green
 
-    ${dt_mac}=   Get Device Details                         ${DT_SERIAL}    MAC
+    ${dt_mac}=   Get Device Details                         ${DT_SERIAL}    MAC         skip_navigation=True
     Set Suite Variable                                      ${DT_MAC}       ${dt_mac}
 
     ${result}=  Should Start With                           ${DT_MAC}       C8665D
     Should Be Equal                                         ${result}       ${None}
 
-    ${dt_iqagent}=   Get Device Details                     ${DT_SERIAL}    IQAGENT
+    ${dt_iqagent}=   Get Device Details                     ${DT_SERIAL}    IQAGENT     skip_navigation=True
     Set Suite Variable                                      ${DT_IQAGENT}   ${dt_iqagent}
 
     [Teardown]    Refresh Page
@@ -153,7 +153,7 @@ TCCS-13500: Disable Digital Twin Feature
     ${result}=  Navigate to Devices
     Should Be Equal As Integers                             ${result}       1
 
-    ${result}=   validate digital twin option visible
+    ${result}=   Validate Digital Twin Option Visible
     Should Be Equal As Strings                              ${result}       True
 
     ${result}=    Disable CoPilot Feature For This VIQ
@@ -162,12 +162,12 @@ TCCS-13500: Disable Digital Twin Feature
     ${result}=  Navigate to Devices
     Should Be Equal As Integers                             ${result}       1
 
-    ${result}=  validate digital twin option hidden
+    ${result}=  Validate Digital Twin Option Hidden
     Should Be Equal As Strings                              ${result}       True
 
     Depends On Test     TCCS-13498: Onboard Digital Twin Device
 
-    ${status}=  Get Device Status                           device_serial=${DT_SERIAL}
+    ${status}=  Get Device Status                           device_serial=${DT_SERIAL}  skip_navigation=True
     Should Contain                                          ${status}       disconnected
 
     Select Device                                           device_serial=${DT_SERIAL}  skip_refresh=True  skip_navigation=True
