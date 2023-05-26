@@ -9,21 +9,23 @@
 
 **** Variables ***
 ################## Policy Detail & Wireless Network ###############################
-&{WIRELESS_PESRONAL_00}    ssid_name=w0_1_pap      network_type=Standard   ssid_profile=&{BORADCAST_SSID_00}   auth_profile=&{PERSONAL_AUTH_PROFILE_00}
-&{WIRELESS_PESRONAL_01}    ssid_name=w0_1_chap     network_type=Standard   ssid_profile=&{BORADCAST_SSID_00}   auth_profile=&{PERSONAL_AUTH_PROFILE_01}
-&{WIRELESS_PESRONAL_02}    ssid_name=w0_1_mschap   network_type=Standard   ssid_profile=&{BORADCAST_SSID_00}   auth_profile=&{PERSONAL_AUTH_PROFILE_02}
+&{WIRELESS_PERSONAL_00}    ssid_name=w01_usr_pap_rad      network_type=Standard   ssid_profile=&{BORADCAST_SSID_00}   auth_profile=&{PERSONAL_AUTH_PROFILE_00}
+&{WIRELESS_PERSONAL_01}    ssid_name=w01_usr_chap_rad     network_type=Standard   ssid_profile=&{BORADCAST_SSID_00}   auth_profile=&{PERSONAL_AUTH_PROFILE_01}
+&{WIRELESS_PERSONAL_02}    ssid_name=w01_usr_mschap_rad   network_type=Standard   ssid_profile=&{BORADCAST_SSID_00}   auth_profile=&{PERSONAL_AUTH_PROFILE_02}
 
 &{BORADCAST_SSID_00}       WIFI0=Enable    WIFI1=Enable    WIFI2=Disable
 
-&{PERSONAL_AUTH_PROFILE_00}     auth_type=PSK   key_encryption=&{PSK_KEY_ENCRYPTION_00}   cwp_config=&{PSK_CWP_00}
-&{PERSONAL_AUTH_PROFILE_01}     auth_type=PSK   key_encryption=&{PSK_KEY_ENCRYPTION_00}   cwp_config=&{PSK_CWP_01}
-&{PERSONAL_AUTH_PROFILE_02}     auth_type=PSK   key_encryption=&{PSK_KEY_ENCRYPTION_00}   cwp_config=&{PSK_CWP_02}
+&{PERSONAL_AUTH_PROFILE_00}     auth_type=PSK   key_encryption=&{PSK_KEY_ENCRYPTION_00}   cwp_config=&{PSK_CWP_00}   auth_settings_profile=&{AUTHENTICATION_SETTINGS_00}
+&{PERSONAL_AUTH_PROFILE_01}     auth_type=PSK   key_encryption=&{PSK_KEY_ENCRYPTION_00}   cwp_config=&{PSK_CWP_01}   auth_settings_profile=&{AUTHENTICATION_SETTINGS_00}
+&{PERSONAL_AUTH_PROFILE_02}     auth_type=PSK   key_encryption=&{PSK_KEY_ENCRYPTION_00}   cwp_config=&{PSK_CWP_02}   auth_settings_profile=&{AUTHENTICATION_SETTINGS_00}
 
 &{PSK_KEY_ENCRYPTION_00}        key_management=WPA2-(WPA2 Personal)-PSK   encryption_method=CCMP (AES)   key_type=ASCII Key   key_value=aerohive
 
-&{PSK_CWP_00}                   enable_cwp=Enable   user_auth_on_cwp=Enable   enable_upa=disable   cwp_name=cwp_w0_1_pap      authentication_method=PAP          radius_server_group_config=&{RADIUS_SERVER_GROUP_00}
-&{PSK_CWP_01}                   enable_cwp=Enable   user_auth_on_cwp=Enable   enable_upa=disable   cwp_name=cwp_w0_1_chap     authentication_method=CHAP         radius_server_group_config=&{RADIUS_SERVER_GROUP_00}
-&{PSK_CWP_02}                   enable_cwp=Enable   user_auth_on_cwp=Enable   enable_upa=disable   cwp_name=cwp_w0_1_mschap   authentication_method=MS-CHAP V2   radius_server_group_config=&{RADIUS_SERVER_GROUP_00}
+&{PSK_CWP_00}                   enable_cwp=Enable   user_auth_on_cwp=Enable   enable_upa=disable   cwp_name=w01_pers_usr_pap_rad      authentication_method=PAP
+&{PSK_CWP_01}                   enable_cwp=Enable   user_auth_on_cwp=Enable   enable_upa=disable   cwp_name=w01_pers_usr_chap_rad     authentication_method=CHAP
+&{PSK_CWP_02}                   enable_cwp=Enable   user_auth_on_cwp=Enable   enable_upa=disable   cwp_name=w01_pers_usr_mschap_rad   authentication_method=MS-CHAP V2
+
+&{AUTHENTICATION_SETTINGS_00}   radius_server_group_config=&{RADIUS_SERVER_GROUP_00}
 
 ########## RADIUS Server Configure ##############
 &{RADIUS_SERVER_GROUP_00}      radius_server_group_name=Rad_Server_Grp   radius_server_config=&{RADIUS_SERVER_00}
@@ -32,7 +34,7 @@
 
 &{EXTRENAL_RADIUS_SERVER_00}   radius_server_name=Rad_Sever_ip   ip_or_host_type=IP Address   radius_server_ip_host_name=Radius-IP   radius_server_ip_address=10.254.152.59   shared_secret=Symbol@123
 
-&{LOGIN_CWP}                   username=user1   password=Aerohive123
+&{RADIUS_AUTH_LOGIN}           username=user1   password=Aerohive123
 
 ################## Device Templates ###############################
 &{AP_TEMPLATE_1}         wifi0_configuration=&{AP_TEMPLATE_1_WIFI0}   wifi1_configuration=&{AP_TEMPLATE_1_WIFI1}
@@ -87,11 +89,11 @@ Step1: Create Policy
     Set Suite Variable             ${POLICY}                       personal_cwp
     Set Suite Variable             ${AP_TEMP_NAME}                 ${ap1.model}_cwp
 
-    ${STATUS}                      create network policy if does not exist   ${POLICY}   ${WIRELESS_PESRONAL_00}
+    ${STATUS}                      create network policy if does not exist   ${POLICY}   ${WIRELESS_PERSONAL_00}
     should be equal as strings     '${STATUS}'       '1'
-    ${STATUS}                      create ssid to policy    ${POLICY}        &{WIRELESS_PESRONAL_01}
+    ${STATUS}                      create ssid to policy    ${POLICY}        &{WIRELESS_PERSONAL_01}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      create ssid to policy    ${POLICY}        &{WIRELESS_PESRONAL_02}
+    ${STATUS}                      create ssid to policy    ${POLICY}        &{WIRELESS_PERSONAL_02}
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      add ap template from common object        ${ap1.model}       ${AP_TEMP_NAME}   ${AP_TEMPLATE_1}
     Should Be Equal As Strings     '${STATUS}'       '1'
@@ -114,12 +116,12 @@ Step3: MU connect to wifi0-1 - CWP PAP
 
     Depends On Test     Step2: Assign network policy to AP
     FOR   ${i}   IN RANGE   ${RETRY}
-        ${STATUS}               rem_mu.connect wpa2 psk network   ${WIRELESS_PESRONAL_00}[ssid_name]   ${WIRELESS_PESRONAL_01}[auth_profile][key_encryption][key_value]
+        ${STATUS}               rem_mu.connect wpa2 psk network   ${WIRELESS_PERSONAL_00}[ssid_name]   ${WIRELESS_PERSONAL_01}[auth_profile][key_encryption][key_value]
         exit for loop if        '${STATUS}'=='1'
     END
     should be equal as strings            '${STATUS}'              '1'
     open cp browser    ${mu1.ip}          http://198.18.36.1
-    ${STATUS}          Login Guest User   ${LOGIN_CWP}[username]   ${LOGIN_CWP}[password]
+    ${STATUS}          Login Guest User   ${RADIUS_AUTH_LOGIN}[username]   ${RADIUS_AUTH_LOGIN}[password]
     should be equal as strings            '${STATUS}'              '1'
     close cp browser
 
@@ -129,9 +131,9 @@ Step4: Verify Client360 to wifi0_1 - CWP PAP
 
     Depends On Test     Step3: MU connect to wifi0-1 - CWP PAP
     ${OUT}             get client360 current connection status   ${mu1.wifi_mac}
-    should contain     ${OUT['USER']}                            ${LOGIN_CWP}[username]
+    should contain     ${OUT['USER']}                            ${RADIUS_AUTH_LOGIN}[username]
     should contain     ${OUT['CWP']}                             Used
-    should contain     ${OUT['SSID']}                            ${WIRELESS_PESRONAL_00}[ssid_name]
+    should contain     ${OUT['SSID']}                            ${WIRELESS_PERSONAL_00}[ssid_name]
 
 Step5: MU connect to wifi0-1 - CWP CHAP
     [Documentation]     MU connect to wifi0-1 - CWP CHAP
@@ -139,12 +141,12 @@ Step5: MU connect to wifi0-1 - CWP CHAP
 
     Depends On Test     Step2: Assign network policy to AP
     FOR   ${i}   IN RANGE   ${RETRY}
-        ${STATUS}               rem_mu.connect wpa2 psk network   ${WIRELESS_PESRONAL_01}[ssid_name]   ${WIRELESS_PESRONAL_01}[auth_profile][key_encryption][key_value]
+        ${STATUS}               rem_mu.connect wpa2 psk network   ${WIRELESS_PERSONAL_01}[ssid_name]   ${WIRELESS_PERSONAL_01}[auth_profile][key_encryption][key_value]
         exit for loop if        '${STATUS}'=='1'
     END
     should be equal as strings            '${STATUS}'              '1'
     open cp browser    ${mu1.ip}          http://198.18.36.1
-    ${STATUS}          Login Guest User   ${LOGIN_CWP}[username]   ${LOGIN_CWP}[password]
+    ${STATUS}          Login Guest User   ${RADIUS_AUTH_LOGIN}[username]   ${RADIUS_AUTH_LOGIN}[password]
     should be equal as strings            '${STATUS}'              '1'
     close cp browser
 
@@ -154,9 +156,9 @@ Step6: Verify Client360 to wifi0_1 - CWP CHAP
 
     Depends On Test     Step5: MU connect to wifi0-1 - CWP CHAP
     ${OUT}             get client360 current connection status   ${mu1.wifi_mac}
-    should contain     ${OUT['USER']}                            ${LOGIN_CWP}[username]
+    should contain     ${OUT['USER']}                            ${RADIUS_AUTH_LOGIN}[username]
     should contain     ${OUT['CWP']}                             Used
-    should contain     ${OUT['SSID']}                            ${WIRELESS_PESRONAL_01}[ssid_name]
+    should contain     ${OUT['SSID']}                            ${WIRELESS_PERSONAL_01}[ssid_name]
 
 Step7: MU connect to wifi0-1 - CWP MS-CHAP V2
     [Documentation]     MU connect to wifi0-1 - CWP MS-CHAP V2
@@ -164,12 +166,12 @@ Step7: MU connect to wifi0-1 - CWP MS-CHAP V2
 
     Depends On Test     Step2: Assign network policy to AP
     FOR   ${i}   IN RANGE   ${RETRY}
-        ${STATUS}               rem_mu.connect wpa2 psk network   ${WIRELESS_PESRONAL_02}[ssid_name]   ${WIRELESS_PESRONAL_01}[auth_profile][key_encryption][key_value]
+        ${STATUS}               rem_mu.connect wpa2 psk network   ${WIRELESS_PERSONAL_02}[ssid_name]   ${WIRELESS_PERSONAL_01}[auth_profile][key_encryption][key_value]
         exit for loop if        '${STATUS}'=='1'
     END
     should be equal as strings            '${STATUS}'              '1'
     open cp browser    ${mu1.ip}          http://198.18.36.1
-    ${STATUS}          Login Guest User   ${LOGIN_CWP}[username]   ${LOGIN_CWP}[password]
+    ${STATUS}          Login Guest User   ${RADIUS_AUTH_LOGIN}[username]   ${RADIUS_AUTH_LOGIN}[password]
     should be equal as strings            '${STATUS}'              '1'
     close cp browser
 
@@ -179,9 +181,9 @@ Step8: Verify Client360 to wifi0_1 - CWP MS-CHAP V2
 
     Depends On Test     Step7: MU connect to wifi0-1 - CWP MS-CHAP V2
     ${OUT}             get client360 current connection status   ${mu1.wifi_mac}
-    should contain     ${OUT['USER']}                            ${LOGIN_CWP}[username]
+    should contain     ${OUT['USER']}                            ${RADIUS_AUTH_LOGIN}[username]
     should contain     ${OUT['CWP']}                             Used
-    should contain     ${OUT['SSID']}                            ${WIRELESS_PESRONAL_02}[ssid_name]
+    should contain     ${OUT['SSID']}                            ${WIRELESS_PERSONAL_02}[ssid_name]
 
 *** Keywords ***
 Pre_condition

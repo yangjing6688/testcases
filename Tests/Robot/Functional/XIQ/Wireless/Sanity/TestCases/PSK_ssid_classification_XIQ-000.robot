@@ -7,10 +7,10 @@
 
 **** Variables ***
 ################## Policy Detail & Wireless Network ###############################
-&{WIRELESS_PESRONAL_00}     ssid_name=w0_1_sc_loc    network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_00}
-&{WIRELESS_PESRONAL_01}     ssid_name=w0_1_mil_loc   network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_00}
-&{WIRELESS_PESRONAL_02}     ssid_name=w0_1_sc_ccg    network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_00}
-&{WIRELESS_PESRONAL_03}     ssid_name=w0_1_mil_cgg   network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_00}
+&{WIRELESS_PERSONAL_00}     ssid_name=w0_1_sc_loc    network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_00}
+&{WIRELESS_PERSONAL_01}     ssid_name=w0_1_mil_loc   network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_00}
+&{WIRELESS_PERSONAL_02}     ssid_name=w0_1_sc_ccg    network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_00}
+&{WIRELESS_PERSONAL_03}     ssid_name=w0_1_mil_cgg   network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_00}
 
 &{BORADCAST_SSID_00}           WIFI0=Enable        WIFI1=Enable      WIFI2=Disable
 &{PERSONAL_AUTH_PROFILE_00}    auth_type=PSK   key_encryption=&{PSK_KEY_ENCRYPTION_00}   cwp_config=&{PSK_CWP_00}
@@ -96,22 +96,22 @@ Step1: Create Policies with Classication Rules
     ...                                                                       ${CLASS_CCG_01}[match_type]   ${CLASS_CCG_01}[group_name]
     should be equal as strings     '${STATUS}'        '1'
 
-    ${STATUS}                      create network policy if does not exist    ${POLICY_00}         ${WIRELESS_PESRONAL_00}
+    ${STATUS}                      create network policy if does not exist    ${POLICY_00}         ${WIRELESS_PERSONAL_00}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      create ssid to policy                      ${POLICY_00}         &{WIRELESS_PESRONAL_01}
+    ${STATUS}                      create ssid to policy                      ${POLICY_00}         &{WIRELESS_PERSONAL_01}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      Add Classification Rule to SSID            ${POLICY_00}         ${WIRELESS_PESRONAL_00}[ssid_name]    ${CLASS_LOC_00}[classification_rule_name]
+    ${STATUS}                      Add Classification Rule to SSID            ${POLICY_00}         ${WIRELESS_PERSONAL_00}[ssid_name]    ${CLASS_LOC_00}[classification_rule_name]
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      Add Classification Rule to SSID            ${POLICY_00}         ${WIRELESS_PESRONAL_01}[ssid_name]    ${CLASS_LOC_01}[classification_rule_name]
+    ${STATUS}                      Add Classification Rule to SSID            ${POLICY_00}         ${WIRELESS_PERSONAL_01}[ssid_name]    ${CLASS_LOC_01}[classification_rule_name]
     should be equal as strings     '${STATUS}'        '1'
 
-    ${STATUS}                      create network policy if does not exist    ${POLICY_01}         ${WIRELESS_PESRONAL_02}
+    ${STATUS}                      create network policy if does not exist    ${POLICY_01}         ${WIRELESS_PERSONAL_02}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      create ssid to policy                      ${POLICY_01}         &{WIRELESS_PESRONAL_03}
+    ${STATUS}                      create ssid to policy                      ${POLICY_01}         &{WIRELESS_PERSONAL_03}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      Add Classification Rule to SSID            ${POLICY_01}         ${WIRELESS_PESRONAL_02}[ssid_name]    ${CLASS_CCG_00}[classification_rule_name]
+    ${STATUS}                      Add Classification Rule to SSID            ${POLICY_01}         ${WIRELESS_PERSONAL_02}[ssid_name]    ${CLASS_CCG_00}[classification_rule_name]
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      Add Classification Rule to SSID            ${POLICY_01}         ${WIRELESS_PESRONAL_03}[ssid_name]    ${CLASS_CCG_01}[classification_rule_name]
+    ${STATUS}                      Add Classification Rule to SSID            ${POLICY_01}         ${WIRELESS_PERSONAL_03}[ssid_name]    ${CLASS_CCG_01}[classification_rule_name]
     should be equal as strings     '${STATUS}'        '1'
 
     ${STATUS}                      add ap template from common object         ${ap1.model}         ${AP_TEMP_NAME_00}    ${AP_TEMPLATE_1}
@@ -142,8 +142,8 @@ Step3: Verify AP1 and AP2 with Classification on location
     [Tags]              tcxm-50782   development   p3   px
 
     Depends On Test     Step2: Assign network policy with Classification on location to AP1 and AP2
-    Verify_AP_with_Classification     ${ap1}    ${CLASS_LOC_00}    ${WIRELESS_PESRONAL_00}
-    Verify_AP_with_Classification     ${ap2}    ${CLASS_LOC_01}    ${WIRELESS_PESRONAL_01}
+    Verify_AP_with_Classification     ${ap1}    ${CLASS_LOC_00}    ${WIRELESS_PERSONAL_00}
+    Verify_AP_with_Classification     ${ap2}    ${CLASS_LOC_01}    ${WIRELESS_PERSONAL_01}
 
 Step4: Assign network policy with Classification on ccg to AP1 and AP2
     [Documentation]     Assign network policy with Classification on ccg to AP1 and AP2
@@ -160,8 +160,8 @@ Step5: Verify AP1 and AP2 with Classification on ccg
     [Tags]              tcxm-50784   development   p5   px
 
     Depends On Test     Step4: Assign network policy with Classification on ccg to AP1 and AP2
-    Verify_AP_with_Classification    ${ap1}    ${CLASS_LOC_00}    ${WIRELESS_PESRONAL_02}
-    Verify_AP_with_Classification    ${ap2}    ${CLASS_LOC_01}    ${WIRELESS_PESRONAL_03}
+    Verify_AP_with_Classification    ${ap1}    ${CLASS_LOC_00}    ${WIRELESS_PERSONAL_02}
+    Verify_AP_with_Classification    ${ap2}    ${CLASS_LOC_01}    ${WIRELESS_PERSONAL_03}
 
 *** Keywords ***
 Pre_condition

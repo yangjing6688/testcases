@@ -7,8 +7,8 @@
 
 **** Variables ***
 ################## Policy Detail & Wireless Network ###############################
-&{WIRELESS_PESRONAL_00}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_00}
-&{WIRELESS_PESRONAL_01}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_01}
+&{WIRELESS_PERSONAL_00}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_00}
+&{WIRELESS_PERSONAL_01}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_01}
 
 &{BORADCAST_SSID_00}            WIFI0=Enable        WIFI1=Enable      WIFI2=Disable
 &{PERSONAL_AUTH_PROFILE_00}     auth_type=PSK   key_encryption=&{PSK_KEY_ENCRYPTION_00}   cwp_config=&{PSK_CWP_00}   user_profile_config=&{USER_PROFILE_00}
@@ -85,8 +85,8 @@ Step1: Create Policy
     Set Suite Variable             ${SSID_00}                      w0_1_105_${NUM}
     Set Suite Variable             ${SSID_01}                      w0_1_101_3_${NUM}
     Set Suite Variable             ${AP_TEMP_NAME}                 ${ap1.model}_${NUM}
-    Set To Dictionary              ${WIRELESS_PESRONAL_00}         ssid_name=${SSID_00}
-    Set To Dictionary              ${WIRELESS_PESRONAL_01}         ssid_name=${SSID_01}
+    Set To Dictionary              ${WIRELESS_PERSONAL_00}         ssid_name=${SSID_00}
+    Set To Dictionary              ${WIRELESS_PERSONAL_01}         ssid_name=${SSID_01}
 
     ${STATUS}                      Add Classification Rule with Location      ${USER_PROFILE_00}[classification_rule_name]   ${USER_PROFILE_00}[description]   ${LOC_TEST_00}
     should be equal as strings     '${STATUS}'        '1'
@@ -98,9 +98,9 @@ Step1: Create Policy
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      Add Classification Rule to User Profile    ${USER_PROFILE_00}[profile_name]   ${USER_PROFILE_01}[vlan_id]     ${USER_PROFILE_01}[classification_rule_name]
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      create network policy if does not exist            ${POLICY}         ${WIRELESS_PESRONAL_00}
+    ${STATUS}                      create network policy if does not exist            ${POLICY}         ${WIRELESS_PERSONAL_00}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      create ssid to policy                              ${POLICY}         &{WIRELESS_PESRONAL_01}
+    ${STATUS}                      create ssid to policy                              ${POLICY}         &{WIRELESS_PERSONAL_01}
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      Apply Different User Profile to Various Clients    ${SSID_01}        ${USER_PROFILE_02}
     should be equal as strings     '${STATUS}'        '1'
@@ -136,7 +136,7 @@ Step4: Verify (105) cli vlanid assigned to the client - Default User Profile
     [Tags]              tcxm-6847   development   step4   steps
 
     Depends On Test     Step2: Assign network policy with VLANs to AP1
-    Connect_to_client    ${SSID_00}      ${WIRELESS_PESRONAL_00}[auth_profile][key_encryption][key_value]
+    Connect_to_client    ${SSID_00}      ${WIRELESS_PERSONAL_00}[auth_profile][key_encryption][key_value]
     Show_station         ${ap1}          ${USER_PROFILE_00}[vlan_id]
 
 Step5: Verify (104) cli user-profile attr and ssid security object attr - Default User Profile
@@ -159,7 +159,7 @@ Step6: Verify (104) cli vlanid assigned to the client - Default User Profile
     [Tags]              tcxm-6847   development   step6   steps
 
     Depends On Test     Step5: Verify (104) cli user-profile attr and ssid security object attr - Default User Profile
-    Connect_to_client    ${SSID_00}      ${WIRELESS_PESRONAL_00}[auth_profile][key_encryption][key_value]
+    Connect_to_client    ${SSID_00}      ${WIRELESS_PERSONAL_00}[auth_profile][key_encryption][key_value]
     Show_station         ${ap1}          ${USER_PROFILE_01}[vlan_id]
 
 Step7: Verify (103) cli location1 and attribute - Multiple User Profile
@@ -185,7 +185,7 @@ Step8: Verify (103) cli location1 vlanid assigned to the client - Multiple User 
     [Tags]              tcxm-8582   development   step8   steps
 
     Depends On Test     Step7: Verify (103) cli location1 and attribute - Multiple User Profile
-    Connect_to_client    ${SSID_01}    ${WIRELESS_PESRONAL_01}[auth_profile][key_encryption][key_value]
+    Connect_to_client    ${SSID_01}    ${WIRELESS_PERSONAL_01}[auth_profile][key_encryption][key_value]
     Show_station         ${ap1}        ${USER_PROFILE_02}[vlan_id]
 
 Step9: Verify (101) cli location2 and attribute - Multiple User Profile
@@ -211,7 +211,7 @@ Step10: Verify (101) cli location2 vlanid assigned to the client - Multiple User
     [Tags]              tcxm-8582   development   step10   steps
 
     Depends On Test     Step9: Verify (101) cli location2 and attribute - Multiple User Profile
-    Connect_to_client    ${SSID_01}    ${WIRELESS_PESRONAL_01}[auth_profile][key_encryption][key_value]
+    Connect_to_client    ${SSID_01}    ${WIRELESS_PERSONAL_01}[auth_profile][key_encryption][key_value]
     Show_station         ${ap1}        ${USER_PROFILE_03}[vlan_id]
 
 *** Keywords ***

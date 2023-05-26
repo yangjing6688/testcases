@@ -11,12 +11,12 @@
 
 **** Variables ***
 ################## Policy Detail & Wireless Network ###############################
-&{WIRELESS_PESRONAL_00}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_00}
-&{WIRELESS_PESRONAL_01}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_01}
-&{WIRELESS_PESRONAL_02}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_01}     auth_profile=&{PERSONAL_AUTH_PROFILE_02}
-&{WIRELESS_PESRONAL_03}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_01}     auth_profile=&{PERSONAL_AUTH_PROFILE_03}
-&{WIRELESS_PESRONAL_04}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_02}     auth_profile=&{PERSONAL_AUTH_PROFILE_00}
-&{WIRELESS_PESRONAL_05}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_02}     auth_profile=&{PERSONAL_AUTH_PROFILE_01}
+&{WIRELESS_PERSONAL_00}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_00}
+&{WIRELESS_PERSONAL_01}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_00}     auth_profile=&{PERSONAL_AUTH_PROFILE_01}
+&{WIRELESS_PERSONAL_02}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_01}     auth_profile=&{PERSONAL_AUTH_PROFILE_02}
+&{WIRELESS_PERSONAL_03}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_01}     auth_profile=&{PERSONAL_AUTH_PROFILE_03}
+&{WIRELESS_PERSONAL_04}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_02}     auth_profile=&{PERSONAL_AUTH_PROFILE_00}
+&{WIRELESS_PERSONAL_05}     ssid_name=""    network_type=Standard    ssid_profile=&{BORADCAST_SSID_02}     auth_profile=&{PERSONAL_AUTH_PROFILE_01}
 
 &{BORADCAST_SSID_00}        WIFI0=Enable        WIFI1=Enable      WIFI2=Disable
 &{BORADCAST_SSID_01}        WIFI0=Disable       WIFI1=Disable     WIFI2=Enable
@@ -99,21 +99,21 @@ Step1: Create Policy - Personal SSID with CWP
     Set To Dictionary              ${PERSONAL_AUTH_PROFILE_01}     cwp_config=${PSK_CWP_01}
     Set To Dictionary              ${PERSONAL_AUTH_PROFILE_03}     cwp_config=${PSK_CWP_01}
     Set Suite Variable             ${AP_TEMP_NAME}                 ${ap1.model}_${NUM}
-    ${WIRELESS_PESRONAL_00}        set variable if    '${ap1.model}' != 'AP3000'    ${WIRELESS_PESRONAL_00}    ${WIRELESS_PESRONAL_04}
-    ${WIRELESS_PESRONAL_01}        set variable if    '${ap1.model}' != 'AP3000'    ${WIRELESS_PESRONAL_01}    ${WIRELESS_PESRONAL_05}
+    ${WIRELESS_PERSONAL_00}        set variable if    '${ap1.model}' != 'AP3000'    ${WIRELESS_PERSONAL_00}    ${WIRELESS_PERSONAL_04}
+    ${WIRELESS_PERSONAL_01}        set variable if    '${ap1.model}' != 'AP3000'    ${WIRELESS_PERSONAL_01}    ${WIRELESS_PERSONAL_05}
     ${AP_TEMPLATE_1}               set variable if    '${ap1.model}' != 'AP3000'    ${AP_TEMPLATE_1}           ${AP_TEMPLATE_2}
-    Set To Dictionary              ${WIRELESS_PESRONAL_00}         ssid_name=${SSID_00}
-    Set To Dictionary              ${WIRELESS_PESRONAL_01}         ssid_name=${SSID_01}      auth_profile=${PERSONAL_AUTH_PROFILE_01}
-    Set To Dictionary              ${WIRELESS_PESRONAL_02}         ssid_name=${SSID_02}
-    Set To Dictionary              ${WIRELESS_PESRONAL_03}         ssid_name=${SSID_03}      auth_profile=${PERSONAL_AUTH_PROFILE_03}
+    Set To Dictionary              ${WIRELESS_PERSONAL_00}         ssid_name=${SSID_00}
+    Set To Dictionary              ${WIRELESS_PERSONAL_01}         ssid_name=${SSID_01}      auth_profile=${PERSONAL_AUTH_PROFILE_01}
+    Set To Dictionary              ${WIRELESS_PERSONAL_02}         ssid_name=${SSID_02}
+    Set To Dictionary              ${WIRELESS_PERSONAL_03}         ssid_name=${SSID_03}      auth_profile=${PERSONAL_AUTH_PROFILE_03}
 
-    ${STATUS}                      create network policy if does not exist    ${POLICY}   ${WIRELESS_PESRONAL_00}
+    ${STATUS}                      create network policy if does not exist    ${POLICY}   ${WIRELESS_PERSONAL_00}
     should be equal as strings     '${STATUS}'       '1'
-    ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_PESRONAL_01}
+    ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_PERSONAL_01}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_PESRONAL_02}
+    ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_PERSONAL_02}
     should be equal as strings     '${STATUS}'        '1'
-    ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_PESRONAL_03}
+    ${STATUS}                      create ssid to policy    ${POLICY}      &{WIRELESS_PERSONAL_03}
     should be equal as strings     '${STATUS}'        '1'
     ${STATUS}                      add ap template from common object      ${ap1.model}       ${AP_TEMP_NAME}   ${AP_TEMPLATE_1}
     Should Be Equal As Strings     '${STATUS}'       '1'
@@ -136,7 +136,7 @@ Step3: MU connect to wifi0-1 - CWP disabled
 
     Depends On Test     Step2: Assign network policy to AP
     FOR    ${i}    IN RANGE    ${retry}
-        ${STATUS}               rem_mu.connect wpa2 psk network      ${SSID_00}      ${WIRELESS_PESRONAL_00}[auth_profile][key_encryption][key_value]
+        ${STATUS}               rem_mu.connect wpa2 psk network      ${SSID_00}      ${WIRELESS_PERSONAL_00}[auth_profile][key_encryption][key_value]
         exit for loop if        '${STATUS}'=='1'
     END
     should be equal as strings    '${STATUS}'    '1'
@@ -156,7 +156,7 @@ Step5: MU connect to wifi0-1 - CWP enable
 
     Depends On Test     Step2: Assign network policy to AP
     FOR    ${i}    IN RANGE    ${retry}
-        ${STATUS}               rem_mu.connect wpa2 psk network      ${SSID_01}        ${WIRELESS_PESRONAL_01}[auth_profile][key_encryption][key_value]
+        ${STATUS}               rem_mu.connect wpa2 psk network      ${SSID_01}        ${WIRELESS_PERSONAL_01}[auth_profile][key_encryption][key_value]
         exit for loop if        '${STATUS}'=='1'
     END
     should be equal as strings                              '${STATUS}'       '1'
@@ -179,7 +179,7 @@ Step7: MU connect to wifi2 - CWP disabled
 
     Depends On Test     Step2: Assign network policy to AP
     FOR    ${i}    IN RANGE    ${retry}
-        ${STATUS}               rem_mu.connect wpa3 psk network      ${SSID_02}      ${WIRELESS_PESRONAL_02}[auth_profile][key_encryption][key_value]
+        ${STATUS}               rem_mu.connect wpa3 psk network      ${SSID_02}      ${WIRELESS_PERSONAL_02}[auth_profile][key_encryption][key_value]
         exit for loop if        '${STATUS}'=='1'
     END
     should be equal as strings    '${STATUS}'     '1'
@@ -199,7 +199,7 @@ Step9: MU connect to wifi2 - CWP enable
 
     Depends On Test     Step2: Assign network policy to AP
     FOR    ${i}    IN RANGE    ${retry}
-         ${STATUS}              rem_mu.connect wpa3 psk network      ${SSID_03}        ${WIRELESS_PESRONAL_03}[auth_profile][key_encryption][key_value]
+         ${STATUS}              rem_mu.connect wpa3 psk network      ${SSID_03}        ${WIRELESS_PERSONAL_03}[auth_profile][key_encryption][key_value]
          exit for loop if       '${STATUS}'=='1'
     END
     should be equal as strings                              '${STATUS}'       '1'
