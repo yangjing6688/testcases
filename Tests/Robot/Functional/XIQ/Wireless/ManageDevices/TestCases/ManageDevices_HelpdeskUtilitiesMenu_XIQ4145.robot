@@ -33,11 +33,8 @@ ${XIQ_PASSWORD}       ${tenant_password}
 ${XIQ_CAPWAP_URL}     ${capwap_url}
 ${IQAGENT}            ${sw_connection_host}
 
-${AP_SERIAL}
 ${AP_LOCATION}        auto_location_01, Santa Clara, building_02, floor_04
-${SW_SERIAL}
 ${SW_LOCATION}        auto_location_01, Santa Clara, building_02, floor_04
-${RT_SERIAL}
 ${RT_LOCATION}        auto_location_01, Santa Clara, building_02, floor_04
 
 
@@ -47,7 +44,7 @@ TCXM-19799: Confirm Access To APs Diagnostics
     [Tags]              tcxm_19799   development
 
     Navigate to Devices and Confirm Success
-    Select Device       ${AP_SERIAL}
+    Select Device       ${device1.serial}
     ${nav_result}=      Navigate To Device Utilities Diagnostics
     Should Be Equal As Integers  ${nav_result}  1
 
@@ -143,7 +140,7 @@ TCXM-19800: Confirm Access To Routers Diagnostics
     [Tags]              tcxm_19800   development
 
     Refresh Devices Page
-    Select Device       ${RT_SERIAL}
+    Select Device       ${device3.serial}
     ${nav_result}=      Navigate To Device Utilities Diagnostics
     Should Be Equal As Integers  ${nav_result}  1
 
@@ -216,7 +213,7 @@ TCXM-19810: Confirm Access To Switches Diagnostics
     [Tags]              tcxm_19810   development
 
     Refresh Devices Page
-    Select Device       ${SW_SERIAL}
+    Select Device       ${device2.serial}
     ${nav_result}=      Navigate To Device Utilities Diagnostics
     Should Be Equal As Integers  ${nav_result}  1
 
@@ -314,18 +311,12 @@ Onboard Test Devices
 
     ${ONBOARD_RESULT1}=      onboard device quick    ${device1}
     Should Be Equal As Strings          ${ONBOARD_RESULT1}       1
-    ${AP_SERIAL}=    set variable       ${${device1.name}.serial}
-    Set Suite Variable          ${AP_SERIAL}
 
     ${ONBOARD_RESULT2}=       onboard device quick    ${device2}
     Should Be Equal As Strings          ${ONBOARD_RESULT2}       1
-    ${SW_SERIAL}=    set variable       ${${device2.name}.serial}
-    Set Suite Variable          ${SW_SERIAL}
 
     ${ONBOARD_RESULT3}=       onboard device quick    ${device3}
     Should Be Equal As Strings          ${ONBOARD_RESULT3}       1
-    ${RT_SERIAL}=    set variable       ${${device3.name}.serial}
-    Set Suite Variable          ${RT_SERIAL}
 
 Select Device
     [Documentation]     Selects the specified device and confirms the action was successful
@@ -346,9 +337,9 @@ Tear Down Test and Close Session
 
     Log Out of XIQ and Quit Browser
     Log Into XIQ and Confirm Success   ${XIQ_USER}   ${XIQ_PASSWORD}   ${XIQ_URL}
-    Clean Up Test Device and Confirm Success  ${AP_SERIAL}
-    Clean Up Test Device and Confirm Success  ${SW_SERIAL}
-    Clean Up Test Device and Confirm Success  ${RT_SERIAL}
+    Clean Up Test Device and Confirm Success  ${device1.serial}
+    Clean Up Test Device and Confirm Success  ${device2.serial}
+    Clean Up Test Device and Confirm Success  ${device3.serial}
     Log Out of XIQ and Quit Browser
 
 Clean Up Test Device and Confirm Success

@@ -109,14 +109,10 @@ Pre Condition
     ${ONBOARD_RESULT}=      onboard device quick    ${device2}
     Should Be Equal As Strings          ${ONBOARD_RESULT}       1
 
-    ${ONBOARD_AP1_SERIALS}=     set variable    ${${device1.name}.serial}
-    Set Suite Variable         ${ONBOARD_AP1_SERIALS}
-    ${ONBOARD_AP2_SERIALS}=     set variable    ${${device2.name}.serial}
-    Set Suite Variable         ${ONBOARD_AP2_SERIALS}
 # Assign Network Policy1 to device1
-    assign network policy to a device    ${${device1.name}.serial}  ${NW_POLICY_NAME1}
+    assign network policy to a device    ${device1.serial}  ${NW_POLICY_NAME1}
 # Assign Network Policy2 to device2
-    assign network policy to a device    ${${device2.name}.serial}  ${NW_POLICY_NAME2}
+    assign network policy to a device    ${device2.serial}  ${NW_POLICY_NAME2}
 Suite Clean Up
     [Documentation]    Delete all devices, all ssids, Network Policy, classification rule, ccg, location and quit web browser
     [Tags]             development          tcxm_26873
@@ -128,5 +124,5 @@ Suite Clean Up
     Delete Location Building Floor  ${LOCATION_1}      ${BUILDING_1}     ${FLOOR_1}
     Delete Location Building Floor  ${LOCATION_2}      ${BUILDING_2}     ${FLOOR_2}
     Logout User
-    XIQ Quit Browser
+    Quit Browser
 
