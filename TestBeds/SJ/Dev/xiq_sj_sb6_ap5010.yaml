@@ -10,5 +10,6 @@ ap1:
   connection_method: ssh
   ip: 10.16.187.115
   port: 22
+  mac: 241FBD020C00
   username: admin
   password: Aerohive123

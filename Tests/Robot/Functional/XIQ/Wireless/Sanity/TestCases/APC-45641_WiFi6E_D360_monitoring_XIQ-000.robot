@@ -47,7 +47,6 @@ Post_condition
     Logout User
     Quit Browser
 
-
 *** Test Cases ***
 TCCS-8235-AP D360 Monitor overview - Device health - 5/5 (Overall Score)
     [Documentation]  calculate overallscore of device
@@ -57,15 +56,13 @@ TCCS-8235-AP D360 Monitor overview - Device health - 5/5 (Overall Score)
     &{MONITOR_GET}     create dictionary     overview=&{OVERVIEW_GET}
     &{D360_INFO_GET}   create dictionary     monitor=&{MONITOR_GET}
 
-
-
      FOR    ${i}    IN RANGE    ${retry}
         ${OUTP}      D360 Get Info   ${ap1.mac}    ${D360_INFO_GET}
-        Log To Console    ${OUTP}
         exit for loop if    '${OUTP}[monitor][overview][device_overall_score]' == '${OUTP}[monitor][overview][expected_device_overall_score]'
         Sleep    3m
      END
      Sleep    60s
+
 TCCS-8235:AP D360 Monitor overview - Device health - 1/5 (Capture overall score widget values and status)
     [Documentation]  Capture AP-D360 Monitoring Overview overall score widget values and status
     [Tags]      tccs-8235    xiq-19418     p1    px    sanity   development
@@ -76,16 +73,30 @@ TCCS-8235:AP D360 Monitor overview - Device health - 1/5 (Capture overall score 
 
     FOR    ${i}    IN RANGE    ${retry}
         ${OUTP}      D360 Get Info   ${ap1.mac}    ${D360_INFO_GET}
-        Log To Console  ${OUTP}
-        exit for loop if         '${OUTP}[monitor][overview][connected_status]' == &{all_variables['Expected_Status']}
+        exit for loop if         '${OUTP}[monitor][overview][connected_status]' == '${all_variables['Expected_Status']}'
         log to console           Wait for 3 minutes
         sleep                    3m
     END
-    Should Be Equal As Strings   '${OUTP}[monitor][overview][connected_status]'    &{all_variables['Expected_Status']}
+    Should Be Equal As Strings   '${OUTP}[monitor][overview][connected_status]'    '${all_variables['Expected_Status']}'
     Should Be Equal As Strings   '${OUTP}[monitor][overview][config_firmware_score]'    '${all_variables['Expected_firmware_score']}'
     Should Be Equal As Strings   '${OUTP}[monitor][overview][device_availability_score]'    '${all_variables['device_availability_score']}'
     Should Be Equal As Strings   '${OUTP}[monitor][overview][device_hardware_health]'    '${all_variables['device_hardware_health']}'
 
+TCCS-8235-AP D360 Monitor overview - Device health - 3/5 (HW health score validation)
+    [Documentation]  Validating Device HW Health Score with Expected Device HW Health Score
+    [Tags]      tccs-8235     p1    px    regression   hw_health_score_validation
+
+    &{OVERVIEW_GET_STATUS}    create dictionary     average_cpu_percent=get     average_memory_utilization=get      adequate_power_supply=get   device_hardware_health=get   expected_device_hardware_health=get
+    &{MONITOR_GET}     create dictionary     overview=&{OVERVIEW_GET_STATUS}
+    &{D360_INFO_GET}   create dictionary     monitor=&{MONITOR_GET}
+
+    FOR    ${i}    IN RANGE    ${retry}
+        ${OUTP}      D360 Get Info   ${ap1.mac}    ${D360_INFO_GET}
+        exit for loop if    '${OUTP}[monitor][overview][device_hardware_health]' == '${OUTP}[monitor][overview][expected_device_hardware_health]'
+        log to console           Wait for 3 minutes
+        sleep                    3m
+    END
+    Should Be Equal As Strings   '${OUTP}[monitor][overview][device_hardware_health]'    '${OUTP}[monitor][overview][expected_device_hardware_health]'
 
 TCXM-11490:APC-45641_func_Overview_ConnectedClientsBar
     [Documentation]  Find connetced clients count from D360 overview page
