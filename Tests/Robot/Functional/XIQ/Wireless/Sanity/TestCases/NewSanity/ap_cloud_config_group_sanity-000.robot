@@ -44,6 +44,7 @@ Library     xiq/flows/globalsettings/GlobalSetting.py
 Library     extauto/common/Utils.py
 Library     ExtremeAutomation/Imports/CommonObjectUtils.py
 Library     ExtremeAutomation/Keywords/UserDefinedKeywords/NetworkElements/SetupTeardown/SetupTeardownUdks.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 Variables   Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/ap_cloud_config_group_config.py
 
@@ -85,12 +86,12 @@ Pre Condition
     ${LOGIN_RESULT}=            Login User                  ${tenant_username}      ${tenant_password}      check_warning_msg=True
     Should Be Equal As Integers     ${LOGIN_RESULT}         1
 
-    ${SEARCH_RESULT}=           Search Device               device_serial=${device1.serial}     ignore_failure=True
+    ${SEARCH_RESULT}=           keywordsdevices.search device       ${device1}     ignore_failure=True
     IF  ${SEARCH_RESULT} == 1
         ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}      ${MAIN_DEVICE_SPAWN}
         Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
 
-        ${DELETE_DEVICE_RESULT}=        Delete Device                       device_serial=${device1.serial}
+        ${DELETE_DEVICE_RESULT}=        keywordsdevices.delete device       ${device1}
         Should Be Equal As Integers     ${DELETE_DEVICE_RESULT}             1
     END
 
@@ -147,16 +148,16 @@ Test Suite Cleanup
 
     Log To Console      DOING CLEANUP AFTER RUNNING THE SUITE!
 
-    ${SEARCH_RESULT}=   Search Device               device_serial=${device1.serial}     ignore_failure=True
+    ${SEARCH_RESULT}=   keywordsdevices.search device       ${device1}     ignore_failure=True
     IF  ${SEARCH_RESULT} == 1
         ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
         Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
 
-        ${DELETE_DEVICE_RESULT}=        Delete Device                       device_serial=${device1.serial}
+        ${DELETE_DEVICE_RESULT}=        keywordsdevices.delete device       ${device1}
         Should Be Equal As Integers     ${DELETE_DEVICE_RESULT}             1
     END
 
-    ${DELETE_DEVICE_STATUS}=        Run Keyword If  'serial' in ${device}    Delete Device  device_serial=${device.serial}
+    ${DELETE_DEVICE_STATUS}=        Run Keyword If  'serial' in ${device}    keywordsdevices.delete device  ${device}
     should be equal as integers     ${DELETE_DEVICE_STATUS}               1
 
     ${DELETE_POLICIES_RESULT}=      Delete Network Policy          ${NETWORK}

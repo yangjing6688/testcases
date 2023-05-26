@@ -23,6 +23,7 @@ Library     extauto/xiq/flows/configure/ExpressNetworkPolicies.py
 Library     extauto/xiq/flows/globalsettings/GlobalSetting.py
 Library     ExtremeAutomation/Imports/CommonObjectUtils.py
 Library     ExtremeAutomation/Keywords/UserDefinedKeywords/NetworkElements/SetupTeardown/SetupTeardownUdks.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -113,12 +114,12 @@ Device Onboard
     Should Be Equal as Integers             ${REBOOT_STATUS}          1
 
 Clean Up Device
-    ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_failure=True
+    ${search_result}=   keywordsdevices.search device   ${device1}    ignore_failure=True
     # Disconnect from Extreme Cloud IQ
     Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud
 
 Delete and Disconnect Device From Cloud
-    delete device   device_serial=${device1.serial}
+    keywordsdevices.delete device    ${device1}
     disconnect device from cloud     ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
 
 Create Network Policy and Update to AP

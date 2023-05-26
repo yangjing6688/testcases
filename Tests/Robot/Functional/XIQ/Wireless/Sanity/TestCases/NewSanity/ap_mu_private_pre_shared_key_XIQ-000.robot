@@ -50,6 +50,7 @@ Library     extauto/xiq/flows/manage/DeviceCliAccess.py
 Library     extauto/xiq/flows/mlinsights/MLInsightClient360.py
 Library     ExtremeAutomation/Imports/CommonObjectUtils.py
 Library     ExtremeAutomation/Keywords/UserDefinedKeywords/NetworkElements/SetupTeardown/SetupTeardownUdks.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 Variables   TestBeds/${TESTBED}
 Variables   Environments/${TOPO}
@@ -87,12 +88,12 @@ Suite Setup
     ${LOGIN_RESULT}=            Login User                  ${tenant_username}      ${tenant_password}      check_warning_msg=True
     Should Be Equal As Integers     ${LOGIN_RESULT}         1
 
-    ${SEARCH_RESULT}=           Search Device               device_serial=${device1.serial}     ignore_failure=True
+    ${SEARCH_RESULT}=           keywordsdevices.search device               ${device1}     ignore_failure=True
     IF  ${SEARCH_RESULT} == 1
         ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}      ${MAIN_DEVICE_SPAWN}
         Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
 
-        ${DELETE_DEVICE_RESULT}=        Delete Device                       device_serial=${device1.serial}
+        ${DELETE_DEVICE_RESULT}=        keywordsdevices.delete device       ${device1}
         Should Be Equal As Integers     ${DELETE_DEVICE_RESULT}             1
     END
 
@@ -153,12 +154,12 @@ Suite Teardown
 
     Log To Console      DOING CLEANUP AFTER RUNNING THE SUITE!
 
-    ${SEARCH_RESULT}=   Search Device               device_serial=${device1.serial}     ignore_failure=True
+    ${SEARCH_RESULT}=   keywordsdevices.search device                       ${device1}     ignore_failure=True
     IF  ${SEARCH_RESULT} == 1
         ${DISCONNECT_DEVICE_RESULT}=    Disconnect Device From Cloud        ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
         Should Be Equal As Integers     ${DISCONNECT_DEVICE_RESULT}         1
 
-        ${DELETE_DEVICE_RESULT}=        Delete Device                       device_serial=${device1.serial}
+        ${DELETE_DEVICE_RESULT}=        keywordsdevices.delete device       ${device1}
         Should Be Equal As Integers     ${DELETE_DEVICE_RESULT}             1
     END
 

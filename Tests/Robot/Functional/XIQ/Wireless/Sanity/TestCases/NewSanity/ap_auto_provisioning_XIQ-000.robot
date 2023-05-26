@@ -44,6 +44,7 @@ Library     extauto/xiq/flows/configure/CommonObjects.py
 Library     extauto/xiq/flows/configure/ExpressNetworkPolicies.py
 Library     ExtremeAutomation/Imports/CommonObjectUtils.py
 Library     ExtremeAutomation/Keywords/UserDefinedKeywords/NetworkElements/SetupTeardown/SetupTeardownUdks.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -74,7 +75,7 @@ Test Suite Setup
     ${LOGIN_STATUS}=                Login User          ${tenant_username}      ${tenant_password}     check_warning_msg=True
     should be equal as integers     ${LOGIN_STATUS}               1
 
-    ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_failure=True
+    ${search_result}=       keywordsdevices.search device       ${device1}          ignore_failure=True
     # Disconnect from Extreme Cloud IQ
     Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud  ${device1}  ${MAIN_DEVICE_SPAWN}
 
@@ -95,7 +96,7 @@ Test Suite Teardown
     ${REFRESH_PAGE_STATUS}=     Refresh Devices Page
     Should Be Equal As Integers     ${REFRESH_PAGE_STATUS}               1
 
-    ${search_result}=   Search Device       device_serial=${device1.serial}    ignore_failure=True
+    ${search_result}=       keywordsdevices.search device       ${device1}      ignore_failure=True
     # Disconnect from Extreme Cloud IQ
     Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud  ${device1}  ${MAIN_DEVICE_SPAWN}
 
@@ -113,7 +114,7 @@ Test Suite Teardown
 
 Delete and Disconnect Device From Cloud
     [Arguments]                             ${device}  ${SPAWN}
-    ${DELETE_DEVICE}=          delete device   device_serial=${device.serial}
+    ${DELETE_DEVICE}=          keywordsdevices.delete device        ${device}
     Should Be Equal As Integers     ${DELETE_DEVICE}               1
 
     ${DISCONNECT_RESULT}=          disconnect device from cloud     ${device.cli_type}     ${SPAWN}
@@ -121,7 +122,7 @@ Delete and Disconnect Device From Cloud
 
 Clean Up Device
     [Arguments]                             ${device}  ${SPAWN}
-    ${search_result}=   Search Device       device_serial=${device.serial}    ignore_failure=True
+    ${search_result}=   keywordsdevices.search device       ${device}    ignore_failure=True
     # Disconnect from Extreme Cloud IQ
     Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud  ${device.cli_type}     ${SPAWN}
 

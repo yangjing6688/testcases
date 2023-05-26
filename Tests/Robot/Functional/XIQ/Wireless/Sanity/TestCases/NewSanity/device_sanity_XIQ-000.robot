@@ -28,6 +28,7 @@ Library     extauto/xiq/flows/configure/CommonObjects.py
 Library     extauto/xiq/flows/configure/ExpressNetworkPolicies.py
 Library     extauto/xiq/flows/configure/RouterTemplate.py
 Library     extauto/xiq/flows/manage/Devices.py
+Library     keywords/gui/manage/KeywordsDevices.py
 Variables   Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/voss_config.py
 
 Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/device_sanity_XIQ_config.robot
@@ -95,12 +96,12 @@ Test Suite Teardown
     Base Test Suite Cleanup 
 
 Clean Up Device
-    ${search_result}=   Search Device       device_serial=${device1.serial}   ignore_failure=True
+    ${search_result}=   keywordsdevices.search device               ${device1}   ignore_failure=True
     # Disconnect from Extreme Cloud IQ
     Run Keyword If  '${search_result}' == '1'       Delete and Disconnect Device From Cloud
 
 Delete and Disconnect Device From Cloud
-    delete device   device_serial=${device1.serial}
+    keywordsdevices.delete device    ${device1}
     disconnect device from cloud     ${device1.cli_type}     ${MAIN_DEVICE_SPAWN}
 
 SSH to the connection
@@ -137,10 +138,10 @@ Confirm Device Status
 
 Clean Up Test Device and Confirm Success
     [Documentation]     Deletes the specified device and confirms the action was successful
-    [Arguments]         ${serial}
+    [Arguments]         ${device}
 
     Navigate to Devices and Confirm Success
-    ${del_result}=  Delete Device   device_serial=${serial}
+    ${del_result}=  keywordsdevices.delete device   ${device}
     Should Be Equal As Integers     ${del_result}  1
 
 *** Test Cases ***
