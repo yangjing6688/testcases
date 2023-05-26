@@ -25,7 +25,7 @@ Test Suite Setup
     set global variable  ${simulated_device}
 
 Test Suite Teardown
-    ${DELETE_AP}=                   Delete Devices       ${SIM_SERIAL}
+    ${DELETE_AP}=                   Delete Devices       ${simulated_device.serial}
     should be equal as integers     ${DELETE_AP}               1
     Logout User
     Quit Browser
@@ -37,6 +37,3 @@ TCCS-13631: Login as External Admin account(Administrator role) and onboard a si
 
     ${ONBOARD_SIM_AP}=              Onboard Device Quick    ${simulated_device}
     Should Be Equal As Strings      ${ONBOARD_SIM_AP}       1
-
-    ${SIM_SERIAL}=     set variable    ${${simulated_device.name}.serial}
-    Set Suite Variable         ${SIM_SERIAL}

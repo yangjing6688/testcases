@@ -50,7 +50,7 @@ Log Into XIQ and Set Up Test
 Tear Down Test and Close Session
     [Documentation]     Logs into XIQ and sets up the elements necessary to complete this test suite
 
-    Clean Up Test Device and Confirm Success    ${SIM_SERIAL}
+    Clean Up Test Device and Confirm Success    ${device.serial}
     Logout User
     Quit Browser
 
@@ -59,10 +59,6 @@ Onboard Test Devices
 
     ${ONBOARD_RESULT}=    onboard device quick       ${device}
     Should Be Equal As Strings          ${ONBOARD_RESULT}       1
-
-    ${SIM_SERIAL}=     set variable    ${${device.name}.serial}
-    Set Suite Variable         ${SIM_SERIAL}
-
 
 Clean Up Test Device and Confirm Success
     [Documentation]     Deletes the specified device and confirms the action was successful

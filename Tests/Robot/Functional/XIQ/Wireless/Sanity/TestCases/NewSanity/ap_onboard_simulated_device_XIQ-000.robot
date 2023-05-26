@@ -27,8 +27,8 @@ Suite Teardown    Run Keyword And Warn On Failure     Test Suite Teardown
 *** Keywords ***
 
 Test Suite Teardown
-    ${DELETE_AP}=                   Delete Devices              ${SIM_SERIAL}
-    should be equal as integers     ${DELETE_AP}               1
+    ${DELETE_AP}=                   Run Keyword If  'serial' in ${device}    Delete Devices  ${device.serial}
+    Should Be Equal As Integers     ${DELETE_AP}                    1
 
     ${LOGOUT_RESULT}=               Logout User
     Should Be Equal As Integers     ${LOGOUT_RESULT}                1
@@ -47,13 +47,10 @@ TCCS-13211: Quick Add Onboard Simulated Device
     ...     simulated_count=1
     ...     onboard_device_type=Simulated
     ...     location=auto_location_01, Santa Clara, building_02, floor_04
+    Set Suite Variable    ${device}
 
-    set suite variable    ${device}
-    ${LOGIN_STATUS}=                Login User          ${tenant_username}          ${tenant_password}
-    should be equal as integers     ${LOGIN_STATUS}               1
+    ${LOGIN_STATUS}=                Login User              ${tenant_username}      ${tenant_password}
+    Should Be Equal As Integers     ${LOGIN_STATUS}         1
 
-    ${ONBOARD_RESULT}=                  onboard device quick    ${device}
-    Should Be Equal As Strings          ${ONBOARD_RESULT}       1
-
-    ${SIM_SERIAL}=     set variable    ${${device.name}.serial}
-    Set Suite Variable         ${SIM_SERIAL}
+    ${ONBOARD_RESULT}=              Onboard Device Quick    ${device}
+    Should Be Equal As Integers     ${ONBOARD_RESULT}       1

@@ -88,25 +88,21 @@ Pre Condition
     ${ONBOARD_RESULT}=      onboard device quick    ${device}
     Should Be Equal As Strings          ${ONBOARD_RESULT}       1
 
-
-    ${ONBOARD_AP_SERIALS}=     set variable    ${${device.name}.serial}
-    Set Suite Variable         ${ONBOARD_AP_SERIALS}
-
 # Create ccg profile
-    ${CCG_NAME}=     Get From List      ${ONBOARD_AP_SERIALS}        0
+    ${CCG_NAME}=     Get From List      ${device.serial}        0
     Set Suite Variable     ${CCG_NAME}
-    ${CCG_DESCRIPTION}=     Get From List      ${ONBOARD_AP_SERIALS}        0
-    @{AP_SERIAL_IN_CCG}=     Get Slice From List      ${ONBOARD_AP_SERIALS}        0   2
+    ${CCG_DESCRIPTION}=     Get From List      ${device.serial}        0
+    @{AP_SERIAL_IN_CCG}=     Get Slice From List      ${device.serial}        0   2
     Set Suite Variable     @{AP_SERIAL_IN_CCG}
     Add Cloud Config Group      ${CCG_NAME}        ${CCG_DESCRIPTION}        @{AP_SERIAL_IN_CCG}
 # Add classification rule with ccg
-    ${RULE_NAME}=     Get From List      ${ONBOARD_AP_SERIALS}        0
+    ${RULE_NAME}=     Get From List      ${device.serial}        0
     Set Suite Variable     ${RULE_NAME}
-    ${RULE_DESCRIPTION}=     Get From List      ${ONBOARD_AP_SERIALS}        0
-    ${CLOUD_CONFIG_GROUP_POLCIY}=     Get From List      ${ONBOARD_AP_SERIALS}        0
+    ${RULE_DESCRIPTION}=     Get From List      ${device.serial}        0
+    ${CLOUD_CONFIG_GROUP_POLCIY}=     Get From List      ${device.serial}        0
     Add Classification Rule With CCG    ${RULE_NAME}    ${RULE_DESCRIPTION}    not    ${CLOUD_CONFIG_GROUP_POLCIY}
 # Enable SSID classification and assign rule
-    ${Classification_Rule}=      Get From List      ${ONBOARD_AP_SERIALS}        0
+    ${Classification_Rule}=      Get From List      ${device.serial}        0
     Add Classification Rule to SSID     ${NW_POLICY_NAME1}        ${WIRELESS_PESRONAL_WPA2CCMP_1}[ssid_name]        ${Classification_Rule}
 
 # Assign Network Policy to all devices
@@ -121,7 +117,7 @@ Suite Clean Up
     Delete Single Classification rule      ${RULE_NAME}
     Delete Cloud Config Group      ${CCG_NAME}
     Delete Location Building Floor  ${1st_LOCATION_CITY_STATE}      ${1st_LOCATION_STREET}     Floor 1
-    XIQ Quit Browser
+    Quit Browser
 
 *** Test Cases ***
 ######  IP NETWORK  ####################################################################################################

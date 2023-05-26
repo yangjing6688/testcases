@@ -73,30 +73,30 @@ TCXM-19760: Confirm No Access To Device360
     [Documentation]     Confirms no access to the Device360 popup
     [Tags]              tcxm_19760   development
 
-    ${is_link}=         Verify Hostname Link Not Available   ${SIM_SERIAL}
+    ${is_link}=         Verify Hostname Link Not Available   ${device.serial}
     Should Be Equal As Integers   ${is_link}   1
-    ${is_link}=         Verify Mac Link Not Available   ${SIM_SERIAL}
+    ${is_link}=         Verify Mac Link Not Available   ${device.serial}
     Should Be Equal As Integers   ${is_link}   1
 
 TCXM-19838: Confirm No Access To Device360 With Clients
     [Documentation]     Confirms no access to the Device360 popup through clients
     [Tags]              tcxm_19838   development
 
-    ${is_link}=         Verify Client Link Not Available   ${SIM_SERIAL}
+    ${is_link}=         Verify Client Link Not Available   ${device.serial}
     Should Be Equal As Integers   ${is_link}   1
 
 TCXM-19836: Confirm No Access To Policy Change
     [Documentation]     Confirms no access to the policy change popup
     [Tags]              tcxm_19836   development
 
-    ${is_link}=         Verify Policy Link Not Available   ${SIM_SERIAL}
+    ${is_link}=         Verify Policy Link Not Available   ${device.serial}
     Should Be Equal As Integers   ${is_link}   1
 
 TCXM-19837: Confirm No Access To Location Change
     [Documentation]     Confirms no access to the location change popup
     [Tags]              tcxm_19837   development
 
-    ${is_link}=         Verify Location Link Not Available   ${SIM_SERIAL}
+    ${is_link}=         Verify Location Link Not Available   ${device.serial}
     Should Be Equal As Integers   ${is_link}   1
 
 
@@ -130,9 +130,6 @@ Log Into XIQ and Set Up Test
     ${ONBOARD_RESULT}=      onboard device quick    ${device}
     Should Be Equal As Strings          ${ONBOARD_RESULT}       1
 
-    ${SIM_SERIAL}=     set variable    ${${device.name}.serial}
-    Set Suite Variable          ${SIM_SERIAL}
-
     Delete Management Account   ${XIQ_HD_USER}
     Log Out of XIQ and Quit Browser
     Create HelpDesk Role Account        ${HELPDESK_ROLE}
@@ -143,6 +140,6 @@ Tear Down Test and Close Session
 
     Log Out of XIQ and Quit Browser
     Log Into XIQ and Confirm Success   ${XIQ_USER}   ${XIQ_PASSWORD}   ${XIQ_URL}
-    Delete Device and Confirm Success   ${SIM_SERIAL}
-    Confirm Device Serial Not Present   ${SIM_SERIAL}
+    Delete Device and Confirm Success   ${device.serial}
+    Confirm Device Serial Not Present   ${device.serial}
     Log Out of XIQ and Quit Browser

@@ -129,9 +129,6 @@ Pre Condition
     ${ONBOARD_RESULT_SIM}=                  onboard device quick    ${device}
     Should Be Equal As Strings              ${ONBOARD_RESULT_SIM}       1
 
-    ${SIM_SERIAL}=     set variable    ${${device.name}.serial}
-    Set Suite Variable         ${SIM_SERIAL}
-
     ${DELETE_POLICIES_RESULT}=      Delete Network Policy          ${NETWORK}
     Should Be Equal As Integers     ${DELETE_POLICIES_RESULT}           1
 
@@ -159,7 +156,7 @@ Test Suite Cleanup
         Should Be Equal As Integers     ${DELETE_DEVICE_RESULT}             1
     END
 
-    ${DELETE_DEVICE_STATUS}=        Delete Device       device_serial=${SIM_SERIAL}
+    ${DELETE_DEVICE_STATUS}=        Run Keyword If  'serial' in ${device}    Delete Device  device_serial=${device.serial}
     should be equal as integers     ${DELETE_DEVICE_STATUS}               1
 
     ${DELETE_POLICIES_RESULT}=      Delete Network Policy          ${NETWORK}
@@ -197,7 +194,7 @@ TCCS-14511: Cloud Config group Sanity Testcase
     Should Be Equal As Integers     ${ADD_CCG_STATUS}            1
 
     # ADD CCG Group with Simulated AP
-    ${ASSIGN_CCG_POLICY}            assign cloud config group       ${CCG_NAME1}        Delta       None       ${SIM_SERIAL}
+    ${ASSIGN_CCG_POLICY}            assign cloud config group       ${CCG_NAME1}        Delta       None       ${device.serial}
     should be equal as strings     '${ASSIGN_CCG_POLICY}'     '1'
 
     #EDIT CCG Group - REMOVE AP from CCG
@@ -209,7 +206,7 @@ TCCS-14511: Cloud Config group Sanity Testcase
     should be equal as strings     '${ADD_CCG_FROM_MANAGE}'     '1'
 
     #Add Sim AP to CCG Group 2
-    ${ADD_CCG_DUP_STATUS}           add cloud config group      ${CCG_DUPLICATE}        ${CCG_DUPLICATE_DESC}        ${SIM_SERIAL}
+    ${ADD_CCG_DUP_STATUS}           add cloud config group      ${CCG_DUPLICATE}        ${CCG_DUPLICATE_DESC}        ${device.serial}
     should be equal as strings     '${ADD_CCG_DUP_STATUS}'     '1'
 
     # Add Classification rule
