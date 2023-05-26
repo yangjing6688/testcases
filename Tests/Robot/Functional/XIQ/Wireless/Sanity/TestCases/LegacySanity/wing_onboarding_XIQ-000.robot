@@ -26,6 +26,8 @@ Library     xiq/flows/common/Navigator.py
 Library     xiq/flows/manage/Devices.py
 Library     xiq/flows/manage/Device360.py
 Library     xiq/flows/globalsettings/GlobalSetting.py
+Library     keywords/gui/manage/KeywordsDevices.py
+
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -47,7 +49,7 @@ Test Suite Clean Up
     ${LOGIN_STATUS}=                Login User          ${tenant_username}      ${tenant_password}
     should be equal as integers     ${LOGIN_STATUS}               1
 
-    ${DELETE_STATUS}=               Delete Device       device_serial=${wing1.serial}
+    ${DELETE_STATUS}=               keywordsdevices.delete device       ${wing1}
     Should be Equal As Integers     ${DELETE_STATUS}      1
 
     [Teardown]   run keywords       logout user
@@ -62,13 +64,13 @@ TCCS-7279_Step1: Onboard WiNG AP
     ${LOGIN_STATUS}=                Login User          ${tenant_username}      ${tenant_password}     check_warning_msg=True
     should be equal as integers     ${LOGIN_STATUS}               1
 
-    ${DELETE_STATUS}=               Delete Device           device_serial=${wing1.serial}
+    ${DELETE_STATUS}=               keywordsdevices.delete device               ${wing1}
     Should be Equal As Integers     ${DELETE_STATUS}      1
 
     ${ONBOARD_RESULT}=              onboard device quick         ${wing1}
     Should Be Equal As Integers     ${ONBOARD_RESULT}           1
 
-    ${search_result}=               search device    device_serial=${wing1.serial}
+    ${search_result}=               keywordsdevices.search device               ${wing1}
     should be equal as integers     ${search_result}        1
 
     [Teardown]      run keywords    logout user

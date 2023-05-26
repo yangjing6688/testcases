@@ -44,6 +44,7 @@ Library     extauto/xiq/flows/manage/AdvanceOnboarding.py
 Library     extauto/xiq/flows/configure/NetworkPolicy.py
 Library     extauto/xiq/flows/configure/CommonObjects.py
 Library     extauto/xiq/flows/configure/RouterTemplate.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -55,12 +56,12 @@ Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/router_xr_sani
 
 Force Tags   testbed_1_node
 
-Suite Setup     Suite Setup   ${router1.serial}
+Suite Setup     Suite Setup   ${router1}
 Suite Teardown  Suite Teardown
 
 *** Keywords ***
 Suite Setup
-    [Arguments]         ${SERIAL}
+    [Arguments]         ${router1}
 
     ${LOGIN_STATUS}=    Login User  ${tenant_username}      ${tenant_password}      check_warning_msg=True
     Should Be Equal As Integers     ${LOGIN_STATUS}         1
@@ -68,7 +69,7 @@ Suite Setup
     Navigate To Devices
     Refresh Devices Page
 
-    ${DELETE_DEVICE}=               Delete Device                   device_serial=${router1.serial}
+    ${DELETE_DEVICE}=               keywordsdevices.delete device       ${router1}
     Should Be Equal As Integers     ${DELETE_DEVICE}                1
 
     ${DLT_NW_POLICY}=               Delete Network Policy           ${NW_POLICY_NAME}
@@ -102,7 +103,7 @@ Suite Teardown
     Navigate To Devices
     Refresh Devices Page
 
-    ${DELETE_DEVICE}=               Delete Device                   device_serial=${router1.serial}
+    ${DELETE_DEVICE}=               keywordsdevices.delete device       ${router1}
     Should Be Equal As Integers     ${DELETE_DEVICE}                1
 
     ${DLT_NW_POLICY}=               Delete Network Policy           ${NW_POLICY_NAME}
@@ -172,7 +173,7 @@ TCCS-7766_Step1: Onboard Aerohive XR Router Using Quick Add Method
     Should Be Equal As Integers                     ${ONBOARD_RESULT}           1
 
 
-    ${SEARCH_ROUTER}=   Search Device   device_serial=${router1.serial}
+    ${SEARCH_ROUTER}=   keywordsdevices.search device               ${router1}
     Should Be Equal As Integers         ${SEARCH_ROUTER}            1
 
     ${ROUTER_SPAWN}=    Open Spawn      ${router1.console_ip}       ${router1.console_port}     ${router1.username}     ${router1.password}     ${router1.cli_type}     connection_method=console
@@ -203,7 +204,7 @@ TCCS-7766_Step2: Onboard Aerohive XR Router Using Advance Onboarding Method
     Navigate To Devices
     Refresh Devices Page
 
-    ${DELETE_DEVICE}=               Delete Device                   device_serial=${router1.serial}
+    ${DELETE_DEVICE}=               keywordsdevices.delete device               ${router1}
     Should Be Equal As Integers     ${DELETE_DEVICE}                1
 
     ${ONBOARD_ROUTER}=              Advance Onboard Device      ${router1.serial}       device_make=${router1.make}     dev_location=${LOCATION}

@@ -48,6 +48,7 @@ Library     xiq/flows/globalsettings/GlobalSetting.py
 Library     xiq/flows/manage/Client.py
 Library     xiq/flows/configure/ExpressNetworkPolicies.py
 Library     xiq/flows/common/MuCaptivePortal.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -100,7 +101,7 @@ Test Suite Clean Up
     [Tags]      production      cleanup
     # 2022-08-31 new browser library removes need to logout and back in to keep variables in scope. Trial.  Remove if no issues are seen
     #${result}=    Login User       ${tenant_username}     ${tenant_password}
-    ${DELETE_DEVICE_STATUS}=        Delete Device       device_serial=${ap1.serial}
+    ${DELETE_DEVICE_STATUS}=            keywordsdevices.delete device         ${ap1}
     should be equal as integers         ${DELETE_DEVICE_STATUS}               1
 
     ${DELETE_STATUS}=               Delete Network Polices         ${NW_POLICY_NAME1}   ${NW_DEFAULT_POLICY}

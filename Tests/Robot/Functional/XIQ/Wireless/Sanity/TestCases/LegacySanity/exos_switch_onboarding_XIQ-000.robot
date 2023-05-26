@@ -25,6 +25,7 @@ Library     xiq/flows/manage/Tools.py
 Library     xiq/flows/configure/NetworkPolicy.py
 Library     xiq/flows/globalsettings/GlobalSetting.py
 Library     common/TestFlow.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -34,17 +35,17 @@ Variables    Environments/Config/device_commands.yaml
 
 Force Tags   testbed_1_node
 
-Suite Setup     Cleanup-Delete Switch   ${netelem1.serial}
+Suite Setup     Cleanup-Delete Switch   ${netelem1}
 Suite Teardown  Test Suite Clean Up
 
 *** Keywords ***
 Cleanup-Delete Switch
-    [Arguments]     ${SERIAL}
+    [Arguments]     ${device}
 
     ${LOGIN_STATUS}=                    Login User          ${tenant_username}      ${tenant_password}     check_warning_msg=True
     should be equal as integers         ${LOGIN_STATUS}               1
 
-    ${DELETE_DEVICE_STATUS}=            Delete Device                  device_serial=${SERIAL}
+    ${DELETE_DEVICE_STATUS}=            keywordsdevices.delete device               ${device}
     should be equal as integers        ${DELETE_DEVICE_STATUS}               1
 
     ${SW_SPAWN}=                        Open Spawn          ${netelem1.ip}       ${netelem1.port}      ${netelem1.username}       ${netelem1.password}        ${netelem1.cli_type}
@@ -58,7 +59,7 @@ Test Suite Clean Up
 
     [Tags]              production   cleanup
 
-    ${DELETE_DEVICE_STATUS}=            Delete Device       device_serial=${netelem1.serial}
+    ${DELETE_DEVICE_STATUS}=            keywordsdevices.delete device       ${netelem1}
     Should Be Equal As Integers         ${DELETE_DEVICE_STATUS}     1
 
     [Teardown]   run keywords           Logout User
@@ -74,7 +75,7 @@ TCCS-7292_Step1: Onboard EXOS Switch on XIQ
     ${ONBOARD_RESULT}=                   onboard device quick        ${netelem1}
     Should Be Equal As Strings          ${ONBOARD_RESULT}       1
 
-    ${SEARCH_SWITCH}=       Search Device       device_serial=${netelem1.serial}
+    ${SEARCH_SWITCH}=       keywordsdevices.search device            ${netelem1}
     Should Be Equal As Strings             ${SEARCH_SWITCH}       1
 
     ${SWITCH_CONNECTION_HOST}=      Get Switch Connection Host

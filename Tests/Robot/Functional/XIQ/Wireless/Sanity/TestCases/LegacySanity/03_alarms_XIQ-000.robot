@@ -31,6 +31,7 @@ Library     keywords/gui/login/KeywordsLogin.py
 Library     xiq/flows/manage/Devices.py
 Library     xiq/flows/manage/Alarms.py
 Library     xiq/flows/manage/DeviceCliAccess.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -50,7 +51,7 @@ Clean-up
     ${LOGIN_STATUS}=                Login User              ${tenant_username}     ${tenant_password}
     should be equal as integers     ${LOGIN_STATUS}               1
 
-    ${DELETE_DEVICE_STATUS}=            Delete Device                  device_serial=${ap1.serial}
+    ${DELETE_DEVICE_STATUS}=        keywordsdevices.delete device                   ${ap1}
     should be equal as integers     ${DELETE_DEVICE_STATUS}               1
 
     [Teardown]   run keywords        Logout User

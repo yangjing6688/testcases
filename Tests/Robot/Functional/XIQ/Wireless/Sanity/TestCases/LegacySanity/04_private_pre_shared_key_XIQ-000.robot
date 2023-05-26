@@ -52,6 +52,7 @@ Library     xiq/flows/configure/CommonObjects.py
 
 Library     xiq/flows/mlinsights/MLInsightClient360.py
 Library     xiq/flows/globalsettings/GlobalSetting.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 # Moved to python Resources file for randomizing 2022-08-31
 #Resource    Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/test_email_ids.robot
@@ -114,7 +115,7 @@ Test Suite Clean Up
 
     Navigate To Devices
 
-    ${DELETE_DEVICE_STATUS}=        Delete Device       device_serial=${ap1.serial}
+    ${DELETE_DEVICE_STATUS}=            keywordsdevices.delete device       ${ap1}
     should be equal as integers         ${DELETE_DEVICE_STATUS}               1
     # delete policy is showing 'in use' error. Even though device was successfully deleted. Table cleanup assumed.
     sleep                          5

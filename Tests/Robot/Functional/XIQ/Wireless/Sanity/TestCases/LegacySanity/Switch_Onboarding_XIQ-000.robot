@@ -20,6 +20,7 @@ Library     xiq/flows/manage/Devices.py
 Library     xiq/flows/manage/Switch.py
 Library     xiq/flows/manage/AdvOnboard.py
 Library     xiq/flows/manage/AdvanceOnboarding.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -35,14 +36,14 @@ Suite Teardown  Suite Teardown
 Suite Setup
     ${LOGIN_RESULT}=    Login User      ${tenant_username}      ${tenant_password}
     Should Be Equal as Integers         ${LOGIN_RESULT}         1
-    Delete Device                       device_serial=${aerohive_sw1.serial}
+    keywordsdevices.delete device       ${aerohive_sw1}
 
 Suite Teardown
     Run Keywords        logout user
     ...                 quit browser
 
 Test Case Teardown
-    ${DELETE_STATUS}=   Delete Device   device_serial=${aerohive_sw1.serial}
+    ${DELETE_STATUS}=   keywordsdevices.delete device           ${aerohive_sw1}
     Should Be Equal as Integers         ${DELETE_STATUS}        1
 
 
@@ -95,7 +96,7 @@ TCCS-7748_Step4: Onboard Aerohive Switch via advanced Onboarding
     [Tags]                  production  tccs_7748   tccs_7748_step4
     ${ONBOARD_RESULT}=      Advance Onboard Device              device_serial=${aerohive_sw1.serial}  device_make=${aerohive_sw1.cli_type}    dev_location=${LOCATION}
     Should Be Equal as Integers         ${ONBOARD_RESULT}       1
-    ${SEARCH_RESULT}=       Search Device                      device_serial=${aerohive_sw1.serial}
+    ${SEARCH_RESULT}=       keywordsdevices.search device       ${aerohive_sw1}
     Should Be Equal as Integers         ${SEARCH_RESULT}        1
     ${ONLINE_STATUS}=       Wait Until Device Online            device_serial=${aerohive_sw1.serial}
     Should Be Equal as Integers         ${ONLINE_STATUS}        1

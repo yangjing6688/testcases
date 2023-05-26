@@ -45,6 +45,7 @@ Library     xiq/flows/configure/AutoProvisioning.py
 Library     xiq/flows/configure/NetworkPolicy.py
 Library     xiq/flows/configure/CommonObjects.py
 Library     xiq/flows/configure/ExpressNetworkPolicies.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -56,11 +57,11 @@ Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/auto_provision
 Force Tags   testbed_1_node
 
 
-Suite Setup     Cleanup-Delete AP   ${ap1.serial}       ${aerohive_sw1.serial}
-Suite Teardown    Clean-up          ${ap1.serial}       ${aerohive_sw1.serial}
+Suite Setup       Cleanup-Delete AP     ${ap1}          ${aerohive_sw1}
+Suite Teardown    Clean-up              ${ap1}          ${aerohive_sw1}
 *** Keywords ***
 Cleanup-Delete AP
-    [Arguments]                             ${SERIAL1}                  ${SERIAL2}
+    [Arguments]                             ${device1}          ${device2}
     ${LOGIN_STATUS}=                    Login User      ${tenant_username}      ${tenant_password}      check_warning_msg=True
     should be equal as integers         ${LOGIN_STATUS}               1
 
@@ -70,10 +71,10 @@ Cleanup-Delete AP
     Navigate To Devices
     Refresh Devices Page
 
-    ${DELETE_DEVICE_STATUS1}=       Delete Device                  device_serial=${SERIAL1}
+    ${DELETE_DEVICE_STATUS1}=       keywordsdevices.delete device           ${device1}
     should be equal as integers     ${DELETE_DEVICE_STATUS1}    1
 
-    ${DELETE_DEVICE_STATUS2}=       Delete Device                  device_serial=${SERIAL2}
+    ${DELETE_DEVICE_STATUS2}=       keywordsdevices.delete device           ${device2}
     should be equal as integers     ${DELETE_DEVICE_STATUS2}    1
 
     ${DLT_NW_POLICIES}=             Delete Network Polices                  ${POLICY_NAME_01}           ${POLICY_NAME_02}
@@ -83,15 +84,15 @@ Cleanup-Delete AP
     should be equal as integers     ${DELETE_SSIDS}             1
 
 Clean-up
-    [Arguments]                             ${SERIAL1}                  ${SERIAL2}
+    [Arguments]                             ${device1}          ${device2}
 
     Navigate To Devices
     Refresh Devices Page
 
-    ${DELETE_DEVICE_STATUS1}=       Delete Device       device_serial=${SERIAL1}
+    ${DELETE_DEVICE_STATUS1}=       keywordsdevices.delete device           ${device1}
     should be equal as integers     ${DELETE_DEVICE_STATUS1}    1
 
-    ${DELETE_DEVICE_STATUS2}=       Delete Device       device_serial=${SERIAL2}
+    ${DELETE_DEVICE_STATUS2}=       keywordsdevices.delete device           ${device2}
     should be equal as integers     ${DELETE_DEVICE_STATUS2}    1
 
     ${DLT_ALL_AUTOPROV_POLICIES}=       Delete All Auto Provision Policies

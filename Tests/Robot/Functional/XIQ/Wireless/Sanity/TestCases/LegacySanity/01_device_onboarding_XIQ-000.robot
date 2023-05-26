@@ -17,6 +17,7 @@ Library     extauto/common/TestFlow.py
 Library     keywords/gui/login/KeywordsLogin.py
 Library     extauto/xiq/flows/manage/Devices.py
 Library     extauto/xiq/flows/globalsettings/GlobalSetting.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -33,7 +34,7 @@ Suite Setup
     ${LOGIN_STATUS}=                Login User          ${tenant_username}      ${tenant_password}     check_warning_msg=True
     should be equal as integers     ${LOGIN_STATUS}               1
 
-    ${DELETE_DEVICE_STATUS}=            Delete Device       device_serial=${ap1.serial}
+    ${DELETE_DEVICE_STATUS}=            keywordsdevices.delete device           ${ap1}
     should be equal as integers     ${DELETE_DEVICE_STATUS}               1
 
 Suite Teardown
@@ -48,10 +49,10 @@ TCCS-7651_Step1: Onboard Aerohive AP
     ${CHANGE_PASSWORD_STATUS}=      Change Device Password                  Aerohive123
     should be equal as integers     ${CHANGE_PASSWORD_STATUS}               1
 
-    ${ONBOARD_RESULT}=              onboard device quick      ${ap1}
+    ${ONBOARD_RESULT}=              onboard device quick                    ${ap1}
     should be equal as integers     ${ONBOARD_RESULT}       1
 
-    ${search_result}=               search device    device_serial=${ap1.serial}
+    ${search_result}=               keywordsdevices.search device           ${ap1}
     should be equal as integers     ${search_result}        1
 
 TCCS-7651_Step2: Config AP to Report AIO and Check status

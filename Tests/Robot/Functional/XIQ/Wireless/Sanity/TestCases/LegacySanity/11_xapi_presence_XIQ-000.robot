@@ -41,6 +41,7 @@ Library     xiq/flows/manage/Devices.py
 Library     xiq/flows/manage/Location.py
 Library     xiq/flows/globalsettings/GlobalSetting.py
 Library     xiq/flows/configure/NetworkPolicy.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -100,7 +101,7 @@ Test Suite Clean Up
 
     ${result}=    Login User       ${tenant_username}        ${tenant_password}
     Update Network Policy To Ap     policy_name=OPEN_AUTO      ap_serial=${ap1.serial}
-	Delete Device                 device_serial=${ap1.serial}
+	keywordsdevices.delete device   ${ap1}
 
     delete network policy         ${XAPI_NW}
     delete ssid                   ${XAPI_SSID}

@@ -22,6 +22,7 @@ Library     xiq/flows/manage/DeviceCliAccess.py
 Library     xiq/flows/globalsettings/GlobalSetting.py
 Library     xiq/flows/configure/NetworkPolicy.py
 Library     xiq/flows/configure/CommonObjects.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -33,16 +34,16 @@ Resource     Tests/Robot/Functional/XIQ/Wireless/Sanity/Resources/advanced_onboa
 
 Force Tags   testbed_1_node
 
-Suite Setup     Cleanup-Delete AP   ${ap1.serial}
+Suite Setup     Cleanup-Delete AP   ${ap1}
 Suite Teardown  Test Suite Clean Up
 
 *** Keywords ***
 Cleanup-Delete AP
-    [Arguments]     ${SERIAL}
+    [Arguments]     ${device}
     ${LOGIN_STATUS}=                    Login User      ${tenant_username}      ${tenant_password}      check_warning_msg=True
     should be equal as integers         ${LOGIN_STATUS}               1
 
-    ${DELETE_DEVICE_STATUS}=                Delete Device       device_serial=${SERIAL}
+    ${DELETE_DEVICE_STATUS}=            keywordsdevices.delete device           ${device}
     should be equal as integers         ${DELETE_DEVICE_STATUS}               1
 
     ${CHANGE_PASSWORD_STATUS}=          Change Device Password                  Aerohive123

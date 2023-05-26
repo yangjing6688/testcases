@@ -32,6 +32,7 @@ Library     xiq/flows/manage/Devices.py
 Library     xiq/flows/configure/NetworkPolicy.py
 Library     xiq/flows/configure/ExpressNetworkPolicies.py
 Library     xiq/flows/configure/CommonObjects.py
+Library     keywords/gui/manage/KeywordsDevices.py
 
 Variables    TestBeds/${TESTBED}
 Variables    Environments/${TOPO}
@@ -52,7 +53,7 @@ Test Suite Clean Up
     ${LOGIN_STATUS}=                Login User              ${tenant_username}      ${tenant_password}
     should be equal as integers     ${LOGIN_STATUS}               1
 
-    ${DELETE_DEVICE_STATUS}=        Delete Device                  device_serial=${ap1.serial}
+    ${DELETE_DEVICE_STATUS}=        keywordsdevices.delete device       ${ap1}
     should be equal as integers     ${DELETE_DEVICE_STATUS}               1
 
     ${DELETE_NW_POLICY_STATUS}=     Delete network policy      ${POLICY_01}
